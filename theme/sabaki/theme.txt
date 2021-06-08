@@ -1,0 +1,82 @@
+{
+  "comment-font-size": 0,
+  "shadow-size": 100,
+  "stone-indicator-type": 0,
+  "var-panel-color": [
+    80,
+    80,
+    80
+  ],
+  "ui-font-name": "Lizzie默认",
+  "use-pure-stone": false,
+  "winrate-stroke-width": 1.7,
+  "comment-node-color": [
+    0,
+    0,
+    255
+  ],
+  "background-image": "background.png",
+  "winrate-line-color": [
+    0,
+    255,
+    0
+  ],
+  "comment-font-color": [
+    255,
+    255,
+    255
+  ],
+  "blunder-node-colors": [
+    [
+      255,
+      0,
+      0
+    ],
+    [
+      255,
+      153,
+      0
+    ]
+  ],
+  "best-move-color": [
+    0,
+    255,
+    255
+  ],
+  "white-stone-image": "white.png",
+  "black-stone-image": "black.png",
+  "blunder-winrate-thresholds": [
+    -25,
+    -10
+  ],
+  "pure-board-color": [
+    217,
+    152,
+    77
+  ],
+  "winrate-font-name": "Lizzie默认",
+  "minimum-blunder-bar-width": 3,
+  "show-stone-shadow": true,
+  "winrate-miss-line-color": [
+    0,
+    0,
+    178
+  ],
+  "background-filter": 20,
+  "comment-background-color": [
+    0,
+    0,
+    0,
+    200
+  ],
+  "board-image": "board.png",
+  "pure-background-color": [
+    128,
+    128,
+    128
+  ],
+  "font-name": "Lizzie默认",
+  "use-pure-background": false,
+  "show-comment-node-color": true,
+  "use-pure-board": false
+}

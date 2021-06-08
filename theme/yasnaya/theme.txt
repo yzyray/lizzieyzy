@@ -1,0 +1,99 @@
+{
+  "comment-font-size": 0,
+  "shadow-size": 55,
+  "stone-indicator-type": 0,
+  "solid-stone-indicator": true,
+  "var-panel-color": [
+    80,
+    80,
+    80
+  ],
+  "ui-font-name": "Î¢ÈíÑÅºÚ",
+  "winrate-stroke-width": 1.7,
+  "comment-node-color": [
+    0,
+    0,
+    255,
+    200
+  ],
+  "background-image": "background2.png",
+  "comment-font-color": [
+    255,
+    255,
+    255,
+    200
+  ],
+  "winrate-line-color": [
+    0,
+    255,
+    0,
+    200
+  ],
+  "blunder-node-colors": [
+    [
+      255,
+      0,
+      0,
+      200
+    ],
+    [
+      0,
+      255,
+      0,
+      200
+    ],
+    [
+      0,
+      0,
+      255
+    ],
+    [
+      255,
+      255,
+      0
+    ],
+    [
+      0,
+      255,
+      255
+    ],
+    [
+      255,
+      0,
+      255
+    ]
+  ],
+  "best-move-color": [
+    0,
+    255,
+    255
+  ],
+  "white-stone-image": "white1.png",
+  "black-stone-image": "black1.png",
+  "blunder-winrate-thresholds": [
+    -30,
+    -20,
+    -10,
+    -5,
+    5,
+    10
+  ],
+  "winrate-font-name": "Î¢ÈíÑÅºÚ",
+  "minimum-blunder-bar-width": 3,
+  "winrate-miss-line-color": [
+    0,
+    0,
+    255,
+    200
+  ],
+  "background-filter": 20,
+  "comment-background-color": [
+    0,
+    0,
+    0,
+    200
+  ],
+  "board-image": "board7.jpg",
+  "font-name": "Î¢ÈíÑÅºÚ",
+  "show-comment-node-color": true
+}
