@@ -157,36 +157,24 @@ public class Lizzie {
     board = new Board();
     frame = new LizzieFrame();
     LizzieFrame.menu.doubleMenu(true);
-    new Thread() {
-      public void run() {
-        try {
-          if (mainArgs.length == 1) {
-            if (!mainArgs[0].equals("read")) {
-              frame.loadFile(new File(mainArgs[0]), true, true);
+    frame.reSetLoc();
+    frame.showMainPanel();
+    if (Config.isScaled) frame.repaint();
+    frame.addResizeLis();
+    SwingUtilities.invokeLater(
+        new Thread() {
+          public void run() {
+            if (mainArgs.length == 1) {
+              if (!mainArgs[0].equals("read")) {
+                frame.loadFile(new File(mainArgs[0]), true, true);
+              }
+            } else if (config.autoResume) {
+              frame.resumeFile();
             }
-          } else if (config.autoResume) {
-            frame.resumeFile();
+            if (config.isShowingIndependentSub) frame.openIndependentSubBoard();
+            Lizzie.frame.setMainPanelFocus();
           }
-          Thread.sleep(75);
-        } catch (InterruptedException e1) {
-          // TODO Auto-generated catch block
-          e1.printStackTrace();
-        }
-        frame.reSetLoc();
-        frame.showMainPanel();
-        if (Config.isScaled) frame.repaint();
-        frame.addResizeLis();
-
-        try {
-          Thread.sleep(200);
-        } catch (InterruptedException e1) {
-          // TODO Auto-generated catch block
-          e1.printStackTrace();
-        }
-        if (config.isShowingIndependentSub) frame.openIndependentSubBoard();
-        Lizzie.frame.setMainPanelFocus();
-      }
-    }.start();
+        });
     gtpConsole = new GtpConsolePane(frame);
     gtpConsole.setVisible(config.persistedUi.optBoolean("gtp-console-opened", false));
     frame.setVisible(true);

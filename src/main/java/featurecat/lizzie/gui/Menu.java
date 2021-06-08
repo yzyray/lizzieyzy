@@ -5845,23 +5845,28 @@ public class Menu extends JMenuBar {
 
   public void updateRecentFileMenu() {
     // TODO Auto-generated method stub
-    openRecent.removeAll();
-    int j = 1;
-    for (int i = Lizzie.config.recentFilePaths.size() - 1; i >= 0; i--) {
-      String recentFilePath = Lizzie.config.recentFilePaths.get(i);
-      File recentF = new File(recentFilePath);
-      final JFontMenuItem recentFile = new JFontMenuItem(j + ": " + recentF.getName());
-      recentFile.setToolTipText(recentFilePath);
-      recentFile.addActionListener(
-          new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-              Lizzie.frame.loadFile(recentF, true, false);
+    SwingUtilities.invokeLater(
+        new Runnable() {
+          public void run() {
+            openRecent.removeAll();
+            int j = 1;
+            for (int i = Lizzie.config.recentFilePaths.size() - 1; i >= 0; i--) {
+              String recentFilePath = Lizzie.config.recentFilePaths.get(i);
+              File recentF = new File(recentFilePath);
+              final JFontMenuItem recentFile = new JFontMenuItem(j + ": " + recentF.getName());
+              recentFile.setToolTipText(recentFilePath);
+              recentFile.addActionListener(
+                  new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                      Lizzie.frame.loadFile(recentF, true, false);
+                    }
+                  });
+              openRecent.add(recentFile);
+              j++;
             }
-          });
-      openRecent.add(recentFile);
-      j++;
-    }
+          }
+        });
   }
 
   private void resetMinPlayoutsForNextMove() {
@@ -6020,23 +6025,32 @@ public class Menu extends JMenuBar {
   }
 
   public synchronized void updateMenuStatusForEngine() {
-    if (Lizzie.config.showDoubleMenu && Lizzie.frame != null) {
-      setPdaAndWrnByEngineForDouble();
-      return;
-    }
-    updateSingleMenu();
+    SwingUtilities.invokeLater(
+        new Thread() {
+          public void run() {
+            if (Lizzie.config.showDoubleMenu && Lizzie.frame != null) {
+              setPdaAndWrnByEngineForDouble();
+              return;
+            }
+            updateSingleMenu();
+          }
+        });
   }
 
   public synchronized void updateMenuStatus() {
-    if (Lizzie.config.showDoubleMenu && Lizzie.frame != null) {
-      doubleMenu(false);
-      return;
-    }
-    updateSingleMenu();
+    SwingUtilities.invokeLater(
+        new Thread() {
+          public void run() {
+            if (Lizzie.config.showDoubleMenu && Lizzie.frame != null) {
+              doubleMenu(false);
+              return;
+            }
+            updateSingleMenu();
+          }
+        });
   }
 
   public void updateEngineMenuone() {
-
     for (int i = 0; i < engine.length; i++) {
       engine[i] = new JFontMenuItem();
       engineMenu.add(engine[i]);
@@ -8903,13 +8917,18 @@ public class Menu extends JMenuBar {
   }
 
   public void changeEngineIcon2(int index, int mode) {
-    if (index < 0) return;
-    if (index > 20) index = 20;
-
-    if (mode == 0) engine2[index].setIcon(null);
-    if (mode == 1) engine2[index].setIcon(stop);
-    if (mode == 2) engine2[index].setIcon(ready);
-    if (mode == 3) engine2[index].setIcon(icon);
+    SwingUtilities.invokeLater(
+        new Runnable() {
+          public void run() {
+            int locIndex = index;
+            if (locIndex < 0) return;
+            if (locIndex > 20) locIndex = 20;
+            if (mode == 0) engine2[locIndex].setIcon(null);
+            if (mode == 1) engine2[locIndex].setIcon(stop);
+            if (mode == 2) engine2[locIndex].setIcon(ready);
+            if (mode == 3) engine2[locIndex].setIcon(icon);
+          }
+        });
   }
 
   public void changeicon(int index) {
@@ -9041,10 +9060,15 @@ public class Menu extends JMenuBar {
   }
 
   public void showPda(boolean show) {
-    showPDA = show;
-    lblPDASpinner.setVisible(show);
-    more2.setVisible(show);
-    txtPDA.setVisible(show);
+    SwingUtilities.invokeLater(
+        new Runnable() {
+          public void run() {
+            showPDA = show;
+            lblPDASpinner.setVisible(show);
+            more2.setVisible(show);
+            txtPDA.setVisible(show);
+          }
+        });
   }
 
   private synchronized void doAfterChangeToolarPos() {
