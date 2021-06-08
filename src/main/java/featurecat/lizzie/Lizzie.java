@@ -339,6 +339,7 @@ public class Lizzie {
     if (engine != leelaz) return;
     if (engineManager.isUpdating) return;
     LizzieFrame.menu.updateMenuStatusForEngine();
+    Lizzie.frame.reSetLoc();
     if (!isEngineGame && !frame.isPlayingAgainstLeelaz)
       if (!(frame.toolbar.chkAutoPlay.isSelected()
           && !frame.toolbar.chkAutoPlayBlack.isSelected())) {

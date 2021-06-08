@@ -10135,54 +10135,54 @@ public class LizzieFrame extends JFrame {
   }
 
   public void reSetLoc() {
-    int width = getWidth() - getInsets().left - getInsets().right;
-    if (Lizzie.config.showTopToolBar) {
-      if (Lizzie.config.autoWrapToolBar) {
-        topPanel.setBounds(0, 0, width, Lizzie.config.menuHeight);
-        int curHeight = topPanel.getPreferredSize().height + 8;
-        topPanelHeight = Lizzie.config.menuHeight;
-        if (curHeight / Lizzie.config.menuHeight > 1) {
-          topPanelHeight = (curHeight / Lizzie.config.menuHeight) * Lizzie.config.menuHeight;
-          topPanel.setBounds(0, 0, width, topPanelHeight);
-          if (Lizzie.config.isScaled) repaint();
-        }
-      } else {
-        topPanel.setBounds(0, 0, 9999, Lizzie.config.menuHeight);
-        topPanelHeight = Lizzie.config.menuHeight;
-      }
-    } else {
-      topPanelHeight = 0;
-      topPanel.setVisible(false);
-    }
-    mainPanel.setBounds(
-        0,
-        (Lizzie.config.showDoubleMenu ? topPanelHeight : 0),
-        Utils.zoomOut(width),
-        Utils.zoomOut(
-            Lizzie.frame.getHeight()
-                - Lizzie.frame.getJMenuBar().getHeight()
-                - Lizzie.frame.getInsets().top
-                - Lizzie.frame.getInsets().bottom
-                - toolbarHeight
-                - (Lizzie.config.showDoubleMenu ? topPanelHeight : 0)));
-    toolbar.setBounds(
-        0,
-        Lizzie.frame.getHeight()
-            - Lizzie.frame.getJMenuBar().getHeight()
-            - Lizzie.frame.getInsets().top
-            - Lizzie.frame.getInsets().bottom
-            - toolbarHeight,
-        width,
-        toolbarHeight);
-    if (toolbar.showDetail) toolbar.setDetailIcon();
-    //      if (toolbarHeight == 26) {
-    //        toolbar.detail.setIcon(toolbar.iconUp);
-    //      }
-    //      if (toolbarHeight == 70) {
-    //        toolbar.detail.setIcon(toolbar.iconDown);
-    //      }
-    toolbar.reSetButtonLocation();
-    if (tempGamePanelAll.isVisible()) showTempGamePanel();
+    SwingUtilities.invokeLater(
+        new Thread() {
+          public void run() {
+            int width = getWidth() - getInsets().left - getInsets().right;
+            if (Lizzie.config.showTopToolBar) {
+              if (Lizzie.config.autoWrapToolBar) {
+                topPanel.setBounds(0, 0, width, Lizzie.config.menuHeight);
+                int curHeight = topPanel.getPreferredSize().height + 8;
+                topPanelHeight = Lizzie.config.menuHeight;
+                if (curHeight / Lizzie.config.menuHeight > 1) {
+                  topPanelHeight =
+                      (curHeight / Lizzie.config.menuHeight) * Lizzie.config.menuHeight;
+                  topPanel.setBounds(0, 0, width, topPanelHeight);
+                  if (Lizzie.config.isScaled) repaint();
+                }
+              } else {
+                topPanel.setBounds(0, 0, 9999, Lizzie.config.menuHeight);
+                topPanelHeight = Lizzie.config.menuHeight;
+              }
+            } else {
+              topPanelHeight = 0;
+              topPanel.setVisible(false);
+            }
+            mainPanel.setBounds(
+                0,
+                (Lizzie.config.showDoubleMenu ? topPanelHeight : 0),
+                Utils.zoomOut(width),
+                Utils.zoomOut(
+                    Lizzie.frame.getHeight()
+                        - Lizzie.frame.getJMenuBar().getHeight()
+                        - Lizzie.frame.getInsets().top
+                        - Lizzie.frame.getInsets().bottom
+                        - toolbarHeight
+                        - (Lizzie.config.showDoubleMenu ? topPanelHeight : 0)));
+            toolbar.setBounds(
+                0,
+                Lizzie.frame.getHeight()
+                    - Lizzie.frame.getJMenuBar().getHeight()
+                    - Lizzie.frame.getInsets().top
+                    - Lizzie.frame.getInsets().bottom
+                    - toolbarHeight,
+                width,
+                toolbarHeight);
+            if (toolbar.showDetail) toolbar.setDetailIcon();
+            toolbar.reSetButtonLocation();
+            if (tempGamePanelAll.isVisible()) showTempGamePanel();
+          }
+        });
   }
 
   public void testFilter(Integer txtFieldIntValue) {
