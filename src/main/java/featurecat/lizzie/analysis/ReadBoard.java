@@ -158,8 +158,10 @@ public class ReadBoard {
       process = processBuilder.start();
     } catch (IOException e) {
       // TODO Auto-generated catch block
-      Utils.showMsg(resourceBundle.getString("ReadBoard.noFileHint"));
       if (!usePipe) {
+        Utils.showMsg(resourceBundle.getString("ReadBoard.noFileHint"));
+        return;
+      } else {
         throw new Exception("start pipe err");
       }
     }
