@@ -3244,7 +3244,7 @@ public class ConfigDialog2 extends JDialog {
             Lizzie.config.uiConfig.optJSONArray("blunder-bar-color"), new Color(255, 204, 255)));
     lblScoreMeanLineColor.setColor(
         Theme.array2Color(
-            Lizzie.config.uiConfig.optJSONArray("scoremean-line-color"), new Color(255, 0, 0)));
+            Lizzie.config.uiConfig.optJSONArray("scoremean-line-color"), new Color(255, 0, 255)));
     setStoneIndicatorType(Lizzie.config.uiConfig.optInt("stone-indicator-type", 0));
     chkShowCommentNodeColor.setSelected(
         Lizzie.config.uiConfig.optBoolean("show-comment-node-color", true));
