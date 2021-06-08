@@ -17,7 +17,7 @@ LizzieYzy 是一个引擎界面,修改自[Lizzie](https://github.com/featurecat/
 
 `棋盘同步`: [相关仓库](https://github.com/yzyray/readboard) 前台(不可移动,遮挡)/后台(不占用鼠标,可遮挡)两种模式,特别优化了野狐、弈城、新浪平台可一键同步,其他平台或图片动画等需框选棋盘(将棋盘选在内即可,比棋盘大很多也没关系),支持双向同步、自动落子(溜狗),采用C#语言,因此只支持Windows
 
-`引擎对局`: 两个引擎之间的单盘/多盘对局,可加载多个SGF作为开局,支持使用不同命令获取引擎选点:`lz-analyze`,`kata-analyze``genmove`,多盘对局自动计算elo,标准差区间等信息
+`引擎对局`: 两个引擎之间的单盘/多盘对局,可加载多个SGF作为开局,支持使用不同命令获取引擎选点:`lz-analyze`,`kata-analyze`,`genmove`,多盘对局自动计算elo,标准差区间等信息
 
 `上传分享`: [相关仓库](https://github.com/yzyray/LizziePlayer) 支持上传棋谱到[LizziePlayer](http://lizzieyzy.cn)上,然后在手机、平板等移动端观看,LizziePlayer会展示选点、胜率图、吻合度等信息,可查找失误手
 
