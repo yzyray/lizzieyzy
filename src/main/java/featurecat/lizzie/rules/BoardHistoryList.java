@@ -158,6 +158,7 @@ public class BoardHistoryList {
   public Optional<BoardData> nextVariation(int idx) {
     Optional<BoardHistoryNode> n = head.getVariation(idx);
     n.ifPresent(x -> head = x);
+    if (n.isPresent()) head.placeExtraStones();
     return n.map(x -> x.getData());
   }
 
