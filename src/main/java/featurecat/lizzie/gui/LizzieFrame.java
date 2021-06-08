@@ -7808,18 +7808,18 @@ public class LizzieFrame extends JFrame {
             htmlStyle.addRule(style);
           }
         }
-        if (!isCommentArea) {
-          comment = comment.replaceAll("(\r\n)|(\n)", "<br />").replaceAll(" ", "&nbsp;");
+      }
+      if (!isCommentArea) {
+        comment = comment.replaceAll("(\r\n)|(\n)", "<br />").replaceAll(" ", "&nbsp;");
+      }
+      try {
+        if (isLoadingEngine) {
+          if (!cachedComment.equals(comment)) setCommentText(comment);
+          cachedComment = comment;
+        } else {
+          setCommentText(comment);
         }
-        try {
-          if (isLoadingEngine) {
-            if (!cachedComment.equals(comment)) setCommentText(comment);
-            cachedComment = comment;
-          } else {
-            setCommentText(comment);
-          }
-        } catch (Exception ex) {
-        }
+      } catch (Exception ex) {
       }
     }
   }
