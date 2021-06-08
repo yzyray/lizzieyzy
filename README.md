@@ -37,7 +37,7 @@ Add some new features on Lizzie's basis:`Hawk Eye`,`Flash Analyze`,`Batch Analyz
 
 ## New features
 
-`Hawk Eye`: Get accuracy,winrate difference,score difference,blunder move based on the difference bettween engine candidates and actually move,and display in chart.
+`Hawk Eye`: Get accuracy,winrate difference,score difference,blunder move based on the difference bettween engine candidates and actually move,and displayed in chart.
 
 `Flash Analyze`: Depend on Katago's analysis mode,analyze all kifu in parallel,get winrate graph candidates rapidly,support batch analyze.
 
