@@ -113,7 +113,8 @@ public class JPaintTextPane extends JTextPane implements MouseListener {
 
   protected void paintComponent(Graphics g) {
     Graphics2D g1 = (Graphics2D) g;
-    g1.setPaint(Lizzie.frame.backgroundPaint);
+    if (Lizzie.config.usePureBackground) g1.setColor(Lizzie.config.pureBackgroundColor);
+    else g1.setPaint(Lizzie.frame.backgroundPaint);
     g1.fillRect(0, 0, getWidth(), getHeight());
     super.paintComponent(g);
   }

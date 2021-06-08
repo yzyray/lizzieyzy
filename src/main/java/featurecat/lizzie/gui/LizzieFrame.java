@@ -4430,7 +4430,7 @@ public class LizzieFrame extends JFrame {
             }
           }
           if (backgroundG.isPresent()) {
-            drawContainer(backgroundG.get(), vx, vy, vw, vh, true);
+            drawContainer(backgroundG.get(), vx, vy, vw, vh);
           }
           if (!noBasic) {
             if (noComment && noWinrate) {
@@ -4809,11 +4809,11 @@ public class LizzieFrame extends JFrame {
                     && noVariation
                     && !showListPane
                     && !Lizzie.config.showCaptured) {
-                  drawContainer(backgroundG.get(), contx, 0, grw, conth + caph, false);
+                  drawContainer(backgroundG.get(), contx, 0, grw, conth + caph);
                 } else {
                   if (isSmallCap) {
-                    drawContainer(backgroundG.get(), contx, conty, grw, conth, false);
-                  } else drawContainer(backgroundG.get(), contx, conty, contw, conth, false);
+                    drawContainer(backgroundG.get(), contx, conty, grw, conth);
+                  } else drawContainer(backgroundG.get(), contx, conty, contw, conth);
                 }
               }
               //        if (!Lizzie.config.showLargeSubBoard() && !Lizzie.config.showLargeWinrate())
@@ -4822,7 +4822,7 @@ public class LizzieFrame extends JFrame {
               //        }
               if (Lizzie.config.showVariationGraph || showListPane) {
                 if (!Lizzie.config.showSubBoard && Lizzie.config.showComment) treeh = vh;
-                drawContainer(backgroundG.get(), vx, vy, vw, treeh, true);
+                drawContainer(backgroundG.get(), vx, vy, vw, treeh);
               }
               //        {
 
@@ -4830,14 +4830,13 @@ public class LizzieFrame extends JFrame {
               //        	else if(Lizzie.config.showComment)
               //        		  drawContainer(backgroundG.get(), vx, vy, vw, vh);
               //        }
-              if (Lizzie.config.showComment)
-                drawContainer(backgroundG.get(), cx, cy, cw, ch, false);
+              if (Lizzie.config.showComment) drawContainer(backgroundG.get(), cx, cy, cw, ch);
               if (Lizzie.config.showCaptured) {
                 if (Lizzie.config.showLargeSubBoard()
                     && !noSubBoard
                     && !Lizzie.config.showWinrateGraph)
-                  drawContainer(backgroundG.get(), capx, capy, capw, treeh, false);
-                else drawContainer(backgroundG.get(), capx, capy, capw, caph, false);
+                  drawContainer(backgroundG.get(), capx, capy, capw, treeh);
+                else drawContainer(backgroundG.get(), capx, capy, capw, caph);
               }
             }
             // if (Lizzie.leelaz != null && Lizzie.leelaz.isLoaded()) {
@@ -5086,14 +5085,8 @@ public class LizzieFrame extends JFrame {
             boardRenderer.setupSizeParameters();
             boardRenderer.draw(g);
             if (backgroundG.isPresent()) {
-              drawContainer(backgroundG.get(), capx, capy, spaceW, spaceH, false);
-              drawContainer(
-                  backgroundG.get(),
-                  leftInset,
-                  vy,
-                  spaceW,
-                  vh,
-                  Lizzie.config.showVariationGraph || showListPane);
+              drawContainer(backgroundG.get(), capx, capy, spaceW, spaceH);
+              drawContainer(backgroundG.get(), leftInset, vy, spaceW, vh);
             }
             // if (Lizzie.leelaz != null && Lizzie.leelaz.isLoaded()) {
             if (Lizzie.config.showStatus && Lizzie.config.extraMode != 7) {
@@ -5268,7 +5261,7 @@ public class LizzieFrame extends JFrame {
     //    cachedLargeWinrate = Lizzie.config.showLargeWinrate();
     //    cachedShowComment = Lizzie.config.showComment;
     //    cachedBoardPositionProportion = BoardPositionProportion;
-
+    boolean needRedrawBackgroundPaint = redrawBackgroundAnyway;
     redrawBackgroundAnyway = false;
 
     Graphics2D g = cachedBackground.createGraphics();
@@ -5285,12 +5278,17 @@ public class LizzieFrame extends JFrame {
     int drawHeight = max(wallpaper.getHeight(), mainPanel.getHeight());
     // Support seamless texture
     boardRenderer.drawTextureImage(g, wallpaper, 0, 0, drawWidth, drawHeight, false);
-
     Lizzie.board.setForceRefresh(true);
+    if (backgroundPaint == null || needRedrawBackgroundPaint) {
+      BufferedImage result = new BufferedImage(100, 100, TYPE_INT_ARGB);
+      filter20.filter(cachedBackground.getSubimage(0, 0, 100, 100), result);
+      backgroundPaint =
+          new TexturePaint(result, new Rectangle(0, 0, result.getWidth(), result.getHeight()));
+    }
     return g;
   }
 
-  private void drawContainer(Graphics g, int vx, int vy, int vw, int vh, boolean getVarTreePaint) {
+  private void drawContainer(Graphics g, int vx, int vy, int vw, int vh) {
     if (vw <= 0
         || vh <= 0
         || vx < cachedBackground.getMinX()
@@ -5299,19 +5297,9 @@ public class LizzieFrame extends JFrame {
         || vy + vh > cachedBackground.getMinY() + cachedBackground.getHeight()) {
       return;
     }
-
     BufferedImage result = new BufferedImage(vw, vh, TYPE_INT_ARGB);
     filter20.filter(cachedBackground.getSubimage(vx, vy, vw, vh), result);
-    // Graphics2D gs =result.createGraphics();
-
     g.drawImage(result, vx, vy, null);
-
-    if (getVarTreePaint)
-      backgroundPaint =
-          new TexturePaint(result, new Rectangle(0, 0, result.getWidth(), result.getHeight()));
-
-    // g.setColor(Color.LIGHT_GRAY);
-    // g.fillRect(vx, vy, vw, vh);
   }
 
   private BufferedImage drawContainer(int vx, int vy, int vw, int vh) {
@@ -5324,16 +5312,9 @@ public class LizzieFrame extends JFrame {
         || vy + vh > cachedBackground.getMinY() + cachedBackground.getHeight()) {
       return null;
     }
-
     BufferedImage result = new BufferedImage(vw, vh, TYPE_INT_ARGB);
     filter20.filter(cachedBackground.getSubimage(vx, vy, vw, vh), result);
-    // if(backgroundPaint==null)
-    backgroundPaint =
-        new TexturePaint(result, new Rectangle(0, 0, result.getWidth(), result.getHeight()));
     return result;
-    //  g.drawImage(result, vx, vy, null);
-    // g.setColor(Color.LIGHT_GRAY);
-    // g.fillRect(vx, vy, vw, vh);
   }
 
   private void drawPonderingState(
