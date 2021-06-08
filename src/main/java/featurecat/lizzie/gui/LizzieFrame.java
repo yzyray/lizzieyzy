@@ -9757,7 +9757,8 @@ public class LizzieFrame extends JFrame {
     //        tree_RING_DIAM + 2);
     if (Lizzie.config.showCommentNodeColor && !cur.getData().comment.isEmpty()) {
       // g.setColor(Lizzie.config.varPanelColor);
-      g.setPaint(backgroundPaint);
+      if (Lizzie.config.usePureBackground) g.setColor(Lizzie.config.pureBackgroundColor);
+      else g.setPaint(Lizzie.frame.backgroundPaint);
       g.fillOval(
           tree_curposx + (tree_DOT_DIAM + tree_diff - tree_RING_DIAM) / 2,
           tree_posy + (tree_DOT_DIAM + tree_diff - tree_RING_DIAM) / 2,
@@ -9777,7 +9778,8 @@ public class LizzieFrame extends JFrame {
           tree_RING_DIAM);
     } else {
       // g.setColor(Lizzie.config.varPanelColor);
-      g.setPaint(backgroundPaint);
+      if (Lizzie.config.usePureBackground) g.setColor(Lizzie.config.pureBackgroundColor);
+      else g.setPaint(Lizzie.frame.backgroundPaint);
       g.fillOval(
           tree_curposx + tree_diff - 1, tree_posy + tree_diff - 1, tree_diam + 2, tree_diam + 2);
       g.setColor(new Color(0, 0, 0, 130));

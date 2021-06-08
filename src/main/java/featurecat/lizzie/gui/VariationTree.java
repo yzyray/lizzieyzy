@@ -339,24 +339,12 @@ public class VariationTree {
     if (!calc) {
       // Draw background
       area.setBounds(posx, posy, width, height);
-      // if(Lizzie.frame.backgroundPaint!=null)
-      // {
-      //      g.setColor(new Color(0, 0, 0, 60));
-      g.setPaint(Lizzie.frame.backgroundPaint);
+      if (Lizzie.config.usePureBackground) g.setColor(Lizzie.config.pureBackgroundColor);
+      else g.setPaint(Lizzie.frame.backgroundPaint);
       g.fillRect(posx, posy, width, height);
 
       g.setColor(new Color(0, 0, 0, 130));
       g.fillRect(posx, posy, width, height);
-      // }
-      //      if (Lizzie.config.showBorder) {
-      //        // draw edge of panel
-      //        g.setStroke(new BasicStroke(2 * strokeRadius));
-      //        g.drawLine(
-      //            posx + strokeRadius,
-      //            posy + strokeRadius,
-      //            posx + strokeRadius,
-      //            posy - strokeRadius + height);
-      //      }
       g.setStroke(new BasicStroke(1));
     }
 
