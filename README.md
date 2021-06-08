@@ -31,7 +31,7 @@ Maven编译所需的额外文件上传在[这里](https://pan.baidu.com/s/1q615G
 
 # LizzieYzy - Interface Of Go Engine
 
-LizzieYzy is a graphical interface modified from [Lizzie](https://github.com/featurecat/lizzie),allowing load various engine like:[Katago](https://github.com/lightvector/KataGo)、[LeelaZero](https://github.com/leela-zero/leela-zero)、[Leela](https://github.com/gcp/Leela)、[ZenGTP](https://github.com/yzyray/ZenGTP)、[SAI](http://sai.unich.it)、[Pachi](https://github.com/pasky/pachi) or other GTP engines.
+LizzieYzy is a graphical interface modified from [Lizzie](https://github.com/featurecat/lizzie),allowing load various engine: [Katago](https://github.com/lightvector/KataGo)、[LeelaZero](https://github.com/leela-zero/leela-zero)、[Leela](https://github.com/gcp/Leela)、[ZenGTP](https://github.com/yzyray/ZenGTP)、[SAI](http://sai.unich.it)、[Pachi](https://github.com/pasky/pachi) or other GTP engines.
 
 Add some new features on Lizzie's basis:`Hawk Eye`,`Flash Analyze`,`Batch Analyze`,`Estimate`,`Board Synchronization(only windows)`,`Engine Game`,`Upload And Share`,`Double Engine Mode` and ajust some details,support retina monitor,won't get fuzzy by scaled.
 
@@ -55,4 +55,4 @@ Add some new features on Lizzie's basis:`Hawk Eye`,`Flash Analyze`,`Batch Analyz
 
 ##
 
-Put necessary jars for building maven is [here](https://pan.baidu.com/s/1q615GHD62F92mNZbTYfcxA?_at_=1623121084609#list/path=%2Fsharelink875943949-871813486621563%2F公开整合包%2Flib(编译用)&parentPath=%2Fsharelink875943949-871813486621563)
+Put necessary jars for building maven [here](https://pan.baidu.com/s/1q615GHD62F92mNZbTYfcxA?_at_=1623121084609#list/path=%2Fsharelink875943949-871813486621563%2F公开整合包%2Flib(编译用)&parentPath=%2Fsharelink875943949-871813486621563)
