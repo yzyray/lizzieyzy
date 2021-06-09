@@ -53,7 +53,7 @@ public class SetCustomMode extends JDialog {
     this.isSetCustom = isSetCustom;
     oriPondering = Lizzie.leelaz.isPondering();
     if (Lizzie.leelaz.isPondering()) Lizzie.leelaz.togglePonder();
-    this.setAlwaysOnTop(Lizzie.frame.isAlwaysOnTop());
+    this.setAlwaysOnTop(true);
     this.saveTempConfig();
     if (isSetCustom) Lizzie.config.loadCustomLayout(index);
     initComponents();

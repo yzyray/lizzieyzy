@@ -3,6 +3,7 @@ package featurecat.lizzie;
 import featurecat.lizzie.theme.Theme;
 import featurecat.lizzie.util.Utils;
 import java.awt.Color;
+import java.awt.Frame;
 import java.awt.Toolkit;
 import java.io.*;
 import java.util.*;
@@ -2304,6 +2305,16 @@ public class Config {
         Lizzie.frame.independentMainBoard != null && Lizzie.frame.independentMainBoard.isVisible();
     boolean showIndependentSub =
         Lizzie.frame.independentSubBoard != null && Lizzie.frame.independentSubBoard.isVisible();
+    boolean isMainFrameMaxSize = Lizzie.frame.getExtendedState() == JFrame.MAXIMIZED_BOTH;
+    jsonLayout.put("main-frame-maxsize", isMainFrameMaxSize);
+    if (!isMainFrameMaxSize) {
+      JSONArray mainFramePos = new JSONArray();
+      mainFramePos.put(Lizzie.frame.getX());
+      mainFramePos.put(Lizzie.frame.getY());
+      mainFramePos.put(Lizzie.frame.getWidth());
+      mainFramePos.put(Lizzie.frame.getHeight());
+      jsonLayout.put("main-frame-position", mainFramePos);
+    }
     jsonLayout.put("independent-main-board", showIndependentMain);
     jsonLayout.put("independent-sub-board", showIndependentSub);
     if (showIndependentMain) {
@@ -2374,7 +2385,15 @@ public class Config {
           jsonLayout.getJSONArray("independent-sub-board-position").getInt(2),
           jsonLayout.getJSONArray("independent-sub-board-position").getInt(3));
     }
-
+    if (jsonLayout.getBoolean("main-frame-maxsize")) {
+      Lizzie.frame.setExtendedState(Frame.MAXIMIZED_BOTH);
+    } else {
+      Lizzie.frame.setBounds(
+          jsonLayout.getJSONArray("main-frame-position").getInt(0),
+          jsonLayout.getJSONArray("main-frame-position").getInt(1),
+          jsonLayout.getJSONArray("main-frame-position").getInt(2),
+          jsonLayout.getJSONArray("main-frame-position").getInt(3));
+    }
     Lizzie.frame.refreshBackground();
     Lizzie.frame.repaint();
   }
