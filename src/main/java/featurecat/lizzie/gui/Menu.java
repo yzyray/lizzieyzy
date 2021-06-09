@@ -6024,7 +6024,7 @@ public class Menu extends JMenuBar {
     setKomiPanelExtra();
   }
 
-  public synchronized void updateMenuStatusForEngine() {
+  public void updateMenuStatusForEngine() {
     SwingUtilities.invokeLater(
         new Thread() {
           public void run() {
@@ -6037,7 +6037,7 @@ public class Menu extends JMenuBar {
         });
   }
 
-  public synchronized void updateMenuStatus() {
+  public void updateMenuStatus() {
     SwingUtilities.invokeLater(
         new Thread() {
           public void run() {
@@ -6134,7 +6134,7 @@ public class Menu extends JMenuBar {
     }
   }
 
-  public synchronized void updateMenuAfterEngine(boolean first) {
+  public void updateMenuAfterEngine(boolean first) {
     if (!first) {
       this.remove(black);
       this.remove(white);
@@ -6894,7 +6894,7 @@ public class Menu extends JMenuBar {
     if (!first) doubleMenu(false);
   }
 
-  public synchronized void doubleMenu(boolean first) {
+  public void doubleMenu(boolean first) {
     if (!Lizzie.config.showDoubleMenu) {
       Lizzie.frame.topPanel.setVisible(false);
       if (first) toggleDoubleMenuGameStatus();
@@ -8031,7 +8031,7 @@ public class Menu extends JMenuBar {
     }
   }
 
-  private synchronized void setKomiPanelInDoubleMenu() {
+  private void setKomiPanelInDoubleMenu() {
     remove(komiPanel);
     lblKomiSpinner.setBounds(
         1,
@@ -8372,319 +8372,376 @@ public class Menu extends JMenuBar {
     else sepForPdaWrn.setVisible(true);
   }
 
-  private synchronized void setKomiPanelExtra() {
-    if (Lizzie.config.showDoubleMenu && Lizzie.frame != null) {
-      doubleMenu(false);
-      return;
-    }
-    if (toolPanel != null) {
-      komiPanel.remove(toolPanel);
-      toolPanel.removeAll();
-    }
-    toolPanel = new JToolBar();
-    if (Lizzie.config.showDoubleMenuGameControl) {
-      toolPanel.add(combinedSeparatorGameControl);
-      toolPanel.add(doubleMenuNewGame);
-      toolPanel.add(doubleMenuPauseGame);
-      toolPanel.add(doubleMenuResign);
-    }
-    toolPanel.add(combinedSeparatorPlaceStone);
-    toolPanel.add(black);
-    toolPanel.add(white);
-    toolPanel.add(blackwhite);
-    toolPanel.add(playPass);
-    toolPanel.add(combinedSeparatorForce);
-    toolPanel.add(selectAllow);
-    toolPanel.add(selectAllowMore);
-    toolPanel.add(selectAvoid);
-    toolPanel.add(selectAvoidMore);
-    toolPanel.add(clearSelect);
-
-    // aaa
-    if (Lizzie.config.showTimeControlInMenu || Lizzie.config.showPlayoutControlInMenu) {
-      toolPanel.addSeparator(new Dimension(8, Lizzie.config.menuHeight + 2));
-      toolPanel.add(new JFontLabel(resourceBundle.getString("Menu.lblLimit"))); // "限制:"));
-      if (Lizzie.config.showTimeControlInMenu) {
-        toolPanel.add(chkTime);
-        toolPanel.add(txtTimeLimit);
-      }
-      if (Lizzie.config.showPlayoutControlInMenu) {
-        toolPanel.add(chkPlayOut);
-        toolPanel.add(txtPlayOutsLimit);
-      }
-      toolPanel.addSeparator(new Dimension(2, 0));
-    }
-
-    if (chkShowBlack == null) {
-      chkShowBlack = new JFontCheckBox(resourceBundle.getString("Menu.Black"));
-      chkShowBlack.addActionListener(
-          new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-              // TBD
-              Lizzie.frame.toolbar.chkShowBlack.setSelected(chkShowBlack.isSelected());
-              Lizzie.frame.refresh();
+  private void setKomiPanelExtra() {
+    SwingUtilities.invokeLater(
+        new Thread() {
+          public void run() {
+            if (Lizzie.config.showDoubleMenu && Lizzie.frame != null) {
+              doubleMenu(false);
+              return;
             }
-          });
-    }
-    if (chkShowWhite == null) {
-      chkShowWhite = new JFontCheckBox(resourceBundle.getString("Menu.White"));
-      chkShowWhite.addActionListener(
-          new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-              // TBD
-              Lizzie.frame.toolbar.chkShowWhite.setSelected(chkShowWhite.isSelected());
-              Lizzie.frame.refresh();
+            if (toolPanel != null) {
+              komiPanel.remove(toolPanel);
+              toolPanel.removeAll();
             }
-          });
-    }
+            toolPanel = new JToolBar();
+            if (Lizzie.config.showDoubleMenuGameControl) {
+              toolPanel.add(combinedSeparatorGameControl);
+              toolPanel.add(doubleMenuNewGame);
+              toolPanel.add(doubleMenuPauseGame);
+              toolPanel.add(doubleMenuResign);
+            }
+            toolPanel.add(combinedSeparatorPlaceStone);
+            toolPanel.add(black);
+            toolPanel.add(white);
+            toolPanel.add(blackwhite);
+            toolPanel.add(playPass);
+            toolPanel.add(combinedSeparatorForce);
+            toolPanel.add(selectAllow);
+            toolPanel.add(selectAllowMore);
+            toolPanel.add(selectAvoid);
+            toolPanel.add(selectAvoidMore);
+            toolPanel.add(clearSelect);
 
-    if (chkAnalyzeBlack == null) {
-      chkAnalyzeBlack = new JFontCheckBox(resourceBundle.getString("Menu.Black"));
-      chkAnalyzeBlack.addActionListener(
-          new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-              // TBD
-              Lizzie.config.analyzeBlack = chkAnalyzeBlack.isSelected();
-              if (Lizzie.board.getHistory().isBlacksTurn()) {
-                if (Lizzie.leelaz.isPondering()) {
-                  if (Lizzie.config.analyzeBlack) Lizzie.leelaz.ponder();
-                  else Lizzie.leelaz.nameCmdfornoponder();
-                }
+            // aaa
+            if (Lizzie.config.showTimeControlInMenu || Lizzie.config.showPlayoutControlInMenu) {
+              toolPanel.addSeparator(new Dimension(8, Lizzie.config.menuHeight + 2));
+              toolPanel.add(new JFontLabel(resourceBundle.getString("Menu.lblLimit"))); // "限制:"));
+              if (Lizzie.config.showTimeControlInMenu) {
+                toolPanel.add(chkTime);
+                toolPanel.add(txtTimeLimit);
+              }
+              if (Lizzie.config.showPlayoutControlInMenu) {
+                toolPanel.add(chkPlayOut);
+                toolPanel.add(txtPlayOutsLimit);
+              }
+              toolPanel.addSeparator(new Dimension(2, 0));
+            }
+
+            if (chkShowBlack == null) {
+              chkShowBlack = new JFontCheckBox(resourceBundle.getString("Menu.Black"));
+              chkShowBlack.addActionListener(
+                  new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                      // TBD
+                      Lizzie.frame.toolbar.chkShowBlack.setSelected(chkShowBlack.isSelected());
+                      Lizzie.frame.refresh();
+                    }
+                  });
+            }
+            if (chkShowWhite == null) {
+              chkShowWhite = new JFontCheckBox(resourceBundle.getString("Menu.White"));
+              chkShowWhite.addActionListener(
+                  new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                      // TBD
+                      Lizzie.frame.toolbar.chkShowWhite.setSelected(chkShowWhite.isSelected());
+                      Lizzie.frame.refresh();
+                    }
+                  });
+            }
+
+            if (chkAnalyzeBlack == null) {
+              chkAnalyzeBlack = new JFontCheckBox(resourceBundle.getString("Menu.Black"));
+              chkAnalyzeBlack.addActionListener(
+                  new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                      // TBD
+                      Lizzie.config.analyzeBlack = chkAnalyzeBlack.isSelected();
+                      if (Lizzie.board.getHistory().isBlacksTurn()) {
+                        if (Lizzie.leelaz.isPondering()) {
+                          if (Lizzie.config.analyzeBlack) Lizzie.leelaz.ponder();
+                          else Lizzie.leelaz.nameCmdfornoponder();
+                        }
+                      }
+                    }
+                  });
+            }
+            if (chkAnalyzeWhite == null) {
+              chkAnalyzeWhite = new JFontCheckBox(resourceBundle.getString("Menu.White"));
+              chkAnalyzeWhite.addActionListener(
+                  new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                      // TBD
+                      Lizzie.config.analyzeWhite = chkAnalyzeWhite.isSelected();
+                      if (!Lizzie.board.getHistory().isBlacksTurn()) {
+                        if (Lizzie.leelaz.isPondering()) {
+                          if (Lizzie.config.analyzeWhite) Lizzie.leelaz.ponder();
+                          else Lizzie.leelaz.nameCmdfornoponder();
+                        }
+                      }
+                    }
+                  });
+            }
+
+            if (chkShowWinrate == null) {
+              chkShowWinrate = new JFontCheckBox(resourceBundle.getString("Menu.winrate"));
+              chkShowWinrate.addActionListener(
+                  new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                      // TBD
+                      Lizzie.config.showWinrateInSuggestion =
+                          !Lizzie.config.showWinrateInSuggestion;
+                      Lizzie.config.uiConfig.put(
+                          "show-winrate-in-suggestion", Lizzie.config.showWinrateInSuggestion);
+                      Lizzie.frame.refresh();
+                    }
+                  });
+            }
+
+            if (chkShowPlayouts == null) {
+              chkShowPlayouts = new JFontCheckBox(resourceBundle.getString("Menu.playouts"));
+              chkShowPlayouts.addActionListener(
+                  new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                      // TBD
+                      Lizzie.config.showPlayoutsInSuggestion =
+                          !Lizzie.config.showPlayoutsInSuggestion;
+                      Lizzie.config.uiConfig.put(
+                          "show-playouts-in-suggestion", Lizzie.config.showPlayoutsInSuggestion);
+                      Lizzie.frame.refresh();
+                    }
+                  });
+            }
+
+            if (chkShowScore == null) {
+              chkShowScore = new JFontCheckBox(resourceBundle.getString("Menu.score"));
+              chkShowScore.addActionListener(
+                  new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                      // TBD
+                      Lizzie.config.showScoremeanInSuggestion =
+                          !Lizzie.config.showScoremeanInSuggestion;
+                      Lizzie.config.uiConfig.put(
+                          "show-scoremean-in-suggestion", Lizzie.config.showScoremeanInSuggestion);
+                      Lizzie.frame.refresh();
+                    }
+                  });
+            }
+
+            if (Lizzie.config.showAnalyzeController) {
+              JFontLabel lblShowAnalyze =
+                  new JFontLabel(resourceBundle.getString("Menu.lblShowAnalyze"));
+              chkAnalyzeBlack.setSelected(Lizzie.config.analyzeBlack);
+              chkAnalyzeWhite.setSelected(Lizzie.config.analyzeWhite);
+              toolPanel.addSeparator();
+              toolPanel.add(lblShowAnalyze);
+              toolPanel.add(chkAnalyzeBlack);
+              toolPanel.add(chkAnalyzeWhite);
+            }
+
+            if (Lizzie.config.showDoubleMenuVar || Lizzie.config.showDoubleMenuMoveInfo) {
+              JFontLabel lblShowCandidate =
+                  new JFontLabel(resourceBundle.getString("Menu.lblShowCandidate"));
+
+              chkShowBlack.setSelected(Lizzie.frame.toolbar.chkShowBlack.isSelected());
+              chkShowWhite.setSelected(Lizzie.frame.toolbar.chkShowWhite.isSelected());
+
+              if (Lizzie.config.showWinrateInSuggestion) chkShowWinrate.setSelected(true);
+              if (Lizzie.config.showPlayoutsInSuggestion) chkShowPlayouts.setSelected(true);
+              if (Lizzie.config.showScoremeanInSuggestion) chkShowScore.setSelected(true);
+
+              toolPanel.addSeparator();
+              toolPanel.add(lblShowCandidate);
+              if (Lizzie.config.showDoubleMenuVar) {
+                toolPanel.add(chkShowBlack);
+                toolPanel.add(chkShowWhite);
+              }
+              if (Lizzie.config.showDoubleMenuMoveInfo) {
+                //  Lizzie.frame.topPanel.add(lblMoveInfo);
+                if (Lizzie.config.showDoubleMenuVar) toolPanel.addSeparator();
+                toolPanel.add(chkShowWinrate);
+                toolPanel.add(chkShowPlayouts);
+                toolPanel.add(chkShowScore);
               }
             }
-          });
-    }
-    if (chkAnalyzeWhite == null) {
-      chkAnalyzeWhite = new JFontCheckBox(resourceBundle.getString("Menu.White"));
-      chkAnalyzeWhite.addActionListener(
-          new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-              // TBD
-              Lizzie.config.analyzeWhite = chkAnalyzeWhite.isSelected();
-              if (!Lizzie.board.getHistory().isBlacksTurn()) {
-                if (Lizzie.leelaz.isPondering()) {
-                  if (Lizzie.config.analyzeWhite) Lizzie.leelaz.ponder();
-                  else Lizzie.leelaz.nameCmdfornoponder();
-                }
+            JPanel btnPanel = new JPanel(null);
+            int pos = 0;
+            if (Lizzie.config.showRuleMenu
+                || Lizzie.config.showParamMenu
+                || Lizzie.config.showGobanMenu
+                || Lizzie.config.showSaveLoadMenu) toolPanel.addSeparator();
+            toolPanel.add(setRules);
+            toolPanel.add(setLzSaiParam);
+            toolPanel.add(setBoardSize);
+            toolPanel.add(saveLoad);
+            if (Lizzie.config.showRuleMenu) {
+              setRules.setBounds(
+                  pos,
+                  Lizzie.config.isFrameFontSmall()
+                      ? 0
+                      : (Lizzie.config.isFrameFontMiddle() ? 0 : 2),
+                  Lizzie.config.isFrameFontSmall()
+                      ? 40
+                      : (Lizzie.config.isFrameFontMiddle()
+                          ? 46
+                          : (Lizzie.config.isChinese ? 52 : 55)),
+                  Lizzie.config.isFrameFontSmall()
+                      ? 20
+                      : (Lizzie.config.isFrameFontMiddle() ? 23 : 26));
+              setRules.setVisible(true);
+              btnPanel.add(setRules);
+              pos +=
+                  Lizzie.config.isFrameFontSmall()
+                      ? 40
+                      : (Lizzie.config.isFrameFontMiddle()
+                          ? 46
+                          : (Lizzie.config.isChinese ? 52 : 55));
+            } else setRules.setVisible(false);
+            if (Lizzie.config.showParamMenu) {
+              if (Lizzie.config.isChinese) {
+                setLzSaiParam.setBounds(
+                    pos,
+                    Lizzie.config.isFrameFontSmall()
+                        ? 0
+                        : (Lizzie.config.isFrameFontMiddle() ? 0 : 2),
+                    Lizzie.config.isFrameFontSmall()
+                        ? 40
+                        : (Lizzie.config.isFrameFontMiddle() ? 46 : 52),
+                    Lizzie.config.isFrameFontSmall()
+                        ? 20
+                        : (Lizzie.config.isFrameFontMiddle() ? 23 : 26));
+                pos +=
+                    Lizzie.config.isFrameFontSmall()
+                        ? 40
+                        : (Lizzie.config.isFrameFontMiddle() ? 46 : 52);
+              } else {
+                setLzSaiParam.setBounds(
+                    pos,
+                    Lizzie.config.isFrameFontSmall()
+                        ? 0
+                        : (Lizzie.config.isFrameFontMiddle() ? 0 : 2),
+                    Lizzie.config.isFrameFontSmall()
+                        ? 48
+                        : (Lizzie.config.isFrameFontMiddle() ? 62 : 75),
+                    Lizzie.config.isFrameFontSmall()
+                        ? 20
+                        : (Lizzie.config.isFrameFontMiddle() ? 23 : 26));
+                pos +=
+                    Lizzie.config.isFrameFontSmall()
+                        ? 48
+                        : (Lizzie.config.isFrameFontMiddle() ? 62 : 75);
               }
+              setLzSaiParam.setVisible(true);
+              btnPanel.add(setLzSaiParam);
+
+            } else setLzSaiParam.setVisible(false);
+            if (Lizzie.config.showGobanMenu) {
+              if (Lizzie.config.isChinese) {
+                setBoardSize.setBounds(
+                    pos,
+                    Lizzie.config.isFrameFontSmall()
+                        ? 0
+                        : (Lizzie.config.isFrameFontMiddle() ? 0 : 2),
+                    Lizzie.config.isFrameFontSmall()
+                        ? 40
+                        : (Lizzie.config.isFrameFontMiddle() ? 46 : 52),
+                    Lizzie.config.isFrameFontSmall()
+                        ? 20
+                        : (Lizzie.config.isFrameFontMiddle() ? 23 : 26));
+                pos +=
+                    Lizzie.config.isFrameFontSmall()
+                        ? 40
+                        : (Lizzie.config.isFrameFontMiddle() ? 46 : 52);
+              } else {
+                setBoardSize.setBounds(
+                    pos,
+                    Lizzie.config.isFrameFontSmall()
+                        ? 0
+                        : (Lizzie.config.isFrameFontMiddle() ? 0 : 2),
+                    Lizzie.config.isFrameFontSmall()
+                        ? 45
+                        : (Lizzie.config.isFrameFontMiddle() ? 55 : 65),
+                    Lizzie.config.isFrameFontSmall()
+                        ? 20
+                        : (Lizzie.config.isFrameFontMiddle() ? 23 : 26));
+                pos +=
+                    Lizzie.config.isFrameFontSmall()
+                        ? 45
+                        : (Lizzie.config.isFrameFontMiddle() ? 55 : 65);
+              }
+              setBoardSize.setVisible(true);
+              btnPanel.add(setBoardSize);
+            } else setBoardSize.setVisible(false);
+            if (Lizzie.config.showSaveLoadMenu) {
+              saveLoad.setBounds(
+                  pos,
+                  Lizzie.config.isFrameFontSmall()
+                      ? 0
+                      : (Lizzie.config.isFrameFontMiddle() ? 0 : 2),
+                  Lizzie.config.isFrameFontSmall()
+                      ? 40
+                      : (Lizzie.config.isFrameFontMiddle()
+                          ? 46
+                          : (Lizzie.config.isChinese ? 52 : 55)),
+                  Lizzie.config.isFrameFontSmall()
+                      ? 20
+                      : (Lizzie.config.isFrameFontMiddle() ? 23 : 26));
+              saveLoad.setVisible(true);
+              btnPanel.add(saveLoad);
+              pos +=
+                  Lizzie.config.isFrameFontSmall()
+                      ? 40
+                      : (Lizzie.config.isFrameFontMiddle()
+                          ? 46
+                          : (Lizzie.config.isChinese ? 52 : 55));
+            } else saveLoad.setVisible(false);
+            toolPanel.add(btnPanel);
+            komiPanel.add(toolPanel);
+            toolPanel.setBounds(
+                startPos,
+                Lizzie.config.isFrameFontSmall()
+                    ? -2
+                    : (Lizzie.config.isFrameFontMiddle() ? -1 : -1),
+                1500,
+                Lizzie.config.isFrameFontSmall()
+                    ? 22
+                    : (Lizzie.config.isFrameFontMiddle() ? 26 : 32));
+            toolPanel.setFloatable(false);
+            komiPanel.updateUI();
+            lblKomiSpinner.setBounds(
+                1,
+                Lizzie.config.isFrameFontSmall() ? 0 : (Lizzie.config.isFrameFontMiddle() ? 3 : 6),
+                Lizzie.config.isFrameFontSmall()
+                    ? 35
+                    : (Lizzie.config.isFrameFontMiddle() ? 40 : 47),
+                18);
+            txtKomi.setBounds(
+                Lizzie.config.isFrameFontSmall()
+                    ? 31
+                    : (Lizzie.config.isFrameFontMiddle() ? 39 : 49),
+                Lizzie.config.isFrameFontSmall() ? 0 : (Lizzie.config.isFrameFontMiddle() ? 2 : 3),
+                Lizzie.config.isFrameFontSmall()
+                    ? 35
+                    : (Lizzie.config.isFrameFontMiddle() ? 40 : 47),
+                Lizzie.config.isFrameFontSmall()
+                    ? (Lizzie.config.useJavaLooks ? 19 : 18)
+                    : (Lizzie.config.isFrameFontMiddle()
+                        ? (Lizzie.config.useJavaLooks ? 22 : 21)
+                        : (Lizzie.config.useJavaLooks ? 26 : 25)));
+            if (komiContentPanel != null) remove(komiContentPanel);
+            if (Lizzie.config.isFrameFontSmall()) {
+              komiContentPanel = new JPanel();
+              if (!Lizzie.config.useJavaLooks) {
+                komiContentPanel.setBackground(new Color(232, 232, 232));
+                komiPanel.setBackground(new Color(232, 232, 232));
+              }
+              komiContentPanel.setLayout(null);
+              komiContentPanel.add(komiPanel);
+              komiPanel.setBounds(0, 1, 9999, 20);
+              add(komiContentPanel);
+            } else {
+              add(komiPanel);
             }
-          });
-    }
-
-    if (chkShowWinrate == null) {
-      chkShowWinrate = new JFontCheckBox(resourceBundle.getString("Menu.winrate"));
-      chkShowWinrate.addActionListener(
-          new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-              // TBD
-              Lizzie.config.showWinrateInSuggestion = !Lizzie.config.showWinrateInSuggestion;
-              Lizzie.config.uiConfig.put(
-                  "show-winrate-in-suggestion", Lizzie.config.showWinrateInSuggestion);
-              Lizzie.frame.refresh();
-            }
-          });
-    }
-
-    if (chkShowPlayouts == null) {
-      chkShowPlayouts = new JFontCheckBox(resourceBundle.getString("Menu.playouts"));
-      chkShowPlayouts.addActionListener(
-          new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-              // TBD
-              Lizzie.config.showPlayoutsInSuggestion = !Lizzie.config.showPlayoutsInSuggestion;
-              Lizzie.config.uiConfig.put(
-                  "show-playouts-in-suggestion", Lizzie.config.showPlayoutsInSuggestion);
-              Lizzie.frame.refresh();
-            }
-          });
-    }
-
-    if (chkShowScore == null) {
-      chkShowScore = new JFontCheckBox(resourceBundle.getString("Menu.score"));
-      chkShowScore.addActionListener(
-          new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-              // TBD
-              Lizzie.config.showScoremeanInSuggestion = !Lizzie.config.showScoremeanInSuggestion;
-              Lizzie.config.uiConfig.put(
-                  "show-scoremean-in-suggestion", Lizzie.config.showScoremeanInSuggestion);
-              Lizzie.frame.refresh();
-            }
-          });
-    }
-    //    if (!Lizzie.config.showDoubleMenuVar
-    //        && !Lizzie.config.showDoubleMenuMoveInfo
-    //        && !Lizzie.config.showRuleMenu
-    //        && !Lizzie.config.showParamMenu
-    //        && !Lizzie.config.showGobanMenu
-    //        && !Lizzie.config.showSaveLoadMenu
-    //        && !Lizzie.config.showAnalyzeController) {
-    //      komiPanel.setPreferredSize(new Dimension(startPos, 22));
-    //      return;
-    //    }
-
-    if (Lizzie.config.showAnalyzeController) {
-      JFontLabel lblShowAnalyze = new JFontLabel(resourceBundle.getString("Menu.lblShowAnalyze"));
-      chkAnalyzeBlack.setSelected(Lizzie.config.analyzeBlack);
-      chkAnalyzeWhite.setSelected(Lizzie.config.analyzeWhite);
-      toolPanel.addSeparator();
-      toolPanel.add(lblShowAnalyze);
-      toolPanel.add(chkAnalyzeBlack);
-      toolPanel.add(chkAnalyzeWhite);
-    }
-
-    if (Lizzie.config.showDoubleMenuVar || Lizzie.config.showDoubleMenuMoveInfo) {
-      JFontLabel lblShowCandidate =
-          new JFontLabel(resourceBundle.getString("Menu.lblShowCandidate"));
-
-      chkShowBlack.setSelected(Lizzie.frame.toolbar.chkShowBlack.isSelected());
-      chkShowWhite.setSelected(Lizzie.frame.toolbar.chkShowWhite.isSelected());
-
-      if (Lizzie.config.showWinrateInSuggestion) chkShowWinrate.setSelected(true);
-      if (Lizzie.config.showPlayoutsInSuggestion) chkShowPlayouts.setSelected(true);
-      if (Lizzie.config.showScoremeanInSuggestion) chkShowScore.setSelected(true);
-
-      toolPanel.addSeparator();
-      toolPanel.add(lblShowCandidate);
-      if (Lizzie.config.showDoubleMenuVar) {
-        toolPanel.add(chkShowBlack);
-        toolPanel.add(chkShowWhite);
-      }
-      if (Lizzie.config.showDoubleMenuMoveInfo) {
-        //  Lizzie.frame.topPanel.add(lblMoveInfo);
-        if (Lizzie.config.showDoubleMenuVar) toolPanel.addSeparator();
-        toolPanel.add(chkShowWinrate);
-        toolPanel.add(chkShowPlayouts);
-        toolPanel.add(chkShowScore);
-      }
-    }
-    JPanel btnPanel = new JPanel(null);
-    int pos = 0;
-    if (Lizzie.config.showRuleMenu
-        || Lizzie.config.showParamMenu
-        || Lizzie.config.showGobanMenu
-        || Lizzie.config.showSaveLoadMenu) toolPanel.addSeparator();
-    toolPanel.add(setRules);
-    toolPanel.add(setLzSaiParam);
-    toolPanel.add(setBoardSize);
-    toolPanel.add(saveLoad);
-    if (Lizzie.config.showRuleMenu) {
-      setRules.setBounds(
-          pos,
-          Lizzie.config.isFrameFontSmall() ? 0 : (Lizzie.config.isFrameFontMiddle() ? 0 : 2),
-          Lizzie.config.isFrameFontSmall()
-              ? 40
-              : (Lizzie.config.isFrameFontMiddle() ? 46 : (Lizzie.config.isChinese ? 52 : 55)),
-          Lizzie.config.isFrameFontSmall() ? 20 : (Lizzie.config.isFrameFontMiddle() ? 23 : 26));
-      setRules.setVisible(true);
-      btnPanel.add(setRules);
-      pos +=
-          Lizzie.config.isFrameFontSmall()
-              ? 40
-              : (Lizzie.config.isFrameFontMiddle() ? 46 : (Lizzie.config.isChinese ? 52 : 55));
-    } else setRules.setVisible(false);
-    if (Lizzie.config.showParamMenu) {
-      if (Lizzie.config.isChinese) {
-        setLzSaiParam.setBounds(
-            pos,
-            Lizzie.config.isFrameFontSmall() ? 0 : (Lizzie.config.isFrameFontMiddle() ? 0 : 2),
-            Lizzie.config.isFrameFontSmall() ? 40 : (Lizzie.config.isFrameFontMiddle() ? 46 : 52),
-            Lizzie.config.isFrameFontSmall() ? 20 : (Lizzie.config.isFrameFontMiddle() ? 23 : 26));
-        pos +=
-            Lizzie.config.isFrameFontSmall() ? 40 : (Lizzie.config.isFrameFontMiddle() ? 46 : 52);
-      } else {
-        setLzSaiParam.setBounds(
-            pos,
-            Lizzie.config.isFrameFontSmall() ? 0 : (Lizzie.config.isFrameFontMiddle() ? 0 : 2),
-            Lizzie.config.isFrameFontSmall() ? 48 : (Lizzie.config.isFrameFontMiddle() ? 62 : 75),
-            Lizzie.config.isFrameFontSmall() ? 20 : (Lizzie.config.isFrameFontMiddle() ? 23 : 26));
-        pos +=
-            Lizzie.config.isFrameFontSmall() ? 48 : (Lizzie.config.isFrameFontMiddle() ? 62 : 75);
-      }
-      setLzSaiParam.setVisible(true);
-      btnPanel.add(setLzSaiParam);
-
-    } else setLzSaiParam.setVisible(false);
-    if (Lizzie.config.showGobanMenu) {
-      if (Lizzie.config.isChinese) {
-        setBoardSize.setBounds(
-            pos,
-            Lizzie.config.isFrameFontSmall() ? 0 : (Lizzie.config.isFrameFontMiddle() ? 0 : 2),
-            Lizzie.config.isFrameFontSmall() ? 40 : (Lizzie.config.isFrameFontMiddle() ? 46 : 52),
-            Lizzie.config.isFrameFontSmall() ? 20 : (Lizzie.config.isFrameFontMiddle() ? 23 : 26));
-        pos +=
-            Lizzie.config.isFrameFontSmall() ? 40 : (Lizzie.config.isFrameFontMiddle() ? 46 : 52);
-      } else {
-        setBoardSize.setBounds(
-            pos,
-            Lizzie.config.isFrameFontSmall() ? 0 : (Lizzie.config.isFrameFontMiddle() ? 0 : 2),
-            Lizzie.config.isFrameFontSmall() ? 45 : (Lizzie.config.isFrameFontMiddle() ? 55 : 65),
-            Lizzie.config.isFrameFontSmall() ? 20 : (Lizzie.config.isFrameFontMiddle() ? 23 : 26));
-        pos +=
-            Lizzie.config.isFrameFontSmall() ? 45 : (Lizzie.config.isFrameFontMiddle() ? 55 : 65);
-      }
-      setBoardSize.setVisible(true);
-      btnPanel.add(setBoardSize);
-    } else setBoardSize.setVisible(false);
-    if (Lizzie.config.showSaveLoadMenu) {
-      saveLoad.setBounds(
-          pos,
-          Lizzie.config.isFrameFontSmall() ? 0 : (Lizzie.config.isFrameFontMiddle() ? 0 : 2),
-          Lizzie.config.isFrameFontSmall()
-              ? 40
-              : (Lizzie.config.isFrameFontMiddle() ? 46 : (Lizzie.config.isChinese ? 52 : 55)),
-          Lizzie.config.isFrameFontSmall() ? 20 : (Lizzie.config.isFrameFontMiddle() ? 23 : 26));
-      saveLoad.setVisible(true);
-      btnPanel.add(saveLoad);
-      pos +=
-          Lizzie.config.isFrameFontSmall()
-              ? 40
-              : (Lizzie.config.isFrameFontMiddle() ? 46 : (Lizzie.config.isChinese ? 52 : 55));
-    } else saveLoad.setVisible(false);
-    toolPanel.add(btnPanel);
-    komiPanel.add(toolPanel);
-    toolPanel.setBounds(
-        startPos,
-        Lizzie.config.isFrameFontSmall() ? -2 : (Lizzie.config.isFrameFontMiddle() ? -1 : -1),
-        1500,
-        Lizzie.config.isFrameFontSmall() ? 22 : (Lizzie.config.isFrameFontMiddle() ? 26 : 32));
-    toolPanel.setFloatable(false);
-    komiPanel.updateUI();
-    lblKomiSpinner.setBounds(
-        1,
-        Lizzie.config.isFrameFontSmall() ? 0 : (Lizzie.config.isFrameFontMiddle() ? 3 : 6),
-        Lizzie.config.isFrameFontSmall() ? 35 : (Lizzie.config.isFrameFontMiddle() ? 40 : 47),
-        18);
-    txtKomi.setBounds(
-        Lizzie.config.isFrameFontSmall() ? 31 : (Lizzie.config.isFrameFontMiddle() ? 39 : 49),
-        Lizzie.config.isFrameFontSmall() ? 0 : (Lizzie.config.isFrameFontMiddle() ? 2 : 3),
-        Lizzie.config.isFrameFontSmall() ? 35 : (Lizzie.config.isFrameFontMiddle() ? 40 : 47),
-        Lizzie.config.isFrameFontSmall()
-            ? (Lizzie.config.useJavaLooks ? 19 : 18)
-            : (Lizzie.config.isFrameFontMiddle()
-                ? (Lizzie.config.useJavaLooks ? 22 : 21)
-                : (Lizzie.config.useJavaLooks ? 26 : 25)));
-    if (komiContentPanel != null) this.remove(komiContentPanel);
-    if (Lizzie.config.isFrameFontSmall()) {
-      komiContentPanel = new JPanel();
-      if (!Lizzie.config.useJavaLooks) {
-        komiContentPanel.setBackground(new Color(232, 232, 232));
-        komiPanel.setBackground(new Color(232, 232, 232));
-      }
-      komiContentPanel.setLayout(null);
-      komiContentPanel.add(komiPanel);
-      komiPanel.setBounds(0, 1, 9999, 20);
-      this.add(komiContentPanel);
-    } else {
-      this.add(komiPanel);
-    }
+          }
+        });
   }
 
   public void toggleDoubleMenuGameStatus() {
@@ -9076,7 +9133,7 @@ public class Menu extends JMenuBar {
         });
   }
 
-  private synchronized void doAfterChangeToolarPos() {
+  private void doAfterChangeToolarPos() {
     Lizzie.config.flashAnalyze =
         Lizzie.config.uiConfig.optBoolean(
             "flash-analyze", Lizzie.config.showDoubleMenu ? false : true);
