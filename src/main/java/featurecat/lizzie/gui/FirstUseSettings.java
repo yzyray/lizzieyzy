@@ -35,7 +35,7 @@ public class FirstUseSettings extends JDialog {
     setResizable(false);
     setTitle(Lizzie.resourceBundle.getString("FirstUseSettings.title")); // ("初始化设置");
     setAlwaysOnTop(true);
-    setSize(1076, 538);
+    // setSize(1076, 538);
     Lizzie.setFrameSize(
         this,
         Lizzie.config.isFrameFontSmall() ? 656 : (Lizzie.config.isFrameFontMiddle() ? 785 : 955),
