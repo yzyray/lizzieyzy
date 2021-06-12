@@ -280,7 +280,7 @@ public class FloatBoard extends JDialog {
             if (e.getKeyCode() == KeyEvent.VK_PERIOD)
               if (Lizzie.config.useShortcutKataEstimate) Lizzie.frame.toggleShowKataEstimate();
             if (e.getKeyCode() == KeyEvent.VK_H) Lizzie.leelaz.toggleHeatmap(false);
-            if (e.getKeyCode() == KeyEvent.VK_Y) Lizzie.frame.togglePolicy();
+            if (e.getKeyCode() == KeyEvent.VK_T) Lizzie.frame.togglePolicy();
             if (e.getKeyCode() == KeyEvent.VK_UP) {
               if (boardRenderer.isShowingBranch()) {
                 doBranch(-1);

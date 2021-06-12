@@ -492,7 +492,7 @@ public class Config {
   public boolean showNextMoveBlunder = true;
 
   public int batchAnalysisPlayouts = 100;
-  public int minPlayoutsForNextMove = 100;
+  public int minPlayoutsForNextMove = 30;
 
   public boolean isShowingBlunderTabel = false;
   public boolean blunderTabelOnlyAfter = false;
@@ -830,7 +830,7 @@ public class Config {
     useJavaLooks = uiConfig.optBoolean("use-java-looks", !OS.isWindows());
     showNextMoveBlunder = uiConfig.optBoolean("show-next-move-blunder", true);
     batchAnalysisPlayouts = uiConfig.optInt("batch-analysis-playouts", 100);
-    minPlayoutsForNextMove = uiConfig.optInt("min-playouts-for-next-move", 100);
+    minPlayoutsForNextMove = uiConfig.optInt("min-playouts-for-next-move", 30);
     shouldWidenCheckBox =
         useJavaLooks
             || !(Boolean) Toolkit.getDefaultToolkit().getDesktopProperty("win.xpstyle.themeActive");
