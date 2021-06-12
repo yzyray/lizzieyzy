@@ -591,7 +591,8 @@ public class BoardRenderer {
       // Draw the lines
       g.setColor(Color.BLACK);
       BasicStroke borderStroke =
-          new BasicStroke(Math.max(1f, Math.min(3.2f, (float) availableWidth / 481f)));
+          new BasicStroke(
+              Math.max(boardWidth > 560 ? 2f : 1f, Math.min(3.2f, (float) availableWidth / 481f)));
       BasicStroke normalStroke =
           new BasicStroke(Math.max(1f, Math.min(1.7f, (float) availableWidth / 1110f)));
       for (int i = 0; i < Board.boardHeight; i++) {
