@@ -128,11 +128,11 @@ public class EngineManager {
     if (index == -1) {
       Lizzie.leelaz.isKatago = true;
       Lizzie.leelaz.isLoaded = true;
-      Lizzie.frame.addInput(false);
       featurecat.lizzie.gui.Menu.engineMenu.setText(resourceBundle.getString("Menu.noEngine"));
       if (Lizzie.frame.extraMode == 2)
         featurecat.lizzie.gui.Menu.engineMenu2.setText(resourceBundle.getString("Menu.noEngine"));
       isEmpty = true;
+      LizzieFrame.menu.updateMenuStatusForEngine();
       Lizzie.frame.addInput(false);
       new Thread() {
         public void run() {
