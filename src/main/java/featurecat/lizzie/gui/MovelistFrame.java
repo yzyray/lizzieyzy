@@ -460,9 +460,9 @@ public class MovelistFrame extends JFrame {
     bottomPanel.addTab(
         Lizzie.resourceBundle.getString("Movelistframe.winrateMatch"), matchPanelAll); // 胜率吻合图
     bottomPanel.addTab(
-        Lizzie.resourceBundle.getString("Movelistframe.aiScore"), matchGraphAll); // AI Score AI评分曲线
-    bottomPanel.addTab(
         Lizzie.resourceBundle.getString("Movelistframe.stageScore"), matchHistogramAll);
+    bottomPanel.addTab(
+        Lizzie.resourceBundle.getString("Movelistframe.aiScore"), matchGraphAll); // AI Score AI评分曲线
     bottomPanel.addTab(
         Lizzie.resourceBundle.getString("Movelistframe.winrateDifference"), mistakePanelAll);
     bottomPanel.addTab(
@@ -496,7 +496,7 @@ public class MovelistFrame extends JFrame {
         matchPanelAll.add(matchPanel, BorderLayout.CENTER);
         break;
       case 1:
-        curIndex = 1;
+        curIndex = 2;
         matchGraphAll.add(selectpanel, BorderLayout.NORTH);
         matchGraphAll.add(matchPanelmin, BorderLayout.SOUTH);
         matchGraphAll.add(matchPanel, BorderLayout.CENTER);
@@ -514,7 +514,7 @@ public class MovelistFrame extends JFrame {
         scoreDiffGraphAll.add(matchPanel, BorderLayout.CENTER);
         break;
       case 4:
-        curIndex = 2;
+        curIndex = 1;
         matchHistogramAll.add(selectpanel, BorderLayout.NORTH);
         matchHistogramAll.add(matchPanelmin, BorderLayout.SOUTH);
         matchHistogramAll.add(matchPanel, BorderLayout.CENTER);
@@ -1512,13 +1512,13 @@ public class MovelistFrame extends JFrame {
                 matchPanelAll.add(matchPanelmin, BorderLayout.SOUTH);
                 matchPanelAll.add(matchPanel, BorderLayout.CENTER);
                 break;
-              case 1:
+              case 2:
                 selectedIndex = 1;
                 matchGraphAll.add(selectpanel, BorderLayout.NORTH);
                 matchGraphAll.add(matchPanelmin, BorderLayout.SOUTH);
                 matchGraphAll.add(matchPanel, BorderLayout.CENTER);
                 break;
-              case 2:
+              case 1:
                 selectedIndex = 4;
                 matchHistogramAll.add(selectpanel, BorderLayout.NORTH);
                 matchHistogramAll.add(matchPanelmin, BorderLayout.SOUTH);

@@ -11041,7 +11041,8 @@ public class LizzieFrame extends JFrame {
             loadFile(
                 new File(
                     (isAutoSave ? "save" + Utils.pwd + "autoGame" : "save" + Utils.pwd + "game")
-                        + index),
+                        + index
+                        + ".sgf"),
                 true,
                 true);
             if (!moveList.equals("")) Lizzie.board.playList(moveList);
@@ -11560,7 +11561,8 @@ public class LizzieFrame extends JFrame {
                           (data.isAutoSave
                                   ? "save" + Utils.pwd + "autoGame"
                                   : "save" + Utils.pwd + "game")
-                              + data.index),
+                              + data.index
+                              + ".sgf"),
                       true,
                       true);
                   if (!data.moves.equals("")) Lizzie.board.playList(data.moves);
@@ -11624,7 +11626,8 @@ public class LizzieFrame extends JFrame {
               loadFile(
                   new File(
                       (isAutoSave ? "save" + Utils.pwd + "autoGame" : "save" + Utils.pwd + "game")
-                          + index),
+                          + index
+                          + ".sgf"),
                   true,
                   true);
               if (!moveList.equals("")) Lizzie.board.playList(moveList);
