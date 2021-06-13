@@ -147,6 +147,8 @@ public class EngineManager {
     }
     Lizzie.gtpConsole.console.setText("");
     autoCheckEngineAlive(Lizzie.config.autoCheckEngineAlive);
+    if (Lizzie.config.uiConfig.optBoolean("autoload-empty", false) && Lizzie.config.showStatus)
+      Lizzie.frame.refresh();
   }
 
   public void autoCheckEngineAlive(boolean enable) {
