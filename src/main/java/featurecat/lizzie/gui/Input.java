@@ -736,14 +736,14 @@ public class Input implements MouseListener, KeyListener, MouseWheelListener, Mo
       case VK_OPEN_BRACKET:
         if (Lizzie.frame.BoardPositionProportion > 0) {
           Lizzie.frame.BoardPositionProportion--;
-          Lizzie.frame.refreshBackground();
+          Lizzie.frame.refreshContainer();
         }
         break;
 
       case VK_CLOSE_BRACKET:
         if (Lizzie.frame.BoardPositionProportion < 8) {
           Lizzie.frame.BoardPositionProportion++;
-          Lizzie.frame.refreshBackground();
+          Lizzie.frame.refreshContainer();
         }
         break;
 

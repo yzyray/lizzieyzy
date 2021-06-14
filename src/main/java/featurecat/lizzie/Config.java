@@ -1470,15 +1470,15 @@ public class Config {
   //    this.nodeColorMode = this.nodeColorMode > 1 ? 0 : this.nodeColorMode + 1;
   //  }
 
-  public void toggleShowBranch() {
-    this.showBranch = !this.showBranch;
-  }
+  //  public void toggleShowBranch() {
+  //    this.showBranch = !this.showBranch;
+  //  }
 
   public void toggleShowWinrate() {
     this.showWinrateGraph = !this.showWinrateGraph;
     uiConfig.put("show-winrate-graph", showWinrateGraph);
-    Lizzie.frame.redrawBackgroundAnyway = true;
     if (extraMode == 7 && showWinrateGraph) toggleExtraMode(0);
+    Lizzie.frame.refreshContainer();
     Lizzie.frame.refresh();
   }
 
@@ -1499,6 +1499,7 @@ public class Config {
     Lizzie.frame.setHideListScrollpane(showListPane);
     uiConfig.put("show-list-pane", showListPane);
     if (extraMode == 7 && showListPane) toggleExtraMode(0);
+    Lizzie.frame.refreshContainer();
     Lizzie.frame.refresh();
   }
 
@@ -1515,7 +1516,7 @@ public class Config {
       Lizzie.frame.setHideListScrollpane(false);
     }
     uiConfig.put("large-winrate-graph", largeWinrateGraph);
-    Lizzie.frame.redrawBackgroundAnyway = true;
+    Lizzie.frame.refreshContainer();
     Lizzie.frame.refresh();
   }
 
@@ -1528,12 +1529,12 @@ public class Config {
     Lizzie.frame.redrawBackgroundAnyway = true;
     uiConfig.put("large-subboard", largeSubBoard);
     Lizzie.frame.subBoardRenderer.isMouseOver = false;
+    Lizzie.frame.refreshContainer();
     Lizzie.frame.refresh();
   }
 
   public void toggleShowVariationGraph() {
     this.showVariationGraph = !this.showVariationGraph;
-    Lizzie.frame.refreshBackground();
     uiConfig.put("show-variation-graph", showVariationGraph);
     try {
       Lizzie.config.save();
@@ -1543,6 +1544,7 @@ public class Config {
     }
     Lizzie.frame.setVarTreeVisible(showVariationGraph);
     if (extraMode == 7 && showVariationGraph) toggleExtraMode(0);
+    Lizzie.frame.refreshContainer();
     Lizzie.frame.refresh();
   }
 
@@ -1550,6 +1552,7 @@ public class Config {
     this.showCaptured = !this.showCaptured;
     uiConfig.put("show-captured", showCaptured);
     if (extraMode == 7 && showCaptured) toggleExtraMode(0);
+    Lizzie.frame.refreshContainer();
     Lizzie.frame.refresh();
   }
 
@@ -1562,7 +1565,7 @@ public class Config {
       Lizzie.frame.blunderContentPane.setVisible(false);
     }
     Lizzie.frame.commentEditPane.setVisible(false);
-    Lizzie.frame.refreshBackground();
+    Lizzie.frame.refreshContainer();
     Lizzie.frame.refresh();
     if (extraMode == 7 && showComment) toggleExtraMode(0);
   }
@@ -1579,7 +1582,7 @@ public class Config {
     this.showStatus = !this.showStatus;
     if (showStatus) setClassicMode(false);
     uiConfig.put("show-status", showStatus);
-    Lizzie.frame.redrawBackgroundAnyway = true;
+    Lizzie.frame.refreshContainer();
     Lizzie.frame.refresh();
   }
 
@@ -1620,7 +1623,7 @@ public class Config {
 
   public void toggleShowSubBoard() {
     showSubBoard = !showSubBoard;
-    Lizzie.frame.redrawBackgroundAnyway = true;
+    Lizzie.frame.refreshContainer();
     Lizzie.frame.refresh();
     uiConfig.put("show-subboard", showSubBoard);
     if (extraMode == 7 && showSubBoard) toggleExtraMode(0);
@@ -2394,7 +2397,7 @@ public class Config {
           jsonLayout.getJSONArray("main-frame-position").getInt(2),
           jsonLayout.getJSONArray("main-frame-position").getInt(3));
     }
-    Lizzie.frame.refreshBackground();
+    Lizzie.frame.refreshContainer();
     Lizzie.frame.repaint();
   }
 }

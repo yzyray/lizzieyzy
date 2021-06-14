@@ -136,7 +136,7 @@ public class SetCustomMode extends JDialog {
     }
     if (showListPanel && !Lizzie.config.showListPane()) Lizzie.config.toggleShowListPane();
     if (!showListPanel && Lizzie.config.showListPane()) Lizzie.config.toggleShowListPane();
-    Lizzie.frame.refreshBackground();
+    Lizzie.frame.refreshContainer();
     Lizzie.frame.repaint();
   }
 
@@ -192,6 +192,7 @@ public class SetCustomMode extends JDialog {
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             Lizzie.config.showWinrateGraph = winratePanel.isSelected();
+            Lizzie.frame.refreshContainer();
             Lizzie.frame.repaint();
             if (!Lizzie.config.showWinrateGraph) {
               bigWinrate.setSelected(false);
@@ -208,6 +209,12 @@ public class SetCustomMode extends JDialog {
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             Lizzie.config.showComment = commentPanel.isSelected();
+            if (Lizzie.config.showComment) Lizzie.frame.setCommentPaneContent();
+            else {
+              Lizzie.frame.commentScrollPane.setVisible(false);
+              Lizzie.frame.blunderContentPane.setVisible(false);
+            }
+            Lizzie.frame.refreshContainer();
             Lizzie.frame.repaint();
           }
         });
@@ -220,6 +227,7 @@ public class SetCustomMode extends JDialog {
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             Lizzie.config.showVariationGraph = variationPanel.isSelected();
+            Lizzie.frame.refreshContainer();
             Lizzie.frame.repaint();
           }
         });
@@ -234,6 +242,7 @@ public class SetCustomMode extends JDialog {
           public void actionPerformed(ActionEvent e) {
             if (Lizzie.config.showListPane() != listPanel.isSelected())
               Lizzie.config.toggleShowListPane();
+            Lizzie.frame.refreshContainer();
             Lizzie.frame.repaint();
             if (Lizzie.config.showListPane()) {
               bigWinrate.setSelected(false);
@@ -250,6 +259,7 @@ public class SetCustomMode extends JDialog {
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             Lizzie.config.showCaptured = informationPanel.isSelected();
+            Lizzie.frame.refreshContainer();
             Lizzie.frame.repaint();
           }
         });
@@ -263,7 +273,7 @@ public class SetCustomMode extends JDialog {
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             Lizzie.config.showStatus = statusPanel.isSelected();
-            Lizzie.frame.refreshBackground();
+            Lizzie.frame.refreshContainer();
             Lizzie.frame.repaint();
           }
         });
@@ -276,6 +286,7 @@ public class SetCustomMode extends JDialog {
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             Lizzie.config.largeSubBoard = bigSubBoard.isSelected();
+            Lizzie.frame.refreshContainer();
             Lizzie.frame.repaint();
             if (Lizzie.config.largeSubBoard) {
               Lizzie.config.showSubBoard = true;
@@ -305,6 +316,7 @@ public class SetCustomMode extends JDialog {
               sldBoardPositionProportion.setEnabled(false);
 
             } else if (!bigWinrate.isSelected()) sldBoardPositionProportion.setEnabled(true);
+            Lizzie.frame.refreshContainer();
             Lizzie.frame.repaint();
           }
         });
@@ -321,7 +333,7 @@ public class SetCustomMode extends JDialog {
           public void stateChanged(ChangeEvent e) {
             if (Lizzie.frame.BoardPositionProportion != sldBoardPositionProportion.getValue()) {
               Lizzie.frame.BoardPositionProportion = sldBoardPositionProportion.getValue();
-              Lizzie.frame.refreshBackground();
+              Lizzie.frame.refreshContainer();
               Lizzie.frame.repaint();
             }
           }
@@ -357,7 +369,7 @@ public class SetCustomMode extends JDialog {
               bigWinrate.setEnabled(true);
               bigSubBoard.setEnabled(true);
             }
-            Lizzie.frame.refreshBackground();
+            Lizzie.frame.refreshContainer();
             Lizzie.frame.repaint();
             setVisible(true);
           }
@@ -394,7 +406,7 @@ public class SetCustomMode extends JDialog {
                   && Lizzie.frame.independentSubBoard.isVisible())
                 Lizzie.frame.toggleIndependentSubBoard();
             }
-            Lizzie.frame.refreshBackground();
+            Lizzie.frame.refreshContainer();
             Lizzie.frame.repaint();
             setVisible(true);
           }
@@ -436,7 +448,7 @@ public class SetCustomMode extends JDialog {
             if (isSetCustom) Lizzie.config.saveCustomMode(index);
             setVisible(false);
             if (oriPondering) Lizzie.leelaz.ponder();
-            Lizzie.frame.refreshBackground();
+            Lizzie.frame.refreshContainer();
             Lizzie.frame.repaint();
           }
         });

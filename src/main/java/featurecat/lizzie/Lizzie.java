@@ -171,7 +171,6 @@ public class Lizzie {
             } else if (config.autoResume) {
               frame.resumeFile();
             }
-            if (config.isShowingIndependentSub) frame.openIndependentSubBoard();
             Lizzie.frame.setMainPanelFocus();
           }
         });

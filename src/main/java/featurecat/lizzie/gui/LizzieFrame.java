@@ -4369,6 +4369,7 @@ public class LizzieFrame extends JFrame {
 
           int vh = trueHeight;
           int vw = trueWidth / 8 * BoardPositionProportion;
+          if (noVariation && noListPane && noSubBoard) vw = trueWidth;
           int vx = 0;
           int vy = 0;
           if (this.independentMainBoard != null)
@@ -4491,7 +4492,8 @@ public class LizzieFrame extends JFrame {
           }
 
           vh = trueHeight;
-          vw = trueWidth - trueWidth / 8 * BoardPositionProportion;
+          if (noBasic && noWinrate && noComment) vw = trueWidth;
+          else vw = trueWidth - trueWidth / 8 * BoardPositionProportion;
           vx = trueWidth - vw;
           vy = 0;
 
@@ -5220,8 +5222,9 @@ public class LizzieFrame extends JFrame {
    * Lizzie 0.5 today, not tomorrow!). Refactor me out please! (you need to get blurring to work
    * properly on startup).
    */
-  public void refreshBackground() {
+  public void refreshContainer() {
     redrawBackgroundAnyway = true;
+    if (extraMode == 8) this.paintMianPanel(mainPanel.getGraphics());
   }
 
   public void refresh() {
@@ -5593,7 +5596,7 @@ public class LizzieFrame extends JFrame {
       lineOffset += lineHeight;
     }
     showControls = true;
-    refreshBackground();
+    refreshContainer();
     Lizzie.board.setForceRefresh(true);
   }
 
