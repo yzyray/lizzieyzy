@@ -10618,7 +10618,8 @@ public class LizzieFrame extends JFrame {
       } else {
         isPlayoutPercents = false;
       }
-      if (table.getValueAt(row, 0).toString().length() > 3) {
+      String move = table.getValueAt(row, 0).toString();
+      if (move.length() > 3 && !move.toLowerCase().equals("pass")) {
         isNextMove = true;
         String winrate = table.getValueAt(row, 2).toString();
         if (winrate.contains("("))

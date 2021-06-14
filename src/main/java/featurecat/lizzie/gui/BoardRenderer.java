@@ -3035,6 +3035,7 @@ public class BoardRenderer {
                       BoardData thisData = Lizzie.board.getHistory().getData();
                       if (nextData.bestMoves != null
                           && nextData.bestMoves.size() > 0
+                          && !nextData.isChanged
                           && thisData.bestMoves != null
                           && thisData.bestMoves.size() > 0) {
                         if (notEnoughSuggestionAt(nextMove[0], nextMove[1], bestMoves)) {

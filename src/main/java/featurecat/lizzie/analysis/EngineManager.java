@@ -133,6 +133,7 @@ public class EngineManager {
         featurecat.lizzie.gui.Menu.engineMenu2.setText(resourceBundle.getString("Menu.noEngine"));
       isEmpty = true;
       LizzieFrame.menu.updateMenuStatusForEngine();
+      Lizzie.frame.reSetLoc();
       Lizzie.frame.addInput(false);
       new Thread() {
         public void run() {
