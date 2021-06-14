@@ -15,7 +15,7 @@ public class GIBParser {
 
   public static boolean load(String filename) throws IOException {
     // Clear the board
-
+    boolean oriEmpty = Lizzie.engineManager.isEmpty;
     Lizzie.board.clear(false);
     Lizzie.engineManager.isEmpty = true;
     File file = new File(filename);
@@ -35,12 +35,12 @@ public class GIBParser {
     fp.close();
     String value = builder.toString();
     if (value.isEmpty()) {
-      Lizzie.engineManager.isEmpty = false;
+      Lizzie.engineManager.isEmpty = oriEmpty;
       return false;
     }
 
     boolean returnValue = parse(value);
-    Lizzie.engineManager.isEmpty = false;
+    Lizzie.engineManager.isEmpty = oriEmpty;
     return returnValue;
   }
 
@@ -64,7 +64,7 @@ public class GIBParser {
     String[] lines = value.trim().split("\n");
     String whitePlayer = "Player 1";
     String blackPlayer = "Player 2";
-    double komi = 1.5;
+    double komi = 7.5;
     int handicap = 0;
 
     for (String line : lines) {
@@ -105,7 +105,11 @@ public class GIBParser {
         Lizzie.board.pass();
       }
     }
-    Lizzie.board.getHistory().getGameInfo().setKomi(komi);
+    if (Lizzie.config.readKomi) {
+      Lizzie.board.getHistory().getGameInfo().setKomi(komi);
+      Lizzie.board.getHistory().getGameInfo().changeKomi();
+      Lizzie.leelaz.komi(komi);
+    }
     Lizzie.frame.setPlayers(whitePlayer, blackPlayer);
     GameInfo gameInfo = Lizzie.board.getHistory().getGameInfo();
     gameInfo.setPlayerBlack(blackPlayer);

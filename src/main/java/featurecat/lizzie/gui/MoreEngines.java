@@ -50,6 +50,7 @@ public class MoreEngines extends JPanel {
   public static JTable table;
   Font headFont;
   Font winrateFont;
+  static boolean needUpdateEngine = false;
   static JDialog engjf;
   Timer timer;
   int sortnum = 3;
@@ -714,7 +715,7 @@ public class MoreEngines extends JPanel {
           public void actionPerformed(ActionEvent e) {
             checkSave();
             MoreEngines.engjf.setVisible(false);
-            Lizzie.engineManager.updateEngines();
+            if (needUpdateEngine) Lizzie.engineManager.updateEngines();
           }
         });
     this.cancel.addActionListener(
@@ -1124,6 +1125,7 @@ public class MoreEngines extends JPanel {
   }
 
   private void saveCurrentEngineConfig() {
+    needUpdateEngine = true;
     ArrayList<EngineData> engineData = Utils.getEngineData();
     EngineData engineDt = new EngineData();
     engineDt.index = this.curIndex;
@@ -1220,13 +1222,14 @@ public class MoreEngines extends JPanel {
 
   public static JDialog createDialog() {
     engjf = new JDialog();
+    needUpdateEngine = false;
     engjf.setTitle(Lizzie.resourceBundle.getString("MoreEngines.title"));
     engjf.setModal(true);
     engjf.addWindowListener(
         new WindowAdapter() {
           public void windowClosing(WindowEvent e) {
             MoreEngines.engjf.setVisible(false);
-            Lizzie.engineManager.updateEngines();
+            if (needUpdateEngine) Lizzie.engineManager.updateEngines();
           }
         });
     MoreEngines newContentPane = new MoreEngines();

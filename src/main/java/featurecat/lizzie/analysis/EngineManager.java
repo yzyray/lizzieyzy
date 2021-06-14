@@ -1667,7 +1667,8 @@ public class EngineManager {
                 || Lizzie.leelaz.oriHeight != Lizzie.board.boardHeight) {
               Lizzie.board.reopen(Lizzie.leelaz.oriWidth, Lizzie.leelaz.oriHeight);
             }
-            if (Lizzie.leelaz.orikomi != Lizzie.board.getHistory().getGameInfo().getKomi())
+            if (Lizzie.leelaz.orikomi != Lizzie.board.getHistory().getGameInfo().getKomi()
+                && !Lizzie.board.getHistory().getGameInfo().changedKomi)
               Lizzie.leelaz.komi(Lizzie.leelaz.orikomi);
           }
           Lizzie.leelaz.isCheckingName = true;

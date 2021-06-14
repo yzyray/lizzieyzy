@@ -43,10 +43,7 @@ public class SGFParser {
 
   public static boolean load(String filename, boolean showHint) throws IOException {
     // Clear the board
-    // Lizzie.board.getHistory().getCurrentHistoryNode().getData().setPlayouts(0);
-    // Lizzie.board.getHistory().getCurrentHistoryNode().getData().bestMoves.clear();
-    // Lizzie.board=new Board();
-    //  oriEmpty = false;
+    boolean oriEmpty = Lizzie.engineManager.isEmpty;
     islzFirst = false;
     islzFirst2 = true;
     islzloaded = false;
@@ -75,7 +72,7 @@ public class SGFParser {
     String value = builder.toString();
     if (value.isEmpty()) {
       Lizzie.board.isLoadingFile = false;
-      Lizzie.engineManager.isEmpty = false;
+      Lizzie.engineManager.isEmpty = oriEmpty;
       return false;
     }
 
@@ -106,7 +103,7 @@ public class SGFParser {
         Lizzie.config.toggleExtraMode(2);
       }
     }
-    if (Lizzie.engineManager.currentEngineNo >= 0) Lizzie.engineManager.isEmpty = false;
+    if (Lizzie.engineManager.currentEngineNo >= 0) Lizzie.engineManager.isEmpty = oriEmpty;
     return returnValue;
   }
 
