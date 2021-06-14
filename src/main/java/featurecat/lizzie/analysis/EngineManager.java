@@ -188,6 +188,7 @@ public class EngineManager {
       boolean isContinueGame,
       boolean isGenmove,
       boolean isExchange) {
+    if (Lizzie.frame.isTrying) Lizzie.frame.tryPlay(false);
     engineGameInfo = new EngineGameInfo();
     if (!isEmpty && Lizzie.leelaz != null) {
       Lizzie.leelaz.clearBestMoves();

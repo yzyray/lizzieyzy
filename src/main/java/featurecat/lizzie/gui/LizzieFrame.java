@@ -2538,6 +2538,7 @@ public class LizzieFrame extends JFrame {
   }
 
   public void tryPlay(boolean needRefresh) {
+    if (Lizzie.engineManager.isEngineGame || Lizzie.engineManager.isPreEngineGame) return;
     if (!isTrying) {
       isTrying = true;
       try {
