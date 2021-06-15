@@ -14,7 +14,12 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStreamWriter;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -31,13 +36,11 @@ import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.TableModel;
-import org.jdesktop.swingx.util.OS;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class Utils {
 
-  // public static boolean isPlayingSound = false;
   public static String aesKey = "iyekeeaysueeaesk";
   public static String iv = "s6st73f41adc4c5d";
   public static String aesKey2 = "iyekeeay2ueeaesk";
@@ -45,11 +48,6 @@ public class Utils {
   public static String pwd = java.io.File.separator;
   private static int msemaphoretryroom = 1;
   private static boolean alertedNoByoyomiSoundFile = false;
-
-  public static String getPWD() {
-    if (OS.isWindows()) return "\\";
-    else return "/";
-  }
 
   public static void addFiller(JComponent component, int width, int height) {
     Dimension FILLER_DIMENSION = new Dimension(width, height);
@@ -692,6 +690,61 @@ public class Utils {
       // Empty the data buffer, and close the input
       sourceDataLine.drain();
       sourceDataLine.close();
+    }
+  }
+
+  private static String getCurrentDirPath() {
+    URL url = Utils.class.getProtectionDomain().getCodeSource().getLocation();
+    String path = url.getPath();
+    if (path.startsWith("file:")) {
+      path = path.replace("file:", "");
+    }
+    if (path.contains(".jar!/")) {
+      path = path.substring(0, path.indexOf(".jar!/") + 4);
+    }
+
+    File file = new File(path);
+    path = file.getParentFile().getAbsolutePath();
+    return path;
+  }
+
+  private static Path getDistFile(String path, String newFolderName) throws IOException {
+    String currentRealPath = "";
+    File file = new File("");
+    currentRealPath = file.getCanonicalPath();
+    Path dist =
+        Paths.get(
+            currentRealPath
+                + File.separator
+                + newFolderName
+                + File.separator
+                + path.substring(path.lastIndexOf("/") + 1));
+    Path parent = dist.getParent();
+    if (parent != null) {
+      Files.createDirectories(parent);
+    }
+    Files.deleteIfExists(dist);
+    return dist;
+  }
+
+  public static void copy(String resource, String newFolderName) throws IOException {
+    InputStream in = Utils.class.getResourceAsStream(resource);
+    Path dist = getDistFile(resource, newFolderName);
+    Files.copy(in, dist);
+    in.close();
+  }
+
+  public static void addNewThemeAs(String themeName) {
+    // TODO Auto-generated method stub
+    try {
+      copy("/assets/newtheme/black.png", "theme" + File.separator + themeName);
+      copy("/assets/newtheme/white.png", "theme" + File.separator + themeName);
+      copy("/assets/newtheme/board.png", "theme" + File.separator + themeName);
+      copy("/assets/newtheme/background.jpg", "theme" + File.separator + themeName);
+      copy("/assets/newtheme/theme.txt", "theme" + File.separator + themeName);
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
     }
   }
 }

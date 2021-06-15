@@ -270,9 +270,9 @@ public class Theme {
     return getColorByKey("best-move-color", Color.CYAN);
   }
 
-  public Color bestVarPanelColor() {
-    return getColorByKey("var-panel-color", new Color(80, 80, 80));
-  }
+  //  public Color bestVarPanelColor() {
+  //    return getColorByKey("var-panel-color", new Color(80, 80, 80));
+  //  }
 
   /** The threshold list of the blunder winrate */
   public Optional<List<Double>> blunderWinrateThresholds() {

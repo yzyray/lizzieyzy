@@ -1,0 +1,88 @@
+{
+  "comment-font-size": 0,
+  "shadow-size": 85,
+  "stone-indicator-type": 0,
+  "ui-font-name": "Lizzie Default",
+  "blunder-bar-color": [
+    255,
+    204,
+    255
+  ],
+  "use-pure-stone": false,
+  "winrate-stroke-width": 1.7,
+  "comment-node-color": [
+    0,
+    0,
+    255
+  ],
+  "background-image": "background.jpg",
+  "winrate-line-color": [
+    0,
+    255,
+    0
+  ],
+  "comment-font-color": [
+    255,
+    255,
+    255
+  ],
+  "blunder-node-colors": [
+    [
+      255,
+      0,
+      0
+    ],
+    [
+      255,
+      153,
+      0
+    ]
+  ],
+  "best-move-color": [
+    0,
+    255,
+    255,
+    240
+  ],
+  "white-stone-image": "white.png",
+  "black-stone-image": "black.png",
+  "blunder-winrate-thresholds": [
+    -25,
+    -10
+  ],
+  "pure-board-color": [
+    217,
+    152,
+    77
+  ],
+  "winrate-font-name": "Lizzie Default",
+  "minimum-blunder-bar-width": 3,
+  "show-stone-shadow": true,
+  "winrate-miss-line-color": [
+    0,
+    0,
+    178
+  ],
+  "background-filter": 20,
+  "comment-background-color": [
+    0,
+    0,
+    0,
+    200
+  ],
+  "board-image": "board.png",
+  "pure-background-color": [
+    128,
+    128,
+    128
+  ],
+  "scoremean-line-color": [
+    255,
+    0,
+    255
+  ],
+  "font-name": "Lizzie Default",
+  "use-pure-background": false,
+  "show-comment-node-color": true,
+  "use-pure-board": false
+}

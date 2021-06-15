@@ -23,6 +23,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
+import java.awt.Insets;
 import java.awt.Paint;
 import java.awt.RadialGradientPaint;
 import java.awt.Rectangle;
@@ -1823,6 +1824,19 @@ public class ConfigDialog2 extends JDialog {
       cmbThemes.setBounds(175, 11, 199, 20);
       themeTab.add(cmbThemes);
 
+      JButton btnAddTheme = new JButton(resourceBundle.getString("ConfigDialog2.addTheme"));
+      btnAddTheme.addActionListener(
+          new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              Utils.addNewThemeAs("testTheme");
+              setVisible(false);
+              Lizzie.frame.openConfigDialog2(1);
+            }
+          });
+      btnAddTheme.setMargin(new Insets(0, 0, 0, 0));
+      btnAddTheme.setBounds(385, 11, 50, 20);
+      themeTab.add(btnAddTheme);
+
       JLabel lblWinrateStrokeWidth =
           new JLabel(resourceBundle.getString("LizzieConfig.title.winrateStrokeWidth"));
       lblWinrateStrokeWidth.setBounds(10, 44, 163, 16);
@@ -2480,6 +2494,7 @@ public class ConfigDialog2 extends JDialog {
               new ActionListener() {
                 public void actionPerformed(ActionEvent evt) {
                   pnlBoardPreview.repaint();
+                  if (tabbedPane.getSelectedIndex() == 1) tabbedPane.repaint();
                   // table.validate();
                   // table.updateUI();
                 }
