@@ -84,6 +84,7 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.ListCellRenderer;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
@@ -1828,9 +1829,22 @@ public class ConfigDialog2 extends JDialog {
       btnAddTheme.addActionListener(
           new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-              Utils.addNewThemeAs("testTheme");
-              setVisible(false);
-              Lizzie.frame.openConfigDialog2(1);
+              SwingUtilities.invokeLater(
+                  new Runnable() {
+                    public void run() {
+                      String themeName =
+                          JOptionPane.showInputDialog(
+                              Lizzie.frame.configDialog2,
+                              null,
+                              resourceBundle.getString("ConfigDialog2.inputThemeNameTitle"),
+                              JOptionPane.INFORMATION_MESSAGE);
+                      if (themeName != null) {
+                        Utils.addNewThemeAs(themeName);
+                        setVisible(false);
+                        Lizzie.frame.openConfigDialog2(1);
+                      }
+                    }
+                  });
             }
           });
       btnAddTheme.setMargin(new Insets(0, 0, 0, 0));
