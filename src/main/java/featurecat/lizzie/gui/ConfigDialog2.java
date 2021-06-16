@@ -1839,6 +1839,13 @@ public class ConfigDialog2 extends JDialog {
                               resourceBundle.getString("ConfigDialog2.inputThemeNameTitle"),
                               JOptionPane.INFORMATION_MESSAGE);
                       if (themeName != null) {
+                        for (String name : themeList) {
+                          if (themeName.toLowerCase().equals(name.toLowerCase())) {
+                            Utils.showMsg(
+                                resourceBundle.getString("ConfigDialog2.duplicateThemeName"));
+                            return;
+                          }
+                        }
                         Utils.addNewThemeAs(themeName);
                         setVisible(false);
                         Lizzie.frame.openConfigDialog2(1);
