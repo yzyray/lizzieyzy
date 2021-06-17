@@ -276,7 +276,7 @@ public class ConfigDialog2 extends JDialog {
   private JCheckBox chkLimitPlayouts;
 
   public ConfigDialog2() {
-    setAlwaysOnTop(true);
+    setAlwaysOnTop(Lizzie.frame.isAlwaysOnTop());
     setTitle(resourceBundle.getString("LizzieConfig.title.config"));
     setModalityType(ModalityType.APPLICATION_MODAL);
     // setType(Type.POPUP);
@@ -1952,8 +1952,11 @@ public class ConfigDialog2 extends JDialog {
       cmbFontName.addItemListener(
           new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
+              String fontName = (String) e.getItem();
+              if (fontName.equals("Lizzie默认") || fontName.equals("Lizzie Default"))
+                fontName = "Microsoft YaHei";
               cmbFontName.setFont(
-                  new Font((String) e.getItem(), Font.PLAIN, cmbFontName.getFont().getSize()));
+                  new Font(fontName, Font.PLAIN, cmbUiFontName.getFont().getSize()));
             }
           });
       themeTab.add(cmbFontName);
@@ -1964,12 +1967,12 @@ public class ConfigDialog2 extends JDialog {
       cmbUiFontName = new JComboBox(fonts);
       cmbUiFontName.setMaximumRowCount(16);
       cmbUiFontName.setBounds(175, 163, 200, 20);
-      cmbUiFontName.setRenderer(new FontComboBoxRenderer());
+      cmbUiFontName.setRenderer(new FontComboBoxRenderer2());
       cmbUiFontName.addItemListener(
           new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
               cmbUiFontName.setFont(
-                  new Font((String) e.getItem(), Font.PLAIN, cmbUiFontName.getFont().getSize()));
+                  new Font((String) e.getItem(), Font.PLAIN, cmbFontName.getFont().getSize()));
             }
           });
       themeTab.add(cmbUiFontName);
@@ -1985,9 +1988,11 @@ public class ConfigDialog2 extends JDialog {
       cmbWinrateFontName.addItemListener(
           new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
+              String fontName = (String) e.getItem();
+              if (fontName.equals("Lizzie默认") || fontName.equals("Lizzie Default"))
+                fontName = "Microsoft YaHei";
               cmbWinrateFontName.setFont(
-                  new Font(
-                      (String) e.getItem(), Font.PLAIN, cmbWinrateFontName.getFont().getSize()));
+                  new Font(fontName, Font.PLAIN, cmbUiFontName.getFont().getSize()));
             }
           });
       themeTab.add(cmbWinrateFontName);
@@ -2729,6 +2734,19 @@ public class ConfigDialog2 extends JDialog {
         JList<? extends E> list, E value, int index, boolean isSelected, boolean cellHasFocus) {
       final String fontName = (String) value;
       setText(fontName);
+      if (fontName.equals("Lizzie默认") || fontName.equals("Lizzie Default"))
+        setFont(new Font("Microsoft YaHei", Font.PLAIN, 12));
+      else setFont(new Font(fontName, Font.PLAIN, 12));
+      return this;
+    }
+  }
+
+  private class FontComboBoxRenderer2<E> extends JLabel implements ListCellRenderer<E> {
+    @Override
+    public Component getListCellRendererComponent(
+        JList<? extends E> list, E value, int index, boolean isSelected, boolean cellHasFocus) {
+      final String fontName = (String) value;
+      setText(fontName);
       setFont(new Font(fontName, Font.PLAIN, 12));
       return this;
     }
@@ -3133,7 +3151,7 @@ public class ConfigDialog2 extends JDialog {
   }
 
   private void setFontValue(JComboBox<String> cmb, String fontName) {
-    cmb.setSelectedIndex(0);
+    cmb.setSelectedIndex(-1);
     cmb.setSelectedItem(fontName);
   }
 
@@ -3309,15 +3327,9 @@ public class ConfigDialog2 extends JDialog {
     spnMinimumBlunderBarWidth.setValue(
         Lizzie.config.uiConfig.optInt("minimum-blunder-bar-width", 3));
     spnShadowSize.setValue(Lizzie.config.uiConfig.optInt("shadow-size", 100));
-    cmbFontName.setSelectedItem(
-        Lizzie.config.uiConfig.optString(
-            "font-name", resourceBundle.getString("LizzieConfig.title.uiFontName")));
-    cmbUiFontName.setSelectedItem(
-        Lizzie.config.uiConfig.optString(
-            "ui-font-name", resourceBundle.getString("LizzieConfig.title.uiFontName")));
-    cmbWinrateFontName.setSelectedItem(
-        Lizzie.config.uiConfig.optString(
-            "winrate-font-name", resourceBundle.getString("LizzieConfig.title.uiFontName")));
+    setFontValue(cmbFontName, Lizzie.config.uiConfig.optString("font-name", null));
+    setFontValue(cmbUiFontName, Lizzie.config.uiConfig.optString("ui-font-name", null));
+    setFontValue(cmbWinrateFontName, Lizzie.config.uiConfig.optString("winrate-font-name", null));
     txtBackgroundPath.setEnabled(false);
     btnBackgroundPath.setEnabled(false);
     txtBackgroundPath.setText("/assets/background.jpg");
