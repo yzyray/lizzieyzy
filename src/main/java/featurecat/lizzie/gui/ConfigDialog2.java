@@ -3309,9 +3309,15 @@ public class ConfigDialog2 extends JDialog {
     spnMinimumBlunderBarWidth.setValue(
         Lizzie.config.uiConfig.optInt("minimum-blunder-bar-width", 3));
     spnShadowSize.setValue(Lizzie.config.uiConfig.optInt("shadow-size", 100));
-    cmbFontName.setSelectedItem(Lizzie.config.uiConfig.optString("font-name", null));
-    cmbUiFontName.setSelectedItem(Lizzie.config.uiConfig.optString("ui-font-name", null));
-    cmbWinrateFontName.setSelectedItem(Lizzie.config.uiConfig.optString("winrate-font-name", null));
+    cmbFontName.setSelectedItem(
+        Lizzie.config.uiConfig.optString(
+            "font-name", resourceBundle.getString("LizzieConfig.title.uiFontName")));
+    cmbUiFontName.setSelectedItem(
+        Lizzie.config.uiConfig.optString(
+            "ui-font-name", resourceBundle.getString("LizzieConfig.title.uiFontName")));
+    cmbWinrateFontName.setSelectedItem(
+        Lizzie.config.uiConfig.optString(
+            "winrate-font-name", resourceBundle.getString("LizzieConfig.title.uiFontName")));
     txtBackgroundPath.setEnabled(false);
     btnBackgroundPath.setEnabled(false);
     txtBackgroundPath.setText("/assets/background.jpg");
