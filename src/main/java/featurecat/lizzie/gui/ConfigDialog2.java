@@ -1815,11 +1815,63 @@ public class ConfigDialog2 extends JDialog {
       JLabel lblThemes = new JLabel(resourceBundle.getString("LizzieConfig.title.theme"));
       lblThemes.setBounds(10, 11, 163, 20);
       themeTab.add(lblThemes);
+
+      JButton btnDeleteTheme = new JButton(resourceBundle.getString("ConfigDialog2.deleteTheme"));
+      btnDeleteTheme.addActionListener(
+          new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              SwingUtilities.invokeLater(
+                  new Runnable() {
+                    public void run() {
+                      int ret =
+                          JOptionPane.showConfirmDialog(
+                              Lizzie.frame.configDialog2,
+                              resourceBundle.getString("ConfigDialog2.deleteThemeWarning")
+                                  + "\'"
+                                  + cmbThemes.getSelectedItem().toString()
+                                  + "\'"
+                                  + " ?",
+                              resourceBundle.getString("LizzieFrame.warning"),
+                              JOptionPane.OK_CANCEL_OPTION);
+                      if (ret == JOptionPane.YES_NO_OPTION) {
+                        String currentRealPath = "";
+                        File file = new File("");
+                        try {
+                          currentRealPath = file.getCanonicalPath();
+                        } catch (IOException e) {
+                          // TODO Auto-generated catch block
+                          e.printStackTrace();
+                        }
+                        if (Utils.deleteDir(
+                            new File(
+                                currentRealPath
+                                    + Utils.pwd
+                                    + "theme"
+                                    + Utils.pwd
+                                    + cmbThemes.getSelectedItem().toString()))) {
+                          Utils.showMsg(
+                              resourceBundle.getString("ConfigDialog2.deleteThemeSuccess"));
+                          setVisible(false);
+                          Lizzie.frame.openConfigDialog2(1);
+                        } else
+                          Utils.showMsg(
+                              resourceBundle.getString("ConfigDialog2.deleteThemeFailed"));
+                      }
+                    }
+                  });
+            }
+          });
+      btnDeleteTheme.setMargin(new Insets(0, 0, 0, 0));
+      btnDeleteTheme.setBounds(435, 11, 50, 20);
+      themeTab.add(btnDeleteTheme);
+
       cmbThemes = new JComboBox(themeList.toArray(new String[0]));
       cmbThemes.addItemListener(
           new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
               if (isLoadedTheme) readThemeValues();
+              if (cmbThemes.getSelectedIndex() == 0) btnDeleteTheme.setEnabled(false);
+              else btnDeleteTheme.setEnabled(true);
             }
           });
       cmbThemes.setBounds(175, 11, 199, 20);
@@ -2240,6 +2292,8 @@ public class ConfigDialog2 extends JDialog {
       cmbThemes.setSelectedItem(
           Lizzie.config.uiConfig.optString(
               "theme", resourceBundle.getString("LizzieConfig.title.defaultTheme")));
+      if (cmbThemes.getSelectedIndex() == 0) btnDeleteTheme.setEnabled(false);
+      else btnDeleteTheme.setEnabled(true);
 
       chkShowStoneShaow = new JCheckBox(resourceBundle.getString("LizzieConfig.title.shadowSize"));
       chkShowStoneShaow.setBounds(6, 101, 131, 23);
