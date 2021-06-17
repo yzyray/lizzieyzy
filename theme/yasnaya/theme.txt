@@ -73,7 +73,7 @@
     5,
     10
   ],
-  "winrate-font-name": "΢���ź�",
+  "winrate-font-name": "Lizzie默认",
   "minimum-blunder-bar-width": 3,
   "winrate-miss-line-color": [
     0,
@@ -89,6 +89,6 @@
     200
   ],
   "board-image": "board7.jpg",
-  "font-name": "΢���ź�",
+  "font-name": "Lizzie默认",
   "show-comment-node-color": true
 }
