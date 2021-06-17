@@ -3180,7 +3180,7 @@ public class LizzieFrame extends JFrame {
   }
 
   public void saveOriFile() {
-    if (curFile != null) {
+    if (curFile != null && !curFile.getName().toLowerCase().endsWith(".gib")) {
       if (Lizzie.config.showReplaceFileHint) {
         Box box = Box.createVerticalBox();
         JFontLabel label =

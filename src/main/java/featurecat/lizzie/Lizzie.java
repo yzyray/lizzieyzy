@@ -166,7 +166,9 @@ public class Lizzie {
           public void run() {
             if (mainArgs.length == 1) {
               if (!mainArgs[0].equals("read")) {
-                frame.loadFile(new File(mainArgs[0]), true, true);
+                File file = new File(mainArgs[0]);
+                frame.loadFile(file, true, true);
+                frame.curFile = file;
               }
             } else if (config.autoResume) {
               frame.resumeFile();
