@@ -1954,9 +1954,10 @@ public class ConfigDialog2 extends JDialog {
             public void itemStateChanged(ItemEvent e) {
               String fontName = (String) e.getItem();
               if (fontName.equals("Lizzie默认") || fontName.equals("Lizzie Default"))
-                fontName = "Microsoft YaHei";
-              cmbFontName.setFont(
-                  new Font(fontName, Font.PLAIN, cmbUiFontName.getFont().getSize()));
+                cmbFontName.setFont(Lizzie.frame.uiFont);
+              else
+                cmbFontName.setFont(
+                    new Font(fontName, Font.PLAIN, cmbUiFontName.getFont().getSize()));
             }
           });
       themeTab.add(cmbFontName);
@@ -1967,7 +1968,7 @@ public class ConfigDialog2 extends JDialog {
       cmbUiFontName = new JComboBox(fonts);
       cmbUiFontName.setMaximumRowCount(16);
       cmbUiFontName.setBounds(175, 163, 200, 20);
-      cmbUiFontName.setRenderer(new FontComboBoxRenderer2());
+      cmbUiFontName.setRenderer(new UiFontComboBoxRenderer());
       cmbUiFontName.addItemListener(
           new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
@@ -1984,15 +1985,16 @@ public class ConfigDialog2 extends JDialog {
       cmbWinrateFontName = new JComboBox(fonts);
       cmbWinrateFontName.setMaximumRowCount(16);
       cmbWinrateFontName.setBounds(175, 193, 200, 20);
-      cmbWinrateFontName.setRenderer(new FontComboBoxRenderer());
+      cmbWinrateFontName.setRenderer(new WinrateFontComboBoxRenderer());
       cmbWinrateFontName.addItemListener(
           new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
               String fontName = (String) e.getItem();
               if (fontName.equals("Lizzie默认") || fontName.equals("Lizzie Default"))
-                fontName = "Microsoft YaHei";
-              cmbWinrateFontName.setFont(
-                  new Font(fontName, Font.PLAIN, cmbUiFontName.getFont().getSize()));
+                cmbWinrateFontName.setFont(Lizzie.frame.uiFont);
+              else
+                cmbWinrateFontName.setFont(
+                    new Font(fontName, Font.PLAIN, cmbUiFontName.getFont().getSize()));
             }
           });
       themeTab.add(cmbWinrateFontName);
@@ -2734,14 +2736,27 @@ public class ConfigDialog2 extends JDialog {
         JList<? extends E> list, E value, int index, boolean isSelected, boolean cellHasFocus) {
       final String fontName = (String) value;
       setText(fontName);
-      if (fontName.equals("Lizzie默认") || fontName.equals("Lizzie Default"))
-        setFont(new Font("Microsoft YaHei", Font.PLAIN, 12));
+      if (fontName != null && (fontName.equals("Lizzie默认") || fontName.equals("Lizzie Default")))
+        setFont(Lizzie.frame.uiFont);
       else setFont(new Font(fontName, Font.PLAIN, 12));
       return this;
     }
   }
 
-  private class FontComboBoxRenderer2<E> extends JLabel implements ListCellRenderer<E> {
+  private class WinrateFontComboBoxRenderer<E> extends JLabel implements ListCellRenderer<E> {
+    @Override
+    public Component getListCellRendererComponent(
+        JList<? extends E> list, E value, int index, boolean isSelected, boolean cellHasFocus) {
+      final String fontName = (String) value;
+      setText(fontName);
+      if (fontName != null && (fontName.equals("Lizzie默认") || fontName.equals("Lizzie Default")))
+        setFont(Lizzie.frame.winrateFont);
+      else setFont(new Font(fontName, Font.PLAIN, 12));
+      return this;
+    }
+  }
+
+  private class UiFontComboBoxRenderer<E> extends JLabel implements ListCellRenderer<E> {
     @Override
     public Component getListCellRendererComponent(
         JList<? extends E> list, E value, int index, boolean isSelected, boolean cellHasFocus) {
