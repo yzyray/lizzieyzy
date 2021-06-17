@@ -3,11 +3,6 @@
   "shadow-size": 55,
   "stone-indicator-type": 0,
   "solid-stone-indicator": true,
-  "var-panel-color": [
-    80,
-    80,
-    80
-  ],
   "ui-font-name": "Î¢ÈíÑÅºÚ",
   "winrate-stroke-width": 1.7,
   "comment-node-color": [

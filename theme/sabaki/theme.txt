@@ -2,11 +2,6 @@
   "comment-font-size": 0,
   "shadow-size": 100,
   "stone-indicator-type": 0,
-  "var-panel-color": [
-    80,
-    80,
-    80
-  ],
   "ui-font-name": "Lizzie默认",
   "use-pure-stone": false,
   "winrate-stroke-width": 1.7,
