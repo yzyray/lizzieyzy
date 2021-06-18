@@ -1985,7 +1985,7 @@ public class ConfigDialog2 extends JDialog {
       cmbWinrateFontName = new JComboBox(fonts);
       cmbWinrateFontName.setMaximumRowCount(16);
       cmbWinrateFontName.setBounds(175, 193, 200, 20);
-      cmbWinrateFontName.setRenderer(new WinrateFontComboBoxRenderer());
+      cmbWinrateFontName.setRenderer(new UiFontComboBoxRenderer());
       cmbWinrateFontName.addItemListener(
           new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
@@ -2743,19 +2743,6 @@ public class ConfigDialog2 extends JDialog {
     }
   }
 
-  private class WinrateFontComboBoxRenderer<E> extends JLabel implements ListCellRenderer<E> {
-    @Override
-    public Component getListCellRendererComponent(
-        JList<? extends E> list, E value, int index, boolean isSelected, boolean cellHasFocus) {
-      final String fontName = (String) value;
-      setText(fontName);
-      if (fontName != null && (fontName.equals("Lizzie默认") || fontName.equals("Lizzie Default")))
-        setFont(Lizzie.frame.winrateFont);
-      else setFont(new Font(fontName, Font.PLAIN, 12));
-      return this;
-    }
-  }
-
   private class UiFontComboBoxRenderer<E> extends JLabel implements ListCellRenderer<E> {
     @Override
     public Component getListCellRendererComponent(
@@ -3168,6 +3155,7 @@ public class ConfigDialog2 extends JDialog {
   private void setFontValue(JComboBox<String> cmb, String fontName) {
     cmb.setSelectedIndex(-1);
     cmb.setSelectedItem(fontName);
+    if (cmb.getSelectedIndex() == -1) cmb.setSelectedIndex(0);
   }
 
   private void readThemeValues() {
