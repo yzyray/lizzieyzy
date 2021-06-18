@@ -524,7 +524,7 @@ public class EstimateResults extends JDialog {
     }
 
     if (sumW < 10) g2.drawString(sumW + "", 206, topCap + 156);
-    else if (sumB < 100) g2.drawString(sumW + "", 202, topCap + 156);
+    else if (sumW < 100) g2.drawString(sumW + "", 202, topCap + 156);
     else g2.drawString(sumW + "", 198, topCap + 156);
 
     btnEstimate.repaint();
