@@ -9536,7 +9536,7 @@ public class LizzieFrame extends JFrame {
       if (!toolbar.chkAutoPlayTime.isSelected()
           && !toolbar.chkAutoPlayFirstPlayouts.isSelected()
           && !toolbar.chkAutoPlayPlayouts.isSelected()) {
-        toolbar.txtAutoPlayTime.setText(Lizzie.config.maxGameThinkingTimeSeconds + "");
+        toolbar.txtAutoPlayTime.setText(Math.max(1, Lizzie.config.maxGameThinkingTimeSeconds) + "");
         toolbar.chkAutoPlayTime.setSelected(true);
       }
       if (continueNow) {

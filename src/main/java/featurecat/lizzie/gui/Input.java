@@ -632,9 +632,9 @@ public class Input implements MouseListener, KeyListener, MouseWheelListener, Mo
         // return;
         // }
         if (e.isAltDown()) {
-          Lizzie.frame.continueAiPlaying(true, true, true, true);
-        } else {
           Lizzie.frame.continueAiPlaying(false, true, true, true);
+        } else {
+          Lizzie.frame.continueAiPlaying(true, true, true, true);
         }
         break;
 
