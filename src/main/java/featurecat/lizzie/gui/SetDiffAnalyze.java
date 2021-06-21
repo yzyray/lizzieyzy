@@ -123,10 +123,10 @@ public class SetDiffAnalyze extends JDialog {
     contentPanel.add(new JFontLabel(Lizzie.resourceBundle.getString("StartAnaDialog.timePerMove")));
     contentPanel.add(txtTime);
     contentPanel.add(
-        new JFontLabel(Lizzie.resourceBundle.getString("StartAnaDialog.totalPlayoutsPerMove")));
+        new JFontLabel(Lizzie.resourceBundle.getString("StartAnaDialog.totalVisitsPerMove")));
     contentPanel.add(txtPlayouts);
     contentPanel.add(
-        new JFontLabel(Lizzie.resourceBundle.getString("StartAnaDialog.firstPlayoutsPerMove")));
+        new JFontLabel(Lizzie.resourceBundle.getString("StartAnaDialog.firstVisitsPerMove")));
     contentPanel.add(txtFirstPlayouts);
 
     chkBlack.setSelected(Lizzie.config.autoAnaDiffBlack);

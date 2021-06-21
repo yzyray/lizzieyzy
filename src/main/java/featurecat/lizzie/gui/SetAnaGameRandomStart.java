@@ -118,7 +118,7 @@ public class SetAnaGameRandomStart extends JDialog {
 
     JFontLabel lblPlayouts =
         new JFontLabel(
-            resourceBundle.getString("SetAnaGameRandomStart.lblPlayouts.text")); // $NON-NLS-1$
+            resourceBundle.getString("SetAnaGameRandomStart.lblVisits.text")); // $NON-NLS-1$
     lblPlayouts.setBounds(26, 89, 326, 24);
     buttonPane.add(lblPlayouts);
 

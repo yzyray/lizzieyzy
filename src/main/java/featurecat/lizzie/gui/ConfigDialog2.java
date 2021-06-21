@@ -1692,7 +1692,7 @@ public class ConfigDialog2 extends JDialog {
             });
     uiTab.add(txtLimitPlayouts);
 
-    JLabel lblLimitPlayouts = new JLabel(resourceBundle.getString("LizzieConfig.playouts"));
+    JLabel lblLimitPlayouts = new JLabel(resourceBundle.getString("LizzieConfig.visits"));
     uiTab.add(lblLimitPlayouts);
 
     chkLimitTime.addActionListener(

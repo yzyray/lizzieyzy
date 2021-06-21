@@ -877,7 +877,7 @@ public class Menu extends JMenuBar {
     Suggestions.add(suggestion1);
 
     final JFontCheckBoxMenuItem suggestion2 =
-        new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.playouts")); // ("计算量");
+        new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.visits")); // ("计算量");
     suggestion2.addActionListener(
         new ActionListener() {
           @Override
@@ -8217,7 +8217,7 @@ public class Menu extends JMenuBar {
                   + (Lizzie.config.shouldWidenCheckBox ? 4 : 0),
               Lizzie.config.menuHeight - 3));
     if (chkShowPlayouts == null) {
-      chkShowPlayouts = new JFontCheckBox(resourceBundle.getString("Menu.playouts"));
+      chkShowPlayouts = new JFontCheckBox(resourceBundle.getString("Menu.visits"));
       chkShowPlayouts.addActionListener(
           new ActionListener() {
             @Override
@@ -8491,7 +8491,7 @@ public class Menu extends JMenuBar {
             }
 
             if (chkShowPlayouts == null) {
-              chkShowPlayouts = new JFontCheckBox(resourceBundle.getString("Menu.playouts"));
+              chkShowPlayouts = new JFontCheckBox(resourceBundle.getString("Menu.visits"));
               chkShowPlayouts.addActionListener(
                   new ActionListener() {
                     @Override

@@ -392,7 +392,7 @@ public class FirstUseSettings extends JDialog {
     getContentPane().add(txtMaxAnalyzeTime);
 
     chkLimitPlayouts =
-        new JFontCheckBox(Lizzie.resourceBundle.getString("FirstUseSettings.chkLimitPlayouts"));
+        new JFontCheckBox(Lizzie.resourceBundle.getString("FirstUseSettings.chkLimitVisits"));
     getContentPane().add(chkLimitPlayouts);
     if (Lizzie.config.isChinese)
       chkLimitPlayouts.setBounds(
@@ -466,7 +466,7 @@ public class FirstUseSettings extends JDialog {
     getContentPane().add(chkWinrate);
 
     JFontCheckBox chkPlayouts =
-        new JFontCheckBox(Lizzie.resourceBundle.getString("FirstUseSettings.chkPlayouts"));
+        new JFontCheckBox(Lizzie.resourceBundle.getString("FirstUseSettings.chkVisits"));
     chkPlayouts.setBounds(
         Lizzie.config.isFrameFontSmall() ? 350 : (Lizzie.config.isFrameFontMiddle() ? 420 : 520),
         208,

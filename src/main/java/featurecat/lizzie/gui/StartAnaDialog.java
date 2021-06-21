@@ -120,7 +120,7 @@ public class StartAnaDialog extends JDialog {
       contentPanel.add(
           new JFontLabel(
               Lizzie.resourceBundle.getString(
-                  "StartAnaDialog.totalPlayoutsPerMove"))); // ("每手总计算量"));
+                  "StartAnaDialog.totalVisitsPerMove"))); // ("每手总计算量"));
       contentPanel.add(txtAnalysisPlayouts);
     } else {
       contentPanel.add(
@@ -130,12 +130,12 @@ public class StartAnaDialog extends JDialog {
       contentPanel.add(
           new JFontLabel(
               Lizzie.resourceBundle.getString(
-                  "StartAnaDialog.totalPlayoutsPerMove"))); // ("每手总计算量"));
+                  "StartAnaDialog.totalVisitsPerMove"))); // ("每手总计算量"));
       contentPanel.add(Lizzie.frame.toolbar.txtAnaPlayouts);
       contentPanel.add(
           new JFontLabel(
               Lizzie.resourceBundle.getString(
-                  "StartAnaDialog.firstPlayoutsPerMove"))); // ("每手首位计算量"));
+                  "StartAnaDialog.firstVisitsPerMove"))); // ("每手首位计算量"));
       contentPanel.add(Lizzie.frame.toolbar.txtAnaFirstPlayouts);
       contentPanel.add(
           new JFontLabel(

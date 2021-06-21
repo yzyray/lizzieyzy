@@ -286,11 +286,11 @@ public class EngineManager {
                 + resourceBundle.getString("SGFParse.seconds");
       if (engineGameInfo.playoutsFirstEngine > 0)
         engineGameInfo.settingFirst +=
-            resourceBundle.getString("EngineGameInfo.totalPlayouts")
+            resourceBundle.getString("EngineGameInfo.totalVisits")
                 + engineGameInfo.playoutsFirstEngine;
       if (engineGameInfo.firstPlayoutsFirstEngine > 0)
         engineGameInfo.settingFirst +=
-            resourceBundle.getString("EngineGameInfo.firstPlayouts")
+            resourceBundle.getString("EngineGameInfo.firstVisits")
                 + engineGameInfo.firstPlayoutsFirstEngine;
 
       engineGameInfo.settingFirst +=
@@ -316,11 +316,11 @@ public class EngineManager {
                 + resourceBundle.getString("SGFParse.seconds");
       if (engineGameInfo.playoutsSecondEngine > 0)
         engineGameInfo.settingSecond +=
-            resourceBundle.getString("EngineGameInfo.totalPlayouts")
+            resourceBundle.getString("EngineGameInfo.totalVisits")
                 + engineGameInfo.playoutsSecondEngine;
       if (engineGameInfo.firstPlayoutsSecondEngine > 0)
         engineGameInfo.settingSecond +=
-            resourceBundle.getString("EngineGameInfo.firstPlayouts")
+            resourceBundle.getString("EngineGameInfo.firstVisits")
                 + engineGameInfo.firstPlayoutsSecondEngine;
       engineGameInfo.settingSecond +=
           "\r\n"
@@ -937,7 +937,7 @@ public class EngineManager {
               + engineGameInfo.firstEngineTotleTime / (float) 1000
               + resourceBundle.getString("SGFParse.seconds");
       engineGameInfo.resultFirst +=
-          resourceBundle.getString("EngineGameInfo.totalVisits")
+          resourceBundle.getString("EngineGameInfo.result.totalVisits")
               + engineGameInfo.firstEngineTotlePlayouts;
 
       engineGameInfo.resultSecond =
@@ -962,7 +962,7 @@ public class EngineManager {
               + engineGameInfo.secondEngineTotleTime / (float) 1000
               + resourceBundle.getString("SGFParse.seconds");
       engineGameInfo.resultSecond +=
-          resourceBundle.getString("EngineGameInfo.totalVisits")
+          resourceBundle.getString("EngineGameInfo.result.totalVisits")
               + engineGameInfo.secondEngineTotlePlayouts;
 
       engineGameInfo.resultOther =

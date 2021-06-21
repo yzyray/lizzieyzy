@@ -1101,8 +1101,8 @@ public class MovelistFrame extends JFrame {
       lblMatchConfig1.setBounds(5, 40, 166, 20);
       suggestionMoves.setBounds(123, 43, 25, 16);
       lblMatchConfig2.setBounds(150, 40, 250, 20);
-      percentPlayouts.setBounds(373, 43, 40, 16);
-      lblMatchConfig3.setBounds(415, 40, 15, 20);
+      percentPlayouts.setBounds(363, 43, 40, 16);
+      lblMatchConfig3.setBounds(405, 40, 15, 20);
       lblMatchConfig4.setBounds(435, 40, 100, 20);
       firstMove.setBounds(499, 43, 35, 16);
       lblMatchConfig5.setBounds(536, 40, 15, 20);
@@ -6720,6 +6720,18 @@ public class MovelistFrame extends JFrame {
         matchPanelmin.add(lblParse2Move);
         matchPanelmin.add(txtParse2Move);
       } else {
+        if (selectedIndex == 2 || selectedIndex == 3)
+          if (Lizzie.config.isChinese) {
+            lblMatchConfig4.setBounds(318, 40, 100, 20);
+            firstMove.setBounds(373, 43, 35, 16);
+            lblMatchConfig5.setBounds(410, 40, 15, 20);
+            lastMove.setBounds(423, 43, 35, 16);
+          } else {
+            lblMatchConfig4.setBounds(435, 40, 100, 20);
+            firstMove.setBounds(499, 43, 35, 16);
+            lblMatchConfig5.setBounds(536, 40, 15, 20);
+            lastMove.setBounds(548, 43, 35, 16);
+          }
         matchPanelmin.add(lblMatchConfig4);
         matchPanelmin.add(firstMove);
         matchPanelmin.add(lblMatchConfig5);
@@ -6741,8 +6753,8 @@ public class MovelistFrame extends JFrame {
         lblMatchConfig1.setBounds(5, 40, 166, 20);
         suggestionMoves.setBounds(123, 43, 25, 16);
         lblMatchConfig2.setBounds(150, 40, 250, 20);
-        percentPlayouts.setBounds(373, 43, 40, 16);
-        lblMatchConfig3.setBounds(415, 40, 15, 20);
+        percentPlayouts.setBounds(363, 43, 40, 16);
+        lblMatchConfig3.setBounds(405, 40, 15, 20);
         lblMatchConfig4.setBounds(435, 40, 100, 20);
         firstMove.setBounds(499, 43, 35, 16);
         lblMatchConfig5.setBounds(536, 40, 15, 20);

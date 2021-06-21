@@ -116,13 +116,16 @@ public class NewEngineGameDialog extends JDialog {
     //        new JCheckBox(resourceBundle.getString("NewGameDialog.PlayBlack"), true);
     //    checkBoxPlayerIsBlack.addChangeListener(evt -> togglePlayerIsBlack());
 
-    JTextArea lblresignSettingBlack =
-        new JTextArea(
+    JTextArea resignThresoldHint =
+        new JTextArea(resourceBundle.getString("EnginePkConfig.lblresignGenmove"));
+    resignThresoldHint.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
+    resignThresoldHint.setLineWrap(true);
+    resignThresoldHint.setFocusable(false);
+    resignThresoldHint.setBackground(this.getBackground());
+
+    JFontLabel lblresignSettingBlack =
+        new JFontLabel(
             resourceBundle.getString("EnginePkConfig.lblresignSettingBlack")); // ("认输阈值:");
-    lblresignSettingBlack.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
-    lblresignSettingBlack.setLineWrap(true);
-    lblresignSettingBlack.setFocusable(false);
-    lblresignSettingBlack.setBackground(this.getBackground());
     JFontLabel lblresignSettingBlackConsistent =
         new JFontLabel(resourceBundle.getString("EnginePkConfig.lblresignSettingConsistent"));
     JFontLabel lblresignSettingBlack2 =
@@ -138,6 +141,7 @@ public class NewEngineGameDialog extends JDialog {
     txtresignSettingBlackMinMove = new JFontTextField();
     txtresignSettingBlackMinMove.setDocument(new IntDocument());
 
+    contentPanel.add(resignThresoldHint);
     contentPanel.add(lblresignSettingBlack);
     contentPanel.add(lblresignSettingBlackConsistent);
     contentPanel.add(lblresignSettingBlack2);
@@ -147,11 +151,17 @@ public class NewEngineGameDialog extends JDialog {
     contentPanel.add(txtresignSettingBlack2);
     contentPanel.add(txtresignSettingBlackMinMove);
 
+    resignThresoldHint.setBounds(
+        5,
+        180,
+        Lizzie.config.isFrameFontSmall() ? 425 : (Lizzie.config.isFrameFontMiddle() ? 495 : 575),
+        55);
+    resignThresoldHint.setVisible(false);
     lblresignSettingBlack.setBounds(
         5,
         180,
         Lizzie.config.isFrameFontSmall() ? 435 : (Lizzie.config.isFrameFontMiddle() ? 505 : 585),
-        55);
+        25);
     lblresignSettingBlackConsistent.setBounds(
         Lizzie.config.isFrameFontSmall() ? 140 : (Lizzie.config.isFrameFontMiddle() ? 125 : 143),
         180,
@@ -288,9 +298,8 @@ public class NewEngineGameDialog extends JDialog {
               txtresignSettingBlack.setVisible(false);
               txtresignSettingBlack2.setVisible(false);
               txtresignSettingBlackMinMove.setVisible(false);
-              lblresignSettingBlack.setText(
-                  resourceBundle.getString(
-                      "EnginePkConfig.lblresignGenmove")); // "Genmove模式下,认输由引擎控制,请在引擎参数中设置认输阈值");
+              resignThresoldHint.setVisible(true);
+              lblresignSettingBlack.setVisible(false); // "Genmove模式下,认输由引擎控制,请在引擎参数中设置认输阈值");
               lblresignSettingBlackConsistent.setVisible(false);
               lblresignSettingBlack2.setVisible(false);
               lblresignSettingBlack3.setVisible(false);
@@ -326,8 +335,8 @@ public class NewEngineGameDialog extends JDialog {
               txtresignSettingBlack.setVisible(true);
               txtresignSettingBlack2.setVisible(true);
               txtresignSettingBlackMinMove.setVisible(true);
-              lblresignSettingBlack.setText(
-                  resourceBundle.getString("EnginePkConfig.lblresignSettingBlack"));
+              resignThresoldHint.setVisible(false);
+              lblresignSettingBlack.setVisible(true);
               lblresignSettingBlackConsistent.setVisible(true);
               lblresignSettingBlack2.setVisible(true);
               lblresignSettingBlack3.setVisible(true);
@@ -616,7 +625,8 @@ public class NewEngineGameDialog extends JDialog {
       txtresignSettingBlack.setVisible(false);
       txtresignSettingBlack2.setVisible(false);
       txtresignSettingBlackMinMove.setVisible(false);
-      lblresignSettingBlack.setText(resourceBundle.getString("EnginePkConfig.lblresignGenmove"));
+      resignThresoldHint.setVisible(true);
+      lblresignSettingBlack.setVisible(false);
       lblresignSettingBlackConsistent.setVisible(false);
       lblresignSettingBlack2.setVisible(false);
       lblresignSettingBlack3.setVisible(false);

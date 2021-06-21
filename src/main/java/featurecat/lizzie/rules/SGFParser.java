@@ -873,7 +873,7 @@ public class SGFParser {
                 / (float) 1000
             + Lizzie.resourceBundle.getString("SGFParse.seconds")
             + " "
-            + Lizzie.resourceBundle.getString("SGFParse.totoalPlayouts")
+            + Lizzie.resourceBundle.getString("SGFParse.totalVisits")
             + blackPlayouts;
 
     node.getData().comment +=
@@ -885,7 +885,7 @@ public class SGFParser {
                 / (float) 1000
             + Lizzie.resourceBundle.getString("SGFParse.seconds")
             + " "
-            + Lizzie.resourceBundle.getString("SGFParse.totoalPlayouts")
+            + Lizzie.resourceBundle.getString("SGFParse.totalVisits")
             + +whitePlayouts;
     if (Lizzie.engineManager.engineGameInfo.firstEngineIndex
         == Lizzie.engineManager.engineGameInfo.blackEngineIndex) {

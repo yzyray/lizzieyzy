@@ -518,10 +518,10 @@ public class AnalysisFrame extends JFrame {
     g.setColor(Color.BLACK);
     g.setFont(new Font(Lizzie.config.uiFontName, Font.PLAIN, 13));
     g.drawString(
-        resourceBundle.getString("AnalysisFrame.totlePlayouts")
+        resourceBundle.getString("AnalysisFrame.totalVisits")
             + Lizzie.frame.getPlayoutsString(totalPlayouts)
             + " "
-            + resourceBundle.getString("AnalysisFrame.maxPlayouts")
+            + resourceBundle.getString("AnalysisFrame.maxVisits")
             + Lizzie.frame.getPlayoutsString(maxPlayouts)
             + " "
             + resourceBundle.getString("AnalysisFrame.concentration")
