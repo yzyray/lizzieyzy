@@ -38,7 +38,7 @@ public class ReadBoard {
   // private boolean isLoaded = false;
   private boolean isLoaded = false;
   private boolean checkedVersionSucceed = false;
-  private int version = 608;
+  private int version = 621;
   private String engineCommand;
   public String currentEnginename = "";
   private int port = 24781;
