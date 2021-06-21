@@ -2470,14 +2470,15 @@ public class Menu extends JMenuBar {
         new JFontMenu(resourceBundle.getString("Menu.continueGameAgainstAi")); // ("人机续弈");
     gameMenu.add(continueGameAgainstAi);
 
-    JFontMenuItem newAnalyzeModeGame = new JFontMenuItem(); // ("人机对局(分析模式 N)");
+    JFontMenuItem newGenmoveModeGame = new JFontMenuItem(); // ("人机对局(Genmove模式 N)");
 
-    newAnalyzeModeGame.setLayout(null);
-    newAnalyzeModeGame.setPreferredSize(
+    newGenmoveModeGame.setLayout(null);
+    newGenmoveModeGame.setPreferredSize(
         new Dimension(
             Lizzie.config.isFrameFontSmall()
-                ? 170
-                : (Lizzie.config.isFrameFontMiddle() ? 205 : 233),
+                ? 206
+                : (Lizzie.config.isFrameFontMiddle() ? 256 : 313)
+                    + (Lizzie.config.useJavaLooks ? -31 : 0),
             (Lizzie.config.useJavaLooks
                 ? (Lizzie.config.isFrameFontSmall()
                     ? 20
@@ -2485,8 +2486,8 @@ public class Menu extends JMenuBar {
                 : (Lizzie.config.isFrameFontSmall()
                     ? 25
                     : (Lizzie.config.isFrameFontMiddle() ? 27 : 30)))));
-    JFontLabel lblAnalyzeGame = new JFontLabel(resourceBundle.getString("Menu.newAnalyzeModeGame"));
-    lblAnalyzeGame.setBounds(
+    JFontLabel lblGenmoveGame = new JFontLabel(resourceBundle.getString("Menu.newGenmoveGame"));
+    lblGenmoveGame.setBounds(
         Lizzie.config.useJavaLooks ? 6 : 37,
         (Lizzie.config.useJavaLooks
             ? -1
@@ -2495,22 +2496,22 @@ public class Menu extends JMenuBar {
                 : (Lizzie.config.isFrameFontMiddle() ? 1 : -1))),
         320,
         Lizzie.config.isFrameFontSmall() ? 20 : (Lizzie.config.isFrameFontMiddle() ? 25 : 30));
-    JButton aboutAnalyzeGame = new JFontButton("?");
-    aboutAnalyzeGame.addActionListener(
+    JButton aboutGenmoveGame = new JFontButton("?");
+    aboutGenmoveGame.addActionListener(
         new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
             Lizzie.frame.showAnalyzeGenmoveInfo();
           }
         });
-    aboutAnalyzeGame.setFocusable(false);
-    aboutAnalyzeGame.setMargin(new Insets(0, 0, 0, 0));
+    aboutGenmoveGame.setFocusable(false);
+    aboutGenmoveGame.setMargin(new Insets(0, 0, 0, 0));
     if (Lizzie.config.isChinese)
-      aboutAnalyzeGame.setBounds(
+      aboutGenmoveGame.setBounds(
           (Lizzie.config.useJavaLooks ? -31 : 0)
               + (Lizzie.config.isFrameFontSmall()
-                  ? 160
-                  : (Lizzie.config.isFrameFontMiddle() ? 200 : 250)),
+                  ? 186
+                  : (Lizzie.config.isFrameFontMiddle() ? 230 : 280)),
           (Lizzie.config.useJavaLooks
               ? 1
               : (Lizzie.config.isFrameFontSmall()
@@ -2519,11 +2520,11 @@ public class Menu extends JMenuBar {
           Lizzie.config.menuHeight - 2,
           Lizzie.config.menuHeight - 2);
     else
-      aboutAnalyzeGame.setBounds(
+      aboutGenmoveGame.setBounds(
           (Lizzie.config.useJavaLooks ? -31 : 0)
               + (Lizzie.config.isFrameFontSmall()
-                  ? 210
-                  : (Lizzie.config.isFrameFontMiddle() ? 260 : 320)),
+                  ? 219
+                  : (Lizzie.config.isFrameFontMiddle() ? 265 : 326)),
           (Lizzie.config.useJavaLooks
               ? 1
               : (Lizzie.config.isFrameFontSmall()
@@ -2531,28 +2532,27 @@ public class Menu extends JMenuBar {
                   : (Lizzie.config.isFrameFontMiddle() ? 2 : 1))),
           Lizzie.config.menuHeight - 2,
           Lizzie.config.menuHeight - 2);
-    newAnalyzeModeGame.add(aboutAnalyzeGame);
-    newAnalyzeModeGame.add(lblAnalyzeGame);
-    newAnalyzeModeGame.addActionListener(
-        new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            Lizzie.frame.startAnalyzeGameDialog();
-          }
-        });
-    newGame.add(newAnalyzeModeGame);
-
-    final JFontMenuItem newGenmoveGame =
-        new JFontMenuItem(
-            resourceBundle.getString("Menu.newGenmoveGame")); // ("人机对局(Genmove模式 Alt+N)");
-    newGenmoveGame.addActionListener(
+    newGenmoveModeGame.add(aboutGenmoveGame);
+    newGenmoveModeGame.add(lblGenmoveGame);
+    newGenmoveModeGame.addActionListener(
         new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
             Lizzie.frame.startNewGame();
           }
         });
-    newGame.add(newGenmoveGame);
+    newGame.add(newGenmoveModeGame);
+
+    final JFontMenuItem newAnalyzeGame =
+        new JFontMenuItem(resourceBundle.getString("Menu.newAnalyzeModeGame"));
+    newAnalyzeGame.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.frame.startAnalyzeGameDialog();
+          }
+        });
+    newGame.add(newAnalyzeGame);
 
     final JFontMenuItem newEngineGame =
         new JFontMenuItem(resourceBundle.getString("Menu.newEngineGame")); // ("引擎对局(Alt+E)");
@@ -2565,6 +2565,32 @@ public class Menu extends JMenuBar {
           }
         });
     newGame.add(newEngineGame);
+
+    final JFontMenuItem continueGenmoveGameAsWhite =
+        new JFontMenuItem(
+            resourceBundle.getString(
+                "Menu.continueGenmoveGameAsWhite")); // ("续弈[AI执黑](Genmove模式 Alt+回车)");
+    continueGenmoveGameAsWhite.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.frame.continueAiPlaying(true, false, false, false);
+          }
+        });
+    continueGameAgainstAi.add(continueGenmoveGameAsWhite);
+
+    final JFontMenuItem continueGenmoveGameAsBlack =
+        new JFontMenuItem(
+            resourceBundle.getString(
+                "Menu.continueGenmoveGameAsBlack")); // ("续弈[AI执白](Genmove模式 Alt+回车)");
+    continueGenmoveGameAsBlack.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.frame.continueAiPlaying(true, false, true, false);
+          }
+        });
+    continueGameAgainstAi.add(continueGenmoveGameAsBlack);
 
     final JFontMenuItem continueAnalyzeGameAsWhite =
         new JFontMenuItem(
@@ -2596,32 +2622,6 @@ public class Menu extends JMenuBar {
         });
 
     continueGameAgainstAi.add(continueAnalyzeGameAsBlack);
-
-    final JFontMenuItem continueGenmoveGameAsWhite =
-        new JFontMenuItem(
-            resourceBundle.getString(
-                "Menu.continueGenmoveGameAsWhite")); // ("续弈[AI执黑](Genmove模式 Alt+回车)");
-    continueGenmoveGameAsWhite.addActionListener(
-        new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            Lizzie.frame.continueAiPlaying(true, false, false, false);
-          }
-        });
-    continueGameAgainstAi.add(continueGenmoveGameAsWhite);
-
-    final JFontMenuItem continueGenmoveGameAsBlack =
-        new JFontMenuItem(
-            resourceBundle.getString(
-                "Menu.continueGenmoveGameAsBlack")); // ("续弈[AI执白](Genmove模式 Alt+回车)");
-    continueGenmoveGameAsBlack.addActionListener(
-        new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            Lizzie.frame.continueAiPlaying(true, false, true, false);
-          }
-        });
-    continueGameAgainstAi.add(continueGenmoveGameAsBlack);
 
     final JFontCheckBoxMenuItem scoreGame =
         new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.scoreGame")); // ("终局数子");
@@ -6750,14 +6750,15 @@ public class Menu extends JMenuBar {
             }
           });
 
-      JFontMenuItem analyzeGame = new JFontMenuItem(); // ("人机对局(分析模式 N)");
+      JFontMenuItem genmoveGame = new JFontMenuItem();
 
-      analyzeGame.setLayout(null);
-      analyzeGame.setPreferredSize(
+      genmoveGame.setLayout(null);
+      genmoveGame.setPreferredSize(
           new Dimension(
               Lizzie.config.isFrameFontSmall()
-                  ? 170
-                  : (Lizzie.config.isFrameFontMiddle() ? 205 : 233),
+                  ? 206
+                  : (Lizzie.config.isFrameFontMiddle() ? 256 : 313)
+                      + (Lizzie.config.useJavaLooks ? -31 : 0),
               (Lizzie.config.useJavaLooks
                   ? (Lizzie.config.isFrameFontSmall()
                       ? 20
@@ -6765,10 +6766,9 @@ public class Menu extends JMenuBar {
                   : (Lizzie.config.isFrameFontSmall()
                       ? 25
                       : (Lizzie.config.isFrameFontMiddle() ? 27 : 30)))));
-      JFontLabel lblAnalyzeGame =
-          new JFontLabel(resourceBundle.getString("Menu.newAnalyzeModeGame"));
+      JFontLabel lblGenmoveGame = new JFontLabel(resourceBundle.getString("Menu.newGenmoveGame"));
 
-      lblAnalyzeGame.setBounds(
+      lblGenmoveGame.setBounds(
           Lizzie.config.useJavaLooks ? 6 : 37,
           (Lizzie.config.useJavaLooks
               ? -1
@@ -6777,22 +6777,22 @@ public class Menu extends JMenuBar {
                   : (Lizzie.config.isFrameFontMiddle() ? 1 : -1))),
           320,
           Lizzie.config.isFrameFontSmall() ? 20 : (Lizzie.config.isFrameFontMiddle() ? 25 : 30));
-      JButton aboutAnalyzeGame = new JFontButton("?");
-      aboutAnalyzeGame.addActionListener(
+      JButton aboutGenmoveGame = new JFontButton("?");
+      aboutGenmoveGame.addActionListener(
           new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
               Lizzie.frame.showAnalyzeGenmoveInfo();
             }
           });
-      aboutAnalyzeGame.setFocusable(false);
-      aboutAnalyzeGame.setMargin(new Insets(0, 0, 0, 0));
+      aboutGenmoveGame.setFocusable(false);
+      aboutGenmoveGame.setMargin(new Insets(0, 0, 0, 0));
       if (Lizzie.config.isChinese)
-        aboutAnalyzeGame.setBounds(
+        aboutGenmoveGame.setBounds(
             (Lizzie.config.useJavaLooks ? -31 : 0)
                 + (Lizzie.config.isFrameFontSmall()
-                    ? 160
-                    : (Lizzie.config.isFrameFontMiddle() ? 200 : 250)),
+                    ? 186
+                    : (Lizzie.config.isFrameFontMiddle() ? 230 : 280)),
             (Lizzie.config.useJavaLooks
                 ? 1
                 : (Lizzie.config.isFrameFontSmall()
@@ -6801,11 +6801,11 @@ public class Menu extends JMenuBar {
             Lizzie.config.menuHeight - 2,
             Lizzie.config.menuHeight - 2);
       else
-        aboutAnalyzeGame.setBounds(
+        aboutGenmoveGame.setBounds(
             (Lizzie.config.useJavaLooks ? -31 : 0)
                 + (Lizzie.config.isFrameFontSmall()
-                    ? 210
-                    : (Lizzie.config.isFrameFontMiddle() ? 260 : 320)),
+                    ? 219
+                    : (Lizzie.config.isFrameFontMiddle() ? 265 : 326)),
             (Lizzie.config.useJavaLooks
                 ? 1
                 : (Lizzie.config.isFrameFontSmall()
@@ -6813,28 +6813,27 @@ public class Menu extends JMenuBar {
                     : (Lizzie.config.isFrameFontMiddle() ? 2 : 1))),
             Lizzie.config.menuHeight - 2,
             Lizzie.config.menuHeight - 2);
-      analyzeGame.add(aboutAnalyzeGame);
-      analyzeGame.add(lblAnalyzeGame);
-      analyzeGame.addActionListener(
-          new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-              Lizzie.frame.startAnalyzeGameDialog();
-            }
-          });
-
-      JFontMenuItem genmoveGame =
-          new JFontMenuItem(
-              resourceBundle.getString("Menu.newGenmoveGame")); // ("人机对局(Genmove模式 Alt+N)");
+      genmoveGame.add(aboutGenmoveGame);
+      genmoveGame.add(lblGenmoveGame);
       genmoveGame.addActionListener(
           new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
               Lizzie.frame.startNewGame();
             }
           });
 
-      newGamePopup.add(analyzeGame);
+      JFontMenuItem analyzeGame =
+          new JFontMenuItem(resourceBundle.getString("Menu.newAnalyzeModeGame"));
+      analyzeGame.addActionListener(
+          new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              Lizzie.frame.startAnalyzeGameDialog();
+            }
+          });
+
       newGamePopup.add(genmoveGame);
+      newGamePopup.add(analyzeGame);
       newGamePopup.add(engineGame);
 
       doubleMenuNewGame.addActionListener(
@@ -7827,14 +7826,15 @@ public class Menu extends JMenuBar {
           }
         });
 
-    JFontMenuItem analyzeGame = new JFontMenuItem(); // ("人机对局(分析模式 N)");
+    JFontMenuItem genmoveGame = new JFontMenuItem();
 
-    analyzeGame.setLayout(null);
-    analyzeGame.setPreferredSize(
+    genmoveGame.setLayout(null);
+    genmoveGame.setPreferredSize(
         new Dimension(
             Lizzie.config.isFrameFontSmall()
-                ? 170
-                : (Lizzie.config.isFrameFontMiddle() ? 205 : 233),
+                ? 206
+                : (Lizzie.config.isFrameFontMiddle() ? 256 : 313)
+                    + (Lizzie.config.useJavaLooks ? -31 : 0),
             (Lizzie.config.useJavaLooks
                 ? (Lizzie.config.isFrameFontSmall()
                     ? 20
@@ -7842,11 +7842,8 @@ public class Menu extends JMenuBar {
                 : (Lizzie.config.isFrameFontSmall()
                     ? 25
                     : (Lizzie.config.isFrameFontMiddle() ? 27 : 30)))));
-    JFontLabel lblAnalyzeGame =
-        new JFontLabel(
-            resourceBundle.getString(
-                "Menu.newAnalyzeModeGame")); // "Custom limit moves:");//自定义限制手数:
-    lblAnalyzeGame.setBounds(
+    JFontLabel lblGenmoveGame = new JFontLabel(resourceBundle.getString("Menu.newGenmoveGame"));
+    lblGenmoveGame.setBounds(
         Lizzie.config.useJavaLooks ? 6 : 37,
         (Lizzie.config.useJavaLooks
             ? -1
@@ -7855,22 +7852,22 @@ public class Menu extends JMenuBar {
                 : (Lizzie.config.isFrameFontMiddle() ? 1 : -1))),
         320,
         Lizzie.config.isFrameFontSmall() ? 20 : (Lizzie.config.isFrameFontMiddle() ? 25 : 30));
-    JButton aboutAnalyzeGame = new JFontButton("?");
-    aboutAnalyzeGame.addActionListener(
+    JButton aboutGenmoveGame = new JFontButton("?");
+    aboutGenmoveGame.addActionListener(
         new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
             Lizzie.frame.showAnalyzeGenmoveInfo();
           }
         });
-    aboutAnalyzeGame.setFocusable(false);
-    aboutAnalyzeGame.setMargin(new Insets(0, 0, 0, 0));
+    aboutGenmoveGame.setFocusable(false);
+    aboutGenmoveGame.setMargin(new Insets(0, 0, 0, 0));
     if (Lizzie.config.isChinese)
-      aboutAnalyzeGame.setBounds(
+      aboutGenmoveGame.setBounds(
           (Lizzie.config.useJavaLooks ? -31 : 0)
               + (Lizzie.config.isFrameFontSmall()
-                  ? 160
-                  : (Lizzie.config.isFrameFontMiddle() ? 200 : 250)),
+                  ? 186
+                  : (Lizzie.config.isFrameFontMiddle() ? 230 : 280)),
           (Lizzie.config.useJavaLooks
               ? 1
               : (Lizzie.config.isFrameFontSmall()
@@ -7879,11 +7876,11 @@ public class Menu extends JMenuBar {
           Lizzie.config.menuHeight - 2,
           Lizzie.config.menuHeight - 2);
     else
-      aboutAnalyzeGame.setBounds(
+      aboutGenmoveGame.setBounds(
           (Lizzie.config.useJavaLooks ? -31 : 0)
               + (Lizzie.config.isFrameFontSmall()
-                  ? 210
-                  : (Lizzie.config.isFrameFontMiddle() ? 260 : 320)),
+                  ? 219
+                  : (Lizzie.config.isFrameFontMiddle() ? 265 : 326)),
           (Lizzie.config.useJavaLooks
               ? 1
               : (Lizzie.config.isFrameFontSmall()
@@ -7891,28 +7888,27 @@ public class Menu extends JMenuBar {
                   : (Lizzie.config.isFrameFontMiddle() ? 2 : 1))),
           Lizzie.config.menuHeight - 2,
           Lizzie.config.menuHeight - 2);
-    analyzeGame.add(aboutAnalyzeGame);
-    analyzeGame.add(lblAnalyzeGame);
-    analyzeGame.addActionListener(
-        new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            Lizzie.frame.startAnalyzeGameDialog();
-          }
-        });
-
-    JFontMenuItem genmoveGame =
-        new JFontMenuItem(
-            resourceBundle.getString("Menu.newGenmoveGame")); // ("人机对局(Genmove模式 Alt+N)");
+    genmoveGame.add(aboutGenmoveGame);
+    genmoveGame.add(lblGenmoveGame);
     genmoveGame.addActionListener(
         new ActionListener() {
+          @Override
           public void actionPerformed(ActionEvent e) {
             Lizzie.frame.startNewGame();
           }
         });
 
-    newGamePopup.add(analyzeGame);
+    JFontMenuItem analyzeGame =
+        new JFontMenuItem(resourceBundle.getString("Menu.newAnalyzeModeGame"));
+    analyzeGame.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.frame.startAnalyzeGameDialog();
+          }
+        });
+
     newGamePopup.add(genmoveGame);
+    newGamePopup.add(analyzeGame);
     newGamePopup.add(engineGame);
 
     doubleMenuNewGame.addActionListener(

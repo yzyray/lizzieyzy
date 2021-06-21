@@ -116,9 +116,13 @@ public class NewEngineGameDialog extends JDialog {
     //        new JCheckBox(resourceBundle.getString("NewGameDialog.PlayBlack"), true);
     //    checkBoxPlayerIsBlack.addChangeListener(evt -> togglePlayerIsBlack());
 
-    JFontLabel lblresignSettingBlack =
-        new JFontLabel(
+    JTextArea lblresignSettingBlack =
+        new JTextArea(
             resourceBundle.getString("EnginePkConfig.lblresignSettingBlack")); // ("认输阈值:");
+    lblresignSettingBlack.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
+    lblresignSettingBlack.setLineWrap(true);
+    lblresignSettingBlack.setFocusable(false);
+    lblresignSettingBlack.setBackground(this.getBackground());
     JFontLabel lblresignSettingBlackConsistent =
         new JFontLabel(resourceBundle.getString("EnginePkConfig.lblresignSettingConsistent"));
     JFontLabel lblresignSettingBlack2 =
@@ -143,7 +147,11 @@ public class NewEngineGameDialog extends JDialog {
     contentPanel.add(txtresignSettingBlack2);
     contentPanel.add(txtresignSettingBlackMinMove);
 
-    lblresignSettingBlack.setBounds(5, 180, 697, 25);
+    lblresignSettingBlack.setBounds(
+        5,
+        180,
+        Lizzie.config.isFrameFontSmall() ? 435 : (Lizzie.config.isFrameFontMiddle() ? 505 : 585),
+        55);
     lblresignSettingBlackConsistent.setBounds(
         Lizzie.config.isFrameFontSmall() ? 140 : (Lizzie.config.isFrameFontMiddle() ? 125 : 143),
         180,

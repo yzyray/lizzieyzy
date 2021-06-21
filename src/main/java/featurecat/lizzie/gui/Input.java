@@ -373,9 +373,9 @@ public class Input implements MouseListener, KeyListener, MouseWheelListener, Mo
         // return;
         // }
         if (e.isAltDown() || Lizzie.leelaz.noAnalyze) {
-          Lizzie.frame.startNewGame();
-        } else {
           Lizzie.frame.startAnalyzeGameDialog();
+        } else {
+          Lizzie.frame.startNewGame();
         }
         break;
       case VK_SPACE:

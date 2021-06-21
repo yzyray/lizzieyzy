@@ -149,7 +149,7 @@ public class BottomToolbar extends JPanel {
   // public int EnginePkBatchNumberNow = 1;
   public String batchPkNameToolbar = "";
   //  public String SF = "";
-  public boolean isGenmoveToolbar = false;
+  public boolean isGenmoveToolbar = true;
   public boolean isEngineGameHandicapToolbar = false;
   public boolean AutosavePk = true;
   public boolean exChangeToolbar = true;
