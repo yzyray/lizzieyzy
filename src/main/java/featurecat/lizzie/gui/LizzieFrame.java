@@ -480,6 +480,8 @@ public class LizzieFrame extends JFrame {
 
   private boolean WRNStatusBeforeGame = Lizzie.config.chkKataEngineWRN;
   private boolean autoWRNStatusBeforeGame = Lizzie.config.autoLoadKataEngineWRN;
+  private double WRNValueBeforeGenmove = 0;
+  private boolean WRNSelectedBeforeGenmove = false;
 
   static {
     // load fonts
@@ -3055,6 +3057,7 @@ public class LizzieFrame extends JFrame {
                   Lizzie.config.getMySaveTime(),
                   Lizzie.config.getMyByoyomiSeconds(),
                   Lizzie.config.getMyByoyomiTimes());
+            clearWRNforGame(true);
             if (isHandicapGame) {
               Lizzie.board.getHistory().getData().blackToPlay = false;
               if (Lizzie.leelaz.isKatago && Lizzie.config.useFreeHandicap)
@@ -10085,6 +10088,7 @@ public class LizzieFrame extends JFrame {
     if (Lizzie.frame.isPlayingAgainstLeelaz) {
       stopTimer();
       setAsMain();
+      restoreWRN(true);
       Lizzie.leelaz.setGameStatus(false);
       if (Lizzie.config.autoSavePlayedGame) autoSavePlayedGame();
       Lizzie.frame.isPlayingAgainstLeelaz = false;
@@ -10104,7 +10108,7 @@ public class LizzieFrame extends JFrame {
     if (Lizzie.frame.isAnaPlayingAgainstLeelaz) {
       stopTimer();
       setAsMain();
-      restoreWRN();
+      restoreWRN(false);
       if (Lizzie.leelaz.isheatmap) {
         Lizzie.leelaz.isheatmap = false;
         this.isShowingHeatmap = false;
@@ -12443,44 +12447,62 @@ public class LizzieFrame extends JFrame {
     menu.setPdaAndWrn(pda, wrn);
   }
 
-  public void clearWRNforGame() {
+  public void clearWRNforGame(boolean isGenmove) {
     // TODO Auto-generated method stub
-    if ((Lizzie.engineManager.isPreEngineGame
-            || Lizzie.engineManager.isEngineGame
-            || isAnaPlayingAgainstLeelaz)
-        && Lizzie.config.disableWRNInGame) {
-      WRNStatusBeforeGame = Lizzie.config.chkKataEngineWRN || Lizzie.config.autoLoadKataEngineWRN;
-      autoWRNStatusBeforeGame = Lizzie.config.autoLoadKataEngineWRN;
+    if (isGenmove) {
+      try {
+        WRNValueBeforeGenmove = Double.parseDouble(menu.txtWRN.getText());
+      } catch (NumberFormatException e) {
+        WRNValueBeforeGenmove = 0;
+      }
+      WRNSelectedBeforeGenmove = menu.chkWRN.isSelected();
       menu.chkWRN.setSelected(false);
       menu.txtWRN.setEnabled(false);
-      Lizzie.config.chkKataEngineWRN = false;
-      if (isAnaPlayingAgainstLeelaz) {
-        if (Lizzie.leelaz.isKatago)
-          Lizzie.leelaz.sendCommand("kata-set-param analysisWideRootNoise 0");
-      } else {
-        {
-          if (Lizzie.engineManager.engineList.get(
-                  Lizzie.engineManager.engineGameInfo.firstEngineIndex)
-              .isKatago)
-            Lizzie.engineManager
-                .engineList
-                .get(Lizzie.engineManager.engineGameInfo.firstEngineIndex)
-                .sendCommand("kata-set-param analysisWideRootNoise 0");
-          if (Lizzie.engineManager.engineList.get(
-                  Lizzie.engineManager.engineGameInfo.secondEngineIndex)
-              .isKatago)
-            Lizzie.engineManager
-                .engineList
-                .get(Lizzie.engineManager.engineGameInfo.secondEngineIndex)
-                .sendCommand("kata-set-param analysisWideRootNoise 0");
+      menu.chkWRN.setEnabled(false);
+    } else {
+      if ((Lizzie.engineManager.isPreEngineGame
+              || Lizzie.engineManager.isEngineGame
+              || isAnaPlayingAgainstLeelaz)
+          && Lizzie.config.disableWRNInGame) {
+        WRNStatusBeforeGame = Lizzie.config.chkKataEngineWRN || Lizzie.config.autoLoadKataEngineWRN;
+        autoWRNStatusBeforeGame = Lizzie.config.autoLoadKataEngineWRN;
+        menu.chkWRN.setSelected(false);
+        menu.txtWRN.setEnabled(false);
+        Lizzie.config.chkKataEngineWRN = false;
+        if (isAnaPlayingAgainstLeelaz) {
+          if (Lizzie.leelaz.isKatago)
+            Lizzie.leelaz.sendCommand("kata-set-param analysisWideRootNoise 0");
+        } else {
+          {
+            if (Lizzie.engineManager.engineList.get(
+                    Lizzie.engineManager.engineGameInfo.firstEngineIndex)
+                .isKatago)
+              Lizzie.engineManager
+                  .engineList
+                  .get(Lizzie.engineManager.engineGameInfo.firstEngineIndex)
+                  .sendCommand("kata-set-param analysisWideRootNoise 0");
+            if (Lizzie.engineManager.engineList.get(
+                    Lizzie.engineManager.engineGameInfo.secondEngineIndex)
+                .isKatago)
+              Lizzie.engineManager
+                  .engineList
+                  .get(Lizzie.engineManager.engineGameInfo.secondEngineIndex)
+                  .sendCommand("kata-set-param analysisWideRootNoise 0");
+          }
         }
       }
     }
   }
 
-  public void restoreWRN() {
+  public void restoreWRN(boolean isGenmove) {
     // TODO Auto-generated method stub
-    if (WRNStatusBeforeGame) {
+    if (isGenmove) {
+      menu.chkWRN.setEnabled(true);
+      menu.txtWRN.setEnabled(true);
+      menu.chkWRN.setSelected(WRNSelectedBeforeGenmove);
+      menu.setWrnText(WRNValueBeforeGenmove);
+      Lizzie.leelaz.sendCommand("kata-set-param analysisWideRootNoise " + WRNValueBeforeGenmove);
+    } else if (WRNStatusBeforeGame) {
       try {
         double wrn = Double.parseDouble(Lizzie.frame.menu.txtWRN.getText());
         if (Lizzie.leelaz.isKatago)

@@ -5410,6 +5410,7 @@ public class Menu extends JMenuBar {
     // -1, 20, 20);
 
     chkWRN = new JFontCheckBox();
+    chkWRN.setToolTipText(resourceBundle.getString("Menu.chkWRN.toolTopText"));
     chkWRN.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
@@ -5459,6 +5460,7 @@ public class Menu extends JMenuBar {
     chkWRN.setSelected(Lizzie.config.autoLoadKataEngineWRN);
     lblWRN = new JFontLabel(resourceBundle.getString("Menu.lblWRN")); // ("分析广度拓展");
     txtWRN = new JFontTextField();
+    txtWRN.setToolTipText(resourceBundle.getString("Menu.chkWRN.toolTopText"));
     txtWRN.setDocument(new DoubleDocument());
     if (!Lizzie.config.autoLoadKataEngineWRN) txtWRN.setEnabled(false);
     txtWRN.setText(Lizzie.config.txtKataEngineWRN + "");
@@ -5552,6 +5554,7 @@ public class Menu extends JMenuBar {
         });
 
     chkPDA = new JFontCheckBox();
+    chkPDA.setToolTipText(resourceBundle.getString("Menu.chkPDA.toolTopText"));
     chkPDA.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
@@ -5604,6 +5607,7 @@ public class Menu extends JMenuBar {
 
     lblGfPDA = new JFontLabel(resourceBundle.getString("Menu.lblPDA")); // ("官方PDA");
     txtGfPDA = new JFontTextField();
+    txtGfPDA.setToolTipText(resourceBundle.getString("Menu.chkPDA.toolTopText"));
     txtGfPDA.setDocument(new DoubleDocument());
     if (!Lizzie.config.autoLoadKataEnginePDA) txtGfPDA.setEnabled(false);
     txtGfPDA.setText(Lizzie.config.txtKataEnginePDA + "");

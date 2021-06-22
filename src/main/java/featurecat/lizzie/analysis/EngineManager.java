@@ -1232,7 +1232,7 @@ public class EngineManager {
                 }
               }
               Lizzie.frame.reSetLoc();
-              Lizzie.frame.clearWRNforGame();
+              Lizzie.frame.clearWRNforGame(false);
               if (Lizzie.config.autoLoadLzsaiEngineVisits) {
                 Lizzie.engineManager
                     .engineList
@@ -1389,6 +1389,7 @@ public class EngineManager {
                 }
               }
               Lizzie.frame.reSetLoc();
+              Lizzie.frame.clearWRNforGame(true);
               isEngineGame = true;
               isPreEngineGame = false;
               engineList.get(engineGameInfo.blackEngineIndex).nameCmd();
@@ -2337,7 +2338,7 @@ public class EngineManager {
         || engineList.get(engineGameInfo.whiteEngineIndex).isSai)
       Lizzie.board.isPkBoardKataB = true;
     Lizzie.config.chkPkStartNum = false;
-    Lizzie.frame.restoreWRN();
+    Lizzie.frame.restoreWRN(engineGameInfo.isGenmove);
   }
 
   public String getEngineName(int index) {

@@ -892,7 +892,7 @@ public class NewAnaGameDialog extends JDialog {
                     Lizzie.config.getMySaveTime(),
                     Lizzie.config.getMyByoyomiSeconds(),
                     Lizzie.config.getMyByoyomiTimes());
-              Lizzie.frame.clearWRNforGame();
+              Lizzie.frame.clearWRNforGame(false);
               //                if (handicap >= 2
               //                    && Lizzie.board.boardWidth == 19
               //                    && Lizzie.board.boardHeight == 19) {

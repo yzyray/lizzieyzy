@@ -325,7 +325,7 @@ public class ReadBoard {
           Lizzie.config.UsePureNetInGame = false;
           Lizzie.frame.isAnaPlayingAgainstLeelaz = true;
           Lizzie.frame.toolbar.isAutoPlay = true;
-          Lizzie.frame.clearWRNforGame();
+          Lizzie.frame.clearWRNforGame(false);
         } else if (params[1].equals("white")) {
           Lizzie.frame.toolbar.chkAutoPlayBlack.setSelected(false);
           Lizzie.frame.toolbar.chkAutoPlayWhite.setSelected(true);
@@ -335,7 +335,7 @@ public class ReadBoard {
           Lizzie.config.UsePureNetInGame = false;
           Lizzie.frame.isAnaPlayingAgainstLeelaz = true;
           Lizzie.frame.toolbar.isAutoPlay = true;
-          Lizzie.frame.clearWRNforGame();
+          Lizzie.frame.clearWRNforGame(false);
         }
         Lizzie.leelaz.ponder();
       }
