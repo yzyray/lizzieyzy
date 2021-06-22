@@ -215,9 +215,9 @@ public class InputIndependentMainBoard implements KeyListener {
         // return;
         // }
         if (e.isAltDown() || Lizzie.leelaz.noAnalyze) {
-          Lizzie.frame.startAnalyzeGameDialog();
-        } else {
           Lizzie.frame.startNewGame();
+        } else {
+          Lizzie.frame.startAnalyzeGameDialog();
         }
         break;
       case VK_SPACE:
@@ -471,9 +471,9 @@ public class InputIndependentMainBoard implements KeyListener {
         // return;
         // }
         if (e.isAltDown()) {
-          Lizzie.frame.continueAiPlaying(false, true, true, true);
-        } else {
           Lizzie.frame.continueAiPlaying(true, true, true, true);
+        } else {
+          Lizzie.frame.continueAiPlaying(false, true, true, true);
         }
         break;
 

@@ -58,9 +58,10 @@ public class NewEngineGameDialog extends JDialog {
   public JComboBox enginePkWhite;
   private JComboBox cbxRandomSgf;
 
-  JCheckBox chckbxNewCheckBox;
-  JCheckBox chkSGFstart;
-  JFontButton btnSGFstart;
+  private JCheckBox chkDisableWRNInGame;
+  private JCheckBox chkUseAdvanceTime;
+  private JCheckBox chkSGFstart;
+  private JFontButton btnSGFstart;
   private ActionListener chkenginePkContinueListener;
 
   private boolean cancelled = true;
@@ -78,10 +79,11 @@ public class NewEngineGameDialog extends JDialog {
   private void initComponents() {
     // if (Lizzie.config.showHiddenYzy) setMinimumSize(new Dimension(380, 330));
     // else
+    // setMinimumSize(new Dimension(580, 530));
     Lizzie.setFrameSize(
         this,
         Lizzie.config.isFrameFontSmall() ? 445 : (Lizzie.config.isFrameFontMiddle() ? 515 : 595),
-        Lizzie.config.isFrameFontSmall() ? 385 : (Lizzie.config.isFrameFontMiddle() ? 390 : 395));
+        Lizzie.config.isFrameFontSmall() ? 408 : (Lizzie.config.isFrameFontMiddle() ? 409 : 421));
     setResizable(false);
     setTitle(resourceBundle.getString("NewEngineGameDialog.title")); // "引擎对战");
     setModal(true);
@@ -295,6 +297,7 @@ public class NewEngineGameDialog extends JDialog {
             engineconfig.setVisible(true);
             engineconfig.setAlwaysOnTop(true);
             if (Lizzie.frame.toolbar.isGenmoveToolbar) {
+              chkDisableWRNInGame.setVisible(false);
               txtresignSettingBlack.setVisible(false);
               txtresignSettingBlack2.setVisible(false);
               txtresignSettingBlackMinMove.setVisible(false);
@@ -315,7 +318,7 @@ public class NewEngineGameDialog extends JDialog {
               lblresignSettingWhite4.setVisible(false);
               txtBlackAdvanceTime.setEnabled(true);
               txtWhiteAdvanceTime.setEnabled(true);
-              chckbxNewCheckBox.setEnabled(true);
+              chkUseAdvanceTime.setEnabled(true);
               if (Lizzie.config.pkAdvanceTimeSettings) {
                 Lizzie.frame.toolbar.chkenginePkTime.setEnabled(false);
                 Lizzie.frame.toolbar.txtenginePkTime.setEnabled(false);
@@ -332,6 +335,7 @@ public class NewEngineGameDialog extends JDialog {
                 txtWhiteAdvanceTime.setEnabled(false);
               }
             } else {
+              chkDisableWRNInGame.setVisible(true);
               txtresignSettingBlack.setVisible(true);
               txtresignSettingBlack2.setVisible(true);
               txtresignSettingBlackMinMove.setVisible(true);
@@ -357,7 +361,7 @@ public class NewEngineGameDialog extends JDialog {
               }
               txtBlackAdvanceTime.setEnabled(false);
               txtWhiteAdvanceTime.setEnabled(false);
-              chckbxNewCheckBox.setEnabled(false);
+              chkUseAdvanceTime.setEnabled(false);
             }
           }
         });
@@ -570,7 +574,7 @@ public class NewEngineGameDialog extends JDialog {
         Lizzie.config.isFrameFontSmall() ? 20 : (Lizzie.config.isFrameFontMiddle() ? 22 : 24));
     btnConfig.setBounds(
         Lizzie.config.isFrameFontSmall() ? 331 : (Lizzie.config.isFrameFontMiddle() ? 365 : 430),
-        Lizzie.config.isFrameFontSmall() ? 297 : (Lizzie.config.isFrameFontMiddle() ? 295 : 296),
+        Lizzie.config.isFrameFontSmall() ? 322 : (Lizzie.config.isFrameFontMiddle() ? 320 : 321),
         Lizzie.config.isFrameFontSmall() ? 80 : (Lizzie.config.isFrameFontMiddle() ? 80 : 100),
         Lizzie.config.isFrameFontSmall() ? 23 : (Lizzie.config.isFrameFontMiddle() ? 25 : 26));
     contentPanel.add(lblBatchGame);
@@ -664,17 +668,17 @@ public class NewEngineGameDialog extends JDialog {
     btnNewButton.setBounds(125, 91, 18, 18);
     contentPanel.add(btnNewButton);
 
-    chckbxNewCheckBox = new JCheckBox(); // $NON-NLS-1$
-    chckbxNewCheckBox.setBounds(143, 88, 20, 20);
-    contentPanel.add(chckbxNewCheckBox);
-    if (!Lizzie.frame.toolbar.isGenmoveToolbar) chckbxNewCheckBox.setEnabled(false);
+    chkUseAdvanceTime = new JCheckBox(); // $NON-NLS-1$
+    chkUseAdvanceTime.setBounds(143, 88, 20, 20);
+    contentPanel.add(chkUseAdvanceTime);
+    if (!Lizzie.frame.toolbar.isGenmoveToolbar) chkUseAdvanceTime.setEnabled(false);
 
-    chckbxNewCheckBox.addActionListener(
+    chkUseAdvanceTime.addActionListener(
         new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
             // TODO Auto-generated method stub
-            Lizzie.config.pkAdvanceTimeSettings = chckbxNewCheckBox.isSelected();
+            Lizzie.config.pkAdvanceTimeSettings = chkUseAdvanceTime.isSelected();
             if (Lizzie.config.pkAdvanceTimeSettings) {
               Lizzie.frame.toolbar.chkenginePkTime.setEnabled(false);
               Lizzie.frame.toolbar.txtenginePkTime.setEnabled(false);
@@ -692,19 +696,17 @@ public class NewEngineGameDialog extends JDialog {
             }
           }
         });
-    chckbxNewCheckBox.setSelected(Lizzie.config.pkAdvanceTimeSettings);
+    chkUseAdvanceTime.setSelected(Lizzie.config.pkAdvanceTimeSettings);
 
     JCheckBox checkBoxAllowPonder =
         new JFontCheckBox(
             resourceBundle.getString(
-                "NewEngineGameDialog.checkBoxAllowPonder")); // ("允许后台计算(同一台电脑对战时不可勾选)"); //
-    // $NON-NLS-1$
+                "NewEngineGameDialog.checkBoxAllowPonder")); // ("允许后台计算(同一台电脑对战时不可勾选)");
     checkBoxAllowPonder.setBounds(
         5,
         296,
         Lizzie.config.isFrameFontSmall() ? 317 : (Lizzie.config.isFrameFontMiddle() ? 357 : 419),
         23);
-    contentPanel.add(checkBoxAllowPonder);
     checkBoxAllowPonder.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
@@ -714,8 +716,28 @@ public class NewEngineGameDialog extends JDialog {
           }
         });
     checkBoxAllowPonder.setSelected(Lizzie.config.enginePkPonder);
+    contentPanel.add(checkBoxAllowPonder);
 
-    chkSGFstart = new JCheckBox(""); // $NON-NLS-1$
+    chkDisableWRNInGame =
+        new JFontCheckBox(resourceBundle.getString("NewAnaGameDialog.lblDisableWRNInGame"));
+    chkDisableWRNInGame.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.config.disableWRNInGame = chkDisableWRNInGame.isSelected();
+            Lizzie.config.uiConfig.put("disable-wrn-in-game", Lizzie.config.disableWRNInGame);
+          }
+        });
+    chkDisableWRNInGame.setSelected(Lizzie.config.disableWRNInGame);
+    chkDisableWRNInGame.setBounds(
+        5,
+        322,
+        Lizzie.config.isFrameFontSmall() ? 200 : (Lizzie.config.isFrameFontMiddle() ? 250 : 300),
+        23);
+    chkDisableWRNInGame.setSelected(Lizzie.config.disableWRNInGame);
+    contentPanel.add(chkDisableWRNInGame);
+    chkDisableWRNInGame.setVisible(!Lizzie.frame.toolbar.isGenmoveToolbar);
+
+    chkSGFstart = new JCheckBox("");
     chkSGFstart.setBounds(
         Lizzie.config.isFrameFontSmall() ? 257 : (Lizzie.config.isFrameFontMiddle() ? 257 : 277),
         269,
@@ -739,9 +761,7 @@ public class NewEngineGameDialog extends JDialog {
         });
 
     btnSGFstart =
-        new JFontButton(
-            resourceBundle.getString(
-                "NewEngineGameDialog.btnSGFstart")); // ("多选SGF"); // $NON-NLS-1$
+        new JFontButton(resourceBundle.getString("NewEngineGameDialog.btnSGFstart")); // ("多选SGF");
     btnSGFstart.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
@@ -757,8 +777,7 @@ public class NewEngineGameDialog extends JDialog {
     btnSGFstart.setMargin(new Insets(0, 0, 0, 0));
 
     JFontLabel lblsgf =
-        new JFontLabel(
-            resourceBundle.getString("NewEngineGameDialog.lblsgf")); // ("加载开局SGF"); // $NON-NLS-1$
+        new JFontLabel(resourceBundle.getString("NewEngineGameDialog.lblsgf")); // ("加载开局SGF");
     lblsgf.setBounds(
         Lizzie.config.isFrameFontSmall() ? 160 : (Lizzie.config.isFrameFontMiddle() ? 130 : 110),
         270,

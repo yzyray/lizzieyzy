@@ -363,7 +363,7 @@ public class SetKataRules extends JDialog {
               Lizzie.config.autoLoadKataRules = false;
               Lizzie.config.uiConfig.put("auto-load-kata-rules", false);
             }
-            Lizzie.leelaz.getSuicidalScadule();
+            Lizzie.leelaz.getParameterScadule(false);
             Lizzie.leelaz.sendCommand("kata-get-rules");
             if (Lizzie.leelaz.isPondering()) Lizzie.leelaz.ponder();
             setVisible(false);

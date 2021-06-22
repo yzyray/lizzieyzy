@@ -346,14 +346,11 @@ public class GtpConsolePane extends JDialog {
           if (needPass) {
             Lizzie.board.pass();
           }
-          boolean isAnalyze =
-              command.toLowerCase().startsWith("lz-genmove")
-                  || command.toLowerCase().startsWith("kata-genmove");
-          if (command.toLowerCase().startsWith("genmove") || isAnalyze) {
+          if (command.toLowerCase().startsWith("genmove")) {
             if (!Lizzie.leelaz.isThinking) {
               Lizzie.leelaz.time_settings();
               Lizzie.leelaz.isInputCommand = true;
-              Lizzie.leelaz.genmove(param1, isAnalyze);
+              Lizzie.leelaz.genmove(param1);
             }
           } else {
             if (cmdParams.length >= 3) {

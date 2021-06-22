@@ -269,8 +269,8 @@ public class Config {
   public String txtKataEngineThreads = "";
   public boolean autoLoadKataEngineThreads = false;
 
-  public boolean showWRNInMenu = false;
-  public boolean showPDAInMenu = false;
+  public boolean showWRNInMenu = true;
+  public boolean showPDAInMenu = true;
 
   public boolean enginePkPonder = false;
   public boolean alwaysGtp = true;
@@ -345,7 +345,7 @@ public class Config {
   public String zenEstimateCommand = "ZenEstimate" + Utils.pwd + "ZenGTP.exe";
 
   public boolean showDoubleMenu = true;
-  public boolean showDoubleMenuVar = true;
+  public boolean showDoubleMenuVar = false;
   public boolean showDoubleMenuMoveInfo = true;
   public boolean showDoubleMenuGameControl = true;
 
@@ -540,6 +540,8 @@ public class Config {
   public boolean showScrollVariation = true;
   public boolean ignoreOutOfWidth = false;
   public int maxTreeWidth = 10000;
+
+  public boolean disableWRNInGame = true;
 
   private JSONObject loadAndMergeSaveBoardConfig(
       JSONObject defaultCfg, String fileName, boolean needValidation) throws IOException {
@@ -851,7 +853,7 @@ public class Config {
         uiConfig.optString("use-estimate-command", "ZenEstimate" + Utils.pwd + "ZenGTP.exe");
     showDoubleMenu = uiConfig.optBoolean("show-double-menu", true);
     showDoubleMenuGameControl = uiConfig.optBoolean("show-double-menu-game-control", true);
-    showDoubleMenuVar = uiConfig.optBoolean("show-double-menu-var", true);
+    showDoubleMenuVar = uiConfig.optBoolean("show-double-menu-var", false);
     showDoubleMenuMoveInfo = uiConfig.optBoolean("show-double-menu-moveinfo", true);
     firstTimeLoad = uiConfig.optBoolean("first-time-load", true);
     hostName = uiConfig.optString("host-name", "");
@@ -1155,8 +1157,9 @@ public class Config {
     txtKataEngineThreads = uiConfig.optString("txt-kata-engine-threads", "");
     autoLoadKataEngineThreads = uiConfig.optBoolean("autoload-kata-engine-threads", false);
 
-    showWRNInMenu = uiConfig.optBoolean("show-wrn-in-menu", false);
-    showPDAInMenu = uiConfig.optBoolean("show-pda-in-menu", false);
+    showWRNInMenu = uiConfig.optBoolean("show-wrn-in-menu", true);
+    showPDAInMenu = uiConfig.optBoolean("show-pda-in-menu", true);
+    disableWRNInGame = uiConfig.optBoolean("disable-wrn-in-game", true);
 
     showReplaceFileHint = uiConfig.optBoolean("show-replace-file-hint", true);
     maxTreeWidth = uiConfig.optInt("max-tree-width", 10000);

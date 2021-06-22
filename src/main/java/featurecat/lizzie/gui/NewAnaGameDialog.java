@@ -75,7 +75,6 @@ public class NewAnaGameDialog extends JDialog {
 
   private ResourceBundle resourceBundle = // ResourceBundle.getBundle("l10n.DisplayStrings");
       Lizzie.resourceBundle;
-
   //          ? ResourceBundle.getBundle("l10n.DisplayStrings")
   //          : (Lizzie.config.useLanguage == 1
   //              ? ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("zh", "CN"))
@@ -125,11 +124,11 @@ public class NewAnaGameDialog extends JDialog {
     GridBagLayout gbl_contentPanel = new GridBagLayout();
     gbl_contentPanel.columnWidths = new int[] {225, 280, 0};
     gbl_contentPanel.rowHeights =
-        new int[] {31, 31, 31, 31, 31, 31, 0, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31};
+        new int[] {31, 31, 31, 31, 31, 31, 0, 31, 31, 31, 31, 31, 31, 0, 31, 31, 31, 31};
     gbl_contentPanel.columnWeights = new double[] {0.0, 0.0, Double.MIN_VALUE};
     gbl_contentPanel.rowWeights =
         new double[] {
-          0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+          0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
         };
     contentPanel.setLayout(gbl_contentPanel);
     GridBagConstraints gbc = new GridBagConstraints();
@@ -574,11 +573,37 @@ public class NewAnaGameDialog extends JDialog {
     gbc_panelResign.gridy = 12;
     contentPanel.add(panelResign, gbc_panelResign);
 
+    JFontLabel lblDisableWRNInGame =
+        new JFontLabel(
+            resourceBundle.getString("NewAnaGameDialog.lblDisableWRNInGame")); // "对局时不使用分析广度拓展");
+    GridBagConstraints gbc_lblDisableWRNInGame = new GridBagConstraints();
+    gbc_lblDisableWRNInGame.anchor = GridBagConstraints.WEST;
+    gbc_lblDisableWRNInGame.insets = new Insets(0, 0, 5, 5);
+    gbc_lblDisableWRNInGame.gridx = 0;
+    gbc_lblDisableWRNInGame.gridy = 13;
+    contentPanel.add(lblDisableWRNInGame, gbc_lblDisableWRNInGame);
+
+    JCheckBox chkDisableWRNInGame = new JCheckBox();
+    GridBagConstraints gbc_chkDisableWRNInGame = new GridBagConstraints();
+    gbc_chkDisableWRNInGame.anchor = GridBagConstraints.WEST;
+    gbc_chkDisableWRNInGame.insets = new Insets(0, 0, 5, 0);
+    gbc_chkDisableWRNInGame.gridx = 1;
+    gbc_chkDisableWRNInGame.gridy = 13;
+    contentPanel.add(chkDisableWRNInGame, gbc_chkDisableWRNInGame);
+    chkDisableWRNInGame.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.config.disableWRNInGame = chkDisableWRNInGame.isSelected();
+            Lizzie.config.uiConfig.put("disable-wrn-in-game", Lizzie.config.disableWRNInGame);
+          }
+        });
+    chkDisableWRNInGame.setSelected(Lizzie.config.disableWRNInGame);
+
     GridBagConstraints gbc_9 = new GridBagConstraints();
     gbc_9.fill = GridBagConstraints.BOTH;
     gbc_9.insets = new Insets(0, 0, 5, 5);
     gbc_9.gridx = 0;
-    gbc_9.gridy = 13;
+    gbc_9.gridy = 14;
     JFontLabel label_3 =
         new JFontLabel(resourceBundle.getString("NewAnaGameDialog.chkUsePlayMode"));
     contentPanel.add(label_3, gbc_9);
@@ -595,14 +620,14 @@ public class NewAnaGameDialog extends JDialog {
     gbc_chkUsePlayMode.fill = GridBagConstraints.BOTH;
     gbc_chkUsePlayMode.insets = new Insets(0, 0, 5, 0);
     gbc_chkUsePlayMode.gridx = 1;
-    gbc_chkUsePlayMode.gridy = 13;
+    gbc_chkUsePlayMode.gridy = 14;
     contentPanel.add(chkUsePlayMode, gbc_chkUsePlayMode);
 
     GridBagConstraints gbc_10 = new GridBagConstraints();
     gbc_10.fill = GridBagConstraints.BOTH;
     gbc_10.insets = new Insets(0, 0, 5, 5);
     gbc_10.gridx = 0;
-    gbc_10.gridy = 14;
+    gbc_10.gridy = 15;
     JFontLabel label_10 = new JFontLabel(resourceBundle.getString("NewAnaGameDialog.showBlack"));
     contentPanel.add(label_10, gbc_10); // ("显示分析结果(黑)"));
     chkShowBlack = new JFontCheckBox();
@@ -611,13 +636,13 @@ public class NewAnaGameDialog extends JDialog {
     gbc_chkShowBlack.fill = GridBagConstraints.BOTH;
     gbc_chkShowBlack.insets = new Insets(0, 0, 5, 0);
     gbc_chkShowBlack.gridx = 1;
-    gbc_chkShowBlack.gridy = 14;
+    gbc_chkShowBlack.gridy = 15;
     contentPanel.add(chkShowBlack, gbc_chkShowBlack);
     GridBagConstraints gbc_11 = new GridBagConstraints();
     gbc_11.fill = GridBagConstraints.BOTH;
     gbc_11.insets = new Insets(0, 0, 5, 5);
     gbc_11.gridx = 0;
-    gbc_11.gridy = 15;
+    gbc_11.gridy = 16;
     JFontLabel label_7 = new JFontLabel(resourceBundle.getString("NewAnaGameDialog.showWhite"));
     contentPanel.add(label_7, gbc_11); // ("显示分析结果(白)"));
     if (checkContinuePlay.isSelected()) textFieldHandicap.setEnabled(false);
@@ -630,7 +655,7 @@ public class NewAnaGameDialog extends JDialog {
     gbc_chkShowWhite.insets = new Insets(0, 0, 5, 0);
     gbc_chkShowWhite.fill = GridBagConstraints.BOTH;
     gbc_chkShowWhite.gridx = 1;
-    gbc_chkShowWhite.gridy = 15;
+    gbc_chkShowWhite.gridy = 16;
     contentPanel.add(chkShowWhite, gbc_chkShowWhite);
 
     JLabel lblAutoSave =
@@ -639,7 +664,7 @@ public class NewAnaGameDialog extends JDialog {
     gbc_lblNewLabel.anchor = GridBagConstraints.WEST;
     gbc_lblNewLabel.insets = new Insets(0, 0, 0, 5);
     gbc_lblNewLabel.gridx = 0;
-    gbc_lblNewLabel.gridy = 16;
+    gbc_lblNewLabel.gridy = 17;
     contentPanel.add(lblAutoSave, gbc_lblNewLabel);
 
     JCheckBox chkAutoSave =
@@ -659,7 +684,7 @@ public class NewAnaGameDialog extends JDialog {
     GridBagConstraints gbc_chkAutoSave = new GridBagConstraints();
     gbc_chkAutoSave.anchor = GridBagConstraints.WEST;
     gbc_chkAutoSave.gridx = 1;
-    gbc_chkAutoSave.gridy = 16;
+    gbc_chkAutoSave.gridy = 17;
     contentPanel.add(chkAutoSave, gbc_chkAutoSave);
   }
 
@@ -867,7 +892,7 @@ public class NewAnaGameDialog extends JDialog {
                     Lizzie.config.getMySaveTime(),
                     Lizzie.config.getMyByoyomiSeconds(),
                     Lizzie.config.getMyByoyomiTimes());
-
+              Lizzie.frame.clearWRNforGame();
               //                if (handicap >= 2
               //                    && Lizzie.board.boardWidth == 19
               //                    && Lizzie.board.boardHeight == 19) {

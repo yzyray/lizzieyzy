@@ -71,7 +71,7 @@ public class Leelaz {
 	private BufferedOutputStream outputStream;
 	private BufferedReader errorStream;
 	
-	private boolean hasUnReadLine=false;
+	//private boolean hasUnReadLine=false;
 	private String unReadLine="";
 
 	// public Board board;
@@ -97,6 +97,7 @@ public class Leelaz {
 	public boolean isInputCommand = false;
 
 	public boolean getRcentLine=false;
+	private int recentLineNumber=0;
 	public String recentRulesLine="";
 	public int usingSpecificRules=-1;//1=中国规则2=中古规则3=日本规则4=TT规则5=其他规则
 	public boolean preload = false;
@@ -973,8 +974,7 @@ public class Leelaz {
 					}
 					if(Lizzie.config.autoLoadKataRules)
 						sendCommand("kata-set-rules "+Lizzie.config.kataRules);
-					getSuicidalScadule();
-					sendCommand("kata-get-rules");
+					getParameterScadule(true);
 					this.isKatago = true;
 					if(params[1].startsWith("KataGoCustom")) 
 						isKatagoCustom=true;
@@ -1497,8 +1497,7 @@ public class Leelaz {
 							}							
 							if(Lizzie.config.autoLoadKataRules)
 								sendCommand("kata-set-rules "+Lizzie.config.kataRules);
-							getSuicidalScadule();
-							sendCommand("kata-get-rules");
+							getParameterScadule(true);
 							this.isKatago = true;
 							if(params[1].startsWith("KataGoCustom")) 
 								isKatagoCustom=true;
@@ -2754,20 +2753,37 @@ parseHeatMap(line);
 	/** Continually reads and processes output from leelaz */
 	private void read() {
 		try {
-			int c;
 			String line="";
-			while (hasUnReadLine||(line=inputStream.readLine())!= null) {
-				if(hasUnReadLine)
-				{	hasUnReadLine=false;
-				line=unReadLine;}
-				// while (true) {
-				// c = process.getInputStream().read();
-				//line.append((char) c);
-			//	if ((c == '\n')) {		
-					if(getRcentLine&&line.startsWith("= {"))
-					{	recentRulesLine=line;
+			while ((line=inputStream.readLine())!= null) {				
+					if(getRcentLine)		
+						{			
+						if(line.startsWith("= {"))
+					{	
+						recentRulesLine=line;
 					Lizzie.config.currentKataGoRules=line;
 					}
+						else if(line.startsWith("="))
+						{
+							String[] params=line.trim().split(" ");
+							if(params.length==2)
+							{
+								try {
+								if(recentLineNumber==0) {
+									this.pda=Double.parseDouble(params[1]);									
+								}
+								else
+								if(recentLineNumber==1) {
+									double wrn=Double.parseDouble(params[1]);										
+									Lizzie.frame.setPdaAndWrn(pda,wrn);
+									recentLineNumber++;
+								}		
+								recentLineNumber++;
+								}
+								catch (NumberFormatException e) {									
+								}								
+							}
+						}
+						}
 					if (Lizzie.engineManager.isEngineGame && Lizzie.engineManager.engineGameInfo.isGenmove&&isLoaded) {
 						try {
 							parseLineForGenmovePk(line);
@@ -3321,26 +3337,6 @@ parseHeatMap(line);
 		//canGetGenmoveInfo = false;
 		
 		//isPondering = false;
-	//	genmovenoponder = false;
-	}
-	
-	public void genmove(String color,boolean useAnalyze) {
-		if(useAnalyze)
-			genmove(color);
-		else
-		{String command ="genmove " + color;		
-		/*
-		 * We don't support displaying this while playing, so no reason to request it
-		 * (for now) if (isPondering) { command = "lz-genmove_analyze " + color + " 10";
-		 * }
-		 */
-		sendCommand(command);
-		isThinking = true;
-		Lizzie.frame.menu.toggleEngineMenuStatus(false,true);
-		//canGetGenmoveInfo = false;
-		
-		//isPondering = false;
-		}
 	//	genmovenoponder = false;
 	}
 
@@ -4052,8 +4048,15 @@ parseHeatMap(line);
 	}
 
 	
-	public void getSuicidalScadule() {
+	public void getParameterScadule(boolean sendCommand) {
 		getRcentLine=true;
+		if(sendCommand)
+		{
+			recentLineNumber=0;
+			sendCommand("kata-get-param playoutDoublingAdvantage");
+			sendCommand("kata-get-param analysisWideRootNoise");		
+		sendCommand("kata-get-rules");
+		}
 		  Runnable runnable =
 			        new Runnable() {
 			          public void run() {

@@ -954,7 +954,7 @@ public class WinrateGraph {
             node = node.previous().get();
           }
           while (node.previous().isPresent() && node.previous().get().previous().isPresent()) {
-            if (!node.getData().bestMoves.isEmpty()) {
+            if (node.getData().getPlayouts() > 0) {
               double curscoreMean = node.getData().scoreMean;
               //              if (Math.abs(curscoreMean) > maxcoreMean)
               //            	  maxcoreMean = Math.abs(curscoreMean);
@@ -1055,7 +1055,7 @@ public class WinrateGraph {
           if (!curMove.getData().blackToPlay && curMove.previous().isPresent())
             curMove = curMove.previous().get();
           while (node.previous().isPresent() && node.previous().get().previous().isPresent()) {
-            if (!node.getData().bestMoves.isEmpty()) {
+            if (node.getData().getPlayouts() > 0) {
 
               double curscoreMean = node.getData().scoreMean;
               //              if (Math.abs(curscoreMean) > maxcoreMean)
@@ -1134,7 +1134,7 @@ public class WinrateGraph {
         setMaxScoreMean(node);
         double lastscoreMean = -500;
         while (node.previous().isPresent()) {
-          if (!node.getData().bestMoves.isEmpty()) {
+          if (node.getData().getPlayouts() > 0) {
 
             double curscoreMean = node.getData().scoreMean;
 

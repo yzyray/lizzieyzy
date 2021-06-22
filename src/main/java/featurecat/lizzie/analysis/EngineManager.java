@@ -806,7 +806,6 @@ public class EngineManager {
     engineList.get(engineGameInfo.blackEngineIndex).sendCommand("clear_board");
     engineList.get(engineGameInfo.whiteEngineIndex).sendCommand("clear_board");
     if (mannul) {
-
       engineList.get(engineGameInfo.blackEngineIndex).notPondering();
       engineList.get(engineGameInfo.blackEngineIndex).nameCmd();
       engineList.get(engineGameInfo.whiteEngineIndex).notPondering();
@@ -1084,18 +1083,7 @@ public class EngineManager {
     }
     Lizzie.frame.winrateGraph.maxcoreMean = 30;
     Lizzie.frame.toolbar.enableDisabelForEngineGame(true);
-    // Lizzie.frame.subBoardRenderer.reverseBestmoves = false;
-    // Lizzie.frame.boardRenderer.reverseBestmoves = false;
     Lizzie.board.clearbestmovesafter(Lizzie.board.getHistory().getStart());
-    changeEngIcoForEndPk();
-    engineList.get(engineGameInfo.blackEngineIndex).notPondering();
-    engineList.get(engineGameInfo.blackEngineIndex).nameCmd();
-    engineList.get(engineGameInfo.whiteEngineIndex).notPondering();
-    engineList.get(engineGameInfo.whiteEngineIndex).nameCmd();
-    engineList.get(engineGameInfo.blackEngineIndex).played = false;
-    engineList.get(engineGameInfo.whiteEngineIndex).played = false;
-    Lizzie.frame.addInput(true);
-
     File file = new File("");
     String courseFile = "";
     try {
@@ -1146,7 +1134,7 @@ public class EngineManager {
           // df=df+"_白胜";
           jg =
               jg
-                  + resourceBundle.getString("GameInfoDialog.black")
+                  + resourceBundle.getString("GameInfoDialog.white")
                   + "("
                   + engineList.get(engineGameInfo.whiteEngineIndex).oriEnginename
                   + ")"
@@ -1154,7 +1142,7 @@ public class EngineManager {
         } else {
           jg =
               jg
-                  + resourceBundle.getString("GameInfoDialog.white")
+                  + resourceBundle.getString("GameInfoDialog.black")
                   + "("
                   + engineList.get(engineGameInfo.blackEngineIndex).oriEnginename
                   + ")"
@@ -1173,6 +1161,14 @@ public class EngineManager {
       Utils.showMsgNoModal(jg);
     }
     isSaveingEngineSGF = false;
+    changeEngIcoForEndPk();
+    engineList.get(engineGameInfo.blackEngineIndex).notPondering();
+    engineList.get(engineGameInfo.blackEngineIndex).nameCmd();
+    engineList.get(engineGameInfo.whiteEngineIndex).notPondering();
+    engineList.get(engineGameInfo.whiteEngineIndex).nameCmd();
+    engineList.get(engineGameInfo.blackEngineIndex).played = false;
+    engineList.get(engineGameInfo.whiteEngineIndex).played = false;
+    Lizzie.frame.addInput(true);
   }
 
   public void startNewEngineGame(boolean firstTime) {
@@ -1236,6 +1232,7 @@ public class EngineManager {
                 }
               }
               Lizzie.frame.reSetLoc();
+              Lizzie.frame.clearWRNforGame();
               if (Lizzie.config.autoLoadLzsaiEngineVisits) {
                 Lizzie.engineManager
                     .engineList
@@ -2340,6 +2337,7 @@ public class EngineManager {
         || engineList.get(engineGameInfo.whiteEngineIndex).isSai)
       Lizzie.board.isPkBoardKataB = true;
     Lizzie.config.chkPkStartNum = false;
+    Lizzie.frame.restoreWRN();
   }
 
   public String getEngineName(int index) {

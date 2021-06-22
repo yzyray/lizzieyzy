@@ -478,6 +478,9 @@ public class LizzieFrame extends JFrame {
   public boolean ponderStatusBeforeScore = false;
   private KeyListener gtpShortKey;
 
+  private boolean WRNStatusBeforeGame = Lizzie.config.chkKataEngineWRN;
+  private boolean autoWRNStatusBeforeGame = Lizzie.config.autoLoadKataEngineWRN;
+
   static {
     // load fonts
 
@@ -788,7 +791,7 @@ public class LizzieFrame extends JFrame {
       blunderTableColum3Width = pos.getInt(16);
 
     } else {
-      setSize(960, 650);
+      setSize(1065, 700);
       setLocationRelativeTo(null); // Start centered, needs to be called *after* setSize...
     }
     if (Lizzie.config.startMaximized && !persisted) {
@@ -10101,6 +10104,7 @@ public class LizzieFrame extends JFrame {
     if (Lizzie.frame.isAnaPlayingAgainstLeelaz) {
       stopTimer();
       setAsMain();
+      restoreWRN();
       if (Lizzie.leelaz.isheatmap) {
         Lizzie.leelaz.isheatmap = false;
         this.isShowingHeatmap = false;
@@ -12403,5 +12407,94 @@ public class LizzieFrame extends JFrame {
         Lizzie.frame.varTreeScrollPane.getHeight(),
         true,
         false);
+  }
+
+  public void setPdaAndWrn(double pda, double wrn) {
+    // TODO Auto-generated method stub
+
+    if (!Lizzie.config.autoLoadKataEnginePDA) {
+      if (pda == 0) {
+        Lizzie.config.chkKataEnginePDA = false;
+        Lizzie.config.txtKataEnginePDA = "0";
+      } else {
+        Lizzie.config.chkKataEnginePDA = true;
+        Lizzie.config.txtKataEnginePDA = pda + "";
+      }
+    }
+    if (!((Lizzie.engineManager.isPreEngineGame
+            || Lizzie.engineManager.isEngineGame
+            || isAnaPlayingAgainstLeelaz)
+        && Lizzie.config.disableWRNInGame)) {
+      if (!Lizzie.config.autoLoadKataEngineWRN) {
+        if (wrn == 0) {
+          Lizzie.config.chkKataEngineWRN = false;
+          Lizzie.config.txtKataEngineWRN = "0";
+        } else {
+          Lizzie.config.chkKataEngineWRN = true;
+          Lizzie.config.txtKataEngineWRN = wrn + "";
+        }
+      }
+    } else {
+      if (wrn != 0) {
+        Lizzie.config.chkKataEngineWRN = true;
+        Lizzie.config.txtKataEngineWRN = wrn + "";
+      }
+    }
+    menu.setPdaAndWrn(pda, wrn);
+  }
+
+  public void clearWRNforGame() {
+    // TODO Auto-generated method stub
+    if ((Lizzie.engineManager.isPreEngineGame
+            || Lizzie.engineManager.isEngineGame
+            || isAnaPlayingAgainstLeelaz)
+        && Lizzie.config.disableWRNInGame) {
+      WRNStatusBeforeGame = Lizzie.config.chkKataEngineWRN || Lizzie.config.autoLoadKataEngineWRN;
+      autoWRNStatusBeforeGame = Lizzie.config.autoLoadKataEngineWRN;
+      menu.chkWRN.setSelected(false);
+      menu.txtWRN.setEnabled(false);
+      Lizzie.config.chkKataEngineWRN = false;
+      if (isAnaPlayingAgainstLeelaz) {
+        if (Lizzie.leelaz.isKatago)
+          Lizzie.leelaz.sendCommand("kata-set-param analysisWideRootNoise 0");
+      } else {
+        {
+          if (Lizzie.engineManager.engineList.get(
+                  Lizzie.engineManager.engineGameInfo.firstEngineIndex)
+              .isKatago)
+            Lizzie.engineManager
+                .engineList
+                .get(Lizzie.engineManager.engineGameInfo.firstEngineIndex)
+                .sendCommand("kata-set-param analysisWideRootNoise 0");
+          if (Lizzie.engineManager.engineList.get(
+                  Lizzie.engineManager.engineGameInfo.secondEngineIndex)
+              .isKatago)
+            Lizzie.engineManager
+                .engineList
+                .get(Lizzie.engineManager.engineGameInfo.secondEngineIndex)
+                .sendCommand("kata-set-param analysisWideRootNoise 0");
+        }
+      }
+    }
+  }
+
+  public void restoreWRN() {
+    // TODO Auto-generated method stub
+    if (WRNStatusBeforeGame) {
+      try {
+        double wrn = Double.parseDouble(Lizzie.frame.menu.txtWRN.getText());
+        if (Lizzie.leelaz.isKatago)
+          Lizzie.leelaz.sendCommand("kata-set-param analysisWideRootNoise " + wrn);
+        menu.setWrnText(wrn);
+        Lizzie.config.txtKataEngineWRN = wrn + "";
+      } catch (NumberFormatException e) {
+        return;
+      }
+      menu.chkWRN.setSelected(true);
+      menu.txtWRN.setEnabled(true);
+      Lizzie.config.chkKataEngineWRN = true;
+      Lizzie.config.autoLoadKataEngineWRN = autoWRNStatusBeforeGame;
+      Lizzie.config.uiConfig.put("autoload-kata-engine-wrn", Lizzie.config.autoLoadKataEngineWRN);
+    }
   }
 }

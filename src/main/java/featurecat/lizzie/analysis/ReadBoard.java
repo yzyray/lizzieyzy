@@ -275,13 +275,7 @@ public class ReadBoard {
       shutdown();
       Lizzie.frame.syncBoard = false;
       if (Lizzie.frame.isAnaPlayingAgainstLeelaz) {
-        Lizzie.frame.isAnaPlayingAgainstLeelaz = false;
-        Lizzie.frame.toolbar.chkAutoPlay.setSelected(false);
-        Lizzie.frame.toolbar.isAutoPlay = false;
-        Lizzie.frame.toolbar.chkAutoPlayBlack.setSelected(false);
-        Lizzie.frame.toolbar.chkAutoPlayWhite.setSelected(false);
-        Lizzie.frame.toolbar.chkShowBlack.setSelected(true);
-        Lizzie.frame.toolbar.chkShowWhite.setSelected(true);
+        Lizzie.frame.stopAiPlayingAndPolicy();
       }
       showInBoard = false;
       if (Lizzie.frame.floatBoard != null) {
@@ -291,13 +285,7 @@ public class ReadBoard {
     if (line.startsWith("stopsync")) {
       Lizzie.frame.syncBoard = false;
       if (Lizzie.frame.isAnaPlayingAgainstLeelaz) {
-        Lizzie.frame.isAnaPlayingAgainstLeelaz = false;
-        Lizzie.frame.toolbar.chkAutoPlay.setSelected(false);
-        Lizzie.frame.toolbar.isAutoPlay = false;
-        Lizzie.frame.toolbar.chkAutoPlayBlack.setSelected(false);
-        Lizzie.frame.toolbar.chkAutoPlayWhite.setSelected(false);
-        Lizzie.frame.toolbar.chkShowBlack.setSelected(true);
-        Lizzie.frame.toolbar.chkShowWhite.setSelected(true);
+        Lizzie.frame.stopAiPlayingAndPolicy();
       }
       Lizzie.leelaz.nameCmd();
       showInBoard = false;
@@ -337,6 +325,7 @@ public class ReadBoard {
           Lizzie.config.UsePureNetInGame = false;
           Lizzie.frame.isAnaPlayingAgainstLeelaz = true;
           Lizzie.frame.toolbar.isAutoPlay = true;
+          Lizzie.frame.clearWRNforGame();
         } else if (params[1].equals("white")) {
           Lizzie.frame.toolbar.chkAutoPlayBlack.setSelected(false);
           Lizzie.frame.toolbar.chkAutoPlayWhite.setSelected(true);
@@ -346,6 +335,7 @@ public class ReadBoard {
           Lizzie.config.UsePureNetInGame = false;
           Lizzie.frame.isAnaPlayingAgainstLeelaz = true;
           Lizzie.frame.toolbar.isAutoPlay = true;
+          Lizzie.frame.clearWRNforGame();
         }
         Lizzie.leelaz.ponder();
       }
@@ -394,13 +384,7 @@ public class ReadBoard {
         Lizzie.leelaz.isThinking = false;
       }
       if (Lizzie.frame.isAnaPlayingAgainstLeelaz) {
-        Lizzie.frame.isAnaPlayingAgainstLeelaz = false;
-        Lizzie.frame.toolbar.chkAutoPlay.setSelected(false);
-        Lizzie.frame.toolbar.isAutoPlay = false;
-        Lizzie.frame.toolbar.chkAutoPlayBlack.setSelected(false);
-        Lizzie.frame.toolbar.chkAutoPlayWhite.setSelected(false);
-        Lizzie.frame.toolbar.chkShowBlack.setSelected(true);
-        Lizzie.frame.toolbar.chkShowWhite.setSelected(true);
+        Lizzie.frame.stopAiPlayingAndPolicy();
       }
       Lizzie.leelaz.togglePonder();
     }
