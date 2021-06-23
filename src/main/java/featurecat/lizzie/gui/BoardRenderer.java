@@ -1533,7 +1533,7 @@ public class BoardRenderer {
             case 0:
               g.setColor(Color.red);
               // g.setColor(Lizzie.board.getData().blackToPlay ? Color.BLUE : Color.RED);
-              drawPolygon(g, stoneX, stoneY, lastMoveMarkerRadius);
+              drawPolygon(g, stoneX, stoneY, stoneRadius);
               break;
             case 1:
               g.setColor(Lizzie.board.getData().blackToPlay ? Color.BLACK : Color.WHITE);
@@ -3861,9 +3861,9 @@ public class BoardRenderer {
   //  }
 
   private void drawPolygon(Graphics2D g, int centerX, int centerY, int radius) {
-    int[] xPoints = {centerX, centerX - (11 * radius / 11), centerX + (11 * radius / 11)};
+    int[] xPoints = {centerX, centerX - (radius / 2), centerX + (radius / 2)};
     int[] yPoints = {
-      centerY - (10 * radius / 11), centerY + (8 * radius / 11), centerY + (8 * radius / 11)
+      centerY - (10 * radius / 22), centerY + (8 * radius / 22), centerY + (8 * radius / 22)
     };
     g.fillPolygon(xPoints, yPoints, 3);
   }
