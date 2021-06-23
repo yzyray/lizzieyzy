@@ -5455,6 +5455,7 @@ public class Menu extends JMenuBar {
               Lizzie.config.uiConfig.put(
                   "autoload-kata-engine-wrn", Lizzie.config.autoLoadKataEngineWRN);
             }
+            Lizzie.config.chkKataEngineWRN = chkWRN.isSelected();
           }
         });
     chkWRN.setSelected(Lizzie.config.autoLoadKataEngineWRN);
@@ -5601,6 +5602,7 @@ public class Menu extends JMenuBar {
               Lizzie.config.uiConfig.put(
                   "autoload-kata-engine-pda", Lizzie.config.autoLoadKataEnginePDA);
             }
+            Lizzie.config.chkKataEnginePDA = chkPDA.isSelected();
           }
         });
     chkPDA.setSelected(Lizzie.config.autoLoadKataEnginePDA);

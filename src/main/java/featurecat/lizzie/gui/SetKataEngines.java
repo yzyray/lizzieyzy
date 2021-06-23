@@ -491,6 +491,9 @@ public class SetKataEngines extends JDialog {
     chkWRNInMenu.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
+            if (Lizzie.frame.isPlayingAgainstLeelaz
+                || (Lizzie.engineManager.isEngineGame
+                    && Lizzie.engineManager.engineGameInfo.isGenmove)) return;
             if (chkWRNInMenu.isSelected()) {
               txtWRN.setEnabled(false);
               chkAutoLoadWRN.setEnabled(false);
@@ -655,6 +658,11 @@ public class SetKataEngines extends JDialog {
       txtRPT.setEnabled(true);
       chkAutoRPT.setEnabled(true);
       chkEditRPT.setSelected(true);
+    }
+    if (Lizzie.frame.isPlayingAgainstLeelaz
+        || (Lizzie.engineManager.isEngineGame && Lizzie.engineManager.engineGameInfo.isGenmove)) {
+      txtWRN.setEnabled(false);
+      chkEditWRN.setEnabled(false);
     }
   }
 

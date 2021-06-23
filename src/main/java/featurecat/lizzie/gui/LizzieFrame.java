@@ -12459,6 +12459,7 @@ public class LizzieFrame extends JFrame {
       menu.chkWRN.setSelected(false);
       menu.txtWRN.setEnabled(false);
       menu.chkWRN.setEnabled(false);
+      Lizzie.config.chkKataEngineWRN = false;
     } else {
       if ((Lizzie.engineManager.isPreEngineGame
               || Lizzie.engineManager.isEngineGame
@@ -12501,6 +12502,7 @@ public class LizzieFrame extends JFrame {
       menu.txtWRN.setEnabled(true);
       menu.chkWRN.setSelected(WRNSelectedBeforeGenmove);
       menu.setWrnText(WRNValueBeforeGenmove);
+      Lizzie.config.chkKataEngineWRN = WRNSelectedBeforeGenmove;
       Lizzie.leelaz.sendCommand("kata-set-param analysisWideRootNoise " + WRNValueBeforeGenmove);
     } else if (WRNStatusBeforeGame) {
       try {
