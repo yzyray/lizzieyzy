@@ -38,7 +38,7 @@ public class ReadBoard {
   // private boolean isLoaded = false;
   private boolean isLoaded = false;
   private boolean checkedVersionSucceed = false;
-  private int version = 621;
+  private int version = 623;
   private String engineCommand;
   public String currentEnginename = "";
   private int port = 24781;
@@ -245,10 +245,11 @@ public class ReadBoard {
     }
     if (line.startsWith("start")) {
       String[] params = line.trim().split(" ");
-      if (params.length == 3) {
+      if (params.length == 4) {
         int boardWidth = Integer.parseInt(params[1]);
-        if (boardWidth != Lizzie.board.boardWidth || boardWidth != Lizzie.board.boardHeight) {
-          Lizzie.board.reopen(boardWidth, boardWidth);
+        int boardHeight = Integer.parseInt(params[2]);
+        if (boardWidth != Lizzie.board.boardWidth || boardHeight != Lizzie.board.boardHeight) {
+          Lizzie.board.reopen(boardWidth, boardHeight);
         } else {
           Lizzie.board.clear(false);
         }
@@ -449,7 +450,7 @@ public class ReadBoard {
       if (thisTime - startSyncTime < Lizzie.config.readBoardArg2 / 2) return;
       startSyncTime = thisTime;
     }
-    if (tempcount.size() > Lizzie.board.boardWidth * Lizzie.board.boardWidth) {
+    if (tempcount.size() > Lizzie.board.boardWidth * Lizzie.board.boardHeight) {
       tempcount = new ArrayList<Integer>();
       return;
     }
