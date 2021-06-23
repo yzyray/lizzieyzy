@@ -345,8 +345,8 @@ public class Config {
   public String zenEstimateCommand = "ZenEstimate" + Utils.pwd + "ZenGTP.exe";
 
   public boolean showDoubleMenu = true;
-  public boolean showDoubleMenuVar = false;
-  public boolean showDoubleMenuMoveInfo = true;
+  public boolean showDoubleMenuVar = true;
+  public boolean showDoubleMenuMoveInfo = false;
   public boolean showDoubleMenuGameControl = true;
 
   public String hostName = "";
@@ -853,8 +853,8 @@ public class Config {
         uiConfig.optString("use-estimate-command", "ZenEstimate" + Utils.pwd + "ZenGTP.exe");
     showDoubleMenu = uiConfig.optBoolean("show-double-menu", true);
     showDoubleMenuGameControl = uiConfig.optBoolean("show-double-menu-game-control", true);
-    showDoubleMenuVar = uiConfig.optBoolean("show-double-menu-var", false);
-    showDoubleMenuMoveInfo = uiConfig.optBoolean("show-double-menu-moveinfo", true);
+    showDoubleMenuVar = uiConfig.optBoolean("show-double-menu-var", true);
+    showDoubleMenuMoveInfo = uiConfig.optBoolean("show-double-menu-moveinfo", false);
     firstTimeLoad = uiConfig.optBoolean("first-time-load", true);
     hostName = uiConfig.optString("host-name", "");
     showListPane = uiConfig.optBoolean("show-list-pane", true);
