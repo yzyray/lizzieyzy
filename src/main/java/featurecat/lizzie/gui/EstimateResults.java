@@ -484,11 +484,11 @@ public class EstimateResults extends JDialog {
     if (Lizzie.config.estimateArea) {
       if (blackAlives < 10) g2.drawString(blackAlives + "", 37, topCap + 130); // 黑活子
       else if (blackAlives < 100) g2.drawString(blackAlives + "", 33, topCap + 130); // 黑活子
-      else g2.drawString(blackAlives + "", 29, 130); // 黑活子
+      else g2.drawString(blackAlives + "", 29, topCap + 130); // 黑活子
     } else {
       if (blackEat < 10) g2.drawString(blackEat + "", 37, topCap + 130); // 黑提子
       else if (blackEat < 100) g2.drawString(blackEat + "", 33, topCap + 130); // 黑提子
-      else g2.drawString(blackEat + "", 29, 130); // 黑提子
+      else g2.drawString(blackEat + "", 29, topCap + 130); // 黑提子
     }
 
     if (sumB < 10) g2.drawString(sumB + "", 37, topCap + 156);
