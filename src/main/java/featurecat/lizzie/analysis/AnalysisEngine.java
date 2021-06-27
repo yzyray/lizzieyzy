@@ -232,8 +232,6 @@ public class AnalysisEngine {
     resultMap.put(turnNumber, bestMoves);
     waitFrame.setProgress(resultMap.size(), analyzeNumberCount);
     tryToSetResult();
-    if (shouldRePonder && !Lizzie.leelaz.isPondering()) Lizzie.leelaz.togglePonder();
-    Lizzie.frame.renderVarTree(0, 0, false, false);
   }
 
   private void tryToSetResult() {
@@ -278,6 +276,8 @@ public class AnalysisEngine {
       }
       if (Lizzie.config.analysisAlwaysOverride)
         Lizzie.config.enableLizzieCache = oriEnableLizzieCache;
+      if (shouldRePonder && !Lizzie.leelaz.isPondering()) Lizzie.leelaz.togglePonder();
+      Lizzie.frame.renderVarTree(0, 0, false, false);
     }
   }
 
