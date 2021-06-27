@@ -3119,7 +3119,7 @@ public class LizzieFrame extends JFrame {
   public void saveRawFileComment() {
     isSavingRaw = true;
     isSavingRawComment = true;
-    FileNameExtensionFilter filter = new FileNameExtensionFilter("*.sgf", "*.SGF");
+    FileNameExtensionFilter filter = new FileNameExtensionFilter("*.sgf", "SGF");
     JSONObject filesystem = Lizzie.config.persisted.getJSONObject("filesystem");
     JFileChooser chooser = new JFileChooser(filesystem.getString("last-folder"));
     chooser.setFileFilter(filter);
@@ -3255,7 +3255,7 @@ public class LizzieFrame extends JFrame {
       Lizzie.leelaz.togglePonder();
     }
     isSavingRaw = savingRaw;
-    FileNameExtensionFilter filter = new FileNameExtensionFilter("*.sgf", "*.SGF");
+    FileNameExtensionFilter filter = new FileNameExtensionFilter("*.sgf", "SGF");
     JSONObject filesystem = Lizzie.config.persisted.getJSONObject("filesystem");
     JFileChooser chooser = new JFileChooser(filesystem.getString("last-folder"));
     chooser.setFileFilter(filter);
