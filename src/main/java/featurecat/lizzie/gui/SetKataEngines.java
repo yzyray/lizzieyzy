@@ -490,7 +490,10 @@ public class SetKataEngines extends JDialog {
     JFontLabel lblShowInMenu =
         new JFontLabel(Lizzie.resourceBundle.getString("SetKataEngines.lblShowInMenu"));
     lblShowInMenu.setBounds(
-        Lizzie.config.isFrameFontSmall() ? 688 : (Lizzie.config.isFrameFontMiddle() ? 807 : 947),
+        (Lizzie.config.isChinese ? 0 : Lizzie.config.isFrameFontSmall() ? 5 : 10)
+            + (Lizzie.config.isFrameFontSmall()
+                ? 688
+                : (Lizzie.config.isFrameFontMiddle() ? 807 : 947)),
         3,
         161,
         20);
