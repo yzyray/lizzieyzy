@@ -2952,7 +2952,7 @@ public class Menu extends JMenuBar {
             Lizzie.board.clearbestmovesInfomationAfter(Lizzie.board.getHistory().getStart());
             if (Lizzie.config.extraMode == 2)
               Lizzie.board.clearbestmovesInfomationAfter2(Lizzie.board.getHistory().getStart());
-            Lizzie.frame.refresh();
+            Lizzie.frame.refreshCurrentMove();
           }
         });
     analyzeMenu.add(clearAllLizzieBestmoves);
@@ -2968,7 +2968,7 @@ public class Menu extends JMenuBar {
             if (Lizzie.config.extraMode == 2)
               Lizzie.board.clearbestmovesInfomation2(
                   Lizzie.board.getHistory().getCurrentHistoryNode());
-            Lizzie.frame.refresh();
+            Lizzie.frame.refreshCurrentMove();
           }
         });
     analyzeMenu.add(clearThisLizzieBestmoves);

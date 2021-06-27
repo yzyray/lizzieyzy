@@ -12542,4 +12542,12 @@ public class LizzieFrame extends JFrame {
       Lizzie.config.uiConfig.put("autoload-kata-engine-wrn", Lizzie.config.autoLoadKataEngineWRN);
     }
   }
+
+  public void refreshCurrentMove() {
+    // TODO Auto-generated method stub
+    Lizzie.board.clearbestmoves();
+    Lizzie.leelaz.sendCommand("clear_cache");
+    if (Lizzie.leelaz.isPondering()) Lizzie.leelaz.ponder();
+    refresh();
+  }
 }
