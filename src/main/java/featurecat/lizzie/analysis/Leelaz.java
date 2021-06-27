@@ -71,9 +71,6 @@ public class Leelaz {
 	private BufferedOutputStream outputStream;
 	private BufferedReader errorStream;
 	
-	//private boolean hasUnReadLine=false;
-	private String unReadLine="";
-
 	// public Board board;
 	private List<MoveData> bestMoves;
 	private List<MoveData> bestMovesPrevious;
@@ -111,7 +108,8 @@ public class Leelaz {
 	public boolean isDymPda =false;
 	public boolean isStaticPda =false;
 	public boolean canRestoreDymPda=false;
-	public double pda =0;
+	public double pda = 0;
+	public double wrn = 0;
 	private double pdaBeforeGame=0;
 	public double pdaCap =0;
 	public boolean startAutoAna=false;
@@ -1368,6 +1366,7 @@ public class Leelaz {
 						}
 					}					
 					isSettingHandicap = false;
+					Lizzie.frame.allowPlaceStone=true;
 					if(Lizzie.frame.isAnaPlayingAgainstLeelaz)
 					{
 						  
@@ -2627,7 +2626,17 @@ public class Leelaz {
 			        
 				}
 			} 
-		}		
+		}	
+		else {
+			if((Lizzie.frame.isPlayingAgainstLeelaz||Lizzie.engineManager.isEngineGame)&&line.startsWith("CHAT:")) {
+			if(line.contains("PDA"))
+			{
+			String value=line.substring(line.indexOf("PDA")+4);	
+			value=value.substring(0,value.indexOf(")"));
+			this.pda=Double.parseDouble(value);
+			}				
+			}
+		}
 if(!isLoaded) {
 	if(line.startsWith("Started OpenCL SGEMM")||line.startsWith("Tuning xGemmDirect"))
 	{
@@ -2773,7 +2782,7 @@ parseHeatMap(line);
 								}
 								else
 								if(recentLineNumber==1) {
-									double wrn=Double.parseDouble(params[1]);										
+									wrn=Double.parseDouble(params[1]);										
 									Lizzie.frame.setPdaAndWrn(pda,wrn);
 									recentLineNumber++;
 								}		
@@ -3913,13 +3922,14 @@ parseHeatMap(line);
 	
 	private void setKataEnginePara() {
         if (Lizzie.config.autoLoadKataEnginePDA)
-           setPda(Lizzie.config.txtKataEnginePDA);
-
+           {setPda(Lizzie.config.autoLoadTxtKataEnginePDA);
+           }
         if (Lizzie.config.autoLoadKataEngineWRN)
-            sendCommand(
+        {  sendCommand(
                 "kata-set-param analysisWideRootNoise "
-                    + Lizzie.config.txtKataEngineWRN);
-        
+                    + Lizzie.config.autoLoadTxtKataEngineWRN);
+        this.wrn=Double.parseDouble(Lizzie.config.autoLoadTxtKataEngineWRN);
+        } 
         if(Lizzie.config.autoLoadKataEngineThreads)
         	 Lizzie.leelaz.sendCommand(
                      "kata-set-param numSearchThreads " + Lizzie.config.txtKataEngineThreads);	

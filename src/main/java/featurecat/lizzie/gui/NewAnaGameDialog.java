@@ -856,6 +856,7 @@ public class NewAnaGameDialog extends JDialog {
       // close window
       cancelled = false;
       setVisible(false);
+      Lizzie.frame.allowPlaceStone = false;
       Runnable syncBoard =
           new Runnable() {
             public void run() {
@@ -914,6 +915,7 @@ public class NewAnaGameDialog extends JDialog {
                 }
               }
               if (!isHandicap) {
+                Lizzie.frame.allowPlaceStone = true;
                 if (Lizzie.config.UsePureNetInGame && !Lizzie.leelaz.isheatmap)
                   Lizzie.leelaz.toggleHeatmap(false);
                 Lizzie.leelaz.Pondering();

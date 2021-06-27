@@ -2035,12 +2035,7 @@ public class SGFParser {
                 String.format("%.1f", scoreStdev),
                 engine,
                 playouts,
-                data.pda != 0
-                    ? String.format("%.1f", data.getKomi())
-                        + " "
-                        + Lizzie.resourceBundle.getString("SGFParse.pda")
-                        + data.pda
-                    : String.format("%.1f", data.getKomi()));
+                String.format("%.1f", data.getKomi()) + getPdaWrnString(data.pda, data.wrn));
       }
     } else {
       String wf =
@@ -2133,6 +2128,13 @@ public class SGFParser {
       }
     }
     return nc;
+  }
+
+  private static String getPdaWrnString(double pda, double wrn) {
+    // TODO Auto-generated method stub
+    String line = pda != 0 ? " " + Lizzie.resourceBundle.getString("SGFParse.pda") + pda : "";
+    line += wrn != 0 ? " " + Lizzie.resourceBundle.getString("SGFParse.wrn") + wrn : "";
+    return line;
   }
 
   private static String formatComment2(BoardHistoryNode node) {

@@ -731,7 +731,7 @@ public class NewEngineGameDialog extends JDialog {
     chkDisableWRNInGame.setBounds(
         5,
         322,
-        Lizzie.config.isFrameFontSmall() ? 200 : (Lizzie.config.isFrameFontMiddle() ? 250 : 300),
+        Lizzie.config.isFrameFontSmall() ? 300 : (Lizzie.config.isFrameFontMiddle() ? 350 : 400),
         23);
     chkDisableWRNInGame.setSelected(Lizzie.config.disableWRNInGame);
     contentPanel.add(chkDisableWRNInGame);

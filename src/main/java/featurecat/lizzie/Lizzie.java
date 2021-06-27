@@ -332,8 +332,14 @@ public class Lizzie {
     if (!isEngineGame && !frame.isPlayingAgainstLeelaz)
       if (!(frame.toolbar.chkAutoPlay.isSelected()
           && !frame.toolbar.chkAutoPlayBlack.isSelected())) {
-        leelaz.setResponseUpToDate();
-        leelaz.ponder();
+        if (Lizzie.config.notStartPondering) {
+          leelaz.setResponseUpToDate();
+          leelaz.notPondering();
+          Lizzie.config.notStartPondering = false;
+        } else {
+          leelaz.setResponseUpToDate();
+          leelaz.ponder();
+        }
       }
     leelaz.setResponseUpToDate();
     Runnable runnable =

@@ -5418,7 +5418,6 @@ public class Menu extends JMenuBar {
             if (chkWRN.isSelected()) {
               txtWRN.setEnabled(true);
               double wrn = 0;
-              Lizzie.config.autoLoadKataEngineWRN = true;
               try {
                 wrn = Double.parseDouble(txtWRN.getText());
               } catch (NumberFormatException s) {
@@ -5436,8 +5435,6 @@ public class Menu extends JMenuBar {
                     .sendCommand("kata-set-param analysisWideRootNoise " + wrn);
               } else Lizzie.leelaz.sendCommand("kata-set-param analysisWideRootNoise " + wrn);
               if (Lizzie.leelaz.isPondering()) Lizzie.leelaz.ponder();
-              Lizzie.config.uiConfig.put(
-                  "autoload-kata-engine-wrn", Lizzie.config.autoLoadKataEngineWRN);
             } else {
               txtWRN.setEnabled(false);
               if (Lizzie.engineManager.isEngineGame) {
@@ -5451,9 +5448,6 @@ public class Menu extends JMenuBar {
                     .sendCommand("kata-set-param analysisWideRootNoise 0");
               } else Lizzie.leelaz.sendCommand("kata-set-param analysisWideRootNoise 0");
               if (Lizzie.leelaz.isPondering()) Lizzie.leelaz.ponder();
-              Lizzie.config.autoLoadKataEngineWRN = false;
-              Lizzie.config.uiConfig.put(
-                  "autoload-kata-engine-wrn", Lizzie.config.autoLoadKataEngineWRN);
             }
             Lizzie.config.chkKataEngineWRN = chkWRN.isSelected();
           }
@@ -5563,7 +5557,6 @@ public class Menu extends JMenuBar {
             if (chkPDA.isSelected()) {
               txtGfPDA.setEnabled(true);
               double pda = 0;
-              Lizzie.config.autoLoadKataEnginePDA = true;
               try {
                 pda = Double.parseDouble(txtGfPDA.getText());
               } catch (NumberFormatException s) {
@@ -5581,8 +5574,6 @@ public class Menu extends JMenuBar {
                     .setPda(pda + "");
               } else Lizzie.leelaz.setPda(pda + "");
               if (Lizzie.leelaz.isPondering()) Lizzie.leelaz.ponder();
-              Lizzie.config.uiConfig.put(
-                  "autoload-kata-engine-pda", Lizzie.config.autoLoadKataEnginePDA);
               Lizzie.config.uiConfig.put("txt-kata-engine-pda", Lizzie.config.txtKataEnginePDA);
 
             } else {
@@ -5598,9 +5589,6 @@ public class Menu extends JMenuBar {
                     .setPda("0");
               } else Lizzie.leelaz.setPda("0");
               if (Lizzie.leelaz.isPondering()) Lizzie.leelaz.ponder();
-              Lizzie.config.autoLoadKataEnginePDA = false;
-              Lizzie.config.uiConfig.put(
-                  "autoload-kata-engine-pda", Lizzie.config.autoLoadKataEnginePDA);
             }
             Lizzie.config.chkKataEnginePDA = chkPDA.isSelected();
           }
@@ -5956,7 +5944,10 @@ public class Menu extends JMenuBar {
       txtGfPDA.setVisible(false);
       chkPDA.setVisible(false);
     } else {
-      if (Lizzie.config.showPDAInMenu && Lizzie.leelaz != null && Lizzie.leelaz.isKatago) {
+      if (Lizzie.config.showPDAInMenu
+          && !isEngineGame()
+          && Lizzie.leelaz != null
+          && Lizzie.leelaz.isKatago) {
         chkPDA.setBounds(
             startPos,
             Lizzie.config.isFrameFontSmall() ? 0 : (Lizzie.config.isFrameFontMiddle() ? 1 : 2),
@@ -6005,7 +5996,10 @@ public class Menu extends JMenuBar {
       }
     }
 
-    if (Lizzie.config.showWRNInMenu && Lizzie.leelaz != null && Lizzie.leelaz.isKatago) {
+    if (Lizzie.config.showWRNInMenu
+        && !isEngineGame()
+        && Lizzie.leelaz != null
+        && Lizzie.leelaz.isKatago) {
       chkWRN.setBounds(
           startPos,
           Lizzie.config.isFrameFontSmall() ? 0 : (Lizzie.config.isFrameFontMiddle() ? 1 : 2),
@@ -8394,13 +8388,19 @@ public class Menu extends JMenuBar {
       txtPDA.setVisible(true);
       more2.setVisible(true);
       customPDAMorePanel.setVisible(true);
+      lblGfPDAForDouble.setVisible(false);
+      chkPDA.setVisible(false);
+      txtGfPDA.setVisible(false);
       needRemoveS = false;
     } else {
       lblCustomPda.setVisible(false);
       txtPDA.setVisible(false);
       more2.setVisible(false);
       customPDAMorePanel.setVisible(false);
-      if (Lizzie.config.showPDAInMenu && Lizzie.leelaz != null && Lizzie.leelaz.isKatago) {
+      if (Lizzie.config.showPDAInMenu
+          && !isEngineGame()
+          && Lizzie.leelaz != null
+          && Lizzie.leelaz.isKatago) {
         chkPDA.setVisible(true);
         lblGfPDAForDouble.setVisible(true);
         txtGfPDA.setVisible(true);
@@ -8412,7 +8412,10 @@ public class Menu extends JMenuBar {
       }
     }
 
-    if (Lizzie.config.showWRNInMenu && Lizzie.leelaz != null && Lizzie.leelaz.isKatago) {
+    if (Lizzie.config.showWRNInMenu
+        && !isEngineGame()
+        && Lizzie.leelaz != null
+        && Lizzie.leelaz.isKatago) {
       needRemoveS = false;
       lblWRNForDouble.setVisible(true);
       chkWRN.setVisible(true);
@@ -9244,5 +9247,27 @@ public class Menu extends JMenuBar {
     ShouldIgnoreDtChange = true;
     txtWRN.setText(wrn + "");
     ShouldIgnoreDtChange = false;
+  }
+
+  public void setUseWrn(boolean use, String wrn) {
+    // TODO Auto-generated method stub
+    ShouldIgnoreDtChange = true;
+    txtWRN.setText(wrn + "");
+    ShouldIgnoreDtChange = false;
+    chkWRN.setSelected(use);
+    txtWRN.setEnabled(use);
+  }
+
+  public void setUseGfPda(boolean use, String pda) {
+    // TODO Auto-generated method stub
+    ShouldIgnoreDtChange = true;
+    txtGfPDA.setText(pda + "");
+    ShouldIgnoreDtChange = false;
+    chkPDA.setSelected(use);
+    txtGfPDA.setEnabled(use);
+  }
+
+  private boolean isEngineGame() {
+    return Lizzie.engineManager != null && Lizzie.engineManager.isEngineGame();
   }
 }

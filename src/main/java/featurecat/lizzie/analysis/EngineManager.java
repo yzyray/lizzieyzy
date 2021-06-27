@@ -2322,6 +2322,7 @@ public class EngineManager {
     }
     this.currentEngineNo = Lizzie.leelaz.currentEngineN();
     double komi = Lizzie.board.getHistory().getGameInfo().getKomi();
+    Lizzie.config.notStartPondering = true;
     switchEngine(Lizzie.leelaz.currentEngineN(), true);
     Lizzie.board.setKomi(komi);
     Lizzie.board.clearAfterMove();
@@ -2347,5 +2348,9 @@ public class EngineManager {
 
   private void changeEngIco(int index) {
     Lizzie.frame.menu.changeicon(index);
+  }
+
+  public boolean isEngineGame() {
+    return isPreEngineGame || isEngineGame;
   }
 }

@@ -3032,7 +3032,7 @@ public class LizzieFrame extends JFrame {
     Lizzie.frame.isPlayingAgainstLeelaz = true;
     // Lizzie.leelaz.isSettingHandicap=true;
     boolean isHandicapGame = gameInfo.getHandicap() != 0;
-
+    Lizzie.frame.allowPlaceStone = false;
     Runnable syncBoard =
         new Runnable() {
           public void run() {
@@ -3064,10 +3064,13 @@ public class LizzieFrame extends JFrame {
                 Lizzie.leelaz.sendCommand("place_free_handicap " + gameInfo.getHandicap());
               else Lizzie.leelaz.sendCommand("fixed_handicap " + gameInfo.getHandicap());
               if (playerIsBlack) Lizzie.leelaz.genmove("w");
-            } else if (!playerIsBlack && Lizzie.board.getHistory().isBlacksTurn()) {
-              Lizzie.leelaz.genmove("b");
-            } else if (playerIsBlack && !Lizzie.board.getHistory().isBlacksTurn())
-              Lizzie.leelaz.genmove("w");
+            } else {
+              Lizzie.frame.allowPlaceStone = true;
+              if (!playerIsBlack && Lizzie.board.getHistory().isBlacksTurn()) {
+                Lizzie.leelaz.genmove("b");
+              } else if (playerIsBlack && !Lizzie.board.getHistory().isBlacksTurn())
+                Lizzie.leelaz.genmove("w");
+            }
             GameInfo gameInfo = Lizzie.board.getHistory().getGameInfo();
             gameInfo.setPlayerBlack(
                 playerIsBlack
@@ -6473,7 +6476,7 @@ public class LizzieFrame extends JFrame {
                 == Lizzie.board.getData().blackToPlay) {
           if (isPlayingAgainstLeelaz || isAnaPlayingAgainstLeelaz) {
             if (Lizzie.leelaz.isGamePaused) return;
-            if (Lizzie.leelaz.isLoaded() && !Lizzie.engineManager.isEmpty)
+            if (allowPlaceStone && Lizzie.leelaz.isLoaded() && !Lizzie.engineManager.isEmpty)
               Lizzie.board.place(coords[0], coords[1]);
             else
               Utils.showMsg(
@@ -9994,8 +9997,7 @@ public class LizzieFrame extends JFrame {
   }
 
   public void togglePonderMannul() {
-    stopAiPlayingAndPolicy();
-    Lizzie.leelaz.togglePonder();
+    if (!stopAiPlayingAndPolicy()) Lizzie.leelaz.togglePonder();
   }
 
   public void drawKataEstimate(Leelaz engine, ArrayList<Double> tempcount) {
@@ -10075,7 +10077,9 @@ public class LizzieFrame extends JFrame {
     }.start();
   }
 
-  public void stopAiPlayingAndPolicy() {
+  public boolean stopAiPlayingAndPolicy() {
+    boolean isGaming =
+        Lizzie.frame.isPlayingAgainstLeelaz || Lizzie.frame.isAnaPlayingAgainstLeelaz;
     if (Lizzie.frame.isShowingHeatmap) {
       Lizzie.leelaz.toggleHeatmap(true);
       Lizzie.leelaz.notPondering();
@@ -10139,6 +10143,7 @@ public class LizzieFrame extends JFrame {
       Lizzie.leelaz.notPondering();
     }
     Lizzie.frame.menu.toggleDoubleMenuGameStatus();
+    return isGaming;
   }
 
   public void showMainPanel() {
@@ -12238,6 +12243,8 @@ public class LizzieFrame extends JFrame {
   private boolean tempShowWhite;
   public boolean isInTemporaryBoard;
 
+  public boolean allowPlaceStone = true;
+
   public void startTemporaryBoard() {
     if (isInTemporaryBoard) return;
     isInTemporaryBoard = true;
@@ -12471,24 +12478,36 @@ public class LizzieFrame extends JFrame {
         menu.txtWRN.setEnabled(false);
         Lizzie.config.chkKataEngineWRN = false;
         if (isAnaPlayingAgainstLeelaz) {
-          if (Lizzie.leelaz.isKatago)
+          if (Lizzie.leelaz.isKatago) {
+            Lizzie.leelaz.wrn = 0;
             Lizzie.leelaz.sendCommand("kata-set-param analysisWideRootNoise 0");
+          }
         } else {
           {
             if (Lizzie.engineManager.engineList.get(
                     Lizzie.engineManager.engineGameInfo.firstEngineIndex)
-                .isKatago)
+                .isKatago) {
               Lizzie.engineManager
                   .engineList
                   .get(Lizzie.engineManager.engineGameInfo.firstEngineIndex)
                   .sendCommand("kata-set-param analysisWideRootNoise 0");
+              Lizzie.engineManager.engineList.get(
+                          Lizzie.engineManager.engineGameInfo.firstEngineIndex)
+                      .wrn =
+                  0;
+            }
             if (Lizzie.engineManager.engineList.get(
                     Lizzie.engineManager.engineGameInfo.secondEngineIndex)
-                .isKatago)
+                .isKatago) {
               Lizzie.engineManager
                   .engineList
                   .get(Lizzie.engineManager.engineGameInfo.secondEngineIndex)
                   .sendCommand("kata-set-param analysisWideRootNoise 0");
+              Lizzie.engineManager.engineList.get(
+                          Lizzie.engineManager.engineGameInfo.secondEngineIndex)
+                      .wrn =
+                  0;
+            }
           }
         }
       }
@@ -12507,8 +12526,10 @@ public class LizzieFrame extends JFrame {
     } else if (WRNStatusBeforeGame) {
       try {
         double wrn = Double.parseDouble(Lizzie.frame.menu.txtWRN.getText());
-        if (Lizzie.leelaz.isKatago)
+        if (Lizzie.leelaz.isKatago) {
           Lizzie.leelaz.sendCommand("kata-set-param analysisWideRootNoise " + wrn);
+          Lizzie.leelaz.wrn = wrn;
+        }
         menu.setWrnText(wrn);
         Lizzie.config.txtKataEngineWRN = wrn + "";
       } catch (NumberFormatException e) {

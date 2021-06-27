@@ -255,14 +255,16 @@ public class Config {
 
   public boolean chkKataEnginePDA = false;
   public String txtKataEnginePDA = "";
+  public String autoLoadTxtKataEnginePDA = "";
   public boolean autoLoadKataEnginePDA = false;
 
-  public boolean chkKataEngineRPT = false;
-  public String txtKataEngineRPT = "";
-  public boolean autoLoadKataEngineRPT = false;
+  //  public boolean chkKataEngineRPT = false;
+  //  public String txtKataEngineRPT = "";
+  //  public boolean autoLoadKataEngineRPT = false;
 
   public boolean chkKataEngineWRN = false;
   public String txtKataEngineWRN = "";
+  public String autoLoadTxtKataEngineWRN = "";
   public boolean autoLoadKataEngineWRN = false;
 
   public boolean chkKataEngineThreads = false;
@@ -542,6 +544,7 @@ public class Config {
   public int maxTreeWidth = 10000;
 
   public boolean disableWRNInGame = true;
+  public boolean notStartPondering = false;
 
   private JSONObject loadAndMergeSaveBoardConfig(
       JSONObject defaultCfg, String fileName, boolean needValidation) throws IOException {
@@ -1147,8 +1150,10 @@ public class Config {
     autoLoadKataEnginePDA = uiConfig.optBoolean("autoload-kata-engine-pda", false);
 
     // chkKataEngineRPT  = uiConfig.optBoolean("chk-kata-engine-rpt", false);
-    txtKataEngineRPT = uiConfig.optString("txt-kata-engine-rpt", "");
-    autoLoadKataEngineRPT = uiConfig.optBoolean("autoload-kata-engine-rpt", false);
+    // txtKataEngineRPT = uiConfig.optString("txt-kata-engine-rpt", "");
+    //   autoLoadKataEngineRPT = uiConfig.optBoolean("autoload-kata-engine-rpt", false);
+    autoLoadTxtKataEnginePDA = uiConfig.optString("auto-load-txt-kata-engine-pda", "");
+    autoLoadTxtKataEngineWRN = uiConfig.optString("auto-load-txt-kata-engine-wrn", "");
 
     //  chkKataEngineWRN  = uiConfig.optBoolean("chk-kata-engine-wrn", false);
     txtKataEngineWRN = uiConfig.optString("txt-kata-engine-wrn", "");

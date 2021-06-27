@@ -48,6 +48,7 @@ public class BoardData {
 		public double pda=0;
 		public double pda2=0;
 		public double komi=-999;
+		public double wrn = 0;
 	//	public boolean commented=true;
 	//	public boolean commented2=true;
 	
@@ -230,6 +231,8 @@ public class BoardData {
 				 }
 				 else
 					 pda=0;}
+				 if(!(Lizzie.engineManager.isEngineGame&&Lizzie.engineManager.engineGameInfo.isGenmove))
+				 wrn=Lizzie.leelaz.wrn;				 
 				 //排序
 				 Collections.sort(
 						 moves,
