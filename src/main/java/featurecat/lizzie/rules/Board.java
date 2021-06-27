@@ -1557,7 +1557,7 @@ public class Board {
         if (Lizzie.frame.isPlayingAgainstLeelaz
             && Lizzie.frame.playerIsBlack == getData().blackToPlay)
           Lizzie.leelaz.genmove((history.isBlacksTurn() ? "w" : "b"));
-
+        clearAfterMove();
         return;
       }
 
@@ -1966,6 +1966,7 @@ public class Board {
           Lizzie.leelaz.playMove(color, convertCoordinatesToName(x, y));
         }
         //  modifyEnd(false);
+        clearAfterMove();
         return;
       }
       // load a copy of the data at the current node of history
@@ -2108,6 +2109,7 @@ public class Board {
         } else if (!Lizzie.frame.isPlayingAgainstLeelaz && !Lizzie.engineManager.isEngineGame) {
           Lizzie.leelaz.playMove(color, convertCoordinatesToName(x, y));
         }
+        clearAfterMove();
         //    modifyEnd(false);
         return;
       }
@@ -2243,6 +2245,7 @@ public class Board {
         } else if (!Lizzie.frame.isPlayingAgainstLeelaz && !Lizzie.engineManager.isEngineGame) {
           Lizzie.leelaz.playMove(color, convertCoordinatesToName(x, y));
         }
+        clearAfterMove();
         return;
       }
 
