@@ -117,7 +117,7 @@ public class Menu extends JMenuBar {
   JFontLabel lblKomiSpinner;
   public JTextField txtKomi;
   JFontLabel lblPDASpinner;
-  boolean showPDA = true;
+  boolean showPDA = false;
   int startPos;
   JFontButton btnKomiUp;
   JFontButton btnKomiDown;
@@ -8064,6 +8064,7 @@ public class Menu extends JMenuBar {
     Lizzie.frame.topPanel.add(sepForPdaWrn);
 
     lblCustomPda = new JFontLabel(resourceBundle.getString("Menu.separateLblPda"));
+    lblCustomPda.setVisible(false);
     Lizzie.frame.topPanel.add(lblCustomPda);
     Lizzie.frame.topPanel.add(txtPDA);
     customPDAMorePanel = new JPanel();
