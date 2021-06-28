@@ -441,9 +441,9 @@ public class KataEstimate {
         }
       }
     }
-    Lizzie.frame.boardRenderer.drawcountblock(tempCountForRender);
+    Lizzie.frame.boardRenderer.drawEstimateImage(tempCountForRender);
     if (Lizzie.frame.floatBoard != null && Lizzie.frame.floatBoard.isVisible())
-      Lizzie.frame.floatBoard.boardRenderer.drawcountblock(tempCountForRender);
+      Lizzie.frame.floatBoard.boardRenderer.drawEstimateImage(tempCountForRender);
     Lizzie.frame.refresh();
     hasResult = true;
     if (firstcount) {

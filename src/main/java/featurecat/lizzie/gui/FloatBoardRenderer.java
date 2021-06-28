@@ -81,6 +81,7 @@ public class FloatBoardRenderer {
   private ArrayList<BufferedImage> cachedSelectImage = new ArrayList<BufferedImage>();
   private boolean hasBlockimage = false;
   private BufferedImage countblockimage = emptyImage;
+  private BufferedImage estimateImage = emptyImage;
 
   private BufferedImage cachedBoardImage = emptyImage;
   private BufferedImage cachedWallpaperImage = emptyImage;
@@ -639,13 +640,16 @@ public class FloatBoardRenderer {
     countblockimage = new BufferedImage(boardWidth, boardHeight, TYPE_INT_ARGB);
   }
 
+  public void removeEstimateImage() {
+    estimateImage = new BufferedImage(boardWidth, boardHeight, TYPE_INT_ARGB);
+  }
+
   public static int roundToInt(double number) {
     return (int) round(number);
   }
 
   public boolean shouldShowCountBlockBelow() {
     Leelaz leelaz = Lizzie.leelaz;
-    if (Lizzie.frame.isAutocounting || Lizzie.frame.isCounting) return false;
     if (leelaz.isKatago && leelaz.iskataHeatmapShowOwner) {
       return Lizzie.config.showPureEstimateBigBelow;
     }
@@ -776,9 +780,9 @@ public class FloatBoardRenderer {
     g.dispose();
   }
 
-  public void drawcountblock(ArrayList<Double> tempcount) {
-    countblockimage = new BufferedImage(boardWidth, boardHeight, TYPE_INT_ARGB);
-    Graphics2D g = countblockimage.createGraphics();
+  public void drawEstimateImage(ArrayList<Double> tempcount) {
+    estimateImage = new BufferedImage(boardWidth, boardHeight, TYPE_INT_ARGB);
+    Graphics2D g = estimateImage.createGraphics();
     for (int i = 0; i < tempcount.size(); i++) {
       if (tempcount.get(i) > 0) {
         int y = i / Lizzie.board.boardWidth;
@@ -1154,7 +1158,9 @@ public class FloatBoardRenderer {
   /** Render the shadows and stones in correct background-foreground order */
   private void renderImages(Graphics2D g) {
     g.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_OFF);
-    if (shouldShowCountBlockBelow()) g.drawImage(countblockimage, x, y, null);
+    if (Lizzie.config.showKataGoEstimate && !Lizzie.config.isHiddenKataEstimate
+        || Lizzie.frame.isShowingHeatmap)
+      if (shouldShowCountBlockBelow()) g.drawImage(countblockimage, x, y, null);
     if (isShowingBranch) {
       if (!Lizzie.config.removeDeadChainInVariation) {
         g.drawImage(cachedStonesShadowImage, x, y, null);
@@ -1172,7 +1178,10 @@ public class FloatBoardRenderer {
       g.drawImage(cachedStonesImage, x, y, null);
     }
     g.drawImage(blockimage, x, y, null);
-    if (!shouldShowCountBlockBelow()) g.drawImage(countblockimage, x, y, null);
+    if (Lizzie.config.showKataGoEstimate && !Lizzie.config.isHiddenKataEstimate
+        || Lizzie.frame.isShowingHeatmap)
+      if (!shouldShowCountBlockBelow()) g.drawImage(countblockimage, x, y, null);
+    g.drawImage(estimateImage, x, y, null);
     g.drawImage(selectImage, x, y, null);
     if (!cachedSelectImage.isEmpty()) {
       for (int i = 0; i < cachedSelectImage.size(); i++) {

@@ -475,7 +475,6 @@ public class SubBoardRenderer {
 
   public boolean shouldShowCountBlockBelow() {
     Leelaz leelaz = Lizzie.leelaz;
-    if (Lizzie.frame.isAutocounting || Lizzie.frame.isCounting) return false;
     if (leelaz.isKatago && leelaz.iskataHeatmapShowOwner) {
       return Lizzie.config.showPureEstimateBigBelow;
     }
@@ -917,7 +916,9 @@ public class SubBoardRenderer {
   /** Render the shadows and stones in correct background-foreground order */
   private void renderImages(Graphics2D g) {
     g.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_OFF);
-    if (shouldShowCountBlockBelow()) g.drawImage(countblockimage, x, y, null);
+    if (Lizzie.config.showKataGoEstimate && !Lizzie.config.isHiddenKataEstimate
+        || Lizzie.frame.isShowingHeatmap)
+      if (shouldShowCountBlockBelow()) g.drawImage(countblockimage, x, y, null);
     g.drawImage(cachedStonesShadowImage, x, y, null);
     g.drawImage(cachedStonesShadowImagedraged, x, y, null);
     if (Lizzie.config.showBranchNow()) {
@@ -926,7 +927,9 @@ public class SubBoardRenderer {
     g.drawImage(cachedStonesImage, x, y, null);
     g.drawImage(cachedStonesImagedraged, x, y, null);
     g.drawImage(blockimage, x, y, null);
-    if (!shouldShowCountBlockBelow()) g.drawImage(countblockimage, x, y, null);
+    if (Lizzie.config.showKataGoEstimate && !Lizzie.config.isHiddenKataEstimate
+        || Lizzie.frame.isShowingHeatmap)
+      if (!shouldShowCountBlockBelow()) g.drawImage(countblockimage, x, y, null);
     g.drawImage(heatimage, x, y, null);
 
     if (!Lizzie.frame.isInPlayMode() && !Lizzie.config.subBoardRaw && Lizzie.config.showBranchNow()

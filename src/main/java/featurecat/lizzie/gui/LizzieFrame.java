@@ -9957,6 +9957,11 @@ public class LizzieFrame extends JFrame {
     //   refresh();
   }
 
+  public void clearEstimate() {
+    boardRenderer.removeEstimateImage();
+    if (floatBoard != null) floatBoard.boardRenderer.removeEstimateImage();
+  }
+
   public void clearKataEstimate() {
     boardRenderer.removecountblock();
     if (Lizzie.config.showSubBoard) subBoardRenderer.removecountblock();

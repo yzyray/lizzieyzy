@@ -75,7 +75,7 @@ public class EstimateResults extends JDialog {
         new WindowAdapter() {
           public void windowClosing(WindowEvent e) {
             setVisible(false);
-            Lizzie.frame.clearKataEstimate();
+            Lizzie.frame.clearEstimate();
             Lizzie.frame.refresh();
             Lizzie.frame.isCounting = false;
             iscounted = false;
@@ -141,7 +141,7 @@ public class EstimateResults extends JDialog {
               Lizzie.frame.zen.countStones();
               btnAuto.setText(resourceBundle.getString("EstimateResults.stopEstimate")); // "停止判断");
             } else {
-              Lizzie.frame.clearKataEstimate();
+              Lizzie.frame.clearEstimate();
               Lizzie.frame.refresh();
               // Lizzie.frame.iscounting=false;
               btnAuto.setText(resourceBundle.getString("EstimateResults.autoEstimate")); // "自动判断");
@@ -159,7 +159,7 @@ public class EstimateResults extends JDialog {
               btnEstimate.setText(
                   resourceBundle.getString("EstimateResults.closeEstimate")); // "关闭判断");
             } else {
-              Lizzie.frame.clearKataEstimate();
+              Lizzie.frame.clearEstimate();
               Lizzie.frame.refresh();
               Lizzie.frame.isCounting = false;
               btnEstimate.setText(resourceBundle.getString("EstimateResults.estimate")); // "判断形势");
