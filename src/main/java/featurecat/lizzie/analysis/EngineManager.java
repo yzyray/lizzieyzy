@@ -104,7 +104,9 @@ public class EngineManager {
             }
             if (currentEngineNo > 20) Lizzie.frame.menu.changeEngineIcon(20, 3);
             else Lizzie.frame.menu.changeEngineIcon(currentEngineNo, 3);
-            Lizzie.initializeAfterVersionCheck(false, e);
+            ArrayList<Movelist> mv = Lizzie.board.getmovelist();
+            Lizzie.leelaz.sendCommand("clear_board");
+            Lizzie.board.restoreMoveNumber(engineDt.index, mv, false, Lizzie.leelaz);
           }
         }.start();
       } else {
@@ -2211,97 +2213,6 @@ public class EngineManager {
       e.printStackTrace();
     }
   }
-
-  //  public void switchEngine2(int index) {
-  //    // if (isEmpty) isEmpty = false;
-  //    if (index == currentEngineNo) {
-  //      Message msg = new Message();
-  //      msg.setMessage(resourceBundle.getString("EngineManager.sameEngineHint"));
-  //      msg.setVisible(true);
-  //      return;
-  //    }
-  //    if (index > this.engineList.size()) return;
-  //    Leelaz newEng = engineList.get(index);
-  //    if (newEng == null) return;
-  //    boolean changeBoard = true;
-  //
-  //    ArrayList<Movelist> mv = Lizzie.board.getmovelist();
-  //
-  //    try {
-  //      if (currentEngineNo2 != -1) {
-  //        Leelaz curEng = engineList.get(this.currentEngineNo2);
-  //        curEng.switching = true;
-  //        if (newEng.width == Lizzie.board.boardWidth && newEng.height ==
-  // Lizzie.board.boardHeight)
-  //          changeBoard = false;
-  //        else {
-  //          newEng.width = Lizzie.board.boardWidth;
-  //          newEng.height = Lizzie.board.boardHeight;
-  //        }
-  //        newEng.komi = (float) Lizzie.board.getHistory().getGameInfo().getKomi();
-  //        try {
-  //          if (!Lizzie.config.fastChange) {
-  //            curEng.normalQuit();
-  //          } else {
-  //            curEng.sendCommand("name");
-  //          }
-  //        } catch (Exception e) {
-  //          e.printStackTrace();
-  //        }
-  //        curEng.notPondering();
-  //      }
-  //      Lizzie.leelaz2 = newEng;
-  //
-  //      if (!newEng.isStarted()) {
-  //        newEng.startEngine(index);
-  //      } else {
-  //        if (changeBoard) newEng.boardSize(newEng.width, newEng.height);
-  //        newEng.sendCommand("komi " + newEng.komi);
-  //        Lizzie.config.leelaversion = newEng.version;
-  //        Runnable runnable =
-  //            new Runnable() {
-  //              public void run() {
-  //                Lizzie.frame.toolbar.reSetButtonLocation();
-  //                Lizzie.frame.resetMovelistFrameandAnalysisFrame(true);
-  //                Lizzie.frame.setVisible(true);
-  //                if (newEng.isKatago || newEng.version < 17) {
-  //                  featurecat.lizzie.gui.Input.selectMode = false;
-  //                  Lizzie.frame.boardRenderer.removeSelectedRect();
-  //                  featurecat.lizzie.gui.RightClickMenu.avoidcoords = "";
-  //                  featurecat.lizzie.gui.RightClickMenu.allowcoords = "";
-  //                  if (Lizzie.frame.isKeepingForce) {
-  //                    Lizzie.frame.isKeepingForce = false;
-  //                    newEng.ponder();
-  //                  }
-  //                }
-  //              }
-  //            };
-  //        Thread thread = new Thread(runnable);
-  //        thread.start();
-  //        if (newEng.isKatago || newEng.version < 17) {
-  //          //   Lizzie.frame.menu.toggleShowForce(false);
-  //        } else {
-  //          Lizzie.frame.menu.toggleShowForce(true);
-  //        }
-  //      }
-  //      newEng.sendCommand("clear_board");
-  //      Lizzie.board.restoreMoveNumber(index, mv);
-  //      newEng.ponder();
-  //      Lizzie.board.clearbestmovesafter2(Lizzie.board.getHistory().getStart());
-  //      Lizzie.leelaz.ponder();
-  //      this.currentEngineNo2 = index;
-  //      featurecat.lizzie.gui.Menu.engineMenu2.setText(
-  //          resourceBundle.getString("EngineManager.subEngine")
-  //              + (currentEngineNo2 + 1)
-  //              + ": "
-  //              + engineList.get(currentEngineNo2).currentEnginename);
-  //      newEng.setResponseUpToDate();
-  //    } catch (IOException e) {
-  //      e.printStackTrace();
-  //    }
-  //    changeEngIco(2);
-  //    Lizzie.frame.boardRenderer2.removecountblock();
-  //  }
 
   public void changeEngIcoForEndPk() {
     // Lizzie.frame.subBoardRenderer.reverseBestmoves = false;

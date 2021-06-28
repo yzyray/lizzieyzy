@@ -1153,6 +1153,11 @@ public class MoreEngines extends JPanel {
         engineDt.password = Utils.doEncrypt(new String(this.txtPassword.getPassword()));
       }
     }
+    if (engineDt.isDefault) {
+      for (EngineData engine : engineData) {
+        engine.isDefault = false;
+      }
+    }
     if (this.curIndex + 1 > engineData.size()) {
       engineData.add(engineDt);
     } else {

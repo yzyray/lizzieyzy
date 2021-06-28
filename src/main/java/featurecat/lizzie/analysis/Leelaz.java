@@ -1316,7 +1316,7 @@ public class Leelaz {
 					if (!Lizzie.config.playponder)
 						Lizzie.leelaz.nameCmdfornoponder();
 				}
-				if (!isInputCommand) {
+				if (!isInputCommand&&params.length>=2) {
 					isPondering = false;
 				}
 				isThinking = false;
@@ -1437,9 +1437,6 @@ public class Leelaz {
 						}
 						if (!Lizzie.config.playponder)
 							Lizzie.leelaz.nameCmdfornoponder();
-					}
-					if (!isInputCommand) {
-						isPondering = false;
 					}
 					isThinking = false;
 					if (isInputCommand) {
