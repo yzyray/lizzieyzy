@@ -1921,7 +1921,6 @@ public class EngineManager {
         e.printStackTrace();
       }
     } else {
-      if (newEng.isKataGoPda) LizzieFrame.menu.showPda(true);
       newEng.canRestoreDymPda = false;
       newEng.boardSize(newEng.width, newEng.height);
       newEng.sendCommand("komi " + newEng.komi);
@@ -2061,8 +2060,7 @@ public class EngineManager {
     if (Lizzie.board.getHistory().getStart() == Lizzie.board.getHistory().getEnd())
       isEmptyBoard = true;
 
-    Lizzie.frame.menu.showPda(false);
-    Lizzie.frame.menu.txtPDA.setText("0");
+    // Lizzie.frame.menu.showPda(false);
     try {
       if (isEmptyBoard && changeOriBoard && isMain)
         Lizzie.board.reopenOnlyBoard(newEng.oriWidth, newEng.oriHeight);

@@ -323,9 +323,16 @@ public class Lizzie {
 
   public static void initializeAfterVersionCheck(boolean isEngineGame, Leelaz engine) {
     engine.canRestoreDymPda = true;
-    if (engine.isKataGoPda && (engine == Lizzie.leelaz || Lizzie.engineManager.isPreEngineGame))
-      LizzieFrame.menu.showPda(true);
+    if (engineManager.isEngineGame()) {
+      if (engineManager.engineList.get(engineManager.engineGameInfo.firstEngineIndex).isKataGoPda
+          || engineManager.engineList.get(engineManager.engineGameInfo.secondEngineIndex)
+              .isKataGoPda) LizzieFrame.menu.showPda(true);
+      else LizzieFrame.menu.showPda(false);
+    }
     if (engine != leelaz) return;
+    if (!Lizzie.engineManager.isEngineGame()) {
+      LizzieFrame.menu.showPda(engine.isKataGoPda);
+    }
     if (!isEngineGame && !frame.isPlayingAgainstLeelaz)
       if (!(frame.toolbar.chkAutoPlay.isSelected()
           && !frame.toolbar.chkAutoPlayBlack.isSelected())) {

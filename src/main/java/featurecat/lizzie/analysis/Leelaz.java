@@ -952,7 +952,7 @@ public class Leelaz {
 					if(params[1].startsWith("KataGoPda")) {
 						isKatagoCustom=true;
 						isCheckinPda=true;
-						isKataGoPda=true;
+						isKataGoPda=true;						
 					sendCommand("getpda");
 					sendCommand("getdympdacap");
 					Runnable runnable =
@@ -970,6 +970,7 @@ public class Leelaz {
 					    Thread thread = new Thread(runnable);
 					    thread.start();
 					}
+					setKataEnginePara();
 					if(Lizzie.config.autoLoadKataRules)
 						sendCommand("kata-set-rules "+Lizzie.config.kataRules);
 					getParameterScadule(true);
@@ -982,8 +983,7 @@ public class Leelaz {
 					if (this.currentEngineN == EngineManager.currentEngineNo) {
 						Lizzie.config.leelaversion = version;
 					}
-				//	isLoaded = true;
-					setKataEnginePara();
+				//	isLoaded = true;					
 					//Lizzie.frame.menu.showWRNandPDA(true);
 				}	
 				else {setLeelaSaiEnginePara();
@@ -1469,11 +1469,11 @@ public class Leelaz {
 				          }
 //						if (params[1].startsWith("KataGoYm"))
 //							sendCommandToLeelazWithOutLog("lizzie_use");		
-						if (params[1].startsWith("KataGo") || isKatago) {
+						if (params[1].startsWith("KataGo") || isKatago) {							
 							if(params[1].startsWith("KataGoPda")) {
 								isKatagoCustom=true;
 								isCheckinPda=true;								
-								isKataGoPda=true;
+								isKataGoPda=true;								
 							sendCommand("getpda");
 							sendCommand("getdympdacap");
 							Runnable runnable =
@@ -1490,7 +1490,8 @@ public class Leelaz {
 							        };
 							    Thread thread = new Thread(runnable);
 							    thread.start();
-							}							
+							}			
+							setKataEnginePara();
 							if(Lizzie.config.autoLoadKataRules)
 								sendCommand("kata-set-rules "+Lizzie.config.kataRules);
 							getParameterScadule(true);
@@ -1518,8 +1519,7 @@ public class Leelaz {
 									Lizzie.frame.menu.changeEngineIcon(20,2);
 								else
 									Lizzie.frame.menu.changeEngineIcon(currentEngineN,2);
-							}
-							setKataEnginePara();
+							}							
 						}	else {setLeelaSaiEnginePara();
 						}		
 						if (params[1].toLowerCase().startsWith("katajigo"))
@@ -3918,7 +3918,7 @@ parseHeatMap(line);
 	}
 	
 	private void setKataEnginePara() {
-        if (Lizzie.config.autoLoadKataEnginePDA)
+        if (Lizzie.config.autoLoadKataEnginePDA&&!isKataGoPda)
            {setPda(Lizzie.config.autoLoadTxtKataEnginePDA);
            }
         if (Lizzie.config.autoLoadKataEngineWRN)

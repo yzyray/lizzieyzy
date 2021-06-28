@@ -5452,13 +5452,13 @@ public class Menu extends JMenuBar {
             Lizzie.config.chkKataEngineWRN = chkWRN.isSelected();
           }
         });
-    chkWRN.setSelected(Lizzie.config.autoLoadKataEngineWRN);
+    // chkWRN.setSelected(Lizzie.config.autoLoadKataEngineWRN);
     lblWRN = new JFontLabel(resourceBundle.getString("Menu.lblWRN")); // ("分析广度拓展");
     txtWRN = new JFontTextField();
     txtWRN.setToolTipText(resourceBundle.getString("Menu.chkWRN.toolTopText"));
     txtWRN.setDocument(new DoubleDocument());
-    if (!Lizzie.config.autoLoadKataEngineWRN) txtWRN.setEnabled(false);
-    txtWRN.setText(Lizzie.config.txtKataEngineWRN + "");
+    // if (!Lizzie.config.autoLoadKataEngineWRN) txtWRN.setEnabled(false);
+    // txtWRN.setText(Lizzie.config.txtKataEngineWRN + "");
 
     Document dt3 = txtWRN.getDocument();
     dt3.addDocumentListener(
@@ -5593,14 +5593,14 @@ public class Menu extends JMenuBar {
             Lizzie.config.chkKataEnginePDA = chkPDA.isSelected();
           }
         });
-    chkPDA.setSelected(Lizzie.config.autoLoadKataEnginePDA);
+    // chkPDA.setSelected(Lizzie.config.autoLoadKataEnginePDA);
 
     lblGfPDA = new JFontLabel(resourceBundle.getString("Menu.lblPDA")); // ("官方PDA");
     txtGfPDA = new JFontTextField();
     txtGfPDA.setToolTipText(resourceBundle.getString("Menu.chkPDA.toolTopText"));
     txtGfPDA.setDocument(new DoubleDocument());
-    if (!Lizzie.config.autoLoadKataEnginePDA) txtGfPDA.setEnabled(false);
-    txtGfPDA.setText(Lizzie.config.txtKataEnginePDA + "");
+    // if (!Lizzie.config.autoLoadKataEnginePDA) txtGfPDA.setEnabled(false);
+    // txtGfPDA.setText(Lizzie.config.txtKataEnginePDA + "");
 
     Document dt4 = txtGfPDA.getDocument();
     dt4.addDocumentListener(
@@ -8335,41 +8335,23 @@ public class Menu extends JMenuBar {
 
   public void setPdaAndWrn(double pda, double wrn) {
     ShouldIgnoreDtChange = true;
-    if (!Lizzie.config.autoLoadKataEnginePDA) {
-      if (pda == 0) {
-        chkPDA.setSelected(false);
-        txtGfPDA.setText("0");
-        txtGfPDA.setEnabled(false);
-      } else {
-        chkPDA.setSelected(true);
-        txtGfPDA.setText(pda + "");
-        txtGfPDA.setEnabled(true);
-      }
-      Lizzie.config.autoLoadKataEnginePDA = false;
-      Lizzie.config.uiConfig.put("txt-kata-engine-pda", Lizzie.config.txtKataEnginePDA);
-    }
-    if (!((Lizzie.engineManager.isPreEngineGame
-            || Lizzie.engineManager.isEngineGame
-            || Lizzie.frame.isAnaPlayingAgainstLeelaz)
-        && Lizzie.config.disableWRNInGame)) {
-      if (!Lizzie.config.autoLoadKataEngineWRN) {
-        if (wrn == 0) {
-          chkWRN.setSelected(false);
-          txtWRN.setText("0");
-          txtWRN.setEnabled(false);
-        } else {
-          chkWRN.setSelected(true);
-          txtWRN.setText(wrn + "");
-          txtWRN.setEnabled(true);
-        }
-        Lizzie.config.autoLoadKataEngineWRN = false;
-        Lizzie.config.uiConfig.put("autoload-kata-engine-wrn", Lizzie.config.autoLoadKataEngineWRN);
-      }
-
+    if (pda == 0) {
+      chkPDA.setSelected(false);
+      txtGfPDA.setText("0");
+      txtGfPDA.setEnabled(false);
     } else {
-      if (wrn != 0) {
-        txtWRN.setText(wrn + "");
-      }
+      chkPDA.setSelected(true);
+      txtGfPDA.setText(pda + "");
+      txtGfPDA.setEnabled(true);
+    }
+    if (wrn == 0) {
+      chkWRN.setSelected(false);
+      txtWRN.setText("0");
+      txtWRN.setEnabled(false);
+    } else {
+      chkWRN.setSelected(true);
+      txtWRN.setText(wrn + "");
+      txtWRN.setEnabled(true);
     }
     ShouldIgnoreDtChange = false;
   }

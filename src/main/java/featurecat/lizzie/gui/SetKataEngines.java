@@ -48,6 +48,7 @@ public class SetKataEngines extends JDialog {
   public SetKataEngines() {
     // this.setModal(true);
     // setType(Type.POPUP);
+    boolean isPdaEngine = Lizzie.leelaz.isKataGoPda;
     setResizable(false);
     setTitle(Lizzie.resourceBundle.getString("SetKataEngines.title")); // ("设置KataGo引擎高级参数");
     setAlwaysOnTop(true);
@@ -81,21 +82,21 @@ public class SetKataEngines extends JDialog {
             Lizzie.config.showPDAInMenu = chkPDAInMenu.isSelected();
             Lizzie.config.uiConfig.put("show-pda-in-menu", Lizzie.config.showPDAInMenu);
 
-            // if (!Lizzie.config.showPDAInMenu) {
-            Lizzie.config.chkKataEnginePDA = chkEditPDA.isSelected();
-            Lizzie.config.autoLoadKataEnginePDA = chkAutoLoadPDA.isSelected();
-            Lizzie.config.txtKataEnginePDA = txtPDA.getText();
-            if (Lizzie.config.chkKataEnginePDA) {
-              Lizzie.leelaz.setPda(Lizzie.config.txtKataEnginePDA);
-              if (Lizzie.config.autoLoadKataEnginePDA) {
-                Lizzie.config.autoLoadTxtKataEnginePDA = Lizzie.config.txtKataEnginePDA;
-                Lizzie.config.uiConfig.put(
-                    "auto-load-txt-kata-engine-pda", Lizzie.config.autoLoadTxtKataEnginePDA);
-              }
-            } else Lizzie.leelaz.setPda("0");
-            Lizzie.frame.menu.setUseGfPda(
-                Lizzie.config.chkKataEnginePDA, Lizzie.config.txtKataEnginePDA);
-            // }
+            if (!isPdaEngine) {
+              Lizzie.config.chkKataEnginePDA = chkEditPDA.isSelected();
+              Lizzie.config.autoLoadKataEnginePDA = chkAutoLoadPDA.isSelected();
+              Lizzie.config.txtKataEnginePDA = txtPDA.getText();
+              if (Lizzie.config.chkKataEnginePDA) {
+                Lizzie.leelaz.setPda(Lizzie.config.txtKataEnginePDA);
+                if (Lizzie.config.autoLoadKataEnginePDA) {
+                  Lizzie.config.autoLoadTxtKataEnginePDA = Lizzie.config.txtKataEnginePDA;
+                  Lizzie.config.uiConfig.put(
+                      "auto-load-txt-kata-engine-pda", Lizzie.config.autoLoadTxtKataEnginePDA);
+                }
+              } else Lizzie.leelaz.setPda("0");
+              Lizzie.frame.menu.setUseGfPda(
+                  Lizzie.config.chkKataEnginePDA, Lizzie.config.txtKataEnginePDA);
+            }
 
             //  if (!Lizzie.config.showWRNInMenu) {
             Lizzie.config.chkKataEngineWRN = chkEditWRN.isSelected();
@@ -180,7 +181,6 @@ public class SetKataEngines extends JDialog {
         133,
         24);
     getContentPane().add(txtPDA);
-    // txtPDA.setColumns(10);
 
     Document dt4 = txtPDA.getDocument();
     dt4.addDocumentListener(
@@ -467,7 +467,7 @@ public class SetKataEngines extends JDialog {
     lblHint2.setBounds(7, 145, 559, 28);
     getContentPane().add(lblHint2);
 
-    // setSize(983, 342);
+    setSize(983, 342);
     // Lizzie.setFrameSize(this, 770, 230);
     Lizzie.setFrameSize(
         this,
@@ -681,6 +681,22 @@ public class SetKataEngines extends JDialog {
         || (Lizzie.engineManager.isEngineGame && Lizzie.engineManager.engineGameInfo.isGenmove)) {
       txtWRN.setEnabled(false);
       chkEditWRN.setEnabled(false);
+    }
+
+    if (isPdaEngine) {
+      txtPDA.setVisible(false);
+      this.chkAutoLoadPDA.setVisible(false);
+      this.chkEditPDA.setVisible(false);
+      this.chkPDAInMenu.setVisible(false);
+
+      JFontLabel lblPdaEngineUseMenu =
+          new JFontLabel(Lizzie.resourceBundle.getString("SetKataEngines.lblPdaEngineUseMenu"));
+      getContentPane().add(lblPdaEngineUseMenu);
+      lblPdaEngineUseMenu.setBounds(
+          Lizzie.config.isFrameFontSmall() ? 451 : (Lizzie.config.isFrameFontMiddle() ? 560 : 680),
+          25,
+          400,
+          23);
     }
   }
 

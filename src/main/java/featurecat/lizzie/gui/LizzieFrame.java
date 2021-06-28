@@ -12421,29 +12421,20 @@ public class LizzieFrame extends JFrame {
   }
 
   public void setPdaAndWrn(double pda, double wrn) {
-    // TODO Auto-generated method stub
-
-    if (!Lizzie.config.autoLoadKataEnginePDA) {
-      if (pda == 0) {
-        Lizzie.config.chkKataEnginePDA = false;
-        Lizzie.config.txtKataEnginePDA = "0";
-      } else {
-        Lizzie.config.chkKataEnginePDA = true;
-        Lizzie.config.txtKataEnginePDA = pda + "";
-      }
+    if (pda == 0) {
+      Lizzie.config.chkKataEnginePDA = false;
+      Lizzie.config.txtKataEnginePDA = "0";
+    } else {
+      Lizzie.config.chkKataEnginePDA = true;
+      Lizzie.config.txtKataEnginePDA = pda + "";
     }
-    if (!((Lizzie.engineManager.isPreEngineGame
-            || Lizzie.engineManager.isEngineGame
-            || isAnaPlayingAgainstLeelaz)
-        && Lizzie.config.disableWRNInGame)) {
-      if (!Lizzie.config.autoLoadKataEngineWRN) {
-        if (wrn == 0) {
-          Lizzie.config.chkKataEngineWRN = false;
-          Lizzie.config.txtKataEngineWRN = "0";
-        } else {
-          Lizzie.config.chkKataEngineWRN = true;
-          Lizzie.config.txtKataEngineWRN = wrn + "";
-        }
+    if (!Lizzie.config.autoLoadKataEngineWRN) {
+      if (wrn == 0) {
+        Lizzie.config.chkKataEngineWRN = false;
+        Lizzie.config.txtKataEngineWRN = "0";
+      } else {
+        Lizzie.config.chkKataEngineWRN = true;
+        Lizzie.config.txtKataEngineWRN = wrn + "";
       }
     } else {
       if (wrn != 0) {
