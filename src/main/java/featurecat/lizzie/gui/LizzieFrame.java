@@ -10009,21 +10009,22 @@ public class LizzieFrame extends JFrame {
     if (isInScoreMode) return;
     if ((!Lizzie.leelaz.iskataHeatmapShowOwner && Lizzie.config.showKataGoEstimateBySize)
         || (Lizzie.leelaz.iskataHeatmapShowOwner && Lizzie.config.showPureEstimateBySize)) {
-      if (Lizzie.config.showKataGoEstimateOnMainbord) {
+      if (Lizzie.config.showKataGoEstimateOnMainbord || isShowingHeatmap) {
         if (extraMode == 2) {
           if (engine == Lizzie.leelaz) Lizzie.frame.boardRenderer.drawcountblockkata2(tempcount);
           if (Lizzie.leelaz2 != null && engine == Lizzie.leelaz2)
             Lizzie.frame.boardRenderer2.drawcountblockkata2(tempcount);
         } else {
           Lizzie.frame.boardRenderer.drawcountblockkata2(tempcount);
-          if (Lizzie.config.showKataGoEstimateOnSubbord && Lizzie.config.showSubBoard)
-            Lizzie.frame.subBoardRenderer.drawcountblockkata2(tempcount);
           if (floatBoard != null && floatBoard.isVisible())
             floatBoard.boardRenderer.drawcountblockkata2(tempcount);
         }
-        if (Lizzie.config.showKataGoEstimateOnSubbord
-            && Lizzie.config.showSubBoard
-            && extraMode != 2) Lizzie.frame.subBoardRenderer.drawcountblockkata2(tempcount);
+      }
+      if (Lizzie.config.showKataGoEstimateOnSubbord && extraMode != 2) {
+        if (Lizzie.config.showSubBoard)
+          Lizzie.frame.subBoardRenderer.drawcountblockkata2(tempcount);
+        if (independentSubBoard != null && independentSubBoard.isVisible())
+          independentSubBoard.subBoardRenderer.drawcountblockkata2(tempcount);
       }
     } else {
       if (Lizzie.config.showKataGoEstimateOnMainbord || isShowingHeatmap) {
@@ -10037,8 +10038,11 @@ public class LizzieFrame extends JFrame {
             floatBoard.boardRenderer.drawcountblockkata(tempcount);
         }
       }
-      if (Lizzie.config.showKataGoEstimateOnSubbord && Lizzie.config.showSubBoard && extraMode != 2)
-        Lizzie.frame.subBoardRenderer.drawcountblockkata(tempcount);
+      if (Lizzie.config.showKataGoEstimateOnSubbord && extraMode != 2) {
+        if (Lizzie.config.showSubBoard) Lizzie.frame.subBoardRenderer.drawcountblockkata(tempcount);
+        if (independentSubBoard != null && independentSubBoard.isVisible())
+          independentSubBoard.subBoardRenderer.drawcountblockkata(tempcount);
+      }
     }
   }
 
