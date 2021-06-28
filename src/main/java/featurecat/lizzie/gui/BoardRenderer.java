@@ -84,7 +84,7 @@ public class BoardRenderer {
   // private BufferedImage importantSugg = emptyImage;
   // private ArrayList<BufferedImage> cachedSelectImage = new ArrayList<BufferedImage>();
   private boolean hasBlockimage = false;
-  private BufferedImage countblockimage = emptyImage;
+  private BufferedImage kataEstimateImage = emptyImage;
   private BufferedImage estimateImage = emptyImage;
 
   private BufferedImage scoreImage = emptyImage;
@@ -825,7 +825,7 @@ public class BoardRenderer {
   }
 
   public void removecountblock() {
-    countblockimage = new BufferedImage(boardWidth, boardHeight, TYPE_INT_ARGB);
+    kataEstimateImage = new BufferedImage(boardWidth, boardHeight, TYPE_INT_ARGB);
   }
 
   public void removeEstimateImage() {
@@ -852,7 +852,7 @@ public class BoardRenderer {
     return Lizzie.config.showKataGoEstimateBigBelow;
   }
 
-  public void drawcountblockkata(ArrayList<Double> tempcount) {
+  public void drawKataEstimateByTransparent(ArrayList<Double> tempcount) {
     BufferedImage newEstimateImage = new BufferedImage(boardWidth, boardHeight, TYPE_INT_ARGB);
     Graphics2D g = newEstimateImage.createGraphics();
     for (int i = 0; i < tempcount.size(); i++) {
@@ -918,7 +918,7 @@ public class BoardRenderer {
               squareWidth * 6 / 10);
       }
     }
-    countblockimage = newEstimateImage;
+    kataEstimateImage = newEstimateImage;
     g.dispose();
   }
 
@@ -932,7 +932,7 @@ public class BoardRenderer {
     }
   }
 
-  public void drawcountblockkata2(ArrayList<Double> tempcount) {
+  public void drawKataEstimateBySize(ArrayList<Double> tempcount) {
     BufferedImage newEstimateImage = new BufferedImage(boardWidth, boardHeight, TYPE_INT_ARGB);
     Graphics2D g = newEstimateImage.createGraphics();
     for (int i = 0; i < tempcount.size(); i++) {
@@ -960,7 +960,7 @@ public class BoardRenderer {
         if (length > 0) g.fillRect(stoneX - length / 2, stoneY - length / 2, length, length);
       }
     }
-    countblockimage = newEstimateImage;
+    kataEstimateImage = newEstimateImage;
     g.dispose();
   }
 
@@ -1454,7 +1454,7 @@ public class BoardRenderer {
     g.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_OFF);
     if ((Lizzie.config.showKataGoEstimate && !Lizzie.config.isHiddenKataEstimate)
         || Lizzie.frame.isShowingHeatmap)
-      if (shouldShowCountBlockBelow()) g.drawImage(countblockimage, x, y, null);
+      if (shouldShowCountBlockBelow()) g.drawImage(kataEstimateImage, x, y, null);
     if (isShowingBranch) {
       if (!Lizzie.config.removeDeadChainInVariation && !shouldShowPreviousBestMoves()) {
         g.drawImage(cachedStonesShadowImage, x, y, null);
@@ -1474,8 +1474,9 @@ public class BoardRenderer {
     g.drawImage(blockimage, x, y, null);
     if ((Lizzie.config.showKataGoEstimate && !Lizzie.config.isHiddenKataEstimate)
         || Lizzie.frame.isShowingHeatmap)
-      if (!shouldShowCountBlockBelow()) g.drawImage(countblockimage, x, y, null);
-    g.drawImage(estimateImage, x, y, null);
+      if (!shouldShowCountBlockBelow()) g.drawImage(kataEstimateImage, x, y, null);
+    if (Lizzie.frame.isCounting || Lizzie.frame.isAutocounting)
+      g.drawImage(estimateImage, x, y, null);
     if (Lizzie.frame.isKeepingForce
         || RightClickMenu.isKeepForcing
         || RightClickMenu.isTempForcing) {

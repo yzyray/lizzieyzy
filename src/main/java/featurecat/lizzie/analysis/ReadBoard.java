@@ -162,7 +162,7 @@ public class ReadBoard {
       if (!usePipe) {
         Utils.showMsg(e.getLocalizedMessage());
         SMessage msg = new SMessage();
-        msg.setMessage(resourceBundle.getString("ReadBoard.noFileHint"), 2);
+        msg.setMessage(resourceBundle.getString("ReadBoard.loadFailed"), 2);
         s.close();
         return;
       } else {
@@ -211,12 +211,14 @@ public class ReadBoard {
       }
       System.out.println("Board synchronization tool process ended.");
       shutdown();
-      if (System.currentTimeMillis() - startTime < 1500) {
+      if (!isLoaded && System.currentTimeMillis() - startTime < 500) {
         try {
           Runtime.getRuntime().exec("powershell /c start readboard\\readboard.bat");
         } catch (IOException e) {
           e.printStackTrace();
         }
+        SMessage msg = new SMessage();
+        msg.setMessage(resourceBundle.getString("ReadBoard.loadFailed"), 2);
       }
       // Do no exit for switching weights
       // System.exit(-1);
