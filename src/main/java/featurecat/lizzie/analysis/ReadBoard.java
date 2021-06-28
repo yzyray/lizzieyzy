@@ -55,6 +55,7 @@ public class ReadBoard {
   private boolean needGenmove = false;
   private boolean showInBoard = false;
   private boolean isSyncing = false;
+  private long startTime;
 
   public ReadBoard(boolean usePipe) throws Exception {
     this.usePipe = usePipe;
@@ -86,7 +87,6 @@ public class ReadBoard {
                 + resourceBundle.getString("ReadBoard.portUsed")
                 + e.getMessage());
       try {
-
         s.close();
       } catch (Exception e1) {
         // TODO Auto-generated catch block
@@ -156,14 +156,17 @@ public class ReadBoard {
     processBuilder.redirectErrorStream(true);
     try {
       process = processBuilder.start();
+      startTime = System.currentTimeMillis();
     } catch (IOException e) {
       // TODO Auto-generated catch block
       if (!usePipe) {
         Utils.showMsg(e.getLocalizedMessage());
         SMessage msg = new SMessage();
         msg.setMessage(resourceBundle.getString("ReadBoard.noFileHint"), 2);
+        s.close();
         return;
       } else {
+        System.out.print(e.getLocalizedMessage());
         throw new Exception("Start pipe failed");
       }
     }
@@ -208,6 +211,13 @@ public class ReadBoard {
       }
       System.out.println("Board synchronization tool process ended.");
       shutdown();
+      if (System.currentTimeMillis() - startTime < 1500) {
+        try {
+          Runtime.getRuntime().exec("powershell /c start readboard\\readboard.bat");
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
       // Do no exit for switching weights
       // System.exit(-1);
     } catch (IOException e) {
