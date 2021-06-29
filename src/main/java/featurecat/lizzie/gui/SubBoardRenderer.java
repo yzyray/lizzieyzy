@@ -935,7 +935,6 @@ public class SubBoardRenderer {
         || Lizzie.frame.isShowingHeatmap)
       if (!shouldShowCountBlockBelow()) g.drawImage(kataEstimateImage, x, y, null);
     g.drawImage(heatimage, x, y, null);
-
     if (!Lizzie.frame.isInPlayMode() && !Lizzie.config.subBoardRaw && Lizzie.config.showBranchNow()
         || (Lizzie.config.extraMode == 1 && !showHeat && this != Lizzie.frame.subBoardRenderer4)) {
       g.drawImage(branchStonesImage, x, y, null);

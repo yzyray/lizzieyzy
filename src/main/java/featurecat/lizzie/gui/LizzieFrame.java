@@ -10020,7 +10020,7 @@ public class LizzieFrame extends JFrame {
             floatBoard.boardRenderer.drawKataEstimateBySize(tempcount);
         }
       }
-      if (Lizzie.config.showKataGoEstimateOnSubbord && extraMode != 2) {
+      if ((Lizzie.config.showKataGoEstimateOnSubbord || isShowingHeatmap) && extraMode != 2) {
         if (Lizzie.config.showSubBoard)
           Lizzie.frame.subBoardRenderer.drawKataEstimateBySize(tempcount);
         if (independentSubBoard != null && independentSubBoard.isVisible())
@@ -10039,7 +10039,7 @@ public class LizzieFrame extends JFrame {
             floatBoard.boardRenderer.drawKataEstimateByTransparent(tempcount);
         }
       }
-      if (Lizzie.config.showKataGoEstimateOnSubbord && extraMode != 2) {
+      if ((Lizzie.config.showKataGoEstimateOnSubbord || isShowingHeatmap) && extraMode != 2) {
         if (Lizzie.config.showSubBoard)
           Lizzie.frame.subBoardRenderer.drawKataEstimateByTransparent(tempcount);
         if (independentSubBoard != null && independentSubBoard.isVisible())

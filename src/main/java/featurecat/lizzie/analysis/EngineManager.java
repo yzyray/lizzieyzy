@@ -589,7 +589,13 @@ public class EngineManager {
     double wr =
         (double) engineGameInfo.getFirstEngineWins()
             / (double) (engineGameInfo.getFirstEngineWins() + engineGameInfo.getSecondEngineWins());
+
     double elo = Math.log10(1.0 / wr - 1.0) * 400;
+    double zxwr = (wr + 1.0 / (2.0 * games)) / (1.0 + 1.0 / games);
+    double zxwrc =
+        1.0
+            * Math.sqrt(wr * (1.0 - wr) / games + 1.0 / ((2.0 * games) * (2.0 * games)))
+            / (1.0 + 1.0 / games);
     double zxwr2 = (wr + 4.0 / (2.0 * games)) / (1.0 + 4.0 / games);
     double zxwrc2 =
         2.0
@@ -600,9 +606,8 @@ public class EngineManager {
         3.0
             * Math.sqrt(wr * (1.0 - wr) / games + 9.0 / ((2.0 * games) * (2.0 * games)))
             / (1.0 + 9.0 / games);
-    double elo2 =
-        Math.log10(1.0 / ((zxwr2 > 0.5 ? zxwr2 + zxwrc2 : zxwr2 - zxwrc2)) - 1.0) * 400; // 待修改
-    // PrintWriter pfp= new PrintWriter(autoSaveFile);
+    double elo2 = Math.log10(1.0 / ((zxwr2 > 0.5 ? zxwr2 + zxwrc2 : zxwr2 - zxwrc2)) - 1.0) * 400;
+
     writer.write(
         settingAll
             + resourceBundle.getString("EngineGameInfo.backgroundPonder")
@@ -654,6 +659,13 @@ public class EngineManager {
       if (Lizzie.engineManager.engineGameInfo.batchNumberCurrent < 50)
         writer.write("?(" + resourceBundle.getString("EngineGameInfo.notEnoughGames") + ")");
     }
+    writer.write("\r\n");
+    writer.write(
+        resourceBundle.getString("EngineGameInfo.oneStdev") // "一个标准差置信区间为:"
+            + String.format("%.2f", zxwr * 100)
+            + "% ± "
+            + String.format("%.2f", zxwrc * 100)
+            + "%");
     writer.write("\r\n");
     writer.write(
         resourceBundle.getString("EngineGameInfo.twoStdev") // "两个标准差置信区间为:"
