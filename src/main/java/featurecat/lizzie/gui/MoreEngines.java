@@ -675,6 +675,7 @@ public class MoreEngines extends JPanel {
             newEng.width = 19;
             engData.add(0, newEng);
             Utils.saveEngineSettings(engData);
+            needUpdateEngine = true;
             handleTableClick(0);
           }
         });
@@ -705,6 +706,7 @@ public class MoreEngines extends JPanel {
                     table.validate();
                     table.updateUI();
                     table.getSelectionModel().clearSelection();
+                    needUpdateEngine = true;
                     handleTableClick(curIndex);
                   }
                 });
