@@ -93,6 +93,8 @@ public class SGFParser {
     Lizzie.board.clearAfterMove();
     if (showHint) Lizzie.frame.refresh();
     if (isExtraMode2 && Lizzie.frame.extraMode != 2 && !Lizzie.config.isAutoAna && showHint) {
+      boolean onTop = Lizzie.frame.isAlwaysOnTop();
+      if (!onTop) Lizzie.frame.setAlwaysOnTop(true);
       int ret =
           JOptionPane.showConfirmDialog(
               Lizzie.frame,
@@ -102,6 +104,7 @@ public class SGFParser {
       if (ret == JOptionPane.OK_OPTION) {
         Lizzie.config.toggleExtraMode(2);
       }
+      Lizzie.frame.setAlwaysOnTop(onTop);
     }
     if (Lizzie.engineManager.currentEngineNo >= 0) Lizzie.engineManager.isEmpty = oriEmpty;
     return returnValue;

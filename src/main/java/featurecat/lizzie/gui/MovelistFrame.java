@@ -280,8 +280,8 @@ public class MovelistFrame extends JFrame {
       int height = (int) screensize.getHeight();
       if (pos.getInt(0) >= width || pos.getInt(1) >= height) setLocation(0, 0);
     } else {
-      if (isMainEngine) setBounds(-9, 0, Lizzie.config.isChinese ? 746 : 880, 487);
-      else setBounds(737, 0, Lizzie.config.isChinese ? 746 : 880, 487);
+      if (isMainEngine) setBounds(-9, 0, Lizzie.config.isChinese ? 846 : 980, 487);
+      else setBounds(737, 0, Lizzie.config.isChinese ? 846 : 980, 487);
     }
     // setMinimumSize(new Dimension(700, 300));
     try {
@@ -462,15 +462,16 @@ public class MovelistFrame extends JFrame {
     bottomPanel.addTab(
         Lizzie.resourceBundle.getString("Movelistframe.stageScore"), matchHistogramAll);
     bottomPanel.addTab(
-        Lizzie.resourceBundle.getString("Movelistframe.aiScore"), matchGraphAll); // AI Score AI评分曲线
+        Lizzie.resourceBundle.getString("Movelistframe.winrateStatistics"), winrateDiffStatics);
+    bottomPanel.addTab(
+        Lizzie.resourceBundle.getString("Movelistframe.scoreStatistics"), scoreDiffStatics);
     bottomPanel.addTab(
         Lizzie.resourceBundle.getString("Movelistframe.winrateDifference"), mistakePanelAll);
     bottomPanel.addTab(
         Lizzie.resourceBundle.getString("Movelistframe.scoreDifference"), scoreDiffGraphAll);
     bottomPanel.addTab(
-        Lizzie.resourceBundle.getString("Movelistframe.winrateStatistics"), winrateDiffStatics);
-    bottomPanel.addTab(
-        Lizzie.resourceBundle.getString("Movelistframe.scoreStatistics"), scoreDiffStatics);
+        Lizzie.resourceBundle.getString("Movelistframe.accuracyLine"),
+        matchGraphAll); // AI Score AI评分曲线
     bottomPanel.addTab(
         Lizzie.resourceBundle.getString("Movelistframe.winrateBigMistake"), bigMistakePanel);
     bottomPanel.addTab(
@@ -496,19 +497,19 @@ public class MovelistFrame extends JFrame {
         matchPanelAll.add(matchPanel, BorderLayout.CENTER);
         break;
       case 1:
-        curIndex = 2;
+        curIndex = 6;
         matchGraphAll.add(selectpanel, BorderLayout.NORTH);
         matchGraphAll.add(matchPanelmin, BorderLayout.SOUTH);
         matchGraphAll.add(matchPanel, BorderLayout.CENTER);
         break;
       case 2:
-        curIndex = 3;
+        curIndex = 4;
         mistakePanelAll.add(selectpanel, BorderLayout.NORTH);
         mistakePanelAll.add(matchPanelmin, BorderLayout.SOUTH);
         mistakePanelAll.add(matchPanel, BorderLayout.CENTER);
         break;
       case 3:
-        curIndex = 4;
+        curIndex = 5;
         scoreDiffGraphAll.add(selectpanel, BorderLayout.NORTH);
         scoreDiffGraphAll.add(matchPanelmin, BorderLayout.SOUTH);
         scoreDiffGraphAll.add(matchPanel, BorderLayout.CENTER);
@@ -520,13 +521,13 @@ public class MovelistFrame extends JFrame {
         matchHistogramAll.add(matchPanel, BorderLayout.CENTER);
         break;
       case 5:
-        curIndex = 5;
+        curIndex = 2;
         winrateDiffStatics.add(selectpanel, BorderLayout.NORTH);
         winrateDiffStatics.add(matchPanelmin, BorderLayout.SOUTH);
         winrateDiffStatics.add(matchPanel, BorderLayout.CENTER);
         break;
       case 6:
-        curIndex = 6;
+        curIndex = 3;
         scoreDiffStatics.add(selectpanel, BorderLayout.NORTH);
         scoreDiffStatics.add(matchPanelmin, BorderLayout.SOUTH);
         scoreDiffStatics.add(matchPanel, BorderLayout.CENTER);
@@ -1512,41 +1513,41 @@ public class MovelistFrame extends JFrame {
                 matchPanelAll.add(matchPanelmin, BorderLayout.SOUTH);
                 matchPanelAll.add(matchPanel, BorderLayout.CENTER);
                 break;
-              case 2:
-                selectedIndex = 1;
-                matchGraphAll.add(selectpanel, BorderLayout.NORTH);
-                matchGraphAll.add(matchPanelmin, BorderLayout.SOUTH);
-                matchGraphAll.add(matchPanel, BorderLayout.CENTER);
-                break;
               case 1:
                 selectedIndex = 4;
                 matchHistogramAll.add(selectpanel, BorderLayout.NORTH);
                 matchHistogramAll.add(matchPanelmin, BorderLayout.SOUTH);
                 matchHistogramAll.add(matchPanel, BorderLayout.CENTER);
                 break;
-              case 3:
-                selectedIndex = 2;
-                mistakePanelAll.add(selectpanel, BorderLayout.NORTH);
-                mistakePanelAll.add(matchPanelmin, BorderLayout.SOUTH);
-                mistakePanelAll.add(matchPanel, BorderLayout.CENTER);
-                break;
-              case 4:
-                selectedIndex = 3;
-                scoreDiffGraphAll.add(selectpanel, BorderLayout.NORTH);
-                scoreDiffGraphAll.add(matchPanelmin, BorderLayout.SOUTH);
-                scoreDiffGraphAll.add(matchPanel, BorderLayout.CENTER);
-                break;
-              case 5:
+              case 2:
                 selectedIndex = 5;
                 winrateDiffStatics.add(selectpanel, BorderLayout.NORTH);
                 winrateDiffStatics.add(matchPanelmin, BorderLayout.SOUTH);
                 winrateDiffStatics.add(matchPanel, BorderLayout.CENTER);
                 break;
-              case 6:
+              case 3:
                 selectedIndex = 6;
                 scoreDiffStatics.add(selectpanel, BorderLayout.NORTH);
                 scoreDiffStatics.add(matchPanelmin, BorderLayout.SOUTH);
                 scoreDiffStatics.add(matchPanel, BorderLayout.CENTER);
+                break;
+              case 4:
+                selectedIndex = 2;
+                mistakePanelAll.add(selectpanel, BorderLayout.NORTH);
+                mistakePanelAll.add(matchPanelmin, BorderLayout.SOUTH);
+                mistakePanelAll.add(matchPanel, BorderLayout.CENTER);
+                break;
+              case 5:
+                selectedIndex = 3;
+                scoreDiffGraphAll.add(selectpanel, BorderLayout.NORTH);
+                scoreDiffGraphAll.add(matchPanelmin, BorderLayout.SOUTH);
+                scoreDiffGraphAll.add(matchPanel, BorderLayout.CENTER);
+                break;
+              case 6:
+                selectedIndex = 1;
+                matchGraphAll.add(selectpanel, BorderLayout.NORTH);
+                matchGraphAll.add(matchPanelmin, BorderLayout.SOUTH);
+                matchGraphAll.add(matchPanel, BorderLayout.CENTER);
                 break;
               case 7:
                 selectedIndex = 7;
@@ -2814,15 +2815,12 @@ public class MovelistFrame extends JFrame {
               // Lizzie.config.matchAiTemperature);
               blackTrueValue = blackTrueValue + nodeInfo.percentsMatch;
               winratediffBlack = winratediffBlack + Math.abs(nodeInfo.diffWinrate);
+              scorediffBlack = scorediffBlack + Math.abs(nodeInfo.scoreMeanDiff);
               analyzedBlack = analyzedBlack + 1;
             } else {
-              //              whiteValue =
-              //                  whiteValue
-              //                      + Math.pow(
-              //                          nodeInfo.percentsMatch, (double) 1 /
-              // Lizzie.config.matchAiTemperature);
               whiteTrueValue = whiteTrueValue + nodeInfo.percentsMatch;
               winratediffWhite = winratediffWhite + Math.abs(nodeInfo.diffWinrate);
+              scorediffWhite = scorediffWhite + Math.abs(nodeInfo.scoreMeanDiff);
               analyzedWhite = analyzedWhite + 1;
             }
 
@@ -2973,7 +2971,9 @@ public class MovelistFrame extends JFrame {
               + String.format("%.2f", blackTrueValue * 100 / analyzedBlack)
               + Lizzie.resourceBundle.getString("Movelistframe.avgDifference")
               + String.format("%.2f", winratediffBlack / analyzedBlack)
-              + "%",
+              + "%"
+              + "/ "
+              + String.format("%.2f", scorediffBlack / analyzedBlack),
           25,
           15);
       g.drawString(
@@ -2987,7 +2987,9 @@ public class MovelistFrame extends JFrame {
               + String.format("%.2f", whiteTrueValue * 100 / analyzedWhite)
               + Lizzie.resourceBundle.getString("Movelistframe.avgDifference")
               + String.format("%.2f", winratediffWhite / analyzedWhite)
-              + "%",
+              + "%"
+              + "/ "
+              + String.format("%.2f", scorediffWhite / analyzedWhite),
           25,
           35);
       g.drawString(
@@ -2995,57 +2997,57 @@ public class MovelistFrame extends JFrame {
               + all
               + Lizzie.resourceBundle.getString("Movelistframe.analyzed")
               + analyzed,
-          391,
+          491,
           15);
 
       if (Lizzie.config.isChinese) {
         g.setColor(new Color(0, 0, 255, 100));
-        g.fillRect(400, 23, 20, 14);
+        g.fillRect(500, 23, 20, 14);
         g.setColor(Color.BLACK);
-        g.drawString(Lizzie.resourceBundle.getString("Movelistframe.blackMatchLabel"), 420, 35);
+        g.drawString(Lizzie.resourceBundle.getString("Movelistframe.blackMatchLabel"), 520, 35);
         g.setColor(new Color(0, 255, 0, 100));
-        g.fillRect(460, 23, 20, 14);
+        g.fillRect(560, 23, 20, 14);
         g.setColor(Color.BLACK);
-        g.drawString(Lizzie.resourceBundle.getString("Movelistframe.whiteMatchLabel"), 480, 35);
+        g.drawString(Lizzie.resourceBundle.getString("Movelistframe.whiteMatchLabel"), 580, 35);
         g.setColor(Color.CYAN);
         g.setStroke(new BasicStroke(3));
-        g.drawLine(522, 30, 540, 30);
+        g.drawLine(622, 30, 640, 30);
         g.setColor(Color.BLACK);
-        g.drawString(Lizzie.resourceBundle.getString("Movelistframe.analyzedLabel"), 545, 35);
+        g.drawString(Lizzie.resourceBundle.getString("Movelistframe.analyzedLabel"), 645, 35);
         g.setColor(Color.ORANGE);
         g.setStroke(new BasicStroke(3));
-        g.drawLine(588, 30, 606, 30);
+        g.drawLine(688, 30, 706, 30);
         g.setColor(Color.BLACK);
-        g.drawString(Lizzie.resourceBundle.getString("Movelistframe.unanalyzedLabel"), 611, 35);
+        g.drawString(Lizzie.resourceBundle.getString("Movelistframe.unanalyzedLabel"), 711, 35);
         g.setColor(Color.RED);
         g.setStroke(new BasicStroke(1));
-        g.drawLine(654, 30, 672, 30);
+        g.drawLine(754, 30, 772, 30);
         g.setColor(Color.BLACK);
-        g.drawString(Lizzie.resourceBundle.getString("Movelistframe.scoreLeadLabel"), 677, 35);
+        g.drawString(Lizzie.resourceBundle.getString("Movelistframe.scoreLeadLabel"), 777, 35);
       } else {
         g.setColor(new Color(0, 0, 255, 100));
-        g.fillRect(400, 23, 20, 14);
+        g.fillRect(500, 23, 20, 14);
         g.setColor(Color.BLACK);
-        g.drawString(Lizzie.resourceBundle.getString("Movelistframe.blackMatchLabel"), 421, 35);
+        g.drawString(Lizzie.resourceBundle.getString("Movelistframe.blackMatchLabel"), 521, 35);
         g.setColor(new Color(0, 255, 0, 100));
-        g.fillRect(492, 23, 20, 14);
+        g.fillRect(592, 23, 20, 14);
         g.setColor(Color.BLACK);
-        g.drawString(Lizzie.resourceBundle.getString("Movelistframe.whiteMatchLabel"), 514, 35);
+        g.drawString(Lizzie.resourceBundle.getString("Movelistframe.whiteMatchLabel"), 614, 35);
         g.setColor(Color.CYAN);
         g.setStroke(new BasicStroke(3));
-        g.drawLine(588, 30, 606, 30);
+        g.drawLine(688, 30, 706, 30);
         g.setColor(Color.BLACK);
-        g.drawString(Lizzie.resourceBundle.getString("Movelistframe.analyzedLabel"), 611, 35);
+        g.drawString(Lizzie.resourceBundle.getString("Movelistframe.analyzedLabel"), 711, 35);
         g.setColor(Color.ORANGE);
         g.setStroke(new BasicStroke(3));
-        g.drawLine(668, 30, 686, 30);
+        g.drawLine(768, 30, 786, 30);
         g.setColor(Color.BLACK);
-        g.drawString(Lizzie.resourceBundle.getString("Movelistframe.unanalyzedLabel"), 691, 35);
+        g.drawString(Lizzie.resourceBundle.getString("Movelistframe.unanalyzedLabel"), 791, 35);
         g.setColor(Color.RED);
         g.setStroke(new BasicStroke(1));
-        g.drawLine(761, 30, 779, 30);
+        g.drawLine(861, 30, 879, 30);
         g.setColor(Color.BLACK);
-        g.drawString(Lizzie.resourceBundle.getString("Movelistframe.scoreLeadLabel"), 784, 35);
+        g.drawString(Lizzie.resourceBundle.getString("Movelistframe.scoreLeadLabel"), 884, 35);
       }
     } else if (selectedIndex == 1) {
       g.drawString(
@@ -4428,45 +4430,42 @@ public class MovelistFrame extends JFrame {
           y2 + g.getFontMetrics().getHeight());
 
       g.drawString(
-          "<" + Lizzie.config.scoreDiffRange1 + "%",
+          "<" + Lizzie.config.scoreDiffRange1,
           (int)
               (posx
                   + 4 * width / 72
-                  - g.getFontMetrics().stringWidth("<" + Lizzie.config.scoreDiffRange1 + "%") / 2),
+                  - g.getFontMetrics().stringWidth("<" + Lizzie.config.scoreDiffRange1) / 2),
           y + g.getFontMetrics().getHeight());
 
       g.drawString(
-          Lizzie.config.scoreDiffRange1 + "-" + Lizzie.config.scoreDiffRange2 + "%",
+          Lizzie.config.scoreDiffRange1 + "-" + Lizzie.config.scoreDiffRange2,
           (int)
               (posx
                   + 9 * width / 72
                   - g.getFontMetrics()
                           .stringWidth(
-                              Lizzie.config.scoreDiffRange1
-                                  + "-"
-                                  + Lizzie.config.scoreDiffRange2
-                                  + "%")
+                              Lizzie.config.scoreDiffRange1 + "-" + Lizzie.config.scoreDiffRange2)
                       / 2),
           y + g.getFontMetrics().getHeight());
 
       g.drawString(
-          ">" + Lizzie.config.scoreDiffRange2 + "%",
+          ">" + Lizzie.config.scoreDiffRange2,
           (int)
               (posx
                   + 14 * width / 72
-                  - g.getFontMetrics().stringWidth(">" + Lizzie.config.scoreDiffRange2 + "%") / 2),
+                  - g.getFontMetrics().stringWidth(">" + Lizzie.config.scoreDiffRange2) / 2),
           y + g.getFontMetrics().getHeight());
 
       g.drawString(
-          "<" + Lizzie.config.scoreDiffRange1 + "%",
+          "<" + Lizzie.config.scoreDiffRange1,
           (int)
               (posx
                   + 22 * width / 72
-                  - g.getFontMetrics().stringWidth("<" + Lizzie.config.scoreDiffRange1 + "%") / 2),
+                  - g.getFontMetrics().stringWidth("<" + Lizzie.config.scoreDiffRange1) / 2),
           y + g.getFontMetrics().getHeight());
 
       g.drawString(
-          Lizzie.config.scoreDiffRange1 + "-" + Lizzie.config.scoreDiffRange2 + "%",
+          Lizzie.config.scoreDiffRange1 + "-" + Lizzie.config.scoreDiffRange2,
           (int)
               (posx
                   + 27 * width / 72
@@ -4480,23 +4479,23 @@ public class MovelistFrame extends JFrame {
           y + g.getFontMetrics().getHeight());
 
       g.drawString(
-          ">" + Lizzie.config.scoreDiffRange2 + "%",
+          ">" + Lizzie.config.scoreDiffRange2,
           (int)
               (posx
                   + 32 * width / 72
-                  - g.getFontMetrics().stringWidth(">" + Lizzie.config.scoreDiffRange2 + "%") / 2),
+                  - g.getFontMetrics().stringWidth(">" + Lizzie.config.scoreDiffRange2) / 2),
           y + g.getFontMetrics().getHeight());
 
       g.drawString(
-          "<" + Lizzie.config.scoreDiffRange1 + "%",
+          "<" + Lizzie.config.scoreDiffRange1,
           (int)
               (posx
                   + 58 * width / 72
-                  - g.getFontMetrics().stringWidth("<" + Lizzie.config.scoreDiffRange1 + "%") / 2),
+                  - g.getFontMetrics().stringWidth("<" + Lizzie.config.scoreDiffRange1) / 2),
           y + g.getFontMetrics().getHeight());
 
       g.drawString(
-          Lizzie.config.scoreDiffRange1 + "-" + Lizzie.config.scoreDiffRange2 + "%",
+          Lizzie.config.scoreDiffRange1 + "-" + Lizzie.config.scoreDiffRange2,
           (int)
               (posx
                   + 63 * width / 72
@@ -4510,23 +4509,23 @@ public class MovelistFrame extends JFrame {
           y + g.getFontMetrics().getHeight());
 
       g.drawString(
-          ">" + Lizzie.config.scoreDiffRange2 + "%",
+          ">" + Lizzie.config.scoreDiffRange2,
           (int)
               (posx
                   + 68 * width / 72
-                  - g.getFontMetrics().stringWidth(">" + Lizzie.config.scoreDiffRange2 + "%") / 2),
+                  - g.getFontMetrics().stringWidth(">" + Lizzie.config.scoreDiffRange2) / 2),
           y + g.getFontMetrics().getHeight());
 
       g.drawString(
-          "<" + Lizzie.config.scoreDiffRange1 + "%",
+          "<" + Lizzie.config.scoreDiffRange1,
           (int)
               (posx
                   + 40 * width / 72
-                  - g.getFontMetrics().stringWidth("<" + Lizzie.config.scoreDiffRange1 + "%") / 2),
+                  - g.getFontMetrics().stringWidth("<" + Lizzie.config.scoreDiffRange1) / 2),
           y + g.getFontMetrics().getHeight());
 
       g.drawString(
-          Lizzie.config.scoreDiffRange1 + "-" + Lizzie.config.scoreDiffRange2 + "%",
+          Lizzie.config.scoreDiffRange1 + "-" + Lizzie.config.scoreDiffRange2,
           (int)
               (posx
                   + 45 * width / 72
@@ -4540,11 +4539,11 @@ public class MovelistFrame extends JFrame {
           y + g.getFontMetrics().getHeight());
 
       g.drawString(
-          ">" + Lizzie.config.scoreDiffRange2 + "%",
+          ">" + Lizzie.config.scoreDiffRange2,
           (int)
               (posx
                   + 50 * width / 72
-                  - g.getFontMetrics().stringWidth(">" + Lizzie.config.scoreDiffRange2 + "%") / 2),
+                  - g.getFontMetrics().stringWidth(">" + Lizzie.config.scoreDiffRange2) / 2),
           y + g.getFontMetrics().getHeight());
 
       g.fillRect(
@@ -6700,6 +6699,11 @@ public class MovelistFrame extends JFrame {
         matchPanelmin.add(suggestionMoves);
         matchPanelmin.add(percentPlayouts);
         matchPanelmin.add(lblMatchConfig3);
+        // aaa添加新筛选
+        matchPanelmin.add(lblParse1Move);
+        matchPanelmin.add(txtParse1Move);
+        matchPanelmin.add(lblParse2Move);
+        matchPanelmin.add(txtParse2Move);
       }
       if (selectedIndex == 5 || selectedIndex == 6) {
         if (Lizzie.config.isChinese) {
@@ -6739,6 +6743,7 @@ public class MovelistFrame extends JFrame {
       }
     }
     if (selectedIndex == 0) {
+      // aaa添加新筛选
       if (Lizzie.config.isChinese) {
         lblMatchConfig1.setBounds(5, 40, 166, 20);
         suggestionMoves.setBounds(84, 43, 25, 16);
