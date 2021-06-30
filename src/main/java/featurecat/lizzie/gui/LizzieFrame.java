@@ -2987,7 +2987,7 @@ public class LizzieFrame extends JFrame {
         e.printStackTrace();
       }
     }
-    Lizzie.config.uiConfig.put("show-badmoves-frame", moveListFrame2.isVisible());
+    Lizzie.config.uiConfig.put("show-badmoves-frame", moveListFrame.isVisible());
   }
 
   public static void sendAiTime() {

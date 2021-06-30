@@ -115,6 +115,7 @@ public class MoveListFrame extends JFrame {
   private JPanel winLossPanel;
   private JPanel scoreLossPanel;
 
+  JCheckBox chkCurrent;
   JCheckBox chkAllGame;
   JCheckBox chkOpening;
   JCheckBox chkMiddle;
@@ -395,12 +396,27 @@ public class MoveListFrame extends JFrame {
     statisticsGraph.add(lossPanel);
 
     statisticsContol = new JPanel(new FlowLayout());
-
+    
+    chkCurrent = new JCheckBox("当前");
+    chkCurrent.addActionListener(
+            new ActionListener() {
+              public void actionPerformed(ActionEvent e) {
+                if (chkAllGame.isSelected()) {
+                	Lizzie.config.moveListFilterCurrent=true;                	
+                	updateCurrentLastMove();
+                 repaint();
+                  customStart.setEnabled(false);
+                  customEnd.setEnabled(false);
+                }
+              }
+            });
+    
     chkAllGame = new JCheckBox("全局");
     chkAllGame.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             if (chkAllGame.isSelected()) {
+            	updateCurrentLastMove();
               applyMoveChange(-1, 1000);
               customStart.setEnabled(false);
               customEnd.setEnabled(false);
@@ -458,6 +474,7 @@ public class MoveListFrame extends JFrame {
         });
 
     ButtonGroup chkGroup = new ButtonGroup();
+    chkGroup.add(chkCurrent);
     chkGroup.add(chkAllGame);
     chkGroup.add(chkOpening);
     chkGroup.add(chkMiddle);
@@ -1901,7 +1918,12 @@ public class MoveListFrame extends JFrame {
         });
   }
 
-  private void setFilterStatus() {
+  private void updateCurrentLastMove() {
+	// TODO Auto-generated method stub
+	  moveListFilterCurrent = uiConfig.optBoolean("move-list-filter-current", false);
+}
+
+private void setFilterStatus() {
     // TODO Auto-generated method stub
     if (Lizzie.config.matchAiFirstMove <= 1
         && Lizzie.config.matchAiLastMove == Lizzie.config.openingEndMove)
