@@ -396,27 +396,31 @@ public class MoveListFrame extends JFrame {
     statisticsGraph.add(lossPanel);
 
     statisticsContol = new JPanel(new FlowLayout());
-    
+
     chkCurrent = new JCheckBox("当前");
     chkCurrent.addActionListener(
-            new ActionListener() {
-              public void actionPerformed(ActionEvent e) {
-                if (chkAllGame.isSelected()) {
-                	Lizzie.config.moveListFilterCurrent=true;                	
-                	updateCurrentLastMove();
-                 repaint();
-                  customStart.setEnabled(false);
-                  customEnd.setEnabled(false);
-                }
-              }
-            });
-    
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            if (chkCurrent.isSelected()) {
+              Lizzie.config.moveListFilterCurrent = true;
+              Lizzie.config.uiConfig.put(
+                  "move-list-filter-current", Lizzie.config.moveListFilterCurrent);
+              updateCurrentLastMove();
+              repaint();
+              customStart.setEnabled(false);
+              customEnd.setEnabled(false);
+            }
+          }
+        });
+
     chkAllGame = new JCheckBox("全局");
     chkAllGame.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             if (chkAllGame.isSelected()) {
-            	updateCurrentLastMove();
+              Lizzie.config.moveListFilterCurrent = false;
+              Lizzie.config.uiConfig.put(
+                  "move-list-filter-current", Lizzie.config.moveListFilterCurrent);
               applyMoveChange(-1, 1000);
               customStart.setEnabled(false);
               customEnd.setEnabled(false);
@@ -429,6 +433,9 @@ public class MoveListFrame extends JFrame {
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             if (chkOpening.isSelected()) {
+              Lizzie.config.moveListFilterCurrent = true;
+              Lizzie.config.uiConfig.put(
+                  "move-list-filter-current", Lizzie.config.moveListFilterCurrent);
               applyMoveChange(-1, Lizzie.config.openingEndMove);
               customStart.setEnabled(false);
               customEnd.setEnabled(false);
@@ -441,6 +448,9 @@ public class MoveListFrame extends JFrame {
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             if (chkMiddle.isSelected()) {
+              Lizzie.config.moveListFilterCurrent = true;
+              Lizzie.config.uiConfig.put(
+                  "move-list-filter-current", Lizzie.config.moveListFilterCurrent);
               applyMoveChange(Lizzie.config.openingEndMove, Lizzie.config.middleEndMove);
               customStart.setEnabled(false);
               customEnd.setEnabled(false);
@@ -453,6 +463,9 @@ public class MoveListFrame extends JFrame {
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             if (chkEnd.isSelected()) {
+              Lizzie.config.moveListFilterCurrent = true;
+              Lizzie.config.uiConfig.put(
+                  "move-list-filter-current", Lizzie.config.moveListFilterCurrent);
               applyMoveChange(Lizzie.config.middleEndMove, 1000);
               customStart.setEnabled(false);
               customEnd.setEnabled(false);
@@ -465,6 +478,9 @@ public class MoveListFrame extends JFrame {
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             if (chkCustom.isSelected()) {
+              Lizzie.config.moveListFilterCurrent = true;
+              Lizzie.config.uiConfig.put(
+                  "move-list-filter-current", Lizzie.config.moveListFilterCurrent);
               applyMoveChange(
                   Lizzie.config.gameStatisticsCustomStart, Lizzie.config.gameStatisticsCustomEnd);
               customStart.setEnabled(true);
@@ -480,6 +496,7 @@ public class MoveListFrame extends JFrame {
     chkGroup.add(chkMiddle);
     chkGroup.add(chkEnd);
     chkGroup.add(chkCustom);
+    statisticsContol.add(chkCurrent);
     statisticsContol.add(chkAllGame);
     statisticsContol.add(chkOpening);
     statisticsContol.add(chkMiddle);
@@ -1301,6 +1318,7 @@ public class MoveListFrame extends JFrame {
                     Lizzie.board.updateMovelist(Lizzie.board.getHistory().getCurrentHistoryNode());
                   }
                 }
+                if (Lizzie.config.moveListFilterCurrent) updateCurrentLastMove();
                 bottomPanel.repaint();
                 statisticsPanel.repaint();
                 if (selectedIndexTop == 1) {
@@ -1919,13 +1937,21 @@ public class MoveListFrame extends JFrame {
   }
 
   private void updateCurrentLastMove() {
-	// TODO Auto-generated method stub
-	  moveListFilterCurrent = uiConfig.optBoolean("move-list-filter-current", false);
-}
-
-private void setFilterStatus() {
     // TODO Auto-generated method stub
-    if (Lizzie.config.matchAiFirstMove <= 1
+    if ((showBranch.getSelectedIndex() == 0
+            && Lizzie.board.getHistory().getCurrentHistoryNode().isMainTrunk())
+        || (showBranch.getSelectedIndex() == 1
+            && !Lizzie.board.getHistory().getCurrentHistoryNode().isMainTrunk())) {
+      Lizzie.config.matchAiLastMove =
+          Lizzie.board.getHistory().getCurrentHistoryNode().getData().moveNumber;
+      Lizzie.config.uiConfig.put("match-ai-lastmove", Lizzie.config.matchAiLastMove);
+    }
+  }
+
+  private void setFilterStatus() {
+    // TODO Auto-generated method stub
+    if (Lizzie.config.moveListFilterCurrent) chkCurrent.setSelected(true);
+    else if (Lizzie.config.matchAiFirstMove <= 1
         && Lizzie.config.matchAiLastMove == Lizzie.config.openingEndMove)
       chkOpening.setSelected(true);
     else if (Lizzie.config.matchAiFirstMove == Lizzie.config.openingEndMove
