@@ -149,9 +149,9 @@ public class Config {
   public int limitBranchLength = 0;
   public int limitMaxSuggestion = 10;
   public boolean showNoSuggCircle = false;
-  public int limitbadmoves = 0;
-  public int limitbadMeanmoves = 0;
-  public int limitbadplayouts = 0;
+  public int moveListWinrateThreshold = 0;
+  public int moveListScoreThreshold = 0;
+  public int moveListVisitsThreshold = 0;
   public int analyzeUpdateIntervalCentisec;
   public int analyzeUpdateIntervalCentisecSSH;
   public boolean showHeat = false;
@@ -210,8 +210,8 @@ public class Config {
   public int scoreDiffRange1 = 2;
   public int scoreDiffRange2 = 5;
 
-  public int parse1Move = 60;
-  public int parse2Move = 140;
+  public int openingEndMove = 60;
+  public int middleEndMove = 160;
 
   public boolean checkRandomVisits = false;;
   public double percentsRandomVisits = 10;
@@ -1040,9 +1040,9 @@ public class Config {
     showNoSuggCircle = leelazConfig.optBoolean("show-nosugg-circle", false);
     enableLizzieCache = leelazConfig.optBoolean("enable-lizzie-cache", true);
 
-    limitbadMeanmoves = uiConfig.optInt("badmoves-scoremean-limits", 0);
-    limitbadmoves = uiConfig.optInt("badmoves-winrate-limits", 0);
-    limitbadplayouts = uiConfig.optInt("badmoves-playouts-limits", 0);
+    moveListScoreThreshold = uiConfig.optInt("move-list-score-threshold", 0);
+    moveListWinrateThreshold = uiConfig.optInt("move-list-winrate-threshold", 0);
+    moveListVisitsThreshold = uiConfig.optInt("move-list-visits-threshold", 0);
     showTimeControlInMenu = uiConfig.optBoolean("show-time-control-in-menu", false);
     showPlayoutControlInMenu = uiConfig.optBoolean("show-playout-control-in-menu", false);
     suggestionInfoWinrate = uiConfig.optInt("suggestion-info-winrate", 1);
@@ -1104,8 +1104,8 @@ public class Config {
     winrateDiffRange2 = uiConfig.optInt("winrate-diff-range2", 10);
     scoreDiffRange1 = uiConfig.optInt("score-diff-range1", 2);
     scoreDiffRange2 = uiConfig.optInt("score-diff-range2", 5);
-    parse1Move = uiConfig.optInt("parse1-Move", 60);
-    parse2Move = uiConfig.optInt("parse2-Move", 140);
+    openingEndMove = uiConfig.optInt("opening-end-move", 60);
+    middleEndMove = uiConfig.optInt("middle-end-move", 160);
     checkRandomVisits = uiConfig.optBoolean("check-random-visits", false);
     percentsRandomVisits = uiConfig.optDouble("percents-random-visits", 10.0);
 
@@ -1988,37 +1988,37 @@ public class Config {
 
       persistedUi.put("public-kifu-search", searchPos);
     }
-    if (Lizzie.frame.movelistframe != null) {
+    if (Lizzie.frame.moveListFrame != null) {
       JSONArray badmoveslistPos = new JSONArray();
 
-      badmoveslistPos.put(Lizzie.frame.movelistframe.sortnum);
-      badmoveslistPos.put(Lizzie.frame.movelistframe.getX());
-      badmoveslistPos.put(Lizzie.frame.movelistframe.getY());
-      badmoveslistPos.put(Lizzie.frame.movelistframe.getWidth());
-      badmoveslistPos.put(Lizzie.frame.movelistframe.getHeight());
+      badmoveslistPos.put(Lizzie.frame.moveListFrame.sortnum);
+      badmoveslistPos.put(Lizzie.frame.moveListFrame.getX());
+      badmoveslistPos.put(Lizzie.frame.moveListFrame.getY());
+      badmoveslistPos.put(Lizzie.frame.moveListFrame.getWidth());
+      badmoveslistPos.put(Lizzie.frame.moveListFrame.getHeight());
       badmoveslistPos.put(
-          Lizzie.frame.movelistframe.table.getColumnModel().getColumn(0).getWidth());
+          Lizzie.frame.moveListFrame.table.getColumnModel().getColumn(0).getWidth());
       badmoveslistPos.put(
-          Lizzie.frame.movelistframe.table.getColumnModel().getColumn(1).getWidth());
+          Lizzie.frame.moveListFrame.table.getColumnModel().getColumn(1).getWidth());
       badmoveslistPos.put(
-          Lizzie.frame.movelistframe.table.getColumnModel().getColumn(2).getWidth());
+          Lizzie.frame.moveListFrame.table.getColumnModel().getColumn(2).getWidth());
       badmoveslistPos.put(
-          Lizzie.frame.movelistframe.table.getColumnModel().getColumn(3).getWidth());
+          Lizzie.frame.moveListFrame.table.getColumnModel().getColumn(3).getWidth());
       badmoveslistPos.put(
-          Lizzie.frame.movelistframe.table.getColumnModel().getColumn(4).getWidth());
+          Lizzie.frame.moveListFrame.table.getColumnModel().getColumn(4).getWidth());
       badmoveslistPos.put(
-          Lizzie.frame.movelistframe.table.getColumnModel().getColumn(5).getWidth());
+          Lizzie.frame.moveListFrame.table.getColumnModel().getColumn(5).getWidth());
       badmoveslistPos.put(
-          Lizzie.frame.movelistframe.table.getColumnModel().getColumn(6).getWidth());
+          Lizzie.frame.moveListFrame.table.getColumnModel().getColumn(6).getWidth());
       badmoveslistPos.put(
-          Lizzie.frame.movelistframe.table.getColumnModel().getColumn(7).getWidth());
+          Lizzie.frame.moveListFrame.table.getColumnModel().getColumn(7).getWidth());
       badmoveslistPos.put(
-          Lizzie.frame.movelistframe.table.getColumnModel().getColumn(8).getWidth());
-      if (Lizzie.frame.movelistframe.table.getColumnCount() == 11) {
+          Lizzie.frame.moveListFrame.table.getColumnModel().getColumn(8).getWidth());
+      if (Lizzie.frame.moveListFrame.table.getColumnCount() == 11) {
         badmoveslistPos.put(
-            Lizzie.frame.movelistframe.table.getColumnModel().getColumn(9).getWidth());
+            Lizzie.frame.moveListFrame.table.getColumnModel().getColumn(9).getWidth());
         badmoveslistPos.put(
-            Lizzie.frame.movelistframe.table.getColumnModel().getColumn(10).getWidth());
+            Lizzie.frame.moveListFrame.table.getColumnModel().getColumn(10).getWidth());
       }
       persistedUi.put("badmoves-list-position", badmoveslistPos);
     } else {

@@ -58,13 +58,6 @@ public class Board {
   public boolean isPkBoardKataW = false;
   public boolean isKataBoard = false;
   public boolean hasStartStone = false;
-  public int matchAiMoves = Lizzie.config.matchAiMoves;
-  public double matchAiPercentsPlayouts = Lizzie.config.matchAiPercentsPlayouts;
-  public int matchAiFirstMove = Lizzie.config.matchAiFirstMove;
-  public int matchAiLastMove = Lizzie.config.matchAiLastMove;
-  // public boolean enableAiMatch = false;
-  // public boolean aiMatchAsWinrate = false;
-  // public int aiMatchArg = 10;
   public ArrayList<Movelist> startStonelist = new ArrayList<Movelist>();
 
   // Save the node for restore move when in the branch
@@ -3866,7 +3859,8 @@ public class Board {
         }
       } else {
         if (!(node.getData().lastMove == passstep) && !(node.getData().lastMove.get() == null)) {
-          Map<String, Object> matchAiMap = isMatchAi(node, matchAiMoves, matchAiPercentsPlayouts);
+          Map<String, Object> matchAiMap =
+              isMatchAi(node, Lizzie.config.matchAiMoves, Lizzie.config.matchAiPercentsPlayouts);
           double percentsMatch =
               Double.parseDouble(matchAiMap.getOrDefault("percents", "0").toString());
 
@@ -3960,7 +3954,8 @@ public class Board {
         }
       } else {
         if (!(node.getData().lastMove == passstep) && !(node.getData().lastMove.get() == null)) {
-          Map<String, Object> matchAiMap = isMatchAi2(node, matchAiMoves, matchAiPercentsPlayouts);
+          Map<String, Object> matchAiMap =
+              isMatchAi2(node, Lizzie.config.matchAiMoves, Lizzie.config.matchAiPercentsPlayouts);
           double percentsMatch =
               Double.parseDouble(matchAiMap.getOrDefault("percents", "0").toString());
           boolean isMatchAi = Boolean.parseBoolean(matchAiMap.get("match").toString());

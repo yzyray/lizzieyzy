@@ -182,8 +182,8 @@ public class LizzieFrame extends JFrame {
   public ArrayList<Movelist> movelist;
   public AnalysisFrame analysisFrame;
   public AnalysisFrame analysisFrame2;
-  public MovelistFrame movelistframe;
-  public MovelistFrame movelistframe2;
+  public MoveListFrame moveListFrame;
+  public MoveListFrame moveListFrame2;
   public int blackorwhite = 0;
   // private final BufferStrategy bs;
   public boolean isCounting = false;
@@ -2752,7 +2752,7 @@ public class LizzieFrame extends JFrame {
       repaint();
       if (extraMode != 2) {
         Lizzie.board.setMovelistAll2();
-        if (movelistframe != null && movelistframe.isVisible()) {
+        if (moveListFrame != null && moveListFrame.isVisible()) {
           toggleBadMoves();
           toggleBadMoves();
         }
@@ -2767,7 +2767,7 @@ public class LizzieFrame extends JFrame {
       }
       Lizzie.frame.menu.setEngineMenuone2status(false);
       if (extraMode == 2) {
-        if (movelistframe2 != null && movelistframe2.isVisible()) movelistframe2.setVisible(false);
+        if (moveListFrame2 != null && moveListFrame2.isVisible()) moveListFrame2.setVisible(false);
       }
     }
 
@@ -2962,21 +2962,21 @@ public class LizzieFrame extends JFrame {
   }
 
   public void toggleBadMoves() {
-    if (movelistframe == null || !movelistframe.isVisible()) {
-      movelistframe = new MovelistFrame(1);
+    if (moveListFrame == null || !moveListFrame.isVisible()) {
+      moveListFrame = new MoveListFrame(1);
       if (Lizzie.config.extraMode == 2) {
-        if (movelistframe2 == null || !movelistframe2.isVisible()) {
-          movelistframe2 = new MovelistFrame(2);
-          movelistframe2.setVisible(true);
-          if (Lizzie.config.badmovesalwaysontop) movelistframe2.setAlwaysOnTop(true);
+        if (moveListFrame2 == null || !moveListFrame2.isVisible()) {
+          moveListFrame2 = new MoveListFrame(2);
+          moveListFrame2.setVisible(true);
+          if (Lizzie.config.badmovesalwaysontop) moveListFrame2.setAlwaysOnTop(true);
         }
       }
-      movelistframe.setVisible(true);
-      if (Lizzie.config.badmovesalwaysontop) movelistframe.setAlwaysOnTop(true);
+      moveListFrame.setVisible(true);
+      if (Lizzie.config.badmovesalwaysontop) moveListFrame.setAlwaysOnTop(true);
     } else {
-      movelistframe.setVisible(false);
-      if (this.extraMode == 2 && movelistframe2 != null) {
-        movelistframe2.setVisible(false);
+      moveListFrame.setVisible(false);
+      if (this.extraMode == 2 && moveListFrame2 != null) {
+        moveListFrame2.setVisible(false);
       }
       clickbadmove = Lizzie.frame.outOfBoundCoordinate;
       Lizzie.frame.refresh();
@@ -2987,7 +2987,7 @@ public class LizzieFrame extends JFrame {
         e.printStackTrace();
       }
     }
-    Lizzie.config.uiConfig.put("show-badmoves-frame", movelistframe.isVisible());
+    Lizzie.config.uiConfig.put("show-badmoves-frame", moveListFrame2.isVisible());
   }
 
   public static void sendAiTime() {
@@ -7576,13 +7576,13 @@ public class LizzieFrame extends JFrame {
       hadSetFrame = true;
     }
     if (Lizzie.config.uiConfig.optBoolean("show-badmoves-frame", false)) {
-      if (movelistframe == null) toggleBadMoves();
+      if (moveListFrame == null) toggleBadMoves();
       else {
         toggleBadMoves();
         toggleBadMoves();
       }
       hadSetFrame = true;
-    } else if (movelistframe != null && movelistframe.isVisible()) {
+    } else if (moveListFrame != null && moveListFrame.isVisible()) {
       toggleBadMoves();
       toggleBadMoves();
       hadSetFrame = true;
@@ -9168,7 +9168,7 @@ public class LizzieFrame extends JFrame {
     }
     thisUrl.setText(url);
     try {
-      frame.setIconImage(ImageIO.read(MovelistFrame.class.getResourceAsStream("/assets/logo.png")));
+      frame.setIconImage(ImageIO.read(MoveListFrame.class.getResourceAsStream("/assets/logo.png")));
     } catch (IOException e1) {
       // TODO Auto-generated catch block
       e1.printStackTrace();

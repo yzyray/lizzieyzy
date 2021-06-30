@@ -1748,8 +1748,8 @@ public class ConfigDialog2 extends JDialog {
     else chkShowMoveList.setSelected(false);
 
     if (Lizzie.frame != null
-        && Lizzie.frame.movelistframe != null
-        && Lizzie.frame.movelistframe.isVisible()) chkShowIndependentHawkEye.setSelected(true);
+        && Lizzie.frame.moveListFrame != null
+        && Lizzie.frame.moveListFrame.isVisible()) chkShowIndependentHawkEye.setSelected(true);
     else chkShowIndependentHawkEye.setSelected(false);
 
     if (Lizzie.frame != null
@@ -3560,13 +3560,13 @@ public class ConfigDialog2 extends JDialog {
 
       if (chkShowIndependentHawkEye.isSelected()) {
         if (Lizzie.frame != null
-            && Lizzie.frame.movelistframe != null
-            && Lizzie.frame.movelistframe.isVisible()) {
+            && Lizzie.frame.moveListFrame != null
+            && Lizzie.frame.moveListFrame.isVisible()) {
         } else Lizzie.frame.toggleBadMoves();
       } else {
         if (Lizzie.frame != null
-            && Lizzie.frame.movelistframe != null
-            && Lizzie.frame.movelistframe.isVisible()) Lizzie.frame.toggleBadMoves();
+            && Lizzie.frame.moveListFrame != null
+            && Lizzie.frame.moveListFrame.isVisible()) Lizzie.frame.toggleBadMoves();
       }
 
       if (chkShowIndependentMoveList.isSelected()) {
