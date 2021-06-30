@@ -546,6 +546,9 @@ public class Config {
   public boolean disableWRNInGame = true;
   public boolean notStartPondering = false;
 
+  public int gameStatisticsCustomStart = -1;
+  public int gameStatisticsCustomEnd = 1000;
+
   private JSONObject loadAndMergeSaveBoardConfig(
       JSONObject defaultCfg, String fileName, boolean needValidation) throws IOException {
 
@@ -1168,6 +1171,8 @@ public class Config {
 
     showReplaceFileHint = uiConfig.optBoolean("show-replace-file-hint", true);
     maxTreeWidth = uiConfig.optInt("max-tree-width", 10000);
+    gameStatisticsCustomStart = uiConfig.optInt("game-statistics-custom-start", -1);
+    gameStatisticsCustomEnd = uiConfig.optInt("game-statistics-custom-end", 1000);
     showScrollVariation = uiConfig.optBoolean("show-scroll-variation", true);
     ignoreOutOfWidth = uiConfig.optBoolean("ignore-out-of-width", false);
     enginePkPonder = uiConfig.optBoolean("engine-pk-ponder", false);

@@ -2625,7 +2625,9 @@ public class LizzieFrame extends JFrame {
   }
 
   public void countstones(boolean shouldRetart) {
-    if (Lizzie.config.showKataGoEstimate && Lizzie.leelaz.isKatago) {
+    if (Lizzie.config.showKataGoEstimate
+        && !Lizzie.config.isHiddenKataEstimate
+        && Lizzie.leelaz.isKatago) {
       Lizzie.config.showKataGoEstimate = false;
       clearKataEstimate();
       Lizzie.leelaz.ponder();
@@ -8781,9 +8783,7 @@ public class LizzieFrame extends JFrame {
       double maximumFontWidth,
       int aboveOrBelow,
       boolean middle) {
-
     Font font = makeFont(fontBase, style);
-
     // set maximum size of font
     FontMetrics fm = g.getFontMetrics(font);
     font = font.deriveFont((float) (font.getSize2D() * maximumFontWidth / fm.stringWidth(string)));
@@ -8807,7 +8807,6 @@ public class LizzieFrame extends JFrame {
     } else {
       verticalOffset = 0;
     }
-
     g.drawString(
         string,
         middle ? x + (int) (maximumFontWidth - length) / 2 : x,
@@ -8850,7 +8849,6 @@ public class LizzieFrame extends JFrame {
     } else {
       verticalOffset = 0;
     }
-
     g.drawString(string, x - wid / 2, y + height / 2 + verticalOffset);
   }
 
@@ -12551,5 +12549,20 @@ public class LizzieFrame extends JFrame {
     Lizzie.leelaz.sendCommand("clear_cache");
     if (Lizzie.leelaz.isPondering()) Lizzie.leelaz.ponder();
     refresh();
+  }
+
+  public String getPlayerName(boolean isBlack, int length) {
+    // TODO Auto-generated method stub
+    String player =
+        isBlack
+            ? Lizzie.board.getHistory().getGameInfo().getPlayerBlack()
+            : Lizzie.board.getHistory().getGameInfo().getPlayerWhite();
+    if (player.length() > length) player = player.substring(0, 11);
+    if (player.equals(""))
+      player =
+          isBlack
+              ? resourceBundle.getString("SGFParse.black")
+              : resourceBundle.getString("SGFParse.white");
+    return player;
   }
 }

@@ -5598,7 +5598,7 @@ public class Menu extends JMenuBar {
     lblGfPDA = new JFontLabel(resourceBundle.getString("Menu.lblPDA")); // ("官方PDA");
     txtGfPDA = new JFontTextField();
     txtGfPDA.setToolTipText(resourceBundle.getString("Menu.chkPDA.toolTopText"));
-    txtGfPDA.setDocument(new DoubleDocument());
+    txtGfPDA.setDocument(new KomiDocument());
     // if (!Lizzie.config.autoLoadKataEnginePDA) txtGfPDA.setEnabled(false);
     // txtGfPDA.setText(Lizzie.config.txtKataEnginePDA + "");
 
