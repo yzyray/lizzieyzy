@@ -1973,8 +1973,7 @@ public class LizzieFrame extends JFrame {
           new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-              // TBD未完成
-              SetThreshold setThreshold = new SetThreshold(Lizzie.frame);
+              SetThreshold setThreshold = new SetThreshold(Lizzie.frame, false);
               setThreshold.setVisible(true);
             }
           });
@@ -6078,22 +6077,24 @@ public class LizzieFrame extends JFrame {
     if (!isInPlayMode()) {
       if (!Lizzie.engineManager.isEngineGame) {
         BoardHistoryNode node = Lizzie.board.getHistory().getCurrentHistoryNode();
-
+        if (node.nodeInfo.analyzed) {
+          if (node.nodeInfo.isBlack) {
+            blackValue = blackValue + node.nodeInfo.percentsMatch;
+            analyzedBlack = analyzedBlack + 1;
+          } else {
+            whiteValue = whiteValue + node.nodeInfo.percentsMatch;
+            analyzedWhite = analyzedWhite + 1;
+          }
+        }
         while (node.previous().isPresent()) {
           node = node.previous().get();
           NodeInfo nodeInfo = node.nodeInfo;
           if (nodeInfo.analyzed) {
             if (nodeInfo.isBlack) {
               blackValue = blackValue + nodeInfo.percentsMatch;
-              //                      + Math.pow(
-              //                          nodeInfo.percentsMatch, (double) 1 /
-              // Lizzie.config.matchAiTemperature);
               analyzedBlack = analyzedBlack + 1;
             } else {
               whiteValue = whiteValue + nodeInfo.percentsMatch;
-              //                      + Math.pow(
-              //                          nodeInfo.percentsMatch, (double) 1 /
-              // Lizzie.config.matchAiTemperature);
               analyzedWhite = analyzedWhite + 1;
             }
           }

@@ -6,6 +6,7 @@ import static java.lang.Math.min;
 
 import featurecat.lizzie.Config;
 import featurecat.lizzie.Lizzie;
+import featurecat.lizzie.analysis.EngineManager;
 import featurecat.lizzie.rules.Board;
 import featurecat.lizzie.rules.BoardHistoryNode;
 import featurecat.lizzie.rules.NodeInfo;
@@ -56,11 +57,10 @@ import org.json.JSONArray;
 
 @SuppressWarnings("serial")
 public class MoveListFrame extends JFrame {
-  public static Config config;
-  public TableModel dataModel;
-
   public final DecimalFormat FORMAT_PERCENT = new DecimalFormat("#0.00");
   public final DecimalFormat FORMAT_INT = new DecimalFormat("#0");
+  public TableModel dataModel;
+  private JFrame thisDialog;
   private int DOT_RADIUS = 3;
   private int[] origParams = {0, 0, 0, 0};
   private int[] params = {0, 0, 0, 0, 0};
@@ -88,9 +88,9 @@ public class MoveListFrame extends JFrame {
   JPanel bigScoreMistakePanel;
   SetMatchAiPara setMatchAiPara;
   public boolean isShowingWinrateGraph = Lizzie.config.isShowingWinrateGraph;
-  boolean topCurNode = Lizzie.config.moveListTopCurNode;
   JButton detail;
   JButton hideMove;
+  JButton btnSetTabelThresold;
   JTextField suggestionMoves;
   JTextField percentPlayouts;
   JTextField winrateDiffRange1;
@@ -109,7 +109,6 @@ public class MoveListFrame extends JFrame {
 
   private JPanel statisticsPanel;
   private JPanel statisticsGraph;
-  private JPanel statisticsContol;
   private JPanel keyPanel;
   private JTabbedPane lossPanel;
   private JPanel winLossPanel;
@@ -151,9 +150,6 @@ public class MoveListFrame extends JFrame {
   private boolean issorted = false;
   private boolean isOriginOrder = true;
 
-  JSpinner dropwinratechooser = new JSpinner(new SpinnerNumberModel(1, 0, 99, 1));
-  JSpinner dropScoreMeanChooser = new JSpinner(new SpinnerNumberModel(1, 0, 99, 1));
-  JSpinner playoutschooser = new JSpinner(new SpinnerNumberModel(100, 0, 999999, 100));
   JCheckBox checkBlack = new JCheckBox();
   JCheckBox checkWhite = new JCheckBox();
   public JComboBox<String> showBranch;
@@ -162,17 +158,8 @@ public class MoveListFrame extends JFrame {
   int analyzedW = 0;
   double blackMatchValue = 0;
   double whiteMatchValue = 0;
-  // public int matchTemp=2;
 
   boolean isKatago = false;
-
-  //  private int parse1Move = Lizzie.config.openingEndMove;
-  //  private int parse2Move = Lizzie.config.middleEndMove;
-  //
-  //  JLabel lblParse1Move;
-  //  JLabel lblParse2Move;
-  //  JTextField txtParse1Move;
-  //  JTextField txtParse2Move;
 
   private double parse1BlackValue = 0;
   private int parse1BlackAnalyzed = 0;
@@ -250,12 +237,12 @@ public class MoveListFrame extends JFrame {
   private int mouseOverBigMistakeIndex = -1; // 0-9
 
   public MoveListFrame(int engineIndex) {
-    // super(new BorderLayout());
     if (engineIndex == 2) isMainEngine = false;
+    thisDialog = this;
     setLayout(new BorderLayout());
     oriTitle =
         Lizzie.resourceBundle.getString("Movelistframe.title")
-            + (Lizzie.frame.extraMode == 2
+            + (LizzieFrame.extraMode == 2
                 ? (isMainEngine
                     ? Lizzie.resourceBundle.getString("Movelistframe.titleMain")
                     : Lizzie.resourceBundle.getString("Movelistframe.titleSub"))
@@ -269,12 +256,6 @@ public class MoveListFrame extends JFrame {
             Lizzie.frame.toggleBadMoves();
           }
         });
-    //
-    //     final MovelistFrame newContentPane = new MovelistFrame();
-    //     newContentPane.setOpaque(true); // content panes must be opaque
-    //     setContentPane(newContentPane);
-    //     // Display the window.
-    //     // jf.setSize(521, 320);
 
     boolean persisted = Lizzie.config.persistedUi != null;
     if (persisted
@@ -291,7 +272,6 @@ public class MoveListFrame extends JFrame {
       if (isMainEngine) setBounds(-9, 0, Lizzie.config.isChinese ? 846 : 980, 487);
       else setBounds(737, 0, Lizzie.config.isChinese ? 846 : 980, 487);
     }
-    // setMinimumSize(new Dimension(700, 300));
     try {
       setIconImage(ImageIO.read(MoveListFrame.class.getResourceAsStream("/assets/logo.png")));
     } catch (IOException e) {
@@ -304,12 +284,12 @@ public class MoveListFrame extends JFrame {
           || Lizzie.leelaz.isSai
           || Lizzie.board.isContainsKataData()
           || (Lizzie.board.isPkBoard
-                  && (Lizzie.engineManager.isEngineGame
+                  && (EngineManager.isEngineGame
                       && (Lizzie.engineManager.engineList.get(
-                                  Lizzie.engineManager.engineGameInfo.blackEngineIndex)
+                                  EngineManager.engineGameInfo.blackEngineIndex)
                               .isKatago
                           || Lizzie.engineManager.engineList.get(
-                                  Lizzie.engineManager.engineGameInfo.whiteEngineIndex)
+                                  EngineManager.engineGameInfo.whiteEngineIndex)
                               .isKatago))
               || (Lizzie.board.isPkBoardKataB || Lizzie.board.isPkBoardKataW))) isKatago = true;
     } else {
@@ -319,9 +299,8 @@ public class MoveListFrame extends JFrame {
     dataModel = getTableModel();
     table = new JTable(dataModel);
 
-    winrateFont =
-        new Font("Microsoft YaHei", Font.PLAIN, Math.max(Lizzie.config.frameFontSize, 14));
-    headFont = new Font("Microsoft YaHei", Font.PLAIN, Math.max(Lizzie.config.frameFontSize, 13));
+    winrateFont = new Font("Microsoft YaHei", Font.PLAIN, Math.max(Config.frameFontSize, 14));
+    headFont = new Font("Microsoft YaHei", Font.PLAIN, Math.max(Config.frameFontSize, 13));
 
     table.getTableHeader().setFont(headFont);
     table.getTableHeader().setReorderingAllowed(false);
@@ -329,10 +308,8 @@ public class MoveListFrame extends JFrame {
     DefaultTableCellRenderer tcr = new ColorTableCellRenderer();
     tcr.setHorizontalAlignment(JLabel.CENTER);
     table.setDefaultRenderer(Object.class, tcr);
-    table.setRowHeight(Lizzie.config.menuHeight);
+    table.setRowHeight(Config.menuHeight);
     tablePanel = new JPanel(new BorderLayout());
-
-    // this.add(selectpanel, BorderLayout.SOUTH);
 
     bottomPanel = new JTabbedPane(JTabbedPane.TOP);
     topPanel = new JTabbedPane(JTabbedPane.TOP);
@@ -350,11 +327,11 @@ public class MoveListFrame extends JFrame {
 
     minTable1.getTableHeader().setFont(headFont);
     minTable1.setFont(winrateFont);
-    minTable1.setRowHeight(Lizzie.config.menuHeight);
+    minTable1.setRowHeight(Config.menuHeight);
 
     minTable2.getTableHeader().setFont(headFont);
     minTable2.setFont(winrateFont);
-    minTable2.setRowHeight(Lizzie.config.menuHeight);
+    minTable2.setRowHeight(Config.menuHeight);
 
     minTable1.setDefaultRenderer(Object.class, r);
 
@@ -386,18 +363,50 @@ public class MoveListFrame extends JFrame {
         };
     lossPanel = new JTabbedPane();
 
-    winLossPanel = new JPanel();
-    scoreLossPanel = new JPanel();
-    lossPanel.addTab("胜率损失", winLossPanel);
-    lossPanel.addTab("目数损失", scoreLossPanel);
+    winLossPanel =
+        new JPanel(true) {
+          @Override
+          protected void paintComponent(Graphics g) {
+            Graphics2D g0 = (Graphics2D) g;
+            g0.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+            g0.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            drawLossPanel(g0, winLossPanel.getWidth(), winLossPanel.getHeight(), true);
+            g0.dispose();
+          }
+        };
+    scoreLossPanel =
+        new JPanel(true) {
+          @Override
+          protected void paintComponent(Graphics g) {
+            Graphics2D g0 = (Graphics2D) g;
+            g0.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+            g0.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            drawLossPanel(g0, scoreLossPanel.getWidth(), scoreLossPanel.getHeight(), false);
+            g0.dispose();
+          }
+        };
+    lossPanel.addTab(Lizzie.resourceBundle.getString("Movelistframe.winLoss"), winLossPanel);
+    lossPanel.addTab(Lizzie.resourceBundle.getString("Movelistframe.scoreLoss"), scoreLossPanel);
+    if (Lizzie.config.lossPanelSelectWinrate) lossPanel.setSelectedIndex(0);
+    else lossPanel.setSelectedIndex(1);
+    lossPanel.addChangeListener(
+        new ChangeListener() {
+          public void stateChanged(ChangeEvent changeEvent) {
+            JTabbedPane sourceTabbedPane = (JTabbedPane) changeEvent.getSource();
+            int index = sourceTabbedPane.getSelectedIndex();
+            if (index == 0) Lizzie.config.lossPanelSelectWinrate = true;
+            else Lizzie.config.lossPanelSelectWinrate = false;
+            Lizzie.config.uiConfig.put(
+                "loss-panel-select-winrate", Lizzie.config.lossPanelSelectWinrate);
+          }
+        });
 
     statisticsGraph = new JPanel(new GridLayout(1, 2));
     statisticsGraph.add(keyPanel);
     statisticsGraph.add(lossPanel);
 
-    statisticsContol = new JPanel(new FlowLayout());
-
-    chkCurrent = new JCheckBox("当前");
+    chkCurrent =
+        new JCheckBox(Lizzie.resourceBundle.getString("Movelistframe.lblShowBranchItemCurrent"));
     chkCurrent.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
@@ -413,7 +422,7 @@ public class MoveListFrame extends JFrame {
           }
         });
 
-    chkAllGame = new JCheckBox("全局");
+    chkAllGame = new JCheckBox(Lizzie.resourceBundle.getString("Movelistframe.all"));
     chkAllGame.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
@@ -428,12 +437,12 @@ public class MoveListFrame extends JFrame {
           }
         });
 
-    chkOpening = new JCheckBox("布局");
+    chkOpening = new JCheckBox(Lizzie.resourceBundle.getString("Movelistframe.open"));
     chkOpening.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             if (chkOpening.isSelected()) {
-              Lizzie.config.moveListFilterCurrent = true;
+              Lizzie.config.moveListFilterCurrent = false;
               Lizzie.config.uiConfig.put(
                   "move-list-filter-current", Lizzie.config.moveListFilterCurrent);
               applyMoveChange(-1, Lizzie.config.openingEndMove);
@@ -443,12 +452,12 @@ public class MoveListFrame extends JFrame {
           }
         });
 
-    chkMiddle = new JCheckBox("中盘");
+    chkMiddle = new JCheckBox(Lizzie.resourceBundle.getString("Movelistframe.middle"));
     chkMiddle.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             if (chkMiddle.isSelected()) {
-              Lizzie.config.moveListFilterCurrent = true;
+              Lizzie.config.moveListFilterCurrent = false;
               Lizzie.config.uiConfig.put(
                   "move-list-filter-current", Lizzie.config.moveListFilterCurrent);
               applyMoveChange(Lizzie.config.openingEndMove, Lizzie.config.middleEndMove);
@@ -458,12 +467,12 @@ public class MoveListFrame extends JFrame {
           }
         });
 
-    chkEnd = new JCheckBox("收官");
+    chkEnd = new JCheckBox(Lizzie.resourceBundle.getString("Movelistframe.end"));
     chkEnd.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             if (chkEnd.isSelected()) {
-              Lizzie.config.moveListFilterCurrent = true;
+              Lizzie.config.moveListFilterCurrent = false;
               Lizzie.config.uiConfig.put(
                   "move-list-filter-current", Lizzie.config.moveListFilterCurrent);
               applyMoveChange(Lizzie.config.middleEndMove, 1000);
@@ -473,12 +482,12 @@ public class MoveListFrame extends JFrame {
           }
         });
 
-    chkCustom = new JCheckBox("自定义");
+    chkCustom = new JCheckBox(Lizzie.resourceBundle.getString("Movelistframe.chkCustom"));
     chkCustom.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             if (chkCustom.isSelected()) {
-              Lizzie.config.moveListFilterCurrent = true;
+              Lizzie.config.moveListFilterCurrent = false;
               Lizzie.config.uiConfig.put(
                   "move-list-filter-current", Lizzie.config.moveListFilterCurrent);
               applyMoveChange(
@@ -496,14 +505,6 @@ public class MoveListFrame extends JFrame {
     chkGroup.add(chkMiddle);
     chkGroup.add(chkEnd);
     chkGroup.add(chkCustom);
-    statisticsContol.add(chkCurrent);
-    statisticsContol.add(chkAllGame);
-    statisticsContol.add(chkOpening);
-    statisticsContol.add(chkMiddle);
-    statisticsContol.add(chkEnd);
-    statisticsContol.add(chkCustom);
-
-    // aaa
 
     customStart = new JTextField();
     customStart.setColumns(3);
@@ -549,15 +550,10 @@ public class MoveListFrame extends JFrame {
 
     setFilterStatus();
 
-    statisticsContol.add(customStart);
-    statisticsContol.add(new JLabel("-"));
-    statisticsContol.add(customEnd);
-
-    statisticsContol.add(new JLabel("布局结束手数"));
     openingEndMove = new JTextField();
     openingEndMove.setDocument(new IntDocument());
     openingEndMove.setColumns(3);
-    statisticsContol.add(openingEndMove);
+
     openingEndMove.setText(Lizzie.config.openingEndMove + "");
 
     Document dtOpeningEndMove = openingEndMove.getDocument();
@@ -576,11 +572,10 @@ public class MoveListFrame extends JFrame {
           }
         });
 
-    statisticsContol.add(new JLabel("中盘结束手数"));
     middleEndMove = new JTextField();
     middleEndMove.setDocument(new IntDocument());
     middleEndMove.setColumns(3);
-    statisticsContol.add(middleEndMove);
+
     middleEndMove.setText(Lizzie.config.middleEndMove + "");
 
     Document dtMiddleEndMove = middleEndMove.getDocument();
@@ -601,9 +596,9 @@ public class MoveListFrame extends JFrame {
 
     statisticsPanel = new JPanel(new BorderLayout());
     statisticsPanel.add(statisticsGraph, BorderLayout.CENTER);
-    statisticsPanel.add(statisticsContol, BorderLayout.SOUTH);
 
-    topPanel.addTab("统计信息", statisticsPanel);
+    topPanel.addTab(
+        Lizzie.resourceBundle.getString("Movelistframe.statisticsPanel"), statisticsPanel);
     topPanel.addTab(
         Lizzie.resourceBundle.getString("Movelistframe.topPanle.simpleList"), minTablePanel);
     topPanel.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
@@ -770,14 +765,12 @@ public class MoveListFrame extends JFrame {
     try {
       iconUp.setImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/up.png")));
     } catch (IOException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
     iconDown = new ImageIcon();
     try {
       iconDown.setImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/down.png")));
     } catch (IOException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
     iconSettings = new ImageIcon();
@@ -785,7 +778,6 @@ public class MoveListFrame extends JFrame {
       iconSettings.setImage(
           ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/settings.png")));
     } catch (IOException e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     }
 
@@ -870,23 +862,15 @@ public class MoveListFrame extends JFrame {
                   bigScoreMistakePanel.add(matchPanel);
                   break;
               }
-              //  matchPanelAll.add(matchPanel, BorderLayout.CENTER);
               detail.setIcon(iconDown);
             }
             isShowingWinrateGraph = !isShowingWinrateGraph;
-            // if (true) {
             bottomPanel.setPreferredSize(
                 new Dimension(getWidth(), isShowingWinrateGraph ? getHeight() / 4 + 123 : 125));
-            //    }
-
             validate();
             Lizzie.config.uiConfig.put("show-winrate-matchai", isShowingWinrateGraph);
           }
         });
-
-    //    JLabel lblDetail = new JLabel("吻合图:");
-    //    lblDetail.setBounds(5, 0, 45, 20);
-    //    matchPanelmin.add(lblDetail);
 
     settings = new JButton(iconSettings);
     settings.setFocusable(false);
@@ -896,7 +880,6 @@ public class MoveListFrame extends JFrame {
         new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
-            // TODO Auto-generated method stub
             if (setMatchAiPara == null) setMatchAiPara = new SetMatchAiPara();
             setMatchAiPara.setVisible(true);
           }
@@ -917,10 +900,7 @@ public class MoveListFrame extends JFrame {
           }
 
           @Override
-          public void focusLost(FocusEvent e) {
-            // TODO Auto-generated method stub
-
-          }
+          public void focusLost(FocusEvent e) {}
         });
 
     lblMatchConfig2 =
@@ -939,10 +919,7 @@ public class MoveListFrame extends JFrame {
           }
 
           @Override
-          public void focusLost(FocusEvent e) {
-            // TODO Auto-generated method stub
-
-          }
+          public void focusLost(FocusEvent e) {}
         });
 
     lblMatchConfig3 = new JLabel("%");
@@ -1284,8 +1261,10 @@ public class MoveListFrame extends JFrame {
             switch (index) {
               case 0:
                 Lizzie.config.movelistSelectedIndexTop = 0;
+                btnSetTabelThresold.setVisible(false);
                 break;
               case 1:
+                btnSetTabelThresold.setVisible(true);
                 if (selectedIndexTop != 1) {
                   sortnum = 2;
                 }
@@ -1293,6 +1272,7 @@ public class MoveListFrame extends JFrame {
                 Lizzie.config.movelistSelectedIndexTop = 1;
                 break;
               case 2:
+                btnSetTabelThresold.setVisible(true);
                 if (selectedIndexTop != 2) {
                   sortnum = 3;
                 }
@@ -1314,7 +1294,7 @@ public class MoveListFrame extends JFrame {
                 refreshCount = refreshCount + 1;
                 if (refreshCount > 9) {
                   refreshCount = 0;
-                  if (!Lizzie.engineManager.isEmpty && Lizzie.leelaz.isPondering()) {
+                  if (!EngineManager.isEmpty && Lizzie.leelaz.isPondering()) {
                     Lizzie.board.updateMovelist(Lizzie.board.getHistory().getCurrentHistoryNode());
                   }
                 }
@@ -1401,9 +1381,6 @@ public class MoveListFrame extends JFrame {
     headerMint1.setDefaultRenderer(hr);
     headerMint2.setDefaultRenderer(hr);
 
-    dropwinratechooser.setValue(Lizzie.config.moveListWinrateThreshold);
-    dropScoreMeanChooser.setValue(Lizzie.config.moveListScoreThreshold);
-    playoutschooser.setValue(Lizzie.config.moveListVisitsThreshold);
     checkBlack.setSelected(true);
     checkWhite.setSelected(true);
 
@@ -1427,12 +1404,7 @@ public class MoveListFrame extends JFrame {
         new JLabel(Lizzie.resourceBundle.getString("Movelistframe.checkBlackFilter")); // ("黑");
     checkWhiteFilter =
         new JLabel(Lizzie.resourceBundle.getString("Movelistframe.checkWhiteFilter")); // ("白");
-    JLabel lblDropWinrate =
-        new JLabel(Lizzie.resourceBundle.getString("Movelistframe.lblDropWinrate")); // ("胜率波动");
-    JLabel lblDropScore =
-        new JLabel(Lizzie.resourceBundle.getString("Movelistframe.lblDropScore")); // ("目差波动");
-    JLabel lblPlayouts =
-        new JLabel(Lizzie.resourceBundle.getString("Movelistframe.lblPlayouts")); // ("前后计算量");
+
     JLabel lblShowBranch =
         new JLabel(Lizzie.resourceBundle.getString("Movelistframe.lblShowBranch")); // ("分支");
     showBranch = new JComboBox<String>();
@@ -1455,41 +1427,39 @@ public class MoveListFrame extends JFrame {
             statisticsPanel.repaint();
           }
         });
-
-    JCheckBox chkTopCurrentMove =
-        new JCheckBox(
-            Lizzie.resourceBundle.getString("Movelistframe.chkTopCurrentMove")); // ("置顶当前手");
-    chkTopCurrentMove.setFocusable(false);
-    chkTopCurrentMove.setSelected(this.topCurNode);
-    chkTopCurrentMove.setMargin(new Insets(3, 2, 3, 2));
-    chkTopCurrentMove.addItemListener(
-        new ItemListener() {
-          @Override
-          public void itemStateChanged(ItemEvent e) {
-            topCurNode = chkTopCurrentMove.isSelected();
-            Lizzie.config.moveListTopCurNode = chkTopCurrentMove.isSelected();
-            Lizzie.config.uiConfig.put("movelist-top-curnode", Lizzie.config.moveListTopCurNode);
-            tablePanel.repaint();
+    btnSetTabelThresold =
+        new JButton(Lizzie.resourceBundle.getString("Movelistframe.btnSetTabelThresold"));
+    btnSetTabelThresold.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            SetThreshold setThreshold = new SetThreshold(thisDialog, true);
+            setThreshold.setVisible(true);
           }
         });
+    btnSetTabelThresold.setMargin(new Insets(0, 2, 0, 2));
+    if (selectedIndexTop == 0) btnSetTabelThresold.setVisible(false);
 
     filterPanel.add(hideMove);
+    filterPanel.add(btnSetTabelThresold);
     filterPanel.add(checkBlackFilter);
     filterPanel.add(checkBlack);
     filterPanel.add(checkWhiteFilter);
     filterPanel.add(checkWhite);
     filterPanel.add(lblShowBranch);
     filterPanel.add(showBranch);
-    filterPanel.add(lblDropWinrate);
-    filterPanel.add(dropwinratechooser);
-    filterPanel.add(lblDropScore);
-    filterPanel.add(dropScoreMeanChooser);
-    filterPanel.add(lblPlayouts);
-    filterPanel.add(playoutschooser);
-    filterPanel.add(chkTopCurrentMove);
-    playoutschooser.setPreferredSize(new Dimension(55, 23));
-    dropwinratechooser.setPreferredSize(new Dimension(35, 23));
-    dropScoreMeanChooser.setPreferredSize(new Dimension(35, 23));
+    filterPanel.add(chkCurrent);
+    filterPanel.add(chkAllGame);
+    filterPanel.add(chkOpening);
+    filterPanel.add(chkMiddle);
+    filterPanel.add(chkEnd);
+    filterPanel.add(chkCustom);
+    filterPanel.add(customStart);
+    filterPanel.add(new JLabel("-"));
+    filterPanel.add(customEnd);
+    filterPanel.add(new JLabel(Lizzie.resourceBundle.getString("Movelistframe.openingEndMove")));
+    filterPanel.add(openingEndMove);
+    filterPanel.add(new JLabel(Lizzie.resourceBundle.getString("Movelistframe.middleEndMove")));
+    filterPanel.add(middleEndMove);
 
     if (Lizzie.board.isPkBoard) {
       if (isKatago)
@@ -1602,32 +1572,6 @@ public class MoveListFrame extends JFrame {
           }
         });
 
-    playoutschooser.addChangeListener(
-        new ChangeListener() {
-
-          public void stateChanged(ChangeEvent e) {
-            Lizzie.config.moveListVisitsThreshold = (int) playoutschooser.getValue();
-            Lizzie.config.uiConfig.putOpt("badmoves-playouts-limits", playoutschooser.getValue());
-          }
-        });
-
-    dropwinratechooser.addChangeListener(
-        new ChangeListener() {
-
-          public void stateChanged(ChangeEvent e) {
-            Lizzie.config.moveListWinrateThreshold = (int) dropwinratechooser.getValue();
-            Lizzie.config.uiConfig.putOpt("badmoves-winrate-limits", dropwinratechooser.getValue());
-          }
-        });
-    dropScoreMeanChooser.addChangeListener(
-        new ChangeListener() {
-
-          public void stateChanged(ChangeEvent e) {
-            Lizzie.config.moveListScoreThreshold = (int) dropScoreMeanChooser.getValue();
-            Lizzie.config.uiConfig.putOpt(
-                "badmoves-scoremean-limits", dropScoreMeanChooser.getValue());
-          }
-        });
     table.addMouseListener(
         new MouseAdapter() {
           public void mouseClicked(MouseEvent e) {
@@ -2483,7 +2427,6 @@ public class MoveListFrame extends JFrame {
           }
         } else if (selectedIndex == 6) {
           if (nodeInfo.analyzed) {
-            if (nodeInfo.scoreMeanDiff > 0) continue;
             if (nodeInfo.isBlack) {
               if (nodeInfo.moveNum <= Lizzie.config.openingEndMove) {
                 if (nodeInfo.scoreMeanDiff > 0
@@ -6286,6 +6229,352 @@ public class MoveListFrame extends JFrame {
         (int) (height * 0.15 + height * 0.7 * (100 - bigMistakeInfo.currentMoveWinRate) / 100.0));
   }
 
+  public void drawLossPanel(Graphics2D g, int width, int height, boolean isWinrate) {
+    g.setColor(new Color(200, 200, 200));
+    g.fillRect(0, 0, width, height);
+
+    int black1 = 0;
+    int black2 = 0;
+    int black3 = 0;
+    int black4 = 0;
+    int black5 = 0;
+    int black6 = 0;
+    int totalAnalyzedBlack = 0;
+
+    int white1 = 0;
+    int white2 = 0;
+    int white3 = 0;
+    int white4 = 0;
+    int white5 = 0;
+    int white6 = 0;
+    int totalAnalyzedWhite = 0;
+
+    BoardHistoryNode node = Lizzie.board.getHistory().getCurrentHistoryNode();
+    if (showBranch.getSelectedIndex() == 0 && !node.isMainTrunk()) {
+      node = Lizzie.board.getHistory().getMainEnd();
+    }
+    while (node.next().isPresent()) {
+      node = node.next().get();
+    }
+    while (node.previous().isPresent()) {
+      node = node.previous().get();
+      NodeInfo nodeInfo =
+          showBranch.getSelectedIndex() == 0
+              ? (isMainEngine ? node.nodeInfoMain : node.nodeInfoMain2)
+              : (isMainEngine ? node.nodeInfo : node.nodeInfo2);
+      if ((node.getData().moveNumber <= Lizzie.config.matchAiLastMove
+          && (node.getData().moveNumber + 1) > Lizzie.config.matchAiFirstMove)) {
+        if (nodeInfo.analyzed) {
+          if (nodeInfo.isBlack) {
+            totalAnalyzedBlack++;
+            if (isWinrate) {
+              if (nodeInfo.diffWinrate > -1) black1++;
+              else if (nodeInfo.diffWinrate > -3) black2++;
+              else if (nodeInfo.diffWinrate > -6) black3++;
+              else if (nodeInfo.diffWinrate > -12) black4++;
+              else if (nodeInfo.diffWinrate > -24) black5++;
+              else black6++;
+            } else {
+              if (nodeInfo.scoreMeanDiff > -0.5) black1++;
+              else if (nodeInfo.scoreMeanDiff > -1.5) black2++;
+              else if (nodeInfo.scoreMeanDiff > -3) black3++;
+              else if (nodeInfo.scoreMeanDiff > -6) black4++;
+              else if (nodeInfo.scoreMeanDiff > -12) black5++;
+              else black6++;
+            }
+          } else {
+            totalAnalyzedWhite++;
+            if (isWinrate) {
+              if (nodeInfo.diffWinrate > -1) white1++;
+              else if (nodeInfo.diffWinrate > -3) white2++;
+              else if (nodeInfo.diffWinrate > -5) white3++;
+              else if (nodeInfo.diffWinrate > -10) white4++;
+              else if (nodeInfo.diffWinrate > -20) white5++;
+              else white6++;
+            } else {
+              if (nodeInfo.scoreMeanDiff > -0.5) white1++;
+              else if (nodeInfo.scoreMeanDiff > -1.5) white2++;
+              else if (nodeInfo.scoreMeanDiff > -3) white3++;
+              else if (nodeInfo.scoreMeanDiff > -6) white4++;
+              else if (nodeInfo.scoreMeanDiff > -12) white5++;
+              else white6++;
+            }
+          }
+        }
+      }
+    }
+
+    double borderPercent = 0.03;
+
+    double availableWidth = width * (1 - borderPercent);
+    double availableHeight = height * (1 - borderPercent);
+    int startX = (int) (width * borderPercent / 2);
+    int startY = (int) (height * borderPercent / 2);
+
+    double titleHeight = availableHeight / 10;
+    g.setColor(Color.BLACK);
+    g.fillRect(startX, startY, (int) (availableWidth / 2), (int) (titleHeight));
+    g.setColor(Color.WHITE);
+    drawStringMid(
+        g,
+        startX,
+        startY + (int) (titleHeight * 0.1),
+        LizzieFrame.uiFont,
+        Font.PLAIN,
+        totalAnalyzedBlack + "",
+        (int) (availableWidth / 2),
+        (int) (titleHeight * 0.8));
+    g.fillRect(
+        startX + (int) (availableWidth / 2),
+        startY,
+        (int) (availableWidth / 2),
+        (int) (titleHeight));
+    g.setColor(Color.BLACK);
+    drawStringMid(
+        g,
+        startX + (int) (availableWidth / 2),
+        startY + (int) (titleHeight * 0.1),
+        LizzieFrame.uiFont,
+        Font.PLAIN,
+        totalAnalyzedWhite + "",
+        (int) (availableWidth / 2),
+        (int) (titleHeight * 0.8));
+
+    double heightGap = availableHeight * 0.02;
+    int valueStartY = (int) (startY + titleHeight + heightGap);
+    int valueWidth = (int) (availableWidth * 0.43);
+    int valueHeight = (int) (availableHeight - titleHeight - heightGap);
+    int valueStartXBlack = startX;
+    int valueStartXWhite = startX + (int) (availableWidth * 0.57);
+
+    g.setColor(new Color(180, 180, 180));
+    g.fillRect(valueStartXBlack, valueStartY, valueWidth, valueHeight);
+    g.fillRect(valueStartXWhite, valueStartY, valueWidth, valueHeight);
+
+    int valueStartXMiddle = startX + valueWidth;
+    int valueRowHeight = (int) ((availableHeight - titleHeight - heightGap) / 6);
+    g.setColor(Color.BLACK);
+
+    Font font =
+        drawStringMid(
+            g,
+            (int) (valueStartXMiddle + availableWidth * 0.14 * 0.03),
+            valueStartY + valueRowHeight / 4,
+            LizzieFrame.uiFont,
+            Font.PLAIN,
+            isWinrate ? "<1%" : "<0.5",
+            availableWidth * 0.14 * 0.94,
+            valueRowHeight / 2);
+    drawStringMid(
+        g,
+        (int) (valueStartXMiddle + availableWidth * 0.14 * 0.03),
+        valueStartY + valueRowHeight + valueRowHeight / 4,
+        LizzieFrame.uiFont,
+        Font.PLAIN,
+        (isWinrate ? "1-3%" : "0.5-1.5"),
+        availableWidth * 0.14 * 0.94,
+        valueRowHeight / 2);
+    drawStringMid(
+        g,
+        (int) (valueStartXMiddle + availableWidth * 0.14 * 0.03),
+        valueStartY + valueRowHeight * 2 + valueRowHeight / 4,
+        LizzieFrame.uiFont,
+        Font.PLAIN,
+        isWinrate ? "3-6%" : "1.5-3",
+        availableWidth * 0.14 * 0.94,
+        valueRowHeight / 2);
+    drawStringMid(
+        g,
+        (int) (valueStartXMiddle + availableWidth * 0.14 * 0.03),
+        valueStartY + valueRowHeight * 3 + valueRowHeight / 4,
+        LizzieFrame.uiFont,
+        Font.PLAIN,
+        isWinrate ? "6-12%" : "3-6",
+        availableWidth * 0.14 * 0.94,
+        valueRowHeight / 2);
+
+    drawStringMid(
+        g,
+        (int) (valueStartXMiddle + availableWidth * 0.14 * 0.03),
+        valueStartY + valueRowHeight * 4 + valueRowHeight / 4,
+        LizzieFrame.uiFont,
+        Font.PLAIN,
+        isWinrate ? "12-24%" : "6-12",
+        availableWidth * 0.14 * 0.94,
+        valueRowHeight / 2);
+    drawStringMid(
+        g,
+        (int) (valueStartXMiddle + availableWidth * 0.14 * 0.03),
+        valueStartY + valueRowHeight * 5 + valueRowHeight / 4,
+        LizzieFrame.uiFont,
+        Font.PLAIN,
+        isWinrate ? "≥24%" : "≥12",
+        availableWidth * 0.14 * 0.94,
+        valueRowHeight / 2);
+
+    drawRectWithValue(
+        g,
+        valueStartXBlack,
+        valueStartY,
+        valueWidth,
+        valueRowHeight,
+        black1 / (double) totalAnalyzedBlack,
+        black1 + "",
+        new Color(22, 222, 0),
+        Color.BLACK,
+        Color.PINK,
+        font,
+        true);
+    drawRectWithValue(
+        g,
+        valueStartXBlack,
+        valueStartY + valueRowHeight,
+        valueWidth,
+        valueRowHeight,
+        black2 / (double) totalAnalyzedBlack,
+        black2 + "",
+        new Color(158, 232, 34),
+        Color.BLACK,
+        Color.PINK,
+        font,
+        true);
+    drawRectWithValue(
+        g,
+        valueStartXBlack,
+        valueStartY + valueRowHeight * 2,
+        valueWidth,
+        valueRowHeight,
+        black3 / (double) totalAnalyzedBlack,
+        black3 + "",
+        new Color(222, 222, 0),
+        Color.BLACK,
+        Color.PINK,
+        font,
+        true);
+    drawRectWithValue(
+        g,
+        valueStartXBlack,
+        valueStartY + valueRowHeight * 3,
+        valueWidth,
+        valueRowHeight,
+        black4 / (double) totalAnalyzedBlack,
+        black4 + "",
+        new Color(150, 100, 0),
+        Color.BLACK,
+        Color.PINK,
+        font,
+        true);
+    drawRectWithValue(
+        g,
+        valueStartXBlack,
+        valueStartY + valueRowHeight * 4,
+        valueWidth,
+        valueRowHeight,
+        black5 / (double) totalAnalyzedBlack,
+        black5 + "",
+        new Color(172, 16, 19),
+        Color.BLACK,
+        Color.PINK,
+        font,
+        true);
+    drawRectWithValue(
+        g,
+        valueStartXBlack,
+        valueStartY + valueRowHeight * 5,
+        valueWidth,
+        valueRowHeight,
+        black6 / (double) totalAnalyzedBlack,
+        black6 + "",
+        new Color(85, 25, 80),
+        Color.BLACK,
+        Color.PINK,
+        font,
+        true);
+
+    g.setColor(Color.BLACK);
+    g.drawRect(valueStartXBlack - 1, valueStartY - 1, valueWidth + 1, valueHeight + 1);
+    g.drawRect(valueStartXWhite - 1, valueStartY - 1, valueWidth + 1, valueHeight + 1);
+
+    drawRectWithValue(
+        g,
+        valueStartXWhite,
+        valueStartY,
+        valueWidth,
+        valueRowHeight,
+        white1 / (double) totalAnalyzedWhite,
+        white1 + "",
+        new Color(22, 222, 0),
+        Color.WHITE,
+        Color.BLUE,
+        font,
+        false);
+    drawRectWithValue(
+        g,
+        valueStartXWhite,
+        valueStartY + valueRowHeight,
+        valueWidth,
+        valueRowHeight,
+        white2 / (double) totalAnalyzedWhite,
+        white2 + "",
+        new Color(158, 232, 34),
+        Color.WHITE,
+        Color.BLUE,
+        font,
+        false);
+    drawRectWithValue(
+        g,
+        valueStartXWhite,
+        valueStartY + valueRowHeight * 2,
+        valueWidth,
+        valueRowHeight,
+        white3 / (double) totalAnalyzedWhite,
+        white3 + "",
+        new Color(222, 222, 0),
+        Color.WHITE,
+        Color.BLUE,
+        font,
+        false);
+    drawRectWithValue(
+        g,
+        valueStartXWhite,
+        valueStartY + valueRowHeight * 3,
+        valueWidth,
+        valueRowHeight,
+        white4 / (double) totalAnalyzedWhite,
+        white4 + "",
+        new Color(150, 100, 0),
+        Color.WHITE,
+        Color.BLUE,
+        font,
+        false);
+    drawRectWithValue(
+        g,
+        valueStartXWhite,
+        valueStartY + valueRowHeight * 4,
+        valueWidth,
+        valueRowHeight,
+        white5 / (double) totalAnalyzedWhite,
+        white5 + "",
+        new Color(172, 16, 19),
+        Color.WHITE,
+        Color.BLUE,
+        font,
+        false);
+    drawRectWithValue(
+        g,
+        valueStartXWhite,
+        valueStartY + valueRowHeight * 5,
+        valueWidth,
+        valueRowHeight,
+        white6 / (double) totalAnalyzedWhite,
+        white6 + "",
+        new Color(85, 25, 80),
+        Color.WHITE,
+        Color.BLUE,
+        font,
+        false);
+  }
+
   public void drawKeyPanel(Graphics2D g, int width, int height) {
     g.setColor(new Color(200, 200, 200));
     g.fillRect(0, 0, width, height);
@@ -6302,7 +6591,7 @@ public class MoveListFrame extends JFrame {
         g,
         startX,
         startY,
-        Lizzie.frame.uiFont,
+        LizzieFrame.uiFont,
         Font.PLAIN,
         Lizzie.frame.getPlayerName(true, 12),
         (int) (availableWidth * 0.4),
@@ -6312,7 +6601,7 @@ public class MoveListFrame extends JFrame {
         g,
         startX + (int) (availableWidth * 0.6),
         startY,
-        Lizzie.frame.uiFont,
+        LizzieFrame.uiFont,
         Font.PLAIN,
         Lizzie.frame.getPlayerName(false, 12),
         (int) (availableWidth * 0.4),
@@ -6324,14 +6613,9 @@ public class MoveListFrame extends JFrame {
     int valueHeight = (int) (availableHeight - titleHeight - heightGap);
     int valueStartXBlack = startX;
     int valueStartXWhite = startX + (int) (availableWidth * 0.6);
-    g.setColor(Color.BLACK);
-    g.drawRect(valueStartXBlack - 1, valueStartY - 1, valueWidth + 1, valueHeight + 1);
+
     g.setColor(new Color(180, 180, 180));
     g.fillRect(valueStartXBlack, valueStartY, valueWidth, valueHeight);
-
-    g.setColor(Color.BLACK);
-    g.drawRect(valueStartXWhite - 1, valueStartY - 1, valueWidth + 1, valueHeight + 1);
-    g.setColor(new Color(180, 180, 180));
     g.fillRect(valueStartXWhite, valueStartY, valueWidth, valueHeight);
 
     int valueStartXMiddle = startX + valueWidth;
@@ -6342,36 +6626,36 @@ public class MoveListFrame extends JFrame {
             g,
             (int) (valueStartXMiddle + availableWidth * 0.2 * 0.05),
             valueStartY + valueRowHeight / 4,
-            Lizzie.frame.uiFont,
+            LizzieFrame.uiFont,
             Font.PLAIN,
-            "吻合度",
+            Lizzie.resourceBundle.getString("Movelistframe.keyPanel.accuracy"),
             availableWidth * 0.2 * 0.9,
             valueRowHeight / 2);
     drawStringMid(
         g,
         (int) (valueStartXMiddle + availableWidth * 0.2 * 0.05),
         valueStartY + valueRowHeight + valueRowHeight / 4,
-        Lizzie.frame.uiFont,
+        LizzieFrame.uiFont,
         Font.PLAIN,
-        "吻合率",
+        Lizzie.resourceBundle.getString("Movelistframe.keyPanel.match"),
         availableWidth * 0.2 * 0.9,
         valueRowHeight / 2);
     drawStringMid(
         g,
         (int) (valueStartXMiddle + availableWidth * 0.2 * 0.05),
         valueStartY + valueRowHeight * 2 + valueRowHeight / 4,
-        Lizzie.frame.uiFont,
+        LizzieFrame.uiFont,
         Font.PLAIN,
-        "平均胜率损失",
+        Lizzie.resourceBundle.getString("Movelistframe.keyPanel.avgWinLoss"),
         availableWidth * 0.2 * 0.9,
         valueRowHeight / 2);
     drawStringMid(
         g,
         (int) (valueStartXMiddle + availableWidth * 0.2 * 0.05),
         valueStartY + valueRowHeight * 3 + valueRowHeight / 4,
-        Lizzie.frame.uiFont,
+        LizzieFrame.uiFont,
         Font.PLAIN,
-        "平均目数损失",
+        Lizzie.resourceBundle.getString("Movelistframe.keyPanel.avgScoreLoss"),
         availableWidth * 0.2 * 0.9,
         valueRowHeight / 2);
 
@@ -6457,6 +6741,7 @@ public class MoveListFrame extends JFrame {
         blackAccuracy,
         String.format("%.1f", blackAccuracy * 100),
         Color.BLACK,
+        Color.BLACK,
         Color.PINK,
         font,
         true);
@@ -6467,7 +6752,8 @@ public class MoveListFrame extends JFrame {
         valueWidth,
         valueRowHeight,
         blackMatch,
-        String.format("%.1f", blackMatch * 100),
+        String.format("%.1f", blackMatch * 100) + "%",
+        Color.BLACK,
         Color.BLACK,
         Color.PINK,
         font,
@@ -6481,6 +6767,7 @@ public class MoveListFrame extends JFrame {
         blackAvgWinLoss / maxAvgWinLoss,
         String.format("%.1f", blackAvgWinLoss) + "%",
         Color.BLACK,
+        Color.BLACK,
         Color.PINK,
         font,
         true);
@@ -6492,6 +6779,7 @@ public class MoveListFrame extends JFrame {
         valueRowHeight,
         blackAvgScoreLoss / maxAvgWinLoss,
         String.format("%.1f", blackAvgScoreLoss),
+        Color.BLACK,
         Color.BLACK,
         Color.PINK,
         font,
@@ -6506,6 +6794,7 @@ public class MoveListFrame extends JFrame {
         whiteAccracy,
         String.format("%.1f", whiteAccracy * 100),
         Color.WHITE,
+        Color.WHITE,
         Color.BLUE,
         font,
         false);
@@ -6516,7 +6805,8 @@ public class MoveListFrame extends JFrame {
         valueWidth,
         valueRowHeight,
         whiteMatch,
-        String.format("%.1f", whiteMatch * 100),
+        String.format("%.1f", whiteMatch * 100) + "%",
+        Color.WHITE,
         Color.WHITE,
         Color.BLUE,
         font,
@@ -6530,6 +6820,7 @@ public class MoveListFrame extends JFrame {
         whiteAvgWinLoss / maxAvgWinLoss,
         String.format("%.1f", whiteAvgWinLoss) + "%",
         Color.WHITE,
+        Color.WHITE,
         Color.BLUE,
         font,
         false);
@@ -6542,9 +6833,14 @@ public class MoveListFrame extends JFrame {
         whiteAvgScoreLoss / maxAvgWinLoss,
         String.format("%.1f", whiteAvgScoreLoss),
         Color.WHITE,
+        Color.WHITE,
         Color.BLUE,
         font,
         false);
+
+    g.setColor(Color.BLACK);
+    g.drawRect(valueStartXBlack - 1, valueStartY - 1, valueWidth + 1, valueHeight + 1);
+    g.drawRect(valueStartXWhite - 1, valueStartY - 1, valueWidth + 1, valueHeight + 1);
   }
 
   private void drawRectWithValue(
@@ -6555,12 +6851,13 @@ public class MoveListFrame extends JFrame {
       int height,
       double value,
       String valueString,
-      Color backColor,
-      Color fontColor,
+      Color rectColor,
+      Color fontColorOutside,
+      Color fontColorInside,
       Font f,
       boolean isLeft) {
     if (Double.isNaN(value) || value <= 0 || value > 1) return;
-    g.setColor(backColor);
+    g.setColor(rectColor);
     if (isLeft)
       g.fillRect(
           (int) (x + width * (1 - value)),
@@ -6574,12 +6871,13 @@ public class MoveListFrame extends JFrame {
     int fontHeight = fm.getAscent() - fm.getDescent();
     if (isLeft) {
       if (width * (1 - value) > length * 1.2) {
+        g.setColor(fontColorOutside);
         g.drawString(
             valueString,
             (int) (x + width * (1 - value) - length * 1.1),
             y + height / 2 + fontHeight / 2);
       } else {
-        g.setColor(fontColor);
+        g.setColor(fontColorInside);
         g.drawString(
             valueString,
             (int) (x + width * (1 - value) + length * 0.1),
@@ -6587,10 +6885,11 @@ public class MoveListFrame extends JFrame {
       }
     } else {
       if (width * (1 - value) > length * 1.2) {
+        g.setColor(fontColorOutside);
         g.drawString(
             valueString, (int) (x + width * value + length * 0.1), y + height / 2 + fontHeight / 2);
       } else {
-        g.setColor(fontColor);
+        g.setColor(fontColorInside);
         g.drawString(
             valueString,
             (int) (x + width * (value) - length * 1.1),
@@ -6613,12 +6912,12 @@ public class MoveListFrame extends JFrame {
     FontMetrics fm = g.getFontMetrics(font);
     font = font.deriveFont((float) (font.getSize2D() * maximumFontWidth / fm.stringWidth(string)));
     font = font.deriveFont((float) min(maximumFontHeight, font.getSize()));
-    if (font.getSize() > Math.round(Lizzie.config.frameFontSize * Lizzie.javaScaleFactor) + 6) {
+    if (font.getSize() > Math.round(Config.frameFontSize * Lizzie.javaScaleFactor) + 6) {
       font =
           new Font(
               font.getName(),
               font.getStyle(),
-              Math.round(Lizzie.config.frameFontSize * Lizzie.javaScaleFactor) + 6);
+              Math.round(Config.frameFontSize * Lizzie.javaScaleFactor) + 6);
     }
     g.setFont(font);
     fm = g.getFontMetrics(font);
@@ -6643,7 +6942,7 @@ public class MoveListFrame extends JFrame {
         JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
       // if(row%2 == 0){
       // if(row%2 == 0){
-      if (topCurNode
+      if (Lizzie.config.moveListTopCurNode
           && row == 0
           && Lizzie.board.getHistory().getCurrentHistoryNode().previous().isPresent()
           && (showBranch.getSelectedIndex() == 1
@@ -6652,9 +6951,9 @@ public class MoveListFrame extends JFrame {
           && Lizzie.board.getHistory().getCurrentHistoryNode().previous().get().nodeInfo.analyzed) {
         setBackground(new Color(220, 220, 220));
         setForeground(new Color(0, 0, 0));
-      } else if (Lizzie.board.convertNameToCoordinates(table.getValueAt(row, 2).toString())[0]
+      } else if (Board.convertNameToCoordinates(table.getValueAt(row, 2).toString())[0]
               == Lizzie.frame.clickbadmove[0]
-          && Lizzie.board.convertNameToCoordinates(table.getValueAt(row, 2).toString())[1]
+          && Board.convertNameToCoordinates(table.getValueAt(row, 2).toString())[1]
               == Lizzie.frame.clickbadmove[1]) {
         setBackground(new Color(238, 221, 130));
       } else setBackground(Color.WHITE);
@@ -6696,9 +6995,9 @@ public class MoveListFrame extends JFrame {
 
     public Component getTableCellRendererComponent(
         JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-      if (Lizzie.board.convertNameToCoordinates(table.getValueAt(row, 1).toString())[0]
+      if (Board.convertNameToCoordinates(table.getValueAt(row, 1).toString())[0]
               == Lizzie.frame.clickbadmove[0]
-          && Lizzie.board.convertNameToCoordinates(table.getValueAt(row, 1).toString())[1]
+          && Board.convertNameToCoordinates(table.getValueAt(row, 1).toString())[1]
               == Lizzie.frame.clickbadmove[1]) {
         setBackground(new Color(238, 221, 130));
       } else setBackground(Color.WHITE);
@@ -6842,7 +7141,7 @@ public class MoveListFrame extends JFrame {
     if (Lizzie.config.isAutoAna) return;
     table.repaint();
     int moveNumber = Integer.parseInt(table.getValueAt(row, 1).toString());
-    int[] coords = Lizzie.board.convertNameToCoordinates(table.getValueAt(row, 2).toString());
+    int[] coords = Board.convertNameToCoordinates(table.getValueAt(row, 2).toString());
     if (this.showBranch.getSelectedIndex() == 0) {
       Lizzie.frame.moveToMainTrunk();
     }
@@ -6857,7 +7156,7 @@ public class MoveListFrame extends JFrame {
     tablePanelMin1.repaint();
     int moveNumber = Integer.parseInt(minTable1.getValueAt(row, 0).toString());
     // Lizzie.board.goToMoveNumber(1);
-    int[] coords = Lizzie.board.convertNameToCoordinates(minTable1.getValueAt(row, 1).toString());
+    int[] coords = Board.convertNameToCoordinates(minTable1.getValueAt(row, 1).toString());
     if (this.showBranch.getSelectedIndex() == 0) {
       Lizzie.frame.moveToMainTrunk();
     }
@@ -6871,7 +7170,7 @@ public class MoveListFrame extends JFrame {
     tablePanelMin2.repaint();
     int moveNumber = Integer.parseInt(minTable2.getValueAt(row, 0).toString().trim());
     // Lizzie.board.goToMoveNumber(1);
-    int[] coords = Lizzie.board.convertNameToCoordinates(minTable2.getValueAt(row, 1).toString());
+    int[] coords = Board.convertNameToCoordinates(minTable2.getValueAt(row, 1).toString());
     if (this.showBranch.getSelectedIndex() == 0) {
       Lizzie.frame.moveToMainTrunk();
     }
@@ -6902,12 +7201,12 @@ public class MoveListFrame extends JFrame {
           if (nodeInfoThis.analyzed)
             if (nodeInfoThis.isBlack && checkBlack.isSelected()
                 || !nodeInfoThis.isBlack && checkWhite.isSelected())
-              if (Math.abs(nodeInfoThis.diffWinrate) >= (int) dropwinratechooser.getValue())
-                if (nodeInfoThis.playouts >= (int) playoutschooser.getValue()
-                    && nodeInfoThis.previousPlayouts >= (int) playoutschooser.getValue())
+              if (Math.abs(nodeInfoThis.diffWinrate) >= Lizzie.config.moveListWinrateThreshold)
+                if (nodeInfoThis.playouts >= Lizzie.config.moveListVisitsThreshold
+                    && nodeInfoThis.previousPlayouts >= Lizzie.config.moveListVisitsThreshold)
                   if (!isKatago
                       || Math.abs(nodeInfoThis.scoreMeanDiff)
-                          >= (int) dropScoreMeanChooser.getValue()) row = row + 1;
+                          >= Lizzie.config.moveListScoreThreshold) row = row + 1;
           lastNode = lastNode.previous().get();
         }
         NodeInfo nodeInfoThis =
@@ -6917,13 +7216,13 @@ public class MoveListFrame extends JFrame {
         if (nodeInfoThis.analyzed)
           if (nodeInfoThis.isBlack && checkBlack.isSelected()
               || !nodeInfoThis.isBlack && checkWhite.isSelected())
-            if (Math.abs(nodeInfoThis.diffWinrate) >= (int) dropwinratechooser.getValue())
-              if (nodeInfoThis.playouts >= (int) playoutschooser.getValue()
-                  && nodeInfoThis.previousPlayouts >= (int) playoutschooser.getValue())
+            if (Math.abs(nodeInfoThis.diffWinrate) >= Lizzie.config.moveListWinrateThreshold)
+              if (nodeInfoThis.playouts >= Lizzie.config.moveListVisitsThreshold
+                  && nodeInfoThis.previousPlayouts >= Lizzie.config.moveListVisitsThreshold)
                 if (!isKatago
-                    || Math.abs(nodeInfoThis.scoreMeanDiff)
-                        >= (int) dropScoreMeanChooser.getValue()) row = row + 1;
-        if (topCurNode
+                    || Math.abs(nodeInfoThis.scoreMeanDiff) >= Lizzie.config.moveListScoreThreshold)
+                  row = row + 1;
+        if (Lizzie.config.moveListTopCurNode
             && Lizzie.board.getHistory().getCurrentHistoryNode().previous().isPresent()
             && (showBranch.getSelectedIndex() == 1
                 || (showBranch.getSelectedIndex() == 0
@@ -6990,12 +7289,12 @@ public class MoveListFrame extends JFrame {
           if (nodeInfoThis.analyzed)
             if (nodeInfoThis.isBlack && checkBlack.isSelected()
                 || !nodeInfoThis.isBlack && checkWhite.isSelected())
-              if (Math.abs(nodeInfoThis.diffWinrate) >= (int) dropwinratechooser.getValue())
-                if (nodeInfoThis.playouts >= (int) playoutschooser.getValue()
-                    && nodeInfoThis.previousPlayouts >= (int) playoutschooser.getValue())
+              if (Math.abs(nodeInfoThis.diffWinrate) >= Lizzie.config.moveListWinrateThreshold)
+                if (nodeInfoThis.playouts >= Lizzie.config.moveListVisitsThreshold
+                    && nodeInfoThis.previousPlayouts >= Lizzie.config.moveListVisitsThreshold)
                   if (!isKatago
                       || Math.abs(nodeInfoThis.scoreMeanDiff)
-                          >= (int) dropScoreMeanChooser.getValue()) data2.add(nodeInfoThis);
+                          >= Lizzie.config.moveListScoreThreshold) data2.add(nodeInfoThis);
           lastNode = lastNode.previous().get();
         }
         NodeInfo nodeInfoThis =
@@ -7005,12 +7304,12 @@ public class MoveListFrame extends JFrame {
         if (nodeInfoThis.analyzed)
           if (nodeInfoThis.isBlack && checkBlack.isSelected()
               || !nodeInfoThis.isBlack && checkWhite.isSelected())
-            if (Math.abs(nodeInfoThis.diffWinrate) >= (int) dropwinratechooser.getValue())
-              if (nodeInfoThis.playouts >= (int) playoutschooser.getValue()
-                  && nodeInfoThis.previousPlayouts >= (int) playoutschooser.getValue())
+            if (Math.abs(nodeInfoThis.diffWinrate) >= Lizzie.config.moveListWinrateThreshold)
+              if (nodeInfoThis.playouts >= Lizzie.config.moveListVisitsThreshold
+                  && nodeInfoThis.previousPlayouts >= Lizzie.config.moveListVisitsThreshold)
                 if (!isKatago
-                    || Math.abs(nodeInfoThis.scoreMeanDiff)
-                        >= (int) dropScoreMeanChooser.getValue()) data2.add(nodeInfoThis);
+                    || Math.abs(nodeInfoThis.scoreMeanDiff) >= Lizzie.config.moveListScoreThreshold)
+                  data2.add(nodeInfoThis);
         Collections.sort(
             data2,
             new Comparator<NodeInfo>() {
@@ -7256,7 +7555,7 @@ public class MoveListFrame extends JFrame {
                 }
               }
             });
-        if (topCurNode
+        if (Lizzie.config.moveListTopCurNode
             && Lizzie.board.getHistory().getCurrentHistoryNode().previous().isPresent()
             && (showBranch.getSelectedIndex() == 1
                 || (showBranch.getSelectedIndex() == 0
@@ -7485,12 +7784,12 @@ public class MoveListFrame extends JFrame {
                   : (isMainEngine ? lastNode.nodeInfo : lastNode.nodeInfo2);
           if (nodeInfoThis.analyzed)
             if (nodeInfoThis.isBlack)
-              if (Math.abs(nodeInfoThis.diffWinrate) >= (int) dropwinratechooser.getValue())
-                if (nodeInfoThis.playouts >= (int) playoutschooser.getValue()
-                    && nodeInfoThis.previousPlayouts >= (int) playoutschooser.getValue())
+              if (Math.abs(nodeInfoThis.diffWinrate) >= Lizzie.config.moveListWinrateThreshold)
+                if (nodeInfoThis.playouts >= Lizzie.config.moveListVisitsThreshold
+                    && nodeInfoThis.previousPlayouts >= Lizzie.config.moveListVisitsThreshold)
                   if (!isKatago
                       || Math.abs(nodeInfoThis.scoreMeanDiff)
-                          >= (int) dropScoreMeanChooser.getValue()) row = row + 1;
+                          >= Lizzie.config.moveListScoreThreshold) row = row + 1;
           lastNode = lastNode.previous().get();
         }
         NodeInfo nodeInfoThis =
@@ -7499,12 +7798,12 @@ public class MoveListFrame extends JFrame {
                 : (isMainEngine ? lastNode.nodeInfo : lastNode.nodeInfo2);
         if (nodeInfoThis.analyzed)
           if (nodeInfoThis.isBlack)
-            if (Math.abs(nodeInfoThis.diffWinrate) >= (int) dropwinratechooser.getValue())
-              if (nodeInfoThis.playouts >= (int) playoutschooser.getValue()
-                  && nodeInfoThis.previousPlayouts >= (int) playoutschooser.getValue())
+            if (Math.abs(nodeInfoThis.diffWinrate) >= Lizzie.config.moveListWinrateThreshold)
+              if (nodeInfoThis.playouts >= Lizzie.config.moveListVisitsThreshold
+                  && nodeInfoThis.previousPlayouts >= Lizzie.config.moveListVisitsThreshold)
                 if (!isKatago
-                    || Math.abs(nodeInfoThis.scoreMeanDiff)
-                        >= (int) dropScoreMeanChooser.getValue()) row = row + 1;
+                    || Math.abs(nodeInfoThis.scoreMeanDiff) >= Lizzie.config.moveListScoreThreshold)
+                  row = row + 1;
         return row;
       }
 
@@ -7546,12 +7845,12 @@ public class MoveListFrame extends JFrame {
                   : (isMainEngine ? lastNode.nodeInfo : lastNode.nodeInfo2);
           if (nodeInfoThis.analyzed)
             if (nodeInfoThis.isBlack)
-              if (Math.abs(nodeInfoThis.diffWinrate) >= (int) dropwinratechooser.getValue())
-                if (nodeInfoThis.playouts >= (int) playoutschooser.getValue()
-                    && nodeInfoThis.previousPlayouts >= (int) playoutschooser.getValue())
+              if (Math.abs(nodeInfoThis.diffWinrate) >= Lizzie.config.moveListWinrateThreshold)
+                if (nodeInfoThis.playouts >= Lizzie.config.moveListVisitsThreshold
+                    && nodeInfoThis.previousPlayouts >= Lizzie.config.moveListVisitsThreshold)
                   if (!isKatago
                       || Math.abs(nodeInfoThis.scoreMeanDiff)
-                          >= (int) dropScoreMeanChooser.getValue()) data2.add(nodeInfoThis);
+                          >= Lizzie.config.moveListScoreThreshold) data2.add(nodeInfoThis);
           lastNode = lastNode.previous().get();
         }
         NodeInfo nodeInfoThis =
@@ -7560,12 +7859,12 @@ public class MoveListFrame extends JFrame {
                 : (isMainEngine ? lastNode.nodeInfo : lastNode.nodeInfo2);
         if (nodeInfoThis.analyzed)
           if (nodeInfoThis.isBlack)
-            if (Math.abs(nodeInfoThis.diffWinrate) >= (int) dropwinratechooser.getValue())
-              if (nodeInfoThis.playouts >= (int) playoutschooser.getValue()
-                  && nodeInfoThis.previousPlayouts >= (int) playoutschooser.getValue())
+            if (Math.abs(nodeInfoThis.diffWinrate) >= Lizzie.config.moveListWinrateThreshold)
+              if (nodeInfoThis.playouts >= Lizzie.config.moveListVisitsThreshold
+                  && nodeInfoThis.previousPlayouts >= Lizzie.config.moveListVisitsThreshold)
                 if (!isKatago
-                    || Math.abs(nodeInfoThis.scoreMeanDiff)
-                        >= (int) dropScoreMeanChooser.getValue()) data2.add(nodeInfoThis);
+                    || Math.abs(nodeInfoThis.scoreMeanDiff) >= Lizzie.config.moveListScoreThreshold)
+                  data2.add(nodeInfoThis);
         Collections.sort(
             data2,
             new Comparator<NodeInfo>() {
@@ -7781,12 +8080,12 @@ public class MoveListFrame extends JFrame {
                   : (isMainEngine ? lastNode.nodeInfo : lastNode.nodeInfo2);
           if (nodeInfoThis.analyzed)
             if (!nodeInfoThis.isBlack)
-              if (Math.abs(nodeInfoThis.diffWinrate) >= (int) dropwinratechooser.getValue())
-                if (nodeInfoThis.playouts >= (int) playoutschooser.getValue()
-                    && nodeInfoThis.previousPlayouts >= (int) playoutschooser.getValue())
+              if (Math.abs(nodeInfoThis.diffWinrate) >= Lizzie.config.moveListWinrateThreshold)
+                if (nodeInfoThis.playouts >= Lizzie.config.moveListVisitsThreshold
+                    && nodeInfoThis.previousPlayouts >= Lizzie.config.moveListVisitsThreshold)
                   if (!isKatago
                       || Math.abs(nodeInfoThis.scoreMeanDiff)
-                          >= (int) dropScoreMeanChooser.getValue()) row = row + 1;
+                          >= Lizzie.config.moveListScoreThreshold) row = row + 1;
           lastNode = lastNode.previous().get();
         }
         NodeInfo nodeInfoThis =
@@ -7795,12 +8094,12 @@ public class MoveListFrame extends JFrame {
                 : (isMainEngine ? lastNode.nodeInfo : lastNode.nodeInfo2);
         if (nodeInfoThis.analyzed)
           if (!nodeInfoThis.isBlack)
-            if (Math.abs(nodeInfoThis.diffWinrate) >= (int) dropwinratechooser.getValue())
-              if (nodeInfoThis.playouts >= (int) playoutschooser.getValue()
-                  && nodeInfoThis.previousPlayouts >= (int) playoutschooser.getValue())
+            if (Math.abs(nodeInfoThis.diffWinrate) >= Lizzie.config.moveListWinrateThreshold)
+              if (nodeInfoThis.playouts >= Lizzie.config.moveListVisitsThreshold
+                  && nodeInfoThis.previousPlayouts >= Lizzie.config.moveListVisitsThreshold)
                 if (!isKatago
-                    || Math.abs(nodeInfoThis.scoreMeanDiff)
-                        >= (int) dropScoreMeanChooser.getValue()) row = row + 1;
+                    || Math.abs(nodeInfoThis.scoreMeanDiff) >= Lizzie.config.moveListScoreThreshold)
+                  row = row + 1;
         return row;
       }
 
@@ -7840,24 +8139,24 @@ public class MoveListFrame extends JFrame {
               showBranch.getSelectedIndex() == 0 ? lastNode.nodeInfoMain : lastNode.nodeInfo;
           if (nodeInfoThis.analyzed)
             if (!nodeInfoThis.isBlack)
-              if (Math.abs(nodeInfoThis.diffWinrate) >= (int) dropwinratechooser.getValue())
-                if (nodeInfoThis.playouts >= (int) playoutschooser.getValue()
-                    && nodeInfoThis.previousPlayouts >= (int) playoutschooser.getValue())
+              if (Math.abs(nodeInfoThis.diffWinrate) >= Lizzie.config.moveListWinrateThreshold)
+                if (nodeInfoThis.playouts >= Lizzie.config.moveListVisitsThreshold
+                    && nodeInfoThis.previousPlayouts >= Lizzie.config.moveListVisitsThreshold)
                   if (!isKatago
                       || Math.abs(nodeInfoThis.scoreMeanDiff)
-                          >= (int) dropScoreMeanChooser.getValue()) data2.add(nodeInfoThis);
+                          >= Lizzie.config.moveListScoreThreshold) data2.add(nodeInfoThis);
           lastNode = lastNode.previous().get();
         }
         NodeInfo nodeInfoThis =
             showBranch.getSelectedIndex() == 0 ? lastNode.nodeInfoMain : lastNode.nodeInfo;
         if (nodeInfoThis.analyzed)
           if (!nodeInfoThis.isBlack)
-            if (Math.abs(nodeInfoThis.diffWinrate) >= (int) dropwinratechooser.getValue())
-              if (nodeInfoThis.playouts >= (int) playoutschooser.getValue()
-                  && nodeInfoThis.previousPlayouts >= (int) playoutschooser.getValue())
+            if (Math.abs(nodeInfoThis.diffWinrate) >= Lizzie.config.moveListWinrateThreshold)
+              if (nodeInfoThis.playouts >= Lizzie.config.moveListVisitsThreshold
+                  && nodeInfoThis.previousPlayouts >= Lizzie.config.moveListVisitsThreshold)
                 if (!isKatago
-                    || Math.abs(nodeInfoThis.scoreMeanDiff)
-                        >= (int) dropScoreMeanChooser.getValue()) data2.add(nodeInfoThis);
+                    || Math.abs(nodeInfoThis.scoreMeanDiff) >= Lizzie.config.moveListScoreThreshold)
+                  data2.add(nodeInfoThis);
         Collections.sort(
             data2,
             new Comparator<NodeInfo>() {

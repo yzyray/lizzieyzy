@@ -16,6 +16,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
@@ -29,12 +30,15 @@ public class SetThreshold extends JDialog {
   private JSpinner dropWinRateChooser = new JSpinner(new SpinnerNumberModel(0, 0, 99, 1));
   private JSpinner dropScoreMeanChooser = new JSpinner(new SpinnerNumberModel(0, 0, 99, 1));
   private JSpinner playoutsChooser = new JSpinner(new SpinnerNumberModel(0, 0, 999999, 100));
+  private JCheckBox chkTopCurrentMove;
 
   private JButton btnConfirm;
   private JButton btnCancel;
+  private boolean fromMoveList;
 
-  public SetThreshold(Window owner) {
+  public SetThreshold(Window owner, boolean fromMoveList) {
     super(owner);
+    this.fromMoveList = fromMoveList;
     initComponents();
     try {
       this.setIconImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/logo.png")));
@@ -68,13 +72,19 @@ public class SetThreshold extends JDialog {
   }
 
   private void initContentPanel() {
-    GridLayout gridLayout = new GridLayout(3, 2, 4, 4);
+    GridLayout gridLayout = new GridLayout(fromMoveList ? 4 : 3, 2, 4, 4);
     dropWinRateChooser.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
-    dropWinRateChooser.setValue(Lizzie.config.blunderWinThreshold);
     dropScoreMeanChooser.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
-    dropScoreMeanChooser.setValue(Lizzie.config.blunderScoreThreshold);
     playoutsChooser.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
-    playoutsChooser.setValue(Lizzie.config.blunderPlayoutsThreshold);
+    if (fromMoveList) {
+      dropWinRateChooser.setValue(Lizzie.config.moveListWinrateThreshold);
+      dropScoreMeanChooser.setValue(Lizzie.config.moveListScoreThreshold);
+      playoutsChooser.setValue(Lizzie.config.moveListVisitsThreshold);
+    } else {
+      dropWinRateChooser.setValue(Lizzie.config.blunderWinThreshold);
+      dropScoreMeanChooser.setValue(Lizzie.config.blunderScoreThreshold);
+      playoutsChooser.setValue(Lizzie.config.blunderPlayoutsThreshold);
+    }
     contentPanel.setLayout(gridLayout);
     contentPanel.add(
         new JFontLabel(Lizzie.resourceBundle.getString("Movelistframe.lblDropWinrate")));
@@ -83,7 +93,13 @@ public class SetThreshold extends JDialog {
     contentPanel.add(dropScoreMeanChooser);
     contentPanel.add(new JFontLabel(Lizzie.resourceBundle.getString("Movelistframe.lblPlayouts")));
     contentPanel.add(playoutsChooser);
-
+    if (fromMoveList) {
+      chkTopCurrentMove = new JCheckBox();
+      chkTopCurrentMove.setSelected(Lizzie.config.moveListTopCurNode);
+      contentPanel.add(
+          new JFontLabel(Lizzie.resourceBundle.getString("Movelistframe.chkTopCurrentMove")));
+      contentPanel.add(chkTopCurrentMove);
+    }
     dialogPane.add(contentPanel, BorderLayout.CENTER);
   }
 
@@ -100,10 +116,18 @@ public class SetThreshold extends JDialog {
     btnConfirm.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            Lizzie.config.saveThreshold(
-                (int) dropWinRateChooser.getValue(),
-                (int) dropScoreMeanChooser.getValue(),
-                (int) playoutsChooser.getValue());
+            if (fromMoveList) {
+              Lizzie.config.saveThreshold(
+                  (int) dropWinRateChooser.getValue(),
+                  (int) dropScoreMeanChooser.getValue(),
+                  (int) playoutsChooser.getValue(),
+                  chkTopCurrentMove.isSelected());
+            } else {
+              Lizzie.config.saveThreshold(
+                  (int) dropWinRateChooser.getValue(),
+                  (int) dropScoreMeanChooser.getValue(),
+                  (int) playoutsChooser.getValue());
+            }
             setVisible(false);
           }
         });

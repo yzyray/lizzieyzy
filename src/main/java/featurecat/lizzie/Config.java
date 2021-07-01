@@ -546,9 +546,10 @@ public class Config {
   public boolean disableWRNInGame = true;
   public boolean notStartPondering = false;
 
-  public int gameStatisticsCustomStart = -1;
-  public int gameStatisticsCustomEnd = 1000;
-public boolean moveListFilterCurrent;
+  public int gameStatisticsCustomStart = 10;
+  public int gameStatisticsCustomEnd = 200;
+  public boolean moveListFilterCurrent = false;
+  public boolean lossPanelSelectWinrate = true;
 
   private JSONObject loadAndMergeSaveBoardConfig(
       JSONObject defaultCfg, String fileName, boolean needValidation) throws IOException {
@@ -1175,6 +1176,7 @@ public boolean moveListFilterCurrent;
     gameStatisticsCustomStart = uiConfig.optInt("game-statistics-custom-start", -1);
     gameStatisticsCustomEnd = uiConfig.optInt("game-statistics-custom-end", 1000);
     moveListFilterCurrent = uiConfig.optBoolean("move-list-filter-current", false);
+    lossPanelSelectWinrate = uiConfig.optBoolean("loss-panel-select-winrate", true);
     showScrollVariation = uiConfig.optBoolean("show-scroll-variation", true);
     ignoreOutOfWidth = uiConfig.optBoolean("ignore-out-of-width", false);
     enginePkPonder = uiConfig.optBoolean("engine-pk-ponder", false);
@@ -2280,19 +2282,16 @@ public boolean moveListFilterCurrent;
     uiConfig.put("blunder-playouts-threshold", blunderPlayoutsThreshold);
   }
 
-  //  public void setLanguage(String code) {
-  //    // currently will not set the resource bundle. TODO.
-  //    if (code.equals("ko")) {
-  //      // korean
-  //      if (fontName == null) {
-  //        fontName = "Malgun Gothic";
-  //      }
-  //      if (uiFontName == null) {
-  //        uiFontName = "Malgun Gothic";
-  //      }
-  //      winrateFontName = null;
-  //    }
-  //  }
+  public void saveThreshold(int winRateDiff, int scoreDiff, int playouts, boolean topCurrentMove) {
+    moveListWinrateThreshold = winRateDiff;
+    moveListScoreThreshold = scoreDiff;
+    moveListVisitsThreshold = playouts;
+    moveListTopCurNode = topCurrentMove;
+    uiConfig.putOpt("move-list-winrate-threshold", moveListWinrateThreshold);
+    uiConfig.putOpt("move-list-score-threshold", moveListScoreThreshold);
+    uiConfig.putOpt("move-list-visits-threshold", moveListVisitsThreshold);
+    uiConfig.put("movelist-top-curnode", moveListTopCurNode);
+  }
 
   public void savePanelConfig() {
     uiConfig.put("extra-mode", extraMode);
