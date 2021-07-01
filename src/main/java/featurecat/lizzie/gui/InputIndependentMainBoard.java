@@ -266,7 +266,7 @@ public class InputIndependentMainBoard implements KeyListener {
           Lizzie.config.toggleShowSuggestionVariations();
         } else {
           if (controlIsPressed(e)) Lizzie.config.toggleLargeSubBoard();
-          else if (e.isAltDown()) {
+          else {
             if (Lizzie.frame.toolbar.chkShowBlack.isSelected()
                 || Lizzie.frame.toolbar.chkShowBlack.isSelected()) {
               Lizzie.frame.toolbar.chkShowBlack.setSelected(false);

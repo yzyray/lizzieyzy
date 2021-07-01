@@ -425,7 +425,7 @@ public class Input implements MouseListener, KeyListener, MouseWheelListener, Mo
           Lizzie.config.toggleShowSuggestionVariations();
         } else {
           if (controlIsPressed(e)) Lizzie.config.toggleLargeSubBoard();
-          else if (e.isAltDown()) {
+          else {
             if (Lizzie.frame.toolbar.chkShowBlack.isSelected()
                 || Lizzie.frame.toolbar.chkShowBlack.isSelected()) {
               Lizzie.frame.toolbar.chkShowBlack.setSelected(false);
