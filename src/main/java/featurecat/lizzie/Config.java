@@ -1174,8 +1174,8 @@ public class Config {
 
     showReplaceFileHint = uiConfig.optBoolean("show-replace-file-hint", true);
     maxTreeWidth = uiConfig.optInt("max-tree-width", 10000);
-    gameStatisticsCustomStart = uiConfig.optInt("game-statistics-custom-start", -1);
-    gameStatisticsCustomEnd = uiConfig.optInt("game-statistics-custom-end", 1000);
+    gameStatisticsCustomStart = uiConfig.optInt("game-statistics-custom-start", 10);
+    gameStatisticsCustomEnd = uiConfig.optInt("game-statistics-custom-end", 200);
     moveListFilterCurrent = uiConfig.optBoolean("move-list-filter-current", false);
     lossPanelSelectWinrate = uiConfig.optBoolean("loss-panel-select-winrate", false);
     analysisAutoQuit = uiConfig.optBoolean("analysis-auto-quit", true);
