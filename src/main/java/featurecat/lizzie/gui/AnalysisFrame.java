@@ -283,7 +283,7 @@ public class AnalysisFrame extends JFrame {
           table.getColumnModel().getColumn(8).setPreferredWidth(pos.getInt(12));
           setBounds(pos.getInt(0), pos.getInt(1), pos.getInt(2), pos.getInt(3));
         } else {
-          setBounds(-9, 480, 650, 320);
+          setBounds(-9, 550, 650, 320);
         }
       } else if (Lizzie.config.persistedUi.optJSONArray("suggestions-list-position-7") != null
           && Lizzie.config.persistedUi.optJSONArray("suggestions-list-position-7").length() == 11) {

@@ -269,8 +269,8 @@ public class MoveListFrame extends JFrame {
       int height = (int) screensize.getHeight();
       if (pos.getInt(0) >= width || pos.getInt(1) >= height) setLocation(0, 0);
     } else {
-      if (isMainEngine) setBounds(-9, 0, Lizzie.config.isChinese ? 846 : 980, 487);
-      else setBounds(737, 0, Lizzie.config.isChinese ? 846 : 980, 487);
+      if (isMainEngine) setBounds(-9, 0, Lizzie.config.isChinese ? 846 : 980, 565);
+      else setBounds(737, 0, Lizzie.config.isChinese ? 846 : 980, 565);
     }
     try {
       setIconImage(ImageIO.read(MoveListFrame.class.getResourceAsStream("/assets/logo.png")));
