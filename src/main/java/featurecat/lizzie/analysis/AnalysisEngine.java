@@ -269,16 +269,21 @@ public class AnalysisEngine {
       if (Lizzie.board.getHistory().getCurrentHistoryNode() == Lizzie.board.getHistory().getStart())
         Lizzie.board.nextMove(true);
       Lizzie.frame.refresh();
-      if (!Lizzie.config.analysisEnginePreLoad && !Lizzie.config.fastChange) {
-        isNormalEnd = true;
-        if (this.useJavaSSH) this.javaSSH.close();
-        else this.process.destroyForcibly();
+      if (Lizzie.config.analysisAutoQuit) {
+        normalQuit();
       }
       if (Lizzie.config.analysisAlwaysOverride)
         Lizzie.config.enableLizzieCache = oriEnableLizzieCache;
       if (shouldRePonder && !Lizzie.leelaz.isPondering()) Lizzie.leelaz.togglePonder();
       Lizzie.frame.renderVarTree(0, 0, false, false);
     }
+  }
+
+  private void normalQuit() {
+    // TODO Auto-generated method stub
+    isNormalEnd = true;
+    if (this.useJavaSSH) this.javaSSH.close();
+    else this.process.destroyForcibly();
   }
 
   public void sendRequest(int startMove, int endMove) {

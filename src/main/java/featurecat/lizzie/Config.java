@@ -550,6 +550,7 @@ public class Config {
   public int gameStatisticsCustomEnd = 200;
   public boolean moveListFilterCurrent = false;
   public boolean lossPanelSelectWinrate = true;
+  public boolean analysisAutoQuit = true;
 
   private JSONObject loadAndMergeSaveBoardConfig(
       JSONObject defaultCfg, String fileName, boolean needValidation) throws IOException {
@@ -1177,6 +1178,7 @@ public class Config {
     gameStatisticsCustomEnd = uiConfig.optInt("game-statistics-custom-end", 1000);
     moveListFilterCurrent = uiConfig.optBoolean("move-list-filter-current", false);
     lossPanelSelectWinrate = uiConfig.optBoolean("loss-panel-select-winrate", true);
+    analysisAutoQuit = uiConfig.optBoolean("analysis-auto-quit", true);
     showScrollVariation = uiConfig.optBoolean("show-scroll-variation", true);
     ignoreOutOfWidth = uiConfig.optBoolean("ignore-out-of-width", false);
     enginePkPonder = uiConfig.optBoolean("engine-pk-ponder", false);
