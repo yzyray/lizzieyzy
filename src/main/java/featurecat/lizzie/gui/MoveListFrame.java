@@ -385,16 +385,18 @@ public class MoveListFrame extends JFrame {
             g0.dispose();
           }
         };
-    lossPanel.addTab(Lizzie.resourceBundle.getString("Movelistframe.winLoss"), winLossPanel);
+
     lossPanel.addTab(Lizzie.resourceBundle.getString("Movelistframe.scoreLoss"), scoreLossPanel);
-    if (Lizzie.config.lossPanelSelectWinrate) lossPanel.setSelectedIndex(0);
-    else lossPanel.setSelectedIndex(1);
+    lossPanel.addTab(Lizzie.resourceBundle.getString("Movelistframe.winLoss"), winLossPanel);
+
+    if (Lizzie.config.lossPanelSelectWinrate || !isKatago) lossPanel.setSelectedIndex(1);
+    else lossPanel.setSelectedIndex(0);
     lossPanel.addChangeListener(
         new ChangeListener() {
           public void stateChanged(ChangeEvent changeEvent) {
             JTabbedPane sourceTabbedPane = (JTabbedPane) changeEvent.getSource();
             int index = sourceTabbedPane.getSelectedIndex();
-            if (index == 0) Lizzie.config.lossPanelSelectWinrate = true;
+            if (index == 1) Lizzie.config.lossPanelSelectWinrate = true;
             else Lizzie.config.lossPanelSelectWinrate = false;
             Lizzie.config.uiConfig.put(
                 "loss-panel-select-winrate", Lizzie.config.lossPanelSelectWinrate);
@@ -6646,7 +6648,7 @@ public class MoveListFrame extends JFrame {
         valueStartY + valueRowHeight * 2 + valueRowHeight / 4,
         LizzieFrame.uiFont,
         Font.PLAIN,
-        Lizzie.resourceBundle.getString("Movelistframe.keyPanel.avgWinLoss"),
+        Lizzie.resourceBundle.getString("Movelistframe.keyPanel.avgScoreLoss"),
         availableWidth * 0.2 * 0.9,
         valueRowHeight / 2);
     drawStringMid(
@@ -6655,7 +6657,7 @@ public class MoveListFrame extends JFrame {
         valueStartY + valueRowHeight * 3 + valueRowHeight / 4,
         LizzieFrame.uiFont,
         Font.PLAIN,
-        Lizzie.resourceBundle.getString("Movelistframe.keyPanel.avgScoreLoss"),
+        Lizzie.resourceBundle.getString("Movelistframe.keyPanel.avgWinLoss"),
         availableWidth * 0.2 * 0.9,
         valueRowHeight / 2);
 
@@ -6758,27 +6760,29 @@ public class MoveListFrame extends JFrame {
         Color.PINK,
         font,
         true);
+
     drawRectWithValue(
         g,
         valueStartXBlack,
         valueStartY + valueRowHeight * 2,
         valueWidth,
         valueRowHeight,
-        blackAvgWinLoss / maxAvgWinLoss,
-        String.format("%.1f", blackAvgWinLoss) + "%",
+        blackAvgScoreLoss / maxAvgWinLoss,
+        String.format("%.1f", blackAvgScoreLoss),
         Color.BLACK,
         Color.BLACK,
         Color.PINK,
         font,
         true);
+
     drawRectWithValue(
         g,
         valueStartXBlack,
         valueStartY + valueRowHeight * 3,
         valueWidth,
         valueRowHeight,
-        blackAvgScoreLoss / maxAvgWinLoss,
-        String.format("%.1f", blackAvgScoreLoss),
+        blackAvgWinLoss / maxAvgWinLoss,
+        String.format("%.1f", blackAvgWinLoss) + "%",
         Color.BLACK,
         Color.BLACK,
         Color.PINK,
@@ -6817,8 +6821,8 @@ public class MoveListFrame extends JFrame {
         valueStartY + valueRowHeight * 2,
         valueWidth,
         valueRowHeight,
-        whiteAvgWinLoss / maxAvgWinLoss,
-        String.format("%.1f", whiteAvgWinLoss) + "%",
+        whiteAvgScoreLoss / maxAvgWinLoss,
+        String.format("%.1f", whiteAvgScoreLoss),
         Color.WHITE,
         Color.WHITE,
         Color.BLUE,
@@ -6830,8 +6834,8 @@ public class MoveListFrame extends JFrame {
         valueStartY + valueRowHeight * 3,
         valueWidth,
         valueRowHeight,
-        whiteAvgScoreLoss / maxAvgWinLoss,
-        String.format("%.1f", whiteAvgScoreLoss),
+        whiteAvgWinLoss / maxAvgWinLoss,
+        String.format("%.1f", whiteAvgWinLoss) + "%",
         Color.WHITE,
         Color.WHITE,
         Color.BLUE,

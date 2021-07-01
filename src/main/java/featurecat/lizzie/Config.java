@@ -549,7 +549,7 @@ public class Config {
   public int gameStatisticsCustomStart = 10;
   public int gameStatisticsCustomEnd = 200;
   public boolean moveListFilterCurrent = false;
-  public boolean lossPanelSelectWinrate = true;
+  public boolean lossPanelSelectWinrate = false;
   public boolean analysisAutoQuit = true;
 
   private JSONObject loadAndMergeSaveBoardConfig(
@@ -1177,7 +1177,7 @@ public class Config {
     gameStatisticsCustomStart = uiConfig.optInt("game-statistics-custom-start", -1);
     gameStatisticsCustomEnd = uiConfig.optInt("game-statistics-custom-end", 1000);
     moveListFilterCurrent = uiConfig.optBoolean("move-list-filter-current", false);
-    lossPanelSelectWinrate = uiConfig.optBoolean("loss-panel-select-winrate", true);
+    lossPanelSelectWinrate = uiConfig.optBoolean("loss-panel-select-winrate", false);
     analysisAutoQuit = uiConfig.optBoolean("analysis-auto-quit", true);
     showScrollVariation = uiConfig.optBoolean("show-scroll-variation", true);
     ignoreOutOfWidth = uiConfig.optBoolean("ignore-out-of-width", false);
