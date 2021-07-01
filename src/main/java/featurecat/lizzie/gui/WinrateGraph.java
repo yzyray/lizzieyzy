@@ -1203,7 +1203,7 @@ public class WinrateGraph {
     int oriMWrHeight = -1;
     int mx = -1;
     if (mwr >= 0) {
-      g.setColor(Color.MAGENTA);
+      g.setColor(Color.RED);
       g.fillOval(
           posx + (mmovenum * width / numMoves) - DOT_RADIUS,
           posy + height - (int) (mwr * height / 100) - DOT_RADIUS,

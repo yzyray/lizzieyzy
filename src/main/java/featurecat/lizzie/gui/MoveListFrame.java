@@ -235,6 +235,7 @@ public class MoveListFrame extends JFrame {
 
   private List<bigMistakeInfo> BigMistakeList = new ArrayList<bigMistakeInfo>();
   private int mouseOverBigMistakeIndex = -1; // 0-9
+  private Color defaultScoreColor = new Color(255, 0, 0);
 
   public MoveListFrame(int engineIndex) {
     if (engineIndex == 2) isMainEngine = false;
@@ -2711,7 +2712,7 @@ public class MoveListFrame extends JFrame {
         g.drawLine(688, 30, 706, 30);
         g.setColor(Color.BLACK);
         g.drawString(Lizzie.resourceBundle.getString("Movelistframe.unanalyzedLabel"), 711, 35);
-        g.setColor(Lizzie.config.scoreMeanLineColor);
+        g.setColor(defaultScoreColor);
         g.setStroke(new BasicStroke(1));
         g.drawLine(754, 30, 772, 30);
         g.setColor(Color.BLACK);
@@ -2735,7 +2736,7 @@ public class MoveListFrame extends JFrame {
         g.drawLine(768, 30, 786, 30);
         g.setColor(Color.BLACK);
         g.drawString(Lizzie.resourceBundle.getString("Movelistframe.unanalyzedLabel"), 791, 35);
-        g.setColor(Lizzie.config.scoreMeanLineColor);
+        g.setColor(defaultScoreColor);
         g.setStroke(new BasicStroke(1));
         g.drawLine(861, 30, 879, 30);
         g.setColor(Color.BLACK);
@@ -6057,7 +6058,7 @@ public class MoveListFrame extends JFrame {
                 if (lastscoreMean > -500) {
                   // Color lineColor = g.getColor();
                   Stroke previousStroke = g.getStroke();
-                  g.setColor(Lizzie.config.scoreMeanLineColor);
+                  g.setColor(defaultScoreColor);
                   if (!node.isMainTrunk()) {
                     g.setStroke(dashed);
                   } else g.setStroke(new BasicStroke(1));
