@@ -15,5 +15,16 @@ public class NodeInfo {
   public double scoreMeanBoard;
   public boolean isMatchAi;
   public double percentsMatch;
+  public boolean isBest;
   public BoardHistoryNode nextNode;
+
+  public double getScoreMeanDiff() {
+    if (this.isBest) return 0;
+    else return scoreMeanDiff;
+  }
+
+  public double getWinrateDiff() {
+    if (this.isBest) return 0;
+    else return diffWinrate;
+  }
 }

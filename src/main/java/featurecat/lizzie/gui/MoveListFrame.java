@@ -1294,6 +1294,7 @@ public class MoveListFrame extends JFrame {
             Lizzie.config.analyzeUpdateIntervalCentisec * 20,
             new ActionListener() {
               public void actionPerformed(ActionEvent evt) {
+                if (!isVisible()) return;
                 refreshCount = refreshCount + 1;
                 if (refreshCount > 9) {
                   refreshCount = 0;
@@ -2236,39 +2237,39 @@ public class MoveListFrame extends JFrame {
           if (nodeInfo.analyzed) {
             if (nodeInfo.isBlack) {
               analyzedBlack = analyzedBlack + 1;
-              if (nodeInfo.diffWinrate > 0) continue;
-              winratediffBlack = winratediffBlack + Math.abs(nodeInfo.diffWinrate);
+              if (nodeInfo.getWinrateDiff() > 0) continue;
+              winratediffBlack = winratediffBlack + Math.abs(nodeInfo.getWinrateDiff());
               winratediffVarianceBlack =
-                  winratediffVarianceBlack + Math.pow(nodeInfo.diffWinrate, 2);
-              if (Math.abs(nodeInfo.diffWinrate) >= Lizzie.config.winrateDiffRange1) {
+                  winratediffVarianceBlack + Math.pow(nodeInfo.getWinrateDiff(), 2);
+              if (Math.abs(nodeInfo.getWinrateDiff()) >= Lizzie.config.winrateDiffRange1) {
                 range1Black = range1Black + 1;
-                winratediffBlack1 = winratediffBlack1 + Math.abs(nodeInfo.diffWinrate);
+                winratediffBlack1 = winratediffBlack1 + Math.abs(nodeInfo.getWinrateDiff());
                 winratediffVarianceBlack1 =
-                    winratediffVarianceBlack1 + Math.pow(nodeInfo.diffWinrate, 2);
+                    winratediffVarianceBlack1 + Math.pow(nodeInfo.getWinrateDiff(), 2);
               }
-              if (Math.abs(nodeInfo.diffWinrate) >= Lizzie.config.winrateDiffRange2) {
+              if (Math.abs(nodeInfo.getWinrateDiff()) >= Lizzie.config.winrateDiffRange2) {
                 range2Black = range2Black + 1;
-                winratediffBlack2 = winratediffBlack2 + Math.abs(nodeInfo.diffWinrate);
+                winratediffBlack2 = winratediffBlack2 + Math.abs(nodeInfo.getWinrateDiff());
                 winratediffVarianceBlack2 =
-                    winratediffVarianceBlack2 + Math.pow(nodeInfo.diffWinrate, 2);
+                    winratediffVarianceBlack2 + Math.pow(nodeInfo.getWinrateDiff(), 2);
               }
             } else {
               analyzedWhite = analyzedWhite + 1;
-              if (nodeInfo.diffWinrate > 0) continue;
-              winratediffWhite = winratediffWhite + Math.abs(nodeInfo.diffWinrate);
+              if (nodeInfo.getWinrateDiff() > 0) continue;
+              winratediffWhite = winratediffWhite + Math.abs(nodeInfo.getWinrateDiff());
               winratediffVarianceWhite =
-                  winratediffVarianceWhite + Math.pow(nodeInfo.diffWinrate, 2);
-              if (Math.abs(nodeInfo.diffWinrate) >= Lizzie.config.winrateDiffRange1) {
+                  winratediffVarianceWhite + Math.pow(nodeInfo.getWinrateDiff(), 2);
+              if (Math.abs(nodeInfo.getWinrateDiff()) >= Lizzie.config.winrateDiffRange1) {
                 range1White = range1White + 1;
-                winratediffWhite1 = winratediffWhite1 + Math.abs(nodeInfo.diffWinrate);
+                winratediffWhite1 = winratediffWhite1 + Math.abs(nodeInfo.getWinrateDiff());
                 winratediffVarianceWhite1 =
-                    winratediffVarianceWhite1 + Math.pow(nodeInfo.diffWinrate, 2);
+                    winratediffVarianceWhite1 + Math.pow(nodeInfo.getWinrateDiff(), 2);
               }
-              if (Math.abs(nodeInfo.diffWinrate) >= Lizzie.config.winrateDiffRange2) {
+              if (Math.abs(nodeInfo.getWinrateDiff()) >= Lizzie.config.winrateDiffRange2) {
                 range2White = range2White + 1;
-                winratediffWhite2 = winratediffWhite2 + Math.abs(nodeInfo.diffWinrate);
+                winratediffWhite2 = winratediffWhite2 + Math.abs(nodeInfo.getWinrateDiff());
                 winratediffVarianceWhite2 =
-                    winratediffVarianceWhite2 + Math.pow(nodeInfo.diffWinrate, 2);
+                    winratediffVarianceWhite2 + Math.pow(nodeInfo.getWinrateDiff(), 2);
               }
             }
           }
@@ -2276,37 +2277,39 @@ public class MoveListFrame extends JFrame {
           if (nodeInfo.analyzed) {
             if (nodeInfo.isBlack) {
               analyzedBlackS = analyzedBlackS + 1;
-              if (nodeInfo.scoreMeanDiff > 0) continue;
-              scorediffBlack = scorediffBlack + Math.abs(nodeInfo.scoreMeanDiff);
-              scorediffVarianceBlack = scorediffVarianceBlack + Math.pow(nodeInfo.scoreMeanDiff, 2);
-              if (Math.abs(nodeInfo.scoreMeanDiff) >= Lizzie.config.scoreDiffRange1) {
+              if (nodeInfo.getScoreMeanDiff() > 0) continue;
+              scorediffBlack = scorediffBlack + Math.abs(nodeInfo.getScoreMeanDiff());
+              scorediffVarianceBlack =
+                  scorediffVarianceBlack + Math.pow(nodeInfo.getScoreMeanDiff(), 2);
+              if (Math.abs(nodeInfo.getScoreMeanDiff()) >= Lizzie.config.scoreDiffRange1) {
                 range1BlackS = range1BlackS + 1;
-                scorediffBlack1 = scorediffBlack1 + Math.abs(nodeInfo.scoreMeanDiff);
+                scorediffBlack1 = scorediffBlack1 + Math.abs(nodeInfo.getScoreMeanDiff());
                 scorediffVarianceBlack1 =
-                    scorediffVarianceBlack1 + Math.pow(nodeInfo.scoreMeanDiff, 2);
+                    scorediffVarianceBlack1 + Math.pow(nodeInfo.getScoreMeanDiff(), 2);
               }
-              if (Math.abs(nodeInfo.scoreMeanDiff) >= Lizzie.config.scoreDiffRange2) {
+              if (Math.abs(nodeInfo.getScoreMeanDiff()) >= Lizzie.config.scoreDiffRange2) {
                 range2BlackS = range2BlackS + 1;
-                scorediffBlack2 = scorediffBlack2 + Math.abs(nodeInfo.scoreMeanDiff);
+                scorediffBlack2 = scorediffBlack2 + Math.abs(nodeInfo.getScoreMeanDiff());
                 scorediffVarianceBlack2 =
-                    scorediffVarianceBlack2 + Math.pow(nodeInfo.scoreMeanDiff, 2);
+                    scorediffVarianceBlack2 + Math.pow(nodeInfo.getScoreMeanDiff(), 2);
               }
             } else {
               analyzedWhiteS = analyzedWhiteS + 1;
-              if (nodeInfo.scoreMeanDiff > 0) continue;
-              scorediffWhite = scorediffWhite + Math.abs(nodeInfo.scoreMeanDiff);
-              scorediffVarianceWhite = scorediffVarianceWhite + Math.pow(nodeInfo.scoreMeanDiff, 2);
-              if (Math.abs(nodeInfo.scoreMeanDiff) >= Lizzie.config.scoreDiffRange1) {
+              if (nodeInfo.getScoreMeanDiff() > 0) continue;
+              scorediffWhite = scorediffWhite + Math.abs(nodeInfo.getScoreMeanDiff());
+              scorediffVarianceWhite =
+                  scorediffVarianceWhite + Math.pow(nodeInfo.getScoreMeanDiff(), 2);
+              if (Math.abs(nodeInfo.getScoreMeanDiff()) >= Lizzie.config.scoreDiffRange1) {
                 range1WhiteS = range1WhiteS + 1;
-                scorediffWhite1 = scorediffWhite1 + Math.abs(nodeInfo.scoreMeanDiff);
+                scorediffWhite1 = scorediffWhite1 + Math.abs(nodeInfo.getScoreMeanDiff());
                 scorediffVarianceWhite1 =
-                    scorediffVarianceWhite1 + Math.pow(nodeInfo.scoreMeanDiff, 2);
+                    scorediffVarianceWhite1 + Math.pow(nodeInfo.getScoreMeanDiff(), 2);
               }
-              if (Math.abs(nodeInfo.scoreMeanDiff) >= Lizzie.config.scoreDiffRange2) {
+              if (Math.abs(nodeInfo.getScoreMeanDiff()) >= Lizzie.config.scoreDiffRange2) {
                 range2WhiteS = range2WhiteS + 1;
-                scorediffWhite2 = scorediffWhite2 + Math.abs(nodeInfo.scoreMeanDiff);
+                scorediffWhite2 = scorediffWhite2 + Math.abs(nodeInfo.getScoreMeanDiff());
                 scorediffVarianceWhite2 =
-                    scorediffVarianceWhite2 + Math.pow(nodeInfo.scoreMeanDiff, 2);
+                    scorediffVarianceWhite2 + Math.pow(nodeInfo.getScoreMeanDiff(), 2);
               }
             }
           }
@@ -2316,47 +2319,47 @@ public class MoveListFrame extends JFrame {
               if (nodeInfo.moveNum <= Lizzie.config.openingEndMove) {
                 parse1BlackAnalyzed++;
                 parse1BlackValue += nodeInfo.percentsMatch;
-                if (nodeInfo.diffWinrate < 0)
-                  parse1BlackWinrateDiff += Math.abs(nodeInfo.diffWinrate);
-                if (nodeInfo.scoreMeanDiff < 0)
-                  parse1BlackScoreDiff += Math.abs(nodeInfo.scoreMeanDiff);
+                if (nodeInfo.getWinrateDiff() < 0)
+                  parse1BlackWinrateDiff += Math.abs(nodeInfo.getWinrateDiff());
+                if (nodeInfo.getScoreMeanDiff() < 0)
+                  parse1BlackScoreDiff += Math.abs(nodeInfo.getScoreMeanDiff());
               } else if (nodeInfo.moveNum <= Lizzie.config.middleEndMove) {
                 parse2BlackAnalyzed++;
                 parse2BlackValue += nodeInfo.percentsMatch;
-                if (nodeInfo.diffWinrate < 0)
-                  parse2BlackWinrateDiff += Math.abs(nodeInfo.diffWinrate);
-                if (nodeInfo.scoreMeanDiff < 0)
-                  parse2BlackScoreDiff += Math.abs(nodeInfo.scoreMeanDiff);
+                if (nodeInfo.getWinrateDiff() < 0)
+                  parse2BlackWinrateDiff += Math.abs(nodeInfo.getWinrateDiff());
+                if (nodeInfo.getScoreMeanDiff() < 0)
+                  parse2BlackScoreDiff += Math.abs(nodeInfo.getScoreMeanDiff());
               } else {
                 parse3BlackAnalyzed++;
                 parse3BlackValue += nodeInfo.percentsMatch;
-                if (nodeInfo.diffWinrate < 0)
-                  parse3BlackWinrateDiff += Math.abs(nodeInfo.diffWinrate);
-                if (nodeInfo.scoreMeanDiff < 0)
-                  parse3BlackScoreDiff += Math.abs(nodeInfo.scoreMeanDiff);
+                if (nodeInfo.getWinrateDiff() < 0)
+                  parse3BlackWinrateDiff += Math.abs(nodeInfo.getWinrateDiff());
+                if (nodeInfo.getScoreMeanDiff() < 0)
+                  parse3BlackScoreDiff += Math.abs(nodeInfo.getScoreMeanDiff());
               }
             } else {
               if (nodeInfo.moveNum <= Lizzie.config.openingEndMove) {
                 parse1WhiteAnalyzed++;
                 parse1WhiteValue += nodeInfo.percentsMatch;
-                if (nodeInfo.diffWinrate < 0)
-                  parse1WhiteWinrateDiff += Math.abs(nodeInfo.diffWinrate);
-                if (nodeInfo.scoreMeanDiff < 0)
-                  parse1WhiteScoreDiff += Math.abs(nodeInfo.scoreMeanDiff);
+                if (nodeInfo.getWinrateDiff() < 0)
+                  parse1WhiteWinrateDiff += Math.abs(nodeInfo.getWinrateDiff());
+                if (nodeInfo.getScoreMeanDiff() < 0)
+                  parse1WhiteScoreDiff += Math.abs(nodeInfo.getScoreMeanDiff());
               } else if (nodeInfo.moveNum <= Lizzie.config.middleEndMove) {
                 parse2WhiteAnalyzed++;
                 parse2WhiteValue += nodeInfo.percentsMatch;
-                if (nodeInfo.diffWinrate < 0)
-                  parse2WhiteWinrateDiff += Math.abs(nodeInfo.diffWinrate);
-                if (nodeInfo.scoreMeanDiff < 0)
-                  parse2WhiteScoreDiff += Math.abs(nodeInfo.scoreMeanDiff);
+                if (nodeInfo.getWinrateDiff() < 0)
+                  parse2WhiteWinrateDiff += Math.abs(nodeInfo.getWinrateDiff());
+                if (nodeInfo.getScoreMeanDiff() < 0)
+                  parse2WhiteScoreDiff += Math.abs(nodeInfo.getScoreMeanDiff());
               } else {
                 parse3WhiteAnalyzed++;
                 parse3WhiteValue += nodeInfo.percentsMatch;
-                if (nodeInfo.diffWinrate < 0)
-                  parse3WhiteWinrateDiff += Math.abs(nodeInfo.diffWinrate);
-                if (nodeInfo.scoreMeanDiff < 0)
-                  parse3WhiteScoreDiff += Math.abs(nodeInfo.scoreMeanDiff);
+                if (nodeInfo.getWinrateDiff() < 0)
+                  parse3WhiteWinrateDiff += Math.abs(nodeInfo.getWinrateDiff());
+                if (nodeInfo.getScoreMeanDiff() < 0)
+                  parse3WhiteScoreDiff += Math.abs(nodeInfo.getScoreMeanDiff());
               }
             }
           }
@@ -2364,65 +2367,65 @@ public class MoveListFrame extends JFrame {
           if (nodeInfo.analyzed) {
             if (nodeInfo.isBlack) {
               if (nodeInfo.moveNum <= Lizzie.config.openingEndMove) {
-                if (nodeInfo.diffWinrate > 0
-                    || Math.abs(nodeInfo.diffWinrate) < Lizzie.config.winrateDiffRange1) {
+                if (nodeInfo.getWinrateDiff() > 0
+                    || Math.abs(nodeInfo.getWinrateDiff()) < Lizzie.config.winrateDiffRange1) {
                   parse1BlackWinrateMiss1++;
-                } else if (Math.abs(nodeInfo.diffWinrate) <= Lizzie.config.winrateDiffRange2
-                    && Math.abs(nodeInfo.diffWinrate) >= Lizzie.config.winrateDiffRange1) {
+                } else if (Math.abs(nodeInfo.getWinrateDiff()) <= Lizzie.config.winrateDiffRange2
+                    && Math.abs(nodeInfo.getWinrateDiff()) >= Lizzie.config.winrateDiffRange1) {
                   parse1BlackWinrateMiss2++;
-                } else if (Math.abs(nodeInfo.diffWinrate) > Lizzie.config.winrateDiffRange2) {
+                } else if (Math.abs(nodeInfo.getWinrateDiff()) > Lizzie.config.winrateDiffRange2) {
                   parse1BlackWinrateMiss3++;
                 }
               } else if (nodeInfo.moveNum <= Lizzie.config.middleEndMove) {
-                if (nodeInfo.diffWinrate > 0
-                    || Math.abs(nodeInfo.diffWinrate) < Lizzie.config.winrateDiffRange1) {
+                if (nodeInfo.getWinrateDiff() > 0
+                    || Math.abs(nodeInfo.getWinrateDiff()) < Lizzie.config.winrateDiffRange1) {
                   parse2BlackWinrateMiss1++;
-                } else if (Math.abs(nodeInfo.diffWinrate) <= Lizzie.config.winrateDiffRange2
-                    && Math.abs(nodeInfo.diffWinrate) >= Lizzie.config.winrateDiffRange1) {
+                } else if (Math.abs(nodeInfo.getWinrateDiff()) <= Lizzie.config.winrateDiffRange2
+                    && Math.abs(nodeInfo.getWinrateDiff()) >= Lizzie.config.winrateDiffRange1) {
                   parse2BlackWinrateMiss2++;
-                } else if (Math.abs(nodeInfo.diffWinrate) > Lizzie.config.winrateDiffRange2) {
+                } else if (Math.abs(nodeInfo.getWinrateDiff()) > Lizzie.config.winrateDiffRange2) {
                   parse2BlackWinrateMiss3++;
                 }
               } else {
-                if (nodeInfo.diffWinrate > 0
-                    || Math.abs(nodeInfo.diffWinrate) < Lizzie.config.winrateDiffRange1) {
+                if (nodeInfo.getWinrateDiff() > 0
+                    || Math.abs(nodeInfo.getWinrateDiff()) < Lizzie.config.winrateDiffRange1) {
                   parse3BlackWinrateMiss1++;
-                } else if (Math.abs(nodeInfo.diffWinrate) <= Lizzie.config.winrateDiffRange2
-                    && Math.abs(nodeInfo.diffWinrate) >= Lizzie.config.winrateDiffRange1) {
+                } else if (Math.abs(nodeInfo.getWinrateDiff()) <= Lizzie.config.winrateDiffRange2
+                    && Math.abs(nodeInfo.getWinrateDiff()) >= Lizzie.config.winrateDiffRange1) {
                   parse3BlackWinrateMiss2++;
-                } else if (Math.abs(nodeInfo.diffWinrate) > Lizzie.config.winrateDiffRange2) {
+                } else if (Math.abs(nodeInfo.getWinrateDiff()) > Lizzie.config.winrateDiffRange2) {
                   parse3BlackWinrateMiss3++;
                 }
               }
             } else {
               if (nodeInfo.moveNum <= Lizzie.config.openingEndMove) {
-                if (nodeInfo.diffWinrate > 0
-                    || Math.abs(nodeInfo.diffWinrate) < Lizzie.config.winrateDiffRange1) {
+                if (nodeInfo.getWinrateDiff() > 0
+                    || Math.abs(nodeInfo.getWinrateDiff()) < Lizzie.config.winrateDiffRange1) {
                   parse1WhiteWinrateMiss1++;
-                } else if (Math.abs(nodeInfo.diffWinrate) <= Lizzie.config.winrateDiffRange2
-                    && Math.abs(nodeInfo.diffWinrate) >= Lizzie.config.winrateDiffRange1) {
+                } else if (Math.abs(nodeInfo.getWinrateDiff()) <= Lizzie.config.winrateDiffRange2
+                    && Math.abs(nodeInfo.getWinrateDiff()) >= Lizzie.config.winrateDiffRange1) {
                   parse1WhiteWinrateMiss2++;
-                } else if (Math.abs(nodeInfo.diffWinrate) > Lizzie.config.winrateDiffRange2) {
+                } else if (Math.abs(nodeInfo.getWinrateDiff()) > Lizzie.config.winrateDiffRange2) {
                   parse1WhiteWinrateMiss3++;
                 }
               } else if (nodeInfo.moveNum <= Lizzie.config.middleEndMove) {
-                if (nodeInfo.diffWinrate > 0
-                    || Math.abs(nodeInfo.diffWinrate) < Lizzie.config.winrateDiffRange1) {
+                if (nodeInfo.getWinrateDiff() > 0
+                    || Math.abs(nodeInfo.getWinrateDiff()) < Lizzie.config.winrateDiffRange1) {
                   parse2WhiteWinrateMiss1++;
-                } else if (Math.abs(nodeInfo.diffWinrate) <= Lizzie.config.winrateDiffRange2
-                    && Math.abs(nodeInfo.diffWinrate) >= Lizzie.config.winrateDiffRange1) {
+                } else if (Math.abs(nodeInfo.getWinrateDiff()) <= Lizzie.config.winrateDiffRange2
+                    && Math.abs(nodeInfo.getWinrateDiff()) >= Lizzie.config.winrateDiffRange1) {
                   parse2WhiteWinrateMiss2++;
-                } else if (Math.abs(nodeInfo.diffWinrate) > Lizzie.config.winrateDiffRange2) {
+                } else if (Math.abs(nodeInfo.getWinrateDiff()) > Lizzie.config.winrateDiffRange2) {
                   parse2WhiteWinrateMiss3++;
                 }
               } else {
-                if (nodeInfo.diffWinrate > 0
-                    || Math.abs(nodeInfo.diffWinrate) < Lizzie.config.winrateDiffRange1) {
+                if (nodeInfo.getWinrateDiff() > 0
+                    || Math.abs(nodeInfo.getWinrateDiff()) < Lizzie.config.winrateDiffRange1) {
                   parse3WhiteWinrateMiss1++;
-                } else if (Math.abs(nodeInfo.diffWinrate) <= Lizzie.config.winrateDiffRange2
-                    && Math.abs(nodeInfo.diffWinrate) >= Lizzie.config.winrateDiffRange1) {
+                } else if (Math.abs(nodeInfo.getWinrateDiff()) <= Lizzie.config.winrateDiffRange2
+                    && Math.abs(nodeInfo.getWinrateDiff()) >= Lizzie.config.winrateDiffRange1) {
                   parse3WhiteWinrateMiss2++;
-                } else if (Math.abs(nodeInfo.diffWinrate) > Lizzie.config.winrateDiffRange2) {
+                } else if (Math.abs(nodeInfo.getWinrateDiff()) > Lizzie.config.winrateDiffRange2) {
                   parse3WhiteWinrateMiss3++;
                 }
               }
@@ -2432,65 +2435,65 @@ public class MoveListFrame extends JFrame {
           if (nodeInfo.analyzed) {
             if (nodeInfo.isBlack) {
               if (nodeInfo.moveNum <= Lizzie.config.openingEndMove) {
-                if (nodeInfo.scoreMeanDiff > 0
-                    || Math.abs(nodeInfo.scoreMeanDiff) < Lizzie.config.scoreDiffRange1) {
+                if (nodeInfo.getScoreMeanDiff() > 0
+                    || Math.abs(nodeInfo.getScoreMeanDiff()) < Lizzie.config.scoreDiffRange1) {
                   parse1BlackScoreMiss1++;
-                } else if (Math.abs(nodeInfo.scoreMeanDiff) <= Lizzie.config.scoreDiffRange2
-                    && Math.abs(nodeInfo.scoreMeanDiff) >= Lizzie.config.scoreDiffRange1) {
+                } else if (Math.abs(nodeInfo.getScoreMeanDiff()) <= Lizzie.config.scoreDiffRange2
+                    && Math.abs(nodeInfo.getScoreMeanDiff()) >= Lizzie.config.scoreDiffRange1) {
                   parse1BlackScoreMiss2++;
-                } else if (Math.abs(nodeInfo.scoreMeanDiff) > Lizzie.config.scoreDiffRange2) {
+                } else if (Math.abs(nodeInfo.getScoreMeanDiff()) > Lizzie.config.scoreDiffRange2) {
                   parse1BlackScoreMiss3++;
                 }
               } else if (nodeInfo.moveNum <= Lizzie.config.middleEndMove) {
-                if (nodeInfo.scoreMeanDiff > 0
-                    || Math.abs(nodeInfo.scoreMeanDiff) < Lizzie.config.scoreDiffRange1) {
+                if (nodeInfo.getScoreMeanDiff() > 0
+                    || Math.abs(nodeInfo.getScoreMeanDiff()) < Lizzie.config.scoreDiffRange1) {
                   parse2BlackScoreMiss1++;
-                } else if (Math.abs(nodeInfo.scoreMeanDiff) <= Lizzie.config.scoreDiffRange2
-                    && Math.abs(nodeInfo.scoreMeanDiff) >= Lizzie.config.scoreDiffRange1) {
+                } else if (Math.abs(nodeInfo.getScoreMeanDiff()) <= Lizzie.config.scoreDiffRange2
+                    && Math.abs(nodeInfo.getScoreMeanDiff()) >= Lizzie.config.scoreDiffRange1) {
                   parse2BlackScoreMiss2++;
-                } else if (Math.abs(nodeInfo.scoreMeanDiff) > Lizzie.config.scoreDiffRange2) {
+                } else if (Math.abs(nodeInfo.getScoreMeanDiff()) > Lizzie.config.scoreDiffRange2) {
                   parse2BlackScoreMiss3++;
                 }
               } else {
-                if (nodeInfo.scoreMeanDiff > 0
-                    || Math.abs(nodeInfo.scoreMeanDiff) < Lizzie.config.scoreDiffRange1) {
+                if (nodeInfo.getScoreMeanDiff() > 0
+                    || Math.abs(nodeInfo.getScoreMeanDiff()) < Lizzie.config.scoreDiffRange1) {
                   parse3BlackScoreMiss1++;
-                } else if (Math.abs(nodeInfo.scoreMeanDiff) <= Lizzie.config.scoreDiffRange2
-                    && Math.abs(nodeInfo.scoreMeanDiff) >= Lizzie.config.scoreDiffRange1) {
+                } else if (Math.abs(nodeInfo.getScoreMeanDiff()) <= Lizzie.config.scoreDiffRange2
+                    && Math.abs(nodeInfo.getScoreMeanDiff()) >= Lizzie.config.scoreDiffRange1) {
                   parse3BlackScoreMiss2++;
-                } else if (Math.abs(nodeInfo.scoreMeanDiff) > Lizzie.config.scoreDiffRange2) {
+                } else if (Math.abs(nodeInfo.getScoreMeanDiff()) > Lizzie.config.scoreDiffRange2) {
                   parse3BlackScoreMiss3++;
                 }
               }
             } else {
               if (nodeInfo.moveNum <= Lizzie.config.openingEndMove) {
-                if (nodeInfo.scoreMeanDiff > 0
-                    || Math.abs(nodeInfo.scoreMeanDiff) < Lizzie.config.scoreDiffRange1) {
+                if (nodeInfo.getScoreMeanDiff() > 0
+                    || Math.abs(nodeInfo.getScoreMeanDiff()) < Lizzie.config.scoreDiffRange1) {
                   parse1WhiteScoreMiss1++;
-                } else if (Math.abs(nodeInfo.scoreMeanDiff) <= Lizzie.config.scoreDiffRange2
-                    && Math.abs(nodeInfo.scoreMeanDiff) >= Lizzie.config.scoreDiffRange1) {
+                } else if (Math.abs(nodeInfo.getScoreMeanDiff()) <= Lizzie.config.scoreDiffRange2
+                    && Math.abs(nodeInfo.getScoreMeanDiff()) >= Lizzie.config.scoreDiffRange1) {
                   parse1WhiteScoreMiss2++;
-                } else if (Math.abs(nodeInfo.scoreMeanDiff) > Lizzie.config.scoreDiffRange2) {
+                } else if (Math.abs(nodeInfo.getScoreMeanDiff()) > Lizzie.config.scoreDiffRange2) {
                   parse1WhiteScoreMiss3++;
                 }
               } else if (nodeInfo.moveNum <= Lizzie.config.middleEndMove) {
-                if (nodeInfo.scoreMeanDiff > 0
-                    || Math.abs(nodeInfo.scoreMeanDiff) < Lizzie.config.scoreDiffRange1) {
+                if (nodeInfo.getScoreMeanDiff() > 0
+                    || Math.abs(nodeInfo.getScoreMeanDiff()) < Lizzie.config.scoreDiffRange1) {
                   parse2WhiteScoreMiss1++;
-                } else if (Math.abs(nodeInfo.scoreMeanDiff) <= Lizzie.config.scoreDiffRange2
-                    && Math.abs(nodeInfo.scoreMeanDiff) >= Lizzie.config.scoreDiffRange1) {
+                } else if (Math.abs(nodeInfo.getScoreMeanDiff()) <= Lizzie.config.scoreDiffRange2
+                    && Math.abs(nodeInfo.getScoreMeanDiff()) >= Lizzie.config.scoreDiffRange1) {
                   parse2WhiteScoreMiss2++;
-                } else if (Math.abs(nodeInfo.scoreMeanDiff) > Lizzie.config.scoreDiffRange2) {
+                } else if (Math.abs(nodeInfo.getScoreMeanDiff()) > Lizzie.config.scoreDiffRange2) {
                   parse2WhiteScoreMiss3++;
                 }
               } else {
-                if (nodeInfo.scoreMeanDiff > 0
-                    || Math.abs(nodeInfo.scoreMeanDiff) < Lizzie.config.scoreDiffRange1) {
+                if (nodeInfo.getScoreMeanDiff() > 0
+                    || Math.abs(nodeInfo.getScoreMeanDiff()) < Lizzie.config.scoreDiffRange1) {
                   parse3WhiteScoreMiss1++;
-                } else if (Math.abs(nodeInfo.scoreMeanDiff) <= Lizzie.config.scoreDiffRange2
-                    && Math.abs(nodeInfo.scoreMeanDiff) >= Lizzie.config.scoreDiffRange1) {
+                } else if (Math.abs(nodeInfo.getScoreMeanDiff()) <= Lizzie.config.scoreDiffRange2
+                    && Math.abs(nodeInfo.getScoreMeanDiff()) >= Lizzie.config.scoreDiffRange1) {
                   parse3WhiteScoreMiss2++;
-                } else if (Math.abs(nodeInfo.scoreMeanDiff) > Lizzie.config.scoreDiffRange2) {
+                } else if (Math.abs(nodeInfo.getScoreMeanDiff()) > Lizzie.config.scoreDiffRange2) {
                   parse3WhiteScoreMiss3++;
                 }
               }
@@ -2505,17 +2508,17 @@ public class MoveListFrame extends JFrame {
               //                          nodeInfo.percentsMatch, (double) 1 /
               // Lizzie.config.matchAiTemperature);
               blackTrueValue = blackTrueValue + nodeInfo.percentsMatch;
-              if (nodeInfo.diffWinrate < 0)
-                winratediffBlack = winratediffBlack + Math.abs(nodeInfo.diffWinrate);
-              if (nodeInfo.scoreMeanDiff < 0)
-                scorediffBlack = scorediffBlack + Math.abs(nodeInfo.scoreMeanDiff);
+              if (nodeInfo.getWinrateDiff() < 0)
+                winratediffBlack = winratediffBlack + Math.abs(nodeInfo.getWinrateDiff());
+              if (nodeInfo.getScoreMeanDiff() < 0)
+                scorediffBlack = scorediffBlack + Math.abs(nodeInfo.getScoreMeanDiff());
               analyzedBlack = analyzedBlack + 1;
             } else {
               whiteTrueValue = whiteTrueValue + nodeInfo.percentsMatch;
-              if (nodeInfo.diffWinrate < 0)
-                winratediffWhite = winratediffWhite + Math.abs(nodeInfo.diffWinrate);
-              if (nodeInfo.scoreMeanDiff < 0)
-                scorediffWhite = scorediffWhite + Math.abs(nodeInfo.scoreMeanDiff);
+              if (nodeInfo.getWinrateDiff() < 0)
+                winratediffWhite = winratediffWhite + Math.abs(nodeInfo.getWinrateDiff());
+              if (nodeInfo.getScoreMeanDiff() < 0)
+                scorediffWhite = scorediffWhite + Math.abs(nodeInfo.getScoreMeanDiff());
               analyzedWhite = analyzedWhite + 1;
             }
 
@@ -5076,7 +5079,7 @@ public class MoveListFrame extends JFrame {
           // Double winRate = isMainEngine ? node.getData().winrate : node.getData().winrate2;
           newBigMistakeInfo.currentMoveWinRate = nodeInfo.winrate;
           newBigMistakeInfo.isBlack = nodeInfo.isBlack;
-          newBigMistakeInfo.diffWinrate = nodeInfo.diffWinrate;
+          newBigMistakeInfo.diffWinrate = nodeInfo.getWinrateDiff();
           newBigMistakeInfo.coords = nodeInfo.coords;
           if (nodeInfo.isBlack) {
             blackBigMistakeList.add(newBigMistakeInfo);
@@ -5142,7 +5145,7 @@ public class MoveListFrame extends JFrame {
           // Double winRate = isMainEngine ? node.getData().winrate : node.getData().winrate2;
           newBigMistakeInfo.currentMoveWinRate = nodeInfo.winrate;
           newBigMistakeInfo.isBlack = nodeInfo.isBlack;
-          newBigMistakeInfo.diffWinrate = nodeInfo.scoreMeanDiff;
+          newBigMistakeInfo.diffWinrate = nodeInfo.getScoreMeanDiff();
           newBigMistakeInfo.coords = nodeInfo.coords;
           if (nodeInfo.isBlack) {
             blackBigMistakeList.add(newBigMistakeInfo);
@@ -6271,35 +6274,35 @@ public class MoveListFrame extends JFrame {
           if (nodeInfo.isBlack) {
             totalAnalyzedBlack++;
             if (isWinrate) {
-              if (nodeInfo.diffWinrate > -1) black1++;
-              else if (nodeInfo.diffWinrate > -3) black2++;
-              else if (nodeInfo.diffWinrate > -6) black3++;
-              else if (nodeInfo.diffWinrate > -12) black4++;
-              else if (nodeInfo.diffWinrate > -24) black5++;
+              if (nodeInfo.getWinrateDiff() > -1) black1++;
+              else if (nodeInfo.getWinrateDiff() > -3) black2++;
+              else if (nodeInfo.getWinrateDiff() > -6) black3++;
+              else if (nodeInfo.getWinrateDiff() > -12) black4++;
+              else if (nodeInfo.getWinrateDiff() > -24) black5++;
               else black6++;
             } else {
-              if (nodeInfo.scoreMeanDiff > -0.5) black1++;
-              else if (nodeInfo.scoreMeanDiff > -1.5) black2++;
-              else if (nodeInfo.scoreMeanDiff > -3) black3++;
-              else if (nodeInfo.scoreMeanDiff > -6) black4++;
-              else if (nodeInfo.scoreMeanDiff > -12) black5++;
+              if (nodeInfo.getScoreMeanDiff() > -0.5) black1++;
+              else if (nodeInfo.getScoreMeanDiff() > -1.5) black2++;
+              else if (nodeInfo.getScoreMeanDiff() > -3) black3++;
+              else if (nodeInfo.getScoreMeanDiff() > -6) black4++;
+              else if (nodeInfo.getScoreMeanDiff() > -12) black5++;
               else black6++;
             }
           } else {
             totalAnalyzedWhite++;
             if (isWinrate) {
-              if (nodeInfo.diffWinrate > -1) white1++;
-              else if (nodeInfo.diffWinrate > -3) white2++;
-              else if (nodeInfo.diffWinrate > -5) white3++;
-              else if (nodeInfo.diffWinrate > -10) white4++;
-              else if (nodeInfo.diffWinrate > -20) white5++;
+              if (nodeInfo.getWinrateDiff() > -1) white1++;
+              else if (nodeInfo.getWinrateDiff() > -3) white2++;
+              else if (nodeInfo.getWinrateDiff() > -5) white3++;
+              else if (nodeInfo.getWinrateDiff() > -10) white4++;
+              else if (nodeInfo.getWinrateDiff() > -20) white5++;
               else white6++;
             } else {
-              if (nodeInfo.scoreMeanDiff > -0.5) white1++;
-              else if (nodeInfo.scoreMeanDiff > -1.5) white2++;
-              else if (nodeInfo.scoreMeanDiff > -3) white3++;
-              else if (nodeInfo.scoreMeanDiff > -6) white4++;
-              else if (nodeInfo.scoreMeanDiff > -12) white5++;
+              if (nodeInfo.getScoreMeanDiff() > -0.5) white1++;
+              else if (nodeInfo.getScoreMeanDiff() > -1.5) white2++;
+              else if (nodeInfo.getScoreMeanDiff() > -3) white3++;
+              else if (nodeInfo.getScoreMeanDiff() > -6) white4++;
+              else if (nodeInfo.getScoreMeanDiff() > -12) white5++;
               else white6++;
             }
           }
@@ -6692,17 +6695,17 @@ public class MoveListFrame extends JFrame {
         if (nodeInfo.analyzed) {
           if (nodeInfo.isBlack) {
             blackAccracyValue = blackAccracyValue + nodeInfo.percentsMatch;
-            if (nodeInfo.diffWinrate < 0)
-              blackWinLossValue = blackWinLossValue + Math.abs(nodeInfo.diffWinrate);
-            if (nodeInfo.scoreMeanDiff < 0)
-              blackScoreLossValue = blackScoreLossValue + Math.abs(nodeInfo.scoreMeanDiff);
+            if (nodeInfo.getWinrateDiff() < 0)
+              blackWinLossValue = blackWinLossValue + Math.abs(nodeInfo.getWinrateDiff());
+            if (nodeInfo.getScoreMeanDiff() < 0)
+              blackScoreLossValue = blackScoreLossValue + Math.abs(nodeInfo.getScoreMeanDiff());
             blackAnalyzedCount = blackAnalyzedCount + 1;
           } else {
             whiteAccracyValue = whiteAccracyValue + nodeInfo.percentsMatch;
-            if (nodeInfo.diffWinrate < 0)
-              whiteWinLossValue = whiteWinLossValue + Math.abs(nodeInfo.diffWinrate);
-            if (nodeInfo.scoreMeanDiff < 0)
-              whiteScoreLossValue = whiteScoreLossValue + Math.abs(nodeInfo.scoreMeanDiff);
+            if (nodeInfo.getWinrateDiff() < 0)
+              whiteWinLossValue = whiteWinLossValue + Math.abs(nodeInfo.getWinrateDiff());
+            if (nodeInfo.getScoreMeanDiff() < 0)
+              whiteScoreLossValue = whiteScoreLossValue + Math.abs(nodeInfo.getScoreMeanDiff());
             whiteAnalyzedCount = whiteAnalyzedCount + 1;
           }
 

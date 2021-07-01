@@ -3830,6 +3830,7 @@ public class Board {
       if (previousNode.nodeInfo.changed) {
         previousNode.nodeInfo.changed = false;
       }
+
       double winrateDiff = lastWinrateDiff(node);
       Optional<int[]> passstep = Optional.empty();
       if (Lizzie.board.isPkBoard) {
@@ -3863,7 +3864,7 @@ public class Board {
               isMatchAi(node, Lizzie.config.matchAiMoves, Lizzie.config.matchAiPercentsPlayouts);
           double percentsMatch =
               Double.parseDouble(matchAiMap.getOrDefault("percents", "0").toString());
-
+          boolean isBest = Boolean.parseBoolean(matchAiMap.getOrDefault("best", false).toString());
           boolean isMatchAi = Boolean.parseBoolean(matchAiMap.get("match").toString());
 
           int[] coords = node.getData().lastMove.get();
@@ -3871,8 +3872,8 @@ public class Board {
           boolean isblack = !node.getData().blackToPlay;
           int previousplayouts = 0;
           previousplayouts = previousNode.getData().getPlayouts();
-
           previousNode.nodeInfo.analyzed = previousNode.getData().getPlayouts() > 0;
+          previousNode.nodeInfo.isBest = isBest;
           previousNode.nodeInfo.diffWinrate = winrateDiff;
           previousNode.nodeInfo.winrate = 100 - node.getData().winrate;
           previousNode.nodeInfo.coords = coords;
@@ -3891,6 +3892,7 @@ public class Board {
           if (node.isMainTrunk() && node.previous().get().isMainTrunk()) {
             previousNode.nodeInfoMain.analyzed = previousNode.getData().getPlayouts() > 0;
             previousNode.nodeInfoMain.diffWinrate = winrateDiff;
+            previousNode.nodeInfoMain.isBest = isBest;
             previousNode.nodeInfoMain.winrate = 100 - node.getData().winrate;
             previousNode.nodeInfoMain.coords = coords;
             previousNode.nodeInfoMain.isBlack = isblack;
@@ -3958,6 +3960,7 @@ public class Board {
               isMatchAi2(node, Lizzie.config.matchAiMoves, Lizzie.config.matchAiPercentsPlayouts);
           double percentsMatch =
               Double.parseDouble(matchAiMap.getOrDefault("percents", "0").toString());
+          boolean isBest = Boolean.parseBoolean(matchAiMap.getOrDefault("best", false).toString());
           boolean isMatchAi = Boolean.parseBoolean(matchAiMap.get("match").toString());
           int[] coords = node.getData().lastMove.get();
           boolean isblack = !node.getData().blackToPlay;
@@ -3965,6 +3968,7 @@ public class Board {
           previousplayouts = previousNode.getData().getPlayouts2();
 
           previousNode.nodeInfo2.analyzed = previousNode.getData().getPlayouts2() > 0;
+          previousNode.nodeInfo2.isBest = isBest;
           previousNode.nodeInfo2.diffWinrate = winrateDiff;
           previousNode.nodeInfo2.winrate = 100 - node.getData().winrate2;
           previousNode.nodeInfo2.coords = coords;
@@ -3982,6 +3986,7 @@ public class Board {
 
           if (node.isMainTrunk()) {
             previousNode.nodeInfoMain2.analyzed = previousNode.getData().getPlayouts2() > 0;
+            previousNode.nodeInfoMain2.isBest = isBest;
             previousNode.nodeInfoMain2.diffWinrate = winrateDiff;
             previousNode.nodeInfoMain2.winrate = 100 - node.getData().winrate2;
             previousNode.nodeInfoMain2.coords = coords;
@@ -4035,6 +4040,7 @@ public class Board {
           if (c[0] == lastMoveCoords[0] && c[1] == lastMoveCoords[1]) {
             if ((preNodeData.bestMoves.get(i).playouts / maxPlayouts) * 100 >= percentPlayouts
                 && i < bestNums) {
+              if (i == 0) map.put("best", true);
               map.put("match", true);
               hasPut = true;
             }
@@ -4073,6 +4079,7 @@ public class Board {
           if (c[0] == lastMoveCoords[0] && c[1] == lastMoveCoords[1]) {
             if ((preNodeData.bestMoves2.get(i).playouts / maxPlayouts) * 100 >= percentPlayouts
                 && i < bestNums) {
+              if (i == 0) map.put("best", true);
               map.put("match", true);
               hasPut = true;
             }
