@@ -3075,7 +3075,8 @@ public class BoardRenderer {
                                 thisMoveData.winrate - (100 - nextMoveData.winrate);
                             double scoreDiff = thisMoveData.scoreMean + nextMoveData.scoreMean;
                             if (winrateDiff >= 10 || scoreDiff >= 5) {
-                              g.setColor(new Color(220, 80, 30, 100));
+                              drawCircleBackground(g, moveX, moveY);
+                              g.setColor(new Color(220, 80, 30, 85));
                               drawNextMoveBlunder(
                                   g,
                                   color,
@@ -3112,7 +3113,8 @@ public class BoardRenderer {
                             double winrateDiff =
                                 thisMoveData.winrate - (100 - nextMoveData.winrate);
                             if (winrateDiff >= 10) {
-                              g.setColor(new Color(220, 80, 30, 100));
+                              drawCircleBackground(g, moveX, moveY);
+                              g.setColor(new Color(220, 80, 30, 85));
                               drawNextMoveBlunder(
                                   g, color, moveX, moveY, 100 - nextMoveData.winrate, false);
                               hasFillCircle = true;
@@ -3147,6 +3149,23 @@ public class BoardRenderer {
                   if (first) g.setStroke(new BasicStroke(Math.max(stoneRadius / 15f, 1f)));
                 });
       }
+    }
+  }
+
+  private void drawCircleBackground(Graphics2D g, int moveX, int moveY) {
+    // TODO Auto-generated method stub
+    if (isFancyBoard) {
+      g.setPaint(paint);
+      Composite comp = g.getComposite();
+      g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 0.8f));
+      fillCircle(g, moveX, moveY, stoneRadius + 1);
+      g.setComposite(comp);
+    } else {
+      g.setColor(noFancyColor);
+      Composite comp = g.getComposite();
+      g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 0.8f));
+      fillCircle(g, moveX, moveY, stoneRadius + 1);
+      g.setComposite(comp);
     }
   }
 

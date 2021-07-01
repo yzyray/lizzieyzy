@@ -35,7 +35,6 @@ import org.json.JSONObject;
 public class SubBoardRenderer {
   // Percentage of the boardLength to offset before drawing black lines
   private static final double MARGIN = 0.03;
-  private static final double MARGIN_WITH_COORDINATES = 0.06;
   private static final double STARPOINT_DIAMETER = 0.015;
   private static final BufferedImage emptyImage = new BufferedImage(1, 1, TYPE_INT_ARGB);
 
@@ -1161,33 +1160,6 @@ public class SubBoardRenderer {
     }
     g.dispose();
     //   }
-  }
-
-  private void drawNextMoves(Graphics2D g) {
-
-    g.setColor(Lizzie.board.getData().blackToPlay ? Color.BLACK : Color.WHITE);
-
-    List<BoardHistoryNode> nexts = Lizzie.board.getHistory().getNexts();
-
-    for (int i = 0; i < nexts.size(); i++) {
-      boolean first = (i == 0);
-      nexts
-          .get(i)
-          .getData()
-          .lastMove
-          .ifPresent(
-              nextMove -> {
-                int moveX = x + scaledMarginWidth + squareWidth * nextMove[0];
-                int moveY = y + scaledMarginHeight + squareHeight * nextMove[1];
-                if (first)
-                  g.setStroke(
-                      Lizzie.board.getData().blackToPlay
-                          ? new BasicStroke(2.5f)
-                          : new BasicStroke(3.0f));
-                drawCircle(g, moveX, moveY, stoneRadius + 2); // Slightly outside best move circle
-                if (first) g.setStroke(new BasicStroke(1.8f));
-              });
-    }
   }
 
   private void drawWoodenBoard(Graphics2D g) {
