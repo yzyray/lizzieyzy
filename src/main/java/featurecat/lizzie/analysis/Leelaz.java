@@ -2903,15 +2903,16 @@ parseHeatMap(line);
 //		      //			}	 
 //	}
 
-	public void setPda(String pda) {
-		sendCommand("kata-set-param playoutDoublingAdvantage "+pda);
+	public void setPda(String pda) {		
 		try {
 		this.pda=Double.parseDouble(pda);
 		pdaBeforeGame=Double.parseDouble(pda);
 		}
 		catch (NumberFormatException e) {
-			
+			e.printStackTrace();
+			return;
 		}
+		sendCommand("kata-set-param playoutDoublingAdvantage "+pda);
 	}
 	
 	public void setGameStatus(boolean isStart) {
@@ -3929,20 +3930,22 @@ parseHeatMap(line);
         if (Lizzie.config.autoLoadKataEnginePDA&&!isKataGoPda)
            {setPda(Lizzie.config.autoLoadTxtKataEnginePDA);
            }
-        if (Lizzie.config.autoLoadKataEngineWRN)
-        {  sendCommand(
-                "kata-set-param analysisWideRootNoise "
-                    + Lizzie.config.autoLoadTxtKataEngineWRN);
-        this.wrn=Double.parseDouble(Lizzie.config.autoLoadTxtKataEngineWRN);
-        } 
         if(Lizzie.config.autoLoadKataEngineThreads)
-        	 Lizzie.leelaz.sendCommand(
-                     "kata-set-param numSearchThreads " + Lizzie.config.txtKataEngineThreads);	
-        
-//        if (Lizzie.config.autoLoadKataEngineRPT)
-//            sendCommand(
-//                "kata-set-param rootPolicyTemperature "
-//                    + Lizzie.config.txtKataEngineRPT);
+       	 Lizzie.leelaz.sendCommand(
+                    "kata-set-param numSearchThreads " + Lizzie.config.txtKataEngineThreads);	
+        if (Lizzie.config.autoLoadKataEngineWRN)
+        {  
+        try {
+        this.wrn=Double.parseDouble(Lizzie.config.autoLoadTxtKataEngineWRN);
+        }catch (NumberFormatException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return;
+          }	
+        sendCommand(
+                "kata-set-param analysisWideRootNoise "
+                    + wrn);
+        }    
          }
 	
 	public void setHeatmap() {
