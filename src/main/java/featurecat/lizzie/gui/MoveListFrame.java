@@ -6428,7 +6428,7 @@ public class MoveListFrame extends JFrame {
         black1 + "",
         new Color(22, 222, 0),
         Color.BLACK,
-        Color.PINK,
+        new Color(150, 100, 0),
         font,
         true);
     drawRectWithValue(
@@ -6496,10 +6496,6 @@ public class MoveListFrame extends JFrame {
         Color.PINK,
         font,
         true);
-
-    g.setColor(Color.BLACK);
-    g.drawRect(valueStartXBlack - 1, valueStartY - 1, valueWidth + 1, valueHeight + 1);
-    g.drawRect(valueStartXWhite - 1, valueStartY - 1, valueWidth + 1, valueHeight + 1);
 
     drawRectWithValue(
         g,
@@ -6579,6 +6575,10 @@ public class MoveListFrame extends JFrame {
         Color.BLUE,
         font,
         false);
+
+    g.setColor(Color.BLACK);
+    g.drawRect(valueStartXBlack - 1, valueStartY - 1, valueWidth + 1, valueHeight + 1);
+    g.drawRect(valueStartXWhite - 1, valueStartY - 1, valueWidth + 1, valueHeight + 1);
   }
 
   public void drawKeyPanel(Graphics2D g, int width, int height) {

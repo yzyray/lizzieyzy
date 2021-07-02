@@ -551,6 +551,7 @@ public class Config {
   public boolean moveListFilterCurrent = false;
   public boolean lossPanelSelectWinrate = false;
   public boolean analysisAutoQuit = true;
+  public boolean firstLoadKataGo = true;
 
   private JSONObject loadAndMergeSaveBoardConfig(
       JSONObject defaultCfg, String fileName, boolean needValidation) throws IOException {
@@ -1179,6 +1180,7 @@ public class Config {
     moveListFilterCurrent = uiConfig.optBoolean("move-list-filter-current", false);
     lossPanelSelectWinrate = uiConfig.optBoolean("loss-panel-select-winrate", false);
     analysisAutoQuit = uiConfig.optBoolean("analysis-auto-quit", true);
+    firstLoadKataGo = uiConfig.optBoolean("first-load-katago", true);
     showScrollVariation = uiConfig.optBoolean("show-scroll-variation", true);
     ignoreOutOfWidth = uiConfig.optBoolean("ignore-out-of-width", false);
     enginePkPonder = uiConfig.optBoolean("engine-pk-ponder", false);

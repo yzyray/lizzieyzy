@@ -396,6 +396,8 @@ public class Lizzie {
   public static void resetAllHints() {
     config.allowCloseCommentControlHint = true;
     config.showReplaceFileHint = true;
+    config.firstLoadKataGo = true;
+    config.uiConfig.put("first-load-katago", config.firstLoadKataGo);
     config.uiConfig.put("show-replace-file-hint", config.showReplaceFileHint);
     config.uiConfig.put("allow-close-comment-control-hint", config.allowCloseCommentControlHint);
   }

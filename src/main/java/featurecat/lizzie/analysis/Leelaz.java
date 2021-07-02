@@ -6,6 +6,7 @@ import featurecat.lizzie.gui.EngineFailedMessage;
 import featurecat.lizzie.gui.LizzieFrame;
 import featurecat.lizzie.gui.Message;
 import featurecat.lizzie.gui.RightClickMenu;
+import featurecat.lizzie.gui.SMessage;
 import featurecat.lizzie.gui.SocketCheckVersion;
 import featurecat.lizzie.rules.Stone;
 import featurecat.lizzie.util.Utils;
@@ -1469,7 +1470,14 @@ public class Leelaz {
 				          }
 //						if (params[1].startsWith("KataGoYm"))
 //							sendCommandToLeelazWithOutLog("lizzie_use");		
-						if (params[1].startsWith("KataGo") || isKatago) {							
+						if (params[1].startsWith("KataGo") || isKatago) {
+							if(Lizzie.config.firstLoadKataGo)
+							{
+								SMessage msg = new SMessage();
+						        msg.setMessage(Lizzie.resourceBundle.getString("Leelaz.kataGoPerformance"), 3);
+						        Lizzie.config.firstLoadKataGo=false;
+						        Lizzie.config.uiConfig.put("first-load-katago", Lizzie.config.firstLoadKataGo);
+							}
 							if(params[1].startsWith("KataGoPda")) {
 								isKatagoCustom=true;
 								isCheckinPda=true;								
