@@ -270,9 +270,18 @@ public class BoardData {
 			    					if(!lastBestMove.lastTimeUnlimited)
 			    						continue;
 			    				}
-			    				if(move.coordinate.equals(lastBestMove.coordinate)) {
-			    					 needSkip=true;
+			    				if(move.coordinate.equals(lastBestMove.coordinate)) {			    					
 			    					 move.lastTimeUnlimited=true;
+			    					 if(move.playouts>lastBestMove.playouts||!lastBestMove.lastTimeUnlimited)
+			    					 { 
+			    						 move.lastTimeUnlimitedTime=System.currentTimeMillis();
+			    						 needSkip=true;
+			    					 }
+			    					 else if(System.currentTimeMillis()-lastBestMove.lastTimeUnlimitedTime<3000)
+			    						 { 
+			    						 move.lastTimeUnlimitedTime=lastBestMove.lastTimeUnlimitedTime;
+			    						 needSkip=true;
+			    						 }			    							    						
 			    					continue;
 			    				}
 			    			}
