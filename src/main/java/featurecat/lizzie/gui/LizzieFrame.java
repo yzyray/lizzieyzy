@@ -3442,52 +3442,6 @@ public class LizzieFrame extends JFrame {
     refresh();
   }
 
-  public void openFileAll() {
-    boolean ponder = false;
-    if (Lizzie.leelaz.isPondering()) {
-      ponder = true;
-      Lizzie.leelaz.togglePonder();
-    }
-
-    JSONObject filesystem = Lizzie.config.persisted.getJSONObject("filesystem");
-    this.setAlwaysOnTop(false);
-    FileDialog fileDialog =
-        new FileDialog(this, resourceBundle.getString("LizzieFrame.chooseKifu")); // "选择棋谱");
-
-    fileDialog.setLocationRelativeTo(this);
-    fileDialog.setDirectory(filesystem.getString("last-folder"));
-    fileDialog.setFile("*.sgf;*.gib;*.SGF;*.GIB");
-
-    fileDialog.setMultipleMode(true);
-    fileDialog.setMode(0);
-    fileDialog.setVisible(true);
-
-    File[] files = fileDialog.getFiles();
-
-    if (files.length > 0) {
-      isBatchAna = true;
-      BatchAnaNum = 0;
-      curFile = files[0];
-      Batchfiles = new ArrayList<File>();
-      for (int i = 0; i < files.length; i++) {
-        Batchfiles.add(files[i]);
-      }
-      loadFile(files[0], false, true);
-      //  toolbar.chkAnaAutoSave.setSelected(true);
-      //  toolbar.chkAnaAutoSave.setEnabled(false);
-
-      //  toolbar.detail.setIcon(toolbar.iconDown);
-    }
-    if (ponder) {
-      Lizzie.leelaz.ponder();
-    }
-    this.setAlwaysOnTop(Lizzie.config.mainsalwaysontop);
-    refresh();
-    if (Lizzie.frame.analysisTable != null && Lizzie.frame.analysisTable.frame.isVisible()) {
-      Lizzie.frame.analysisTable.refreshTable();
-    }
-  }
-
   public void openSgfStart() {
     if (Lizzie.leelaz.isPondering()) {
       Lizzie.leelaz.togglePonder();

@@ -1711,7 +1711,7 @@ public class MoveListFrame extends JFrame {
               Lizzie.frame.toggleBadMoves();
             }
             if (e.getKeyCode() == KeyEvent.VK_O) {
-              Lizzie.frame.openFileAll();
+              Lizzie.frame.openFile();
             }
             if (e.getKeyCode() == KeyEvent.VK_U) {
               Lizzie.frame.toggleBestMoves();
