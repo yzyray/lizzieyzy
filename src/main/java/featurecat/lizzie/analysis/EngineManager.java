@@ -833,7 +833,7 @@ public class EngineManager {
       // Lizzie.frame.boardRenderer.reverseBestmoves = false;
       Lizzie.board.clearbestmovesafter(Lizzie.board.getHistory().getStart());
       Lizzie.frame.addInput(true);
-      if (engineGameInfo.isBatchGame) {
+      if (engineGameInfo.isBatchGame && engineGameInfo.batchNumberCurrent > 1) {
         File file = new File("");
         String courseFile = "";
         try {

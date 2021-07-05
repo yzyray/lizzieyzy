@@ -916,7 +916,7 @@ public class SubBoardRenderer {
   private void renderImages(Graphics2D g) {
     g.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_OFF);
     if ((Lizzie.config.showKataGoEstimate
-            && !Lizzie.config.isHiddenKataEstimate
+            && Lizzie.config.showKataGoEstimateOnSubbord
             && Lizzie.config.showKataGoEstimateOnSubbord)
         || Lizzie.frame.isShowingHeatmap)
       if (shouldShowCountBlockBelow()) g.drawImage(kataEstimateImage, x, y, null);
@@ -929,7 +929,7 @@ public class SubBoardRenderer {
     g.drawImage(cachedStonesImagedraged, x, y, null);
     g.drawImage(blockimage, x, y, null);
     if ((Lizzie.config.showKataGoEstimate
-            && !Lizzie.config.isHiddenKataEstimate
+            && Lizzie.config.showKataGoEstimateOnSubbord
             && Lizzie.config.showKataGoEstimateOnSubbord)
         || Lizzie.frame.isShowingHeatmap)
       if (!shouldShowCountBlockBelow()) g.drawImage(kataEstimateImage, x, y, null);

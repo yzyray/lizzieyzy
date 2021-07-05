@@ -2,8 +2,10 @@ package featurecat.lizzie.util;
 
 import static java.lang.Math.round;
 
+import featurecat.lizzie.Config;
 import featurecat.lizzie.Lizzie;
 import featurecat.lizzie.gui.EngineData;
+import featurecat.lizzie.gui.LizzieFrame;
 import featurecat.lizzie.gui.Message;
 import featurecat.lizzie.gui.RemoteEngineData;
 import featurecat.lizzie.rules.BoardHistoryNode;
@@ -16,7 +18,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -112,12 +113,12 @@ public class Utils {
   }
 
   public static int zoomIn(int pos) {
-    if (Lizzie.config.isScaled) return (int) Math.round(pos / Lizzie.javaScaleFactor);
+    if (Config.isScaled) return (int) Math.round(pos / Lizzie.javaScaleFactor);
     else return pos;
   }
 
   public static int zoomOut(int pos) {
-    if (Lizzie.config.isScaled) return (int) Math.round(pos * Lizzie.javaScaleFactor);
+    if (Config.isScaled) return (int) Math.round(pos * Lizzie.javaScaleFactor);
     else return pos;
   }
 
@@ -500,57 +501,6 @@ public class Utils {
     }
   }
 
-  //  public static double lastWinrateDiff(BoardHistoryNode node) {
-  //
-  //    // Last winrate
-  //    Optional<BoardData> lastNode = node.previous().flatMap(n -> Optional.of(n.getData()));
-  //    boolean validLastWinrate = lastNode.map(d -> d.getPlayouts() > 0).orElse(false);
-  //    double lastWR = validLastWinrate ? lastNode.get().winrate : 50;
-  //
-  //    // Current winrate
-  //    BoardData data = node.getData();
-  //    boolean validWinrate = false;
-  //    double curWR = 50;
-  //    if (data == Lizzie.board.getHistory().getData()) {
-  //      Leelaz.WinrateStats stats = Lizzie.leelaz.getWinrateStats();
-  //      curWR = stats.maxWinrate;
-  //      validWinrate = (stats.totalPlayouts > 0);
-  //      if (Lizzie.frame.isPlayingAgainstLeelaz
-  //          && Lizzie.frame.playerIsBlack == !Lizzie.board.getHistory().getData().blackToPlay) {
-  //        validWinrate = false;
-  //      }
-  //    } else {
-  //      validWinrate = (data.getPlayouts() > 0);
-  //      curWR = validWinrate ? data.winrate : 100 - lastWR;
-  //    }
-  //
-  //    // Last move difference winrate
-  //    if (validLastWinrate && validWinrate) {
-  //      return 100 - lastWR - curWR;
-  //    } else {
-  //      return 0;
-  //    }
-  //  }
-
-  //  public static Color getBlunderNodeColor(BoardHistoryNode node) {
-  //    if (Lizzie.config.nodeColorMode == 1 && node.getData().blackToPlay
-  //        || Lizzie.config.nodeColorMode == 2 && !node.getData().blackToPlay) {
-  //      return Color.WHITE;
-  //    }
-  //    double diffWinrate = lastWinrateDiff(node);
-  //    Optional<Double> st =
-  //        diffWinrate >= 0
-  //            ? Lizzie.config.blunderWinrateThresholds.flatMap(
-  //                l -> l.stream().filter(t -> (t > 0 && t <= diffWinrate)).reduce((f, s) -> s))
-  //            : Lizzie.config.blunderWinrateThresholds.flatMap(
-  //                l -> l.stream().filter(t -> (t < 0 && t >= diffWinrate)).reduce((f, s) -> f));
-  //    if (st.isPresent()) {
-  //      return Lizzie.config.blunderNodeColors.map(m -> m.get(st.get())).get();
-  //    } else {
-  //      return Color.WHITE;
-  //    }
-  //  }
-
   public static Integer txtFieldValue(JTextField txt) {
     if (txt.getText().trim().isEmpty()
         || txt.getText().trim().length() >= String.valueOf(Integer.MAX_VALUE).length()) {
@@ -591,7 +541,7 @@ public class Utils {
   }
 
   public static void playVoiceFile() {
-    if (Lizzie.config.notPlaySoundInSync && (Lizzie.frame.urlSgf || Lizzie.frame.syncBoard)) return;
+    if (Lizzie.config.notPlaySoundInSync && (LizzieFrame.urlSgf || Lizzie.frame.syncBoard)) return;
     Runnable runnable =
         new Runnable() {
           public void run() {
@@ -691,21 +641,6 @@ public class Utils {
       sourceDataLine.drain();
       sourceDataLine.close();
     }
-  }
-
-  private static String getCurrentDirPath() {
-    URL url = Utils.class.getProtectionDomain().getCodeSource().getLocation();
-    String path = url.getPath();
-    if (path.startsWith("file:")) {
-      path = path.replace("file:", "");
-    }
-    if (path.contains(".jar!/")) {
-      path = path.substring(0, path.indexOf(".jar!/") + 4);
-    }
-
-    File file = new File(path);
-    path = file.getParentFile().getAbsolutePath();
-    return path;
   }
 
   private static Path getDistFile(String path, String newFolderName) throws IOException {

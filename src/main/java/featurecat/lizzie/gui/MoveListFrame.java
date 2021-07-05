@@ -5758,7 +5758,7 @@ public class MoveListFrame extends JFrame {
                 showBranch.getSelectedIndex() == 0
                     ? (isMainEngine ? node.nodeInfoMain : node.nodeInfoMain2)
                     : (isMainEngine ? node.nodeInfo : node.nodeInfo2);
-            double diffWinrate = nodeinfoW.diffWinrate;
+            double diffWinrate = nodeinfoW.getWinrateDiff();
             double convertHeight = 0;
             // if(Lizzie.board.isPkBoard)
             //		diffWinrate=-diffWinrate;
@@ -5828,7 +5828,7 @@ public class MoveListFrame extends JFrame {
                 showBranch.getSelectedIndex() == 0
                     ? (isMainEngine ? node.nodeInfoMain : node.nodeInfoMain2)
                     : (isMainEngine ? node.nodeInfo : node.nodeInfo2);
-            double diffScore = nodeinfoW3.scoreMeanDiff;
+            double diffScore = nodeinfoW3.getScoreMeanDiff();
             double convertScoreHeight = 0;
             // if(Lizzie.board.isPkBoard)
             //		diffWinrate=-diffWinrate;
@@ -6625,7 +6625,7 @@ public class MoveListFrame extends JFrame {
     g.fillRect(valueStartXWhite, valueStartY, valueWidth, valueHeight);
 
     int valueStartXMiddle = startX + valueWidth;
-    int valueRowHeight = (int) ((availableHeight - titleHeight - heightGap) / 4);
+    int valueRowHeight = (int) ((availableHeight - titleHeight - heightGap) / 5);
     g.setColor(Color.BLACK);
     Font font =
         drawStringMid(
@@ -6652,7 +6652,7 @@ public class MoveListFrame extends JFrame {
         valueStartY + valueRowHeight * 2 + valueRowHeight / 4,
         LizzieFrame.uiFont,
         Font.PLAIN,
-        Lizzie.resourceBundle.getString("Movelistframe.keyPanel.avgScoreLoss"),
+        Lizzie.resourceBundle.getString("Movelistframe.keyPanel.matchBestMove"),
         availableWidth * 0.2 * 0.9,
         valueRowHeight / 2);
     drawStringMid(
@@ -6661,18 +6661,29 @@ public class MoveListFrame extends JFrame {
         valueStartY + valueRowHeight * 3 + valueRowHeight / 4,
         LizzieFrame.uiFont,
         Font.PLAIN,
+        Lizzie.resourceBundle.getString("Movelistframe.keyPanel.avgScoreLoss"),
+        availableWidth * 0.2 * 0.9,
+        valueRowHeight / 2);
+    drawStringMid(
+        g,
+        (int) (valueStartXMiddle + availableWidth * 0.2 * 0.05),
+        valueStartY + valueRowHeight * 4 + valueRowHeight / 4,
+        LizzieFrame.uiFont,
+        Font.PLAIN,
         Lizzie.resourceBundle.getString("Movelistframe.keyPanel.avgWinLoss"),
         availableWidth * 0.2 * 0.9,
         valueRowHeight / 2);
 
     int blackAnalyzedCount = 0;
     int blackMatchCount = 0;
+    int blackBestCount = 0;
     double blackAccracyValue = 0;
     double blackWinLossValue = 0;
     double blackScoreLossValue = 0;
 
     int whiteAnalyzedCount = 0;
     int whiteMatchCount = 0;
+    int whiteBestCount = 0;
     double whiteAccracyValue = 0;
     double whiteWinLossValue = 0;
     double whiteScoreLossValue = 0;
@@ -6699,22 +6710,24 @@ public class MoveListFrame extends JFrame {
               blackWinLossValue = blackWinLossValue + Math.abs(nodeInfo.getWinrateDiff());
             if (nodeInfo.getScoreMeanDiff() < 0)
               blackScoreLossValue = blackScoreLossValue + Math.abs(nodeInfo.getScoreMeanDiff());
-            blackAnalyzedCount = blackAnalyzedCount + 1;
+            blackAnalyzedCount++;
+            if (nodeInfo.isBest) blackBestCount++;
           } else {
             whiteAccracyValue = whiteAccracyValue + nodeInfo.percentsMatch;
             if (nodeInfo.getWinrateDiff() < 0)
               whiteWinLossValue = whiteWinLossValue + Math.abs(nodeInfo.getWinrateDiff());
             if (nodeInfo.getScoreMeanDiff() < 0)
               whiteScoreLossValue = whiteScoreLossValue + Math.abs(nodeInfo.getScoreMeanDiff());
-            whiteAnalyzedCount = whiteAnalyzedCount + 1;
+            whiteAnalyzedCount++;
+            if (nodeInfo.isBest) whiteBestCount++;
           }
 
-          analyzed = analyzed + 1;
+          analyzed++;
           if (nodeInfo.isBlack) {
-            if (nodeInfo.isMatchAi) blackMatchCount = blackMatchCount + 1;
+            if (nodeInfo.isMatchAi) blackMatchCount++;
           }
           if (!nodeInfo.isBlack) {
-            if (nodeInfo.isMatchAi) whiteMatchCount = whiteMatchCount + 1;
+            if (nodeInfo.isMatchAi) whiteMatchCount++;
           }
         }
       }
@@ -6723,11 +6736,13 @@ public class MoveListFrame extends JFrame {
     double blackMatch = blackMatchCount / (double) blackAnalyzedCount;
     double blackAvgWinLoss = blackWinLossValue / blackAnalyzedCount;
     double blackAvgScoreLoss = blackScoreLossValue / blackAnalyzedCount;
+    double blackBest = blackBestCount / (double) blackAnalyzedCount;
 
     double whiteAccracy = whiteAccracyValue / whiteAnalyzedCount;
     double whiteMatch = whiteMatchCount / (double) whiteAnalyzedCount;
     double whiteAvgWinLoss = whiteWinLossValue / whiteAnalyzedCount;
     double whiteAvgScoreLoss = whiteScoreLossValue / whiteAnalyzedCount;
+    double whiteBest = whiteBestCount / (double) whiteAnalyzedCount;
 
     double maxAvgWinLoss = 10;
     if (blackAvgWinLoss > maxAvgWinLoss) maxAvgWinLoss = blackAvgWinLoss;
@@ -6771,6 +6786,20 @@ public class MoveListFrame extends JFrame {
         valueStartY + valueRowHeight * 2,
         valueWidth,
         valueRowHeight,
+        blackBest,
+        String.format("%.1f", blackBest * 100) + "%",
+        Color.BLACK,
+        Color.BLACK,
+        Color.PINK,
+        font,
+        true);
+
+    drawRectWithValue(
+        g,
+        valueStartXBlack,
+        valueStartY + valueRowHeight * 3,
+        valueWidth,
+        valueRowHeight,
         blackAvgScoreLoss / maxAvgWinLoss,
         String.format("%.1f", blackAvgScoreLoss),
         Color.BLACK,
@@ -6782,7 +6811,7 @@ public class MoveListFrame extends JFrame {
     drawRectWithValue(
         g,
         valueStartXBlack,
-        valueStartY + valueRowHeight * 3,
+        valueStartY + valueRowHeight * 4,
         valueWidth,
         valueRowHeight,
         blackAvgWinLoss / maxAvgWinLoss,
@@ -6806,6 +6835,7 @@ public class MoveListFrame extends JFrame {
         Color.BLUE,
         font,
         false);
+
     drawRectWithValue(
         g,
         valueStartXWhite,
@@ -6819,10 +6849,25 @@ public class MoveListFrame extends JFrame {
         Color.BLUE,
         font,
         false);
+
     drawRectWithValue(
         g,
         valueStartXWhite,
         valueStartY + valueRowHeight * 2,
+        valueWidth,
+        valueRowHeight,
+        whiteBest,
+        String.format("%.1f", whiteBest * 100) + "%",
+        Color.WHITE,
+        Color.WHITE,
+        Color.BLUE,
+        font,
+        false);
+
+    drawRectWithValue(
+        g,
+        valueStartXWhite,
+        valueStartY + valueRowHeight * 3,
         valueWidth,
         valueRowHeight,
         whiteAvgScoreLoss / maxAvgWinLoss,
@@ -6832,10 +6877,11 @@ public class MoveListFrame extends JFrame {
         Color.BLUE,
         font,
         false);
+
     drawRectWithValue(
         g,
         valueStartXWhite,
-        valueStartY + valueRowHeight * 3,
+        valueStartY + valueRowHeight * 4,
         valueWidth,
         valueRowHeight,
         whiteAvgWinLoss / maxAvgWinLoss,

@@ -1158,7 +1158,7 @@ public class FloatBoardRenderer {
   /** Render the shadows and stones in correct background-foreground order */
   private void renderImages(Graphics2D g) {
     g.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_OFF);
-    if ((Lizzie.config.showKataGoEstimate && !Lizzie.config.isHiddenKataEstimate)
+    if ((Lizzie.config.showKataGoEstimate && Lizzie.config.showKataGoEstimateOnMainbord)
         || Lizzie.frame.isShowingHeatmap)
       if (shouldShowCountBlockBelow()) g.drawImage(kataEstimateImage, x, y, null);
     if (isShowingBranch) {
@@ -1178,7 +1178,7 @@ public class FloatBoardRenderer {
       g.drawImage(cachedStonesImage, x, y, null);
     }
     g.drawImage(blockimage, x, y, null);
-    if ((Lizzie.config.showKataGoEstimate && !Lizzie.config.isHiddenKataEstimate)
+    if ((Lizzie.config.showKataGoEstimate && Lizzie.config.showKataGoEstimateOnMainbord)
         || Lizzie.frame.isShowingHeatmap)
       if (!shouldShowCountBlockBelow()) g.drawImage(kataEstimateImage, x, y, null);
     if (Lizzie.frame.isCounting || Lizzie.frame.isAutocounting)

@@ -214,8 +214,8 @@ public class BoardHistoryNode {
           if (i != 0 && changeMove) {
             break;
           }
-          if (clearAfterMove) Lizzie.board.clearAfterMove();
           if (Lizzie.config.playSound) Utils.playVoiceFile();
+          if (clearAfterMove) Lizzie.board.clearAfterMove();
           return variations.get(i);
         }
       }
@@ -251,8 +251,8 @@ public class BoardHistoryNode {
       variations.add(node);
     }
     node.previous = Optional.of(this);
-    if (clearAfterMove) Lizzie.board.clearAfterMove();
     if (Lizzie.config.playSound) Utils.playVoiceFile();
+    if (clearAfterMove) Lizzie.board.clearAfterMove();
     return node;
   }
 

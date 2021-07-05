@@ -25,7 +25,7 @@ public class SocketLoggin {
     try {
       // 客户端socket指定服务器的地址和端口号119.3.182.214
       socket = new Socket("lizzieyzy.cn", 3045);
-      System.out.println("Socket=" + socket);
+      // System.out.println("Socket=" + socket);
       // 同服务器原理一样
       br = new BufferedReader(new InputStreamReader(socket.getInputStream(), "utf-8"));
       pw =
