@@ -111,8 +111,7 @@ public class BoardRenderer {
 
   private int displayedBranchLength = SHOW_NORMAL_BOARD;
   private int cachedDisplayedBranchLength = SHOW_RAW_BOARD;
-  public boolean[] hasDrawBackground =
-      new boolean[Lizzie.board.boardHeight * Lizzie.board.boardWidth];
+  public boolean[] hasDrawBackground = new boolean[Board.boardHeight * Board.boardWidth];
   private boolean isFancyBoard = true;
   private Color noFancyColor;
   // private boolean isMainBoard = false;
@@ -1179,8 +1178,6 @@ public class BoardRenderer {
     }
 
     Optional<MoveData> suggestedMove = mouseOveredMove();
-    // aaa如果放在下一手上 下一手又有bestmoves,按照blunder计算偏差较大的情况下模拟一个movedata 传到branch中显示,并且要把
-    // blunder draw好 正在观看这个点的时候置一个标志isShowingBlunderMove 不因为刷新选点把选点覆盖在这个点上导致无法继续观看
     if (!suggestedMove.isPresent()
         || Lizzie.frame.isShowingPolicy
         || Lizzie.frame.isShowingHeatmap) {
@@ -1390,7 +1387,6 @@ public class BoardRenderer {
   }
 
   private Optional<MoveData> mouseOveredMove() {
-    // aaa
     isMouseOverNextBlunder = false;
     if (isShowingNextMoveBlunder) {
       int[] mouseOverCoords;
@@ -1402,7 +1398,7 @@ public class BoardRenderer {
       if (mouseOverCoords[0] == nextMoveX && mouseOverCoords[1] == nextMoveY) {
         mouseOverOrder = -1;
         MoveData move = new MoveData();
-        move.coordinate = Lizzie.board.convertCoordinatesToName(nextMoveX, nextMoveY);
+        move.coordinate = Board.convertCoordinatesToName(nextMoveX, nextMoveY);
         move.order = -1;
         move.variation = nextPv;
         move.pvVisits = nextPvVisits;
@@ -1438,6 +1434,18 @@ public class BoardRenderer {
           needAddback = true;
         }
         if (needAddback) {
+          List<MoveData> outOfRangeMoves =
+              this.boardIndex == 1
+                  ? Lizzie.board.getHistory().getCurrentHistoryNode().getData().bestMoves2OutOfRange
+                  : Lizzie.board.getHistory().getCurrentHistoryNode().getData().bestMovesOutOfRange;
+          if (outOfRangeMoves != null) {
+            for (MoveData move : outOfRangeMoves) {
+              if (move.coordinate.equals(mouseOverTemp.coordinate)) {
+                bestMoves.add(move);
+                return Optional.of(move);
+              }
+            }
+          }
           mouseOverTemp.order = Math.max(bestMoves.size(), 9);
           bestMoves.add(mouseOverTemp);
           return Optional.of(mouseOverTemp);
@@ -2036,19 +2044,8 @@ public class BoardRenderer {
               if (Lizzie.config.showSuggestionOrder && move.order < 9 && move.order > 0) {
                 int suggestionX = x + scaledMarginWidth + squareWidth * coords[0];
                 int suggestionY = y + scaledMarginHeight + squareHeight * coords[1];
-                boolean blackToPlay = Lizzie.board.getData().blackToPlay;
-                if (shouldShowPreviousBestMoves()) blackToPlay = !blackToPlay;
-                drawStringForOrder(
-                    g,
-                    (int) round(suggestionX + squareWidth * 0.43),
-                    (int) round(suggestionY - squareWidth * 0.358),
-                    LizzieFrame.winrateFont,
-                    Font.PLAIN,
-                    move.order + 1 + "",
-                    squareWidth * 0.36f,
-                    squareWidth * 0.39,
-                    1,
-                    blackToPlay);
+                drawOrder(
+                    g, suggestionX, suggestionY, move.order, Lizzie.board.getData().blackToPlay);
               }
               if (Lizzie.config.showSuggestionOrder && move.order == 0) {
                 int suggestionX = x + scaledMarginWidth + squareWidth * coords[0];
@@ -2227,20 +2224,12 @@ public class BoardRenderer {
           }
 
           if (isMouseOverNextBlunder && isMouseOver) {
-            if (Lizzie.config.showSuggestionOrder && move.order < 9 && move.order > 0) {
-              boolean blackToPlay = Lizzie.board.getData().blackToPlay;
-              if (shouldShowPreviousBestMoves()) blackToPlay = !blackToPlay;
-              drawStringForOrder(
-                  g,
-                  (int) round(suggestionX + squareWidth * 0.43),
-                  (int) round(suggestionY - squareWidth * 0.358),
-                  LizzieFrame.winrateFont,
-                  Font.PLAIN,
-                  move.order + 1 + "",
-                  squareWidth * 0.36f,
-                  squareWidth * 0.39,
-                  1,
-                  blackToPlay);
+            if (Lizzie.config.showSuggestionOrder
+                && move.order < 9
+                && move.order > 0
+                && (needShow || isMouseOver || !move.lastTimeUnlimited)) {
+              drawOrder(
+                  g, suggestionX, suggestionY, move.order, Lizzie.board.getData().blackToPlay);
             }
           }
           if (!branchOpt.isPresent() || (isMouseOver && !isMouseOverNextBlunder)) {
@@ -2257,20 +2246,12 @@ public class BoardRenderer {
             // } else {
             //  text = String.format("%.1f", roundedWinrate);
             // }
-            if (Lizzie.config.showSuggestionOrder && move.order < 9 && move.order > 0) {
-              boolean blackToPlay = Lizzie.board.getData().blackToPlay;
-              if (shouldShowPreviousBestMoves()) blackToPlay = !blackToPlay;
-              drawStringForOrder(
-                  g,
-                  (int) round(suggestionX + squareWidth * 0.43),
-                  (int) round(suggestionY - squareWidth * 0.358),
-                  LizzieFrame.winrateFont,
-                  Font.PLAIN,
-                  move.order + 1 + "",
-                  squareWidth * 0.36f,
-                  squareWidth * 0.39,
-                  1,
-                  blackToPlay);
+            if (Lizzie.config.showSuggestionOrder
+                && move.order < 9
+                && move.order > 0
+                && (needShow || isMouseOver || !move.lastTimeUnlimited)) {
+              drawOrder(
+                  g, suggestionX, suggestionY, move.order, Lizzie.board.getData().blackToPlay);
             }
 
             if (!(Lizzie.config.limitMaxSuggestion > 0
@@ -2783,6 +2764,22 @@ public class BoardRenderer {
         clearAfterMove();
       }
     }
+  }
+
+  private void drawOrder(Graphics2D g, int x, int y, int order, boolean blackToPlay) {
+    // TODO Auto-generated method stub
+    if (shouldShowPreviousBestMoves()) blackToPlay = !blackToPlay;
+    drawStringForOrder(
+        g,
+        (int) round(x + squareWidth * 0.43),
+        (int) round(y - squareWidth * 0.358),
+        LizzieFrame.winrateFont,
+        Font.PLAIN,
+        order + 1 + "",
+        squareWidth * 0.36f,
+        squareWidth * 0.39,
+        1,
+        blackToPlay);
   }
 
   public void clearAfterMove() {

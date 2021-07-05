@@ -94,7 +94,6 @@ public class GetEngineLine {
       if (engineFile != null) {
         enginePath = relativizePath(engineFile.toPath());
         if (isIkatago) {
-          // aaa
           boolean isColab = false;
           Object[] options = {"Colab", resourceBundle.getString("MoreEngines.otherPlatform")};
 

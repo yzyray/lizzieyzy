@@ -8443,7 +8443,6 @@ public class Menu extends JMenuBar {
             toolPanel.add(selectAvoidMore);
             toolPanel.add(clearSelect);
 
-            // aaa
             if (Lizzie.config.showTimeControlInMenu || Lizzie.config.showPlayoutControlInMenu) {
               toolPanel.addSeparator(new Dimension(8, Lizzie.config.menuHeight + 2));
               toolPanel.add(new JFontLabel(resourceBundle.getString("Menu.lblLimit"))); // "限制:"));

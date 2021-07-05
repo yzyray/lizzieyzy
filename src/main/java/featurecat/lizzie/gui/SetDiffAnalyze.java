@@ -53,7 +53,6 @@ public class SetDiffAnalyze extends JDialog {
   private void initComponents() {
     setMinimumSize(new Dimension(100, 100));
     setResizable(false);
-    // aaa
     setTitle(Lizzie.resourceBundle.getString("SetDiffAnalyze.title"));
 
     Container contentPane = getContentPane();

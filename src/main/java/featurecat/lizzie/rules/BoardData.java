@@ -30,7 +30,9 @@ public class BoardData {
 	public double scoreMeanBoard;
 	public double scoreMeanBoard2;
 	public List<MoveData> bestMoves;
+	public List<MoveData> bestMovesOutOfRange;
 	public List<MoveData> bestMoves2;
+	public List<MoveData> bestMoves2OutOfRange;
 	public int blackCaptures;
 	public int whiteCaptures;
 	public boolean isChanged = false;
@@ -247,13 +249,14 @@ public class BoardData {
 				              }
 				            });
 				 
-				tryToLimitMoves(moves,bestMoves);
+				tryToLimitMoves(moves,bestMoves,true);
 				   bestMoves = moves;
 			}
 		
 	
-	private void tryToLimitMoves(List<MoveData> moves,List<MoveData> lastMoves) {
-		// TODO Auto-generated method stub
+	private void tryToLimitMoves(List<MoveData> moves,List<MoveData> lastMoves,boolean isMain) {
+		// TODO Auto-generated method stub		
+		List<MoveData> outOfRangeMoves = new ArrayList<>();
 		   if (Lizzie.config.limitMaxSuggestion > 0
 			        && !Lizzie.config.showNoSuggCircle
 			        && (moves.size() > Lizzie.config.limitMaxSuggestion)) { 
@@ -261,9 +264,9 @@ public class BoardData {
 			    	  {
 			    		  MoveData move=moves.get(n);					    		  
 			    		  boolean needSkip=false;
-			    		  int absoluteMaxSuggestion=Lizzie.config.limitMaxSuggestion+2;
-			    		  if(n<absoluteMaxSuggestion) {
-			    			for(int s=0;s<absoluteMaxSuggestion&&s<lastMoves.size();s++)  
+			    		  int absoluteMaxSuggestionOrder=Lizzie.config.limitMaxSuggestion+1;
+			    		  if(move.order<absoluteMaxSuggestionOrder) {
+			    			for(int s=0;s<absoluteMaxSuggestionOrder&&s<lastMoves.size();s++)  
 			    			{
 			    				MoveData lastBestMove=lastMoves.get(s);
 			    				if(s>=Lizzie.config.limitMaxSuggestion) {
@@ -297,10 +300,13 @@ public class BoardData {
 			    		  }
 			    		  }
 			    		  if(!needSkip)
-			    		  {moves.remove(move);	
+			    		  {
+			    			  outOfRangeMoves.add(move); 
+			    			  moves.remove(move);	
 			    		  n--;}
-			    	  }
-			      				     
+			    	  }		
+			    	  if(isMain) bestMovesOutOfRange=outOfRangeMoves;
+			    	  else bestMoves2OutOfRange=outOfRangeMoves;
 			    }
 	}
 
@@ -358,7 +364,7 @@ public class BoardData {
 				                return 0;
 				              }
 				            });
-				 tryToLimitMoves(moves,bestMoves2);
+				 tryToLimitMoves(moves,bestMoves2,false);
 				   bestMoves2 = moves;
 			}	
 

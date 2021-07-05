@@ -174,7 +174,6 @@ public class ScoreResult extends JDialog {
 
   public void setScore(
       int blackAlive, int blackPoint, int whiteAlive, int whitePoint, double komi) {
-    // aaa
     double blackAll = blackAlive + blackPoint;
     double whiteAll = whiteAlive + whitePoint + komi;
     blackScore.setText(

@@ -513,7 +513,6 @@ public class Config {
   public int blunderScoreThreshold = 0;
   public int blunderPlayoutsThreshold = 0;
 
-  // aaa 待处理读取保存
   public boolean autoAnaDiffEnable = false;
 
   public boolean autoAnaDiffBlack = true;

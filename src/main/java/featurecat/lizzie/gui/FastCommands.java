@@ -107,7 +107,6 @@ public class FastCommands extends JDialog {
     List<String> commands = Lizzie.leelaz.commandLists;
     GridLayout gridLayout = new GridLayout(commands.size(), 1, 0, 0);
     contentPanel.setLayout(gridLayout);
-    // aaa
     for (String cmd : commands) {
       JPanel textPanel = new JPanel();
       JTextField txtCmd = new JFontTextField();

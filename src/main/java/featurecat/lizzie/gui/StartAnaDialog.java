@@ -160,7 +160,6 @@ public class StartAnaDialog extends JDialog {
           });
       contentPanel.add(chkAnalyzeAllBracnh);
     }
-    // aaa
     if (!isAnalysisMode) {
       contentPanel.add(
           new JFontLabel(
