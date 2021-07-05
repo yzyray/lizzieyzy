@@ -834,75 +834,6 @@ public class FloatBoardRenderer {
     g.dispose();
   }
 
-  /** Draw the stones. We cache the image for a performance boost. */
-  public void drawStones() {
-    if (Lizzie.board == null) return;
-
-    // draw a new image if frame size changes or board state changes
-    if (cachedStonesImage.getWidth() != boardWidth
-        || cachedStonesImage.getHeight() != boardHeight
-        || cachedDisplayedBranchLength != displayedBranchLength
-        || cachedBackgroundImageHasCoordinatesEnabled != showCoordinates()
-        || !cachedZhash.equals(Lizzie.board.getData().zobrist)) {
-      cachedZhash = Lizzie.board.getData().zobrist.clone();
-      cachedStonesImage = new BufferedImage(boardWidth, boardHeight, TYPE_INT_ARGB);
-      cachedStonesShadowImage = new BufferedImage(boardWidth, boardHeight, TYPE_INT_ARGB);
-      Graphics2D g = cachedStonesImage.createGraphics();
-      g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-      Graphics2D gShadow = cachedStonesShadowImage.createGraphics();
-      gShadow.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-
-      // we need antialiasing to make the stones pretty. Java is a bit slow at
-      // antialiasing; that's
-      // why we want the cache
-      g.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
-      gShadow.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
-      drawShadowCache();
-      if (Lizzie.config.usePureStone) {
-        for (int i = 0; i < Board.boardWidth; i++) {
-          for (int j = 0; j < Board.boardHeight; j++) {
-            int stoneX = scaledMarginWidth + squareWidth * i;
-            int stoneY = scaledMarginHeight + squareHeight * j;
-            drawStoneSimple(
-                g, gShadow, stoneX, stoneY, Lizzie.board.getStones()[Board.getIndex(i, j)], i, j);
-          }
-        }
-      } else {
-        final CountDownLatch latch = new CountDownLatch(Board.boardWidth);
-        for (int i = 0; i < Board.boardWidth; i++) {
-          final Integer threadI = i;
-          new Thread() {
-            public void run() {
-              for (int j = 0; j < Board.boardHeight; j++) {
-                int stoneX = scaledMarginWidth + squareWidth * threadI;
-                int stoneY = scaledMarginHeight + squareHeight * j;
-                drawStone(
-                    g,
-                    gShadow,
-                    stoneX,
-                    stoneY,
-                    Lizzie.board.getStones()[Board.getIndex(threadI, j)],
-                    threadI,
-                    j);
-              }
-              latch.countDown();
-            }
-          }.start();
-        }
-        try {
-          latch.await();
-        } catch (InterruptedException e) {
-          // TODO Auto-generated catch block
-          e.printStackTrace();
-        }
-      }
-      cachedDisplayedBranchLength = displayedBranchLength;
-      cachedBackgroundImageHasCoordinatesEnabled = showCoordinates();
-      g.dispose();
-      gShadow.dispose();
-    }
-  }
-
   /*
    * Draw a white/black dot on territory and captured stones. Dame is drawn as red
    * dot.
@@ -1161,7 +1092,7 @@ public class FloatBoardRenderer {
     if ((Lizzie.config.showKataGoEstimate && Lizzie.config.showKataGoEstimateOnMainbord)
         || Lizzie.frame.isShowingHeatmap)
       if (shouldShowCountBlockBelow()) g.drawImage(kataEstimateImage, x, y, null);
-    if (isShowingBranch) {
+    if (showingBranch) {
       if (!Lizzie.config.removeDeadChainInVariation) {
         g.drawImage(cachedStonesShadowImage, x, y, null);
         g.drawImage(cachedStonesImage, x, y, null);
@@ -1173,9 +1104,6 @@ public class FloatBoardRenderer {
         g.drawImage(branchStonesShadowImage, x, y, null);
         g.drawImage(branchStonesImage, x, y, null);
       }
-    } else {
-      g.drawImage(cachedStonesShadowImage, x, y, null);
-      g.drawImage(cachedStonesImage, x, y, null);
     }
     g.drawImage(blockimage, x, y, null);
     if ((Lizzie.config.showKataGoEstimate && Lizzie.config.showKataGoEstimateOnMainbord)
