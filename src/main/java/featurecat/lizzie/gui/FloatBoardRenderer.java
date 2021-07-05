@@ -1767,7 +1767,6 @@ public class FloatBoardRenderer {
 
           Optional<int[]> coordsOpt = Board.asCoordinates(move.coordinate);
           if (!coordsOpt.isPresent()) {
-            //	Lizzie.board.getHistory().getCurrentHistoryNode().getData().comment+=move.coordinate+"计算量:"+move.playouts+"";
             continue;
           }
           int[] coords = coordsOpt.get();
@@ -1781,6 +1780,7 @@ public class FloatBoardRenderer {
                   && move.order + 1 > Lizzie.config.limitMaxSuggestion)
               && !isMouseOver) {
             if (hasDrawBackground[Lizzie.board.getIndex(coords[0], coords[1])]) continue;
+            if (move.lastTimeUnlimited) continue;
           }
           if (percentPlayouts <= Lizzie.config.minPlayoutRatioForStats
               && !Lizzie.config.showNoSuggCircle
@@ -2500,6 +2500,7 @@ public class FloatBoardRenderer {
             hasDrawBackground[Lizzie.board.getIndex(coords[0], coords[1])] = false;
             continue;
           }
+          if (move.lastTimeUnlimited) continue;
           hasDrawBackground[Lizzie.board.getIndex(coords[0], coords[1])] = true;
 
           float hue;
