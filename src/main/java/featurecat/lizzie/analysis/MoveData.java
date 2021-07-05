@@ -28,6 +28,7 @@ public class MoveData {
   public boolean isNextMove;
   public double bestWinrate;
   public double bestScoreMean;
+  public boolean lastTimeUnlimited;
 
   public MoveData() {}
 

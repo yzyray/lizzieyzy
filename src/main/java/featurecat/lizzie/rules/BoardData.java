@@ -247,33 +247,54 @@ public class BoardData {
 				              }
 				            });
 				 
-				   if (Lizzie.config.limitMaxSuggestion > 0
-					        && !Lizzie.config.showNoSuggCircle
-					        && (moves.size() > Lizzie.config.limitMaxSuggestion)) {       	
-					      if(Lizzie.frame.priorityMoveCoords.size()>0) {    	 
-					    	  for(int n=Lizzie.config.limitMaxSuggestion;n<moves.size();n++)
-					    	  {
-					    		  MoveData move=moves.get(n);
-					    		  boolean needSkip=false;
-					    		  for(String coords:Lizzie.frame.priorityMoveCoords)
-					    		  {if(move.coordinate.equals(coords))
-					    		  {		
-					    			  needSkip=true;
-					    				continue;
-					    		  }
-					    		  }
-					    		  if(!needSkip)
-					    		  {moves.remove(move);	
-					    		  n--;}
-					    	  }
-					      }
-					    	  else
-					    		  moves = moves.subList(0, Lizzie.config.limitMaxSuggestion);					     
-					    }
+				tryToLimitMoves(moves,bestMoves);
 				   bestMoves = moves;
 			}
 		
 	
+	private void tryToLimitMoves(List<MoveData> moves,List<MoveData> lastMoves) {
+		// TODO Auto-generated method stub
+		   if (Lizzie.config.limitMaxSuggestion > 0
+			        && !Lizzie.config.showNoSuggCircle
+			        && (moves.size() > Lizzie.config.limitMaxSuggestion)) { 
+			    	  for(int n=Lizzie.config.limitMaxSuggestion;n<moves.size();n++)
+			    	  {
+			    		  MoveData move=moves.get(n);					    		  
+			    		  boolean needSkip=false;
+			    		  int absoluteMaxSuggestion=Lizzie.config.limitMaxSuggestion+2;
+			    		  if(n<absoluteMaxSuggestion) {
+			    			for(int s=0;s<absoluteMaxSuggestion&&s<lastMoves.size();s++)  
+			    			{
+			    				MoveData lastBestMove=lastMoves.get(s);
+			    				if(s>=Lizzie.config.limitMaxSuggestion) {
+			    					if(!lastBestMove.lastTimeUnlimited)
+			    						continue;
+			    				}
+			    				if(move.coordinate.equals(lastBestMove.coordinate)) {
+			    					 needSkip=true;
+			    					 move.lastTimeUnlimited=true;
+			    					continue;
+			    				}
+			    			}
+			    		  }
+			    		  if(Lizzie.frame.priorityMoveCoords.size()>0&&!needSkip) 
+			    		  {
+			    			  for(String coords:Lizzie.frame.priorityMoveCoords)
+			    		  {if(move.coordinate.equals(coords))
+			    		  {		
+			    			  needSkip=true;
+			    				continue;
+			    		  }
+			    		  }
+			    		  }
+			    		  if(!needSkip)
+			    		  {moves.remove(move);	
+			    		  n--;}
+			    	  }
+			      				     
+			    }
+	}
+
 	public void tryToSetBestMoves2(List<MoveData> moves,String engName,boolean isFromLeelaz) {
 		// MoveData.getPlayouts(moves) > playouts
 //		if(moves.isEmpty())
@@ -328,29 +349,7 @@ public class BoardData {
 				                return 0;
 				              }
 				            });
-				   if (Lizzie.config.limitMaxSuggestion > 0
-					        && !Lizzie.config.showNoSuggCircle
-					        && (moves.size() > Lizzie.config.limitMaxSuggestion)) {       	
-					      if(Lizzie.frame.priorityMoveCoords.size()>0) {    	 
-					    	  for(int n=Lizzie.config.limitMaxSuggestion;n<moves.size();n++)
-					    	  {
-					    		  MoveData move=moves.get(n);
-					    		  boolean needSkip=false;
-					    		  for(String coords:Lizzie.frame.priorityMoveCoords)
-					    		  {if(move.coordinate.equals(coords))
-					    		  {		
-					    			  needSkip=true;
-					    				continue;
-					    		  }
-					    		  }
-					    		  if(!needSkip)
-					    		  {moves.remove(move);	
-					    		  n--;}
-					    	  }
-					      }
-					    	  else
-					    		  moves = moves.subList(0, Lizzie.config.limitMaxSuggestion);					     
-					    }
+				 tryToLimitMoves(moves,bestMoves2);
 				   bestMoves2 = moves;
 			}	
 
