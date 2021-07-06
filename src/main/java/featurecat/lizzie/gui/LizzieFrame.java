@@ -3166,7 +3166,7 @@ public class LizzieFrame extends JFrame {
                 resourceBundle.getString("LizzieFrame.prompt.sgfExists"),
                 resourceBundle.getString("LizzieFrame.warning"),
                 JOptionPane.OK_CANCEL_OPTION);
-        if (ret == JOptionPane.CANCEL_OPTION) {
+        if (ret == JOptionPane.CANCEL_OPTION || ret == -1) {
           return;
         }
       }
@@ -3302,7 +3302,7 @@ public class LizzieFrame extends JFrame {
                 resourceBundle.getString("LizzieFrame.prompt.sgfExists"),
                 resourceBundle.getString("LizzieFrame.warning"),
                 JOptionPane.OK_CANCEL_OPTION);
-        if (ret == JOptionPane.CANCEL_OPTION) {
+        if (ret == JOptionPane.CANCEL_OPTION || ret == -1) {
           return;
         }
       }
@@ -3375,7 +3375,7 @@ public class LizzieFrame extends JFrame {
                 resourceBundle.getString("LizzieFrame.prompt.sgfExists"),
                 resourceBundle.getString("LizzieFrame.warning"),
                 JOptionPane.OK_CANCEL_OPTION);
-        if (ret == JOptionPane.CANCEL_OPTION) {
+        if (ret == JOptionPane.CANCEL_OPTION || ret == -1) {
           return;
         }
       }
@@ -8498,7 +8498,7 @@ public class LizzieFrame extends JFrame {
                           resourceBundle.getString("LizzieFrame.fileExists"),
                           resourceBundle.getString("LizzieFrame.warning"),
                           JOptionPane.OK_CANCEL_OPTION);
-                  if (ret == JOptionPane.CANCEL_OPTION) {
+                  if (ret == JOptionPane.CANCEL_OPTION || ret == -1) {
                     return;
                   }
                 }
@@ -8600,7 +8600,7 @@ public class LizzieFrame extends JFrame {
                           resourceBundle.getString("LizzieFrame.fileExists"),
                           resourceBundle.getString("LizzieFrame.warning"),
                           JOptionPane.OK_CANCEL_OPTION);
-                  if (ret == JOptionPane.CANCEL_OPTION) {
+                  if (ret == JOptionPane.CANCEL_OPTION || ret == -1) {
                     return;
                   }
                 }
@@ -8669,7 +8669,7 @@ public class LizzieFrame extends JFrame {
                           resourceBundle.getString("LizzieFrame.fileExists"),
                           resourceBundle.getString("LizzieFrame.warning"),
                           JOptionPane.OK_CANCEL_OPTION);
-                  if (ret == JOptionPane.CANCEL_OPTION) {
+                  if (ret == JOptionPane.CANCEL_OPTION || ret == -1) {
                     return;
                   }
                 }
@@ -10895,6 +10895,23 @@ public class LizzieFrame extends JFrame {
     saveTempGame(data);
   }
 
+  public void deleteAllTempGame() {
+    ArrayList<TempGameData> data = getSaveGameList();
+    for (int index = 1; index < data.size() + 1; index++) {
+      File file = new File("save" + Utils.pwd + "game" + index + ".bmp");
+      if (file.exists() && file.isFile()) file.delete();
+      File file2 = new File("save" + Utils.pwd + "game" + index + ".sgf");
+      if (file2.exists() && file2.isFile()) file2.delete();
+    }
+    saveTempGame(new ArrayList<TempGameData>());
+    try {
+      Lizzie.config.saveTempBoard();
+    } catch (IOException es) {
+      // TODO Auto-generated catch block
+      es.printStackTrace();
+    }
+  }
+
   public void saveTempGame(int index, String name) {
     SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     ArrayList<TempGameData> data = getSaveGameList();
@@ -11351,7 +11368,6 @@ public class LizzieFrame extends JFrame {
         new JCheckBox(
             Lizzie.resourceBundle.getString(
                 "LizzieFrame.saveAndLoad.chkZoomImage")); // ("打开时自动恢复");
-
     JCheckBox chkAutoResume =
         new JCheckBox(
             Lizzie.resourceBundle.getString(
@@ -11360,15 +11376,18 @@ public class LizzieFrame extends JFrame {
         new JCheckBox(
             Lizzie.resourceBundle.getString(
                 "LizzieFrame.saveAndLoad.chkAutoSaveOnExit")); // ("退出时自动存档");
-
+    JButton btnDeleteAll =
+        new JButton(
+            Lizzie.resourceBundle.getString("LizzieFrame.saveAndLoad.btnDeleteAll")); // 全部删除
+    btnDeleteAll.setMargin(new Insets(0, 0, 0, 0));
     JButton btnClose =
         new JButton(resourceBundle.getString("LizzieFrame.saveAndLoad.close")); // ("关闭");
+
     chkAutoSaveOnExit.setSelected(Lizzie.config.autoSaveOnExit);
     chkAutoSaveOnExit.addActionListener(
         new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
-            // TBD
             Lizzie.config.autoSaveOnExit = chkAutoSaveOnExit.isSelected();
             Lizzie.config.uiConfig.put("auto-save-exit", Lizzie.config.autoSaveOnExit);
           }
@@ -11379,9 +11398,31 @@ public class LizzieFrame extends JFrame {
         new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
-            // TBD
             Lizzie.config.autoResume = chkAutoResume.isSelected();
             Lizzie.config.uiConfig.put("resume-previous-game", Lizzie.config.autoResume);
+          }
+        });
+
+    btnDeleteAll.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            SwingUtilities.invokeLater(
+                new Runnable() {
+                  public void run() {
+                    int ret =
+                        JOptionPane.showConfirmDialog(
+                            Lizzie.frame,
+                            resourceBundle.getString("LizzieFrame.saveAndLoad.deleteAllWarining"),
+                            resourceBundle.getString("LizzieFrame.warning"),
+                            JOptionPane.OK_CANCEL_OPTION);
+                    if (ret == JOptionPane.CANCEL_OPTION || ret == -1) {
+                      return;
+                    }
+                    deleteAllTempGame();
+                    showTempGamePanel();
+                  }
+                });
           }
         });
 
@@ -11389,7 +11430,6 @@ public class LizzieFrame extends JFrame {
         new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
-            // TBD
             hideTempGamePanel(oriShowListPane, OriShowVariationGraph);
             if (Lizzie.config.isScaled) refresh();
           }
@@ -11399,14 +11439,13 @@ public class LizzieFrame extends JFrame {
         new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
-            // TBD
             Lizzie.config.loadASaveZoom = chkZoomImage.isSelected();
             Lizzie.config.uiConfig.put("load-save-zoom", Lizzie.config.loadASaveZoom);
           }
         });
     chkZoomImage.setSelected(Lizzie.config.loadASaveZoom);
 
-    int startPos = Math.max(0, width - 395);
+    int startPos = Math.max(0, width - 445);
     chkZoomImage.setForeground(Color.WHITE);
     chkZoomImage.setBackground(tempGamePanel.getBackground());
     chkAutoResume.setBackground(tempGamePanel.getBackground());
@@ -11417,9 +11456,11 @@ public class LizzieFrame extends JFrame {
     chkZoomImage.setBounds(startPos, 0, 150, 20);
     chkAutoSaveOnExit.setBounds(startPos + 150, 0, 80, 20);
     chkAutoResume.setBounds(startPos + 230, 0, 110, 20);
-    btnClose.setBounds(Math.min(startPos + 353, width - 40), 0, 40, 19);
+    btnDeleteAll.setBounds(startPos + 343, 0, 60, 19);
+    btnClose.setBounds(Math.min(startPos + 403, width - 40), 0, 40, 19);
     tempGamePanelTop.removeAll();
     tempGamePanelTop.add(btnClose);
+    tempGamePanelTop.add(btnDeleteAll);
     tempGamePanelTop.add(chkZoomImage);
     tempGamePanelTop.add(chkAutoResume);
     tempGamePanelTop.add(chkAutoSaveOnExit);

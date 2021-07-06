@@ -2300,7 +2300,7 @@ public class BottomToolbar extends JPanel {
                   + resourceBundle.getString("BottomToolbar.askStartReAnalyze"),
               resourceBundle.getString("BottomToolbar.askStartReAnalyzeTitle"),
               JOptionPane.OK_CANCEL_OPTION);
-      if (ret == JOptionPane.CANCEL_OPTION) {
+      if (ret == JOptionPane.CANCEL_OPTION || ret == -1) {
         return false;
       }
       Lizzie.config.isAutoAna = true;

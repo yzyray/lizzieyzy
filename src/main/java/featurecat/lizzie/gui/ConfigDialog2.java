@@ -1322,9 +1322,8 @@ public class ConfigDialog2 extends JDialog {
                       "选择五子棋则无法提子,无法用于围棋分析",
                       "五子棋?",
                       JOptionPane.OK_CANCEL_OPTION);
-              if (ret == JOptionPane.CANCEL_OPTION) {
+              if (ret == JOptionPane.CANCEL_OPTION || ret == -1) {
                 chkNoCapture.setSelected(false);
-                ;
               }
             }
           }
