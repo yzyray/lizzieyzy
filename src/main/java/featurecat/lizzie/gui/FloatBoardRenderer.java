@@ -1469,8 +1469,8 @@ public class FloatBoardRenderer {
       }
       for (int i = 0; i < heatcount.size(); i++) {
         if (heatcount.get(i) > 0) {
-          int y1 = i / Lizzie.board.boardWidth;
-          int x1 = i % Lizzie.board.boardWidth;
+          int y1 = i / Board.boardWidth;
+          int x1 = i % Board.boardWidth;
           int suggestionX = x + scaledMarginWidth + squareWidth * x1;
           int suggestionY = y + scaledMarginHeight + squareHeight * y1;
           double percent = ((double) heatcount.get(i)) / maxPolicy;
@@ -1585,10 +1585,8 @@ public class FloatBoardRenderer {
     }
 
     if (Lizzie.frame.isShowingPolicy) {
-
       if (bestMoves.isEmpty()) return;
       Double maxPolicy = 0.0;
-      // int minPolicy = 0;
       for (int n = 0; n < bestMoves.size(); n++) {
         if (bestMoves.get(n).policy > maxPolicy) maxPolicy = bestMoves.get(n).policy;
       }
@@ -1648,9 +1646,6 @@ public class FloatBoardRenderer {
 
     } else {
       if (bestMoves != null && !bestMoves.isEmpty()) {
-
-        // Collections.sort(bestMoves);
-
         int maxPlayouts = 0;
         double maxWinrate = 0;
         double minWinrate = 100.0;
@@ -1666,7 +1661,6 @@ public class FloatBoardRenderer {
 
         for (int i = bestMoves.size() - 1; i >= 0; i--) {
           MoveData move = bestMoves.get(i);
-          // number = i + 1;
 
           boolean isBestMove = bestMoves.get(0) == move;
           boolean hasMaxWinrate = move.winrate == maxWinrate;
@@ -1678,20 +1672,6 @@ public class FloatBoardRenderer {
           }
           double fraction = 0;
           float percentPlayouts = (float) move.playouts / maxPlayouts;
-          //              (Lizzie.config.leelaversion >= 17
-          //                      && Lizzie.config.showlcbcolor
-          //                      && !Lizzie.leelaz.noLcb
-          //                      &&
-          // Lizzie.board.getHistory().getCurrentHistoryNode().getData().winrate < 95
-          //                      &&
-          // Lizzie.board.getHistory().getCurrentHistoryNode().getData().winrate > 5)
-          //                  ? (float) max(move.playouts, move.equalplayouts) / maxPlayouts
-          //                  :
-          //            double percentWinrate =
-          //                Math.min(
-          //                    1,
-          //                    Math.max(0.01, move.winrate - minWinrate)
-          //                        / Math.max(0.01, maxWinrate - minWinrate));
 
           Optional<int[]> coordsOpt = Board.asCoordinates(move.coordinate);
           if (!coordsOpt.isPresent()) {
@@ -1704,17 +1684,14 @@ public class FloatBoardRenderer {
           boolean isMouseOver =
               Lizzie.frame.floatBoard != null
                   && Lizzie.frame.floatBoard.isMouseOver(coords[0], coords[1]);
-          if ((Lizzie.config.limitMaxSuggestion > 0
-                  && move.order + 1 > Lizzie.config.limitMaxSuggestion)
-              && !isMouseOver) {
-            if (hasDrawBackground[Lizzie.board.getIndex(coords[0], coords[1])]) continue;
-            if (move.lastTimeUnlimited) continue;
-          }
-          if (percentPlayouts <= Lizzie.config.minPlayoutRatioForStats
-              && !Lizzie.config.showNoSuggCircle
-              && !isMouseOver) {
-            if (hasDrawBackground[Lizzie.board.getIndex(coords[0], coords[1])]) continue;
-          }
+          boolean lackOfPlayouts = percentPlayouts <= Lizzie.config.minPlayoutRatioForStats;
+          boolean outOfOrder =
+              Lizzie.config.limitMaxSuggestion > 0
+                  && move.order + 1 > Lizzie.config.limitMaxSuggestion
+                  && !move.lastTimeUnlimited;
+          boolean hasBackground = hasDrawBackground[Board.getIndex(coords[0], coords[1])];
+
+          if (outOfOrder && !isMouseOver && hasBackground) continue;
           float hue;
           boolean hue2;
           if (isBestMove) {
@@ -1723,7 +1700,6 @@ public class FloatBoardRenderer {
           } else {
             fraction = percentPlayouts;
             fraction = Math.pow(fraction, (double) 1 / Lizzie.config.suggestionColorRatio);
-            // }
             hue2 = fraction > 0.375 ? true : false;
             hue = redHue + (greenHue - redHue) * (float) fraction;
           }
@@ -1771,8 +1747,8 @@ public class FloatBoardRenderer {
                 fillCircle(g, suggestionX, suggestionY, stoneRadius);
                 g.setComposite(comp);
               }
-              g.setColor(color.GRAY);
-              if (percentPlayouts <= Lizzie.config.minPlayoutRatioForStats)
+              g.setColor(Color.GRAY);
+              if (lackOfPlayouts)
                 drawCircleMin(g, suggestionX, suggestionY, stoneRadius + 1, 26.5f);
               else drawCircle(g, suggestionX, suggestionY, stoneRadius + 1, 26.5f);
               g.setColor(color);
@@ -1780,16 +1756,16 @@ public class FloatBoardRenderer {
               else fillCircle(g, suggestionX, suggestionY, stoneRadius);
               if (isBestMove) {
                 if (Lizzie.config.showBlueRing) {
-                  g.setColor(color.BLUE.brighter());
+                  g.setColor(Color.BLUE.brighter());
                   drawCircleBest(g, suggestionX, suggestionY, stoneRadius + 1, 15f);
                 } else {
-                  g.setColor(color.GRAY);
+                  g.setColor(Color.GRAY);
                   drawCircle(g, suggestionX, suggestionY, stoneRadius + 1, 26.5f);
                 }
               }
             }
           }
-          if (percentPlayouts <= Lizzie.config.minPlayoutRatioForStats && !isMouseOver) {
+          if ((outOfOrder || lackOfPlayouts) && !isMouseOver) {
             continue;
           }
           if (!branchOpt.isPresent() || isMouseOver) {
@@ -1798,14 +1774,6 @@ public class FloatBoardRenderer {
               roundedWinrate = 100.0 - roundedWinrate;
             }
 
-            //  g.setColor(Color.BLACK);
-
-            String text;
-            // if (Lizzie.config.handicapInsteadOfWinrate) {
-            //  text = String.format("%.2f", Lizzie.leelaz.winrateToHandicap(move.winrate));
-            // } else {
-            text = String.format("%.1f", roundedWinrate);
-            // }
             if (Lizzie.config.showSuggestionOrder && move.order < 9 && move.order > 0) {
               boolean blackToPlay = Lizzie.board.getData().blackToPlay;
               drawStringForOrder(
@@ -1821,500 +1789,464 @@ public class FloatBoardRenderer {
                   blackToPlay);
             }
 
-            if (!(Lizzie.config.limitMaxSuggestion > 0
-                    && move.order + 1 > Lizzie.config.limitMaxSuggestion)
-                || isMouseOver) {
-              // number++;
-              if (isMouseOver && isShowingBranch) {
-                // Color oriColor = g.getColor();
-                g.setColor(Color.RED.brighter());
-                drawCircle(g, suggestionX, suggestionY, stoneRadius + 1, 11f);
-                // g.setColor(oriColor);
-              }
+            if (isMouseOver && isShowingBranch) {
+              g.setColor(Color.RED.brighter());
+              drawCircle(g, suggestionX, suggestionY, stoneRadius + 1, 11f);
+            }
 
-              if (Lizzie.config.whiteSuggestionWhite) {
-                //                if (Lizzie.engineManager.isEngineGame
-                //                    && Lizzie.engineManager.engineGameInfo.isGenmove) {
-                //                  if (Lizzie.board.getHistory().isBlacksTurn())
-                // g.setColor(Color.WHITE);
-                //                  else g.setColor(Color.BLACK);
-                //                } else
-                {
-                  if (Lizzie.board.getHistory().isBlacksTurn()) g.setColor(Color.BLACK);
-                  else g.setColor(Color.WHITE);
-                }
-              } else g.setColor(Color.BLACK);
-              if (branchOpt.isPresent()) { // 待修改
-                //                if (Lizzie.engineManager.isEngineGame
-                //                    && Lizzie.engineManager.engineGameInfo.isGenmove) {
-                //                  if (isMouseOverStoneBlack) g.setColor(Color.BLACK);
-                //                  else g.setColor(Color.WHITE);
-                //                } else
-                if (isMouseOverStoneBlack) g.setColor(Color.WHITE);
-                else g.setColor(Color.BLACK);
+            if (Lizzie.config.whiteSuggestionWhite) {
+              {
+                if (Lizzie.board.getHistory().isBlacksTurn()) g.setColor(Color.BLACK);
+                else g.setColor(Color.WHITE);
               }
-              //      boolean isGenmoveBest = false;
-              //              if (Lizzie.engineManager.isEngineGame
-              //                  && Lizzie.engineManager.engineGameInfo.isGenmove) {
-              //                Optional<int[]> lastMoveOpt = Lizzie.board.getLastMove();
-              //                if ((lastMoveOpt.isPresent()
-              //                    && lastMoveOpt.get()[0] == coords[0]
-              //                    && lastMoveOpt.get()[1] == coords[1])) {
-              //                  if (Lizzie.board.getData().blackToPlay) g.setColor(Color.BLACK);
-              //                  else g.setColor(Color.WHITE);
-              //                  isGenmoveBest = true;
-              //                }
-              //              }
+            } else g.setColor(Color.BLACK);
+            if (branchOpt.isPresent()) {
+              if (isMouseOverStoneBlack) g.setColor(Color.WHITE);
+              else g.setColor(Color.BLACK);
+            }
 
-              Color maxColor;
-              if (isBestMove) maxColor = Lizzie.config.bestColor;
-              else maxColor = hue2 ? Color.RED.brighter() : Color.CYAN;
-              boolean showWinrate = Lizzie.config.showWinrateInSuggestion;
-              boolean showPlayouts = Lizzie.config.showPlayoutsInSuggestion;
-              boolean showScoreLead = move.isKataData && Lizzie.config.showScoremeanInSuggestion;
-              boolean canShowMaxColor = Lizzie.config.showSuggestionMaxRed && !isMouseOver;
-              Color oriColor = g.getColor();
-              if (showScoreLead && showPlayouts && showWinrate) {
-                double score = move.scoreMean;
-                if (Lizzie.board.getHistory().isBlacksTurn()) {
-                  if (Lizzie.config.showKataGoBoardScoreMean) {
-                    score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
-                  }
-                } else {
-                  if (Lizzie.config.showKataGoBoardScoreMean) {
-                    score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
-                  }
-                  if (Lizzie.config.winrateAlwaysBlack) {
-                    score = -score;
-                  }
+            Color maxColor;
+            if (isBestMove) maxColor = Lizzie.config.bestColor;
+            else maxColor = hue2 ? Color.RED.brighter() : Color.CYAN;
+            boolean showWinrate = Lizzie.config.showWinrateInSuggestion;
+            boolean showPlayouts = Lizzie.config.showPlayoutsInSuggestion;
+            boolean showScoreLead = move.isKataData && Lizzie.config.showScoremeanInSuggestion;
+            boolean canShowMaxColor = Lizzie.config.showSuggestionMaxRed && !isMouseOver;
+            Color oriColor = g.getColor();
+            if (showScoreLead && showPlayouts && showWinrate) {
+              double score = move.scoreMean;
+              if (Lizzie.board.getHistory().isBlacksTurn()) {
+                if (Lizzie.config.showKataGoBoardScoreMean) {
+                  score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
                 }
-                boolean shouldShowMaxColorWinrate = canShowMaxColor && hasMaxWinrate;
-                boolean shouldShowMaxColorPlayouts =
-                    canShowMaxColor && move.playouts == maxPlayouts;
-                boolean shouldShowMaxColorScoreLead =
-                    canShowMaxColor && move.scoreMean == maxScoreMean;
-                String winrateText = String.format("%.1f", roundedWinrate);
-                String playoutsText = Lizzie.frame.getPlayoutsString(move.playouts);
-                String scoreLeadText = String.format("%.1f", score);
-                if (Lizzie.config.useDefaultInfoRowOrder) {
-                  if (shouldShowMaxColorWinrate) g.setColor(maxColor);
-                  if (roundedWinrate < 10)
-                    drawStringFor3row(
-                        g,
-                        suggestionX,
-                        suggestionY - (int) round(squareWidth * 0.127),
-                        LizzieFrame.winrateFont,
-                        Font.PLAIN,
-                        winrateText,
-                        squareWidth * 0.36f,
-                        squareWidth * 0.67);
-                  else
-                    drawStringFor3row(
-                        g,
-                        suggestionX,
-                        suggestionY - (int) round(squareWidth * 0.125),
-                        LizzieFrame.winrateFont,
-                        Font.PLAIN,
-                        winrateText,
-                        squareWidth * 0.35f,
-                        squareWidth * 0.67);
-                  if (shouldShowMaxColorWinrate) g.setColor(oriColor);
-                  if (shouldShowMaxColorPlayouts) g.setColor(maxColor);
-                  if (move.playouts >= 1000) {
-                    drawStringFor3row(
-                        g,
-                        suggestionX,
-                        suggestionY + (int) round(squareWidth * 0.18),
-                        LizzieFrame.playoutsFont,
-                        Font.PLAIN,
-                        playoutsText,
-                        squareWidth * 0.34f,
-                        stoneRadius * 1.8);
-                  } else {
-                    drawStringFor3row(
-                        g,
-                        suggestionX,
-                        suggestionY + (int) round(squareWidth * 0.18),
-                        LizzieFrame.playoutsFont,
-                        Font.PLAIN,
-                        playoutsText,
-                        squareWidth * 0.34f,
-                        stoneRadius * 1.3);
-                  }
-                  if (shouldShowMaxColorPlayouts) g.setColor(oriColor);
-                  if (shouldShowMaxColorScoreLead) g.setColor(maxColor);
+              } else {
+                if (Lizzie.config.showKataGoBoardScoreMean) {
+                  score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
+                }
+                if (Lizzie.config.winrateAlwaysBlack) {
+                  score = -score;
+                }
+              }
+              boolean shouldShowMaxColorWinrate = canShowMaxColor && hasMaxWinrate;
+              boolean shouldShowMaxColorPlayouts = canShowMaxColor && move.playouts == maxPlayouts;
+              boolean shouldShowMaxColorScoreLead =
+                  canShowMaxColor && move.scoreMean == maxScoreMean;
+              String winrateText = String.format("%.1f", roundedWinrate);
+              String playoutsText = Lizzie.frame.getPlayoutsString(move.playouts);
+              String scoreLeadText = String.format("%.1f", score);
+              if (Lizzie.config.useDefaultInfoRowOrder) {
+                if (shouldShowMaxColorWinrate) g.setColor(maxColor);
+                if (roundedWinrate < 10)
                   drawStringFor3row(
                       g,
                       suggestionX,
-                      suggestionY + (int) round(squareWidth * 0.435),
+                      suggestionY - (int) round(squareWidth * 0.127),
                       LizzieFrame.winrateFont,
                       Font.PLAIN,
-                      scoreLeadText,
-                      availableWidth * 0.273f / (Board.boardWidth - 1),
-                      stoneRadius * 1.6);
-                  if (shouldShowMaxColorScoreLead) g.setColor(oriColor);
-                } else {
-                  String rowText1 = getSuggestionInfoRow1(winrateText, playoutsText, scoreLeadText);
-                  String rowText2 = getSuggestionInfoRow2(winrateText, playoutsText, scoreLeadText);
-                  String rowText3 = getSuggestionInfoRow3(winrateText, playoutsText, scoreLeadText);
-                  boolean shouldShowMaxColorRow1 =
-                      (shouldShowMaxColorWinrate && rowText1.equals(winrateText))
-                          || (shouldShowMaxColorPlayouts && rowText1.equals(playoutsText))
-                          || (shouldShowMaxColorScoreLead && rowText1.equals(scoreLeadText));
-                  boolean shouldShowMaxColorRow2 =
-                      (shouldShowMaxColorWinrate && rowText2.equals(winrateText))
-                          || (shouldShowMaxColorPlayouts && rowText2.equals(playoutsText))
-                          || (shouldShowMaxColorScoreLead && rowText2.equals(scoreLeadText));
-                  boolean shouldShowMaxColorRow3 =
-                      (shouldShowMaxColorWinrate && rowText3.equals(winrateText))
-                          || (shouldShowMaxColorPlayouts && rowText3.equals(playoutsText))
-                          || (shouldShowMaxColorScoreLead && rowText3.equals(scoreLeadText));
-                  if (shouldShowMaxColorRow1) g.setColor(maxColor);
+                      winrateText,
+                      squareWidth * 0.36f,
+                      squareWidth * 0.67);
+                else
                   drawStringFor3row(
                       g,
                       suggestionX,
                       suggestionY - (int) round(squareWidth * 0.125),
-                      Lizzie.config.suggestionInfoPlayouts == 1
-                          ? LizzieFrame.playoutsFont
-                          : LizzieFrame.winrateFont,
+                      LizzieFrame.winrateFont,
                       Font.PLAIN,
-                      rowText1,
+                      winrateText,
                       squareWidth * 0.35f,
                       squareWidth * 0.67);
-                  if (shouldShowMaxColorRow1) g.setColor(oriColor);
-                  if (shouldShowMaxColorRow2) g.setColor(maxColor);
+                if (shouldShowMaxColorWinrate) g.setColor(oriColor);
+                if (shouldShowMaxColorPlayouts) g.setColor(maxColor);
+                if (move.playouts >= 1000) {
                   drawStringFor3row(
                       g,
                       suggestionX,
                       suggestionY + (int) round(squareWidth * 0.18),
-                      Lizzie.config.suggestionInfoPlayouts == 2
-                          ? LizzieFrame.playoutsFont
-                          : LizzieFrame.winrateFont,
+                      LizzieFrame.playoutsFont,
                       Font.PLAIN,
-                      rowText2,
-                      squareWidth * 0.32f,
+                      playoutsText,
+                      squareWidth * 0.34f,
                       stoneRadius * 1.8);
-                  if (shouldShowMaxColorRow2) g.setColor(oriColor);
-                  if (shouldShowMaxColorRow3) g.setColor(maxColor);
+                } else {
                   drawStringFor3row(
                       g,
                       suggestionX,
-                      suggestionY + (int) round(squareWidth * 0.435),
-                      Lizzie.config.suggestionInfoPlayouts == 3
-                          ? LizzieFrame.playoutsFont
-                          : LizzieFrame.winrateFont,
-                      Font.PLAIN,
-                      rowText3,
-                      availableWidth * 0.273f / (Board.boardWidth - 1),
-                      stoneRadius * 1.6);
-                  if (shouldShowMaxColorRow3) g.setColor(oriColor);
-                }
-              } else if (showWinrate && showPlayouts) {
-                String winrateText = String.format("%.1f", roundedWinrate);
-                String playoutsText = Lizzie.frame.getPlayoutsString(move.playouts);
-                boolean shouldShowMaxColorWinrate = canShowMaxColor && hasMaxWinrate;
-                boolean shouldShowMaxColorPlayouts =
-                    canShowMaxColor && move.playouts == maxPlayouts;
-                if (Lizzie.config.useDefaultInfoRowOrder
-                    || Lizzie.config.suggestionInfoWinrate < Lizzie.config.suggestionInfoPlayouts) {
-                  if (shouldShowMaxColorWinrate) g.setColor(maxColor);
-                  if (roundedWinrate < 10) {
-                    drawString(
-                        g,
-                        suggestionX,
-                        suggestionY - squareWidth / 15,
-                        LizzieFrame.winrateFont,
-                        Font.PLAIN,
-                        winrateText,
-                        stoneRadius,
-                        squareWidth * 0.57,
-                        1);
-                  } else {
-                    drawString(
-                        g,
-                        suggestionX,
-                        suggestionY - squareWidth / 16,
-                        LizzieFrame.winrateFont,
-                        Font.PLAIN,
-                        winrateText,
-                        stoneRadius,
-                        squareWidth * 0.735,
-                        1);
-                  }
-                  if (shouldShowMaxColorWinrate) g.setColor(oriColor);
-                  if (shouldShowMaxColorPlayouts) g.setColor(maxColor);
-                  //    if (move.playouts >= 1000) {
-
-                  drawString(
-                      g,
-                      suggestionX,
-                      suggestionY + stoneRadius * 15 / 35,
-                      LizzieFrame.playoutsFont,
-                      playoutsText,
-                      stoneRadius * 0.77f,
-                      stoneRadius * 1.8);
-                  //                  } else {
-                  //                    drawString(
-                  //                        g,
-                  //                        suggestionX,
-                  //                        suggestionY + stoneRadius * 16 / 35,
-                  //                        LizzieFrame.playoutsFont,
-                  //                        playoutsText,
-                  //                        stoneRadius * 0.8f,
-                  //                        stoneRadius * 1.4);
-                  //                  }
-                  if (shouldShowMaxColorPlayouts) g.setColor(oriColor);
-                } else {
-                  if (shouldShowMaxColorWinrate) g.setColor(maxColor);
-                  drawString(
-                      g,
-                      suggestionX,
-                      suggestionY + stoneRadius * 15 / 35,
-                      LizzieFrame.winrateFont,
-                      winrateText,
-                      stoneRadius * 0.77f,
-                      stoneRadius * 1.8);
-
-                  if (shouldShowMaxColorWinrate) g.setColor(oriColor);
-                  if (shouldShowMaxColorPlayouts) g.setColor(maxColor);
-                  drawString(
-                      g,
-                      suggestionX,
-                      suggestionY - squareWidth / 15,
+                      suggestionY + (int) round(squareWidth * 0.18),
                       LizzieFrame.playoutsFont,
                       Font.PLAIN,
                       playoutsText,
-                      stoneRadius * 0.77f,
-                      stoneRadius * 1.8,
-                      1);
-                  if (shouldShowMaxColorPlayouts) g.setColor(oriColor);
+                      squareWidth * 0.34f,
+                      stoneRadius * 1.3);
                 }
-              } else if (showWinrate && showScoreLead) {
-                boolean shouldShowMaxColorWinrate = canShowMaxColor && hasMaxWinrate;
-                boolean shouldShowMaxColorScoreLead =
-                    canShowMaxColor && move.scoreMean == maxScoreMean;
-                double score = move.scoreMean;
-                if (Lizzie.board.getHistory().isBlacksTurn()) {
-                  if (Lizzie.config.showKataGoBoardScoreMean) {
-                    score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
-                  }
-                } else {
-                  if (Lizzie.config.showKataGoBoardScoreMean) {
-                    score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
-                  }
-                  if (Lizzie.config.winrateAlwaysBlack) {
-                    score = -score;
-                  }
-                }
-                String winrateText = String.format("%.1f", roundedWinrate);
-                String scoreLeadText = String.format("%.1f", score);
-                if (Lizzie.config.useDefaultInfoRowOrder
-                    || Lizzie.config.suggestionInfoWinrate
-                        < Lizzie.config.suggestionInfoScoreLead) {
-                  if (shouldShowMaxColorWinrate) g.setColor(maxColor);
-                  if (roundedWinrate < 10) {
-                    drawString(
-                        g,
-                        suggestionX,
-                        suggestionY - squareWidth / 15,
-                        LizzieFrame.winrateFont,
-                        Font.PLAIN,
-                        winrateText,
-                        stoneRadius,
-                        squareWidth * 0.57,
-                        1);
-                  } else {
-                    drawString(
-                        g,
-                        suggestionX,
-                        suggestionY - squareWidth / 16,
-                        LizzieFrame.winrateFont,
-                        Font.PLAIN,
-                        winrateText,
-                        stoneRadius,
-                        squareWidth * 0.735,
-                        1);
-                  }
-                  if (shouldShowMaxColorWinrate) g.setColor(oriColor);
-                  if (shouldShowMaxColorScoreLead) g.setColor(maxColor);
-                  drawString(
-                      g,
-                      suggestionX,
-                      suggestionY + stoneRadius * 4 / 9,
-                      LizzieFrame.winrateFont,
-                      scoreLeadText,
-                      stoneRadius * 0.75f,
-                      stoneRadius * 1.6);
-                  if (shouldShowMaxColorScoreLead) g.setColor(oriColor);
-                } else {
-                  if (shouldShowMaxColorWinrate) g.setColor(maxColor);
-                  drawString(
-                      g,
-                      suggestionX,
-                      suggestionY + stoneRadius * 15 / 35,
-                      LizzieFrame.winrateFont,
-                      winrateText,
-                      stoneRadius * 0.77f,
-                      stoneRadius * 1.8);
-
-                  if (shouldShowMaxColorWinrate) g.setColor(oriColor);
-                  if (shouldShowMaxColorScoreLead) g.setColor(maxColor);
-                  drawString(
-                      g,
-                      suggestionX,
-                      suggestionY - squareWidth / 16,
-                      LizzieFrame.winrateFont,
-                      Font.PLAIN,
-                      scoreLeadText,
-                      stoneRadius * 0.88f,
-                      squareWidth * 0.735,
-                      1);
-                  if (shouldShowMaxColorScoreLead) g.setColor(oriColor);
-                }
-              } else if (showPlayouts && showScoreLead) {
-                boolean shouldShowMaxColorPlayouts =
-                    canShowMaxColor && move.playouts == maxPlayouts;
-                boolean shouldShowMaxColorScoreLead =
-                    canShowMaxColor && move.scoreMean == maxScoreMean;
-                double score = move.scoreMean;
-                if (Lizzie.board.getHistory().isBlacksTurn()) {
-                  if (Lizzie.config.showKataGoBoardScoreMean) {
-                    score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
-                  }
-                } else {
-                  if (Lizzie.config.showKataGoBoardScoreMean) {
-                    score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
-                  }
-                  if (Lizzie.config.winrateAlwaysBlack) {
-                    score = -score;
-                  }
-                }
-                String playoutsText = Lizzie.frame.getPlayoutsString(move.playouts);
-                String scoreLeadText = String.format("%.1f", score);
-                if (Lizzie.config.useDefaultInfoRowOrder
-                    || Lizzie.config.suggestionInfoPlayouts
-                        < Lizzie.config.suggestionInfoScoreLead) {
-                  if (shouldShowMaxColorPlayouts) g.setColor(maxColor);
-                  drawString(
-                      g,
-                      suggestionX,
-                      suggestionY - stoneRadius * 1 / 15,
-                      LizzieFrame.playoutsFont,
-                      Font.PLAIN,
-                      playoutsText,
-                      stoneRadius * 0.82f,
-                      stoneRadius * 1.73,
-                      1);
-                  if (shouldShowMaxColorPlayouts) g.setColor(oriColor);
-                  if (shouldShowMaxColorScoreLead) g.setColor(maxColor);
-                  drawString(
-                      g,
-                      suggestionX,
-                      suggestionY + stoneRadius * 4 / 9,
-                      LizzieFrame.winrateFont,
-                      scoreLeadText,
-                      stoneRadius * 0.75f,
-                      stoneRadius * 1.6);
-                  if (shouldShowMaxColorScoreLead) g.setColor(oriColor);
-                } else {
-                  if (shouldShowMaxColorPlayouts) g.setColor(maxColor);
-                  // if (move.playouts >= 1000) {
-                  drawString(
-                      g,
-                      suggestionX,
-                      suggestionY + stoneRadius * 15 / 35,
-                      LizzieFrame.playoutsFont,
-                      playoutsText,
-                      stoneRadius * 0.77f,
-                      stoneRadius * 1.8);
-                  //                  } else {
-                  //                    drawString(
-                  //                        g,
-                  //                        suggestionX,
-                  //                        suggestionY + stoneRadius * 16 / 35,
-                  //                        LizzieFrame.playoutsFont,
-                  //                        playoutsText,
-                  //                        stoneRadius * 0.8f,
-                  //                        stoneRadius * 1.4);
-                  //                  }
-                  if (shouldShowMaxColorPlayouts) g.setColor(oriColor);
-                  if (shouldShowMaxColorScoreLead) g.setColor(maxColor);
-                  drawString(
-                      g,
-                      suggestionX,
-                      suggestionY - squareWidth / 16,
-                      LizzieFrame.winrateFont,
-                      Font.PLAIN,
-                      scoreLeadText,
-                      stoneRadius * 0.88f,
-                      squareWidth * 0.735,
-                      1);
-                  if (shouldShowMaxColorScoreLead) g.setColor(oriColor);
-                }
-
-              } else if (showWinrate) {
-                boolean shouldShowMaxColorWinrate = canShowMaxColor && hasMaxWinrate;
+                if (shouldShowMaxColorPlayouts) g.setColor(oriColor);
+                if (shouldShowMaxColorScoreLead) g.setColor(maxColor);
+                drawStringFor3row(
+                    g,
+                    suggestionX,
+                    suggestionY + (int) round(squareWidth * 0.435),
+                    LizzieFrame.winrateFont,
+                    Font.PLAIN,
+                    scoreLeadText,
+                    availableWidth * 0.273f / (Board.boardWidth - 1),
+                    stoneRadius * 1.6);
+                if (shouldShowMaxColorScoreLead) g.setColor(oriColor);
+              } else {
+                String rowText1 = getSuggestionInfoRow1(winrateText, playoutsText, scoreLeadText);
+                String rowText2 = getSuggestionInfoRow2(winrateText, playoutsText, scoreLeadText);
+                String rowText3 = getSuggestionInfoRow3(winrateText, playoutsText, scoreLeadText);
+                boolean shouldShowMaxColorRow1 =
+                    (shouldShowMaxColorWinrate && rowText1.equals(winrateText))
+                        || (shouldShowMaxColorPlayouts && rowText1.equals(playoutsText))
+                        || (shouldShowMaxColorScoreLead && rowText1.equals(scoreLeadText));
+                boolean shouldShowMaxColorRow2 =
+                    (shouldShowMaxColorWinrate && rowText2.equals(winrateText))
+                        || (shouldShowMaxColorPlayouts && rowText2.equals(playoutsText))
+                        || (shouldShowMaxColorScoreLead && rowText2.equals(scoreLeadText));
+                boolean shouldShowMaxColorRow3 =
+                    (shouldShowMaxColorWinrate && rowText3.equals(winrateText))
+                        || (shouldShowMaxColorPlayouts && rowText3.equals(playoutsText))
+                        || (shouldShowMaxColorScoreLead && rowText3.equals(scoreLeadText));
+                if (shouldShowMaxColorRow1) g.setColor(maxColor);
+                drawStringFor3row(
+                    g,
+                    suggestionX,
+                    suggestionY - (int) round(squareWidth * 0.125),
+                    Lizzie.config.suggestionInfoPlayouts == 1
+                        ? LizzieFrame.playoutsFont
+                        : LizzieFrame.winrateFont,
+                    Font.PLAIN,
+                    rowText1,
+                    squareWidth * 0.35f,
+                    squareWidth * 0.67);
+                if (shouldShowMaxColorRow1) g.setColor(oriColor);
+                if (shouldShowMaxColorRow2) g.setColor(maxColor);
+                drawStringFor3row(
+                    g,
+                    suggestionX,
+                    suggestionY + (int) round(squareWidth * 0.18),
+                    Lizzie.config.suggestionInfoPlayouts == 2
+                        ? LizzieFrame.playoutsFont
+                        : LizzieFrame.winrateFont,
+                    Font.PLAIN,
+                    rowText2,
+                    squareWidth * 0.32f,
+                    stoneRadius * 1.8);
+                if (shouldShowMaxColorRow2) g.setColor(oriColor);
+                if (shouldShowMaxColorRow3) g.setColor(maxColor);
+                drawStringFor3row(
+                    g,
+                    suggestionX,
+                    suggestionY + (int) round(squareWidth * 0.435),
+                    Lizzie.config.suggestionInfoPlayouts == 3
+                        ? LizzieFrame.playoutsFont
+                        : LizzieFrame.winrateFont,
+                    Font.PLAIN,
+                    rowText3,
+                    availableWidth * 0.273f / (Board.boardWidth - 1),
+                    stoneRadius * 1.6);
+                if (shouldShowMaxColorRow3) g.setColor(oriColor);
+              }
+            } else if (showWinrate && showPlayouts) {
+              String winrateText = String.format("%.1f", roundedWinrate);
+              String playoutsText = Lizzie.frame.getPlayoutsString(move.playouts);
+              boolean shouldShowMaxColorWinrate = canShowMaxColor && hasMaxWinrate;
+              boolean shouldShowMaxColorPlayouts = canShowMaxColor && move.playouts == maxPlayouts;
+              if (Lizzie.config.useDefaultInfoRowOrder
+                  || Lizzie.config.suggestionInfoWinrate < Lizzie.config.suggestionInfoPlayouts) {
                 if (shouldShowMaxColorWinrate) g.setColor(maxColor);
                 if (roundedWinrate < 10) {
                   drawString(
                       g,
                       suggestionX,
-                      suggestionY,
+                      suggestionY - squareWidth / 15,
                       LizzieFrame.winrateFont,
-                      String.format("%.1f", roundedWinrate),
-                      squareWidth * 0.46f,
-                      stoneRadius * 1.9);
+                      Font.PLAIN,
+                      winrateText,
+                      stoneRadius,
+                      squareWidth * 0.57,
+                      1);
                 } else {
                   drawString(
                       g,
                       suggestionX,
-                      suggestionY,
+                      suggestionY - squareWidth / 16,
                       LizzieFrame.winrateFont,
-                      String.format("%.1f", roundedWinrate),
-                      squareWidth * 0.46f,
-                      stoneRadius * 1.9);
+                      Font.PLAIN,
+                      winrateText,
+                      stoneRadius,
+                      squareWidth * 0.735,
+                      1);
                 }
                 if (shouldShowMaxColorWinrate) g.setColor(oriColor);
-              } else if (showPlayouts) {
-                boolean shouldShowMaxColorPlayouts =
-                    canShowMaxColor && move.playouts == maxPlayouts;
+                if (shouldShowMaxColorPlayouts) g.setColor(maxColor);
+                //    if (move.playouts >= 1000) {
+
+                drawString(
+                    g,
+                    suggestionX,
+                    suggestionY + stoneRadius * 15 / 35,
+                    LizzieFrame.playoutsFont,
+                    playoutsText,
+                    stoneRadius * 0.77f,
+                    stoneRadius * 1.8);
+                //                  } else {
+                //                    drawString(
+                //                        g,
+                //                        suggestionX,
+                //                        suggestionY + stoneRadius * 16 / 35,
+                //                        LizzieFrame.playoutsFont,
+                //                        playoutsText,
+                //                        stoneRadius * 0.8f,
+                //                        stoneRadius * 1.4);
+                //                  }
+                if (shouldShowMaxColorPlayouts) g.setColor(oriColor);
+              } else {
+                if (shouldShowMaxColorWinrate) g.setColor(maxColor);
+                drawString(
+                    g,
+                    suggestionX,
+                    suggestionY + stoneRadius * 15 / 35,
+                    LizzieFrame.winrateFont,
+                    winrateText,
+                    stoneRadius * 0.77f,
+                    stoneRadius * 1.8);
+
+                if (shouldShowMaxColorWinrate) g.setColor(oriColor);
                 if (shouldShowMaxColorPlayouts) g.setColor(maxColor);
                 drawString(
                     g,
                     suggestionX,
-                    suggestionY,
+                    suggestionY - squareWidth / 15,
                     LizzieFrame.playoutsFont,
-                    Lizzie.frame.getPlayoutsString(move.playouts),
-                    stoneRadius,
-                    stoneRadius * 1.9);
+                    Font.PLAIN,
+                    playoutsText,
+                    stoneRadius * 0.77f,
+                    stoneRadius * 1.8,
+                    1);
                 if (shouldShowMaxColorPlayouts) g.setColor(oriColor);
-              } else if (showScoreLead) {
-                double score = move.scoreMean;
-                if (Lizzie.board.getHistory().isBlacksTurn()) {
-                  if (Lizzie.config.showKataGoBoardScoreMean) {
-                    score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
-                  }
-                } else {
-                  if (Lizzie.config.showKataGoBoardScoreMean) {
-                    score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
-                  }
-                  if (Lizzie.config.winrateAlwaysBlack) {
-                    score = -score;
-                  }
+              }
+            } else if (showWinrate && showScoreLead) {
+              boolean shouldShowMaxColorWinrate = canShowMaxColor && hasMaxWinrate;
+              boolean shouldShowMaxColorScoreLead =
+                  canShowMaxColor && move.scoreMean == maxScoreMean;
+              double score = move.scoreMean;
+              if (Lizzie.board.getHistory().isBlacksTurn()) {
+                if (Lizzie.config.showKataGoBoardScoreMean) {
+                  score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
                 }
-                boolean shouldShowMaxColorScoreLead =
-                    canShowMaxColor && move.scoreMean == maxScoreMean;
+              } else {
+                if (Lizzie.config.showKataGoBoardScoreMean) {
+                  score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
+                }
+                if (Lizzie.config.winrateAlwaysBlack) {
+                  score = -score;
+                }
+              }
+              String winrateText = String.format("%.1f", roundedWinrate);
+              String scoreLeadText = String.format("%.1f", score);
+              if (Lizzie.config.useDefaultInfoRowOrder
+                  || Lizzie.config.suggestionInfoWinrate < Lizzie.config.suggestionInfoScoreLead) {
+                if (shouldShowMaxColorWinrate) g.setColor(maxColor);
+                if (roundedWinrate < 10) {
+                  drawString(
+                      g,
+                      suggestionX,
+                      suggestionY - squareWidth / 15,
+                      LizzieFrame.winrateFont,
+                      Font.PLAIN,
+                      winrateText,
+                      stoneRadius,
+                      squareWidth * 0.57,
+                      1);
+                } else {
+                  drawString(
+                      g,
+                      suggestionX,
+                      suggestionY - squareWidth / 16,
+                      LizzieFrame.winrateFont,
+                      Font.PLAIN,
+                      winrateText,
+                      stoneRadius,
+                      squareWidth * 0.735,
+                      1);
+                }
+                if (shouldShowMaxColorWinrate) g.setColor(oriColor);
                 if (shouldShowMaxColorScoreLead) g.setColor(maxColor);
+                drawString(
+                    g,
+                    suggestionX,
+                    suggestionY + stoneRadius * 4 / 9,
+                    LizzieFrame.winrateFont,
+                    scoreLeadText,
+                    stoneRadius * 0.75f,
+                    stoneRadius * 1.6);
+                if (shouldShowMaxColorScoreLead) g.setColor(oriColor);
+              } else {
+                if (shouldShowMaxColorWinrate) g.setColor(maxColor);
+                drawString(
+                    g,
+                    suggestionX,
+                    suggestionY + stoneRadius * 15 / 35,
+                    LizzieFrame.winrateFont,
+                    winrateText,
+                    stoneRadius * 0.77f,
+                    stoneRadius * 1.8);
+
+                if (shouldShowMaxColorWinrate) g.setColor(oriColor);
+                if (shouldShowMaxColorScoreLead) g.setColor(maxColor);
+                drawString(
+                    g,
+                    suggestionX,
+                    suggestionY - squareWidth / 16,
+                    LizzieFrame.winrateFont,
+                    Font.PLAIN,
+                    scoreLeadText,
+                    stoneRadius * 0.88f,
+                    squareWidth * 0.735,
+                    1);
+                if (shouldShowMaxColorScoreLead) g.setColor(oriColor);
+              }
+            } else if (showPlayouts && showScoreLead) {
+              boolean shouldShowMaxColorPlayouts = canShowMaxColor && move.playouts == maxPlayouts;
+              boolean shouldShowMaxColorScoreLead =
+                  canShowMaxColor && move.scoreMean == maxScoreMean;
+              double score = move.scoreMean;
+              if (Lizzie.board.getHistory().isBlacksTurn()) {
+                if (Lizzie.config.showKataGoBoardScoreMean) {
+                  score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
+                }
+              } else {
+                if (Lizzie.config.showKataGoBoardScoreMean) {
+                  score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
+                }
+                if (Lizzie.config.winrateAlwaysBlack) {
+                  score = -score;
+                }
+              }
+              String playoutsText = Lizzie.frame.getPlayoutsString(move.playouts);
+              String scoreLeadText = String.format("%.1f", score);
+              if (Lizzie.config.useDefaultInfoRowOrder
+                  || Lizzie.config.suggestionInfoPlayouts < Lizzie.config.suggestionInfoScoreLead) {
+                if (shouldShowMaxColorPlayouts) g.setColor(maxColor);
+                drawString(
+                    g,
+                    suggestionX,
+                    suggestionY - stoneRadius * 1 / 15,
+                    LizzieFrame.playoutsFont,
+                    Font.PLAIN,
+                    playoutsText,
+                    stoneRadius * 0.82f,
+                    stoneRadius * 1.73,
+                    1);
+                if (shouldShowMaxColorPlayouts) g.setColor(oriColor);
+                if (shouldShowMaxColorScoreLead) g.setColor(maxColor);
+                drawString(
+                    g,
+                    suggestionX,
+                    suggestionY + stoneRadius * 4 / 9,
+                    LizzieFrame.winrateFont,
+                    scoreLeadText,
+                    stoneRadius * 0.75f,
+                    stoneRadius * 1.6);
+                if (shouldShowMaxColorScoreLead) g.setColor(oriColor);
+              } else {
+                if (shouldShowMaxColorPlayouts) g.setColor(maxColor);
+                // if (move.playouts >= 1000) {
+                drawString(
+                    g,
+                    suggestionX,
+                    suggestionY + stoneRadius * 15 / 35,
+                    LizzieFrame.playoutsFont,
+                    playoutsText,
+                    stoneRadius * 0.77f,
+                    stoneRadius * 1.8);
+                //                  } else {
+                //                    drawString(
+                //                        g,
+                //                        suggestionX,
+                //                        suggestionY + stoneRadius * 16 / 35,
+                //                        LizzieFrame.playoutsFont,
+                //                        playoutsText,
+                //                        stoneRadius * 0.8f,
+                //                        stoneRadius * 1.4);
+                //                  }
+                if (shouldShowMaxColorPlayouts) g.setColor(oriColor);
+                if (shouldShowMaxColorScoreLead) g.setColor(maxColor);
+                drawString(
+                    g,
+                    suggestionX,
+                    suggestionY - squareWidth / 16,
+                    LizzieFrame.winrateFont,
+                    Font.PLAIN,
+                    scoreLeadText,
+                    stoneRadius * 0.88f,
+                    squareWidth * 0.735,
+                    1);
+                if (shouldShowMaxColorScoreLead) g.setColor(oriColor);
+              }
+
+            } else if (showWinrate) {
+              boolean shouldShowMaxColorWinrate = canShowMaxColor && hasMaxWinrate;
+              if (shouldShowMaxColorWinrate) g.setColor(maxColor);
+              if (roundedWinrate < 10) {
                 drawString(
                     g,
                     suggestionX,
                     suggestionY,
                     LizzieFrame.winrateFont,
-                    String.format("%.1f", score),
-                    stoneRadius,
-                    stoneRadius * 1.7);
-                if (shouldShowMaxColorScoreLead) g.setColor(oriColor);
+                    String.format("%.1f", roundedWinrate),
+                    squareWidth * 0.46f,
+                    stoneRadius * 1.9);
+              } else {
+                drawString(
+                    g,
+                    suggestionX,
+                    suggestionY,
+                    LizzieFrame.winrateFont,
+                    String.format("%.1f", roundedWinrate),
+                    squareWidth * 0.46f,
+                    stoneRadius * 1.9);
               }
+              if (shouldShowMaxColorWinrate) g.setColor(oriColor);
+            } else if (showPlayouts) {
+              boolean shouldShowMaxColorPlayouts = canShowMaxColor && move.playouts == maxPlayouts;
+              if (shouldShowMaxColorPlayouts) g.setColor(maxColor);
+              drawString(
+                  g,
+                  suggestionX,
+                  suggestionY,
+                  LizzieFrame.playoutsFont,
+                  Lizzie.frame.getPlayoutsString(move.playouts),
+                  stoneRadius,
+                  stoneRadius * 1.9);
+              if (shouldShowMaxColorPlayouts) g.setColor(oriColor);
+            } else if (showScoreLead) {
+              double score = move.scoreMean;
+              if (Lizzie.board.getHistory().isBlacksTurn()) {
+                if (Lizzie.config.showKataGoBoardScoreMean) {
+                  score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
+                }
+              } else {
+                if (Lizzie.config.showKataGoBoardScoreMean) {
+                  score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
+                }
+                if (Lizzie.config.winrateAlwaysBlack) {
+                  score = -score;
+                }
+              }
+              boolean shouldShowMaxColorScoreLead =
+                  canShowMaxColor && move.scoreMean == maxScoreMean;
+              if (shouldShowMaxColorScoreLead) g.setColor(maxColor);
+              drawString(
+                  g,
+                  suggestionX,
+                  suggestionY,
+                  LizzieFrame.winrateFont,
+                  String.format("%.1f", score),
+                  stoneRadius,
+                  stoneRadius * 1.7);
+              if (shouldShowMaxColorScoreLead) g.setColor(oriColor);
             }
           }
           // }
@@ -2331,7 +2263,7 @@ public class FloatBoardRenderer {
       unImportantCleared = true;
       drawUnimportantSuggCount = 100;
     }
-    hasDrawBackground = new boolean[Lizzie.board.boardHeight * Lizzie.board.boardWidth];
+    hasDrawBackground = new boolean[Board.boardHeight * Board.boardWidth];
     clearBranch();
   }
 
@@ -2346,61 +2278,16 @@ public class FloatBoardRenderer {
     float greenHue = Color.RGBtoHSB(0, 255, 0, null)[0];
     float cyanHue = Lizzie.config.bestMoveColor;
     if (bestMoves != null && !bestMoves.isEmpty()) {
-
-      // Collections.sort(bestMoves);
-
       int maxPlayouts = 0;
       double maxWinrate = 0;
-      //      double minWinrate = 100.0;
-      //      double maxScoreMean = -300;
-      //      List<MoveData> tempbest1 = new ArrayList();
-      //      List<MoveData> tempbest2 = new ArrayList();
-      //      for (int i = 0; i < bestMoves.size(); i++) {
-      //        tempbest1.add(bestMoves.get(i)); // 开始复制一个list的内容到另外一个list
-      //        tempbest2.add(bestMoves.get(i));
-      //      }
-      //      Collections.sort(
-      //          tempbest1,
-      //          new Comparator<MoveData>() {
-      //
-      //            @Override
-      //            public int compare(MoveData s1, MoveData s2) {
-      //              // 降序
-      //              if (s1.lcb < s2.lcb) return 1;
-      //              if (s1.lcb > s2.lcb) return -1;
-      //              else return 0;
-      //            }
-      //          });
-      //
-      //      Collections.sort(
-      //          tempbest2,
-      //          new Comparator<MoveData>() {
-      //
-      //            @Override
-      //            public int compare(MoveData s1, MoveData s2) {
-      //              // 降序
-      //              if (s1.playouts < s2.playouts) return 1;
-      //              if (s1.playouts > s2.playouts) return -1;
-      //              else return 0;
-      //            }
-      //          });
-      //      if (Lizzie.config.leelaversion >= 17 && Lizzie.config.showlcbcolor &&
-      // !Lizzie.leelaz.noLcb) {
-      //        for (int i = 0; i < tempbest1.size(); i++) {
-      //          tempbest1.get(i).equalplayouts = tempbest2.get(i).playouts;
-      //        }
-      //      }
       for (MoveData move : bestMoves) {
         if (move.playouts > maxPlayouts) maxPlayouts = move.playouts;
         if (move.winrate > maxWinrate) maxWinrate = move.winrate;
-        //     if (move.winrate < minWinrate) minWinrate = move.winrate;
-
       }
 
       for (int i = bestMoves.size() - 1; i >= 0; i--) {
         MoveData move = bestMoves.get(i);
         boolean isBestMove = bestMoves.get(0) == move;
-        // boolean hasMaxWinrate = move.winrate == maxWinrate;
 
         if (move.playouts == 0) {
           continue; // This actually can happen
@@ -2417,61 +2304,30 @@ public class FloatBoardRenderer {
 
           int suggestionX = scaledMarginWidth + squareWidth * coords[0];
           int suggestionY = scaledMarginHeight + squareHeight * coords[1];
-          if (!((Lizzie.config.limitMaxSuggestion > 0
-                  && move.order + 1 > Lizzie.config.limitMaxSuggestion)
-              || move.order + 1 > 25)) {
-            hasDrawBackground[Lizzie.board.getIndex(coords[0], coords[1])] = false;
-            continue;
-          }
-          if (percentPlayouts <= Lizzie.config.minPlayoutRatioForStats
-              && !Lizzie.config.showNoSuggCircle) {
-            hasDrawBackground[Lizzie.board.getIndex(coords[0], coords[1])] = false;
-            continue;
-          }
-          if (move.lastTimeUnlimited) continue;
-          hasDrawBackground[Lizzie.board.getIndex(coords[0], coords[1])] = true;
+          boolean outOfOrder =
+              Lizzie.config.limitMaxSuggestion > 0
+                  && move.order + 1 > Lizzie.config.limitMaxSuggestion
+                  && !move.lastTimeUnlimited;
 
+          if (!outOfOrder && move.order < 25) {
+            hasDrawBackground[Board.getIndex(coords[0], coords[1])] = false;
+            continue;
+          }
+          hasDrawBackground[Board.getIndex(coords[0], coords[1])] = true;
+          if (!Lizzie.config.showNoSuggCircle && outOfOrder && !move.lastTimeUnlimited) continue;
           float hue;
-          //  boolean hue2;
           if (isBestMove) {
             hue = cyanHue;
-            //    hue2 = true;
           } else {
             double fraction = percentPlayouts;
-            // Correction to make differences between colors more perceptually linear
             fraction = percentPlayouts;
-            // Correction to make differences between colors more perceptually linear
-            // fraction *= 2;
-            // if (fraction < 0.1) { // red to yellow
-            //   fraction = Math.cbrt(fraction * fraction) / 2;
-            // }
-
-            // } else { // yellow to green
-            //  fraction = 1 - Math.sqrt(2 - fraction) / 2;
-            fraction =
-                Math.pow(fraction, (double) 1 / Lizzie.config.suggestionColorRatio); // 提升好选点温度
-            //  }
-            //    hue2 = percentPlayouts > 0.4 ? true : false;
+            fraction = Math.pow(fraction, (double) 1 / Lizzie.config.suggestionColorRatio);
             hue = redHue + (greenHue - redHue) * (float) fraction;
-            // else hue = redHue + (greenHue - redHue) * (float) (percentPlayouts * 0.8 + 0.2);
           }
 
           float saturation = 1.0f;
           float brightness = 0.85f;
           float alpha;
-          //            if (!(Lizzie.config.limitMaxSuggestion > 0
-          //                    && number > Lizzie.config.limitMaxSuggestion)) {
-          //            	  alpha =
-          //            			  90
-          //                             + (maxAlpha - 90)
-          //                                 * max(
-          //                                     0,
-          //                                     (float)
-          //                                                 log(percentPlayouts)
-          //                                             / alphaFactor
-          //                                         + 1);
-          //            }
-          //            else
           if (percentPlayouts < 0.05)
             alpha =
                 minAlpha
@@ -2484,18 +2340,7 @@ public class FloatBoardRenderer {
           Color color =
               new Color(hsbColor.getRed(), hsbColor.getGreen(), hsbColor.getBlue(), (int) alpha);
           if (!branchOpt.isPresent()) {
-            // drawShadow2(g, suggestionX, suggestionY, true, alpha / 255.0f);
-            //    g.setColor(new Color(110, 110, 110, 35));
-            // drawCircle(g, suggestionX, suggestionY, stoneRadius + 1, 31.5f);
-            //            g.drawOval(
-            //                suggestionX - stoneRadius - 1,
-            //                suggestionY - stoneRadius - 1,
-            //                2 * stoneRadius + 2,
-            //                2 * stoneRadius + 2);
-            //   g.setColor(color);
-
             g.setColor(new Color(155, 155, 155));
-            // g.setColor(color.LIGHT_GRAY);
             drawCircleMin(g, suggestionX, suggestionY, stoneRadius + 1, 28.5f);
             if (isFancyBoard) {
               g.setPaint(paint);

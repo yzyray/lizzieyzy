@@ -890,16 +890,16 @@ public class ConfigDialog2 extends JDialog {
         new JLabel(
             resourceBundle.getString(
                 "LizzieConfig.lblShowCircleForOutOfLimit")); // ("超限制(低计算)选点依然显示推荐圈");
-    lblShowCircleForOutOfLimit.setBounds(312, 312, 228, 16);
+    lblShowCircleForOutOfLimit.setBounds(10, 312, 228, 16);
     uiTab.add(lblShowCircleForOutOfLimit);
     chkShowNoSuggCircle = new JCheckBox("");
-    chkShowNoSuggCircle.setBounds(532, 310, 57, 23);
+    chkShowNoSuggCircle.setBounds(237, 309, 57, 23);
     uiTab.add(chkShowNoSuggCircle);
 
     JLabel lblNotShowMinPlayoutRatio =
         new JLabel(resourceBundle.getString("LizzieConfig.lblNotShowMinPlayoutRatio"));
     // 不显示低于最高计算量(%)的选点
-    lblNotShowMinPlayoutRatio.setBounds(10, 312, 228, 17);
+    lblNotShowMinPlayoutRatio.setBounds(312, 312, 228, 17);
     uiTab.add(lblNotShowMinPlayoutRatio);
 
     txtMinPlayoutRatioForStats =
@@ -911,7 +911,7 @@ public class ConfigDialog2 extends JDialog {
 
               private DocumentFilter filter = new DigitOnlyFilter("[^0-9\\.]++");
             });
-    txtMinPlayoutRatioForStats.setBounds(230, 310, 45, 24);
+    txtMinPlayoutRatioForStats.setBounds(525, 310, 45, 20);
     uiTab.add(txtMinPlayoutRatioForStats);
 
     JLabel lblSuggestionMoveInfo =
@@ -1602,7 +1602,7 @@ public class ConfigDialog2 extends JDialog {
     uiTab.add(lblVariationRemoveDeadChain);
 
     chkVariationRemoveDeadChain = new JCheckBox();
-    chkVariationRemoveDeadChain.setBounds(837, 307, 23, 23);
+    chkVariationRemoveDeadChain.setBounds(837, 309, 23, 23);
     uiTab.add(chkVariationRemoveDeadChain);
 
     txtVariationReplayInterval = new JTextField();
