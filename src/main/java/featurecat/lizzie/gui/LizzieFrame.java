@@ -8262,21 +8262,6 @@ public class LizzieFrame extends JFrame {
   }
 
   public void selectReleased(int x, int y) {
-    // if (Lizzie.leelaz.isKatago) boardRenderer.removeSelectedRect();
-    if (selectForceAllow) {
-      if (featurecat.lizzie.gui.RightClickMenu.avoidcoords.length() > 0) {
-        Lizzie.frame.boardRenderer.removeSelectedRect();
-        if (Lizzie.frame.independentMainBoard != null)
-          Lizzie.frame.independentMainBoard.boardRenderer.removeSelectedRect();
-      }
-    } else {
-      if (featurecat.lizzie.gui.RightClickMenu.allowcoords.length() > 0) {
-        Lizzie.frame.boardRenderer.removeSelectedRect();
-        if (Lizzie.frame.independentMainBoard != null)
-          Lizzie.frame.independentMainBoard.boardRenderer.removeSelectedRect();
-      }
-    }
-    Lizzie.board.clearbestmovesafter(Lizzie.board.getHistory().getStart());
     if (selectX1 > 0 && selectY1 > 0) {
       Optional<int[]> boardCoordinates =
           boardRenderer.convertScreenToCoordinatesForSelect(
@@ -8296,18 +8281,12 @@ public class LizzieFrame extends JFrame {
         else
           boardRenderer.drawAllSelectedRectByCoords(
               selectForceAllow, featurecat.lizzie.gui.RightClickMenu.avoidcoords);
+        Lizzie.board.clearbestmovesafter(Lizzie.board.getHistory().getStart());
         repaint();
       } else {
-        //  selectX2 = -1;
-        //  selectY2 = -1;
         selectCoordsX2 = -1;
         selectCoordsY2 = -1;
-        boardRenderer.removeSelectedRect();
-        repaint();
       }
-    } else {
-      boardRenderer.removeSelectedRect();
-      repaint();
     }
   }
 
