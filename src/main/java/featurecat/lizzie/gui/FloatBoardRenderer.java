@@ -907,12 +907,9 @@ public class FloatBoardRenderer {
     for (MoveData move : bestMoves) {
       if (move.playouts > maxPlayouts) maxPlayouts = move.playouts;
     }
+
     float percentPlayouts = (float) suggestedMove.get().playouts / maxPlayouts;
-    //        (Lizzie.config.leelaversion >= 17 && Lizzie.config.showlcbcolor &&
-    // !Lizzie.leelaz.noLcb)
-    //            ? (float) max(suggestedMove.get().playouts, suggestedMove.get().equalplayouts)
-    //                / maxPlayouts
-    //            :
+
     if (notChangedMouseOverMove) {
       if (displayedBranchLength == 1) if (!Lizzie.config.autoReplayBranch) return;
     } else {
@@ -926,7 +923,8 @@ public class FloatBoardRenderer {
         }
         if (displayedBranchLength < 2
             && Lizzie.config.limitMaxSuggestion > 0
-            && mouseOverOrder > Lizzie.config.limitMaxSuggestion) {
+            && mouseOverOrder > Lizzie.config.limitMaxSuggestion
+            && !suggestedMove.get().lastTimeUnlimited) {
           displayedBranchLength = 1;
           if (!Lizzie.config.autoReplayBranch) return;
         }

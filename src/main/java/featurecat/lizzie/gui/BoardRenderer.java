@@ -2078,8 +2078,7 @@ public class BoardRenderer {
           boolean lackOfPlayouts = percentPlayouts <= Lizzie.config.minPlayoutRatioForStats;
           boolean outOfOrder =
               Lizzie.config.limitMaxSuggestion > 0
-                  && move.order + 1 > Lizzie.config.limitMaxSuggestion
-                  && !move.lastTimeUnlimited;
+                  && move.order + 1 > Lizzie.config.limitMaxSuggestion;
           boolean hasBackground = hasDrawBackground[Board.getIndex(coords[0], coords[1])];
           if (outOfOrder && !isMouseOver && hasBackground) continue;
 
