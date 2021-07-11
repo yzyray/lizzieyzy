@@ -2,6 +2,7 @@ package featurecat.lizzie.analysis;
 
 import featurecat.lizzie.Lizzie;
 import featurecat.lizzie.gui.FloatBoard;
+import featurecat.lizzie.gui.LizzieFrame;
 import featurecat.lizzie.gui.SMessage;
 import featurecat.lizzie.rules.BoardHistoryNode;
 import featurecat.lizzie.rules.Stone;
@@ -32,10 +33,8 @@ public class ReadBoard {
   private BufferedOutputStream outputStream;
   private ScheduledExecutorService executor;
   ArrayList<Integer> tempcount = new ArrayList<Integer>();
-  // public boolean gtpConsole;
   private long startSyncTime = 0;
 
-  // private boolean isLoaded = false;
   private boolean isLoaded = false;
   private boolean checkedVersionSucceed = false;
   private int version = 623;
@@ -58,11 +57,11 @@ public class ReadBoard {
   private long startTime;
 
   public ReadBoard(boolean usePipe) throws Exception {
-    this.usePipe = usePipe;
+    this.usePipe = !usePipe;
     if (s != null && !s.isClosed()) {
       s.close();
     }
-    if (!usePipe) engineCommand = "readboard\\readboard.bat";
+    if (usePipe) engineCommand = "readboard\\readboard.bat";
     else engineCommand = "readboard\\readboard.exe";
     startEngine(engineCommand, 0);
   }
@@ -70,14 +69,11 @@ public class ReadBoard {
   private void createSocketServer(int port) {
     try {
       s = new ServerSocket(port);
-      // 等待新请求、否则一直阻塞
       while (true) {
         socket = s.accept();
-        // System.out.println("Socket Start:" + socket);
         readBoardStream = new ReadBoardStream(socket);
       }
     } catch (Exception e) {
-      // String a=e.getMessage();
       if (!noMsg)
         Utils.showMsg(
             resourceBundle.getString("ReadBoard.port")
@@ -89,23 +85,24 @@ public class ReadBoard {
       try {
         s.close();
       } catch (Exception e1) {
-        // TODO Auto-generated catch block
-        //	e1.printStackTrace();
+        e1.printStackTrace();
       }
-      // e.printStackTrace();
+      e.printStackTrace();
     } finally {
       try {
         if (s != null) s.close();
         if (socket != null) socket.close();
       } catch (IOException e) {
-        // TODO Auto-generated catch block
-        // e.printStackTrace();
+        e.printStackTrace();
       }
     }
   }
 
   public void startEngine(String engineCommand, int index) throws Exception {
     if (!usePipe) {
+      while (Utils.isPortUsing("127.0.0.1", port)) {
+        port++;
+      }
       noMsg = false;
       Runnable runnable2 =
           new Runnable() {
@@ -132,26 +129,25 @@ public class ReadBoard {
       commands.add("1");
     }
     commands.add(
-        Lizzie.frame.toolbar.txtAutoPlayTime.getText().equals("")
+        LizzieFrame.toolbar.txtAutoPlayTime.getText().equals("")
             ? " "
-            : Lizzie.frame.toolbar.txtAutoPlayTime.getText());
+            : LizzieFrame.toolbar.txtAutoPlayTime.getText());
     commands.add(
-        Lizzie.frame.toolbar.txtAutoPlayPlayouts.getText().equals("")
+        LizzieFrame.toolbar.txtAutoPlayPlayouts.getText().equals("")
             ? " "
-            : Lizzie.frame.toolbar.txtAutoPlayPlayouts.getText());
+            : LizzieFrame.toolbar.txtAutoPlayPlayouts.getText());
     commands.add(
-        Lizzie.frame.toolbar.txtAutoPlayFirstPlayouts.getText().equals("")
+        LizzieFrame.toolbar.txtAutoPlayFirstPlayouts.getText().equals("")
             ? " "
-            : Lizzie.frame.toolbar.txtAutoPlayFirstPlayouts.getText());
-    //   if (Lizzie.config.readBoardArg4) {
+            : LizzieFrame.toolbar.txtAutoPlayFirstPlayouts.getText());
+
     commands.add("0");
-    // } else {
-    //    commands.add("1");
-    //   }
     if (usePipe) commands.add("0");
     else commands.add("1");
     if (Lizzie.config.isChinese) commands.add("0");
     else commands.add("1");
+    if (usePipe) commands.add("-1");
+    else commands.add(port + "");
     ProcessBuilder processBuilder = new ProcessBuilder(commands);
     processBuilder.redirectErrorStream(true);
     try {
