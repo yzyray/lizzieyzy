@@ -57,11 +57,11 @@ public class ReadBoard {
   private long startTime;
 
   public ReadBoard(boolean usePipe) throws Exception {
-    this.usePipe = !usePipe;
+    this.usePipe = usePipe;
     if (s != null && !s.isClosed()) {
       s.close();
     }
-    if (usePipe) engineCommand = "readboard\\readboard.bat";
+    if (!usePipe) engineCommand = "readboard\\readboard.bat";
     else engineCommand = "readboard\\readboard.exe";
     startEngine(engineCommand, 0);
   }
