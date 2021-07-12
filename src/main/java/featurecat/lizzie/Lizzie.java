@@ -333,20 +333,18 @@ public class Lizzie {
     if (!Lizzie.engineManager.isEngineGame()) {
       LizzieFrame.menu.showPda(engine.isKataGoPda);
     }
-    if (!isEngineGame && !frame.isPlayingAgainstLeelaz)
-      if (!(frame.toolbar.chkAutoPlay.isSelected()
-          && !frame.toolbar.chkAutoPlayBlack.isSelected())) {
-        if (Lizzie.config.notStartPondering) {
-          leelaz.notPondering();
-          leelaz.setResponseUpToDate();
-          Lizzie.config.notStartPondering = false;
-        } else {
-          leelaz.ponder();
-          leelaz.setResponseUpToDate();
-        }
+    if (!isEngineGame && !frame.isPlayingAgainstLeelaz) {
+      if (Lizzie.config.notStartPondering) {
+        leelaz.notPondering();
+        leelaz.setResponseUpToDate();
+        Lizzie.config.notStartPondering = false;
+      } else {
+        leelaz.ponder();
+        leelaz.setResponseUpToDate();
       }
+    }
     LizzieFrame.menu.updateMenuStatusForEngine();
-    Lizzie.frame.reSetLoc();
+    if (!Lizzie.frame.syncBoard) Lizzie.frame.reSetLoc();
     Runnable runnable =
         new Runnable() {
           public void run() {
