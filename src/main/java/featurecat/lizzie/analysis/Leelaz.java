@@ -1689,7 +1689,7 @@ public class Leelaz {
 						Lizzie.board.place(coords[0], coords[1]);
 
 					}
-					if (!Lizzie.config.playponder) {
+					if (!Lizzie.config.playponder&&!Lizzie.frame.syncBoard) {
 						if (!(Lizzie.frame.toolbar.chkAutoPlayWhite.isSelected()
 								&& Lizzie.frame.toolbar.chkAutoPlayBlack.isSelected())) {
 							nameCmd();
