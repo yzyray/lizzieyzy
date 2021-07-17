@@ -10327,7 +10327,7 @@ public class LizzieFrame extends JFrame {
   public AbstractTableModel getTableModel() {
 
     return new AbstractTableModel() {
-      List<MoveData> bestMoves;
+      List<MoveData> bestMoves = null;
       ArrayList<MoveData> data2 = new ArrayList<MoveData>();
 
       public int getColumnCount() {
@@ -10344,9 +10344,9 @@ public class LizzieFrame extends JFrame {
         //   int rownum = 0;
         if (isInPlayMode()) return 0;
         data2 = new ArrayList<MoveData>();
-        if (Lizzie.engineManager.isEngineGame && Lizzie.engineManager.engineGameInfo.isGenmove) {
-          if ((bestMoves = Lizzie.leelaz.getBestMoves()).isEmpty())
-            if (Lizzie.board.getHistory().getCurrentHistoryNode().previous().isPresent())
+        if (Lizzie.engineManager.isEngineGame && Lizzie.config.showPreviousBestmovesInEngineGame) {
+          if (Lizzie.board.getHistory().getCurrentHistoryNode().previous().isPresent())
+            if ((bestMoves = Lizzie.leelaz.getBestMoves()).isEmpty())
               bestMoves =
                   Lizzie.board
                       .getHistory()
@@ -10356,9 +10356,10 @@ public class LizzieFrame extends JFrame {
                       .getData()
                       .bestMoves;
         } else bestMoves = Lizzie.board.getHistory().getCurrentHistoryNode().getData().bestMoves;
-        for (int i = 0; i < bestMoves.size(); i++) {
-          data2.add(bestMoves.get(i));
-        }
+        if (bestMoves != null)
+          for (int i = 0; i < bestMoves.size(); i++) {
+            data2.add(bestMoves.get(i));
+          }
         try {
           if (Lizzie.board.getHistory().getCurrentHistoryNode().next().isPresent()) {
             BoardHistoryNode next = Lizzie.board.getHistory().getCurrentHistoryNode().next().get();

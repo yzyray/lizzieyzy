@@ -7,6 +7,7 @@ import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
 import featurecat.lizzie.Lizzie;
 import featurecat.lizzie.analysis.Leelaz;
 import featurecat.lizzie.analysis.MoveData;
+import featurecat.lizzie.rules.Board;
 import featurecat.lizzie.rules.BoardHistoryNode;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -709,14 +710,14 @@ public class AnalysisFrame extends JFrame {
   }
 
   private void handleTableDoubleClick(int row, int col) {
-    String aa = table.getValueAt(row, 1).toString();
-    int[] coords = Lizzie.board.convertNameToCoordinates(aa);
+    int[] coords = Board.convertNameToCoordinates(table.getValueAt(row, 1).toString());
     Lizzie.board.place(coords[0], coords[1]);
   }
 
   public AbstractTableModel getTableModel() {
     return new AbstractTableModel() {
       ArrayList<MoveData> data2 = new ArrayList<MoveData>();
+      List<MoveData> bestMoves;
 
       public int getColumnCount() {
         Leelaz leelaz = null;
@@ -735,10 +736,10 @@ public class AnalysisFrame extends JFrame {
       public int getRowCount() {
         data2 = new ArrayList<MoveData>();
         if (index == 1) {
-          List<MoveData> bestMoves;
-          if (Lizzie.engineManager.isEngineGame && Lizzie.engineManager.engineGameInfo.isGenmove) {
-            if ((bestMoves = Lizzie.leelaz.getBestMoves()).isEmpty())
-              if (Lizzie.board.getHistory().getCurrentHistoryNode().previous().isPresent())
+          if (Lizzie.engineManager.isEngineGame
+              && Lizzie.config.showPreviousBestmovesInEngineGame) {
+            if (Lizzie.board.getHistory().getCurrentHistoryNode().previous().isPresent())
+              if ((bestMoves = Lizzie.leelaz.getBestMoves()).isEmpty())
                 bestMoves =
                     Lizzie.board
                         .getHistory()
@@ -747,11 +748,13 @@ public class AnalysisFrame extends JFrame {
                         .get()
                         .getData()
                         .bestMoves;
+
           } else bestMoves = Lizzie.board.getHistory().getCurrentHistoryNode().getData().bestMoves;
-          for (int i = 0; i < bestMoves.size(); i++) {
-            // if (!Lizzie.board.getData().bestMoves.get(i).coordinate.contains("ass"))
-            data2.add(bestMoves.get(i));
-          }
+          if (bestMoves != null)
+            for (int i = 0; i < bestMoves.size(); i++) {
+              // if (!Lizzie.board.getData().bestMoves.get(i).coordinate.contains("ass"))
+              data2.add(bestMoves.get(i));
+            }
         } else if (index == 2) {
           if (Lizzie.board.getData().bestMoves2 != null) {
             for (int i = 0; i < Lizzie.board.getData().bestMoves2.size(); i++) {
@@ -767,8 +770,8 @@ public class AnalysisFrame extends JFrame {
             int[] coords = next.getData().lastMove.get();
             boolean hasData = false;
             for (MoveData move : data2) {
-              if (Lizzie.board.convertNameToCoordinates(move.coordinate)[0] == coords[0]
-                  && Lizzie.board.convertNameToCoordinates(move.coordinate)[1] == coords[1]) {
+              if (Board.convertNameToCoordinates(move.coordinate)[0] == coords[0]
+                  && Board.convertNameToCoordinates(move.coordinate)[1] == coords[1]) {
                 if (move.order == 0) {
                   move.isNextMove = true;
                   move.bestWinrate = data2.get(0).oriwinrate;
