@@ -1862,7 +1862,7 @@ public class Menu extends JMenuBar {
     kataSettings.add(showScoreLeadOnWinrateGraph);
 
     final JFontCheckBoxMenuItem scoreLeadOnGraphWithKomi =
-        new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.scoreLeadOnGraphWithKomi")); // 目差
+        new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.leadWithKomi")); // 目差
     showScoreLeadOnWinrateGraph.add(scoreLeadOnGraphWithKomi);
     scoreLeadOnGraphWithKomi.addActionListener(
         new ActionListener() {
@@ -1876,8 +1876,7 @@ public class Menu extends JMenuBar {
         });
 
     final JFontCheckBoxMenuItem scoreLeadOnGraphWithoutKomi =
-        new JFontCheckBoxMenuItem(
-            resourceBundle.getString("Menu.scoreLeadOnGraphWithoutKomi")); // 盘面
+        new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.leadWithoutKomi")); // 盘面
     showScoreLeadOnWinrateGraph.add(scoreLeadOnGraphWithoutKomi);
     scoreLeadOnGraphWithoutKomi.addActionListener(
         new ActionListener() {
