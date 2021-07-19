@@ -73,7 +73,7 @@ public class GetEngineLine {
     File weightFile = null;
     File configFile = null;
     JFileChooser chooser = new JFileChooser(".");
-    if (Utils.isWindows()) {
+    if (Utils.isWindows()&&(isKataGo||isLeela||isIkatago)) {
       FileNameExtensionFilter filter =
           new FileNameExtensionFilter(
               isIkatago ? "ikatago" : resourceBundle.getString("LizzieConfig.title.engine"),
@@ -134,12 +134,7 @@ public class GetEngineLine {
         }
         getCommandHelp();
         if (!isKataGo && !isLeela && !isIkatago) {
-          ep = new EngineParameter(enginePath, weightPath, commandHelp, false, "", false, true);
-          ep.setVisible(true);
-          if (!ep.commandLine.isEmpty()) {
-            engineLine = ep.commandLine;
-          }
-          return engineLine;
+          return enginePath;
         }
         JFileChooser chooserw = new JFileChooser(".");
         FileFilterTest1 fileFilter = new FileFilterTest1();
