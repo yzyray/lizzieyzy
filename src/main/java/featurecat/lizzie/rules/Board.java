@@ -2060,12 +2060,12 @@ public class Board {
   }
 
   public void placeForSync(int x, int y, Stone color, boolean newBranch, boolean changeMove) {
-
     Lizzie.frame.boardRenderer.removedrawmovestone();
     Lizzie.frame.suggestionclick = Lizzie.frame.outOfBoundCoordinate;
     if (Lizzie.frame.isCounting) {
       Lizzie.frame.clearKataEstimate();
-      Lizzie.estimateResults.btnEstimate.setText("形式判断");
+      Lizzie.estimateResults.btnEstimate.setText(
+          Lizzie.resourceBundle.getString("EstimateResults.estimate"));
       Lizzie.estimateResults.iscounted = false;
       Lizzie.frame.isCounting = false;
     }
@@ -2195,7 +2195,8 @@ public class Board {
     Lizzie.frame.suggestionclick = Lizzie.frame.outOfBoundCoordinate;
     if (Lizzie.frame.isCounting) {
       Lizzie.frame.clearKataEstimate();
-      Lizzie.estimateResults.btnEstimate.setText("形式判断");
+      Lizzie.estimateResults.btnEstimate.setText(
+          Lizzie.resourceBundle.getString("EstimateResults.estimate"));
       Lizzie.estimateResults.iscounted = false;
       Lizzie.frame.isCounting = false;
     }
@@ -2716,7 +2717,8 @@ public class Board {
     }
     if (Lizzie.frame.isCounting) {
       Lizzie.frame.clearKataEstimate();
-      Lizzie.estimateResults.btnEstimate.setText("形式判断");
+      Lizzie.estimateResults.btnEstimate.setText(
+          Lizzie.resourceBundle.getString("EstimateResults.estimate"));
       Lizzie.estimateResults.iscounted = false;
       Lizzie.frame.isCounting = false;
     }

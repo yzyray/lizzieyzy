@@ -249,7 +249,7 @@ public class ReadBoard {
 
         if ((c == '\n')) {
           try {
-            parseLine(line.toString(), false);
+            parseLine(line.toString());
             if (!isLoaded) {
               isLoaded = true;
               if (!javaReadBoard) checkVersion();
@@ -287,7 +287,7 @@ public class ReadBoard {
     }
   }
 
-  public void parseLine(String line, boolean fromHttp) {
+  public void parseLine(String line) {
     // if (Lizzie.gtpConsole.isVisible())
     // Lizzie.gtpConsole.addLine(line);
     //  System.out.println(line);
@@ -296,9 +296,10 @@ public class ReadBoard {
     //      if (!Lizzie.frame.playerIsBlack && Lizzie.board.getHistory().isBlacksTurn()) return;
     //    }
     if (line.startsWith("re=")) {
-      String[] params = line.substring(3, line.length() - (fromHttp ? 0 : 2)).split(",");
+      String[] params = line.substring(3).split(",");
       if (params.length == Lizzie.board.boardWidth) {
-        for (int i = 0; i < params.length; i++) tempcount.add(Integer.parseInt(params[i]));
+        for (int i = 0; i < params.length; i++)
+          tempcount.add(Integer.parseInt(params[i].substring(0, 1)));
       }
     }
     if (line.startsWith("version")) {
@@ -516,7 +517,7 @@ public class ReadBoard {
   }
 
   private void syncBoardStones(boolean isSecondTime) {
-    if (!isSecondTime) {
+    if (!this.javaReadBoard && !isSecondTime) {
       long thisTime = System.currentTimeMillis();
       if (thisTime - startSyncTime < Lizzie.config.readBoardArg2 / 2) return;
       startSyncTime = thisTime;

@@ -38,7 +38,7 @@ public class ReadBoardStream extends Thread {
     try {
       while ((line = br.readLine()) != null) {
         //  System.out.println(line);
-        Lizzie.frame.readBoard.parseLine(line, true);
+        Lizzie.frame.readBoard.parseLine(line);
       }
     } catch (NumberFormatException e) {
       // TODO Auto-generated catch block
