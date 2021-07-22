@@ -969,15 +969,16 @@ public class AnalysisFrame extends JFrame {
             return String.format("%.1f", data.lcb);
           case 3:
             if (data.isNextMove) {
-              double diff = data.oriwinrate - data.bestWinrate;
               if (data.order != 0) {
+                double diff = data.oriwinrate - data.bestWinrate;
                 return (diff > 0 ? "↑" : "↓")
                     + String.format("%.1f", diff)
                     + "("
                     + String.format("%.1f", data.oriwinrate)
                     + ")";
-              } else return String.format("%.1f", data.oriwinrate);
-            } else return String.format("%.1f", data.oriwinrate);
+              }
+            }
+            return String.format("%.1f", data.oriwinrate);
           case 4:
             if (data.order == -100) return resourceBundle.getString("AnalysisFrame.exclude");
             else return Lizzie.frame.getPlayoutsString(data.playouts);
