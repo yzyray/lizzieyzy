@@ -186,7 +186,7 @@ public class ReadBoard {
                   Runtime.getRuntime()
                       .exec(
                           java64Path
-                              + " -jar readboard_java"
+                              + " -jar -Dsun.java2d.uiScale=1.0 readboard_java"
                               + Utils.pwd
                               + "readboard_0.1.jar"
                               + param);
@@ -205,7 +205,7 @@ public class ReadBoard {
                     Runtime.getRuntime()
                         .exec(
                             java32
-                                + " -jar readboard_java"
+                                + " -jar -Dsun.java2d.uiScale=1.0 readboard_java"
                                 + Utils.pwd
                                 + "readboard_0.1.jar"
                                 + param);
@@ -219,12 +219,20 @@ public class ReadBoard {
           if (!success) {
             process =
                 Runtime.getRuntime()
-                    .exec("java -jar readboard_java" + Utils.pwd + "readboard_0.1.jar" + param);
+                    .exec(
+                        "java -Dsun.java2d.uiScale=1.0 -jar readboard_java"
+                            + Utils.pwd
+                            + "readboard_0.1.jar"
+                            + param);
           }
         } else {
           process =
               Runtime.getRuntime()
-                  .exec("java -jar readboard_java" + Utils.pwd + "readboard_0.1.jar" + param);
+                  .exec(
+                      "java -Dsun.java2d.uiScale=1.0 -jar readboard_java"
+                          + Utils.pwd
+                          + "readboard_0.1.jar"
+                          + param);
         }
       } catch (Exception e) {
         Utils.showMsg(e.getLocalizedMessage());
