@@ -4364,7 +4364,7 @@ public class Menu extends JMenuBar {
         });
 
     final JFontCheckBoxMenuItem analyse =
-        new JFontCheckBoxMenuItem(resourceBundle.getString("BottomToolbar.openfile")); // "分析");
+        new JFontCheckBoxMenuItem(resourceBundle.getString("BottomToolbar.analyse")); // "分析");
     customToolbarItem.add(analyse);
     analyse.addActionListener(
         new ActionListener() {

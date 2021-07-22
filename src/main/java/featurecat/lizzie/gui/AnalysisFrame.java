@@ -773,6 +773,7 @@ public class AnalysisFrame extends JFrame {
               if (Board.convertNameToCoordinates(move.coordinate)[0] == coords[0]
                   && Board.convertNameToCoordinates(move.coordinate)[1] == coords[1]) {
                 if (move.order == 0) {
+                  move.oriwinrate = data2.get(0).oriwinrate;
                   move.isNextMove = true;
                   move.bestWinrate = data2.get(0).oriwinrate;
                   move.bestScoreMean = data2.get(0).scoreMean;
@@ -975,7 +976,7 @@ public class AnalysisFrame extends JFrame {
                     + "("
                     + String.format("%.1f", data.oriwinrate)
                     + ")";
-              }
+              } else return String.format("%.1f", data.oriwinrate);
             } else return String.format("%.1f", data.oriwinrate);
           case 4:
             if (data.order == -100) return resourceBundle.getString("AnalysisFrame.exclude");
