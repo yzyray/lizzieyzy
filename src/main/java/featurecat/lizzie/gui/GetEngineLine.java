@@ -73,7 +73,7 @@ public class GetEngineLine {
     File weightFile = null;
     File configFile = null;
     JFileChooser chooser = new JFileChooser(".");
-    if (Utils.isWindows()&&(isKataGo||isLeela||isIkatago)) {
+    if (Utils.isWindows() && (isKataGo || isLeela || isIkatago)) {
       FileNameExtensionFilter filter =
           new FileNameExtensionFilter(
               isIkatago ? "ikatago" : resourceBundle.getString("LizzieConfig.title.engine"),

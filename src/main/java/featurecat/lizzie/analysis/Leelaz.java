@@ -100,6 +100,7 @@ public class Leelaz {
 	public int usingSpecificRules=-1;//1=中国规则2=中古规则3=日本规则4=TT规则5=其他规则
 	public boolean preload = false;
 	public boolean started = false;
+	public boolean isDownWithError = false;
 	public boolean isLoaded = false;
 	public boolean isCheckingVersion;
 	public boolean isCheckingName;
@@ -327,7 +328,7 @@ public class Leelaz {
 	//	Pattern wPattern = Pattern.compile("(?s).*?(--weights |-w |-model )([^'\" ]+)(?s).*");
 		//Matcher wMatcher = wPattern.matcher(engineCommand);		
 		 currentEnginename = getEngineName(index);		
-		
+		 isDownWithError=false;
 		 if (this.useJavaSSH) {
 		      this.javaSSH = new SSHController(this, this.ip, this.port);
 		      boolean loginStatus = false;
@@ -342,11 +343,12 @@ public class Leelaz {
 		        this.outputStream = new BufferedOutputStream(this.javaSSH.getStdin());
 		        this.errorStream = new BufferedReader(new InputStreamReader(this.javaSSH.getSterr()));
 		      } else {
+		    	  isDownWithError=true;
 		        return;
 		      } 
 		    } else {
 		ProcessBuilder processBuilder = new ProcessBuilder(commands);
-		processBuilder.redirectErrorStream(false);
+		processBuilder.redirectErrorStream(false);		
 		try {
 			process = processBuilder.start();
 		} catch (IOException e) {		
@@ -357,6 +359,7 @@ public class Leelaz {
 				} catch (JSONException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
+					isDownWithError=true;
 				}
 			return;
 		}
@@ -2888,6 +2891,7 @@ parseHeatMap(line);
 		if(!isNormalEnd)
 		{
 			started=false;
+			isDownWithError=true;
 			//isLoaded=false;
 			tryToDignostic(resourceBundle.getString("Leelaz.engineEndUnormalHint"),false);//("打开Gtp窗口(快捷键E)查看报错信息");	
 			//LizzieFrame.openMoreEngineDialog();

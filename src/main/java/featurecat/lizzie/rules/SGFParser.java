@@ -1510,7 +1510,7 @@ public class SGFParser {
     //    if (node.getData().commented) return node.getData().comment;
     //    node.getData().commented = true;
     BoardData data = node.getData();
-    String engine = node.getData().engineName.replaceAll("\\\\|\\*|\\(|\\)|\\[|\\]", "");
+    String engine = node.getData().engineName;
     engine = engine.replaceAll(" ", "");
     String playouts = Lizzie.frame.getPlayoutsString(data.getPlayouts());
 
@@ -1754,7 +1754,7 @@ public class SGFParser {
     //    node.getData().commented = true;
 
     BoardData data = node.getData();
-    String engine = node.getData().engineName.replaceAll("\\\\|\\*|\\(|\\)|\\[|\\]", "");
+    String engine = node.getData().engineName;
     engine = engine.replaceAll(" ", "");
     String playouts = Lizzie.frame.getPlayoutsString(data.getPlayouts());
 
@@ -1934,7 +1934,7 @@ public class SGFParser {
   public static String formatCommentPk(BoardHistoryNode node) {
     if (!EngineManager.isSaveingEngineSGF && !node.previous().isPresent()) return "";
     BoardData data = node.getData();
-    String engine = node.getData().engineName.replaceAll("\\\\|\\*|\\(|\\)|\\[|\\]", "");
+    String engine = node.getData().engineName;
     engine = engine.replaceAll(" ", "");
     String playouts = Lizzie.frame.getPlayoutsString(data.getPlayouts());
     // Last winrate
@@ -2144,7 +2144,7 @@ public class SGFParser {
     //    if (node.getData().commented2) return node.getData().comment;
     //    node.getData().commented2 = true;
     BoardData data = node.getData();
-    String engine = node.getData().engineName2.replaceAll("\\\\|\\*|\\(|\\)|\\[|\\]", "");
+    String engine = node.getData().engineName2;
     engine = engine.replaceAll(" ", "");
     String playouts = Lizzie.frame.getPlayoutsString(data.getPlayouts2());
 
@@ -2402,7 +2402,7 @@ public class SGFParser {
         String wf = "%s %s %s %s %s %s\n%s";
         return String.format(
             wf,
-            data.engineName.replaceAll(" ", ""),
+            data.engineName,
             curWinrate,
             playouts,
             String.format("%.1f", data.scoreMean),
@@ -2413,7 +2413,7 @@ public class SGFParser {
         String wf = "%s %s %s %s %s\n%s";
         return String.format(
             wf,
-            data.engineName.replaceAll(" ", ""),
+            data.engineName,
             curWinrate,
             playouts,
             String.format("%.1f", data.scoreMean),
@@ -2450,7 +2450,7 @@ public class SGFParser {
         String wf = "%s %s %s %s %s %s\n%s";
         return String.format(
             wf,
-            data.engineName2.replaceAll(" ", ""),
+            data.engineName2,
             curWinrate,
             playouts,
             String.format("%.1f", data.scoreMean2),
@@ -2461,7 +2461,7 @@ public class SGFParser {
         String wf = "%s %s %s %s %s\n%s";
         return String.format(
             wf,
-            data.engineName2.replaceAll(" ", ""),
+            data.engineName2,
             curWinrate,
             playouts,
             String.format("%.1f", data.scoreMean2),
@@ -2472,8 +2472,7 @@ public class SGFParser {
 
     String wf = "%s %s %s\n%s";
 
-    return String.format(
-        wf, data.engineName2.replaceAll(" ", ""), curWinrate, playouts, data.bestMovesToString2());
+    return String.format(wf, data.engineName2, curWinrate, playouts, data.bestMovesToString2());
   }
 
   public static boolean isListProperty(String key) {

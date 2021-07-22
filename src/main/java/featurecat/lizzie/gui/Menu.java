@@ -3588,6 +3588,16 @@ public class Menu extends JMenuBar {
           }
         });
 
+    final JFontMenuItem readBoardJava =
+        new JFontMenuItem(resourceBundle.getString("Menu.readBoardJava")); // ("棋盘同步工具");
+    live.add(readBoardJava);
+    readBoardJava.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.frame.openReadBoardJava();
+          }
+        });
+
     live.addSeparator();
 
     final JFontCheckBoxMenuItem EnableEnterYikeGame =
@@ -3618,109 +3628,6 @@ public class Menu extends JMenuBar {
     final JFontMenu readBoardSettings =
         new JFontMenu(resourceBundle.getString("Menu.readBoardSettings")); // ("识别工具选项");
     if (OS.isWindows()) live.add(readBoardSettings);
-
-    //    final JFontMenu defaultPlatform =
-    //        new JFontMenu(resourceBundle.getString("Menu.defaultPlatform")); // ("默认平台");
-    //    readBoardSettings.add(defaultPlatform);
-
-    //    final JFontCheckBoxMenuItem foxWeiqi =
-    //        new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.foxWeiqi")); // ("野狐");
-    //    foxWeiqi.addActionListener(
-    //        new ActionListener() {
-    //          public void actionPerformed(ActionEvent e) {
-    //            Lizzie.config.readBoardArg1 = "0";
-    //            Lizzie.config.uiConfig.put("read-board-arg1", Lizzie.config.readBoardArg1);
-    //          }
-    //        });
-    //    defaultPlatform.add(foxWeiqi);
-    //
-    //    final JFontCheckBoxMenuItem tygem =
-    //        new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.tygem")); // ("弈城");
-    //    tygem.addActionListener(
-    //        new ActionListener() {
-    //          public void actionPerformed(ActionEvent e) {
-    //            Lizzie.config.readBoardArg1 = "1";
-    //            Lizzie.config.uiConfig.put("read-board-arg1", Lizzie.config.readBoardArg1);
-    //          }
-    //        });
-    //    defaultPlatform.add(tygem);
-    //
-    //    final JFontCheckBoxMenuItem sina =
-    //        new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.sina")); // ("新浪");
-    //    sina.addActionListener(
-    //        new ActionListener() {
-    //          public void actionPerformed(ActionEvent e) {
-    //            Lizzie.config.readBoardArg1 = "2";
-    //            Lizzie.config.uiConfig.put("read-board-arg1", Lizzie.config.readBoardArg1);
-    //          }
-    //        });
-    //    defaultPlatform.add(sina);
-
-    //    final JFontCheckBoxMenuItem otherForeground =
-    //        new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.otherForeground")); //
-    // ("其他(前台)");
-    //    otherForeground.addActionListener(
-    //        new ActionListener() {
-    //          public void actionPerformed(ActionEvent e) {
-    //            Lizzie.config.readBoardArg1 = "3";
-    //            Lizzie.config.uiConfig.put("read-board-arg1", Lizzie.config.readBoardArg1);
-    //          }
-    //        });
-    //    defaultPlatform.add(otherForeground);
-    //
-    //    final JFontCheckBoxMenuItem otherBackground =
-    //        new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.otherBackground")); //
-    // ("其他(后台)");
-    //    otherBackground.addActionListener(
-    //        new ActionListener() {
-    //          public void actionPerformed(ActionEvent e) {
-    //            Lizzie.config.readBoardArg1 = "4";
-    //            Lizzie.config.uiConfig.put("read-board-arg1", Lizzie.config.readBoardArg1);
-    //          }
-    //        });
-    //    defaultPlatform.add(otherBackground);
-
-    final JFontCheckBoxMenuItem usePipeline =
-        new JFontCheckBoxMenuItem(
-            resourceBundle.getString("Menu.usePipeline")); // ("启用管道通信(速度更快,非管理员可能导致双向同步失败)");
-    usePipeline.addActionListener(
-        new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            Lizzie.config.usePipeReadBoard = !Lizzie.config.usePipeReadBoard;
-            Lizzie.config.uiConfig.put("use-pipeline-readboard", Lizzie.config.usePipeReadBoard);
-          }
-        });
-    // readBoardArg.add(usePipeReadboard);
-
-    //    final JFontCheckBoxMenuItem enableFoxWeiqiBackgroundMouse =
-    //        new JFontCheckBoxMenuItem(
-    //            resourceBundle.getString("Menu.enableFoxWeiqiBackgroundMouse")); // ("启用野狐后台搬运");
-    //    enableFoxWeiqiBackgroundMouse.addActionListener(
-    //        new ActionListener() {
-    //          public void actionPerformed(ActionEvent e) {
-    //            File file = new File("");
-    //            String courseFile = "";
-    //            try {
-    //              courseFile = file.getCanonicalPath();
-    //            } catch (IOException s) {
-    //              // TODO Auto-generated catch block
-    //              s.printStackTrace();
-    //            }
-    //            File findLw;
-    //            findLw = new File(courseFile + "\\" + "readboard" + "\\" + "lw.dll");
-    //            if (!findLw.exists()) {
-    //            	SMessage msg = new SMessage();
-    //                 msg.setMessage(
-    //                		 resourceBundle.getString("Menu.enableFoxWeiqiBackgroundMouseHint"));
-    //              // "启用失败,readboard文件夹下必须有\"lw.dll\"文件,可以由此下载
-    //              // https://pan.baidu.com/s/1q615GHD62F92mNZbTYfcxA(整合包-野狐后台连线专用插件)");
-    //              return;
-    //            }
-    //            Lizzie.config.readBoardArg4 = !Lizzie.config.readBoardArg4;
-    //            Lizzie.config.uiConfig.put("read-board-arg4", Lizzie.config.readBoardArg4);
-    //          }
-    //        });
-    //    readBoardSettings.add(enableFoxWeiqiBackgroundMouse);
 
     final JFontCheckBoxMenuItem recognizeLastMove =
         new JFontCheckBoxMenuItem(
@@ -3770,6 +3677,22 @@ public class Menu extends JMenuBar {
         });
     readBoardSettings.add(setSyncInterval);
 
+    final JFontMenu readBoardJavaSettings =
+        new JFontMenu(resourceBundle.getString("Menu.readBoardJavaSettings")); // ("识别工具(java)选项");
+    live.add(readBoardJavaSettings);
+
+    final JFontCheckBoxMenuItem alwaysKeepBoardStatSyncJava =
+        new JFontCheckBoxMenuItem(
+            resourceBundle.getString("Menu.alwaysKeepBoardStatSync")); // ("总是保持棋盘一致(回退时可能破坏历史手顺)");
+    alwaysKeepBoardStatSyncJava.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.config.alwaysSyncBoardStat = !Lizzie.config.alwaysSyncBoardStat;
+            Lizzie.config.uiConfig.put("always-sync-boardstat", Lizzie.config.alwaysSyncBoardStat);
+          }
+        });
+    readBoardJavaSettings.add(alwaysKeepBoardStatSyncJava);
+
     live.addMenuListener(
         new MenuListener() {
 
@@ -3778,50 +3701,15 @@ public class Menu extends JMenuBar {
             else EnableEnterYikeGame.setState(false);
             if (Lizzie.config.alwaysGotoLastOnLive) alwaysGoToLastMove.setState(true);
             else alwaysGoToLastMove.setState(false);
-            //            if (Lizzie.config.readBoardArg1.equals("0")) {
-            //              foxWeiqi.setState(true);
-            //              tygem.setState(false);
-            //              sina.setState(false);
-            //              otherForeground.setState(false);
-            //              otherBackground.setState(false);
-            //            }
-            //            if (Lizzie.config.readBoardArg1.equals("1")) {
-            //              foxWeiqi.setState(false);
-            //              tygem.setState(true);
-            //              sina.setState(false);
-            //              otherForeground.setState(false);
-            //              otherBackground.setState(false);
-            //            }
-            //            if (Lizzie.config.readBoardArg1.equals("2")) {
-            //              foxWeiqi.setState(false);
-            //              tygem.setState(false);
-            //              sina.setState(true);
-            //              otherForeground.setState(false);
-            //              otherBackground.setState(false);
-            //            }
-            //            if (Lizzie.config.readBoardArg1.equals("3")) {
-            //              foxWeiqi.setState(false);
-            //              tygem.setState(false);
-            //              sina.setState(false);
-            //              otherForeground.setState(true);
-            //              otherBackground.setState(false);
-            //            }
-            //            if (Lizzie.config.readBoardArg1.equals("4")) {
-            //              foxWeiqi.setState(false);
-            //              tygem.setState(false);
-            //              sina.setState(false);
-            //              otherForeground.setState(false);
-            //              otherBackground.setState(true);
-            //            }
-            if (Lizzie.config.alwaysSyncBoardStat) alwaysKeepBoardStatSync.setState(true);
-            else alwaysKeepBoardStatSync.setState(false);
+            if (Lizzie.config.alwaysSyncBoardStat) {
+              alwaysKeepBoardStatSync.setState(true);
+              alwaysKeepBoardStatSyncJava.setState(true);
+            } else {
+              alwaysKeepBoardStatSync.setState(false);
+              alwaysKeepBoardStatSyncJava.setState(false);
+            }
             if (Lizzie.config.readBoardArg3) recognizeLastMove.setState(true);
             else recognizeLastMove.setState(false);
-            //            if (Lizzie.config.readBoardArg4)
-            // enableFoxWeiqiBackgroundMouse.setState(true);
-            //            else enableFoxWeiqiBackgroundMouse.setState(false);
-            if (Lizzie.config.usePipeReadBoard) usePipeline.setState(true);
-            else usePipeline.setState(false);
             if (Lizzie.config.syncBoth) defaultSyncBothSide.setState(true);
             else defaultSyncBothSide.setState(false);
           }

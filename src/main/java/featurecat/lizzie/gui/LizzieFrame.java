@@ -2369,15 +2369,32 @@ public class LizzieFrame extends JFrame {
     analysisTable.frame.setVisible(false);
   }
 
+  public void openReadBoardJava() {
+    if (readBoard != null) {
+      try {
+        readBoard.shutdown();
+      } catch (Exception e) {
+        e.printStackTrace();
+        // Failed to save config
+      }
+    }
+    try {
+      readBoard = new ReadBoard(true, true);
+    } catch (Exception e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
+
   public void openBoardSync() {
     if (readBoard == null) {
       try {
-        readBoard = new ReadBoard(true);
+        readBoard = new ReadBoard(true, false);
       } catch (Exception e) {
         // TODO Auto-generated catch block
         e.printStackTrace();
         try {
-          readBoard = new ReadBoard(false);
+          readBoard = new ReadBoard(false, false);
         } catch (Exception e1) {
           // TODO Auto-generated catch block
           e1.printStackTrace();
@@ -2392,12 +2409,12 @@ public class LizzieFrame extends JFrame {
         // Failed to save config
       }
       try {
-        readBoard = new ReadBoard(true);
+        readBoard = new ReadBoard(true, false);
       } catch (Exception e) {
         // TODO Auto-generated catch block
         e.printStackTrace();
         try {
-          readBoard = new ReadBoard(false);
+          readBoard = new ReadBoard(false, false);
         } catch (Exception e1) {
           // TODO Auto-generated catch block
           e1.printStackTrace();
@@ -4387,10 +4404,7 @@ public class LizzieFrame extends JFrame {
                   g, weightText, text2, ponderingX, ponderingY, ponderingY2, ponderingSize);
               vh = ponderingY;
             } else {
-              String loadingText =
-                  Lizzie.leelaz.isTuning
-                      ? resourceBundle.getString("LizzieFrame.display.tuning")
-                      : resourceBundle.getString("LizzieFrame.display.loading");
+              String loadingText = getLoadingText();
               drawPonderingState(g, loadingText, loadingX, loadingY, loadingSize);
               vh = loadingY;
             }
@@ -4828,10 +4842,7 @@ public class LizzieFrame extends JFrame {
                 drawPonderingState(
                     g, weightText, text2, ponderingX, ponderingY, ponderingY2, ponderingSize);
               } else {
-                String loadingText =
-                    Lizzie.leelaz.isTuning
-                        ? resourceBundle.getString("LizzieFrame.display.tuning")
-                        : resourceBundle.getString("LizzieFrame.display.loading");
+                String loadingText = getLoadingText();
                 drawPonderingState(g, loadingText, loadingX, loadingY, loadingSize);
               }
             }
@@ -5058,10 +5069,7 @@ public class LizzieFrame extends JFrame {
             // if (Lizzie.leelaz != null && Lizzie.leelaz.isLoaded()) {
             if (Lizzie.config.showStatus && Lizzie.config.extraMode != 7) {
               if (Lizzie.leelaz == null || !Lizzie.leelaz.isLoaded()) {
-                String loadingText =
-                    Lizzie.leelaz.isTuning
-                        ? resourceBundle.getString("LizzieFrame.display.tuning")
-                        : resourceBundle.getString("LizzieFrame.display.loading");
+                String loadingText = getLoadingText();
                 drawPonderingState(g, loadingText, loadingX, loadingY, loadingSize);
               }
             }
@@ -5179,6 +5187,13 @@ public class LizzieFrame extends JFrame {
         g0.drawImage(cachedWinrateImage, grx, gry, null);
     }
     autosaveMaybe();
+  }
+
+  private String getLoadingText() {
+    // TODO Auto-generated method stub
+    if (Lizzie.leelaz.isDownWithError) return resourceBundle.getString("LizzieFrame.display.down");
+    else if (Lizzie.leelaz.isTuning) return resourceBundle.getString("LizzieFrame.display.tuning");
+    else return resourceBundle.getString("LizzieFrame.display.loading");
   }
 
   /**
@@ -7617,6 +7632,7 @@ public class LizzieFrame extends JFrame {
       }
 
       boolean isLoadingEngine = false;
+      boolean isTuningEngine = false;
       if (((Lizzie.leelaz != null && !Lizzie.leelaz.isLoaded())
           || (Lizzie.engineManager.isPreEngineGame
               && (!Lizzie.engineManager
@@ -7627,6 +7643,18 @@ public class LizzieFrame extends JFrame {
                       .engineList
                       .get(Lizzie.engineManager.engineGameInfo.blackEngineIndex)
                       .isLoaded())))) isLoadingEngine = true;
+      if (isLoadingEngine) {
+        if ((Lizzie.leelaz != null && Lizzie.leelaz.isTuning)
+            || (Lizzie.engineManager.isPreEngineGame
+                && (!Lizzie.engineManager.engineList.get(
+                            Lizzie.engineManager.engineGameInfo.whiteEngineIndex)
+                        .isTuning
+                    || !Lizzie.engineManager.engineList.get(
+                            Lizzie.engineManager.engineGameInfo.blackEngineIndex)
+                        .isTuning))) {
+          isTuningEngine = true;
+        }
+      }
       //    if (isLoadingEngine && !isCommentArea) {
       //    	isCommentArea = false;
       //    	setCommentComponet();
@@ -7635,7 +7663,6 @@ public class LizzieFrame extends JFrame {
       //    	isCommentArea = !urlSgf;
       //    	setCommentComponet();
       //    }
-
       String comment = "";
       if (isInPlayMode()) comment = "";
       else {
@@ -7657,6 +7684,8 @@ public class LizzieFrame extends JFrame {
         if (isLoadingEngine) {
           if (Lizzie.gtpConsole != null) {
             comment = Lizzie.gtpConsole.console.getText();
+            if (!Lizzie.config.showStatus && isTuningEngine)
+              comment += Lizzie.resourceBundle.getString("LizzieFrame.display.tuning");
           }
         } else {
           if (Lizzie.engineManager.isEngineGame

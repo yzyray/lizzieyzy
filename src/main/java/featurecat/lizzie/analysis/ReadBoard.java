@@ -9,6 +9,7 @@ import featurecat.lizzie.rules.Stone;
 import featurecat.lizzie.util.Utils;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -20,6 +21,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import org.jdesktop.swingx.util.OS;
 
 public class ReadBoard {
   public Process process;
@@ -55,9 +57,11 @@ public class ReadBoard {
   private boolean showInBoard = false;
   private boolean isSyncing = false;
   private long startTime;
+  private boolean javaReadBoard = false;
 
-  public ReadBoard(boolean usePipe) throws Exception {
+  public ReadBoard(boolean usePipe, boolean isJavaReadBoard) throws Exception {
     this.usePipe = usePipe;
+    this.javaReadBoard = isJavaReadBoard;
     if (s != null && !s.isClosed()) {
       s.close();
     }
@@ -129,15 +133,18 @@ public class ReadBoard {
       commands.add("1");
     }
     commands.add(
-        LizzieFrame.toolbar.txtAutoPlayTime.getText().equals("")
+        !LizzieFrame.toolbar.chkAutoPlayTime.isSelected()
+                || LizzieFrame.toolbar.txtAutoPlayTime.getText().equals("")
             ? " "
             : LizzieFrame.toolbar.txtAutoPlayTime.getText());
     commands.add(
-        LizzieFrame.toolbar.txtAutoPlayPlayouts.getText().equals("")
+        !LizzieFrame.toolbar.chkAutoPlayPlayouts.isSelected()
+                || LizzieFrame.toolbar.txtAutoPlayPlayouts.getText().equals("")
             ? " "
             : LizzieFrame.toolbar.txtAutoPlayPlayouts.getText());
     commands.add(
-        LizzieFrame.toolbar.txtAutoPlayFirstPlayouts.getText().equals("")
+        !LizzieFrame.toolbar.chkAutoPlayFirstPlayouts.isSelected()
+                || LizzieFrame.toolbar.txtAutoPlayFirstPlayouts.getText().equals("")
             ? " "
             : LizzieFrame.toolbar.txtAutoPlayFirstPlayouts.getText());
 
@@ -150,20 +157,74 @@ public class ReadBoard {
     else commands.add(port + "");
     ProcessBuilder processBuilder = new ProcessBuilder(commands);
     processBuilder.redirectErrorStream(true);
-    try {
-      process = processBuilder.start();
-      startTime = System.currentTimeMillis();
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      if (!usePipe) {
+    if (javaReadBoard) {
+      File javaReadBoard = new File("readboard_java" + File.separator + "readboard_0.1.jar");
+      if (!javaReadBoard.exists()) {
+        Utils.copyReadBoardJava();
+      }
+    }
+    if (javaReadBoard) {
+      try {
+        if (OS.isWindows()) {
+          boolean success = false;
+          String java64Path = "jre\\java15\\bin\\java.exe";
+          File java64 = new File(java64Path);
+
+          if (java64.exists()) {
+            try {
+              process =
+                  Runtime.getRuntime()
+                      .exec(java64Path + " -jar readboard_java" + Utils.pwd + "readboard_0.1.jar");
+              success = true;
+            } catch (Exception e) {
+              success = false;
+              e.printStackTrace();
+            }
+          }
+          if (!success) {
+            String java32Path = "jre\\java8_32\\bin\\java.exe";
+            File java32 = new File(java32Path);
+            if (java32.exists()) {
+              try {
+                process =
+                    Runtime.getRuntime()
+                        .exec(java32 + " -jar readboard_java" + Utils.pwd + "readboard_0.1.jar");
+                success = true;
+              } catch (Exception e) {
+                success = false;
+                e.printStackTrace();
+              }
+            }
+          }
+          if (!success) {
+            process =
+                Runtime.getRuntime()
+                    .exec("java -jar readboard_java" + Utils.pwd + "readboard_0.1.jar");
+          }
+        } else {
+          process =
+              Runtime.getRuntime()
+                  .exec("java -jar readboard_java" + Utils.pwd + "readboard_0.1.jar");
+        }
+      } catch (Exception e) {
         Utils.showMsg(e.getLocalizedMessage());
-        SMessage msg = new SMessage();
-        msg.setMessage(resourceBundle.getString("ReadBoard.loadFailed"), 2);
-        s.close();
-        return;
-      } else {
-        System.out.print(e.getLocalizedMessage());
-        throw new Exception("Start pipe failed");
+      }
+    } else {
+      try {
+        process = processBuilder.start();
+        startTime = System.currentTimeMillis();
+      } catch (IOException e) {
+        // TODO Auto-generated catch block
+        if (!usePipe) {
+          Utils.showMsg(e.getLocalizedMessage());
+          SMessage msg = new SMessage();
+          msg.setMessage(resourceBundle.getString("ReadBoard.loadFailed"), 2);
+          s.close();
+          return;
+        } else {
+          System.out.print(e.getLocalizedMessage());
+          throw new Exception("Start pipe failed");
+        }
       }
     }
     if (usePipe) {
@@ -191,7 +252,7 @@ public class ReadBoard {
             parseLine(line.toString(), false);
             if (!isLoaded) {
               isLoaded = true;
-              checkVersion();
+              if (!javaReadBoard) checkVersion();
             }
           } catch (Exception ex) {
             ex.printStackTrace();
@@ -207,7 +268,7 @@ public class ReadBoard {
       }
       System.out.println("Board synchronization tool process ended.");
       shutdown();
-      if (!isLoaded && System.currentTimeMillis() - startTime < 500) {
+      if (!javaReadBoard && !isLoaded && System.currentTimeMillis() - startTime < 500) {
         try {
           Runtime.getRuntime().exec("powershell /c start readboard\\readboard.bat");
         } catch (IOException e) {
@@ -553,7 +614,7 @@ public class ReadBoard {
         isLastBlack = false;
       }
     }
-    if (firstSync && played) {
+    if (firstSync) {
       Lizzie.board.hasStartStone = true;
       Lizzie.board.addStartListAll();
       Lizzie.board.flatten();
@@ -573,41 +634,87 @@ public class ReadBoard {
       if (Lizzie.config.alwaysSyncBoardStat || showInBoard) Lizzie.frame.lastMove();
     }
     stones = Lizzie.board.getHistory().getMainEnd().getData().stones;
-    if ((Lizzie.config.alwaysSyncBoardStat && !Lizzie.frame.bothSync) || showInBoard) {
+    if ((Lizzie.config.alwaysSyncBoardStat) || showInBoard) {
       for (int i = 0; i < tempcount.size(); i++) {
         int m = tempcount.get(i);
         int y = i / Lizzie.board.boardWidth;
         int x = i % Lizzie.board.boardWidth;
-        if (m == 0 && stones[Lizzie.board.getIndex(x, y)] != Stone.EMPTY) {
-          // Lizzie.board.clear(false);
-          //  needRefresh = true;
-          needReSync = true;
-          break;
-        }
+        if (Lizzie.frame.bothSync
+            && Lizzie.board.getHistory().getMainEnd().previous().isPresent()) {
+          Stone[] stonesPrev =
+              Lizzie.board.getHistory().getMainEnd().previous().get().getData().stones;
+          if (m == 0
+              && stones[Lizzie.board.getIndex(x, y)] != Stone.EMPTY
+              && stonesPrev[Lizzie.board.getIndex(x, y)] != Stone.EMPTY) {
+            // Lizzie.board.clear(false);
+            //  needRefresh = true;
+            needReSync = true;
+            break;
+          }
+          if (m == 1
+              && !stones[Lizzie.board.getIndex(x, y)].isBlack()
+              && !stonesPrev[Lizzie.board.getIndex(x, y)].isBlack()) {
+            //  Lizzie.board.clear(false);
+            //   needRefresh = true;
+            needReSync = true;
+            break;
+          }
+          if (m == 2
+              && !stones[Lizzie.board.getIndex(x, y)].isWhite()
+              && !stonesPrev[Lizzie.board.getIndex(x, y)].isWhite()) {
+            // Lizzie.board.clear(false);
+            //  needRefresh = true;
+            needReSync = true;
+            break;
+          }
+          if (m == 3
+              && !stones[Lizzie.board.getIndex(x, y)].isBlack()
+              && !stonesPrev[Lizzie.board.getIndex(x, y)].isBlack()) {
+            // Lizzie.board.clear(false);
+            //  needRefresh = true;
+            needReSync = true;
+            break;
+          }
+          if (m == 4
+              && !stones[Lizzie.board.getIndex(x, y)].isWhite()
+              && !stonesPrev[Lizzie.board.getIndex(x, y)].isWhite()) {
+            //  Lizzie.board.clear(false);
+            //  needRefresh = true;
+            needReSync = true;
+            break;
+          }
+        } else {
+          if (m == 0 && stones[Lizzie.board.getIndex(x, y)] != Stone.EMPTY) {
+            // Lizzie.board.clear(false);
+            //  needRefresh = true;
+            needReSync = true;
+            break;
+          }
 
-        if (m == 1 && !stones[Lizzie.board.getIndex(x, y)].isBlack()) {
-          //  Lizzie.board.clear(false);
-          //   needRefresh = true;
-          needReSync = true;
-          break;
-        }
-        if (m == 2 && !stones[Lizzie.board.getIndex(x, y)].isWhite()) {
-          // Lizzie.board.clear(false);
-          //  needRefresh = true;
-          needReSync = true;
-          break;
-        }
-        if (m == 3 && !stones[Lizzie.board.getIndex(x, y)].isBlack()) {
-          // Lizzie.board.clear(false);
-          //  needRefresh = true;
-          needReSync = true;
-          break;
-        }
-        if (m == 4 && !stones[Lizzie.board.getIndex(x, y)].isWhite()) {
-          //  Lizzie.board.clear(false);
-          //  needRefresh = true;
-          needReSync = true;
-          break;
+          if (m == 1 && !stones[Lizzie.board.getIndex(x, y)].isBlack()) {
+            //  Lizzie.board.clear(false);
+            //   needRefresh = true;
+            needReSync = true;
+            break;
+          }
+          if (m == 2 && !stones[Lizzie.board.getIndex(x, y)].isWhite()) {
+            // Lizzie.board.clear(false);
+            //  needRefresh = true;
+            needReSync = true;
+            break;
+          }
+          if (m == 3 && !stones[Lizzie.board.getIndex(x, y)].isBlack()) {
+            // Lizzie.board.clear(false);
+            //  needRefresh = true;
+            needReSync = true;
+            break;
+          }
+          if (m == 4 && !stones[Lizzie.board.getIndex(x, y)].isWhite()) {
+            //  Lizzie.board.clear(false);
+            //  needRefresh = true;
+            needReSync = true;
+            break;
+          }
         }
       }
       //
@@ -687,7 +794,7 @@ public class ReadBoard {
 
   public void sendCommandTo(String command) {
     // if (Lizzie.gtpConsole.isVisible() || Lizzie.config.alwaysGtp)
-    //   Lizzie.gtpConsole.addReadBoardCommand(command);
+    // Lizzie.gtpConsole.addReadBoardCommand(command);
     try {
       outputStream.write((command + "\n").getBytes());
       outputStream.flush();

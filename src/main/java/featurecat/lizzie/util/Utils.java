@@ -683,20 +683,6 @@ public class Utils {
     in.close();
   }
 
-  public static void addNewThemeAs(String themeName) {
-    // TODO Auto-generated method stub
-    try {
-      copy("/assets/newtheme/black.png", "theme" + File.separator + themeName);
-      copy("/assets/newtheme/white.png", "theme" + File.separator + themeName);
-      copy("/assets/newtheme/board.png", "theme" + File.separator + themeName);
-      copy("/assets/newtheme/background.jpg", "theme" + File.separator + themeName);
-      copy("/assets/newtheme/theme.txt", "theme" + File.separator + themeName);
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-  }
-
   public static boolean deleteDir(File dir) {
     if (dir.isDirectory()) {
       String[] children = dir.list();
@@ -711,6 +697,32 @@ public class Utils {
       return true;
     } else {
       return false;
+    }
+  }
+
+  public static void addNewThemeAs(String themeName) {
+    // TODO Auto-generated method stub
+    try {
+      copy("/assets/newtheme/black.png", "theme" + File.separator + themeName);
+      copy("/assets/newtheme/white.png", "theme" + File.separator + themeName);
+      copy("/assets/newtheme/board.png", "theme" + File.separator + themeName);
+      copy("/assets/newtheme/background.jpg", "theme" + File.separator + themeName);
+      copy("/assets/newtheme/theme.txt", "theme" + File.separator + themeName);
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
+
+  public static void copyReadBoardJava() {
+    // TODO Auto-generated method stub
+    try {
+      copy("/assets/readboard_java/readboard_0.1.jar", "readboard_java");
+      copy("/assets/readboard_java/help.docx", "readboard_java");
+      copy("/assets/readboard_java/help_en.docx", "readboard_java");
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
     }
   }
 }

@@ -1202,7 +1202,6 @@ public class BoardRenderer {
     //                / maxPlayouts
     //            :
     boolean needShow = false;
-
     if (Lizzie.frame.priorityMoveCoords.size() > 0) {
       for (String coords : Lizzie.frame.priorityMoveCoords) {
         if (coords.equals(suggestedMove.get().coordinate)) needShow = true;
@@ -1220,7 +1219,7 @@ public class BoardRenderer {
           .isPresent()) {
         int nextMove[] =
             Lizzie.board.getHistory().getCurrentHistoryNode().next().get().getData().lastMove.get();
-        int coords[] = Lizzie.board.convertNameToCoordinates(suggestedMove.get().coordinate);
+        int coords[] = Board.convertNameToCoordinates(suggestedMove.get().coordinate);
         if (nextMove[0] == coords[0] && nextMove[1] == coords[1]) needShow = true;
       }
     }
@@ -1240,7 +1239,8 @@ public class BoardRenderer {
         if (displayedBranchLength < 2
             && Lizzie.config.limitMaxSuggestion > 0
             && mouseOverOrder > Lizzie.config.limitMaxSuggestion
-            && !needShow) {
+            && !needShow
+            && !suggestedMove.get().lastTimeUnlimited) {
           displayedBranchLength = 1;
           if (!Lizzie.config.autoReplayBranch) return;
         }
@@ -1832,8 +1832,8 @@ public class BoardRenderer {
       }
       for (int i = 0; i < heatcount.size(); i++) {
         if (heatcount.get(i) > 0) {
-          int y1 = i / Lizzie.board.boardWidth;
-          int x1 = i % Lizzie.board.boardWidth;
+          int y1 = i / Board.boardWidth;
+          int x1 = i % Board.boardWidth;
           int suggestionX = x + scaledMarginWidth + squareWidth * x1;
           int suggestionY = y + scaledMarginHeight + squareHeight * y1;
           double percent = ((double) heatcount.get(i)) / maxPolicy;
@@ -2078,7 +2078,8 @@ public class BoardRenderer {
           boolean lackOfPlayouts = percentPlayouts <= Lizzie.config.minPlayoutRatioForStats;
           boolean outOfOrder =
               Lizzie.config.limitMaxSuggestion > 0
-                  && move.order + 1 > Lizzie.config.limitMaxSuggestion;
+                  && move.order + 1 > Lizzie.config.limitMaxSuggestion
+                  && !move.lastTimeUnlimited;
           boolean hasBackground = hasDrawBackground[Board.getIndex(coords[0], coords[1])];
           if (outOfOrder && !isMouseOver && hasBackground) continue;
 
@@ -2203,10 +2204,7 @@ public class BoardRenderer {
             continue;
           }
           if (isMouseOverNextBlunder && isMouseOver) {
-            if (Lizzie.config.showSuggestionOrder
-                && move.order < 9
-                && move.order > 0
-                && (needShow || isMouseOver || !move.lastTimeUnlimited)) {
+            if (Lizzie.config.showSuggestionOrder && move.order < 9 && move.order > 0) {
               drawOrder(
                   g, suggestionX, suggestionY, move.order, Lizzie.board.getData().blackToPlay);
             }
@@ -2217,10 +2215,7 @@ public class BoardRenderer {
               roundedWinrate = 100.0 - roundedWinrate;
             }
 
-            if (Lizzie.config.showSuggestionOrder
-                && move.order < 9
-                && move.order > 0
-                && (needShow || isMouseOver || !move.lastTimeUnlimited)) {
+            if (Lizzie.config.showSuggestionOrder && move.order < 9 && move.order > 0) {
               drawOrder(
                   g, suggestionX, suggestionY, move.order, Lizzie.board.getData().blackToPlay);
             }

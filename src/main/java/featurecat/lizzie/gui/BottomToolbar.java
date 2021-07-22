@@ -725,6 +725,16 @@ public class BottomToolbar extends JPanel {
           }
         });
     if (OS.isWindows()) yike.add(syncBoard);
+
+    JMenuItem syncBoardJava =
+        new JMenuItem(Lizzie.resourceBundle.getString("BottomToolbar.syncBoardJava")); // ("棋盘同步");
+    syncBoardJava.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.frame.openReadBoardJava();
+          }
+        });
+    yike.add(syncBoardJava);
     yike.setVisible(true);
     yike.setVisible(false);
 
