@@ -1,9 +1,11 @@
 package featurecat.lizzie.analysis;
 
+import featurecat.lizzie.Config;
 import featurecat.lizzie.Lizzie;
 import featurecat.lizzie.gui.FloatBoard;
 import featurecat.lizzie.gui.LizzieFrame;
 import featurecat.lizzie.gui.SMessage;
+import featurecat.lizzie.rules.Board;
 import featurecat.lizzie.rules.BoardHistoryNode;
 import featurecat.lizzie.rules.Stone;
 import featurecat.lizzie.util.Utils;
@@ -164,6 +166,14 @@ public class ReadBoard {
       }
     }
     if (javaReadBoard) {
+      // 共传入5个参数,是否中文 是否java外观 字体大小 宽 高
+      String param = "";
+      if (Lizzie.config.isChinese) param = param + " true ";
+      else param = param + " false ";
+      if (Lizzie.config.useJavaLooks) param = param + "true ";
+      else param = param + "false ";
+      param = param + (int) Math.round(Config.frameFontSize * Lizzie.javaScaleFactor);
+      param = " " + param + " " + Board.boardWidth + " " + Board.boardHeight;
       try {
         if (OS.isWindows()) {
           boolean success = false;
@@ -174,7 +184,12 @@ public class ReadBoard {
             try {
               process =
                   Runtime.getRuntime()
-                      .exec(java64Path + " -jar readboard_java" + Utils.pwd + "readboard_0.1.jar");
+                      .exec(
+                          java64Path
+                              + " -jar readboard_java"
+                              + Utils.pwd
+                              + "readboard_0.1.jar"
+                              + param);
               success = true;
             } catch (Exception e) {
               success = false;
@@ -188,7 +203,12 @@ public class ReadBoard {
               try {
                 process =
                     Runtime.getRuntime()
-                        .exec(java32 + " -jar readboard_java" + Utils.pwd + "readboard_0.1.jar");
+                        .exec(
+                            java32
+                                + " -jar readboard_java"
+                                + Utils.pwd
+                                + "readboard_0.1.jar"
+                                + param);
                 success = true;
               } catch (Exception e) {
                 success = false;
@@ -199,12 +219,12 @@ public class ReadBoard {
           if (!success) {
             process =
                 Runtime.getRuntime()
-                    .exec("java -jar readboard_java" + Utils.pwd + "readboard_0.1.jar");
+                    .exec("java -jar readboard_java" + Utils.pwd + "readboard_0.1.jar" + param);
           }
         } else {
           process =
               Runtime.getRuntime()
-                  .exec("java -jar readboard_java" + Utils.pwd + "readboard_0.1.jar");
+                  .exec("java -jar readboard_java" + Utils.pwd + "readboard_0.1.jar" + param);
         }
       } catch (Exception e) {
         Utils.showMsg(e.getLocalizedMessage());
