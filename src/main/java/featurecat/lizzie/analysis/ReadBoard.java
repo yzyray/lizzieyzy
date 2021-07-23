@@ -572,7 +572,7 @@ public class ReadBoard {
       int m = tempcount.get(i);
       int y = i / Lizzie.board.boardWidth;
       int x = i % Lizzie.board.boardWidth;
-      if (m == 1 && !stones[Lizzie.board.getIndex(x, y)].isBlack()) {
+      if (((holdLastMove && m == 3) || m == 1) && !stones[Lizzie.board.getIndex(x, y)].isBlack()) {
         if (stones[Lizzie.board.getIndex(x, y)].isWhite()) {
           Lizzie.board.clear(false);
           needReSync = true;
@@ -593,7 +593,7 @@ public class ReadBoard {
         played = true;
         playedMove = playedMove + 1;
       }
-      if (m == 2 && !stones[Lizzie.board.getIndex(x, y)].isWhite()) {
+      if (((holdLastMove && m == 4) || m == 2) && !stones[Lizzie.board.getIndex(x, y)].isWhite()) {
         if (stones[Lizzie.board.getIndex(x, y)].isBlack()) {
           Lizzie.board.clear(false);
           needReSync = true;
@@ -616,7 +616,7 @@ public class ReadBoard {
         playedMove = playedMove + 1;
       }
 
-      if (m == 3 && !stones[Lizzie.board.getIndex(x, y)].isBlack()) {
+      if (!holdLastMove && m == 3 && !stones[Lizzie.board.getIndex(x, y)].isBlack()) {
         if (stones[Lizzie.board.getIndex(x, y)].isWhite()) {
           Lizzie.board.clear(false);
           needReSync = true;
@@ -630,7 +630,7 @@ public class ReadBoard {
         lastY = y;
         isLastBlack = true;
       }
-      if (m == 4 && !stones[Lizzie.board.getIndex(x, y)].isWhite()) {
+      if (!holdLastMove && m == 4 && !stones[Lizzie.board.getIndex(x, y)].isWhite()) {
         if (stones[Lizzie.board.getIndex(x, y)].isBlack()) {
           Lizzie.board.clear(false);
           needReSync = true;

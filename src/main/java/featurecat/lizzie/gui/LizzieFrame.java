@@ -2974,6 +2974,7 @@ public class LizzieFrame extends JFrame {
 
   public void toggleBadMoves() {
     if (moveListFrame == null || !moveListFrame.isVisible()) {
+      Lizzie.config.uiConfig.put("show-badmoves-frame", true);
       moveListFrame = new MoveListFrame(1);
       if (Lizzie.config.extraMode == 2) {
         if (moveListFrame2 == null || !moveListFrame2.isVisible()) {
@@ -2985,6 +2986,7 @@ public class LizzieFrame extends JFrame {
       moveListFrame.setVisible(true);
       if (Lizzie.config.badmovesalwaysontop) moveListFrame.setAlwaysOnTop(true);
     } else {
+      Lizzie.config.uiConfig.put("show-badmoves-frame", false);
       moveListFrame.setVisible(false);
       if (this.extraMode == 2 && moveListFrame2 != null) {
         moveListFrame2.setVisible(false);
@@ -2998,7 +3000,6 @@ public class LizzieFrame extends JFrame {
         e.printStackTrace();
       }
     }
-    Lizzie.config.uiConfig.put("show-badmoves-frame", moveListFrame.isVisible());
   }
 
   public static void sendAiTime() {
