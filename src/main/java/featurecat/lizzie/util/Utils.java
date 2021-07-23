@@ -714,10 +714,10 @@ public class Utils {
     }
   }
 
-  public static void copyReadBoardJava() {
+  public static void copyReadBoardJava(String javaReadBoardName) {
     // TODO Auto-generated method stub
     try {
-      copy("/assets/readboard_java/readboard_0.1.jar", "readboard_java");
+      copy("/assets/readboard_java/" + javaReadBoardName, "readboard_java");
       copy("/assets/readboard_java/help.docx", "readboard_java");
       copy("/assets/readboard_java/help_en.docx", "readboard_java");
     } catch (IOException e) {

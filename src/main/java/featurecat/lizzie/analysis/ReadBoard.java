@@ -60,6 +60,7 @@ public class ReadBoard {
   private boolean isSyncing = false;
   private long startTime;
   private boolean javaReadBoard = false;
+  private String javaReadBoardName = "readboard-0.2-shaded.jar";
 
   public ReadBoard(boolean usePipe, boolean isJavaReadBoard) throws Exception {
     this.usePipe = usePipe;
@@ -160,9 +161,10 @@ public class ReadBoard {
     ProcessBuilder processBuilder = new ProcessBuilder(commands);
     processBuilder.redirectErrorStream(true);
     if (javaReadBoard) {
-      File javaReadBoard = new File("readboard_java" + File.separator + "readboard_0.1.jar");
+      File javaReadBoard = new File("readboard_java" + File.separator + javaReadBoardName);
       if (!javaReadBoard.exists()) {
-        Utils.copyReadBoardJava();
+        Utils.deleteDir(new File("readboard_java"));
+        Utils.copyReadBoardJava(javaReadBoardName);
       }
     }
     if (javaReadBoard) {
@@ -188,7 +190,7 @@ public class ReadBoard {
                           java64Path
                               + " -jar -Dsun.java2d.uiScale=1.0 readboard_java"
                               + Utils.pwd
-                              + "readboard_0.1.jar"
+                              + javaReadBoardName
                               + param);
               success = true;
             } catch (Exception e) {
@@ -207,7 +209,7 @@ public class ReadBoard {
                             java32
                                 + " -jar -Dsun.java2d.uiScale=1.0 readboard_java"
                                 + Utils.pwd
-                                + "readboard_0.1.jar"
+                                + javaReadBoardName
                                 + param);
                 success = true;
               } catch (Exception e) {
@@ -222,7 +224,7 @@ public class ReadBoard {
                     .exec(
                         "java -Dsun.java2d.uiScale=1.0 -jar readboard_java"
                             + Utils.pwd
-                            + "readboard_0.1.jar"
+                            + javaReadBoardName
                             + param);
           }
         } else {
@@ -231,7 +233,7 @@ public class ReadBoard {
                   .exec(
                       "java -Dsun.java2d.uiScale=1.0 -jar readboard_java"
                           + Utils.pwd
-                          + "readboard_0.1.jar"
+                          + javaReadBoardName
                           + param);
         }
       } catch (Exception e) {
@@ -329,6 +331,8 @@ public class ReadBoard {
         for (int i = 0; i < params.length; i++)
           tempcount.add(Integer.parseInt(params[i].substring(0, 1)));
       }
+    } else {
+      Lizzie.gtpConsole.addLine(line);
     }
     if (line.startsWith("version")) {
       Lizzie.gtpConsole.addErrorLine("Board synchronization tool " + line);
@@ -345,7 +349,7 @@ public class ReadBoard {
     }
     if (line.startsWith("start")) {
       String[] params = line.trim().split(" ");
-      if (params.length == 4) {
+      if (params.length >= 3) {
         int boardWidth = Integer.parseInt(params[1]);
         int boardHeight = Integer.parseInt(params[2]);
         if (boardWidth != Lizzie.board.boardWidth || boardHeight != Lizzie.board.boardHeight) {
