@@ -306,8 +306,7 @@ public class IndependentMainBoard extends JFrame {
           public void mouseClicked(MouseEvent e) {
             if (e.isAltDown()
                 && !SwingUtilities.isMiddleMouseButton(e)
-                && (featurecat.lizzie.gui.RightClickMenu.allowcoords != ""
-                    || featurecat.lizzie.gui.RightClickMenu.avoidcoords != ""))
+                && (LizzieFrame.allowcoords != "" || LizzieFrame.avoidcoords != ""))
               Lizzie.frame.menu.clearSelect.doClick();
           }
 
@@ -734,11 +733,11 @@ public class IndependentMainBoard extends JFrame {
     Optional<int[]> boardCoordinates = boardRenderer.convertScreenToCoordinates(x, y);
     if (boardCoordinates.isPresent()) {
       int[] coords = boardCoordinates.get();
-      if (Lizzie.frame.blackorwhite == 0) Lizzie.board.placeForManul(coords[0], coords[1]);
+      if (Lizzie.frame.blackorwhite == 0) Lizzie.board.placeForManual(coords[0], coords[1]);
       if (Lizzie.frame.blackorwhite == 1)
-        Lizzie.board.placeForManul(coords[0], coords[1], Stone.BLACK);
+        Lizzie.board.placeForManual(coords[0], coords[1], Stone.BLACK);
       if (Lizzie.frame.blackorwhite == 2)
-        Lizzie.board.placeForManul(coords[0], coords[1], Stone.WHITE);
+        Lizzie.board.placeForManual(coords[0], coords[1], Stone.WHITE);
     }
   }
 
@@ -998,10 +997,10 @@ public class IndependentMainBoard extends JFrame {
         selectForceAllowAvoid();
         if (Lizzie.frame.selectForceAllow)
           boardRenderer.drawAllSelectedRectByCoords(
-              Lizzie.frame.selectForceAllow, featurecat.lizzie.gui.RightClickMenu.allowcoords);
+              Lizzie.frame.selectForceAllow, LizzieFrame.allowcoords);
         else
           boardRenderer.drawAllSelectedRectByCoords(
-              Lizzie.frame.selectForceAllow, featurecat.lizzie.gui.RightClickMenu.avoidcoords);
+              Lizzie.frame.selectForceAllow, LizzieFrame.avoidcoords);
         Lizzie.board.clearbestmovesafter(Lizzie.board.getHistory().getStart());
         repaint();
       } else {
@@ -1027,44 +1026,26 @@ public class IndependentMainBoard extends JFrame {
         int y = minY + j;
         String coordsName = Lizzie.board.convertCoordinatesToName(x, y);
         if (Lizzie.frame.selectForceAllow) {
-          if (featurecat.lizzie.gui.RightClickMenu.allowcoords != "") {
-            featurecat.lizzie.gui.RightClickMenu.allowcoords =
-                featurecat.lizzie.gui.RightClickMenu.allowcoords + "," + coordsName;
+          if (LizzieFrame.allowcoords != "") {
+            LizzieFrame.allowcoords = LizzieFrame.allowcoords + "," + coordsName;
           } else {
-            featurecat.lizzie.gui.RightClickMenu.allowcoords = coordsName;
+            LizzieFrame.allowcoords = coordsName;
           }
         } else {
-          if (featurecat.lizzie.gui.RightClickMenu.avoidcoords != "") {
-            featurecat.lizzie.gui.RightClickMenu.avoidcoords =
-                featurecat.lizzie.gui.RightClickMenu.avoidcoords + "," + coordsName;
+          if (LizzieFrame.avoidcoords != "") {
+            LizzieFrame.avoidcoords = LizzieFrame.avoidcoords + "," + coordsName;
           } else {
-            featurecat.lizzie.gui.RightClickMenu.avoidcoords = coordsName;
+            LizzieFrame.avoidcoords = coordsName;
           }
         }
       }
     }
     if (Lizzie.frame.selectForceAllow) {
-      RightClickMenu.avoidcoords = "";
-      //  RightClickMenu.isallowSingle = true;
-      //      if (Lizzie.leelaz.isKatago) {
-      //        if (featurecat.lizzie.gui.RightClickMenu.kataAllowTopLeft == ""
-      //            || featurecat.lizzie.gui.RightClickMenu.kataAllowBottomRight == "") {
-      //          Lizzie.leelaz.sendCommand("kata-analyze " +
-      // Lizzie.config.analyzeUpdateIntervalCentisec);
-      //        } else {
-      //          Lizzie.leelaz.sendCommand(
-      //              "kata-problem_analyze "
-      //                  + Lizzie.config.analyzeUpdateIntervalCentisec
-      //                  + " topleft "
-      //                  + featurecat.lizzie.gui.RightClickMenu.kataAllowTopLeft
-      //                  + " bottomright "
-      //                  + featurecat.lizzie.gui.RightClickMenu.kataAllowBottomRight);
-      //        }
-      //      }
-      Lizzie.leelaz.analyzeAvoid("allow", featurecat.lizzie.gui.RightClickMenu.allowcoords, 50);
+      LizzieFrame.avoidcoords = "";
+      Lizzie.leelaz.analyzeAvoid("allow", LizzieFrame.allowcoords, 50);
     } else {
-      featurecat.lizzie.gui.RightClickMenu.allowcoords = "";
-      Lizzie.leelaz.analyzeAvoid("avoid", featurecat.lizzie.gui.RightClickMenu.avoidcoords, 50);
+      LizzieFrame.allowcoords = "";
+      Lizzie.leelaz.analyzeAvoid("avoid", LizzieFrame.avoidcoords, 50);
     }
     Input.selectMode = false;
     Lizzie.frame.menu.clearAllowAvoidButtonState();

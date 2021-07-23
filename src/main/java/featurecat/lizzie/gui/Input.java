@@ -18,8 +18,7 @@ public class Input implements MouseListener, KeyListener, MouseWheelListener, Mo
   public void mouseClicked(MouseEvent e) {
     if (e.isAltDown()
         && !SwingUtilities.isMiddleMouseButton(e)
-        && (featurecat.lizzie.gui.RightClickMenu.allowcoords != ""
-            || featurecat.lizzie.gui.RightClickMenu.avoidcoords != ""))
+        && (LizzieFrame.allowcoords != "" || LizzieFrame.avoidcoords != ""))
       Lizzie.frame.menu.clearSelect.doClick();
   }
 
@@ -404,12 +403,7 @@ public class Input implements MouseListener, KeyListener, MouseWheelListener, Mo
         break;
 
       case VK_M:
-        if (controlIsPressed(e)) {
-          Lizzie.frame.openChangeMoveDialog();
-        } else if (e.isAltDown()) {
-          // if (isinsertmode) {
-          // return;
-          // }
+        if (e.isAltDown()) {
           Lizzie.config.toggleShowMoveAllInBranch();
         } else {
           Lizzie.config.toggleShowMoveNumber();

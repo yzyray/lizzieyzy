@@ -245,12 +245,7 @@ public class InputIndependentMainBoard implements KeyListener {
         break;
 
       case VK_M:
-        if (controlIsPressed(e)) {
-          Lizzie.frame.openChangeMoveDialog();
-        } else if (e.isAltDown()) {
-          // if (isinsertmode) {
-          // return;
-          // }
+        if (e.isAltDown()) {
           Lizzie.config.toggleShowMoveAllInBranch();
         } else {
           Lizzie.config.toggleShowMoveNumber();

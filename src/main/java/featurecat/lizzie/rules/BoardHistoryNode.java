@@ -134,60 +134,6 @@ public class BoardHistoryNode {
     }
   }
 
-  public BoardHistoryNode addOrGoto2(BoardData data, boolean newBranch, boolean changeMove) {
-    if (Lizzie.leelaz != null && !Lizzie.engineManager.isEngineGame) {
-      Lizzie.leelaz.clearBestMoves();
-    }
-    Optional<BoardHistoryNode> next = next(true);
-    boolean nextDummy = next.isPresent() && next.get().isEndDummay();
-    if (!newBranch && nextDummy) {
-      changeMove = true;
-    }
-    if (!newBranch) {
-      for (int i = 0; i < variations.size(); i++) {
-        if (variations.get(i).data.zobrist.equals(data.zobrist)) {
-          //	          if (i != 0 && changeMove) {
-          //	            break;
-          //	          }
-          Lizzie.board.clearAfterMove();
-          return variations.get(i);
-        }
-      }
-    }
-    if (!this.previous.isPresent()) {
-      data.moveMNNumber = 1;
-    }
-    if (Lizzie.config.newMoveNumberInBranch && !variations.isEmpty() && !changeMove) {
-      if (!newBranch) {
-        data.moveNumberList = new int[Board.boardWidth * Board.boardHeight];
-        data.moveMNNumber = -1;
-      }
-      if (data.moveMNNumber == -1) {
-        data.moveMNNumber = data.dummy ? 0 : 1;
-      }
-      data.lastMove.ifPresent(
-          m -> data.moveNumberList[Board.getIndex(m[0], m[1])] = data.moveMNNumber);
-    }
-    BoardHistoryNode node = new BoardHistoryNode(data);
-    if (changeMove) {
-      //   Optional<BoardHistoryNode> next = next(true);
-      next.ifPresent(
-          n -> {
-            node.variations = n.variations;
-            n.previous = null;
-            n.variations.stream().forEach(v -> v.previous = Optional.of(node));
-            variations.set(0, node);
-          });
-
-    } else {
-      // Add node
-      variations.add(node);
-    }
-    node.previous = Optional.of(this);
-    Lizzie.board.clearAfterMove();
-    return node;
-  }
-
   public BoardHistoryNode addOrGoto(
       BoardData data, boolean newBranch, boolean changeMove, boolean clearAfterMove) {
 

@@ -331,8 +331,6 @@ public class ReadBoard {
         for (int i = 0; i < params.length; i++)
           tempcount.add(Integer.parseInt(params[i].substring(0, 1)));
       }
-    } else {
-      Lizzie.gtpConsole.addLine(line);
     }
     if (line.startsWith("version")) {
       Lizzie.gtpConsole.addErrorLine("Board synchronization tool " + line);
@@ -446,7 +444,7 @@ public class ReadBoard {
       }
     }
     if (line.startsWith("pass")) {
-      Lizzie.board.pass();
+      Lizzie.board.changeNextTurn();
     }
     if (line.startsWith("firstchanged")) {
       String[] params = line.trim().split(" ");

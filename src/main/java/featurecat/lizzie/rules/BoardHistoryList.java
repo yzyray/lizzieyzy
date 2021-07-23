@@ -100,10 +100,6 @@ public class BoardHistoryList {
     head = head.addOrGoto(data, newBranch);
   }
 
-  public void addOrGoto2(BoardData data, boolean newBranch, boolean changeMove) {
-    head = head.addOrGoto2(data, newBranch, changeMove);
-  }
-
   public void addOrGoto(BoardData data, boolean newBranch, boolean changeMove) {
     head = head.addOrGoto(data, newBranch, changeMove, true);
   }

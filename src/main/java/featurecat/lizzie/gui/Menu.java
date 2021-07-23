@@ -6587,13 +6587,8 @@ public class Menu extends JMenuBar {
           }
         });
 
-    // add(selectAllow);
-    // add(selectAllowMore);
-    // add(selectAvoid);
-    // add(selectAvoidMore);
     if (Lizzie.leelaz != null && (Lizzie.leelaz.isKatago || Lizzie.leelaz.isZen)) {
       selectAvoid.setVisible(false);
-      // selectAllow.setVisible(false);
     }
     if (clearSelect != null) remove(clearSelect);
     clearSelect = new JFontButton(iconClear);
@@ -6608,13 +6603,10 @@ public class Menu extends JMenuBar {
             if (Lizzie.frame.independentMainBoard != null)
               Lizzie.frame.independentMainBoard.boardRenderer.removeSelectedRect();
             Lizzie.frame.refresh();
-            if (featurecat.lizzie.gui.RightClickMenu.avoidcoords != ""
-                || featurecat.lizzie.gui.RightClickMenu.allowcoords != "")
+            if (LizzieFrame.avoidcoords != "" || LizzieFrame.allowcoords != "")
               Lizzie.board.clearbestmovesafter(Lizzie.board.getHistory().getStart());
-            featurecat.lizzie.gui.RightClickMenu.avoidcoords = "";
-            featurecat.lizzie.gui.RightClickMenu.allowcoords = "";
-            //            featurecat.lizzie.gui.RightClickMenu.kataAllowTopLeft = "";
-            //            featurecat.lizzie.gui.RightClickMenu.kataAllowBottomRight = "";
+            LizzieFrame.avoidcoords = "";
+            LizzieFrame.allowcoords = "";
             Lizzie.frame.isKeepingForce = false;
             if (Lizzie.leelaz.isPondering()) Lizzie.leelaz.ponder();
           }

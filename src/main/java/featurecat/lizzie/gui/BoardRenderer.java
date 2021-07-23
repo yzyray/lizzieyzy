@@ -809,11 +809,8 @@ public class BoardRenderer {
 
   private void reDrawAllSelectedRect() {
     if (Lizzie.frame.selectForceAllow)
-      drawAllSelectedRectByCoords(
-          Lizzie.frame.selectForceAllow, featurecat.lizzie.gui.RightClickMenu.allowcoords);
-    else
-      drawAllSelectedRectByCoords(
-          Lizzie.frame.selectForceAllow, featurecat.lizzie.gui.RightClickMenu.avoidcoords);
+      drawAllSelectedRectByCoords(Lizzie.frame.selectForceAllow, LizzieFrame.allowcoords);
+    else drawAllSelectedRectByCoords(Lizzie.frame.selectForceAllow, LizzieFrame.avoidcoords);
   }
 
   public void removeSelectedRect() {
@@ -1485,9 +1482,7 @@ public class BoardRenderer {
       if (!shouldShowCountBlockBelow()) g.drawImage(kataEstimateImage, x, y, null);
     if (Lizzie.frame.isCounting || Lizzie.frame.isAutocounting)
       g.drawImage(estimateImage, x, y, null);
-    if (Lizzie.frame.isKeepingForce
-        || RightClickMenu.isKeepForcing
-        || RightClickMenu.isTempForcing) {
+    if (Lizzie.frame.isKeepingForce || LizzieFrame.isKeepForcing || LizzieFrame.isTempForcing) {
       if (needDrawSelectImage) g.drawImage(selectImage, x, y, null);
       if (needDrawSelectImageAll) g.drawImage(selectImageAll, x, y, null);
     }

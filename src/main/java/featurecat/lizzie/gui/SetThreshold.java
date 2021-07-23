@@ -22,6 +22,8 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 public class SetThreshold extends JDialog {
   private JPanel dialogPane = new JPanel();
@@ -35,6 +37,11 @@ public class SetThreshold extends JDialog {
   private JButton btnConfirm;
   private JButton btnCancel;
   private boolean fromMoveList;
+
+  private int originMoveListWinrateThreshold = Lizzie.config.moveListWinrateThreshold;
+  private int originMoveListScoreThreshold = Lizzie.config.moveListScoreThreshold;
+  private int originMoveListVisitsThreshold = Lizzie.config.moveListVisitsThreshold;
+  private boolean originMoveListTopCurNode = Lizzie.config.moveListTopCurNode;
 
   public SetThreshold(Window owner, boolean fromMoveList) {
     super(owner);
@@ -99,6 +106,47 @@ public class SetThreshold extends JDialog {
       contentPanel.add(
           new JFontLabel(Lizzie.resourceBundle.getString("Movelistframe.chkTopCurrentMove")));
       contentPanel.add(chkTopCurrentMove);
+      dropWinRateChooser.addChangeListener(
+          new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+              Lizzie.config.saveThreshold(
+                  (int) dropWinRateChooser.getValue(),
+                  (int) dropScoreMeanChooser.getValue(),
+                  (int) playoutsChooser.getValue(),
+                  chkTopCurrentMove.isSelected());
+            }
+          });
+      dropScoreMeanChooser.addChangeListener(
+          new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+              Lizzie.config.saveThreshold(
+                  (int) dropWinRateChooser.getValue(),
+                  (int) dropScoreMeanChooser.getValue(),
+                  (int) playoutsChooser.getValue(),
+                  chkTopCurrentMove.isSelected());
+            }
+          });
+      playoutsChooser.addChangeListener(
+          new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+              Lizzie.config.saveThreshold(
+                  (int) dropWinRateChooser.getValue(),
+                  (int) dropScoreMeanChooser.getValue(),
+                  (int) playoutsChooser.getValue(),
+                  chkTopCurrentMove.isSelected());
+            }
+          });
+      chkTopCurrentMove.addActionListener(
+          new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+              Lizzie.config.saveThreshold(
+                  (int) dropWinRateChooser.getValue(),
+                  (int) dropScoreMeanChooser.getValue(),
+                  (int) playoutsChooser.getValue(),
+                  chkTopCurrentMove.isSelected());
+            }
+          });
     }
     dialogPane.add(contentPanel, BorderLayout.CENTER);
   }
@@ -116,13 +164,7 @@ public class SetThreshold extends JDialog {
     btnConfirm.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            if (fromMoveList) {
-              Lizzie.config.saveThreshold(
-                  (int) dropWinRateChooser.getValue(),
-                  (int) dropScoreMeanChooser.getValue(),
-                  (int) playoutsChooser.getValue(),
-                  chkTopCurrentMove.isSelected());
-            } else {
+            if (!fromMoveList) {
               Lizzie.config.saveThreshold(
                   (int) dropWinRateChooser.getValue(),
                   (int) dropScoreMeanChooser.getValue(),
@@ -143,6 +185,13 @@ public class SetThreshold extends JDialog {
     btnCancel.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
+            if (fromMoveList) {
+              Lizzie.config.saveThreshold(
+                  originMoveListWinrateThreshold,
+                  originMoveListScoreThreshold,
+                  originMoveListVisitsThreshold,
+                  originMoveListTopCurNode);
+            }
             setVisible(false);
           }
         });
