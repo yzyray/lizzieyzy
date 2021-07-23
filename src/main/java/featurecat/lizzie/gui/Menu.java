@@ -7295,11 +7295,11 @@ public class Menu extends JMenuBar {
       // Lizzie.frame.topPanel.addSeparator();
       Lizzie.frame.topPanel.add(btnOpen);
       Lizzie.frame.topPanel.add(btnSave);
-      Lizzie.frame.topPanel.add(btnSetMain);
       Lizzie.frame.topPanel.add(btnFlashAnalyze);
       Lizzie.frame.topPanel.add(btnAnalyze);
       Lizzie.frame.topPanel.add(btnHawkeye);
       Lizzie.frame.topPanel.add(btnChangeTurn);
+      Lizzie.frame.topPanel.add(btnSetMain);
       Lizzie.frame.topPanel.add(btnBackMain);
       Lizzie.frame.topPanel.add(btnMarkup);
       if (Lizzie.config.isShowingMarkupTools) {
