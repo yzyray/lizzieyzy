@@ -6798,7 +6798,7 @@ public class Menu extends JMenuBar {
       ImageIcon iconHawkeye = new ImageIcon();
       ImageIcon iconSetMain = new ImageIcon();
       ImageIcon iconBackMain = new ImageIcon();
-      ImageIcon iconPass = new ImageIcon();
+      ImageIcon iconChangeTurn = new ImageIcon();
       ImageIcon iconMarkup1 = new ImageIcon();
       ImageIcon iconMarkup2 = new ImageIcon();
       ImageIcon markupLabel1 = new ImageIcon();
@@ -6858,7 +6858,7 @@ public class Menu extends JMenuBar {
                     Lizzie.config.menuIconSize,
                     Lizzie.config.menuIconSize,
                     java.awt.Image.SCALE_SMOOTH));
-        iconPass.setImage(
+        iconChangeTurn.setImage(
             ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/pass.png"))
                 .getScaledInstance(
                     Lizzie.config.menuIconSize,
@@ -7159,19 +7159,20 @@ public class Menu extends JMenuBar {
             }
           });
 
-      JFontButton btnPass = new JFontButton(iconPass);
-      btnPass.setPreferredSize(new Dimension(Lizzie.config.menuHeight, Lizzie.config.menuHeight));
-      btnPass.setFocusable(false);
-      btnPass.setToolTipText(resourceBundle.getString("Menu.btnPass.toolTipText")); // ("设为主分支(L)");
-      btnPass.addActionListener(
+      JFontButton btnChangeTurn = new JFontButton(iconChangeTurn);
+      btnChangeTurn.setPreferredSize(
+          new Dimension(Lizzie.config.menuHeight, Lizzie.config.menuHeight));
+      btnChangeTurn.setFocusable(false);
+      btnChangeTurn.setToolTipText(
+          resourceBundle.getString("Menu.btnChangeTurn.toolTipText")); // ("设为主分支(L)");
+      btnChangeTurn.addActionListener(
           new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-              Lizzie.board.pass();
+              Lizzie.board.changeNextTurn();
             }
           });
 
       JFontButton btnMarkup = new JFontButton();
-      btnPass.setVisible(!playPass.isVisible());
       if (Lizzie.config.isShowingMarkupTools) btnMarkup.setIcon(iconMarkup2);
       else btnMarkup.setIcon(iconMarkup1);
       btnMarkup.setFocusable(false);
@@ -7298,7 +7299,7 @@ public class Menu extends JMenuBar {
       Lizzie.frame.topPanel.add(btnFlashAnalyze);
       Lizzie.frame.topPanel.add(btnAnalyze);
       Lizzie.frame.topPanel.add(btnHawkeye);
-      Lizzie.frame.topPanel.add(btnPass);
+      Lizzie.frame.topPanel.add(btnChangeTurn);
       Lizzie.frame.topPanel.add(btnBackMain);
       Lizzie.frame.topPanel.add(btnMarkup);
       if (Lizzie.config.isShowingMarkupTools) {

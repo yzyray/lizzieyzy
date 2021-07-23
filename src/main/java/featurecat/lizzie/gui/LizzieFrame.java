@@ -2542,14 +2542,7 @@ public class LizzieFrame extends JFrame {
     RightClickMenu2.show(mainPanel, Utils.zoomIn(x), Utils.zoomIn(y));
   }
 
-  public static void openAvoidMoveDialog() {
-    AvoidMoveDialog avoidMoveDialog = new AvoidMoveDialog();
-    avoidMoveDialog.setVisible(true);
-  }
-  // this is copyed from https://github.com/zsalch/lizzie/tree/n_avoiddialog
-
   public void toggleGtpConsole() {
-    // Lizzie.leelaz.toggleGtpConsole();
     if (Lizzie.gtpConsole != null) {
       Lizzie.gtpConsole.setVisible(!Lizzie.gtpConsole.isVisible());
       if (Lizzie.gtpConsole.isVisible()) Lizzie.gtpConsole.setViewEnd();
