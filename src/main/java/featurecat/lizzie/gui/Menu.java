@@ -3642,17 +3642,17 @@ public class Menu extends JMenuBar {
         });
     readBoardSettings.add(recognizeLastMove);
 
-    final JFontCheckBoxMenuItem defaultSyncBothSide =
-        new JFontCheckBoxMenuItem(
-            resourceBundle.getString("Menu.defaultSyncBothSide")); // ("默认双向同步");
-    defaultSyncBothSide.addActionListener(
-        new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            Lizzie.config.syncBoth = !Lizzie.config.syncBoth;
-            Lizzie.config.uiConfig.put("sync-both", Lizzie.config.syncBoth);
-          }
-        });
-    readBoardSettings.add(defaultSyncBothSide);
+    //    final JFontCheckBoxMenuItem defaultSyncBothSide =
+    //        new JFontCheckBoxMenuItem(
+    //            resourceBundle.getString("Menu.defaultSyncBothSide")); // ("默认双向同步");
+    //    defaultSyncBothSide.addActionListener(
+    //        new ActionListener() {
+    //          public void actionPerformed(ActionEvent e) {
+    //            Lizzie.config.syncBoth = !Lizzie.config.syncBoth;
+    //            Lizzie.config.uiConfig.put("sync-both", Lizzie.config.syncBoth);
+    //          }
+    //        });
+    //    readBoardSettings.add(defaultSyncBothSide);
 
     final JFontCheckBoxMenuItem alwaysKeepBoardStatSync =
         new JFontCheckBoxMenuItem(
@@ -3666,16 +3666,16 @@ public class Menu extends JMenuBar {
         });
     readBoardSettings.add(alwaysKeepBoardStatSync);
 
-    final JFontMenuItem setSyncInterval =
-        new JFontMenuItem(resourceBundle.getString("Menu.setSyncInterval")); // ("设置同步间隔");
-    setSyncInterval.addActionListener(
-        new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            SetBoardSyncTime setBoardSyncTime = new SetBoardSyncTime();
-            setBoardSyncTime.setVisible(true);
-          }
-        });
-    readBoardSettings.add(setSyncInterval);
+    //    final JFontMenuItem setSyncInterval =
+    //        new JFontMenuItem(resourceBundle.getString("Menu.setSyncInterval")); // ("设置同步间隔");
+    //    setSyncInterval.addActionListener(
+    //        new ActionListener() {
+    //          public void actionPerformed(ActionEvent e) {
+    //            SetBoardSyncTime setBoardSyncTime = new SetBoardSyncTime();
+    //            setBoardSyncTime.setVisible(true);
+    //          }
+    //        });
+    //    readBoardSettings.add(setSyncInterval);
 
     final JFontMenu readBoardJavaSettings =
         new JFontMenu(resourceBundle.getString("Menu.readBoardJavaSettings")); // ("识别工具(java)选项");
@@ -3710,8 +3710,8 @@ public class Menu extends JMenuBar {
             }
             if (Lizzie.config.readBoardArg3) recognizeLastMove.setState(true);
             else recognizeLastMove.setState(false);
-            if (Lizzie.config.syncBoth) defaultSyncBothSide.setState(true);
-            else defaultSyncBothSide.setState(false);
+            //            if (Lizzie.config.syncBoth) defaultSyncBothSide.setState(true);
+            //            else defaultSyncBothSide.setState(false);
           }
 
           @Override

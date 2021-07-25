@@ -37,7 +37,7 @@ public class ReadBoard {
   private BufferedOutputStream outputStream;
   private ScheduledExecutorService executor;
   ArrayList<Integer> tempcount = new ArrayList<Integer>();
-  private long startSyncTime = 0;
+  // private long startSyncTime = 0;
 
   private boolean isLoaded = false;
   private boolean checkedVersionSucceed = false;
@@ -49,7 +49,7 @@ public class ReadBoard {
   boolean firstcount = true;
   public int numberofcount = 0;
   public boolean firstSync = true;
-  public boolean syncBoth = Lizzie.config.syncBoth;
+  // public boolean syncBoth = Lizzie.config.syncBoth;
   private ReadBoardStream readBoardStream;
   private Socket socket;
   private ServerSocket s;
@@ -124,17 +124,17 @@ public class ReadBoard {
     commands.add(engineCommand);
     commands.add("yzy");
     //   commands.add(Lizzie.config.readBoardArg1);
-    commands.add(Lizzie.config.readBoardArg2 + "");
+    // commands.add(Lizzie.config.readBoardArg2 + "");
     if (Lizzie.config.readBoardArg3) {
       commands.add("0");
     } else {
       commands.add("1");
     }
-    if (syncBoth) {
-      commands.add("0");
-    } else {
-      commands.add("1");
-    }
+    //    if (syncBoth) {
+    //      commands.add("0");
+    //    } else {
+    //      commands.add("1");
+    //    }
     commands.add(
         !LizzieFrame.toolbar.chkAutoPlayTime.isSelected()
                 || LizzieFrame.toolbar.txtAutoPlayTime.getText().equals("")
@@ -547,11 +547,11 @@ public class ReadBoard {
   }
 
   private void syncBoardStones(boolean isSecondTime) {
-    if (!this.javaReadBoard && !isSecondTime) {
-      long thisTime = System.currentTimeMillis();
-      if (thisTime - startSyncTime < Lizzie.config.readBoardArg2 / 2) return;
-      startSyncTime = thisTime;
-    }
+    //    if (!this.javaReadBoard && !isSecondTime) {
+    //      long thisTime = System.currentTimeMillis();
+    //      if (thisTime - startSyncTime < Lizzie.config.readBoardArg2 / 2) return;
+    //      startSyncTime = thisTime;
+    //    }
     if (tempcount.size() > Lizzie.board.boardWidth * Lizzie.board.boardHeight) {
       tempcount = new ArrayList<Integer>();
       return;

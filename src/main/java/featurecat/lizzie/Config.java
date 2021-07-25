@@ -80,13 +80,13 @@ public class Config {
   public boolean readKomi = true;
   public boolean alwaysGotoLastOnLive = false;
   // public String readBoardArg1 = "0";
-  public int readBoardArg2 = 200;
+  //  public int readBoardArg2 = 200;
   public boolean readBoardArg3 = true;
   public boolean alwaysSyncBoardStat = true;
   public boolean playSound = true;
   public boolean notPlaySoundInSync = true;
   public boolean noRefreshOnMouseMove = true;
-  public boolean syncBoth = false;
+  // public boolean syncBoth = false;
   public boolean showBlueRing = true;
   public boolean isShowingWinrateGraph = true;
   public boolean isShowingMoveList = true;
@@ -956,7 +956,7 @@ public class Config {
     alwaysGotoLastOnLive = uiConfig.optBoolean("always-gotolast-onlive", false);
     alwaysSyncBoardStat = uiConfig.optBoolean("always-sync-boardstat", true);
     //    readBoardArg1 = uiConfig.optString("read-board-arg1", "0");
-    readBoardArg2 = uiConfig.optInt("read-board-arg2", 200);
+    //   readBoardArg2 = uiConfig.optInt("read-board-arg2", 200);
     readBoardArg3 = uiConfig.optBoolean("read-board-arg3", true);
     readBoardArg4 = uiConfig.optBoolean("read-board-arg4", false);
     whiteSuggestionWhite = uiConfig.optBoolean("white-suggestion-white", false);
@@ -972,7 +972,7 @@ public class Config {
     playSound = uiConfig.optBoolean("play-sound", true);
     notPlaySoundInSync = uiConfig.optBoolean("not-play-sound-insync", true);
     noRefreshOnMouseMove = uiConfig.optBoolean("norefresh-onmouse-move", true);
-    syncBoth = uiConfig.optBoolean("sync-both", false);
+    // syncBoth = uiConfig.optBoolean("sync-both", false);
     isShowingWinrateGraph = uiConfig.optBoolean("show-winrate-matchai", true);
     isShowingMoveList = uiConfig.optBoolean("show-movelist-matchai", true);
     moveListSelectedBranch = uiConfig.optInt("moveList-selected-branch", 0);
