@@ -3627,7 +3627,7 @@ public class Menu extends JMenuBar {
 
     final JFontMenu readBoardSettings =
         new JFontMenu(resourceBundle.getString("Menu.readBoardSettings")); // ("识别工具选项");
-    if (OS.isWindows()) live.add(readBoardSettings);
+    live.add(readBoardSettings);
 
     final JFontCheckBoxMenuItem recognizeLastMove =
         new JFontCheckBoxMenuItem(
@@ -3642,18 +3642,6 @@ public class Menu extends JMenuBar {
         });
     readBoardSettings.add(recognizeLastMove);
 
-    //    final JFontCheckBoxMenuItem defaultSyncBothSide =
-    //        new JFontCheckBoxMenuItem(
-    //            resourceBundle.getString("Menu.defaultSyncBothSide")); // ("默认双向同步");
-    //    defaultSyncBothSide.addActionListener(
-    //        new ActionListener() {
-    //          public void actionPerformed(ActionEvent e) {
-    //            Lizzie.config.syncBoth = !Lizzie.config.syncBoth;
-    //            Lizzie.config.uiConfig.put("sync-both", Lizzie.config.syncBoth);
-    //          }
-    //        });
-    //    readBoardSettings.add(defaultSyncBothSide);
-
     final JFontCheckBoxMenuItem alwaysKeepBoardStatSync =
         new JFontCheckBoxMenuItem(
             resourceBundle.getString("Menu.alwaysKeepBoardStatSync")); // ("总是保持棋盘一致(回退时可能破坏历史手顺)");
@@ -3666,33 +3654,6 @@ public class Menu extends JMenuBar {
         });
     readBoardSettings.add(alwaysKeepBoardStatSync);
 
-    //    final JFontMenuItem setSyncInterval =
-    //        new JFontMenuItem(resourceBundle.getString("Menu.setSyncInterval")); // ("设置同步间隔");
-    //    setSyncInterval.addActionListener(
-    //        new ActionListener() {
-    //          public void actionPerformed(ActionEvent e) {
-    //            SetBoardSyncTime setBoardSyncTime = new SetBoardSyncTime();
-    //            setBoardSyncTime.setVisible(true);
-    //          }
-    //        });
-    //    readBoardSettings.add(setSyncInterval);
-
-    final JFontMenu readBoardJavaSettings =
-        new JFontMenu(resourceBundle.getString("Menu.readBoardJavaSettings")); // ("识别工具(java)选项");
-    live.add(readBoardJavaSettings);
-
-    final JFontCheckBoxMenuItem alwaysKeepBoardStatSyncJava =
-        new JFontCheckBoxMenuItem(
-            resourceBundle.getString("Menu.alwaysKeepBoardStatSync")); // ("总是保持棋盘一致(回退时可能破坏历史手顺)");
-    alwaysKeepBoardStatSyncJava.addActionListener(
-        new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            Lizzie.config.alwaysSyncBoardStat = !Lizzie.config.alwaysSyncBoardStat;
-            Lizzie.config.uiConfig.put("always-sync-boardstat", Lizzie.config.alwaysSyncBoardStat);
-          }
-        });
-    readBoardJavaSettings.add(alwaysKeepBoardStatSyncJava);
-
     live.addMenuListener(
         new MenuListener() {
 
@@ -3703,10 +3664,8 @@ public class Menu extends JMenuBar {
             else alwaysGoToLastMove.setState(false);
             if (Lizzie.config.alwaysSyncBoardStat) {
               alwaysKeepBoardStatSync.setState(true);
-              alwaysKeepBoardStatSyncJava.setState(true);
             } else {
               alwaysKeepBoardStatSync.setState(false);
-              alwaysKeepBoardStatSyncJava.setState(false);
             }
             if (Lizzie.config.readBoardArg3) recognizeLastMove.setState(true);
             else recognizeLastMove.setState(false);
