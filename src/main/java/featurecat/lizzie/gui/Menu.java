@@ -3629,19 +3629,6 @@ public class Menu extends JMenuBar {
         new JFontMenu(resourceBundle.getString("Menu.readBoardSettings")); // ("识别工具选项");
     live.add(readBoardSettings);
 
-    final JFontCheckBoxMenuItem recognizeLastMove =
-        new JFontCheckBoxMenuItem(
-            resourceBundle.getString(
-                "Menu.recognizeLastMove")); // ("启用识别最后一手(其他类不支持)(关闭可加速,但首次同步后轮谁下可能错误)");
-    recognizeLastMove.addActionListener(
-        new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            Lizzie.config.readBoardArg3 = !Lizzie.config.readBoardArg3;
-            Lizzie.config.uiConfig.put("read-board-arg3", Lizzie.config.readBoardArg3);
-          }
-        });
-    readBoardSettings.add(recognizeLastMove);
-
     final JFontCheckBoxMenuItem alwaysKeepBoardStatSync =
         new JFontCheckBoxMenuItem(
             resourceBundle.getString("Menu.alwaysKeepBoardStatSync")); // ("总是保持棋盘一致(回退时可能破坏历史手顺)");
@@ -3667,10 +3654,6 @@ public class Menu extends JMenuBar {
             } else {
               alwaysKeepBoardStatSync.setState(false);
             }
-            if (Lizzie.config.readBoardArg3) recognizeLastMove.setState(true);
-            else recognizeLastMove.setState(false);
-            //            if (Lizzie.config.syncBoth) defaultSyncBothSide.setState(true);
-            //            else defaultSyncBothSide.setState(false);
           }
 
           @Override

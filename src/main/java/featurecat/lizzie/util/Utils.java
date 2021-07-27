@@ -18,9 +18,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
-import java.net.InetAddress;
-import java.net.Socket;
-import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -52,17 +49,6 @@ public class Utils {
   public static String pwd = java.io.File.separator;
   private static int msemaphoretryroom = 1;
   private static boolean alertedNoByoyomiSoundFile = false;
-
-  public static boolean isPortUsing(String host, int port) throws UnknownHostException {
-    boolean flag = false;
-    InetAddress theAddress = InetAddress.getByName(host);
-    try {
-      Socket socket = new Socket(theAddress, port);
-      flag = true;
-    } catch (IOException e) {
-    }
-    return flag;
-  }
 
   public static void addFiller(JComponent component, int width, int height) {
     Dimension FILLER_DIMENSION = new Dimension(width, height);

@@ -81,7 +81,7 @@ public class Config {
   public boolean alwaysGotoLastOnLive = false;
   // public String readBoardArg1 = "0";
   //  public int readBoardArg2 = 200;
-  public boolean readBoardArg3 = true;
+  //  public boolean readBoardArg3 = true;
   public boolean alwaysSyncBoardStat = true;
   public boolean playSound = true;
   public boolean notPlaySoundInSync = true;
@@ -93,7 +93,6 @@ public class Config {
   public int moveListSelectedBranch = 0;
   // public double matchAiTemperature = 1;
   public boolean showMoveListGraph = true;
-  public boolean readBoardArg4 = false;
   public boolean whiteSuggestionWhite = false;
   public boolean whiteSuggestionOrderWhite = false;
   public boolean advanceTimeSettings = false;
@@ -955,10 +954,6 @@ public class Config {
     readKomi = uiConfig.optBoolean("read-komi", true);
     alwaysGotoLastOnLive = uiConfig.optBoolean("always-gotolast-onlive", false);
     alwaysSyncBoardStat = uiConfig.optBoolean("always-sync-boardstat", true);
-    //    readBoardArg1 = uiConfig.optString("read-board-arg1", "0");
-    //   readBoardArg2 = uiConfig.optInt("read-board-arg2", 200);
-    readBoardArg3 = uiConfig.optBoolean("read-board-arg3", true);
-    readBoardArg4 = uiConfig.optBoolean("read-board-arg4", false);
     whiteSuggestionWhite = uiConfig.optBoolean("white-suggestion-white", false);
     whiteSuggestionOrderWhite = uiConfig.optBoolean("white-suggestion-order-white", false);
     advanceTimeSettings = uiConfig.optBoolean("advance-time-settings", false);

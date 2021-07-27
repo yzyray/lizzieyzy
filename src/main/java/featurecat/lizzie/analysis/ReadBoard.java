@@ -44,7 +44,7 @@ public class ReadBoard {
   private int version = 623;
   private String engineCommand;
   public String currentEnginename = "";
-  private int port = 24781;
+  private int port = -1;
 
   boolean firstcount = true;
   public int numberofcount = 0;
@@ -61,6 +61,7 @@ public class ReadBoard {
   private long startTime;
   private boolean javaReadBoard = false;
   private String javaReadBoardName = "readboard-1.0-shaded.jar";
+  private boolean waitSocket = true;
 
   public ReadBoard(boolean usePipe, boolean isJavaReadBoard) throws Exception {
     this.usePipe = usePipe;
@@ -68,14 +69,16 @@ public class ReadBoard {
     if (s != null && !s.isClosed()) {
       s.close();
     }
-    if (!usePipe) engineCommand = "readboard\\readboard.bat";
-    else engineCommand = "readboard\\readboard.exe";
+    if (usePipe) engineCommand = "readboard\\readboard.exe";
+    else engineCommand = "readboard\\readboard.bat";
     startEngine(engineCommand, 0);
   }
 
-  private void createSocketServer(int port) {
+  private void createSocketServer() {
     try {
-      s = new ServerSocket(port);
+      s = new ServerSocket(0);
+      port = s.getLocalPort();
+      waitSocket = false;
       while (true) {
         socket = s.accept();
         readBoardStream = new ReadBoardStream(socket);
@@ -107,34 +110,25 @@ public class ReadBoard {
 
   public void startEngine(String engineCommand, int index) throws Exception {
     if (!usePipe) {
-      while (Utils.isPortUsing("127.0.0.1", port)) {
-        port++;
-      }
+      waitSocket = true;
       noMsg = false;
       Runnable runnable2 =
           new Runnable() {
             public void run() {
-              if (s == null || s.isClosed()) createSocketServer(port);
+              if (s == null || s.isClosed()) createSocketServer();
             }
           };
       Thread thread2 = new Thread(runnable2);
       thread2.start();
+      int times = 300;
+      while (waitSocket && times > 0) {
+        Thread.sleep(10);
+        times--;
+      }
     }
     List<String> commands = new ArrayList<String>();
     commands.add(engineCommand);
     commands.add("yzy");
-    //   commands.add(Lizzie.config.readBoardArg1);
-    // commands.add(Lizzie.config.readBoardArg2 + "");
-    if (Lizzie.config.readBoardArg3) {
-      commands.add("0");
-    } else {
-      commands.add("1");
-    }
-    //    if (syncBoth) {
-    //      commands.add("0");
-    //    } else {
-    //      commands.add("1");
-    //    }
     commands.add(
         !LizzieFrame.toolbar.chkAutoPlayTime.isSelected()
                 || LizzieFrame.toolbar.txtAutoPlayTime.getText().equals("")
@@ -151,7 +145,6 @@ public class ReadBoard {
             ? " "
             : LizzieFrame.toolbar.txtAutoPlayFirstPlayouts.getText());
 
-    commands.add("0");
     if (usePipe) commands.add("0");
     else commands.add("1");
     if (Lizzie.config.isChinese) commands.add("0");
