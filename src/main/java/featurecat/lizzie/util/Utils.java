@@ -609,8 +609,8 @@ public class Utils {
             showMsg(Lizzie.resourceBundle.getString("Utils.noSoundFile") + wav + "\"");
           }
         } else {
-          showMsg(Lizzie.resourceBundle.getString("Utils.noSoundFile") + wav + "\"");
           Lizzie.config.playSound = false;
+          showMsg(Lizzie.resourceBundle.getString("Utils.noSoundFile") + wav + "\"");
           Lizzie.config.uiConfig.put("play-sound", Lizzie.config.playSound);
         }
         return;
