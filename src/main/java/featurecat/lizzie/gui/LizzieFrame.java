@@ -10582,21 +10582,7 @@ public class LizzieFrame extends JFrame {
 
     public void paintComponent(Graphics g) {
       if (isPlayoutPercents) {
-        //    if (isNextMove)
-        //       setBackground(new Color(0, 221, 0, 50));
-        //        } else setBackground(Color.WHITE);
-        //	setForeground(Color.BLACK);
         Graphics2D g2 = (Graphics2D) g;
-        //  final BasicStroke stroke=new BasicStroke(2.0f);
-
-        //   g2.setStroke(stroke);
-        //        	 if(isSelect)
-        //          	   g2.setColor(new Color(238, 221, 130));
-        //        	 else
-        //        if (isNextMove) {
-        //          g2.setColor(Color.LIGHT_GRAY);
-        //        } else
-        // setBackground(Color.YELLOW);
         g2.setColor(Color.LIGHT_GRAY);
         g2.fillRect(
             0,
@@ -10614,13 +10600,19 @@ public class LizzieFrame extends JFrame {
         }
         if (isNextMove) {
           if (isSelect) {
-            if (diff < -20 || scoreDiff < -5) setBackground(new Color(150, 0, 0, 100));
-            else if (diff < -5 || scoreDiff < -3) setBackground(new Color(150, 150, 0, 120));
-            else setBackground(new Color(50, 150, 0, 100));
+            if (diff < -24 || scoreDiff < -12) setBackground(new Color(85, 25, 80, 120));
+            else if (diff < -12 || scoreDiff < -6) setBackground(new Color(208, 16, 19, 100));
+            else if (diff < -6 || scoreDiff < -3) setBackground(new Color(145, 90, 0, 100));
+            else if (diff < -3 || scoreDiff < -1.5) setBackground(new Color(180, 180, 0, 100));
+            else if (diff < -1 || scoreDiff < -0.5) setBackground(new Color(140, 202, 34, 100));
+            else setBackground(new Color(0, 180, 0, 100));
           } else {
-            if (diff < -20 || scoreDiff < -5) setBackground(new Color(221, 0, 0, 50));
-            else if (diff < -5 || scoreDiff < -3) setBackground(new Color(221, 221, 0, 70));
-            else setBackground(new Color(0, 221, 0, 50));
+            if (diff < -24 || scoreDiff < -12) setBackground(new Color(85, 25, 80, 70));
+            else if (diff < -12 || scoreDiff < -6) setBackground(new Color(208, 16, 19, 50));
+            else if (diff < -6 || scoreDiff < -3) setBackground(new Color(145, 90, 0, 50));
+            else if (diff < -3 || scoreDiff < -1.5) setBackground(new Color(180, 180, 0, 50));
+            else if (diff < -1 || scoreDiff < -0.5) setBackground(new Color(140, 202, 34, 50));
+            else setBackground(new Color(0, 180, 0, 60));
           }
         } else if (!isSelect && !isChanged) {
           setForeground(Color.BLACK);
@@ -12251,20 +12243,28 @@ public class LizzieFrame extends JFrame {
                       .toString()
                       .substring(0, table.getValueAt(row, 3).toString().length() - 1));
           if (column == 3) {
-            if (scoreDiff < 0) setForeground(blunderGoodMove);
-            else if (scoreDiff >= 3 && scoreDiff <= 5) setForeground(Color.BLUE);
-            else if (scoreDiff > 5) setForeground(new Color(220, 0, 0));
-            else setForeground(blunderForeground);
+            if (scoreDiff < 0.5) setForeground(new Color(0, 150, 0));
+            else if (scoreDiff < 1.5) setForeground(new Color(105, 162, 34));
+            else if (scoreDiff < 3) setForeground(new Color(150, 150, 0));
+            else if (scoreDiff < 6) setForeground(new Color(125, 90, 0));
+            else if (scoreDiff < 12) setForeground(new Color(175, 16, 19));
+            else setForeground(new Color(165, 25, 160));
           } else if (column == 2) {
-            if (diffWinrate < 0) setForeground(blunderGoodMove);
-            else if (diffWinrate >= 5 && diffWinrate <= 20) setForeground(Color.BLUE);
-            else if (diffWinrate > 20) setForeground(new Color(220, 0, 0));
+            if (diffWinrate < 1) setForeground(new Color(0, 150, 0));
+            else if (diffWinrate < 3) setForeground(new Color(105, 162, 34));
+            else if (diffWinrate < 6) setForeground(new Color(150, 150, 0));
+            else if (diffWinrate < 12) setForeground(new Color(125, 90, 0));
+            else if (diffWinrate < 24) setForeground(new Color(175, 16, 19));
+            else setForeground(new Color(165, 25, 160));
           } else setForeground(blunderForeground);
         } else {
           if (column == 2) {
-            if (diffWinrate < 0) setForeground(blunderGoodMove);
-            else if (diffWinrate >= 5 && diffWinrate <= 20) setForeground(Color.BLUE);
-            else if (diffWinrate > 20) setForeground(new Color(220, 0, 0));
+            if (diffWinrate < 1) setForeground(new Color(0, 150, 0));
+            else if (diffWinrate < 3) setForeground(new Color(105, 162, 34));
+            else if (diffWinrate < 6) setForeground(new Color(150, 150, 0));
+            else if (diffWinrate < 12) setForeground(new Color(125, 90, 0));
+            else if (diffWinrate < 24) setForeground(new Color(175, 16, 19));
+            else setForeground(new Color(165, 25, 160));
           } else setForeground(blunderForeground);
         }
         return super.getTableCellRendererComponent(table, value, false, false, row, column);

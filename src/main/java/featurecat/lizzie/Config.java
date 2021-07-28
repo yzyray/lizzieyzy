@@ -551,6 +551,9 @@ public class Config {
   public boolean analysisAutoQuit = true;
   public boolean firstLoadKataGo = true;
 
+  public int txtMoveRankMarkLastMove = 3;
+  public int moveRankMarkLastMove = 0; // -1关闭 0全部
+
   private JSONObject loadAndMergeSaveBoardConfig(
       JSONObject defaultCfg, String fileName, boolean needValidation) throws IOException {
 
