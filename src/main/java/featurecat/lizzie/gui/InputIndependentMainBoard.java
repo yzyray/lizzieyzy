@@ -246,7 +246,7 @@ public class InputIndependentMainBoard implements KeyListener {
 
       case VK_M:
         if (e.isAltDown()) {
-          Lizzie.config.toggleShowMoveAllInBranch();
+          Lizzie.config.toggleShowMoveRankMark();
         } else {
           Lizzie.config.toggleShowMoveNumber();
         }

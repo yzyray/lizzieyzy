@@ -404,7 +404,7 @@ public class Input implements MouseListener, KeyListener, MouseWheelListener, Mo
 
       case VK_M:
         if (e.isAltDown()) {
-          Lizzie.config.toggleShowMoveAllInBranch();
+          Lizzie.config.toggleShowMoveRankMark();
         } else {
           Lizzie.config.toggleShowMoveNumber();
         }

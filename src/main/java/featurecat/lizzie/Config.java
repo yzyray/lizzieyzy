@@ -36,7 +36,7 @@ public class Config {
   public double replayBranchIntervalSeconds = 0.9;
   public boolean showCoordinates = true;
   public boolean colorByWinrateInsteadOfVisits = false;
-  public boolean showlcbwinrate = false;
+  // public boolean showlcbwinrate = false;
   public boolean playponder = true;
   public int showrect = 1;
   public boolean showlcbcolor = false;
@@ -552,7 +552,7 @@ public class Config {
   public boolean firstLoadKataGo = true;
 
   public int txtMoveRankMarkLastMove = 3;
-  public int moveRankMarkLastMove = 0; // -1关闭 0全部
+  public int moveRankMarkLastMove = 1; // -1关闭 0全部
 
   private JSONObject loadAndMergeSaveBoardConfig(
       JSONObject defaultCfg, String fileName, boolean needValidation) throws IOException {
@@ -1178,6 +1178,8 @@ public class Config {
     lossPanelSelectWinrate = uiConfig.optBoolean("loss-panel-select-winrate", false);
     analysisAutoQuit = uiConfig.optBoolean("analysis-auto-quit", true);
     firstLoadKataGo = uiConfig.optBoolean("first-load-katago", true);
+    txtMoveRankMarkLastMove = uiConfig.optInt("txt-move-rank-mark-last-move", 3);
+    moveRankMarkLastMove = uiConfig.optInt("move-rank-mark-last-move", 1);
     showScrollVariation = uiConfig.optBoolean("show-scroll-variation", true);
     ignoreOutOfWidth = uiConfig.optBoolean("ignore-out-of-width", false);
     enginePkPonder = uiConfig.optBoolean("engine-pk-ponder", false);
@@ -1448,8 +1450,31 @@ public class Config {
     }
   }
 
-  public void toggleShowLcbWinrate() {
-    this.showlcbwinrate = !this.showlcbwinrate;
+  public void setTxtMoveRankMarkLastMove(int value) {
+    txtMoveRankMarkLastMove = value;
+    uiConfig.put("txt-move-rank-mark-last-move", txtMoveRankMarkLastMove);
+  }
+
+  public void setShowRankMark(boolean showAll, boolean showLast, int showLimit) {
+    if (showAll) moveRankMarkLastMove = 0;
+    else if (showLast) moveRankMarkLastMove = 1;
+    else {
+      moveRankMarkLastMove = showLimit;
+    }
+    uiConfig.put("move-rank-mark-last-move", moveRankMarkLastMove);
+    Lizzie.frame.menu.setBtnRankMark();
+  }
+
+  public void toggleShowMoveRankMark() {
+    if (moveRankMarkLastMove < 0) moveRankMarkLastMove = 1;
+    else if (moveRankMarkLastMove == 1) {
+      if (txtMoveRankMarkLastMove > 1) moveRankMarkLastMove = txtMoveRankMarkLastMove;
+      else moveRankMarkLastMove = 0;
+    } else if (txtMoveRankMarkLastMove > 1 && moveRankMarkLastMove == txtMoveRankMarkLastMove) {
+      moveRankMarkLastMove = 0;
+    } else if (moveRankMarkLastMove == 0) moveRankMarkLastMove = -1;
+    uiConfig.put("move-rank-mark-last-move", moveRankMarkLastMove);
+    Lizzie.frame.menu.setBtnRankMark();
   }
 
   public void toggleExtraMode(int mode) {

@@ -9,6 +9,7 @@ import static java.lang.Math.round;
 
 import featurecat.lizzie.Lizzie;
 import featurecat.lizzie.analysis.Branch;
+import featurecat.lizzie.analysis.EngineManager;
 import featurecat.lizzie.analysis.Leelaz;
 import featurecat.lizzie.analysis.MoveData;
 import featurecat.lizzie.rules.Board;
@@ -346,7 +347,7 @@ public class BoardRenderer {
   }
 
   private boolean shouldShowPreviousBestMoves() {
-    return (Lizzie.engineManager.isEngineGame && Lizzie.config.showPreviousBestmovesInEngineGame);
+    return (EngineManager.isEngineGame && Lizzie.config.showPreviousBestmovesInEngineGame);
   }
 
   private int getInterval() {

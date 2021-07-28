@@ -51,8 +51,9 @@ public class MoveData {
     String[] data = line.trim().split(" ");
     // int k =
     // Lizzie.config.config.getJSONObject("leelaz").getInt("max-suggestion-moves");
-    boolean islcb =
-        (Lizzie.config.leelaversion >= 17 && Lizzie.config.showlcbwinrate && !Lizzie.leelaz.noLcb);
+    //    boolean islcb =
+    //        (Lizzie.config.leelaversion >= 17 && Lizzie.config.showlcbwinrate &&
+    // !Lizzie.leelaz.noLcb);
     // Todo: Proper tag parsing in case gtp protocol is extended(?)/changed
     for (int i = 0; i < data.length; i++) {
       String key = data[i];
@@ -82,9 +83,9 @@ public class MoveData {
         if (key.equals("lcb")) {
           // LCB support
           result.lcb = Integer.parseInt(value) / 100.0;
-          if (islcb) {
-            result.winrate = Integer.parseInt(value) / 100.0;
-          }
+          //          if (islcb) {
+          //            result.winrate = Integer.parseInt(value) / 100.0;
+          //          }
         }
         if (key.equals("prior")) {
           result.policy = Integer.parseInt(value) / 100.0;
@@ -93,9 +94,9 @@ public class MoveData {
         if (key.equals("winrate")) {
           // support 0.16 0.15
           result.oriwinrate = Integer.parseInt(value) / 100.0;
-          if (!islcb) {
-            result.winrate = Integer.parseInt(value) / 100.0;
-          }
+          //          if (!islcb) {
+          //            result.winrate = Integer.parseInt(value) / 100.0;
+          //          }
         }
       }
     }
@@ -122,8 +123,9 @@ public class MoveData {
     String[] data = line.trim().split(" ");
     // int k =
     // Lizzie.config.config.getJSONObject("leelaz").getInt("max-suggestion-moves");
-    boolean islcb =
-        (Lizzie.config.leelaversion >= 17 && Lizzie.config.showlcbwinrate && !Lizzie.leelaz.noLcb);
+    //    boolean islcb =
+    //        (Lizzie.config.leelaversion >= 17 && Lizzie.config.showlcbwinrate &&
+    // !Lizzie.leelaz.noLcb);
     // Todo: Proper tag parsing in case gtp protocol is extended(?)/changed
     for (int i = 0; i < data.length; i++) {
       String key = data[i];
@@ -153,9 +155,9 @@ public class MoveData {
         if (key.equals("lcb")) {
           // LCB support
           result.lcb = Integer.parseInt(value) / 100.0;
-          if (islcb) {
-            result.winrate = Integer.parseInt(value) / 100.0;
-          }
+          //          if (islcb) {
+          //            result.winrate = Integer.parseInt(value) / 100.0;
+          //          }
         }
         if (key.equals("prior")) {
           result.policy = Integer.parseInt(value) / 100.0;
@@ -169,9 +171,9 @@ public class MoveData {
         if (key.equals("winrate")) {
           // support 0.16 0.15
           result.oriwinrate = Integer.parseInt(value) / 100.0;
-          if (!islcb) {
-            result.winrate = Integer.parseInt(value) / 100.0;
-          }
+          //          if (!islcb) {
+          //            result.winrate = Integer.parseInt(value) / 100.0;
+          //          }
         }
       }
     }
@@ -183,8 +185,9 @@ public class MoveData {
   public static MoveData fromInfoKatago(String line) throws ArrayIndexOutOfBoundsException {
     MoveData result = new MoveData();
     String[] data = line.trim().split(" ");
-    boolean islcb =
-        (Lizzie.config.leelaversion >= 17 && Lizzie.config.showlcbwinrate && !Lizzie.leelaz.noLcb);
+    //    boolean islcb =
+    //        (Lizzie.config.leelaversion >= 17 && Lizzie.config.showlcbwinrate &&
+    // !Lizzie.leelaz.noLcb);
     // Todo: Proper tag parsing in case gtp protocol is extended(?)/changed
     for (int i = 0; i < data.length; i++) {
       String key = data[i];
@@ -229,9 +232,9 @@ public class MoveData {
         if (key.equals("lcb")) {
           // LCB support
           result.lcb = Double.parseDouble(value) * 100;
-          if (islcb) {
-            result.winrate = Double.parseDouble(value) * 100;
-          }
+          //          if (islcb) {
+          //            result.winrate = Double.parseDouble(value) * 100;
+          //          }
         }
         if (key.equals("prior")) {
           result.policy = Double.parseDouble(value) * 100;
@@ -239,9 +242,9 @@ public class MoveData {
         if (key.equals("winrate")) {
           // support 0.16 0.15
           result.oriwinrate = Double.parseDouble(value) * 100;
-          if (!islcb) {
-            result.winrate = Double.parseDouble(value) * 100;
-          }
+          //          if (!islcb) {
+          //            result.winrate = Double.parseDouble(value) * 100;
+          //          }
         }
         //        if (key.equals("scoreLead")) {
         //          result.scoreMean = Double.parseDouble(value);
@@ -403,7 +406,7 @@ public class MoveData {
       MoveData result = new MoveData();
       result.coordinate = match.group(1);
       result.playouts = Integer.parseInt(match.group(2));
-      result.winrate = Double.parseDouble(match.group(Lizzie.config.showlcbwinrate ? 4 : 3));
+      result.winrate = Double.parseDouble(match.group(3));
       result.variation = Arrays.asList(match.group(5).split(" ", Lizzie.config.limitBranchLength));
       // result.variation = Arrays.asList(match.group(5).split(" "));
       return result;
@@ -436,7 +439,7 @@ public class MoveData {
       MoveData result = new MoveData();
       result.coordinate = match.group(1);
       result.playouts = Integer.parseInt(match.group(2));
-      result.winrate = Double.parseDouble(match.group(Lizzie.config.showlcbwinrate ? 4 : 3));
+      result.winrate = Double.parseDouble(match.group(3));
       result.scoreMean =
           Lizzie.board.getHistory().isBlacksTurn()
               ? Double.parseDouble(match.group(5))

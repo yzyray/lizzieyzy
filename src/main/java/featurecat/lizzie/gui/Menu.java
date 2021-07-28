@@ -82,6 +82,10 @@ public class Menu extends JMenuBar {
   ImageIcon iconbh;
   ImageIcon iconbh2;
 
+  ImageIcon rankMarkOn;
+  ImageIcon rankMarkOff;
+  JFontButton btnRankMark;
+
   JFontButton selectAllow;
   JFontButton selectAvoid;
   JButton selectAllowMore;
@@ -6734,6 +6738,8 @@ public class Menu extends JMenuBar {
     btnDoubleMenu.setPreferredSize(
         new Dimension((int) btnDoubleMenu.getPreferredSize().getWidth(), Lizzie.config.menuHeight));
     if (Lizzie.config.showBasicBtn) {
+      rankMarkOn = new ImageIcon();
+      rankMarkOff = new ImageIcon();
       ImageIcon iconOpen = new ImageIcon();
       ImageIcon iconSave = new ImageIcon();
       ImageIcon iconAnalyze = new ImageIcon();
@@ -6892,6 +6898,18 @@ public class Menu extends JMenuBar {
                     java.awt.Image.SCALE_SMOOTH));
         clear.setImage(
             ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/clear.png"))
+                .getScaledInstance(
+                    Lizzie.config.menuIconSize,
+                    Lizzie.config.menuIconSize,
+                    java.awt.Image.SCALE_SMOOTH));
+        rankMarkOn.setImage(
+            ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/RankMarkOn.png"))
+                .getScaledInstance(
+                    Lizzie.config.menuIconSize,
+                    Lizzie.config.menuIconSize,
+                    java.awt.Image.SCALE_SMOOTH));
+        rankMarkOff.setImage(
+            ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/RankMarkOff.png"))
                 .getScaledInstance(
                     Lizzie.config.menuIconSize,
                     Lizzie.config.menuIconSize,
@@ -7075,6 +7093,20 @@ public class Menu extends JMenuBar {
             }
           });
 
+      btnRankMark = new JFontButton();
+      btnRankMark.setPreferredSize(
+          new Dimension(Lizzie.config.menuHeight, Lizzie.config.menuHeight));
+      btnRankMark.setFocusable(false);
+      btnRankMark.setToolTipText(
+          resourceBundle.getString("Menu.btnRankMark.toolTipText")); // ("自动分析(A)");
+      btnRankMark.addActionListener(
+          new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              // aaa+地步工具栏
+            }
+          });
+      btnRankMark.setIcon(Lizzie.config.moveRankMarkLastMove < 0 ? rankMarkOff : rankMarkOn);
+
       JFontButton btnSetMain = new JFontButton(iconSetMain);
       btnSetMain.setPreferredSize(
           new Dimension(Lizzie.config.menuHeight, Lizzie.config.menuHeight));
@@ -7240,6 +7272,7 @@ public class Menu extends JMenuBar {
       Lizzie.frame.topPanel.add(btnFlashAnalyze);
       Lizzie.frame.topPanel.add(btnAnalyze);
       Lizzie.frame.topPanel.add(btnHawkeye);
+      Lizzie.frame.topPanel.add(btnRankMark);
       Lizzie.frame.topPanel.add(btnChangeTurn);
       Lizzie.frame.topPanel.add(btnSetMain);
       Lizzie.frame.topPanel.add(btnBackMain);
@@ -9073,5 +9106,10 @@ public class Menu extends JMenuBar {
 
   private boolean isEngineGame() {
     return Lizzie.engineManager != null && Lizzie.engineManager.isEngineGame();
+  }
+
+  public void setBtnRankMark() {
+    if (btnRankMark != null)
+      btnRankMark.setIcon(Lizzie.config.moveRankMarkLastMove < 0 ? rankMarkOff : rankMarkOn);
   }
 }
