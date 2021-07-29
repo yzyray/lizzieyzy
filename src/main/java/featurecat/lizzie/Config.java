@@ -184,6 +184,7 @@ public class Config {
   public boolean tryPlay = true;
   public boolean analyzeList = true;
   public boolean move = true;
+  public boolean moveRank = true;
   public boolean coords = true;
   public boolean liveButton = true;
   public boolean badMoves = false;
@@ -1079,6 +1080,7 @@ public class Config {
     tryPlay = uiConfig.optBoolean("tryPlay", true);
     analyzeList = uiConfig.optBoolean("analyze-list", true);
     move = uiConfig.optBoolean("move", true);
+    moveRank = uiConfig.optBoolean("move-rank", true);
     coords = uiConfig.optBoolean("coords", true);
     autoPlay = uiConfig.optBoolean("autoPlay", true);
     showQuickLinks = uiConfig.optBoolean("show-quick-links", false);

@@ -501,6 +501,11 @@ public class Menu extends JMenuBar {
         new JFontMenu(resourceBundle.getString("Menu.moveMenu")); // ("手数(M)");
     viewMenu.add(moveMenu);
 
+    final JFontMenu moveRankMenu =
+        new JFontMenu(resourceBundle.getString("Menu.moveRankMenu")); // ("手数(M)");
+    viewMenu.add(moveRankMenu);
+    addRankMarkMenu(null, moveRankMenu);
+
     final JFontMenu Suggestions =
         new JFontMenu(resourceBundle.getString("Menu.Suggestions")); // ("选点");
     viewMenu.add(Suggestions);
@@ -565,7 +570,6 @@ public class Menu extends JMenuBar {
         new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
-            // TODO Auto-generated method stub
             SwingUtilities.invokeLater(
                 new Runnable() {
                   public void run() {
@@ -573,10 +577,7 @@ public class Menu extends JMenuBar {
                         JOptionPane.showInputDialog(
                             Lizzie.frame,
                             resourceBundle.getString("Menu.minPlayoutsForNextMoveMessage"),
-                            resourceBundle.getString("Menu.minPlayoutsForNextMoveTitle")
-                                + Lizzie.config.minPlayoutsForNextMove
-                                + ")",
-                            JOptionPane.INFORMATION_MESSAGE);
+                            Lizzie.config.minPlayoutsForNextMove);
                     if (result != null)
                       try {
                         int numbers = Integer.parseInt(result);
@@ -4382,6 +4383,18 @@ public class Menu extends JMenuBar {
           }
         });
 
+    final JFontCheckBoxMenuItem moveRank =
+        new JFontCheckBoxMenuItem(resourceBundle.getString("BottomToolbar.moveRank")); // "手数");
+    customToolbarItem.add(moveRank);
+    moveRank.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.config.moveRank = !Lizzie.config.moveRank;
+            Lizzie.config.uiConfig.put("move-rank", Lizzie.config.moveRank);
+            Lizzie.frame.toolbar.reSetButtonLocation();
+          }
+        });
+
     final JFontCheckBoxMenuItem move =
         new JFontCheckBoxMenuItem(resourceBundle.getString("BottomToolbar.move")); // "手数");
     customToolbarItem.add(move);
@@ -4467,6 +4480,8 @@ public class Menu extends JMenuBar {
             else autoPlay.setState(false);
             if (Lizzie.config.deleteMove) deleteMove.setState(true);
             else deleteMove.setState(false);
+            if (Lizzie.config.moveRank) moveRank.setState(true);
+            else moveRank.setState(false);
           }
 
           @Override
@@ -6218,6 +6233,7 @@ public class Menu extends JMenuBar {
     JFontPopupMenu selectAllowPopup = new JFontPopupMenu();
     JFontCheckBoxMenuItem selectAllowCustomMove = new JFontCheckBoxMenuItem();
     JFontTextField txtLimitLengthAllow = new JFontTextField();
+    txtLimitLengthAllow.setDocument(new IntDocument());
     txtLimitLengthAllow.setPreferredSize(
         new Dimension(
             50,
@@ -6228,7 +6244,7 @@ public class Menu extends JMenuBar {
             resourceBundle.getString(
                 "Menu.selectLimitCustomMoves")); // "Custom limit moves:");//自定义限制手数:
     customNumberAllow.setBounds(
-        Lizzie.config.useJavaLooks ? 20 : 36,
+        Lizzie.config.useJavaLooks ? 20 : 37,
         Lizzie.config.isFrameFontSmall() ? 1 : (Lizzie.config.isFrameFontMiddle() ? 1 : 3),
         180,
         25);
@@ -6380,6 +6396,7 @@ public class Menu extends JMenuBar {
     JFontPopupMenu selectAvoidPopup = new JFontPopupMenu();
     JFontCheckBoxMenuItem selectAvoidCustomMove = new JFontCheckBoxMenuItem();
     JFontTextField txtLimitLengthAvoid = new JFontTextField();
+    txtLimitLengthAllow.setDocument(new IntDocument());
     txtLimitLengthAvoid.setPreferredSize(
         new Dimension(
             50,
@@ -6390,7 +6407,7 @@ public class Menu extends JMenuBar {
             resourceBundle.getString(
                 "Menu.selectLimitCustomMoves")); // "Custom limit moves:");//自定义限制手数:
     customNumberAvoid.setBounds(
-        Lizzie.config.useJavaLooks ? 20 : 36,
+        Lizzie.config.useJavaLooks ? 20 : 37,
         Lizzie.config.isFrameFontSmall() ? 1 : (Lizzie.config.isFrameFontMiddle() ? 1 : 3),
         180,
         25);
@@ -7011,7 +7028,6 @@ public class Menu extends JMenuBar {
         JFontPopupMenu autoAnalyzePopup = new JFontPopupMenu();
         final JFontMenuItem autoAnalyze =
             new JFontMenuItem(resourceBundle.getString("Menu.autoAnalyze")); // ("自动分析(A)");
-        // aboutItem.setMnemonic('A');
         autoAnalyze.addActionListener(
             new ActionListener() {
               @Override
@@ -7093,6 +7109,9 @@ public class Menu extends JMenuBar {
             }
           });
 
+      JFontPopupMenu rankMarkPopup = new JFontPopupMenu();
+      addRankMarkMenu(rankMarkPopup, null);
+
       btnRankMark = new JFontButton();
       btnRankMark.setPreferredSize(
           new Dimension(Lizzie.config.menuHeight, Lizzie.config.menuHeight));
@@ -7103,6 +7122,10 @@ public class Menu extends JMenuBar {
           new ActionListener() {
             public void actionPerformed(ActionEvent e) {
               // aaa+地步工具栏
+              rankMarkPopup.show(
+                  Lizzie.frame.topPanel,
+                  btnRankMark.getX(),
+                  btnRankMark.getY() + btnRankMark.getHeight());
             }
           });
       btnRankMark.setIcon(Lizzie.config.moveRankMarkLastMove < 0 ? rankMarkOff : rankMarkOn);
@@ -7322,6 +7345,7 @@ public class Menu extends JMenuBar {
       JFontPopupMenu selectAllowPopup = new JFontPopupMenu();
       JFontCheckBoxMenuItem selectAllowCustomMove = new JFontCheckBoxMenuItem();
       JFontTextField txtLimitLengthAllow = new JFontTextField();
+      txtLimitLengthAllow.setDocument(new IntDocument());
       txtLimitLengthAllow.setPreferredSize(
           new Dimension(
               50,
@@ -7334,7 +7358,7 @@ public class Menu extends JMenuBar {
               resourceBundle.getString(
                   "Menu.selectLimitCustomMoves")); // "Custom limit moves:");//自定义限制手数:
       customNumberAllow.setBounds(
-          Lizzie.config.useJavaLooks ? 20 : 36,
+          Lizzie.config.useJavaLooks ? 20 : 37,
           Lizzie.config.isFrameFontSmall() ? 1 : (Lizzie.config.isFrameFontMiddle() ? 1 : 3),
           180,
           25);
@@ -7486,6 +7510,7 @@ public class Menu extends JMenuBar {
       JFontPopupMenu selectAvoidPopup = new JFontPopupMenu();
       JFontCheckBoxMenuItem selectAvoidCustomMove = new JFontCheckBoxMenuItem();
       JFontTextField txtLimitLengthAvoid = new JFontTextField();
+      txtLimitLengthAllow.setDocument(new IntDocument());
       txtLimitLengthAvoid.setPreferredSize(
           new Dimension(
               50,
@@ -7498,7 +7523,7 @@ public class Menu extends JMenuBar {
               resourceBundle.getString(
                   "Menu.selectLimitCustomMoves")); // "Custom limit moves:");//自定义限制手数:
       customNumberAvoid.setBounds(
-          Lizzie.config.useJavaLooks ? 20 : 36,
+          Lizzie.config.useJavaLooks ? 20 : 37,
           Lizzie.config.isFrameFontSmall() ? 1 : (Lizzie.config.isFrameFontMiddle() ? 1 : 3),
           180,
           25);
@@ -7867,6 +7892,278 @@ public class Menu extends JMenuBar {
       Lizzie.frame.reSetLoc();
       Lizzie.frame.topPanel.revalidate();
       repaint();
+    }
+  }
+
+  private void addRankMarkMenu(JFontPopupMenu rankPopupMenu, JMenu rankJMenu) {
+    JFontCheckBoxMenuItem rankCustomMove = new JFontCheckBoxMenuItem();
+    JFontTextField txtCustomMove = new JFontTextField();
+    txtCustomMove.setDocument(new IntDocument());
+    Document dtCustomMove = txtCustomMove.getDocument();
+    dtCustomMove.addDocumentListener(
+        new DocumentListener() {
+          public void insertUpdate(DocumentEvent e) {
+            Lizzie.config.txtMoveRankMarkLastMove =
+                Math.max(
+                    1, Utils.parseTextToInt(txtCustomMove, Lizzie.config.txtMoveRankMarkLastMove));
+            Lizzie.config.uiConfig.put(
+                "txt-move-rank-mark-last-move", Lizzie.config.txtMoveRankMarkLastMove);
+          }
+
+          public void removeUpdate(DocumentEvent e) {
+            Lizzie.config.txtMoveRankMarkLastMove =
+                Math.max(
+                    1, Utils.parseTextToInt(txtCustomMove, Lizzie.config.txtMoveRankMarkLastMove));
+            Lizzie.config.uiConfig.put(
+                "txt-move-rank-mark-last-move", Lizzie.config.txtMoveRankMarkLastMove);
+          }
+
+          public void changedUpdate(DocumentEvent e) {
+            Lizzie.config.txtMoveRankMarkLastMove =
+                Math.max(
+                    1, Utils.parseTextToInt(txtCustomMove, Lizzie.config.txtMoveRankMarkLastMove));
+            Lizzie.config.uiConfig.put(
+                "txt-move-rank-mark-last-move", Lizzie.config.txtMoveRankMarkLastMove);
+          }
+        });
+
+    rankCustomMove.setLayout(null);
+    JFontLabel lblCustomMove =
+        new JFontLabel(resourceBundle.getString("Menu.rankMenu.lblCustomMove"));
+    lblCustomMove.setBounds(
+        Lizzie.config.useJavaLooks ? 20 : 37,
+        Lizzie.config.isFrameFontSmall()
+            ? Lizzie.config.useJavaLooks ? -3 : 1
+            : (Lizzie.config.isFrameFontMiddle() ? 1 : 3),
+        180,
+        25);
+    rankCustomMove.add(lblCustomMove);
+    rankCustomMove.add(txtCustomMove);
+    if (Lizzie.config.isChinese) {
+      txtCustomMove.setBounds(
+          (Lizzie.config.useJavaLooks ? 0 : 17)
+              + (Lizzie.config.isFrameFontSmall()
+                  ? 103
+                  : (Lizzie.config.isFrameFontMiddle() ? 131 : 158)),
+          Lizzie.config.isFrameFontSmall()
+              ? Lizzie.config.useJavaLooks ? 0 : 3
+              : (Lizzie.config.isFrameFontMiddle() ? 3 : 4),
+          Lizzie.config.isFrameFontSmall() ? 30 : (Lizzie.config.isFrameFontMiddle() ? 40 : 50),
+          Lizzie.config.isFrameFontSmall() ? 20 : (Lizzie.config.isFrameFontMiddle() ? 22 : 24));
+      lblCustomMove.setPreferredSize(
+          new Dimension(
+              Lizzie.config.isFrameFontSmall()
+                  ? 170
+                  : (Lizzie.config.isFrameFontMiddle() ? 205 : 233),
+              Lizzie.config.isFrameFontSmall()
+                  ? 27
+                  : (Lizzie.config.isFrameFontMiddle() ? 27 : 30)));
+    } else {
+      txtCustomMove.setBounds(
+          (Lizzie.config.useJavaLooks ? 20 : 37)
+              + (Lizzie.config.isFrameFontSmall()
+                  ? 103
+                  : (Lizzie.config.isFrameFontMiddle() ? 131 : 158)),
+          Lizzie.config.isFrameFontSmall()
+              ? Lizzie.config.useJavaLooks ? 0 : 3
+              : (Lizzie.config.isFrameFontMiddle() ? 3 : 4),
+          Lizzie.config.isFrameFontSmall() ? 30 : (Lizzie.config.isFrameFontMiddle() ? 35 : 50),
+          Lizzie.config.isFrameFontSmall() ? 20 : (Lizzie.config.isFrameFontMiddle() ? 22 : 24));
+      lblCustomMove.setPreferredSize(
+          new Dimension(
+              Lizzie.config.isFrameFontSmall()
+                  ? 170
+                  : (Lizzie.config.isFrameFontMiddle() ? 205 : 233),
+              Lizzie.config.isFrameFontSmall()
+                  ? 27
+                  : (Lizzie.config.isFrameFontMiddle() ? 27 : 30)));
+    }
+    JFontCheckBoxMenuItem rankLastMove =
+        new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.rankMenu.rankLastMove"));
+    JFontCheckBoxMenuItem rankAllMove =
+        new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.rankMenu.rankAllMove"));
+    JFontCheckBoxMenuItem rankNoneMove =
+        new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.rankMenu.rankNoneMove"));
+    JFontCheckBoxMenuItem setCustomMoves =
+        new JFontCheckBoxMenuItem(
+            resourceBundle.getString("Menu.rankMenu.setCustomMoves")
+                + Lizzie.config.txtMoveRankMarkLastMove);
+    if (rankPopupMenu != null) {
+      rankPopupMenu.add(rankNoneMove);
+      rankPopupMenu.add(rankLastMove);
+      rankPopupMenu.add(rankCustomMove);
+      rankPopupMenu.add(rankAllMove);
+    } else {
+      rankJMenu.add(rankNoneMove);
+      rankJMenu.add(rankLastMove);
+      if (!Lizzie.config.useJavaLooks) {
+        setCustomMoves.addActionListener(
+            new ActionListener() {
+              @Override
+              public void actionPerformed(ActionEvent e) {
+                SwingUtilities.invokeLater(
+                    new Runnable() {
+                      public void run() {
+                        String result =
+                            JOptionPane.showInputDialog(
+                                Lizzie.frame,
+                                resourceBundle.getString("Menu.rankMenu.setCustomMoves.message"),
+                                Lizzie.config.txtMoveRankMarkLastMove);
+                        if (result != null)
+                          try {
+                            int numbers = Integer.parseInt(result);
+                            Lizzie.config.txtMoveRankMarkLastMove = Math.max(1, numbers);
+                            Lizzie.config.uiConfig.put(
+                                "txt-move-rank-mark-last-move",
+                                Lizzie.config.txtMoveRankMarkLastMove);
+                            Lizzie.config.moveRankMarkLastMove =
+                                Lizzie.config.txtMoveRankMarkLastMove;
+                            Lizzie.config.uiConfig.put(
+                                "move-rank-mark-last-move", Lizzie.config.moveRankMarkLastMove);
+                            setBtnRankMark();
+                            Lizzie.frame.refresh();
+                          } catch (NumberFormatException ex) {
+                            Utils.showMsg(resourceBundle.getString("Menu.inputIntegerHint"));
+                            return;
+                          }
+                      }
+                    });
+              }
+            });
+        rankJMenu.add(setCustomMoves);
+      } else rankJMenu.add(rankCustomMove);
+      rankJMenu.add(rankAllMove);
+    }
+    rankCustomMove.setPreferredSize(
+        new Dimension(
+            (rankPopupMenu != null
+                    ? rankPopupMenu.getPreferredSize().width
+                    : rankJMenu.getPreferredSize().width - (Lizzie.config.useJavaLooks ? 20 : 40))
+                + (Lizzie.config.isFrameFontSmall()
+                    ? 30
+                    : (Lizzie.config.isFrameFontMiddle() ? 40 : 50)),
+            (Lizzie.config.useJavaLooks
+                ? (Lizzie.config.isFrameFontSmall()
+                    ? 20
+                    : (Lizzie.config.isFrameFontMiddle() ? 25 : 30))
+                : (Lizzie.config.isFrameFontSmall()
+                    ? 25
+                    : (Lizzie.config.isFrameFontMiddle() ? 27 : 30)))));
+    rankNoneMove.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            // TBD
+            Lizzie.config.moveRankMarkLastMove = -1;
+            Lizzie.config.uiConfig.put(
+                "move-rank-mark-last-move", Lizzie.config.moveRankMarkLastMove);
+            setBtnRankMark();
+            Lizzie.frame.refresh();
+          }
+        });
+    rankLastMove.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            // TBD
+            Lizzie.config.moveRankMarkLastMove = 1;
+            Lizzie.config.uiConfig.put(
+                "move-rank-mark-last-move", Lizzie.config.moveRankMarkLastMove);
+            setBtnRankMark();
+            Lizzie.frame.refresh();
+          }
+        });
+    rankAllMove.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.config.moveRankMarkLastMove = 0;
+            Lizzie.config.uiConfig.put(
+                "move-rank-mark-last-move", Lizzie.config.moveRankMarkLastMove);
+            setBtnRankMark();
+            Lizzie.frame.refresh();
+          }
+        });
+    rankCustomMove.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            // TBD
+            Lizzie.config.txtMoveRankMarkLastMove =
+                Math.max(
+                    1, Utils.parseTextToInt(txtCustomMove, Lizzie.config.txtMoveRankMarkLastMove));
+            Lizzie.config.uiConfig.put(
+                "txt-move-rank-mark-last-move", Lizzie.config.txtMoveRankMarkLastMove);
+            Lizzie.config.moveRankMarkLastMove = Lizzie.config.txtMoveRankMarkLastMove;
+            Lizzie.config.uiConfig.put(
+                "move-rank-mark-last-move", Lizzie.config.moveRankMarkLastMove);
+            setBtnRankMark();
+            Lizzie.frame.refresh();
+          }
+        });
+
+    if (rankPopupMenu != null) {
+      rankPopupMenu.addPopupMenuListener(
+          new PopupMenuListener() {
+            public void popupMenuCanceled(PopupMenuEvent e) {}
+
+            public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {}
+
+            public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+              rankAllMove.setState(false);
+              rankCustomMove.setState(false);
+              rankNoneMove.setState(false);
+              rankLastMove.setState(false);
+              switch (Lizzie.config.moveRankMarkLastMove) {
+                case 0:
+                  rankAllMove.setState(true);
+                  break;
+                case 1:
+                  rankLastMove.setState(true);
+                  break;
+                case -1:
+                  rankNoneMove.setState(true);
+                  break;
+              }
+              if (Lizzie.config.moveRankMarkLastMove > 1
+                  && Lizzie.config.moveRankMarkLastMove == Lizzie.config.txtMoveRankMarkLastMove)
+                rankCustomMove.setState(true);
+              txtCustomMove.setText(Lizzie.config.txtMoveRankMarkLastMove + "");
+            }
+          });
+    } else {
+      rankJMenu.addMenuListener(
+          new MenuListener() {
+            public void menuSelected(MenuEvent e) {
+              rankAllMove.setState(false);
+              rankCustomMove.setState(false);
+              rankNoneMove.setState(false);
+              rankLastMove.setState(false);
+              switch (Lizzie.config.moveRankMarkLastMove) {
+                case 0:
+                  rankAllMove.setState(true);
+                  break;
+                case 1:
+                  rankLastMove.setState(true);
+                  break;
+                case -1:
+                  rankNoneMove.setState(true);
+                  break;
+              }
+              if (Lizzie.config.moveRankMarkLastMove > 1
+                  && Lizzie.config.moveRankMarkLastMove == Lizzie.config.txtMoveRankMarkLastMove) {
+                rankCustomMove.setState(true);
+                setCustomMoves.setState(true);
+              }
+              txtCustomMove.setText(Lizzie.config.txtMoveRankMarkLastMove + "");
+            }
+
+            @Override
+            public void menuDeselected(MenuEvent e) {}
+
+            @Override
+            public void menuCanceled(MenuEvent e) {}
+          });
     }
   }
 

@@ -76,6 +76,7 @@ public class BottomToolbar extends JPanel {
   JButton tryPlay;
   JButton analyzeList;
   JButton move;
+  JButton moveRank;
   JButton coords;
   JButton liveButton;
   // ActionListener liveButtonListener;
@@ -330,6 +331,7 @@ public class BottomToolbar extends JPanel {
     analyzeList =
         new JFontButton(Lizzie.resourceBundle.getString("BottomToolbar.analyzeList")); // ("选点列表");
     move = new JFontButton(Lizzie.resourceBundle.getString("BottomToolbar.move")); // ("手数");
+    moveRank = new JFontButton(Lizzie.resourceBundle.getString("BottomToolbar.moveRank"));
     coords = new JFontButton(Lizzie.resourceBundle.getString("BottomToolbar.coords")); // ("坐标");
     autoPlay =
         new JFontButton(Lizzie.resourceBundle.getString("BottomToolbar.autoPlay")); // ("自动播放");
@@ -392,6 +394,7 @@ public class BottomToolbar extends JPanel {
     buttonPane.add(refresh);
     buttonPane.add(tryPlay);
     buttonPane.add(analyzeList);
+    buttonPane.add(moveRank);
     buttonPane.add(move);
     buttonPane.add(coords);
     buttonPane.add(autoPlay);
@@ -421,6 +424,7 @@ public class BottomToolbar extends JPanel {
     tryPlay.setFocusable(false);
     analyzeList.setFocusable(false);
     move.setFocusable(false);
+    moveRank.setFocusable(false);
     coords.setFocusable(false);
     liveButton.setFocusable(false);
     share.setFocusable(false);
@@ -460,6 +464,7 @@ public class BottomToolbar extends JPanel {
     analyzeList.setMargin(new Insets(0, 0, 0, 0));
     coords.setMargin(new Insets(0, 0, 0, 0));
     move.setMargin(new Insets(0, 0, 0, 0));
+    moveRank.setMargin(new Insets(0, 0, 0, 0));
     liveButton.setMargin(new Insets(0, 0, 0, 0));
     rightMove.setMargin(new Insets(0, 0, 0, 0));
     leftMove.setMargin(new Insets(0, 0, 0, 0));
@@ -496,6 +501,7 @@ public class BottomToolbar extends JPanel {
     heatMap.setSize((Lizzie.config.isChinese ? 50 : 57) + extraLength, 26);
 
     move.setSize((Lizzie.config.isChinese ? 35 : 85) + extraLength, 26);
+    moveRank.setSize((Lizzie.config.isChinese ? 60 : 70) + extraLength, 26);
     coords.setSize((Lizzie.config.isChinese ? 35 : 50) + extraLength, 26);
 
     gotomove.setSize(35 + extraLength, 26);
@@ -559,6 +565,13 @@ public class BottomToolbar extends JPanel {
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             Lizzie.frame.refreshCurrentMove();
+          }
+        });
+
+    moveRank.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.config.toggleShowMoveRankMark();
           }
         });
 
@@ -4054,6 +4067,8 @@ public class BottomToolbar extends JPanel {
     else move.setVisible(false);
     if (Lizzie.config.coords) coords.setVisible(true);
     else coords.setVisible(false);
+    if (Lizzie.config.moveRank) moveRank.setVisible(true);
+    else moveRank.setVisible(false);
     if (Lizzie.config.autoPlay) autoPlay.setVisible(true);
     else autoPlay.setVisible(false);
   }
@@ -4232,6 +4247,9 @@ public class BottomToolbar extends JPanel {
     if (lastButton.isVisible()) {
       length = length + lastButton.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
     }
+    if (moveRank.isVisible()) {
+      length = length + moveRank.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+    }
     if (move.isVisible()) {
       length = length + move.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
     }
@@ -4257,6 +4275,10 @@ public class BottomToolbar extends JPanel {
     if (move.isVisible()) {
       w = w - (move.getWidth() - (Lizzie.config.isScaled ? 0 : 1));
       move.setLocation(w, 0);
+    }
+    if (moveRank.isVisible()) {
+      w = w - (moveRank.getWidth() - (Lizzie.config.isScaled ? 0 : 1));
+      moveRank.setLocation(w, 0);
     }
     if (lastButton.isVisible()) {
       w = w - (lastButton.getWidth() - (Lizzie.config.isScaled ? 0 : 1));
@@ -4484,6 +4506,10 @@ public class BottomToolbar extends JPanel {
     if (lastButton.isVisible()) {
       lastButton.setLocation(w, 0);
       w = w + lastButton.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+    }
+    if (moveRank.isVisible()) {
+      moveRank.setLocation(w, 0);
+      w = w + moveRank.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
     }
     if (move.isVisible()) {
       move.setLocation(w, 0);

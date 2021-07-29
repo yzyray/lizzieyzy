@@ -93,7 +93,8 @@ public class MoveData {
 
         if (key.equals("winrate")) {
           // support 0.16 0.15
-          result.oriwinrate = Integer.parseInt(value) / 100.0;
+          result.winrate = Integer.parseInt(value) / 100.0;
+          result.oriwinrate = result.winrate;
           //          if (!islcb) {
           //            result.winrate = Integer.parseInt(value) / 100.0;
           //          }
@@ -170,7 +171,8 @@ public class MoveData {
         }
         if (key.equals("winrate")) {
           // support 0.16 0.15
-          result.oriwinrate = Integer.parseInt(value) / 100.0;
+          result.winrate = Integer.parseInt(value) / 100.0;
+          result.oriwinrate = result.winrate;
           //          if (!islcb) {
           //            result.winrate = Integer.parseInt(value) / 100.0;
           //          }
@@ -241,10 +243,8 @@ public class MoveData {
         }
         if (key.equals("winrate")) {
           // support 0.16 0.15
-          result.oriwinrate = Double.parseDouble(value) * 100;
-          //          if (!islcb) {
-          //            result.winrate = Double.parseDouble(value) * 100;
-          //          }
+          result.winrate = Double.parseDouble(value) * 100;
+          result.oriwinrate = result.winrate;
         }
         //        if (key.equals("scoreLead")) {
         //          result.scoreMean = Double.parseDouble(value);
