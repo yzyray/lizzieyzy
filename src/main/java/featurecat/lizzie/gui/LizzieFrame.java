@@ -7909,7 +7909,8 @@ public class LizzieFrame extends JFrame {
         }
       } else return Color.WHITE;
     }
-    double diffWinrate = lastWinrateDiff(node);
+    double diffWinrate = -25;
+    lastWinrateDiff(node);
     Optional<Double> st =
         diffWinrate >= 0
             ? Lizzie.config.blunderWinrateThresholds.flatMap(

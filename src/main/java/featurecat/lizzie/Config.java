@@ -719,8 +719,11 @@ public class Config {
 
     if (isDefaultTheme && isEmptyBlunderWinrateThresholds && isEmptyBlunderNodeColors) {
       // https://github.com/featurecat/lizzie/issues/423#issuecomment-438878060
-      ui.put("blunder-winrate-thresholds", new JSONArray("[-20, -10]"));
-      ui.put("blunder-node-colors", new JSONArray("[[255, 0, 0], [255, 153, 0]]"));
+      ui.put("blunder-winrate-thresholds", new JSONArray("[-24,-12,-6,-3,-1,99]"));
+      ui.put(
+          "blunder-node-colors",
+          new JSONArray(
+              "[[155, 25, 150],[208, 16, 19],[145, 90, 0],[140, 202, 34],[0, 180, 0],[0, 180, 0]]"));
       modified = true;
     }
 
