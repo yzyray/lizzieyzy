@@ -39,8 +39,8 @@ public class ReadBoard {
   ArrayList<Integer> tempcount = new ArrayList<Integer>();
   // private long startSyncTime = 0;
 
-  private boolean isLoaded = false;
-  private boolean checkedVersionSucceed = false;
+  public boolean isLoaded = false;
+  public boolean checkedVersionSucceed = false;
   private int version = 623;
   private String engineCommand;
   public String currentEnginename = "";
@@ -64,12 +64,12 @@ public class ReadBoard {
   private boolean waitSocket = true;
 
   public ReadBoard(boolean usePipe, boolean isJavaReadBoard) throws Exception {
-    this.usePipe = usePipe;
+    this.usePipe = !usePipe;
     this.javaReadBoard = isJavaReadBoard;
     if (s != null && !s.isClosed()) {
       s.close();
     }
-    if (usePipe) engineCommand = "readboard\\readboard.exe";
+    if (!usePipe) engineCommand = "readboard\\readboard.exe";
     else engineCommand = "readboard\\readboard.bat";
     startEngine(engineCommand, 0);
   }
@@ -82,6 +82,7 @@ public class ReadBoard {
       while (true) {
         socket = s.accept();
         readBoardStream = new ReadBoardStream(socket);
+        break;
       }
     } catch (Exception e) {
       if (!noMsg)
@@ -98,13 +99,6 @@ public class ReadBoard {
         e1.printStackTrace();
       }
       e.printStackTrace();
-    } finally {
-      try {
-        if (s != null) s.close();
-        if (socket != null) socket.close();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
     }
   }
 
@@ -326,7 +320,7 @@ public class ReadBoard {
       }
     }
     if (line.startsWith("version")) {
-      Lizzie.gtpConsole.addErrorLine("Board synchronization tool " + line);
+      Lizzie.gtpConsole.addErrorLine("Board synchronization tool " + line + "\n");
       String[] params = line.trim().split(" ");
       if (Integer.parseInt(params[1]) >= version) checkedVersionSucceed = true;
     }
@@ -795,7 +789,7 @@ public class ReadBoard {
     Lizzie.frame.syncBoard = false;
     Lizzie.frame.bothSync = false;
     this.sendCommand("quit");
-    if (!usePipe) {
+    if (usePipe) {
       try {
         s.close();
         socket.close();
