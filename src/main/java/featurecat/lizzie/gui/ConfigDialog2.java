@@ -2219,7 +2219,7 @@ public class ConfigDialog2 extends JDialog {
       themeTab.add(pnlScrollBlunderNodes);
 
       JButton btnAdd = new JButton(resourceBundle.getString("LizzieConfig.button.add"));
-      btnAdd.setBounds(80, 527, 89, 23);
+      btnAdd.setBounds(80, 517, 89, 23);
       btnAdd.addActionListener(
           new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -2229,7 +2229,7 @@ public class ConfigDialog2 extends JDialog {
       themeTab.add(btnAdd);
 
       JButton btnRemove = new JButton(resourceBundle.getString("LizzieConfig.button.remove"));
-      btnRemove.setBounds(80, 557, 89, 23);
+      btnRemove.setBounds(80, 547, 89, 23);
       btnRemove.addActionListener(
           new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -2238,6 +2238,23 @@ public class ConfigDialog2 extends JDialog {
             }
           });
       themeTab.add(btnRemove);
+
+      JButton btnReset = new JButton(resourceBundle.getString("LizzieConfig.button.reset"));
+      btnReset.setBounds(80, 577, 89, 23);
+      btnReset.addActionListener(
+          new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              saveConfig();
+              LizzieFrame.menu.refreshDoubleMoveInfoStatus();
+              LizzieFrame.menu.refreshLimitStatus(false);
+              Lizzie.frame.resetCommentComponent();
+              applyChange();
+              Lizzie.config.resetBlunderColor();
+              setVisible(false);
+              Lizzie.frame.openConfigDialog2(1);
+            }
+          });
+      themeTab.add(btnReset);
 
       btnBackgroundPath = new JButton("...");
       btnBackgroundPath.addActionListener(

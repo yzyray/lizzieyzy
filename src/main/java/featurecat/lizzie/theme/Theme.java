@@ -37,12 +37,15 @@ public class Theme {
   private JSONObject uiConfig = null;
   private Optional<List<Double>> blunderWinrateThresholds = Optional.empty();
 
-  public Theme(JSONObject uiConfig) {
+  public Theme() {}
+
+  public boolean getTheme(JSONObject uiConfig) {
     this.uiConfig = uiConfig;
     String themeName = uiConfig.optString("theme");
     this.path = this.pathPrefix + (themeName.isEmpty() ? "" : themeName + separator);
     File file = new File(this.path + this.configFile);
-    if (file.canRead()) {
+    boolean canReadFile = file.canRead();
+    if (canReadFile) {
       FileInputStream fp;
       try {
         fp = new FileInputStream(file);
@@ -52,6 +55,7 @@ public class Theme {
       } catch (JSONException e) {
       }
     }
+    return canReadFile;
   }
 
   private String getImagePathByKey(String key) {

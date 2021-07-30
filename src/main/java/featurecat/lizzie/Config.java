@@ -723,7 +723,7 @@ public class Config {
       ui.put(
           "blunder-node-colors",
           new JSONArray(
-              "[[155, 25, 150],[208, 16, 19],[200, 140, 50],[180, 180, 0],[140, 202, 34],[0, 180, 0],[0,210,210]]"));
+              "[[155, 25, 150],[208, 16, 19],[200, 140, 50],[180, 180, 0],[140, 202, 34],[0, 220, 0],[0,210,210]]"));
       modified = true;
     }
 
@@ -731,25 +731,43 @@ public class Config {
     return modified;
   }
 
+  public void resetBlunderColor() {
+    Theme theme = new Theme();
+    if (theme.getTheme(uiConfig)) {
+      theme.config.put("blunder-winrate-thresholds", new JSONArray("[-24,-12,-6,-3,-1,3,100]"));
+      theme.config.put(
+          "blunder-node-colors",
+          new JSONArray(
+              "[[155, 25, 150],[208, 16, 19],[200, 140, 50],[180, 180, 0],[140, 202, 34],[0, 220, 0],[0,210,210]]"));
+      theme.save();
+    } else {
+      uiConfig.put("blunder-winrate-thresholds", new JSONArray("[-24,-12,-6,-3,-1,3,100]"));
+      uiConfig.put(
+          "blunder-node-colors",
+          new JSONArray(
+              "[[155, 25, 150],[208, 16, 19],[200, 140, 50],[180, 180, 0],[140, 202, 34],[0, 220, 0],[0,210,210]]"));
+      try {
+        save();
+      } catch (IOException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+    }
+  }
+
   public static void copyFile(File sourceFile, File targetFile) throws IOException {
-    // 新建文件输入流并对它进行缓冲
     FileInputStream input = new FileInputStream(sourceFile);
     BufferedInputStream inBuff = new BufferedInputStream(input);
-
-    // 新建文件输出流并对它进行缓冲
     FileOutputStream output = new FileOutputStream(targetFile);
     BufferedOutputStream outBuff = new BufferedOutputStream(output);
 
-    // 缓冲数组
     byte[] b = new byte[1024 * 5];
     int len;
     while ((len = inBuff.read(b)) != -1) {
       outBuff.write(b, 0, len);
     }
-    // 刷新此缓冲的输出流
     outBuff.flush();
 
-    // 关闭流
     inBuff.close();
     outBuff.close();
     output.close();
@@ -789,7 +807,8 @@ public class Config {
     fastCommandsWidth = persistedUi.optInt("fast-commands-width", 500);
     fastCommandsHeight = persistedUi.optInt("fast-commands-height", 500);
 
-    theme = new Theme(uiConfig);
+    theme = new Theme();
+    theme.getTheme(uiConfig);
 
     // showBorder = uiConfig.optBoolean("show-border", false);
     showMoveNumber = uiConfig.getBoolean("show-move-number");
@@ -1274,7 +1293,10 @@ public class Config {
   }
 
   public void readThemeVaule(boolean first) {
-    if (!first) theme = new Theme(uiConfig);
+    if (!first) {
+      theme = new Theme();
+      theme.getTheme(uiConfig);
+    }
     int oriShadowSize = shadowSize;
     boolean oriShowStoneShadow = showStoneShadow;
     boolean oriUsePureBackground = usePureBackground;
