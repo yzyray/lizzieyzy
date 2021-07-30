@@ -92,7 +92,7 @@ public class Theme {
   }
 
   public Color scoreMeanLineColor() {
-    return getColorByKey("scoremean-line-color", new Color(255, 0, 0));
+    return getColorByKey("scoremean-line-color", new Color(255, 0, 255));
   }
 
   public Theme(String themeName) {
