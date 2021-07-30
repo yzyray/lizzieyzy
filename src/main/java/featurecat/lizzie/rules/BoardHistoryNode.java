@@ -17,6 +17,7 @@ public class BoardHistoryNode {
   public NodeInfo nodeInfoMain2;
   public boolean analyzed = false;
   public boolean diffAnalyzed = false;
+  public boolean isBest = false;
   public ArrayList<ExtraStones> extraStones;
 
   private BoardData data;

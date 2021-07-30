@@ -1711,6 +1711,7 @@ public class Board {
         // don't erase the
         // redo's
         history.next();
+        updateIsBest();
         if (Lizzie.config.playSound) Utils.playVoiceFile();
         // should be opposite from the bottom case
         if (Lizzie.frame.isPlayingAgainstLeelaz
@@ -1851,7 +1852,7 @@ public class Board {
           && Lizzie.frame.readBoard.process.isAlive()) {
         Lizzie.frame.readBoard.sendCommand("place " + x + " " + y);
       }
-
+      updateIsBest();
       //   modifyEnd(false);
       if (!forSync) Lizzie.frame.refresh();
     }
@@ -2254,6 +2255,7 @@ public class Board {
       updateWinrate();
       if (history.next().isPresent()) {
         if (Lizzie.config.playSound) Utils.playVoiceFile();
+        updateIsBest();
         // update leelaz board position, before updating to next node
         Optional<int[]> lastMoveOpt = history.getData().lastMove;
         if (lastMoveOpt.isPresent()) {
@@ -2413,6 +2415,7 @@ public class Board {
       // variations
       if (history.nextVariation(idx).isPresent()) {
         // Update leelaz board position, before updating to next node
+        updateIsBest();
         Optional<int[]> lastMoveOpt = history.getData().lastMove;
         history.getCurrentHistoryNode().placeExtraStones();
         if (lastMoveOpt.isPresent()) {
@@ -2891,6 +2894,8 @@ public class Board {
     synchronized (this) {
       modifyStart();
       boolean isPass = false;
+      if (history.getCurrentHistoryNode().next().isPresent())
+        updateIsBest(history.getCurrentHistoryNode().next().get());
       if (!history.getLastMove().isPresent()) isPass = true;
       if (history.previous().isPresent()) {
         if (!Lizzie.board.isLoadingFile) {
@@ -3180,6 +3185,7 @@ public class Board {
             while (node.next().isPresent()) {
               node = node.next().get();
               updateMovelist(node);
+              updateIsBest(node);
             }
           }
         };
@@ -3416,7 +3422,7 @@ public class Board {
     }
   }
 
-  public void updateMovelistNext(BoardHistoryNode node) {
+  private void updateMovelistNext(BoardHistoryNode node) {
     if (!(node.next().isPresent() && node.next().get().next().isPresent())) {
       updateMovelist(node);
       return;
@@ -3503,8 +3509,29 @@ public class Board {
     return map;
   }
 
+  public void updateIsBest(BoardHistoryNode node) {
+    if (node.previous().isPresent()
+        && node.previous().get().getData().getPlayouts() > 0
+        && node.getData().lastMove.isPresent()) {
+      int[] coords = node.getData().lastMove.get();
+      try {
+        int[] bestCoords =
+            Board.convertNameToCoordinates(
+                node.previous().get().getData().bestMoves.get(0).coordinate);
+        if (bestCoords[0] == coords[0] && bestCoords[1] == coords[1]) node.isBest = true;
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
+  public void updateIsBest() {
+    BoardHistoryNode node = history.getCurrentHistoryNode();
+    updateIsBest(node);
+  }
+
   public void updateWinrate() {
-    updateMovelist(Lizzie.board.history.getCurrentHistoryNode());
+    updateMovelist(history.getCurrentHistoryNode());
     if ((Lizzie.leelaz.isPondering() && !isLoadingFile) || Lizzie.engineManager.isEngineGame) {
       updateComment();
     }
