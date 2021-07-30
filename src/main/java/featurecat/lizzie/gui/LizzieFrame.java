@@ -7884,7 +7884,18 @@ public class LizzieFrame extends JFrame {
 
     // Last move difference winrate
     if (validLastWinrate && validWinrate) {
-      return 100 - lastWR - curWR;
+      double lastDiff = 100 - lastWR - curWR;
+      if (lastDiff < 0 && node.getData().lastMove.isPresent()) {
+        if (node.previous().get().nodeInfo.analyzed) {
+          if (node.previous().get().nodeInfo.isBest) return 0;
+        } else {
+          int[] bestCoords =
+              Board.convertNameToCoordinates(lastNode.get().bestMoves.get(0).coordinate);
+          int[] coords = node.getData().lastMove.get();
+          if (bestCoords[0] == coords[0] && bestCoords[1] == coords[1]) return 0;
+        }
+      }
+      return lastDiff;
     } else {
       return 301;
     }
