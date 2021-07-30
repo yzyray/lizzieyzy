@@ -281,17 +281,31 @@ public class BoardRenderer {
             if (moveNumberList[index] > 0) {
               int markX = x + scaledMarginWidth + squareWidth * coords[0];
               int markY = y + scaledMarginHeight + squareHeight * coords[1];
-              drawMoveRankMarkCircle(
-                  g,
-                  markX,
-                  markY,
-                  stoneRadius,
-                  isSub ? Lizzie.board.lastWinrateDiff2(node) : Lizzie.board.lastWinrateDiff(node),
-                  isSub
-                      ? Lizzie.board.lastScoreMeanDiff2(node)
-                      : Lizzie.board.lastScoreMeanDiff(node),
-                  true);
-              drawList[index] = 1;
+              try {
+                int[] bestCoords =
+                    Board.convertNameToCoordinates(
+                        isSub
+                            ? node.previous().get().getData().bestMoves2.get(0).coordinate
+                            : node.previous().get().getData().bestMoves.get(0).coordinate);
+                if (bestCoords[0] == coords[0] && bestCoords[1] == coords[1])
+                  drawMoveRankMarkCircle(g, markX, markY, stoneRadius, 0, 0, true);
+                else
+                  drawMoveRankMarkCircle(
+                      g,
+                      markX,
+                      markY,
+                      stoneRadius,
+                      isSub
+                          ? Lizzie.board.lastWinrateDiff2(node)
+                          : Lizzie.board.lastWinrateDiff(node),
+                      isSub
+                          ? Lizzie.board.lastScoreMeanDiff2(node)
+                          : Lizzie.board.lastScoreMeanDiff(node),
+                      true);
+                drawList[index] = 1;
+              } catch (Exception e) {
+                e.printStackTrace();
+              }
             }
           }
         } else {
@@ -301,8 +315,8 @@ public class BoardRenderer {
             int[] coords = node.getData().lastMove.get();
             int index = Board.getIndex(coords[0], coords[1]);
             if (moveNumberList[index] > 0 && drawList[index] != 1) {
-              double winrateDiff = nodeInfo.diffWinrate;
-              double scoreDiff = nodeInfo.scoreMeanDiff;
+              double winrateDiff = nodeInfo.getWinrateDiff();
+              double scoreDiff = nodeInfo.getScoreMeanDiff();
               int markX = x + scaledMarginWidth + squareWidth * coords[0];
               int markY = y + scaledMarginHeight + squareHeight * coords[1];
               drawMoveRankMarkCircle(g, markX, markY, stoneRadius, winrateDiff, scoreDiff, false);
