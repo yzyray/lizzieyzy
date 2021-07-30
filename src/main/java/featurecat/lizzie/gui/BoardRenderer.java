@@ -1647,6 +1647,7 @@ public class BoardRenderer {
               break;
             case 1:
               g.setColor(Lizzie.board.getData().blackToPlay ? Color.BLACK : Color.WHITE);
+              g.setStroke(new BasicStroke(stoneRadius / 10f));
               drawCircle(g, stoneX, stoneY, lastMoveMarkerRadius);
               break;
             case 2:
