@@ -14,6 +14,7 @@ import featurecat.lizzie.analysis.MoveData;
 import featurecat.lizzie.rules.Board;
 import featurecat.lizzie.rules.BoardData;
 import featurecat.lizzie.rules.BoardHistoryNode;
+import featurecat.lizzie.rules.NodeInfo;
 import featurecat.lizzie.rules.SGFParser;
 import featurecat.lizzie.rules.Stone;
 import featurecat.lizzie.rules.Zobrist;
@@ -138,7 +139,10 @@ public class FloatBoardRenderer {
 
     drawBranch();
     renderImages(g);
-    if (isShowingBranch) drawMoveNumbers(g);
+    if (!isShowingBranch
+        && Lizzie.config.allowMoveNumber == 0
+        && Lizzie.config.moveRankMarkLastMove >= 0) drawMoveRankMark(g);
+    else drawMoveNumbers(g);
     g.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
     if (!isShowingRawBoard()) {
       if (Lizzie.config.showBestMovesNow()) {
@@ -1126,6 +1130,92 @@ public class FloatBoardRenderer {
     if (!branchOpt.isPresent()) {
       g.drawImage(unImportantSugg, x, y, null);
     }
+  }
+
+  private void drawMoveRankMark(Graphics2D g) {
+    g.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
+    BoardHistoryNode node = Lizzie.board.getHistory().getCurrentHistoryNode();
+    int limit = Lizzie.config.moveRankMarkLastMove;
+    boolean shouldLimit = limit > 0;
+    int[] moveNumberList = node.getData().moveNumberList;
+    int[] drawList = new int[Board.boardWidth * Board.boardHeight];
+    while (node.previous().isPresent()) {
+      if (shouldLimit) {
+        limit--;
+        if (limit < 0) break;
+      }
+      if (node.getData().lastMove.isPresent()) {
+        if (node == Lizzie.board.getHistory().getCurrentHistoryNode()) {
+          int playouts = node.getData().getPlayouts();
+          int playoutsPrevious = node.previous().get().getData().getPlayouts();
+          if (playouts > 0 && playoutsPrevious > 0) {
+            int[] coords = node.getData().lastMove.get();
+            int index = Board.getIndex(coords[0], coords[1]);
+            if (moveNumberList[index] > 0) {
+              int markX = x + scaledMarginWidth + squareWidth * coords[0];
+              int markY = y + scaledMarginHeight + squareHeight * coords[1];
+              if (node.isBest) drawMoveRankMarkCircle(g, markX, markY, stoneRadius, 0, 0, true);
+              else
+                drawMoveRankMarkCircle(
+                    g,
+                    markX,
+                    markY,
+                    stoneRadius,
+                    Lizzie.board.lastWinrateDiff(node),
+                    Lizzie.board.lastScoreMeanDiff(node),
+                    true);
+              drawList[index] = 1;
+            }
+          }
+        } else {
+          NodeInfo nodeInfo = node.previous().get().nodeInfo;
+          if (nodeInfo.analyzed && nodeInfo.previousPlayouts > 0) {
+            int[] coords = node.getData().lastMove.get();
+            int index = Board.getIndex(coords[0], coords[1]);
+            if (moveNumberList[index] > 0 && drawList[index] != 1) {
+              double winrateDiff = nodeInfo.getWinrateDiff();
+              double scoreDiff = nodeInfo.getScoreMeanDiff();
+              int markX = x + scaledMarginWidth + squareWidth * coords[0];
+              int markY = y + scaledMarginHeight + squareHeight * coords[1];
+              drawMoveRankMarkCircle(g, markX, markY, stoneRadius, winrateDiff, scoreDiff, false);
+              drawList[index] = 1;
+            }
+          }
+        }
+      }
+      node = node.previous().get();
+    }
+    node = Lizzie.board.getHistory().getCurrentHistoryNode();
+    if (node.getData().lastMove.isPresent()) {
+      int[] coords = node.getData().lastMove.get();
+      int markX = x + scaledMarginWidth + squareWidth * coords[0];
+      int markY = y + scaledMarginHeight + squareHeight * coords[1];
+      g.setColor(node.getData().blackToPlay ? Color.BLACK : Color.WHITE);
+      drawCircle(g, markX, markY, (int) Math.round(stoneRadius / 2.0), 5f);
+      if (Lizzie.config.moveRankMarkLastMove > 1 || Lizzie.config.moveRankMarkLastMove == 0) {
+        g.setColor(Color.RED);
+        drawPolygonSmall(g, markX, markY, stoneRadius);
+      }
+    }
+  }
+
+  private void drawMoveRankMarkCircle(
+      Graphics2D g,
+      int markX,
+      int markY,
+      int stoneRadius2,
+      double winrateDiff,
+      double scoreDiff,
+      boolean isLastMove) {
+    if (winrateDiff <= -24 || scoreDiff <= -12) g.setColor(new Color(155, 25, 150));
+    else if (winrateDiff <= -12 || scoreDiff <= -6) g.setColor(new Color(208, 16, 19));
+    else if (winrateDiff <= -6 || scoreDiff <= -3) g.setColor(new Color(200, 140, 50));
+    else if (winrateDiff <= -3 || scoreDiff <= -1.5) g.setColor(new Color(180, 180, 0));
+    else if (winrateDiff <= -1 || scoreDiff <= -0.5) g.setColor(new Color(140, 202, 34));
+    else g.setColor(new Color(0, 180, 0));
+    int radius =
+        isLastMove ? (int) Math.round(stoneRadius / 2.0) : (int) Math.round(stoneRadius / 3.3);
+    fillCircle(g, markX, markY, radius);
   }
 
   /** Draw move numbers and/or mark the last played move */
