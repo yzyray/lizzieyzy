@@ -32,7 +32,7 @@ Maven编译所需的额外文件上传在[这里](https://pan.baidu.com/s/1q615G
 # LizzieYzy - Interface Of Go Engine
 ![screenshot_en](/screenshot_en.png?raw=true)
 
-LizzieYzy is a graphical interface modified from [Lizzie](https://github.com/featurecat/lizzie),allowing load various engine: [Katago](https://github.com/lightvector/KataGo)、[LeelaZero](https://github.com/leela-zero/leela-zero)、[Leela](https://github.com/gcp/Leela)、[ZenGTP](https://github.com/yzyray/ZenGTP)、[SAI](http://sai.unich.it)、[Pachi](https://github.com/pasky/pachi) or other GTP engines.
+LizzieYzy is a graphical interface modified from [Lizzie](https://github.com/featurecat/lizzie),allowing load various engines like: [Katago](https://github.com/lightvector/KataGo)、[LeelaZero](https://github.com/leela-zero/leela-zero)、[Leela](https://github.com/gcp/Leela)、[ZenGTP](https://github.com/yzyray/ZenGTP)、[SAI](http://sai.unich.it)、[Pachi](https://github.com/pasky/pachi) or other GTP engines.
 
 Add some new features on Lizzie's basis:`Hawk Eye`,`Flash Analyze`,`Batch Analyze`,`Estimate`,`Board Synchronization(only windows)`,`Engine Game`,`Upload And Share`,`Double Engine Mode` and ajust some details,support retina monitor,won't get fuzzy by scaled.
 
