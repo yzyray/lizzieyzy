@@ -41,7 +41,7 @@ public class ReadBoard {
 
   public boolean isLoaded = false;
   public boolean checkedVersionSucceed = false;
-  private int version = 623;
+  private int version = 730;
   private String engineCommand;
   public String currentEnginename = "";
   private int port = -1;
@@ -64,12 +64,12 @@ public class ReadBoard {
   private boolean waitSocket = true;
 
   public ReadBoard(boolean usePipe, boolean isJavaReadBoard) throws Exception {
-    this.usePipe = !usePipe;
+    this.usePipe = usePipe;
     this.javaReadBoard = isJavaReadBoard;
     if (s != null && !s.isClosed()) {
       s.close();
     }
-    if (!usePipe) engineCommand = "readboard\\readboard.exe";
+    if (usePipe) engineCommand = "readboard\\readboard.exe";
     else engineCommand = "readboard\\readboard.bat";
     startEngine(engineCommand, 0);
   }

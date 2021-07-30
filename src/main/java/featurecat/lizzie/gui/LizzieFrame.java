@@ -7859,7 +7859,7 @@ public class LizzieFrame extends JFrame {
     else commentTextPane.setSize(width, height);
   }
 
-  public double lastWinrateDiff(BoardHistoryNode node) {
+  private double lastWinrateDiff(BoardHistoryNode node) {
     // Last winrate
     Optional<BoardData> lastNode = node.previous().flatMap(n -> Optional.of(n.getData()));
     boolean validLastWinrate = lastNode.map(d -> d.getPlayouts() > 0).orElse(false);
@@ -7886,22 +7886,28 @@ public class LizzieFrame extends JFrame {
     if (validLastWinrate && validWinrate) {
       return 100 - lastWR - curWR;
     } else {
-      return 0;
+      return 301;
     }
   }
 
   public Color getBlunderNodeColor(BoardHistoryNode node) {
     if (Lizzie.engineManager.isEngineGame || Lizzie.board.isPkBoard) {
       if (node.previous().isPresent() && node.previous().get().previous().isPresent()) {
+        if (node.previous().get().previous().get().getData().getPlayouts() == 0
+            || node.getData().getPlayouts() == 0) return Color.WHITE;
         double diffWinrate =
             node.previous().get().previous().get().getData().getWinrate()
                 - node.getData().getWinrate();
         Optional<Double> st =
-            diffWinrate >= 0
-                ? Lizzie.config.blunderWinrateThresholds.flatMap(
-                    l -> l.stream().filter(t -> (t >= 0 && t <= diffWinrate)).reduce((f, s) -> s))
-                : Lizzie.config.blunderWinrateThresholds.flatMap(
-                    l -> l.stream().filter(t -> (t <= 0 && t >= diffWinrate)).reduce((f, s) -> f));
+            Lizzie.config.blunderWinrateThresholds.flatMap(
+                l -> l.stream().filter(t -> (t >= diffWinrate)).reduce((f, s) -> f));
+        //            diffWinrate >= 0
+        //                ? Lizzie.config.blunderWinrateThresholds.flatMap(
+        //                    l -> l.stream().filter(t -> (t >= 0 && t <= diffWinrate)).reduce((f,
+        // s) -> s))
+        //                : Lizzie.config.blunderWinrateThresholds.flatMap(
+        //                    l -> l.stream().filter(t -> (t <= 0 && t >= diffWinrate)).reduce((f,
+        // s) -> f));
         if (st.isPresent()) {
           return Lizzie.config.blunderNodeColors.map(m -> m.get(st.get())).get();
         } else {
@@ -7909,14 +7915,11 @@ public class LizzieFrame extends JFrame {
         }
       } else return Color.WHITE;
     }
-    double diffWinrate = -25;
-    lastWinrateDiff(node);
+    double diffWinrate = lastWinrateDiff(node);
+    if (diffWinrate > 300) return Color.WHITE;
     Optional<Double> st =
-        diffWinrate >= 0
-            ? Lizzie.config.blunderWinrateThresholds.flatMap(
-                l -> l.stream().filter(t -> (t >= 0 && t <= diffWinrate)).reduce((f, s) -> s))
-            : Lizzie.config.blunderWinrateThresholds.flatMap(
-                l -> l.stream().filter(t -> (t <= 0 && t >= diffWinrate)).reduce((f, s) -> f));
+        Lizzie.config.blunderWinrateThresholds.flatMap(
+            l -> l.stream().filter(t -> (t >= diffWinrate)).reduce((f, s) -> f));
     if (st.isPresent()) {
       return Lizzie.config.blunderNodeColors.map(m -> m.get(st.get())).get();
     } else {
@@ -9699,27 +9702,28 @@ public class LizzieFrame extends JFrame {
     g.setColor(blunderColor);
     g.fillOval(tree_curposx + tree_diff, tree_posy + tree_diff, tree_diam, tree_diam);
 
-    if (blunderColor != Color.WHITE) g.setColor(reverseColor(blunderColor));
-    else g.setColor(Color.RED);
+    //   if (blunderColor != Color.WHITE) g.setColor(reverseColor(blunderColor));
+    //  else
+    g.setColor(Color.BLACK);
     g.fillOval(
-        tree_curposx + (tree_DOT_DIAM + tree_diff - tree_CENTER_DIAM) / 2 - 1,
-        tree_posy + (tree_DOT_DIAM + tree_diff - tree_CENTER_DIAM) / 2 - 1,
-        tree_CENTER_DIAM + 2,
-        tree_CENTER_DIAM + 2);
+        tree_curposx + (tree_DOT_DIAM + tree_diff - tree_CENTER_DIAM) / 2,
+        tree_posy + (tree_DOT_DIAM + tree_diff - tree_CENTER_DIAM) / 2,
+        tree_CENTER_DIAM,
+        tree_CENTER_DIAM);
     g.dispose();
   }
 
-  private Color reverseColor(Color color) {
-    // System.out.println("color=="+color);
-    int r = color.getRed();
-    int g = color.getGreen();
-    int b = color.getBlue();
-    int r_ = 255 - r;
-    int g_ = 255 - g;
-    int b_ = 255 - b;
-    Color newColor = new Color(r_, g_, b_);
-    return newColor;
-  }
+  //  private Color reverseColor(Color color) {
+  //    // System.out.println("color=="+color);
+  //    int r = color.getRed();
+  //    int g = color.getGreen();
+  //    int b = color.getBlue();
+  //    int r_ = 255 - r;
+  //    int g_ = 255 - g;
+  //    int b_ = 255 - b;
+  //    Color newColor = new Color(r_, g_, b_);
+  //    return newColor;
+  //  }
 
   private void setTreeMaxLimit() {
     if (varTreeMaxX >= Lizzie.config.maxTreeWidth) {

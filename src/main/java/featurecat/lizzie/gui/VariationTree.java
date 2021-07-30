@@ -159,13 +159,14 @@ public class VariationTree {
           else g.drawString(moveNum + "", moveNum >= 100 ? curposx - 3 : curposx, posy + diff - 5);
         }
         if (startNode == Lizzie.board.getHistory().getCurrentHistoryNode()) {
-          if (blunderColor != Color.WHITE) g.setColor(reverseColor(blunderColor));
-          else g.setColor(Color.RED);
+          //    if (blunderColor != Color.WHITE) g.setColor(reverseColor(blunderColor));
+          //   else
+          g.setColor(Color.BLACK);
           g.fillOval(
-              curposx + (DOT_DIAM + diff - CENTER_DIAM) / 2 - 1,
-              posy + (DOT_DIAM + diff - CENTER_DIAM) / 2 - 1,
-              CENTER_DIAM + 2,
-              CENTER_DIAM + 2);
+              curposx + (DOT_DIAM + diff - CENTER_DIAM) / 2,
+              posy + (DOT_DIAM + diff - CENTER_DIAM) / 2,
+              CENTER_DIAM,
+              CENTER_DIAM);
           Lizzie.frame.varTreeCurX = curposx;
           Lizzie.frame.varTreeCurY = posy - (DOT_DIAM + diff);
 
@@ -239,13 +240,14 @@ public class VariationTree {
           else g.fillOval(curposx + diff, posy + diff, diam, diam);
         }
         if (cur == Lizzie.board.getHistory().getCurrentHistoryNode()) {
-          if (blunderColor != Color.WHITE) g.setColor(reverseColor(blunderColor));
-          else g.setColor(Color.RED);
+          // if (blunderColor != Color.WHITE) g.setColor(reverseColor(blunderColor));
+          // else
+          g.setColor(Color.BLACK);
           g.fillOval(
-              curposx + (DOT_DIAM + diff - CENTER_DIAM) / 2 - 1,
-              posy + (DOT_DIAM + diff - CENTER_DIAM) / 2 - 1,
-              CENTER_DIAM + 2,
-              CENTER_DIAM + 2);
+              curposx + (DOT_DIAM + diff - CENTER_DIAM) / 2,
+              posy + (DOT_DIAM + diff - CENTER_DIAM) / 2,
+              CENTER_DIAM,
+              CENTER_DIAM);
           Lizzie.frame.varTreeCurX = curposx;
           Lizzie.frame.varTreeCurY = posy;
           Lizzie.frame.tree_curposx = curposx;
@@ -469,17 +471,17 @@ public class VariationTree {
     }
   }
 
-  private Color reverseColor(Color color) {
-    // System.out.println("color=="+color);
-    int r = color.getRed();
-    int g = color.getGreen();
-    int b = color.getBlue();
-    int r_ = 255 - r;
-    int g_ = 255 - g;
-    int b_ = 255 - b;
-    Color newColor = new Color(r_, g_, b_);
-    return newColor;
-  }
+  //  private Color reverseColor(Color color) {
+  //    // System.out.println("color=="+color);
+  //    int r = color.getRed();
+  //    int g = color.getGreen();
+  //    int b = color.getBlue();
+  //    int r_ = 255 - r;
+  //    int g_ = 255 - g;
+  //    int b_ = 255 - b;
+  //    Color newColor = new Color(r_, g_, b_);
+  //    return newColor;
+  //  }
 
   private int getCurLane(
       BoardHistoryNode start,
