@@ -10605,18 +10605,18 @@ public class LizzieFrame extends JFrame {
         }
         if (isNextMove) {
           if (isSelect) {
-            if (diff < -24 || scoreDiff < -12) setBackground(new Color(85, 25, 80, 120));
-            else if (diff < -12 || scoreDiff < -6) setBackground(new Color(208, 16, 19, 100));
-            else if (diff < -6 || scoreDiff < -3) setBackground(new Color(145, 90, 0, 100));
-            else if (diff < -3 || scoreDiff < -1.5) setBackground(new Color(180, 180, 0, 100));
-            else if (diff < -1 || scoreDiff < -0.5) setBackground(new Color(140, 202, 34, 100));
+            if (diff <= -24 || scoreDiff <= -12) setBackground(new Color(85, 25, 80, 120));
+            else if (diff <= -12 || scoreDiff <= -6) setBackground(new Color(208, 16, 19, 100));
+            else if (diff <= -6 || scoreDiff <= -3) setBackground(new Color(200, 140, 50, 100));
+            else if (diff <= -3 || scoreDiff <= -1.5) setBackground(new Color(180, 180, 0, 100));
+            else if (diff <= -1 || scoreDiff <= -0.5) setBackground(new Color(140, 202, 34, 100));
             else setBackground(new Color(0, 180, 0, 100));
           } else {
-            if (diff < -24 || scoreDiff < -12) setBackground(new Color(85, 25, 80, 70));
-            else if (diff < -12 || scoreDiff < -6) setBackground(new Color(208, 16, 19, 50));
-            else if (diff < -6 || scoreDiff < -3) setBackground(new Color(145, 90, 0, 50));
-            else if (diff < -3 || scoreDiff < -1.5) setBackground(new Color(180, 180, 0, 50));
-            else if (diff < -1 || scoreDiff < -0.5) setBackground(new Color(140, 202, 34, 50));
+            if (diff <= -24 || scoreDiff <= -12) setBackground(new Color(85, 25, 80, 70));
+            else if (diff <= -12 || scoreDiff <= -6) setBackground(new Color(208, 16, 19, 50));
+            else if (diff <= -6 || scoreDiff <= -3) setBackground(new Color(200, 140, 50, 50));
+            else if (diff <= -3 || scoreDiff <= -1.5) setBackground(new Color(180, 180, 0, 50));
+            else if (diff <= -1 || scoreDiff <= -0.5) setBackground(new Color(140, 202, 34, 50));
             else setBackground(new Color(0, 180, 0, 60));
           }
         } else if (!isSelect && !isChanged) {
@@ -12251,14 +12251,14 @@ public class LizzieFrame extends JFrame {
             if (scoreDiff < 0.5) setForeground(new Color(0, 150, 0));
             else if (scoreDiff < 1.5) setForeground(new Color(105, 162, 34));
             else if (scoreDiff < 3) setForeground(new Color(150, 150, 0));
-            else if (scoreDiff < 6) setForeground(new Color(125, 90, 0));
+            else if (scoreDiff < 6) setForeground(new Color(180, 120, 45));
             else if (scoreDiff < 12) setForeground(new Color(175, 16, 19));
             else setForeground(new Color(165, 25, 160));
           } else if (column == 2) {
             if (diffWinrate < 1) setForeground(new Color(0, 150, 0));
             else if (diffWinrate < 3) setForeground(new Color(105, 162, 34));
             else if (diffWinrate < 6) setForeground(new Color(150, 150, 0));
-            else if (diffWinrate < 12) setForeground(new Color(125, 90, 0));
+            else if (diffWinrate < 12) setForeground(new Color(180, 120, 45));
             else if (diffWinrate < 24) setForeground(new Color(175, 16, 19));
             else setForeground(new Color(165, 25, 160));
           } else setForeground(blunderForeground);
@@ -12267,7 +12267,7 @@ public class LizzieFrame extends JFrame {
             if (diffWinrate < 1) setForeground(new Color(0, 150, 0));
             else if (diffWinrate < 3) setForeground(new Color(105, 162, 34));
             else if (diffWinrate < 6) setForeground(new Color(150, 150, 0));
-            else if (diffWinrate < 12) setForeground(new Color(125, 90, 0));
+            else if (diffWinrate < 12) setForeground(new Color(180, 120, 45));
             else if (diffWinrate < 24) setForeground(new Color(175, 16, 19));
             else setForeground(new Color(165, 25, 160));
           } else setForeground(blunderForeground);

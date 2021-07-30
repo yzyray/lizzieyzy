@@ -6465,7 +6465,7 @@ public class MoveListFrame extends JFrame {
         valueRowHeight,
         black4 / (double) totalAnalyzedBlack,
         black4 + "",
-        new Color(150, 100, 0),
+        new Color(200, 140, 50),
         Color.BLACK,
         Color.PINK,
         font,
@@ -6544,7 +6544,7 @@ public class MoveListFrame extends JFrame {
         valueRowHeight,
         white4 / (double) totalAnalyzedWhite,
         white4 + "",
-        new Color(150, 100, 0),
+        new Color(200, 140, 50),
         Color.WHITE,
         Color.BLUE,
         font,
@@ -7025,27 +7025,27 @@ public class MoveListFrame extends JFrame {
                     .toString()
                     .substring(0, table.getValueAt(row, 4).toString().length() - 1));
         if (column == 4) {
-          if (scoreDiff < 0.5) setForeground(new Color(0, 150, 0));
-          else if (scoreDiff < 1.5) setForeground(new Color(105, 162, 34));
-          else if (scoreDiff < 3) setForeground(new Color(150, 150, 0));
-          else if (scoreDiff < 6) setForeground(new Color(125, 90, 0));
-          else if (scoreDiff < 12) setForeground(new Color(175, 16, 19));
+          if (scoreDiff <= 0.5) setForeground(new Color(0, 150, 0));
+          else if (scoreDiff <= 1.5) setForeground(new Color(105, 162, 34));
+          else if (scoreDiff <= 3) setForeground(new Color(150, 150, 0));
+          else if (scoreDiff <= 6) setForeground(new Color(180, 120, 45));
+          else if (scoreDiff <= 12) setForeground(new Color(175, 16, 19));
           else setForeground(new Color(165, 25, 160));
         } else if (column == 3) {
-          if (diffWinrate < 1) setForeground(new Color(0, 150, 0));
-          else if (diffWinrate < 3) setForeground(new Color(105, 162, 34));
-          else if (diffWinrate < 6) setForeground(new Color(150, 150, 0));
-          else if (diffWinrate < 12) setForeground(new Color(125, 90, 0));
-          else if (diffWinrate < 24) setForeground(new Color(175, 16, 19));
+          if (diffWinrate <= 1) setForeground(new Color(0, 150, 0));
+          else if (diffWinrate <= 3) setForeground(new Color(105, 162, 34));
+          else if (diffWinrate <= 6) setForeground(new Color(150, 150, 0));
+          else if (diffWinrate <= 12) setForeground(new Color(180, 120, 45));
+          else if (diffWinrate <= 24) setForeground(new Color(175, 16, 19));
           else setForeground(new Color(165, 25, 160));
         } else setForeground(Color.BLACK);
       } else {
         if (column == 3) {
-          if (diffWinrate < 1) setForeground(new Color(0, 150, 0));
-          else if (diffWinrate < 3) setForeground(new Color(105, 162, 34));
-          else if (diffWinrate < 6) setForeground(new Color(150, 150, 0));
-          else if (diffWinrate < 12) setForeground(new Color(125, 90, 0));
-          else if (diffWinrate < 24) setForeground(new Color(175, 16, 19));
+          if (diffWinrate <= 1) setForeground(new Color(0, 150, 0));
+          else if (diffWinrate <= 3) setForeground(new Color(105, 162, 34));
+          else if (diffWinrate <= 6) setForeground(new Color(150, 150, 0));
+          else if (diffWinrate <= 12) setForeground(new Color(180, 120, 45));
+          else if (diffWinrate <= 24) setForeground(new Color(175, 16, 19));
           else setForeground(new Color(165, 25, 160));
         } else setForeground(Color.BLACK);
       }
@@ -7077,27 +7077,27 @@ public class MoveListFrame extends JFrame {
                     .toString()
                     .substring(0, table.getValueAt(row, 3).toString().length() - 1));
         if (column == 3) {
-          if (scoreDiff < 0.5) setForeground(new Color(0, 150, 0));
-          else if (scoreDiff < 1.5) setForeground(new Color(105, 162, 34));
-          else if (scoreDiff < 3) setForeground(new Color(150, 150, 0));
-          else if (scoreDiff < 6) setForeground(new Color(125, 90, 0));
-          else if (scoreDiff < 12) setForeground(new Color(175, 16, 19));
+          if (scoreDiff <= 0.5) setForeground(new Color(0, 150, 0));
+          else if (scoreDiff <= 1.5) setForeground(new Color(105, 162, 34));
+          else if (scoreDiff <= 3) setForeground(new Color(150, 150, 0));
+          else if (scoreDiff <= 6) setForeground(new Color(180, 120, 45));
+          else if (scoreDiff <= 12) setForeground(new Color(175, 16, 19));
           else setForeground(new Color(165, 25, 160));
         } else if (column == 2) {
-          if (diffWinrate < 1) setForeground(new Color(0, 150, 0));
-          else if (diffWinrate < 3) setForeground(new Color(105, 162, 34));
-          else if (diffWinrate < 6) setForeground(new Color(150, 150, 0));
-          else if (diffWinrate < 12) setForeground(new Color(125, 90, 0));
-          else if (diffWinrate < 24) setForeground(new Color(175, 16, 19));
+          if (diffWinrate <= 1) setForeground(new Color(0, 150, 0));
+          else if (diffWinrate <= 3) setForeground(new Color(105, 162, 34));
+          else if (diffWinrate <= 6) setForeground(new Color(150, 150, 0));
+          else if (diffWinrate <= 12) setForeground(new Color(180, 120, 45));
+          else if (diffWinrate <= 24) setForeground(new Color(175, 16, 19));
           else setForeground(new Color(165, 25, 160));
         } else setForeground(Color.BLACK);
       } else {
         if (column == 2) {
-          if (diffWinrate < 1) setForeground(new Color(0, 150, 0));
-          else if (diffWinrate < 3) setForeground(new Color(105, 162, 34));
-          else if (diffWinrate < 6) setForeground(new Color(150, 150, 0));
-          else if (diffWinrate < 12) setForeground(new Color(125, 90, 0));
-          else if (diffWinrate < 24) setForeground(new Color(175, 16, 19));
+          if (diffWinrate <= 1) setForeground(new Color(0, 150, 0));
+          else if (diffWinrate <= 3) setForeground(new Color(105, 162, 34));
+          else if (diffWinrate <= 6) setForeground(new Color(150, 150, 0));
+          else if (diffWinrate <= 12) setForeground(new Color(180, 120, 45));
+          else if (diffWinrate <= 24) setForeground(new Color(175, 16, 19));
           else setForeground(new Color(165, 25, 160));
         } else setForeground(Color.BLACK);
       }

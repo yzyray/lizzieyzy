@@ -335,12 +335,12 @@ public class BoardRenderer {
       double winrateDiff,
       double scoreDiff,
       boolean isLastMove) {
-    if (winrateDiff > -1 || scoreDiff > -0.5) g.setColor(new Color(0, 180, 0));
-    else if (winrateDiff > -3 || scoreDiff > -1.5) g.setColor(new Color(140, 202, 34));
-    else if (winrateDiff > -6 || scoreDiff > -3) g.setColor(new Color(180, 180, 0));
-    else if (winrateDiff > -12 || scoreDiff > -6) g.setColor(new Color(145, 90, 0));
-    else if (winrateDiff > -24 || scoreDiff > -12) g.setColor(new Color(208, 16, 19));
-    else g.setColor(new Color(155, 25, 150));
+    if (winrateDiff <= -24 || scoreDiff <= -12) g.setColor(new Color(155, 25, 150));
+    else if (winrateDiff <= -12 || scoreDiff <= -6) g.setColor(new Color(208, 16, 19));
+    else if (winrateDiff <= -6 || scoreDiff <= -3) g.setColor(new Color(200, 140, 50));
+    else if (winrateDiff <= -3 || scoreDiff <= -1.5) g.setColor(new Color(180, 180, 0));
+    else if (winrateDiff <= -1 || scoreDiff <= -0.5) g.setColor(new Color(140, 202, 34));
+    else g.setColor(new Color(0, 180, 0));
     int radius =
         isLastMove ? (int) Math.round(stoneRadius / 2.0) : (int) Math.round(stoneRadius / 3.3);
     fillCircle(g, markX, markY, radius);
