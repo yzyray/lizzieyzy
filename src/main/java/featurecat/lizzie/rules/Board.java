@@ -3519,10 +3519,11 @@ public class Board {
             Board.convertNameToCoordinates(
                 node.previous().get().getData().bestMoves.get(0).coordinate);
         if (bestCoords[0] == coords[0] && bestCoords[1] == coords[1]) node.isBest = true;
+        else node.isBest = false;
       } catch (Exception e) {
         e.printStackTrace();
       }
-    }
+    } else node.isBest = false;
   }
 
   public void updateIsBest() {
