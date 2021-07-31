@@ -1526,8 +1526,8 @@ public class Board {
       if (!Lizzie.leelaz.isInputCommand) Lizzie.leelaz.playMove(color, "pass");
 
       if (Lizzie.frame.isPlayingAgainstLeelaz
-          && Lizzie.frame.playerIsBlack == getData().blackToPlay)
-        Lizzie.leelaz.genmove((history.isBlacksTurn() ? "w" : "b"));
+          && Lizzie.frame.playerIsBlack != getData().blackToPlay)
+        Lizzie.leelaz.genmove((history.isBlacksTurn() ? "b" : "w"));
 
       // update history with pass
 
@@ -1547,8 +1547,8 @@ public class Board {
         if (!Lizzie.engineManager.isEngineGame) Lizzie.leelaz.playMove(color, "pass");
 
         if (Lizzie.frame.isPlayingAgainstLeelaz
-            && Lizzie.frame.playerIsBlack == getData().blackToPlay)
-          Lizzie.leelaz.genmove((history.isBlacksTurn() ? "w" : "b"));
+            && Lizzie.frame.playerIsBlack != getData().blackToPlay)
+          Lizzie.leelaz.genmove((history.isBlacksTurn() ? "b" : "w"));
         clearAfterMove();
         return;
       }
@@ -1583,8 +1583,8 @@ public class Board {
         Lizzie.leelaz.playMove(color, "pass");
 
       if (Lizzie.frame.isPlayingAgainstLeelaz
-          && Lizzie.frame.playerIsBlack == getData().blackToPlay)
-        Lizzie.leelaz.genmove((history.isBlacksTurn() ? "w" : "b"));
+          && Lizzie.frame.playerIsBlack != getData().blackToPlay)
+        Lizzie.leelaz.genmove((history.isBlacksTurn() ? "b" : "w"));
 
       // update history with pass
 
@@ -1717,7 +1717,7 @@ public class Board {
         if (Lizzie.frame.isPlayingAgainstLeelaz
             && Lizzie.frame.playerIsBlack != getData().blackToPlay) {
           Lizzie.leelaz.playMove(color, convertCoordinatesToName(x, y));
-          Lizzie.leelaz.genmove((Lizzie.board.getData().blackToPlay ? "w" : "b"));
+          Lizzie.leelaz.genmove((Lizzie.board.getData().blackToPlay ? "b" : "w"));
         } else if (!Lizzie.frame.isPlayingAgainstLeelaz && !Lizzie.engineManager.isEngineGame) {
           Lizzie.leelaz.playMove(color, convertCoordinatesToName(x, y));
         }
@@ -1836,9 +1836,9 @@ public class Board {
         }
         Lizzie.frame.toolbar.isPkStop = false;
       } else if (Lizzie.frame.isPlayingAgainstLeelaz
-          && Lizzie.frame.playerIsBlack == getData().blackToPlay) {
+          && Lizzie.frame.playerIsBlack != getData().blackToPlay) {
         Lizzie.leelaz.playMove(color, convertCoordinatesToName(x, y));
-        Lizzie.leelaz.genmove((Lizzie.board.getData().blackToPlay ? "w" : "b"));
+        Lizzie.leelaz.genmove((Lizzie.board.getData().blackToPlay ? "b" : "w"));
       } else if (!Lizzie.frame.isPlayingAgainstLeelaz
           && !Lizzie.leelaz.isInputCommand
           && !Lizzie.engineManager.isEngineGame) {

@@ -729,16 +729,6 @@ public class BottomToolbar extends JPanel {
         });
     yike.add(yikeRoom);
 
-    JMenuItem syncBoard =
-        new JMenuItem(Lizzie.resourceBundle.getString("BottomToolbar.syncBoard")); // ("棋盘同步");
-    syncBoard.addActionListener(
-        new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            Lizzie.frame.openBoardSync();
-          }
-        });
-    if (OS.isWindows()) yike.add(syncBoard);
-
     JMenuItem syncBoardJava =
         new JMenuItem(Lizzie.resourceBundle.getString("BottomToolbar.syncBoardJava")); // ("棋盘同步");
     syncBoardJava.addActionListener(
@@ -748,6 +738,16 @@ public class BottomToolbar extends JPanel {
           }
         });
     yike.add(syncBoardJava);
+
+    JMenuItem syncBoard =
+        new JMenuItem(Lizzie.resourceBundle.getString("BottomToolbar.syncBoard")); // ("棋盘同步");
+    syncBoard.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.frame.openBoardSync();
+          }
+        });
+    if (OS.isWindows()) yike.add(syncBoard);
     yike.setVisible(true);
     yike.setVisible(false);
 

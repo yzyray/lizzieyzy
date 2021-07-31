@@ -3582,17 +3582,6 @@ public class Menu extends JMenuBar {
           }
         });
 
-    final JFontMenuItem readBoard =
-        new JFontMenuItem(resourceBundle.getString("Menu.readBoard")); // ("棋盘识别工具(Alt+O)");
-    if (OS.isWindows()) live.add(readBoard);
-
-    readBoard.addActionListener(
-        new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            Lizzie.frame.openBoardSync();
-          }
-        });
-
     final JFontMenuItem readBoardJava =
         new JFontMenuItem(resourceBundle.getString("Menu.readBoardJava")); // ("棋盘同步工具");
     live.add(readBoardJava);
@@ -3603,6 +3592,16 @@ public class Menu extends JMenuBar {
           }
         });
 
+    final JFontMenuItem readBoard =
+        new JFontMenuItem(resourceBundle.getString("Menu.readBoard")); // ("棋盘识别工具(Alt+O)");
+    if (OS.isWindows()) live.add(readBoard);
+
+    readBoard.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.frame.openBoardSync();
+          }
+        });
     live.addSeparator();
 
     final JFontCheckBoxMenuItem EnableEnterYikeGame =
