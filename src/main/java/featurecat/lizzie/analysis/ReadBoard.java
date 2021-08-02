@@ -58,9 +58,9 @@ public class ReadBoard {
   private boolean needGenmove = false;
   private boolean showInBoard = false;
   private boolean isSyncing = false;
-  private long startTime;
+  // private long startTime;
   private boolean javaReadBoard = false;
-  private String javaReadBoardName = "readboard-1.0-shaded.jar";
+  private String javaReadBoardName = "readboard-1.1-shaded.jar";
   private boolean waitSocket = true;
 
   public ReadBoard(boolean usePipe, boolean isJavaReadBoard) throws Exception {
@@ -229,7 +229,8 @@ public class ReadBoard {
     } else {
       try {
         process = processBuilder.start();
-        startTime = System.currentTimeMillis();
+        SMessage msg = new SMessage();
+        msg.setMessage(resourceBundle.getString("ReadBoard.loadFailed"), 2);
       } catch (IOException e) {
         // TODO Auto-generated catch block
         if (!usePipe) {
@@ -284,16 +285,21 @@ public class ReadBoard {
         Lizzie.frame.floatBoard.setVisible(false);
       }
       System.out.println("Board synchronization tool process ended.");
-      shutdown();
-      if (!javaReadBoard && !isLoaded && System.currentTimeMillis() - startTime < 500) {
+      if (!javaReadBoard && !isLoaded) {
         try {
           Runtime.getRuntime().exec("powershell /c start readboard\\readboard.bat");
         } catch (IOException e) {
+          try {
+            Runtime.getRuntime().exec("powershell /c start readboard\\readboard.exe");
+          } catch (Exception s) {
+            s.printStackTrace();
+          }
           e.printStackTrace();
         }
         SMessage msg = new SMessage();
         msg.setMessage(resourceBundle.getString("ReadBoard.loadFailed"), 2);
-      }
+        shutdown();
+      } else shutdown();
       // Do no exit for switching weights
       // System.exit(-1);
     } catch (IOException e) {
