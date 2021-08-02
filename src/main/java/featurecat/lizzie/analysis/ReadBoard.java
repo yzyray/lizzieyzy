@@ -229,8 +229,6 @@ public class ReadBoard {
     } else {
       try {
         process = processBuilder.start();
-        SMessage msg = new SMessage();
-        msg.setMessage(resourceBundle.getString("ReadBoard.loadFailed"), 2);
       } catch (IOException e) {
         // TODO Auto-generated catch block
         if (!usePipe) {
@@ -368,7 +366,6 @@ public class ReadBoard {
     }
     if (line.startsWith("endsync")) {
       noMsg = true;
-      shutdown();
       Lizzie.frame.syncBoard = false;
       if (Lizzie.frame.isAnaPlayingAgainstLeelaz) {
         Lizzie.frame.stopAiPlayingAndPolicy();
@@ -801,18 +798,6 @@ public class ReadBoard {
         socket.close();
       } catch (Exception e) {
       }
-    } else {
-      new Thread() {
-        public void run() {
-          try {
-            Thread.sleep(500);
-          } catch (InterruptedException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
-          }
-          if (process != null && process.isAlive()) process.destroy();
-        }
-      }.start();
     }
   }
 
