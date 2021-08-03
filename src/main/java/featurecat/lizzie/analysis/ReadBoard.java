@@ -40,7 +40,6 @@ public class ReadBoard {
   // private long startSyncTime = 0;
 
   public boolean isLoaded = false;
-  public boolean checkedVersionSucceed = false;
   private int version = 730;
   private String engineCommand;
   public String currentEnginename = "";
@@ -326,7 +325,10 @@ public class ReadBoard {
     if (line.startsWith("version")) {
       Lizzie.gtpConsole.addErrorLine("Board synchronization tool " + line + "\n");
       String[] params = line.trim().split(" ");
-      if (Integer.parseInt(params[1]) >= version) checkedVersionSucceed = true;
+      if (Integer.parseInt(params[1]) < version) {
+        SMessage msg = new SMessage();
+        msg.setMessage(Lizzie.resourceBundle.getString("ReadBoard.versionCheckFaied"), 2);
+      }
     }
     if (line.startsWith("end")) {
       if (!isSyncing) syncBoardStones(false);
@@ -831,21 +833,6 @@ public class ReadBoard {
 
   public void checkVersion() {
     sendCommand("version");
-    new Thread() {
-      public void run() {
-        try {
-          Thread.sleep(2000);
-        } catch (InterruptedException e1) {
-          // TODO Auto-generated catch block
-          e1.printStackTrace();
-        }
-        if (!checkedVersionSucceed) {
-          SMessage msg = new SMessage();
-          msg.setMessage(resourceBundle.getString("ReadBoard.versionCheckFaied"), 4, 3);
-          shutdown();
-        }
-      }
-    }.start();
   }
 
   // public void sendStopInBoard() {

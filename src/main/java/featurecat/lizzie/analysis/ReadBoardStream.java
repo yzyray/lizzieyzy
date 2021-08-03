@@ -1,7 +1,6 @@
 package featurecat.lizzie.analysis;
 
 import featurecat.lizzie.Lizzie;
-import featurecat.lizzie.gui.SMessage;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -63,20 +62,5 @@ public class ReadBoardStream extends Thread {
 
   public void checkVersion() {
     sendCommand("version");
-    new Thread() {
-      public void run() {
-        try {
-          Thread.sleep(2000);
-        } catch (InterruptedException e1) {
-          // TODO Auto-generated catch block
-          e1.printStackTrace();
-        }
-        if (!Lizzie.frame.readBoard.checkedVersionSucceed) {
-          SMessage msg = new SMessage();
-          msg.setMessage(Lizzie.resourceBundle.getString("ReadBoard.versionCheckFaied"), 4, 3);
-          Lizzie.frame.readBoard.shutdown();
-        }
-      }
-    }.start();
   }
 }
