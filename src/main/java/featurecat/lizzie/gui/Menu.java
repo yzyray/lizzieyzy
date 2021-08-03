@@ -502,9 +502,23 @@ public class Menu extends JMenuBar {
     viewMenu.add(moveMenu);
 
     final JFontMenu moveRankMenu =
-        new JFontMenu(resourceBundle.getString("Menu.moveRankMenu")); // ("手数(M)");
+        new JFontMenu(resourceBundle.getString("Menu.moveRankMenu")); // ("落子评价标记(Alt+M)");
     viewMenu.add(moveRankMenu);
     addRankMarkMenu(null, moveRankMenu);
+    moveRankMenu.addSeparator();
+
+    final JFontCheckBoxMenuItem showMoveRankInOrigin =
+        new JFontCheckBoxMenuItem(
+            resourceBundle.getString("Menu.showMoveRankInOrigin")); // ("棋盘同步时原棋盘不显示评价标记");
+    showMoveRankInOrigin.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            // TODO Auto-generated method stub
+            Lizzie.config.toggleDisableMoveRankInOrigin();
+          }
+        });
+    moveRankMenu.add(showMoveRankInOrigin);
 
     final JFontMenu Suggestions =
         new JFontMenu(resourceBundle.getString("Menu.Suggestions")); // ("选点");
@@ -2174,6 +2188,8 @@ public class Menu extends JMenuBar {
         new MenuListener() {
 
           public void menuSelected(MenuEvent e) {
+            if (Lizzie.config.disableMoveRankInOrigin) showMoveRankInOrigin.setSelected(true);
+            else showMoveRankInOrigin.setSelected(false);
             if (Lizzie.config.ignoreOutOfWidth) ignoreOutOfWidth.setState(true);
             else ignoreOutOfWidth.setState(false);
             if (Lizzie.config.showScrollVariation) {

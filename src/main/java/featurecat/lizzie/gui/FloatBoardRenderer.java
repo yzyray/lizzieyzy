@@ -141,6 +141,7 @@ public class FloatBoardRenderer {
     renderImages(g);
     if (!isShowingBranch
         && Lizzie.config.allowMoveNumber == 0
+        && !Lizzie.config.disableMoveRankInOrigin
         && Lizzie.config.moveRankMarkLastMove >= 0) drawMoveRankMark(g);
     else drawMoveNumbers(g);
     g.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);

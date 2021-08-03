@@ -554,6 +554,7 @@ public class Config {
 
   public int txtMoveRankMarkLastMove = 3;
   public int moveRankMarkLastMove = 1; // -1关闭 0全部
+  public boolean disableMoveRankInOrigin = false;
 
   private JSONObject loadAndMergeSaveBoardConfig(
       JSONObject defaultCfg, String fileName, boolean needValidation) throws IOException {
@@ -1204,6 +1205,7 @@ public class Config {
     firstLoadKataGo = uiConfig.optBoolean("first-load-katago", true);
     txtMoveRankMarkLastMove = uiConfig.optInt("txt-move-rank-mark-last-move", 3);
     moveRankMarkLastMove = uiConfig.optInt("move-rank-mark-last-move", 1);
+    disableMoveRankInOrigin = uiConfig.optBoolean("disable-move-rank-in-origin", false);
     showScrollVariation = uiConfig.optBoolean("show-scroll-variation", true);
     ignoreOutOfWidth = uiConfig.optBoolean("ignore-out-of-width", false);
     enginePkPonder = uiConfig.optBoolean("engine-pk-ponder", false);
@@ -1490,6 +1492,11 @@ public class Config {
     }
     uiConfig.put("move-rank-mark-last-move", moveRankMarkLastMove);
     Lizzie.frame.menu.setBtnRankMark();
+  }
+
+  public void toggleDisableMoveRankInOrigin() {
+    disableMoveRankInOrigin = !disableMoveRankInOrigin;
+    uiConfig.put("disable-move-rank-in-origin", disableMoveRankInOrigin);
   }
 
   public void toggleShowMoveRankMark() {
