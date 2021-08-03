@@ -2771,7 +2771,7 @@ public class Board {
   public void clear(boolean isEngineGame) {
     if (isEngineGame) Lizzie.frame.winrateGraph.maxcoreMean = 15;
     else Lizzie.frame.winrateGraph.maxcoreMean = 30;
-    if (Lizzie.frame.readBoard != null && Lizzie.frame.syncBoard) {
+    if (Lizzie.frame.readBoard != null) {
       Lizzie.frame.readBoard.firstSync = true;
     }
     double komi = history.getGameInfo().getKomi();

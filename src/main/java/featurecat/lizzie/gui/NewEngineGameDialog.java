@@ -542,7 +542,9 @@ public class NewEngineGameDialog extends JDialog {
               // Lizzie.config.uiConfig.put("engine-sgf-start", Lizzie.config.chkEngineSgfStart);
               btnSGFstart.setEnabled(false);
               cbxRandomSgf.setEnabled(false);
+              textFieldHandicap.setEnabled(false);
             } else {
+              textFieldHandicap.setEnabled(true);
               if (chkSGFstart.isSelected()) {
                 btnSGFstart.setEnabled(true);
                 cbxRandomSgf.setEnabled(true);
@@ -824,7 +826,9 @@ public class NewEngineGameDialog extends JDialog {
       chkSGFstart.setSelected(false);
       btnSGFstart.setEnabled(false);
       cbxRandomSgf.setEnabled(false);
+      textFieldHandicap.setEnabled(false);
     } else {
+      textFieldHandicap.setEnabled(true);
       if (chkSGFstart.isSelected()) {
         btnSGFstart.setEnabled(true);
         cbxRandomSgf.setEnabled(true);
@@ -921,7 +925,10 @@ public class NewEngineGameDialog extends JDialog {
         komi = FORMAT_KOMI.parse(textFieldKomi.getText()).doubleValue();
       } catch (NumberFormatException err) {
       }
-      int handicap = FORMAT_HANDICAP.parse(textFieldHandicap.getText()).intValue();
+      int handicap =
+          Lizzie.frame.toolbar.chkenginePkContinue.isSelected()
+              ? 0
+              : FORMAT_HANDICAP.parse(textFieldHandicap.getText()).intValue();
       try {
         Lizzie.config.firstEngineResignMoveCounts =
             Integer.parseInt(txtresignSettingBlack.getText());
