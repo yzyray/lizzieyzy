@@ -841,7 +841,7 @@ public class ReadBoard {
         }
         if (!checkedVersionSucceed) {
           SMessage msg = new SMessage();
-          msg.setMessage(resourceBundle.getString("ReadBoard.versionCheckFaied"), 4);
+          msg.setMessage(resourceBundle.getString("ReadBoard.versionCheckFaied"), 4, 3);
           shutdown();
         }
       }

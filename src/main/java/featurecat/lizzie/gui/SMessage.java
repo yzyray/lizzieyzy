@@ -30,6 +30,21 @@ public class SMessage extends JDialog {
     }
   }
 
+  public void setMessage(String message, int rows, int size) {
+    String regex = "[\u4e00-\u9fa5]";
+    lblMessage.setText(message);
+    int width =
+        (int) (message.replaceAll(regex, "12").length() * (Lizzie.config.frameFontSize / 1.6))
+            / size;
+    int height = 80 + (rows - 1) * Lizzie.config.menuHeight;
+    setSize(width, height);
+    setLocationRelativeTo(null);
+    setVisible(true);
+    Lizzie.setFrameSize(this, width, height);
+    this.setModal(true);
+    setVisible(false);
+  }
+
   public void setMessage(String message, int rows) {
     String regex = "[\u4e00-\u9fa5]";
     lblMessage.setText(message);
