@@ -481,6 +481,11 @@ public class ReadBoard {
       }
       Lizzie.leelaz.togglePonder();
     }
+    if (line.startsWith("noinboard")) {
+      if (Lizzie.frame.floatBoard != null && Lizzie.frame.floatBoard.isVisible()) {
+        Lizzie.frame.floatBoard.setVisible(false);
+      }
+    }
     if (line.startsWith("inboard")) {
       //	Lizzie.gtpConsole.addLine(line);
       showInBoard = true;
