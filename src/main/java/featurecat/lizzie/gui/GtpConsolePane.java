@@ -207,6 +207,14 @@ public class GtpConsolePane extends JDialog {
   }
 
   public void setDocs(String str, Color col, boolean isCommand, int fontSize) {
+    new Thread() {
+      public void run() {
+        setDocsTh(str, col, isCommand, fontSize);
+      }
+    }.start();
+  }
+
+  public synchronized void setDocsTh(String str, Color col, boolean isCommand, int fontSize) {
     SimpleAttributeSet attrSet = new SimpleAttributeSet();
     StyleConstants.setForeground(attrSet, col);
     // 颜色
