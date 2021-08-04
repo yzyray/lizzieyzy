@@ -321,6 +321,7 @@ public class Leelaz {
 			Utils.showMsg(resourceBundle.getString("EngineFaied.empty"));
 			return;
 		}	
+		canAddPlayer=false;
 		currentEngineN = index;
 		canRestoreDymPda=false;
 		commands = Utils.splitCommand(engineCommand);
