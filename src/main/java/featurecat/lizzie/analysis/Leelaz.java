@@ -167,6 +167,7 @@ public class Leelaz {
 	 Message msg;
 	public boolean playNow=false;
 	public boolean isZen=false;
+	public boolean canAddPlayer=false;
 	public boolean requireResponseBeforeSend=false;
 	public boolean noLcb=false;
 	//private boolean isInfoLine = false;
@@ -939,10 +940,12 @@ public class Leelaz {
 				if (params[1].toLowerCase().startsWith("llzero"))
 				{	this.noLcb=true;
 				this.isLeela=true;
+				canAddPlayer=true;
 				}
 				if (params[1].toLowerCase().startsWith("leela") && params.length > 2&&params[2].toLowerCase().startsWith("zero"))				
 				{	
 				this.isLeela=true;
+				canAddPlayer=true;
 				}
 				if (params[1].equals("Leela") && params.length == 2) {
 		            isLeela0110 = true;
@@ -952,7 +955,8 @@ public class Leelaz {
 					this.isSai=true;					
 //				if (params[1].startsWith("KataGoYm"))
 //					sendCommandToLeelazWithOutLog("lizzie_use");					
-				if (params[1].startsWith("KataGo") || isKatago) {					
+				if (params[1].startsWith("KataGo") || isKatago) {	
+					canAddPlayer=true;
 					if(params[1].startsWith("KataGoPda")) {
 						isKatagoCustom=true;
 						isCheckinPda=true;
@@ -1460,12 +1464,15 @@ public class Leelaz {
 						if (params[1].toLowerCase().startsWith("zen"))
 							this.isZen=true;
 						if (params[1].toLowerCase().startsWith("llzero"))
-							this.noLcb=true;
+							{this.noLcb=true;
+							canAddPlayer=true;
+							}
 						if (params[1].toLowerCase().startsWith("sai"))
 							this.isSai=true;
 						if (params[1].toLowerCase().startsWith("leela")&&params.length>2&&params[2].toLowerCase().startsWith("zero"))				
 						{	
 							this.isLeela=true;
+							canAddPlayer=true;
 							}
 						 if (params[1].equals("Leela") && params.length == 2) {
 				            isLeela0110 = true;
@@ -1474,6 +1481,7 @@ public class Leelaz {
 //						if (params[1].startsWith("KataGoYm"))
 //							sendCommandToLeelazWithOutLog("lizzie_use");		
 						if (params[1].startsWith("KataGo") || isKatago) {
+							canAddPlayer=true;
 							if(Lizzie.config.firstLoadKataGo)
 							{
 								SMessage msg = new SMessage();
@@ -3524,7 +3532,7 @@ parseHeatMap(line);
 	}
 	
 	private String maybeAddPlayer() {
-		if(this.isZen)
+		if(!canAddPlayer)
 			return "";
 		if(Lizzie.board.getHistory().getCurrentHistoryNode().next().isPresent()&&Lizzie.board.getHistory().isBlacksTurn()!=Lizzie.board.getHistory().getCurrentHistoryNode().next().get().getData().lastMoveColor.isBlack())
 				return	 (Lizzie.board.getHistory().getCurrentHistoryNode().next().get().getData().lastMoveColor.isBlack()?"b ":"w ");
