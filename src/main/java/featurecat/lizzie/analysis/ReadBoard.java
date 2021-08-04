@@ -330,6 +330,9 @@ public class ReadBoard {
         msg.setMessage(Lizzie.resourceBundle.getString("ReadBoard.versionCheckFaied"), 2);
       }
     }
+    if (line.startsWith("error")) {
+      Lizzie.gtpConsole.addErrorLine(line + (usePipe ? "" : "\n"));
+    }
     if (line.startsWith("end")) {
       if (!isSyncing) syncBoardStones(false);
       tempcount = new ArrayList<Integer>();

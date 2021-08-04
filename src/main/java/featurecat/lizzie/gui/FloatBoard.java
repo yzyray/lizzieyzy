@@ -83,7 +83,7 @@ public class FloatBoard extends JDialog {
     tempWidth = width;
     tempHeight = height;
     this.boardType = boardType;
-    if (boardType > 2) showPosBtn = true;
+    // if (boardType > 2) showPosBtn = true;
     this.isScaled = isScaled;
     x = x - Utils.zoomIn(20) + extraX;
     y = y - Utils.zoomIn(20) + extraY;
