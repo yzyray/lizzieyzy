@@ -3,8 +3,10 @@ package featurecat.lizzie.analysis;
 import featurecat.lizzie.Lizzie;
 import featurecat.lizzie.gui.EngineFailedMessage;
 import featurecat.lizzie.gui.EstimateResults;
+import featurecat.lizzie.gui.LizzieFrame;
 import featurecat.lizzie.gui.RemoteEngineData;
 import featurecat.lizzie.gui.SetEstimateParam;
+import featurecat.lizzie.rules.Board;
 import featurecat.lizzie.rules.Movelist;
 import featurecat.lizzie.rules.Stone;
 import featurecat.lizzie.util.Utils;
@@ -242,8 +244,7 @@ public class KataEstimate {
         if (line.startsWith("#")) {
           //  if (first) first = false;
           String[] params = line.substring(1).trim().split("\\s+");
-          if (params.length == Lizzie.board.boardWidth) {
-            boolean blackToPlay = Lizzie.board.getHistory().isBlacksTurn();
+          if (params.length == Board.boardWidth) {
             for (int i = 0; i < params.length; i++) {
               try {
                 Double temp = -Double.parseDouble(params[i]);
@@ -255,7 +256,7 @@ public class KataEstimate {
               }
             }
           }
-          if (tempcount.size() == Lizzie.board.boardHeight * Lizzie.board.boardWidth) {
+          if (tempcount.size() == Board.boardHeight * Board.boardWidth) {
             //   canGetOwnership = false;
             // if (first) first = false;
             // else
@@ -266,7 +267,6 @@ public class KataEstimate {
         }
         if (!noGtp) Lizzie.gtpConsole.addLineEstimate(line);
       } else {
-        if (!noGtp) Lizzie.gtpConsole.addLineEstimate(line);
         if (line.startsWith("whiteOwnership")) {
           canGetOwnership = true;
           tempcount = new ArrayList<Double>();
@@ -274,8 +274,7 @@ public class KataEstimate {
 
         if (canGetOwnership) {
           String[] params = line.trim().split("\\s+");
-          if (params.length == Lizzie.board.boardWidth) {
-            boolean blackToPlay = Lizzie.board.getHistory().isBlacksTurn();
+          if (params.length == Board.boardWidth) {
             for (int i = 0; i < params.length; i++) {
               try {
                 Double temp = -Double.parseDouble(params[i]);
@@ -288,12 +287,13 @@ public class KataEstimate {
               }
             }
           }
-          if (tempcount.size() == Lizzie.board.boardHeight * Lizzie.board.boardWidth) {
+          if (tempcount.size() == Board.boardHeight * Board.boardWidth) {
             canGetOwnership = false;
             territory();
             // 结束并显示
           }
         }
+        if (!noGtp) Lizzie.gtpConsole.addLineEstimate(line);
       }
       //      if (line.startsWith("#")) {
       //
@@ -324,25 +324,25 @@ public class KataEstimate {
 
   private Double getRealCountWhite(int[] coords, Double count) {
     if (coords[0] >= 1) {
-      int left = (coords[0] - 1) + coords[1] * Lizzie.board.boardWidth;
+      int left = (coords[0] - 1) + coords[1] * Board.boardWidth;
       if (tempcount.get(left) >= 0) {
         return 0.0;
       }
     }
-    if (coords[0] <= (Lizzie.board.boardWidth - 2)) {
-      int right = (coords[0] + 1) + coords[1] * Lizzie.board.boardWidth;
+    if (coords[0] <= (Board.boardWidth - 2)) {
+      int right = (coords[0] + 1) + coords[1] * Board.boardWidth;
       if (tempcount.get(right) >= 0) {
         return 0.0;
       }
     }
     if (coords[1] >= 1) {
-      int top = coords[0] + (coords[1] - 1) * Lizzie.board.boardWidth;
+      int top = coords[0] + (coords[1] - 1) * Board.boardWidth;
       if (tempcount.get(top) >= 0) {
         return 0.0;
       }
     }
-    if (coords[1] <= (Lizzie.board.boardHeight - 2)) {
-      int bottom = coords[0] + (coords[1] + 1) * Lizzie.board.boardWidth;
+    if (coords[1] <= (Board.boardHeight - 2)) {
+      int bottom = coords[0] + (coords[1] + 1) * Board.boardWidth;
       if (tempcount.get(bottom) >= 0) {
         return 0.0;
       }
@@ -352,25 +352,25 @@ public class KataEstimate {
 
   private Double getRealCountBlack(int[] coords, Double count) {
     if (coords[0] >= 1) {
-      int left = (coords[0] - 1) + coords[1] * Lizzie.board.boardWidth;
+      int left = (coords[0] - 1) + coords[1] * Board.boardWidth;
       if (tempcount.get(left) <= 0) {
         return 0.0;
       }
     }
-    if (coords[0] <= (Lizzie.board.boardWidth - 2)) {
-      int right = (coords[0] + 1) + coords[1] * Lizzie.board.boardWidth;
+    if (coords[0] <= (Board.boardWidth - 2)) {
+      int right = (coords[0] + 1) + coords[1] * Board.boardWidth;
       if (tempcount.get(right) <= 0) {
         return 0.0;
       }
     }
     if (coords[1] >= 1) {
-      int top = coords[0] + (coords[1] - 1) * Lizzie.board.boardWidth;
+      int top = coords[0] + (coords[1] - 1) * Board.boardWidth;
       if (tempcount.get(top) <= 0) {
         return 0.0;
       }
     }
-    if (coords[1] <= (Lizzie.board.boardHeight - 2)) {
-      int bottom = coords[0] + (coords[1] + 1) * Lizzie.board.boardWidth;
+    if (coords[1] <= (Board.boardHeight - 2)) {
+      int bottom = coords[0] + (coords[1] + 1) * Board.boardWidth;
       if (tempcount.get(bottom) <= 0) {
         return 0.0;
       }
@@ -392,13 +392,13 @@ public class KataEstimate {
     for (Double counts : tempcount) {
       tempCountForRender.add(counts);
       limit++;
-      if (limit >= Lizzie.board.boardWidth * Lizzie.board.boardHeight) break;
+      if (limit >= Board.boardWidth * Board.boardHeight) break;
     }
 
     Stone[] stones = Lizzie.board.getStones();
     for (int i = 0; i < stones.length; i++) {
-      int[] coords = Lizzie.board.getCoord(i);
-      int countOrder = coords[0] + coords[1] * Lizzie.board.boardWidth;
+      int[] coords = Board.getCoord(i);
+      int countOrder = coords[0] + coords[1] * Board.boardWidth;
       Double count = tempcount.get(countOrder);
       if (stones[i] == Stone.BLACK) {
         if (count < 0) {
@@ -441,7 +441,7 @@ public class KataEstimate {
         }
       }
     }
-    Lizzie.frame.boardRenderer.drawEstimateImage(tempCountForRender);
+    LizzieFrame.boardRenderer.drawEstimateImage(tempCountForRender);
     if (Lizzie.frame.floatBoard != null && Lizzie.frame.floatBoard.isVisible())
       Lizzie.frame.floatBoard.boardRenderer.drawEstimateImage(tempCountForRender);
     Lizzie.frame.refresh();
@@ -487,14 +487,28 @@ public class KataEstimate {
     else if (process != null && process.isAlive()) process.destroy();
   }
 
+  public void sendAndEstimate(String command, boolean needVerify) {
+    new Thread() {
+      public void run() {
+        if (!needVerify
+            || command.startsWith("play")
+            || command.startsWith("undo")
+            || command.startsWith("clear")
+            || command.startsWith("boardsize")
+            || command.startsWith("rectan")) {
+          sendCommand(command);
+          countStones();
+        }
+      }
+    }.start();
+  }
+
   public void sendCommand(String command) {
-    //  synchronized (cmdQueue) {
     if (!cmdQueue.isEmpty()) {
       cmdQueue.removeLast();
     }
     cmdQueue.addLast(command);
     trySendCommandFromQueue();
-    //   }
   }
 
   private void trySendCommandFromQueue() {
@@ -523,7 +537,7 @@ public class KataEstimate {
   }
 
   private void playmove(int x, int y, boolean isblack) {
-    String coordsname = Lizzie.board.convertCoordinatesToName(x, y);
+    String coordsname = Board.convertCoordinatesToName(x, y);
     String color = isblack ? "b" : "w";
 
     sendCommand("play" + " " + color + " " + coordsname);
@@ -537,7 +551,7 @@ public class KataEstimate {
   public void syncboradstat() {
     noGtp = false;
     sendCommand("clear_board");
-    boardSize(Lizzie.board.boardWidth, Lizzie.board.boardHeight);
+    boardSize(Board.boardWidth, Board.boardHeight);
     cmdNumber = 1;
     ArrayList<Movelist> movelist = Lizzie.board.getmovelist();
 
@@ -624,12 +638,6 @@ public class KataEstimate {
       Thread thread2 = new Thread(runnable2);
       thread2.start();
     }
-  }
-
-  private void reautocounting() {
-    Lizzie.frame.isAutocounting = true;
-    syncboradstat();
-    countStones();
   }
 
   public void tryToDignostic(String message) {

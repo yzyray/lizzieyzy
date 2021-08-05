@@ -1266,12 +1266,8 @@ public class Leelaz {
 							nameCmdfornoponder();
 					}
 					if (Lizzie.frame.isAutocounting) {
-						if (Lizzie.board.getHistory().isBlacksTurn())
-							Lizzie.frame.zen.sendCommand("play " + "w " + params[1]);
-						else
-							Lizzie.frame.zen.sendCommand("play " + "b " + params[1]);
-
-						Lizzie.frame.zen.countStones();
+						String command="play " +(Lizzie.board.getHistory().isBlacksTurn()?"w ":"b ")+ params[1];
+						Lizzie.frame.zen.sendAndEstimate(command,false);		
 					}					
 				}
 				if (Lizzie.frame.isPlayingAgainstLeelaz) {
@@ -1315,12 +1311,8 @@ public class Leelaz {
 						Lizzie.frame.menu.toggleEngineMenuStatus(false,false);
 					}}
 					if (Lizzie.frame.isAutocounting) {
-						if (Lizzie.board.getHistory().isBlacksTurn())
-							Lizzie.frame.zen.sendCommand("play " + "w " + params[1]);
-						else
-							Lizzie.frame.zen.sendCommand("play " + "b " + params[1]);
-
-						Lizzie.frame.zen.countStones();
+						String command="play " +(Lizzie.board.getHistory().isBlacksTurn()?"w ":"b ")+ params[1];
+						Lizzie.frame.zen.sendAndEstimate(command,false);	
 					}
 					if (!Lizzie.config.playponder)
 						Lizzie.leelaz.nameCmdfornoponder();
@@ -1352,12 +1344,8 @@ public class Leelaz {
 						else
 							this.nameCmdfornoponder();
 						if (Lizzie.frame.isAutocounting) {
-							if (Lizzie.board.getHistory().isBlacksTurn())
-								Lizzie.frame.zen.sendCommand("play " + "w " + params[1]);
-							else
-								Lizzie.frame.zen.sendCommand("play " + "b " + params[1]);
-
-							Lizzie.frame.zen.countStones();
+							String command="play " +(Lizzie.board.getHistory().isBlacksTurn()?"w ":"b ")+ params[1];
+							Lizzie.frame.zen.sendAndEstimate(command,false);	
 						}
 						isInputCommand = false;
 						isThinking = false;							
@@ -1393,12 +1381,8 @@ public class Leelaz {
 						Lizzie.board.place(params[1]);
 						togglePonder();
 						if (Lizzie.frame.isAutocounting) {
-							if (Lizzie.board.getHistory().isBlacksTurn())
-								Lizzie.frame.zen.sendCommand("play " + "w " + params[1]);
-							else
-								Lizzie.frame.zen.sendCommand("play " + "b " + params[1]);
-
-							Lizzie.frame.zen.countStones();
+							String command="play " +(Lizzie.board.getHistory().isBlacksTurn()?"w ":"b ")+ params[1];
+							Lizzie.frame.zen.sendAndEstimate(command,false);	
 						}
 					}
 					if (Lizzie.frame.isPlayingAgainstLeelaz) {
@@ -1437,12 +1421,8 @@ public class Leelaz {
 							Lizzie.frame.menu.toggleEngineMenuStatus(false,false);
 						}
 						if (Lizzie.frame.isAutocounting) {
-							if (Lizzie.board.getHistory().isBlacksTurn())
-								Lizzie.frame.zen.sendCommand("play " + "w " + params[1]);
-							else
-								Lizzie.frame.zen.sendCommand("play " + "b " + params[1]);
-
-							Lizzie.frame.zen.countStones();
+							String command="play " +(Lizzie.board.getHistory().isBlacksTurn()?"w ":"b ")+ params[1];
+							Lizzie.frame.zen.sendAndEstimate(command,false);	
 						}
 						if (!Lizzie.config.playponder)
 							Lizzie.leelaz.nameCmdfornoponder();
@@ -3009,14 +2989,10 @@ parseHeatMap(line);
 				cmdNumber--;
 			}
 			cmdQueue.addLast(command);			
-			trySendCommandFromQueue();
-			if (Lizzie.frame.isAutocounting) {
-				if (command.startsWith("play") || command.startsWith("undo")||command.startsWith("clear")||command.startsWith("boardsize")||command.startsWith("rectan")) {
-					Lizzie.frame.zen.sendCommand(command);
-					Lizzie.frame.zen.countStones();
-					//Lizzie.frame.zen.countStones();
-				}
-			}
+			trySendCommandFromQueue();			
+		}
+		if (Lizzie.frame.isAutocounting) {
+			Lizzie.frame.zen.sendAndEstimate(command,true);		
 		}
 		if(Lizzie.frame.extraMode==2) {
 		if(Lizzie.leelaz2!=null&&this!=Lizzie.leelaz2)
@@ -3028,7 +3004,6 @@ parseHeatMap(line);
 	}
 	
 	public void sendCommandNoLeelaz2(String command) {	
-		//Lizzie.gtpConsole.addLine(command);
 		if(Lizzie.frame.extraMode==2) {	
 			if((command.startsWith("heat")||command.startsWith("kata-raw"))&&!this.isKatago&&Lizzie.leelaz2!=null&&this==Lizzie.leelaz2)
 			heatcount = new ArrayList<Integer>();
@@ -3072,15 +3047,11 @@ parseHeatMap(line);
 				cmdQueue.removeLast();
 			}
 			cmdQueue.addLast(command);
-			trySendCommandFromQueue();
-			if (Lizzie.frame.isAutocounting) {
-				if (command.startsWith("play") || command.startsWith("undo")||command.startsWith("clear")||command.startsWith("boardsize")||command.startsWith("rectan")) {
-					Lizzie.frame.zen.sendCommand(command);
-					Lizzie.frame.zen.countStones();
-					//Lizzie.frame.zen.countStones();
-				}
-			}
-		}		
+			trySendCommandFromQueue();			
+		}	
+		if (Lizzie.frame.isAutocounting) {
+			Lizzie.frame.zen.sendAndEstimate(command,true);		
+		}
 	}
 
 	/** Sends a command from command queue for leelaz to execute if it is ready */
@@ -3116,50 +3087,9 @@ parseHeatMap(line);
 	 * @param command a GTP command containing no newline characters
 	 */
 	
-//	private void sendCommandToLeelazWithOutLog(String command) {		
-//		if (command.startsWith("fixed_handicap") || (isKatago && command.startsWith("place_free_handicap")))
-//			isSettingHandicap = true;
-////    if (printCommunication) {
-////      System.out.println(currentEnginename+" "+ cmdNumber+" "+ command);
-////    }
-//		//
-//		cmdNumber++;						
-//		if (outputStream != null) {
-//		try {
-//			outputStream.write((command + "\n").getBytes());
-//			outputStream.flush();
-//		} catch (Exception e) {
-//			//e.printStackTrace();
-//		}
-//		}
-////    if(executor!=null&&executor.isShutdown())
-////    {	executor = Executors.newSingleThreadScheduledExecutor();
-////    executor.execute(this::read);}
-//	}
-	
 	private void sendCommandToLeelaz(String command) {		
 		if (command.startsWith("fixed_handicap") || (isKatago && command.startsWith("place_free_handicap")))
 			isSettingHandicap = true;
-//    if (printCommunication) {
-//      System.out.println(currentEnginename+" "+ cmdNumber+" "+ command);
-//    }
-		//			
-//		int commandNumber=cmdNumber;
-//		  Runnable runnable =
-//			        new Runnable() {
-//			          public void run() {
-//			        	  try {
-//							Thread.sleep(80);
-//						} catch (InterruptedException e) {
-//							// TODO Auto-generated catch block
-//							e.printStackTrace();
-//						}
-//			        	  if(cmdNumber==commandNumber)
-//			        			setModifyEnd(false);
-//			          }
-//			        };
-//			    Thread thread = new Thread(runnable);
-//			    thread.start();		
 		if (outputStream != null) {
 		try {
 			outputStream.write((command + "\n").getBytes());
@@ -3170,21 +3100,14 @@ parseHeatMap(line);
 		if(Lizzie.config.alwaysGtp||Lizzie.gtpConsole.isVisible())
 			Lizzie.gtpConsole.addCommand(command, cmdNumber, oriEnginename);	
 		}
-//    if(executor!=null&&executor.isShutdown())
-//    {	executor = Executors.newSingleThreadScheduledExecutor();
-//    executor.execute(this::read);}
 	}
 	
-	//private boolean isModifying() {
-//		return Lizzie.board.isModifying||this.isModifying;
-//	}
-
 	/** Check whether leelaz is responding to the last command */
 	public boolean isResponseUpToDate() {
 		// Use >= instead of == for avoiding hang-up, though it cannot happen
 		return currentCmdNum >= cmdNumber - 1;//&&currentCmdNum >=ignoreCmdNumber;
 	}
-	public boolean isResponseUpToPreDate() {
+	private boolean isResponseUpToPreDate() {
 		// Use >= instead of == for avoiding hang-up, though it cannot happen
 		return currentCmdNum >= cmdNumber - 2;//&&currentCmdNum >=ignoreCmdNumber;
 	}

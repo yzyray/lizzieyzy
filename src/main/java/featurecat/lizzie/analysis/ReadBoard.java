@@ -323,7 +323,7 @@ public class ReadBoard {
       }
     }
     if (line.startsWith("version")) {
-      Lizzie.gtpConsole.addErrorLine("Board synchronization tool " + line + "\n");
+      Lizzie.gtpConsole.addLineReadBoard("Board synchronization tool " + line + "\n");
       String[] params = line.trim().split(" ");
       if (Integer.parseInt(params[1]) < version) {
         SMessage msg = new SMessage();
@@ -331,7 +331,7 @@ public class ReadBoard {
       }
     }
     if (line.startsWith("error")) {
-      Lizzie.gtpConsole.addErrorLine(line + (usePipe ? "" : "\n"));
+      Lizzie.gtpConsole.addLineReadBoard(line + (usePipe ? "" : "\n"));
     }
     if (line.startsWith("end")) {
       if (!isSyncing) syncBoardStones(false);

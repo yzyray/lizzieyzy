@@ -1,5 +1,6 @@
 package featurecat.lizzie.gui;
 
+import featurecat.lizzie.Config;
 import featurecat.lizzie.Lizzie;
 import featurecat.lizzie.util.Utils;
 import java.awt.BorderLayout;
@@ -302,28 +303,25 @@ public class GtpConsolePane extends JDialog {
     // addText();
   }
 
-  public void addReadBoardCommand(String command) {
-    if (command == null || command.trim().length() == 0) {
+  public void addLineReadBoard(String line) {
+    if (line == null || line.trim().length() == 0) {
       return;
     }
-    setDocs("ReadBoard > " + command + "\n", Color.WHITE, true, Lizzie.config.frameFontSize);
-    //   commandTexts += command + "\n";
-    // commandTexts+=formatReadBoardCommand(command);
-    // addText();
+    setDocs(" " + line, Color.ORANGE, false, Config.frameFontSize);
   }
 
   public void addLine(String line) {
     if (line == null || line.trim().length() == 0) {
       return;
     }
-    setDocs(" " + line, Color.GREEN, false, Lizzie.config.frameFontSize);
+    setDocs(" " + line, Color.GREEN, false, Config.frameFontSize);
   }
 
   public void addLineEstimate(String line) {
     if (line == null || line.trim().length() == 0) {
       return;
     }
-    setDocs(" " + line, Color.GRAY, false, Lizzie.config.frameFontSize);
+    setDocs(" " + line, Color.GRAY, false, Config.frameFontSize);
   }
 
   private void postCommand(ActionEvent e) {
