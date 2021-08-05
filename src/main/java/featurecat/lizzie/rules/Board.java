@@ -27,21 +27,17 @@ import java.util.stream.Stream;
 import javax.swing.*;
 
 public class Board {
-  public static int boardHeight =
-      19; // Lizzie.config.config.getJSONObject("ui").optInt("board-size", 19);
-  public static int boardWidth =
-      19; // Lizzie.config.config.getJSONObject("ui").optInt("board-size", 19);
+  public static int boardHeight = 19;
+  public static int boardWidth = 19;
   public int insertoricurrentMoveNumber = 0;
   public ArrayList<Integer> insertorimove = new ArrayList<Integer>();
   public ArrayList<Boolean> insertoriisblack = new ArrayList<Boolean>();
-  // public int[] mvnumber = new int[boardHeight * boardWidth];
 
   public ArrayList<Movelist> tempmovelistForGenMoveGame;
   public ArrayList<Movelist> tempmovelist;
   public ArrayList<Movelist> tempmovelist2;
   public ArrayList<Movelist> tempallmovelist;
   public ArrayList<Movelistwr> movelistwr = new ArrayList<Movelistwr>();
-  // public ArrayList<Movelistwr> movelistwrbefore;
 
   private static final String alphabet = "ABCDEFGHJKLMNOPQRSTUVWXYZ";
   private static final String alphabetWithI = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -60,26 +56,14 @@ public class Board {
   public boolean hasStartStone = false;
   public ArrayList<Movelist> startStonelist = new ArrayList<Movelist>();
 
-  // Save the node for restore move when in the branch
-  private Optional<BoardHistoryNode> saveNode;
-
-  // Force refresh board
   private boolean forceRefresh;
   private boolean forceRefresh2;
-  // public boolean canGetBestMoves = true;
   public boolean hasBestHeatMove = false;
   public int bestHeatMoveX;
   public int bestHeatMoveY;
   private ArrayList<Movelist> tempMovelistForSpin;
   public GroupInfo boardGroupInfo;
-
   private boolean hasBigBranch = false;
-
-  //  public boolean isModifying = false;
-  // private ArrayList<AllMovelist> tempListNode;
-  //  private ArrayList<BoardHistoryNode> tempHistoryNode;
-  // public AllMovelist listHead= new AllMovelist();;
-  // Thread threadUpdateMoveList;
 
   public Board() {
     initialize(false);
@@ -92,7 +76,7 @@ public class Board {
     // scoreMode = false;
     isGameBoard = false;
     analysisMode = false;
-    saveNode = Optional.empty();
+    Optional.empty();
     forceRefresh = false;
     forceRefresh2 = false;
     hasBigBranch = false;
@@ -104,25 +88,11 @@ public class Board {
           .getGameInfo()
           .setKomi(Lizzie.board.getHistory().getGameInfo().getKomi());
     } else {
-      if (Lizzie.frame.boardRenderer != null) Lizzie.frame.boardRenderer.clearAfterMove();
-      if (Lizzie.frame.boardRenderer2 != null) Lizzie.frame.boardRenderer2.clearAfterMove();
+      if (LizzieFrame.boardRenderer != null) LizzieFrame.boardRenderer.clearAfterMove();
+      if (LizzieFrame.boardRenderer2 != null) LizzieFrame.boardRenderer2.clearAfterMove();
       LizzieFrame.forceRecreate = true;
     }
   }
-
-  //  private void initializeForPk() {
-  //    System.gc();
-  //    double komi = Lizzie.board.getHistory().getGameInfo().getKomi();
-  //    capturedStones = new Stone[] {};
-  //    scoreMode = false;
-  //    analysisMode = false;
-  //    playoutsAnalysis = 100;
-  //    saveNode = Optional.empty();
-  //    forceRefresh = false;
-  //    forceRefresh2 = false;
-  //    history = new BoardHistoryList(BoardData.empty(boardWidth, boardHeight));
-  //
-  //  }
 
   /**
    * Calculates the array index of a stone stored at (x, y)
@@ -2308,7 +2278,7 @@ public class Board {
       }
       goToMoveNumber(0);
     }
-    saveNode = Optional.of(currentNode);
+    Optional.of(currentNode);
   }
 
   /** Save the back routing from children */
@@ -2769,17 +2739,12 @@ public class Board {
   //	    initializeForPk();
   //	  }
   public void clear(boolean isEngineGame) {
-    if (isEngineGame) Lizzie.frame.winrateGraph.maxcoreMean = 15;
-    else Lizzie.frame.winrateGraph.maxcoreMean = 30;
+    if (isEngineGame) LizzieFrame.winrateGraph.maxcoreMean = 15;
+    else LizzieFrame.winrateGraph.maxcoreMean = 30;
     if (Lizzie.frame.readBoard != null) {
       Lizzie.frame.readBoard.firstSync = true;
     }
     double komi = history.getGameInfo().getKomi();
-    if (!isEngineGame) {
-      Lizzie.leelaz.clear();
-      cleanedittemp();
-      isPkBoard = false;
-    }
     isPkBoardKataB = false;
     isPkBoardKataW = false;
     Lizzie.frame.resetTitle();
@@ -2787,6 +2752,11 @@ public class Board {
     startStonelist = new ArrayList<Movelist>();
     movelistwr.clear();
     initialize(isEngineGame);
+    if (!isEngineGame) {
+      cleanedittemp();
+      isPkBoard = false;
+      Lizzie.leelaz.clear();
+    }
     isKataBoard = false;
     if (!isEngineGame) {
       if (Lizzie.frame.readBoard != null
@@ -2798,9 +2768,9 @@ public class Board {
         Lizzie.board.getHistory().getGameInfo().resetAllNoKomi();
         Lizzie.board.getHistory().getGameInfo().setKomi(komi);
       }
-      if (Lizzie.frame.urlSgf) {
-        if (Lizzie.frame.onlineDialog != null) {
-          Lizzie.frame.onlineDialog.stopSync();
+      if (LizzieFrame.urlSgf) {
+        if (LizzieFrame.onlineDialog != null) {
+          LizzieFrame.onlineDialog.stopSync();
         }
       }
     } else Lizzie.board.getHistory().getGameInfo().setKomi(komi);
@@ -2808,12 +2778,11 @@ public class Board {
   }
 
   public void clearManually() {
-    Lizzie.frame.winrateGraph.maxcoreMean = 30;
+    LizzieFrame.winrateGraph.maxcoreMean = 30;
     if (Lizzie.frame.readBoard != null && Lizzie.frame.syncBoard) {
       Lizzie.frame.readBoard.firstSync = true;
     }
     double komi = history.getGameInfo().getKomi();
-    Lizzie.leelaz.clear();
     cleanedittemp();
     isPkBoard = false;
     isPkBoardKataB = false;
@@ -2824,6 +2793,7 @@ public class Board {
     movelistwr.clear();
     initialize(false);
     isKataBoard = false;
+    Lizzie.leelaz.clear();
     if (Lizzie.frame.readBoard != null
         && Lizzie.frame.readBoard.process != null
         && Lizzie.frame.readBoard.process.isAlive()) {
@@ -2834,9 +2804,9 @@ public class Board {
       Lizzie.board.getHistory().getGameInfo().setKomi(Lizzie.leelaz.orikomi);
       Lizzie.leelaz.sendCommand("komi " + Lizzie.leelaz.orikomi);
     }
-    if (Lizzie.frame.urlSgf) {
-      if (Lizzie.frame.onlineDialog != null) {
-        Lizzie.frame.onlineDialog.stopSync();
+    if (LizzieFrame.urlSgf) {
+      if (LizzieFrame.onlineDialog != null) {
+        LizzieFrame.onlineDialog.stopSync();
       }
     }
     Lizzie.frame.clearKataEstimate();
@@ -2846,10 +2816,8 @@ public class Board {
     if (Lizzie.frame.readBoard != null && Lizzie.frame.syncBoard) {
       Lizzie.frame.readBoard.firstSync = true;
     }
-    //  double komi = history.getGameInfo().getKomi();
-    Lizzie.leelaz.clear();
     Lizzie.frame.resetTitle();
-    Lizzie.frame.winrateGraph.maxcoreMean = 30;
+    LizzieFrame.winrateGraph.maxcoreMean = 30;
     hasStartStone = false;
     startStonelist = new ArrayList<Movelist>();
     movelistwr.clear();
@@ -2860,33 +2828,17 @@ public class Board {
     isPkBoardKataW = false;
     isKataBoard = false;
     Lizzie.leelaz.komi = Lizzie.leelaz.orikomi;
+    Lizzie.leelaz.clear();
     Lizzie.leelaz.sendCommand("komi " + Lizzie.leelaz.orikomi);
-    Lizzie.frame.menu.txtKomi.setText(Lizzie.leelaz.orikomi + "");
+    LizzieFrame.menu.txtKomi.setText(Lizzie.leelaz.orikomi + "");
     Lizzie.board.getHistory().getGameInfo().resetAllNoKomi();
     Lizzie.board.getHistory().getGameInfo().setKomi(Lizzie.leelaz.orikomi);
     Lizzie.frame.clearKataEstimate();
   }
 
-  //  public void clearForSavelist() {
-  //    Lizzie.leelaz.clear();
-  //    Lizzie.frame.resetTitle();
-  //    Lizzie.frame.winrateGraph.maxcoreMean = 30;
-  //    movelistwr.clear();
-  //    cleanedittemp();
-  //    initialize(false);
-  //    isPkBoard = false;
-  //    isPkBoardKataB = false;
-  //    isPkBoardKataW = false;
-  //    isKataBoard = false;
-  //    Lizzie.leelaz.sendCommand("komi " + Lizzie.leelaz.komi);
-  //    Lizzie.board.getHistory().getGameInfo().resetAll();
-  //    Lizzie.frame.boardRenderer.removecountblock();
-  //  }
-
   public void clearforedit() {
-    Lizzie.leelaz.clear();
-    // Lizzie.frame.clear();
     initialize(false);
+    Lizzie.leelaz.clear();
   }
 
   /** Goes to the previous coordinate, thread safe */
