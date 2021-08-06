@@ -2645,6 +2645,7 @@ public class OnlineDialog extends JDialog {
     //
     isStoped = false;
     fromBrowser = true;
+    firstTime = true;
     txtUrl.setText(url);
     type = checkUrl();
     Lizzie.frame.urlSgf = true;
