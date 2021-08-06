@@ -1213,7 +1213,7 @@ public class FloatBoardRenderer {
       int[] coords = node.getData().lastMove.get();
       int markX = x + scaledMarginWidth + squareWidth * coords[0];
       int markY = y + scaledMarginHeight + squareHeight * coords[1];
-      g.setColor(node.getData().blackToPlay ? Color.BLACK : Color.WHITE);
+      g.setColor(node.getData().lastMoveColor.isWhite() ? Color.BLACK : Color.WHITE);
       drawCircle(g, markX, markY, (int) Math.round(squareWidth * 0.22f), 5f);
       if (Lizzie.config.moveRankMarkLastMove > 1 || Lizzie.config.moveRankMarkLastMove == 0) {
         g.setColor(Color.RED);
@@ -1254,26 +1254,6 @@ public class FloatBoardRenderer {
     g.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
     Board board = Lizzie.board;
     Optional<int[]> lastMoveOpt = branchOpt.map(b -> b.data.lastMove).orElse(board.getLastMove());
-
-    if (!lastMoveOpt.isPresent() && board.getData().moveNumber != 0) {
-      g.setColor(
-          board.getData().blackToPlay ? new Color(255, 255, 255, 50) : new Color(0, 0, 0, 50));
-      g.fillOval(
-          x + boardWidth / 2 - 2 * stoneRadius,
-          y + boardHeight / 2 - 2 * stoneRadius,
-          stoneRadius * 4,
-          stoneRadius * 4);
-      g.setColor(
-          board.getData().blackToPlay ? new Color(0, 0, 0, 180) : new Color(255, 255, 255, 180));
-      drawString(
-          g,
-          x + boardWidth / 2,
-          y + boardHeight / 2,
-          LizzieFrame.winrateFont,
-          "pass",
-          stoneRadius * 2,
-          stoneRadius * 3);
-    }
     if (Lizzie.config.showMoveAllInBranch
         && !Lizzie.board.getHistory().getCurrentHistoryNode().isMainTrunk()) {
     } else if (!branchOpt.isPresent()) {
@@ -1294,69 +1274,11 @@ public class FloatBoardRenderer {
         branchOpt
             .map(b -> b.data.moveNumber)
             .orElse(Arrays.stream(moveNumberList).max().getAsInt());
-
-    //    if (Lizzie.config.showMoveAllInBranch
-    //        && !Lizzie.config.showMoveNumberFromOne
-    //        && !Lizzie.frame.isTrying
-    //        && !branchOpt.isPresent()
-    //        && !Lizzie.engineManager.isEngineGame
-    //        && !Lizzie.board.getHistory().getMainEndWithPass().isEndDummay()) {
-    //      for (int i = 0; i < Board.boardWidth; i++) {
-    //        for (int j = 0; j < Board.boardHeight; j++) {
-    //          int stoneX = x + scaledMarginWidth + squareWidth * i;
-    //          int stoneY = y + scaledMarginHeight + squareHeight * j;
-    //          int here = Board.getIndex(i, j);
-    //
-    //          if ((Lizzie.config.allowMoveNumber > -1
-    //              && lastMoveNumber - moveNumberList[here] >= Lizzie.config.allowMoveNumber)) {
-    //            continue;
-    //          }
-    //          Stone stoneHere = branchOpt.map(b ->
-    // b.data.stones[here]).orElse(board.getStones()[here]);
-    //
-    //          if ((lastMoveOpt.isPresent() && lastMoveOpt.get()[0] == i && lastMoveOpt.get()[1] ==
-    // j)) {
-    //            if (Lizzie.engineManager.isEngineGame &&
-    // Lizzie.engineManager.engineGameInfo.isGenmove) {
-    //              continue;
-    //            }
-    //            g.setColor(Color.RED.brighter());
-    //            drawPolygonSmall(g, stoneX, stoneY, stoneRadius);
-    //          } else {
-    //            g.setColor(stoneHere.isBlack() ? Color.WHITE : Color.BLACK);
-    //          }
-    //
-    //          int moveNumber = Lizzie.board.moveNumberByXY(i, j);
-    //          if (moveNumber >= 100) {
-    //            drawString(
-    //                g,
-    //                stoneX,
-    //                stoneY,
-    //                LizzieFrame.uiFont,
-    //                moveNumber + "",
-    //                (float) (stoneRadius * 1.4),
-    //                (int) (stoneRadius * 1.85));
-    //          } else if (moveNumber > 0) {
-    //            drawString(
-    //                g,
-    //                stoneX,
-    //                stoneY,
-    //                LizzieFrame.uiFont,
-    //                moveNumber + "",
-    //                (float) (stoneRadius * 1.4),
-    //                (int) (stoneRadius * 1.4));
-    //          }
-    //        }
-    //      }
-    //      return;
-    //    }
-
     for (int i = 0; i < Board.boardWidth; i++) {
       for (int j = 0; j < Board.boardHeight; j++) {
         int stoneX = x + scaledMarginWidth + squareWidth * i;
         int stoneY = y + scaledMarginHeight + squareHeight * j;
         int here = Board.getIndex(i, j);
-
         // Allow to display only last move number
         if (Lizzie.config.showMoveAllInBranch
             && !Lizzie.board.getHistory().getCurrentHistoryNode().isMainTrunk()) {
