@@ -7860,38 +7860,39 @@ public class LizzieFrame extends JFrame {
     else commentTextPane.setSize(width, height);
   }
 
-  private double lastWinrateDiff(BoardHistoryNode node) {
+  private double[] lastWinrateScoreDiff(BoardHistoryNode node) {
     // Last winrate
+    double[] winScoreDiff = new double[2];
+
     Optional<BoardData> lastNode = node.previous().flatMap(n -> Optional.of(n.getData()));
     boolean validLastWinrate = lastNode.map(d -> d.getPlayouts() > 0).orElse(false);
     double lastWR = validLastWinrate ? lastNode.get().winrate : 50;
+    double lastScore = validLastWinrate ? lastNode.get().scoreMean : 0;
 
     // Current winrate
     BoardData data = node.getData();
     boolean validWinrate = false;
     double curWR = 50;
-    //    if (data == Lizzie.board.getHistory().getData()) {
-    //      Leelaz.WinrateStats stats = Lizzie.leelaz.getWinrateStats();
-    //      curWR = stats.maxWinrate;
-    //      validWinrate = (stats.totalPlayouts > 0);
-    //      if (isPlayingAgainstLeelaz
-    //          && playerIsBlack == !Lizzie.board.getHistory().getData().blackToPlay) {
-    //        validWinrate = false;
-    //      }
-    //    } else {
+    double curScore = 0;
     validWinrate = (data.getPlayouts() > 0);
     curWR = validWinrate ? data.winrate : 100 - lastWR;
-    //  }
-
-    // Last move difference winrate
+    curScore = validWinrate ? data.scoreMean : -lastScore;
     if (validLastWinrate && validWinrate) {
-      double lastDiff = 100 - lastWR - curWR;
-      if (lastDiff < 0 && node.getData().lastMove.isPresent()) {
-        if (node.isBest) return 0;
+      double lastWinDiff = 100 - lastWR - curWR;
+      double lastScoreDiff = -lastScore - curScore;
+      if ((lastWinDiff < 0 || lastScoreDiff < 0) && node.getData().lastMove.isPresent()) {
+        if (node.isBest) {
+          winScoreDiff[0] = 0;
+          winScoreDiff[1] = 0;
+          return winScoreDiff;
+        }
       }
-      return lastDiff;
+      winScoreDiff[0] = lastWinDiff;
+      winScoreDiff[1] = lastScoreDiff;
+      return winScoreDiff;
     } else {
-      return 301;
+      winScoreDiff[0] = 301;
+      return winScoreDiff;
     }
   }
 
@@ -7903,9 +7904,14 @@ public class LizzieFrame extends JFrame {
         double diffWinrate =
             node.previous().get().previous().get().getData().getWinrate()
                 - node.getData().getWinrate();
+        double diffSocre =
+            node.previous().get().previous().get().getData().scoreMean - node.getData().scoreMean;
         Optional<Double> st =
             Lizzie.config.blunderWinrateThresholds.flatMap(
-                l -> l.stream().filter(t -> (t >= diffWinrate)).reduce((f, s) -> f));
+                l ->
+                    l.stream()
+                        .filter(t -> (t >= Math.min(diffWinrate, diffSocre * 2)))
+                        .reduce((f, s) -> f));
         //            diffWinrate >= 0
         //                ? Lizzie.config.blunderWinrateThresholds.flatMap(
         //                    l -> l.stream().filter(t -> (t >= 0 && t <= diffWinrate)).reduce((f,
@@ -7920,11 +7926,11 @@ public class LizzieFrame extends JFrame {
         }
       } else return Color.WHITE;
     }
-    double diffWinrate = lastWinrateDiff(node);
-    if (diffWinrate > 300) return Color.WHITE;
+    double diff[] = lastWinrateScoreDiff(node);
+    if (diff[0] > 300) return Color.WHITE;
     Optional<Double> st =
         Lizzie.config.blunderWinrateThresholds.flatMap(
-            l -> l.stream().filter(t -> (t >= diffWinrate)).reduce((f, s) -> f));
+            l -> l.stream().filter(t -> (t >= Math.min(diff[0], diff[1] * 2))).reduce((f, s) -> f));
     if (st.isPresent()) {
       return Lizzie.config.blunderNodeColors.map(m -> m.get(st.get())).get();
     } else {

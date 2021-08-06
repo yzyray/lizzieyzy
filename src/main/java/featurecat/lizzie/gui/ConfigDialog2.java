@@ -2215,7 +2215,7 @@ public class ConfigDialog2 extends JDialog {
           };
       JScrollPane pnlScrollBlunderNodes = new JScrollPane();
       pnlScrollBlunderNodes.setViewportView(tblBlunderNodes);
-      pnlScrollBlunderNodes.setBounds(175, 497, 199, 108);
+      pnlScrollBlunderNodes.setBounds(175, 497, 299, 108);
       themeTab.add(pnlScrollBlunderNodes);
 
       JButton btnAdd = new JButton(resourceBundle.getString("LizzieConfig.button.add"));
