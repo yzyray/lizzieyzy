@@ -7497,25 +7497,45 @@ public class LizzieFrame extends JFrame {
     if (Lizzie.config.uiConfig.optBoolean("show-suggestions-frame", false)) {
       if (analysisFrame == null) toggleBestMoves();
       else {
-        toggleBestMoves();
-        toggleBestMoves();
+        SwingUtilities.invokeLater(
+            new Runnable() {
+              public void run() {
+                toggleBestMoves();
+                toggleBestMoves();
+              }
+            });
       }
       hadSetFrame = true;
     } else if (analysisFrame != null && analysisFrame.isVisible()) {
-      toggleBestMoves();
-      toggleBestMoves();
+      SwingUtilities.invokeLater(
+          new Runnable() {
+            public void run() {
+              toggleBestMoves();
+              toggleBestMoves();
+            }
+          });
       hadSetFrame = true;
     }
     if (Lizzie.config.uiConfig.optBoolean("show-badmoves-frame", false)) {
       if (moveListFrame == null) toggleBadMoves();
       else {
-        toggleBadMoves();
-        toggleBadMoves();
+        SwingUtilities.invokeLater(
+            new Runnable() {
+              public void run() {
+                toggleBestMoves();
+                toggleBestMoves();
+              }
+            });
       }
       hadSetFrame = true;
     } else if (moveListFrame != null && moveListFrame.isVisible()) {
-      toggleBadMoves();
-      toggleBadMoves();
+      SwingUtilities.invokeLater(
+          new Runnable() {
+            public void run() {
+              toggleBestMoves();
+              toggleBestMoves();
+            }
+          });
       hadSetFrame = true;
     }
     return hadSetFrame;

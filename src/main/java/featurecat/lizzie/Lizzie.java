@@ -179,11 +179,11 @@ public class Lizzie {
     gtpConsole = new GtpConsolePane(frame);
     gtpConsole.setVisible(config.persistedUi.optBoolean("gtp-console-opened", false));
     frame.setVisible(true);
-    if (config.isShowingIndependentMain) frame.openIndependentMainBoard();
-    if (config.isShowingIndependentSub) frame.openIndependentSubBoard();
     SwingUtilities.invokeLater(
         new Thread() {
           public void run() {
+            if (config.isShowingIndependentMain) frame.openIndependentMainBoard();
+            if (config.isShowingIndependentSub) frame.openIndependentSubBoard();
             try {
               Thread.sleep(60);
             } catch (InterruptedException e2) {

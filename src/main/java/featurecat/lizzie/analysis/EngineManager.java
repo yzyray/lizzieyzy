@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 import java.util.ResourceBundle;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import org.json.JSONException;
 
@@ -127,22 +128,24 @@ public class EngineManager {
       Lizzie.leelaz.isKatago = true;
       Lizzie.leelaz.isLoaded = true;
       featurecat.lizzie.gui.Menu.engineMenu.setText(resourceBundle.getString("Menu.noEngine"));
-      if (Lizzie.frame.extraMode == 2)
+      if (LizzieFrame.extraMode == 2)
         featurecat.lizzie.gui.Menu.engineMenu2.setText(resourceBundle.getString("Menu.noEngine"));
       isEmpty = true;
       LizzieFrame.menu.updateMenuStatusForEngine();
       Lizzie.frame.reSetLoc();
       Lizzie.frame.addInput(false);
-      new Thread() {
-        public void run() {
-          if (Lizzie.config.uiConfig.optBoolean("show-badmoves-frame", false)) {
-            Lizzie.frame.toggleBadMoves();
-          }
-          if (Lizzie.config.uiConfig.optBoolean("show-suggestions-frame", false)) {
-            Lizzie.frame.toggleBestMoves();
-          }
-        }
-      }.start();
+
+      SwingUtilities.invokeLater(
+          new Runnable() {
+            public void run() {
+              if (Lizzie.config.uiConfig.optBoolean("show-badmoves-frame", false)) {
+                Lizzie.frame.toggleBadMoves();
+              }
+              if (Lizzie.config.uiConfig.optBoolean("show-suggestions-frame", false)) {
+                Lizzie.frame.toggleBestMoves();
+              }
+            }
+          });
     }
     Lizzie.gtpConsole.console.setText("");
     autoCheckEngineAlive(Lizzie.config.autoCheckEngineAlive);
