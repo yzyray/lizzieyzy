@@ -41,8 +41,6 @@ public class EngineManager {
   public static boolean isPreEngineGame = false;
   public static boolean isSaveingEngineSGF = false;
   Timer timer;
-  private Thread syncBoardTh;
-  private boolean hasSyncBoardThread = false;
   // Timer timer2;
   // Timer timer3;
   // Timer timer5;
@@ -1810,7 +1808,7 @@ public class EngineManager {
 
     } catch (Exception e) {
     }
-    switchEngine(this.currentEngineNo > 0 ? this.currentEngineNo : engineNo, true);
+    switchEngine(currentEngineNo > 0 ? currentEngineNo : engineNo, true);
   }
 
   public void reStartEngine(int index) {
@@ -2132,48 +2130,44 @@ public class EngineManager {
       }
       newEng.anaGameResignCount = 0;
       if (isMain) {
-        if (!hasSyncBoardThread) {
-          hasSyncBoardThread = true;
-          Runnable syncBoard =
-              new Runnable() {
-                public void run() {
-                  do {
-                    try {
-                      Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                      // TODO Auto-generated catch block
-                      e.printStackTrace();
-                    }
-                  } while (!Lizzie.leelaz.isLoaded() || Lizzie.leelaz.isCheckingName);
-                  newEng.notPondering();
-                  Lizzie.board.resendMoveToEngine(index, Lizzie.leelaz);
-                  if (isMain) {
-                    if (Lizzie.frame.isPlayingAgainstLeelaz && !Lizzie.config.genmoveGameNoTime)
-                      LizzieFrame.sendAiTime();
-                    Lizzie.board.clearbestmovesafter(Lizzie.board.getHistory().getStart());
-                    currentEngineNo = Lizzie.leelaz.currentEngineN();
-                    featurecat.lizzie.gui.Menu.engineMenu.setText(
-                        "["
-                            + (currentEngineNo + 1)
-                            + "]: "
-                            + engineList.get(currentEngineNo).oriEnginename);
-
-                    changeEngIco(1);
-                    LizzieFrame.toolbar.reSetButtonLocation();
-                    LizzieFrame.boardRenderer.removecountblock();
-                    if (Lizzie.frame.floatBoard != null)
-                      Lizzie.frame.floatBoard.boardRenderer.removecountblock();
-                    if (Lizzie.config.showSubBoard) LizzieFrame.subBoardRenderer.removecountblock();
-                    if (currentEngineNo > 20) LizzieFrame.menu.changeEngineIcon(20, 3);
-                    else LizzieFrame.menu.changeEngineIcon(currentEngineNo, 3);
+        Runnable syncBoard =
+            new Runnable() {
+              public void run() {
+                do {
+                  try {
+                    Thread.sleep(100);
+                  } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
                   }
-                  Lizzie.leelaz.setResponseUpToDate();
-                  hasSyncBoardThread = false;
+                } while (!newEng.isLoaded() || newEng.isCheckingName);
+                newEng.notPondering();
+                Lizzie.board.resendMoveToEngine(index, newEng);
+                if (newEng == Lizzie.leelaz) {
+                  if (Lizzie.frame.isPlayingAgainstLeelaz && !Lizzie.config.genmoveGameNoTime)
+                    LizzieFrame.sendAiTime();
+                  Lizzie.board.clearbestmovesafter(Lizzie.board.getHistory().getStart());
+                  currentEngineNo = Lizzie.leelaz.currentEngineN();
+                  featurecat.lizzie.gui.Menu.engineMenu.setText(
+                      "["
+                          + (currentEngineNo + 1)
+                          + "]: "
+                          + engineList.get(currentEngineNo).oriEnginename);
+
+                  changeEngIco(1);
+                  LizzieFrame.toolbar.reSetButtonLocation();
+                  LizzieFrame.boardRenderer.removecountblock();
+                  if (Lizzie.frame.floatBoard != null)
+                    Lizzie.frame.floatBoard.boardRenderer.removecountblock();
+                  if (Lizzie.config.showSubBoard) LizzieFrame.subBoardRenderer.removecountblock();
+                  if (currentEngineNo > 20) LizzieFrame.menu.changeEngineIcon(20, 3);
+                  else LizzieFrame.menu.changeEngineIcon(currentEngineNo, 3);
+                  newEng.setResponseUpToDate();
                 }
-              };
-          syncBoardTh = new Thread(syncBoard);
-          syncBoardTh.start();
-        }
+              }
+            };
+        Thread syncBoardTh = new Thread(syncBoard);
+        syncBoardTh.start();
       } else if (Lizzie.leelaz2 != null) {
         Runnable syncBoard =
             new Runnable() {
