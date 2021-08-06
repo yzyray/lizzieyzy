@@ -104,6 +104,7 @@ public class OnlineDialog extends JDialog {
   private long userId = -1000000;
   private long roomId = 0;
   // static AjaxHttpRequest ajax;
+  private boolean firstTime = true;
   static boolean isStoped = false;
   static boolean fromBrowser = false;
   static Timer timer;
@@ -296,6 +297,7 @@ public class OnlineDialog extends JDialog {
     isStoped = false;
     chineseRule = 1;
     chineseFlag = false;
+    firstTime = true;
     Lizzie.frame.urlSgf = true;
     Lizzie.frame.setCommentPaneOrArea(false);
     if (type > 0) {
@@ -529,6 +531,7 @@ public class OnlineDialog extends JDialog {
             Lizzie.board.getHistory().getGameInfo().setKomi(komi);
             Lizzie.leelaz.komi(komi);
           }
+          firstTime = false;
         }
         if (live != null && "3".equals(live.optString("Status"))) {
           if (schedule != null && !schedule.isCancelled() && !schedule.isDone()) {
@@ -588,12 +591,12 @@ public class OnlineDialog extends JDialog {
             int readyState = ajax.getReadyState();
             if (readyState == AjaxHttpRequest.STATE_COMPLETE) {
               String sgf = ajax.getResponseText();
-              parseSgf(sgf, format, num, decode, false);
+              parseSgf(sgf, format, num, decode, firstTime);
             }
           }
         });
 
-    if (needSchedule && !isStoped) {
+    if (needSchedule && !isStoped && type == 1) {
       timer =
           new Timer(
               refreshTime * 1000,
@@ -2321,15 +2324,6 @@ public class OnlineDialog extends JDialog {
     Lizzie.board.getHistory().getGameInfo().setPlayerBlack(blackPlayer);
     Lizzie.board.getHistory().getGameInfo().setPlayerWhite(whitePlayer);
     Lizzie.frame.renderVarTree(0, 0, false, true);
-    //    Timer timer = new Timer();
-    //    timer.schedule(
-    //        new TimerTask() {
-    //          public void run() {
-    //            // Lizzie.frame.refresh();
-    //            this.cancel();
-    //          }
-    //        },
-    //        100);
   }
 
   private void channel() {

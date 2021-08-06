@@ -9269,6 +9269,7 @@ public class LizzieFrame extends JFrame {
                     moveToMainTrunk();
                     Lizzie.board.goToMoveNumberBeyondBranch(moveNumber);
                     if (firstSync) {
+                      renderVarTree(0, 0, false, false);
                       new Thread() {
                         public void run() {
                           try {
