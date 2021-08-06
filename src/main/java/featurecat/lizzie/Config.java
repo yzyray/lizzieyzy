@@ -1412,6 +1412,12 @@ public class Config {
   public void setClassicMode(boolean status) {
     isClassicMode = status;
     uiConfig.put("is-classic-mode", isClassicMode);
+    try {
+      save();
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
   }
 
   public int getMySaveTime() {

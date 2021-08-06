@@ -946,7 +946,7 @@ public class SubBoardRenderer {
     Board board = Lizzie.board;
     Optional<int[]> lastMoveOpt = branchOpt.map(b -> b.data.lastMove).orElse(board.getLastMove());
 
-    if (!lastMoveOpt.isPresent() && board.getData().moveNumber != 0) {
+    if (!lastMoveOpt.isPresent() && board.getData().moveNumber != 0 && !board.getData().dummy) {
       g.setColor(
           board.getData().blackToPlay ? new Color(255, 255, 255, 150) : new Color(0, 0, 0, 150));
       g.fillOval(

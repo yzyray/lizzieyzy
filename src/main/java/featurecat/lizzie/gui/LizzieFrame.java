@@ -17,6 +17,7 @@ import com.teamdev.jxbrowser.chromium.swing.BrowserView;
 import featurecat.lizzie.Config;
 import featurecat.lizzie.Lizzie;
 import featurecat.lizzie.analysis.AnalysisEngine;
+import featurecat.lizzie.analysis.EngineManager;
 import featurecat.lizzie.analysis.GameInfo;
 import featurecat.lizzie.analysis.KataEstimate;
 import featurecat.lizzie.analysis.Leelaz;
@@ -2554,7 +2555,7 @@ public class LizzieFrame extends JFrame {
   }
 
   public void tryPlay(boolean needRefresh) {
-    if (Lizzie.engineManager.isEngineGame || Lizzie.engineManager.isPreEngineGame) return;
+    if (EngineManager.isEngineGame || EngineManager.isPreEngineGame) return;
     if (!isTrying) {
       isTrying = true;
       try {
@@ -2566,14 +2567,14 @@ public class LizzieFrame extends JFrame {
       titleBeforeTrying = this.getTitle();
       this.setTitle(resourceBundle.getString("LizzieFrame.tryTitle")); // "试下中...");
       toolbar.tryPlay.setText(resourceBundle.getString("BottomToolbar.tryplayBack")); // ("恢复");
-      tryMoveList = Lizzie.board.getmovelist();
+      tryMoveList = Lizzie.board.getMoveList();
       Lizzie.board.getHistory().getCurrentHistoryNode().getData().moveNumber = 0;
       Lizzie.board.deleteMoveNoHintAfter();
     } else {
       isTrying = false;
       toolbar.tryPlay.setText(resourceBundle.getString("BottomToolbar.tryPlay")); // ("试下");
       SGFParser.loadFromString(tryString);
-      Lizzie.board.setmovelist(tryMoveList, false);
+      Lizzie.board.resetMoveList(tryMoveList);
       Lizzie.board.setMovelistAll();
       if (Lizzie.board.getcurrentmovenumber() == 0 && Lizzie.leelaz.isPondering())
         Lizzie.leelaz.ponder();
@@ -9230,7 +9231,6 @@ public class LizzieFrame extends JFrame {
               public void actionPerformed(ActionEvent evt) {
                 int moveNumber = Lizzie.board.getHistory().getMainEnd().getData().moveNumber;
                 if (moveNumber > maxMvNum || (firstSync && moveNumber > 0)) {
-
                   if (((Lizzie.board.getHistory().getCurrentHistoryNode().isMainTrunk()
                               && Lizzie.board
                                       .getHistory()
@@ -9240,27 +9240,28 @@ public class LizzieFrame extends JFrame {
                                   == maxMvNum)
                           || firstSync)
                       || Lizzie.config.alwaysGotoLastOnLive) {
-                    firstSync = false;
                     moveToMainTrunk();
                     Lizzie.board.goToMoveNumberBeyondBranch(moveNumber);
+                    if (firstSync) {
+                      new Thread() {
+                        public void run() {
+                          try {
+                            Thread.sleep(500);
+                          } catch (InterruptedException e1) {
+                            // TODO Auto-generated catch block
+                            e1.printStackTrace();
+                          }
+                          renderVarTree(0, 0, false, true);
+                        }
+                      }.start();
+                      firstSync = false;
+                    }
                   }
                   maxMvNum = moveNumber;
+                  renderVarTree(0, 0, false, true);
+                  renderVarTreeCur();
+                  Lizzie.frame.refresh();
                 }
-                //                BoardHistoryNode node =
-                // Lizzie.board.getHistory().getCurrentHistoryNode();
-                //                if (node.getData().comment.equals("") && node.variations.size() >
-                // 0)
-                //                  //
-                //	if(!node.variations.get(0).getData().comment.equals(""))
-                //                  //
-                //                  //
-                //	node.getData().comment=node.variations.get(0).getData().comment;
-                //                  //	else
-                //                  if (node.variations.size() > 1
-                //                      && !node.variations.get(1).getData().comment.equals(""))
-                //                    node.getData().comment =
-                // node.variations.get(1).getData().comment;
-                Lizzie.frame.refresh();
                 if (!urlSgf) {
                   timer.stop();
                   timer = null;
@@ -10887,7 +10888,7 @@ public class LizzieFrame extends JFrame {
     newData.name = name;
     newData.time = df.format(new Date());
     newData.curMoveNumer = Lizzie.board.getcurrentmovenumber();
-    newData.moves = Lizzie.board.moveListToString(Lizzie.board.getmovelist());
+    newData.moves = Lizzie.board.moveListToString(Lizzie.board.getMoveList());
     data.add(newData);
     saveTempGame(data);
     File file = new File("save" + Utils.pwd + "game" + index + ".bmp");

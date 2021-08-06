@@ -256,8 +256,33 @@ public class BoardRenderer {
     // timer.print();
   }
 
+  private void drawPass(Graphics2D g, Board board, Optional<int[]> lastMoveOpt) {
+    if (!lastMoveOpt.isPresent() && board.getData().moveNumber != 0 && !board.getData().dummy) {
+      g.setColor(
+          board.getData().blackToPlay ? new Color(255, 255, 255, 80) : new Color(0, 0, 0, 80));
+      g.fillOval(
+          x + boardWidth / 2 - stoneRadius * 5 / 2,
+          y + boardHeight / 2 - stoneRadius * 5 / 2,
+          stoneRadius * 5,
+          stoneRadius * 5);
+      g.setColor(
+          board.getData().blackToPlay ? new Color(0, 0, 0, 200) : new Color(255, 255, 255, 200));
+      drawString(
+          g,
+          x + boardWidth / 2,
+          y + boardHeight / 2,
+          LizzieFrame.uiFont,
+          resourceBundle.getString("BoardRenderer.pass"),
+          stoneRadius * 3,
+          stoneRadius * 9 / 2);
+    }
+  }
+
   private void drawMoveRankMark(Graphics2D g) {
     g.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
+    Board board = Lizzie.board;
+    Optional<int[]> lastMoveOpt = branchOpt.map(b -> b.data.lastMove).orElse(board.getLastMove());
+    drawPass(g, board, lastMoveOpt);
     BoardHistoryNode node = Lizzie.board.getHistory().getCurrentHistoryNode();
     int limit = Lizzie.config.moveRankMarkLastMove;
     boolean shouldLimit = limit > 0;
@@ -323,7 +348,7 @@ public class BoardRenderer {
       int[] coords = node.getData().lastMove.get();
       int markX = x + scaledMarginWidth + squareWidth * coords[0];
       int markY = y + scaledMarginHeight + squareHeight * coords[1];
-      g.setColor(node.getData().blackToPlay ? Color.BLACK : Color.WHITE);
+      g.setColor(node.getData().lastMoveColor.isWhite() ? Color.BLACK : Color.WHITE);
       drawCircle(g, markX, markY, (int) Math.round(squareWidth * 0.22f), 5f);
       if (Lizzie.config.moveRankMarkLastMove > 1 || Lizzie.config.moveRankMarkLastMove == 0) {
         g.setColor(Color.RED);
@@ -1613,26 +1638,7 @@ public class BoardRenderer {
     g.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
     Board board = Lizzie.board;
     Optional<int[]> lastMoveOpt = branchOpt.map(b -> b.data.lastMove).orElse(board.getLastMove());
-
-    if (!lastMoveOpt.isPresent() && board.getData().moveNumber != 0) {
-      g.setColor(
-          board.getData().blackToPlay ? new Color(255, 255, 255, 80) : new Color(0, 0, 0, 80));
-      g.fillOval(
-          x + boardWidth / 2 - stoneRadius * 5 / 2,
-          y + boardHeight / 2 - stoneRadius * 5 / 2,
-          stoneRadius * 5,
-          stoneRadius * 5);
-      g.setColor(
-          board.getData().blackToPlay ? new Color(0, 0, 0, 200) : new Color(255, 255, 255, 200));
-      drawString(
-          g,
-          x + boardWidth / 2,
-          y + boardHeight / 2,
-          LizzieFrame.uiFont,
-          resourceBundle.getString("BoardRenderer.pass"),
-          stoneRadius * 3,
-          stoneRadius * 9 / 2);
-    }
+    drawPass(g, board, lastMoveOpt);
     if (Lizzie.config.showMoveAllInBranch
         && !Lizzie.board.getHistory().getCurrentHistoryNode().isMainTrunk()) {
     } else if (Lizzie.config.allowMoveNumber == 0
@@ -1659,12 +1665,14 @@ public class BoardRenderer {
               drawPolygon(g, stoneX, stoneY, stoneRadius);
               break;
             case 1:
-              g.setColor(Lizzie.board.getData().blackToPlay ? Color.BLACK : Color.WHITE);
+              g.setColor(
+                  Lizzie.board.getData().lastMoveColor.isWhite() ? Color.BLACK : Color.WHITE);
               g.setStroke(new BasicStroke(stoneRadius / 10f));
               drawCircle(g, stoneX, stoneY, lastMoveMarkerRadius);
               break;
             case 2:
-              g.setColor(Lizzie.board.getData().blackToPlay ? Color.BLACK : Color.WHITE);
+              g.setColor(
+                  Lizzie.board.getData().lastMoveColor.isWhite() ? Color.BLACK : Color.WHITE);
               fillCircle(g, stoneX, stoneY, (int) (lastMoveMarkerRadius * 0.65));
               break;
           }

@@ -104,9 +104,7 @@ public class EngineManager {
             }
             if (currentEngineNo > 20) Lizzie.frame.menu.changeEngineIcon(20, 3);
             else Lizzie.frame.menu.changeEngineIcon(currentEngineNo, 3);
-            ArrayList<Movelist> mv = Lizzie.board.getmovelist();
-            Lizzie.leelaz.sendCommand("clear_board");
-            Lizzie.board.restoreMoveNumber(engineDt.index, mv, false, Lizzie.leelaz);
+            Lizzie.board.resendMoveToEngine(engineDt.index, Lizzie.leelaz);
           }
         }.start();
       } else {
@@ -340,7 +338,7 @@ public class EngineManager {
     }
 
     if (engineGameInfo.isContinueGame) {
-      engineGameInfo.continueGameList = Lizzie.board.getmovelist();
+      engineGameInfo.continueGameList = Lizzie.board.getMoveList();
     }
     if (engineGameInfo.isBatchGame) {
       if (batchGameName.equals("")) {
@@ -817,8 +815,6 @@ public class EngineManager {
     Lizzie.frame.menu.toggleDoubleMenuGameStatus();
     Lizzie.frame.toolbar.isPkStop = false;
     // 保存SGF文件
-    engineList.get(engineGameInfo.blackEngineIndex).sendCommand("clear_board");
-    engineList.get(engineGameInfo.whiteEngineIndex).sendCommand("clear_board");
     if (mannul) {
       engineList.get(engineGameInfo.blackEngineIndex).notPondering();
       engineList.get(engineGameInfo.blackEngineIndex).nameCmd();
@@ -827,11 +823,7 @@ public class EngineManager {
       engineList.get(engineGameInfo.blackEngineIndex).played = false;
       engineList.get(engineGameInfo.whiteEngineIndex).played = false;
       changeEngIcoForEndPk();
-      Lizzie.frame.winrateGraph.maxcoreMean = 30;
-      Lizzie.frame.toolbar.enableDisabelForEngineGame(true);
-      // Lizzie.frame.subBoardRenderer.reverseBestmoves = false;
-      // Lizzie.frame.boardRenderer.reverseBestmoves = false;
-      Lizzie.board.clearbestmovesafter(Lizzie.board.getHistory().getStart());
+      LizzieFrame.toolbar.enableDisabelForEngineGame(true);
       Lizzie.frame.addInput(true);
       if (engineGameInfo.isBatchGame && engineGameInfo.batchNumberCurrent > 1) {
         File file = new File("");
@@ -872,22 +864,22 @@ public class EngineManager {
       isSaveingEngineSGF = false;
       return;
     }
-    if (engineGameInfo.isBatchGame || Lizzie.frame.toolbar.AutosavePk) {
+    if (engineGameInfo.isBatchGame || LizzieFrame.toolbar.AutosavePk) {
       SGFParser.appendGameTimeAndPlayouts();
       saveEngineGameFile(resgnEngineIndex);
     }
     if (engineGameInfo.isBatchGame) {
       if (engineList.get(resgnEngineIndex).doublePass) {
         engineGameInfo.doublePassGame++;
-      } else if (Lizzie.frame.toolbar.checkGameMaxMove
-          && Lizzie.board.getHistory().getMoveNumber() > Lizzie.frame.toolbar.maxGanmeMove) {
+      } else if (LizzieFrame.toolbar.checkGameMaxMove
+          && Lizzie.board.getHistory().getMoveNumber() > LizzieFrame.toolbar.maxGanmeMove) {
         engineGameInfo.maxMoveGame++;
       } else {
         if (resgnEngineIndex == engineGameInfo.firstEngineIndex) {
           if (resgnEngineIndex == engineGameInfo.blackEngineIndex) {
             engineGameInfo.secondEngineWinAsWhite++;
             for (SgfWinLossList wl : engineGameInfo.engineGameSgfWinLoss) {
-              if (wl.SgfNumber == Lizzie.frame.toolbar.currentEnginePkSgfNum) {
+              if (wl.SgfNumber == LizzieFrame.toolbar.currentEnginePkSgfNum) {
                 wl.engineTwoWins++;
                 wl.engineTwoWinsAsWhite++;
                 break;
@@ -896,7 +888,7 @@ public class EngineManager {
           } else {
             engineGameInfo.secondEngineWinAsBlack++;
             for (SgfWinLossList wl : engineGameInfo.engineGameSgfWinLoss) {
-              if (wl.SgfNumber == Lizzie.frame.toolbar.currentEnginePkSgfNum) {
+              if (wl.SgfNumber == LizzieFrame.toolbar.currentEnginePkSgfNum) {
                 wl.engineTwoWins++;
                 wl.engineTwoWinsAsBlack++;
                 break;
@@ -907,7 +899,7 @@ public class EngineManager {
           if (resgnEngineIndex == engineGameInfo.blackEngineIndex) {
             engineGameInfo.firstEngineWinAsWhite++;
             for (SgfWinLossList wl : engineGameInfo.engineGameSgfWinLoss) {
-              if (wl.SgfNumber == Lizzie.frame.toolbar.currentEnginePkSgfNum) {
+              if (wl.SgfNumber == LizzieFrame.toolbar.currentEnginePkSgfNum) {
                 wl.engineOneWins++;
                 wl.engineOneWinsAsWhite++;
                 break;
@@ -916,7 +908,7 @@ public class EngineManager {
           } else {
             engineGameInfo.firstEngineWinAsBlack++;
             for (SgfWinLossList wl : engineGameInfo.engineGameSgfWinLoss) {
-              if (wl.SgfNumber == Lizzie.frame.toolbar.currentEnginePkSgfNum) {
+              if (wl.SgfNumber == LizzieFrame.toolbar.currentEnginePkSgfNum) {
                 wl.engineOneWins++;
                 wl.engineOneWinsAsBlack++;
                 break;
@@ -1015,10 +1007,10 @@ public class EngineManager {
                   + resourceBundle.getString("EngineGameInfo.no"); // " 交换黑白: 否";
         }
 
-        if (Lizzie.frame.toolbar.checkGameMaxMove) {
+        if (LizzieFrame.toolbar.checkGameMaxMove) {
           engineGameInfo.settingAll +=
               resourceBundle.getString("EngineGameInfo.maxMoves")
-                  + Lizzie.frame.toolbar.maxGanmeMove;
+                  + LizzieFrame.toolbar.maxGanmeMove;
         }
       } else {
         engineGameInfo.settingAll =
@@ -1056,21 +1048,21 @@ public class EngineManager {
                   + resourceBundle.getString("EngineGameInfo.no"); // " 交换黑白: 否";
         }
 
-        if (Lizzie.frame.toolbar.checkGameMaxMove) {
+        if (LizzieFrame.toolbar.checkGameMaxMove) {
           engineGameInfo.settingAll +=
               resourceBundle.getString("EngineGameInfo.maxMoves")
-                  + Lizzie.frame.toolbar.maxGanmeMove;
+                  + LizzieFrame.toolbar.maxGanmeMove;
         }
         //      if (Lizzie.frame.toolbar.checkGameMinMove) {
         //        engineGameInfo.settingAll += " 最小手数: " + Lizzie.frame.toolbar.minGanmeMove;
         //      }
 
-        if (Lizzie.frame.toolbar.isRandomMove) {
+        if (LizzieFrame.toolbar.isRandomMove) {
           engineGameInfo.settingAll +=
               resourceBundle.getString("EngineGameInfo.randomPlay1") //    " 随机落子: 前"
-                  + Lizzie.frame.toolbar.randomMove
+                  + LizzieFrame.toolbar.randomMove
                   + resourceBundle.getString("EngineGameInfo.randomPlay2") // "手,胜率不低于首位"
-                  + Lizzie.frame.toolbar.randomDiffWinrate
+                  + LizzieFrame.toolbar.randomDiffWinrate
                   + "%";
           if (Lizzie.config.checkRandomVisits)
             engineGameInfo.settingAll +=
@@ -1095,8 +1087,7 @@ public class EngineManager {
         return;
       }
     }
-    Lizzie.frame.winrateGraph.maxcoreMean = 30;
-    Lizzie.frame.toolbar.enableDisabelForEngineGame(true);
+    LizzieFrame.toolbar.enableDisabelForEngineGame(true);
     Lizzie.board.clearbestmovesafter(Lizzie.board.getHistory().getStart());
     File file = new File("");
     String courseFile = "";
@@ -1163,19 +1154,18 @@ public class EngineManager {
                   + resourceBundle.getString("EngineGameInfo.finishedWin");
         }
       }
-      if (Lizzie.frame.toolbar.AutosavePk) {
+      if (LizzieFrame.toolbar.AutosavePk) {
         jg =
             jg
                 + ","
                 + resourceBundle.getString("EngineGameInfo.engineGameEndHintKifuPos")
                 + courseFile
                 + Utils.pwd
-                + "EngineGames"; // EngineGameInfo.engineGameEndHintKifuPos
+                + "EngineGames";
       }
       Utils.showMsgNoModal(jg);
     }
     isSaveingEngineSGF = false;
-    changeEngIcoForEndPk();
     engineList.get(engineGameInfo.blackEngineIndex).notPondering();
     engineList.get(engineGameInfo.blackEngineIndex).nameCmd();
     engineList.get(engineGameInfo.whiteEngineIndex).notPondering();
@@ -1183,6 +1173,7 @@ public class EngineManager {
     engineList.get(engineGameInfo.blackEngineIndex).played = false;
     engineList.get(engineGameInfo.whiteEngineIndex).played = false;
     Lizzie.frame.addInput(true);
+    changeEngIcoForEndPk();
   }
 
   public void startNewEngineGame(boolean firstTime) {
@@ -1326,7 +1317,6 @@ public class EngineManager {
                         }
                       }
                       Lizzie.leelaz.ponder();
-                      Lizzie.leelaz.isBackGroundThinking = false;
                       Lizzie.leelaz.clearBestMoves();
                     }
                   };
@@ -1924,7 +1914,7 @@ public class EngineManager {
     newEng.notPondering();
     newEng.clearBestMoves();
     newEng.komi = (float) Lizzie.board.getHistory().getGameInfo().getKomi();
-    ArrayList<Movelist> mv = Lizzie.board.getmovelist();
+    ArrayList<Movelist> mv = Lizzie.board.getMoveList();
     if (!newEng.isStarted()) {
       try {
         newEng.startEngine(index);
@@ -1989,7 +1979,7 @@ public class EngineManager {
     newEng.width = Lizzie.board.boardWidth;
     newEng.height = Lizzie.board.boardHeight;
     newEng.komi = (float) Lizzie.board.getHistory().getGameInfo().getKomi();
-    ArrayList<Movelist> mv = Lizzie.board.getmovelist();
+    ArrayList<Movelist> mv = Lizzie.board.getMoveList();
     // if (!newEng.isStarted()) {
     try {
       newEng.startEngine(index);
@@ -2156,12 +2146,10 @@ public class EngineManager {
                     }
                   } while (!Lizzie.leelaz.isLoaded() || Lizzie.leelaz.isCheckingName);
                   newEng.notPondering();
-                  Lizzie.leelaz.sendCommand("clear_board");
-                  ArrayList<Movelist> mv = Lizzie.board.getmovelist();
-                  Lizzie.board.restoreMoveNumber(index, mv, false, Lizzie.leelaz);
+                  Lizzie.board.resendMoveToEngine(index, Lizzie.leelaz);
                   if (isMain) {
                     if (Lizzie.frame.isPlayingAgainstLeelaz && !Lizzie.config.genmoveGameNoTime)
-                      Lizzie.frame.sendAiTime();
+                      LizzieFrame.sendAiTime();
                     Lizzie.board.clearbestmovesafter(Lizzie.board.getHistory().getStart());
                     currentEngineNo = Lizzie.leelaz.currentEngineN();
                     featurecat.lizzie.gui.Menu.engineMenu.setText(
@@ -2171,14 +2159,13 @@ public class EngineManager {
                             + engineList.get(currentEngineNo).oriEnginename);
 
                     changeEngIco(1);
-                    Lizzie.frame.toolbar.reSetButtonLocation();
-                    Lizzie.frame.boardRenderer.removecountblock();
+                    LizzieFrame.toolbar.reSetButtonLocation();
+                    LizzieFrame.boardRenderer.removecountblock();
                     if (Lizzie.frame.floatBoard != null)
                       Lizzie.frame.floatBoard.boardRenderer.removecountblock();
-                    if (Lizzie.config.showSubBoard)
-                      Lizzie.frame.subBoardRenderer.removecountblock();
-                    if (currentEngineNo > 20) Lizzie.frame.menu.changeEngineIcon(20, 3);
-                    else Lizzie.frame.menu.changeEngineIcon(currentEngineNo, 3);
+                    if (Lizzie.config.showSubBoard) LizzieFrame.subBoardRenderer.removecountblock();
+                    if (currentEngineNo > 20) LizzieFrame.menu.changeEngineIcon(20, 3);
+                    else LizzieFrame.menu.changeEngineIcon(currentEngineNo, 3);
                   }
                   Lizzie.leelaz.setResponseUpToDate();
                   hasSyncBoardThread = false;
@@ -2241,17 +2228,18 @@ public class EngineManager {
       // engineList.get(Lizzie.frame.toolbar.engineWhite).clear();
       // switchEngine(Lizzie.frame.toolbar.engineWhite);
     }
-    this.currentEngineNo = Lizzie.leelaz.currentEngineN();
-    double komi = Lizzie.board.getHistory().getGameInfo().getKomi();
+    // this.currentEngineNo = Lizzie.leelaz.currentEngineN();
+    // double komi = Lizzie.board.getHistory().getGameInfo().getKomi();
     Lizzie.config.notStartPondering = true;
-    switchEngine(Lizzie.leelaz.currentEngineN(), true);
-    Lizzie.board.setKomi(komi);
-    Lizzie.board.clearAfterMove();
+    // switchEngine(Lizzie.leelaz.currentEngineN(), true);
+    // Lizzie.board.setKomi(komi);
+    //  Lizzie.board.clearAfterMove();
+    EngineManager.currentEngineNo = Lizzie.leelaz.currentEngineN();
     featurecat.lizzie.gui.Menu.engineMenu.setText(
         resourceBundle.getString("EngineManager.engine")
-            + (currentEngineNo + 1)
+            + (Lizzie.leelaz.currentEngineN() + 1)
             + ": "
-            + engineList.get(currentEngineNo).oriEnginename);
+            + Lizzie.leelaz.oriEnginename);
     changeEngIco(1);
     if (engineList.get(engineGameInfo.blackEngineIndex).isKatago
         || engineList.get(engineGameInfo.blackEngineIndex).isSai)

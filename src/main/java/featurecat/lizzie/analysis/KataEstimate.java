@@ -553,8 +553,7 @@ public class KataEstimate {
     sendCommand("clear_board");
     boardSize(Board.boardWidth, Board.boardHeight);
     cmdNumber = 1;
-    ArrayList<Movelist> movelist = Lizzie.board.getmovelist();
-
+    ArrayList<Movelist> movelist = Lizzie.board.getMoveList();
     if (Lizzie.board.hasStartStone) {
       for (int i = 0; i < Lizzie.board.startStonelist.size(); i++) {
         movelist.add(Lizzie.board.startStonelist.get(i));

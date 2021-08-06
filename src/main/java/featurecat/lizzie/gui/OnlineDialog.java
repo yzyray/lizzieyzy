@@ -46,8 +46,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -63,6 +61,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.Timer;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
@@ -343,7 +342,6 @@ public class OnlineDialog extends JDialog {
   }
 
   private int checkUrl() {
-    int type = 0;
     String id = null;
     chineseRule = 1;
     chineseFlag = false;
@@ -354,14 +352,19 @@ public class OnlineDialog extends JDialog {
             "https*://(?s).*?([^\\./]+\\.[^\\./]+)/(?s).*?(live/[a-zA-Z]+/)([^/]+)/[0-9]+/([^/]+)[^\\n]*");
     Matcher um = up.matcher(url);
     if (um.matches() && um.groupCount() >= 4) {
+      int type = 1;
       id = um.group(3);
-      roomId = Long.parseLong(um.group(4));
+      try {
+        roomId = Long.parseLong(um.group(4));
+      } catch (NumberFormatException e) {
+        roomId = Long.parseLong(id);
+        type = 2;
+      }
       if (!Utils.isBlank(id) && roomId > 0) {
-        ajaxUrl = "https://api." + um.group(1) + "/golive/dtl?id=" + id;
-        return 1;
+        ajaxUrl = "https://api." + um.group(1) + "/golive/dtl?id=" + id + "&flag=1";
+        return type;
       }
     }
-
     up = Pattern.compile("https*://(?s).*?([^\\./]+\\.[^\\./]+)/(?s).*?(live/[a-zA-Z]+/)([^/]+)");
     um = up.matcher(url);
     if (um.matches() && um.groupCount() >= 3) {
@@ -455,48 +458,14 @@ public class OnlineDialog extends JDialog {
     }
   }
 
-  private void procNoClear() throws IOException, URISyntaxException {
-    refreshTime = Utils.txtFieldValue(txtRefreshTime);
-    refreshTime = (refreshTime > 0 ? refreshTime : 10);
-    // if (!online.isShutdown()) {
-    // online.shutdown();
-    // }
-    if (schedule != null && !schedule.isCancelled() && !schedule.isDone()) {
-      schedule.cancel(false);
-    }
-    done = false;
-    history = null;
-    switch (type) {
-      case 1:
-        req2(false);
-        break;
-      case 2:
-        refresh("(?s).*?(\\\"Content\\\":\\\")(.+)(\\\",\\\")(?s).*");
-        break;
-      case 3:
-        req(false);
-        break;
-      case 4:
-        req0();
-        break;
-      case 99:
-        get();
-        break;
-      default:
-        break;
-    }
-  }
-
-  public void parseSgf(String data, String format, int num, boolean decode) {
+  public void parseSgf(String data, String format, int num, boolean decode, boolean first) {
     JSONObject o = null;
     JSONObject live = null;
-    JSONObject branchs = null;
     try {
       o = new JSONObject(data);
       o = o.optJSONObject("Result");
       if (o != null) {
         live = o.optJSONObject("live");
-        branchs = o.optJSONObject("branch");
       }
     } catch (JSONException e) {
     }
@@ -519,7 +488,7 @@ public class OnlineDialog extends JDialog {
       }
     }
     try {
-      BoardHistoryList liveNode = SGFParser.parseSgf(sgf);
+      BoardHistoryList liveNode = SGFParser.parseSgf(sgf, first);
       if (liveNode != null) {
         blackPlayer = liveNode.getGameInfo().getPlayerBlack();
         whitePlayer = liveNode.getGameInfo().getPlayerWhite();
@@ -552,14 +521,15 @@ public class OnlineDialog extends JDialog {
             whitePlayer = smw.group(2);
           }
         }
-        Lizzie.frame.setPlayers(whitePlayer, blackPlayer);
-        Lizzie.board.getHistory().getGameInfo().setPlayerBlack(blackPlayer);
-        Lizzie.board.getHistory().getGameInfo().setPlayerWhite(whitePlayer);
-        if (Lizzie.config.readKomi) {
-          Lizzie.board.getHistory().getGameInfo().setKomi(komi);
-          Lizzie.leelaz.komi(komi);
+        if (first) {
+          Lizzie.frame.setPlayers(whitePlayer, blackPlayer);
+          Lizzie.board.getHistory().getGameInfo().setPlayerBlack(blackPlayer);
+          Lizzie.board.getHistory().getGameInfo().setPlayerWhite(whitePlayer);
+          if (Lizzie.config.readKomi) {
+            Lizzie.board.getHistory().getGameInfo().setKomi(komi);
+            Lizzie.leelaz.komi(komi);
+          }
         }
-        Lizzie.board.getHistory().getGameInfo().setHandicap(handicap);
         if (live != null && "3".equals(live.optString("Status"))) {
           if (schedule != null && !schedule.isCancelled() && !schedule.isDone()) {
             schedule.cancel(false);
@@ -600,7 +570,7 @@ public class OnlineDialog extends JDialog {
     }
     in.close();
     String sgf = response.toString();
-    parseSgf(sgf, "", 0, false);
+    parseSgf(sgf, "", 0, false, true);
   }
 
   public void refresh(String format) throws IOException {
@@ -618,30 +588,31 @@ public class OnlineDialog extends JDialog {
             int readyState = ajax.getReadyState();
             if (readyState == AjaxHttpRequest.STATE_COMPLETE) {
               String sgf = ajax.getResponseText();
-              parseSgf(sgf, format, num, decode);
+              parseSgf(sgf, format, num, decode, false);
             }
           }
         });
 
     if (needSchedule && !isStoped) {
-      timer = new Timer();
-      timer.schedule(
-          new TimerTask() {
-            public void run() {
-              if (!Lizzie.frame.urlSgf) {
-                ajax.abort();
-                timer.cancel();
-              }
-              try {
-                ajax.open("GET", ajaxUrl, true);
-                ajax.send(params);
-              } catch (IOException e) {
-                e.printStackTrace();
-              }
-            }
-          },
-          refreshTime * 1000);
-
+      timer =
+          new Timer(
+              refreshTime * 1000,
+              new ActionListener() {
+                public void actionPerformed(ActionEvent evt) {
+                  if (!LizzieFrame.urlSgf) {
+                    timer.stop();
+                    ajax.abort();
+                  } else {
+                    try {
+                      ajax.open("GET", ajaxUrl, true);
+                      ajax.send(params);
+                    } catch (IOException e) {
+                      e.printStackTrace();
+                    }
+                  }
+                }
+              });
+      timer.start();
     } else {
       try {
         ajax.open("GET", ajaxUrl, true);
@@ -2308,7 +2279,7 @@ public class OnlineDialog extends JDialog {
     blackPlayer = info.optString("blackName");
     whitePlayer = info.optString("whiteName");
     boolean isEnd = !Utils.isBlank(info.optString("resultDesc"));
-    history = SGFParser.parseSgf(info.optString("sgf"));
+    history = SGFParser.parseSgf(info.optString("sgf"), true);
     if (history != null) {
       double komi = info.optDouble("komi", history.getGameInfo().getKomi());
       int handicap = info.optInt("handicap", history.getGameInfo().getHandicap());
@@ -2660,15 +2631,15 @@ public class OnlineDialog extends JDialog {
     txtUrl.setText("");
     checkUrl();
     //  type = 1;
-    try {
-      procNoClear();
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    } catch (URISyntaxException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
+    //    try {
+    //      procNoClear();
+    //    } catch (IOException e) {
+    //      // TODO Auto-generated catch block
+    //      e.printStackTrace();
+    //    } catch (URISyntaxException e) {
+    //      // TODO Auto-generated catch block
+    //      e.printStackTrace();
+    //    }
     if (sio != null) {
       sio.close();
     }

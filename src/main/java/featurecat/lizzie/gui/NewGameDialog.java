@@ -676,7 +676,7 @@ public class NewGameDialog extends JDialog {
       if (!checkContinuePlay.isSelected()) {
         gameInfo.setHandicap(handicap);
         Lizzie.board.tempmovelistForGenMoveGame = null;
-      } else Lizzie.board.tempmovelistForGenMoveGame = Lizzie.board.getmovelist();
+      } else Lizzie.board.tempmovelistForGenMoveGame = Lizzie.board.getMoveList();
       Lizzie.config.playponder = chkPonder.isSelected();
       // if (!chkNoTime.isSelected()) {
       Lizzie.config.maxGameThinkingTimeSeconds =

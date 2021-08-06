@@ -1,6 +1,7 @@
 package featurecat.lizzie.rules;
 
 import featurecat.lizzie.Lizzie;
+import featurecat.lizzie.analysis.EngineManager;
 import featurecat.lizzie.analysis.Leelaz;
 import featurecat.lizzie.util.Utils;
 import java.util.ArrayList;
@@ -137,10 +138,9 @@ public class BoardHistoryNode {
 
   public BoardHistoryNode addOrGoto(
       BoardData data, boolean newBranch, boolean changeMove, boolean clearAfterMove) {
-
     if (!Lizzie.board.isLoadingFile
         && Lizzie.leelaz != null
-        && !Lizzie.engineManager.isEngineGame
+        && !EngineManager.isEngineGame
         && clearAfterMove) {
       Lizzie.leelaz.clearBestMoves();
     }
@@ -195,6 +195,11 @@ public class BoardHistoryNode {
 
     } else {
       // Add node
+      if (variations.size() == 0) {
+        if (this.data.blackToPlay != node.getData().lastMoveColor.isBlack()) {
+          this.data.blackToPlay = node.getData().lastMoveColor.isBlack();
+        }
+      }
       variations.add(node);
     }
     node.previous = Optional.of(this);
@@ -203,73 +208,6 @@ public class BoardHistoryNode {
     return node;
   }
 
-  //  private void clearAfterMove() {
-  //    if (Lizzie.frame.priorityMoveCoords.size() > 0) Lizzie.frame.priorityMoveCoords.clear();
-  //    if (Lizzie.board.isLoadingFile) return;
-  //    if (Lizzie.frame.clickOrder != -1) {
-  //      Lizzie.frame.clickOrder = -1;
-  //      Lizzie.frame.hasMoveOutOfList = false;
-  //      Lizzie.frame.boardRenderer.startNormalBoard();
-  //      Lizzie.frame.suggestionclick = Lizzie.frame.outOfBoundCoordinate;
-  //      Lizzie.frame.mouseOverCoordinate = Lizzie.frame.outOfBoundCoordinate;
-  //      Lizzie.frame.boardRenderer.clearBranch();
-  //      Lizzie.frame.selectedorder = -1;
-  //      Lizzie.frame.currentRow = -1;
-  //    }
-  //    Lizzie.frame.clickbadmove=Lizzie.frame.outOfBoundCoordinate;
-  //    if (Lizzie.frame.toolbar.chkAutoSub.isSelected()) {
-  //      Lizzie.frame.toolbar.displayedSubBoardBranchLength = 1;
-  //      Lizzie.frame.subBoardRenderer.setDisplayedBranchLength(1);
-  //      Lizzie.frame.subBoardRenderer.wheeled = false;
-  //    } else {
-  //      Lizzie.frame.subBoardRenderer.clearAfterMove();
-  //    }
-  //    Lizzie.frame.subBoardRenderer.bestmovesNum = 0;
-  //    if (Lizzie.frame.extraMode == 1) {
-  //      Lizzie.frame.subBoardRenderer2.bestmovesNum = 1;
-  //      Lizzie.frame.subBoardRenderer3.bestmovesNum = 2;
-  //      Lizzie.frame.subBoardRenderer4.bestmovesNum = 3;
-  //      Lizzie.frame.subBoardRenderer.clearAfterMove();
-  //      Lizzie.frame.subBoardRenderer2.clearAfterMove();
-  //      Lizzie.frame.subBoardRenderer3.clearAfterMove();
-  //      Lizzie.frame.subBoardRenderer4.clearAfterMove();
-  //    }
-  //    if (Lizzie.frame.analysisFrame != null && Lizzie.frame.analysisFrame.isVisible()) {
-  //      Lizzie.frame.analysisFrame.selectedorder = -1;
-  //      Lizzie.frame.analysisFrame.clickOrder = -1;
-  //    }
-  //    if (Lizzie.frame.analysisFrame2 != null && Lizzie.frame.analysisFrame2.isVisible()) {
-  //      Lizzie.frame.analysisFrame2.selectedorder = -1;
-  //      Lizzie.frame.analysisFrame2.clickOrder = -1;
-  //    }
-  //    if (Lizzie.frame.independentMainBoard != null) {
-  //      Lizzie.frame.independentMainBoard.mouseOverCoordinate = Lizzie.frame.outOfBoundCoordinate;
-  //      Lizzie.frame.independentMainBoard.boardRenderer.startNormalBoard();
-  //      Lizzie.frame.independentMainBoard.boardRenderer.clearBranch();
-  //      Lizzie.frame.independentMainBoard.boardRenderer.clearSuggestionImage();
-  //      Lizzie.frame.independentMainBoard.boardRenderer.removedrawmovestone();
-  //    }
-  //    if (Lizzie.frame.floatBoard != null) {
-  //      Lizzie.frame.floatBoard.mouseOverCoordinate = Lizzie.frame.outOfBoundCoordinate;
-  //      Lizzie.frame.floatBoard.boardRenderer.startNormalBoard();
-  //      Lizzie.frame.floatBoard.boardRenderer.clearBranch();
-  //      Lizzie.frame.floatBoard.boardRenderer.clearSuggestionImage();
-  //      Lizzie.frame.floatBoard.boardRenderer.removedrawmovestone();
-  //    }
-  //    if (Lizzie.frame.independentSubBoard != null) {
-  //      Lizzie.frame.independentSubBoard.subBoardRenderer.clearAfterMove();
-  //
-  //      if (Lizzie.frame.toolbar.chkAutoSub.isSelected()) {
-  //        Lizzie.frame.independentSubBoard.subBoardRenderer.setDisplayedBranchLength(1);
-  //        Lizzie.frame.independentSubBoard.subBoardRenderer.wheeled = false;
-  //      } else {
-  //        Lizzie.frame.independentSubBoard.subBoardRenderer.clearAfterMove();
-  //      }
-  //    }
-  //    // Lizzie.frame.isShowingHeatmap = false;
-  //    Lizzie.frame.boardRenderer.clearSuggestionImage();
-  //    Lizzie.frame.clearCommentPos();
-  //  }
   /** @return data stored on this node */
   public BoardData getData() {
     return data;
@@ -694,6 +632,7 @@ public class BoardHistoryNode {
       if (!cur.compare(node)) {
         BoardData sData = cur.getData();
         sData.sync(node.getData());
+        if (sData.getPlayouts() > 0) sData.comment = SGFParser.formatComment(cur);
         if (node.numberOfChildren() > 0) {
           for (int i = 0; i < node.numberOfChildren(); i++) {
             if (node.getVariation(i).isPresent()) {

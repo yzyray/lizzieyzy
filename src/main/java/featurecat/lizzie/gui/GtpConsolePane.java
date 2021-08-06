@@ -2,6 +2,8 @@ package featurecat.lizzie.gui;
 
 import featurecat.lizzie.Config;
 import featurecat.lizzie.Lizzie;
+import featurecat.lizzie.analysis.EngineManager;
+import featurecat.lizzie.util.DocType;
 import featurecat.lizzie.util.Utils;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -19,6 +21,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.util.ArrayDeque;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.concurrent.Executors;
@@ -57,6 +60,7 @@ public class GtpConsolePane extends JDialog {
   private ScheduledExecutorService executor;
   int checkCount = 0;
   private Font gtpFont;
+  private ArrayDeque<DocType> docQueue;
 
   /** Creates a Gtp Console Window */
   public GtpConsolePane(Window owner) {
@@ -70,12 +74,12 @@ public class GtpConsolePane extends JDialog {
                   .getContextClassLoader()
                   .getResourceAsStream("fonts/SourceCodePro-Regular.ttf"));
 
-      gtpFont = gtpFont.deriveFont(Font.PLAIN, Lizzie.config.frameFontSize);
+      gtpFont = gtpFont.deriveFont(Font.PLAIN, Config.frameFontSize);
     } catch (IOException | FontFormatException e) {
       e.printStackTrace();
-      gtpFont = new Font(Font.MONOSPACED, Font.PLAIN, Lizzie.config.frameFontSize);
+      gtpFont = new Font(Font.MONOSPACED, Font.PLAIN, Config.frameFontSize);
     }
-
+    docQueue = new ArrayDeque<>();
     boolean persisted =
         Lizzie.config.persistedUi != null
             && Lizzie.config.persistedUi.optJSONArray("gtp-console-position") != null
@@ -92,19 +96,6 @@ public class GtpConsolePane extends JDialog {
       setBounds((int) screensize.getWidth() - 400, (int) screensize.getHeight() - 700, 400, 650);
     }
     console = new JIMSendTextPane(false);
-    //    console.addMouseListener(
-    //        new MouseAdapter() {
-    //          public void mouseClicked(MouseEvent e) {
-    //            if (e.getButton() == MouseEvent.BUTTON3) {
-    //              String text = console.getSelectedText();
-    //              Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-    //              Transferable transferableString = new StringSelection(text);
-    //              clipboard.setContents(transferableString, null);
-    //              int length = console.getCaretPosition();
-    //              console.setCaretPosition(length);
-    //            }
-    //          }
-    //        });
     console.setBorder(BorderFactory.createEmptyBorder());
     console.setEditable(false);
     console.setBackground(Color.BLACK);
@@ -207,24 +198,25 @@ public class GtpConsolePane extends JDialog {
     fastCommands.setVisible(true);
   }
 
-  public void setDocs(String str, Color col, boolean isCommand, int fontSize) {
-    new Thread() {
-      public void run() {
-        setDocsTh(str, col, isCommand, fontSize);
-      }
-    }.start();
-  }
-
-  public synchronized void setDocsTh(String str, Color col, boolean isCommand, int fontSize) {
+  public void addDocs(DocType doc) {
     SimpleAttributeSet attrSet = new SimpleAttributeSet();
-    StyleConstants.setForeground(attrSet, col);
+    StyleConstants.setForeground(attrSet, doc.contentColor);
     // 颜色
-    if (isCommand) {
+    if (doc.isCommand) {
       StyleConstants.setFontFamily(attrSet, Lizzie.config.uiFontName);
     }
-    StyleConstants.setFontSize(attrSet, fontSize);
+    StyleConstants.setFontSize(attrSet, doc.fontSize);
     // 字体大小
-    insert(str, attrSet);
+    insert(doc.content, attrSet);
+  }
+
+  public void setDocs(String str, Color col, boolean isCommand, int fontSize) {
+    DocType doc = new DocType();
+    doc.content = str;
+    doc.contentColor = col;
+    doc.isCommand = isCommand;
+    doc.fontSize = fontSize;
+    docQueue.addFirst(doc);
   }
 
   public void insert(String str, AttributeSet attrSet) {
@@ -240,23 +232,27 @@ public class GtpConsolePane extends JDialog {
   private void read() {
     while (true) {
       try {
-        Thread.sleep(300);
-        if ((Lizzie.leelaz != null && !Lizzie.leelaz.isLoaded())
-            || (Lizzie.engineManager.isPreEngineGame
-                && (!Lizzie.engineManager
-                        .engineList
-                        .get(Lizzie.engineManager.engineGameInfo.whiteEngineIndex)
-                        .isLoaded()
-                    || !Lizzie.engineManager
-                        .engineList
-                        .get(Lizzie.engineManager.engineGameInfo.blackEngineIndex)
-                        .isLoaded()))) Lizzie.frame.refresh();
+        Thread.sleep(100);
       } catch (InterruptedException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();
       }
+      while (!docQueue.isEmpty()) {
+        DocType doc = docQueue.removeFirst();
+        addDocs(doc);
+      }
+      if ((Lizzie.leelaz != null && !Lizzie.leelaz.isLoaded())
+          || (EngineManager.isPreEngineGame
+              && (!Lizzie.engineManager
+                      .engineList
+                      .get(EngineManager.engineGameInfo.whiteEngineIndex)
+                      .isLoaded()
+                  || !Lizzie.engineManager
+                      .engineList
+                      .get(EngineManager.engineGameInfo.blackEngineIndex)
+                      .isLoaded()))) Lizzie.frame.refresh();
       checkCount++;
-      if (checkCount > 100) {
+      if (checkCount > 300) {
         checkCount = 0;
         checkConsole();
       } else {
@@ -287,7 +283,7 @@ public class GtpConsolePane extends JDialog {
     if (command == null || command.trim().length() == 0) {
       return;
     }
-    setDocs(engineName + "> " + command + "\n", Color.WHITE, true, Lizzie.config.frameFontSize);
+    setDocs(engineName + "> " + command + "\n", Color.WHITE, true, Config.frameFontSize);
   }
 
   public void addEstimateCommand(String command, int commandNumber) {
@@ -298,7 +294,7 @@ public class GtpConsolePane extends JDialog {
         resourceBundle.getString("GtpConsolePane.estimateEngine") + "> " + command + "\n",
         Color.WHITE,
         true,
-        Lizzie.config.frameFontSize);
+        Config.frameFontSize);
     //   commandTexts+=formatZenCommand(command, commandNumber);
     // addText();
   }
@@ -331,12 +327,12 @@ public class GtpConsolePane extends JDialog {
     String command = txtCommand.getText().trim();
     txtCommand.setText("");
 
-    if (Lizzie.engineManager.isEngineGame) {
+    if (EngineManager.isEngineGame) {
       this.setDocs(
           resourceBundle.getString("GtpConsolePane.isEngineGame") + "\r\n",
           new Color(255, 255, 0),
           false,
-          Lizzie.config.frameFontSize);
+          Config.frameFontSize);
       return;
     }
 
@@ -369,7 +365,7 @@ public class GtpConsolePane extends JDialog {
               resourceBundle.getString("GtpConsolePane.wrongParameters") + "\r\n",
               new Color(255, 255, 0),
               false,
-              Lizzie.config.frameFontSize);
+              Config.frameFontSize);
         }
       } else if ("clear_board".equals(command.toLowerCase())) {
         Lizzie.board.clear(false);
@@ -393,7 +389,7 @@ public class GtpConsolePane extends JDialog {
               resourceBundle.getString("GtpConsolePane.wrongParameters") + "\r\n",
               new Color(255, 255, 0),
               false,
-              Lizzie.config.frameFontSize);
+              Config.frameFontSize);
         }
       } else if (command.toLowerCase().startsWith("komi")) {
         String cmdParams[] = command.split(" ");
@@ -401,8 +397,8 @@ public class GtpConsolePane extends JDialog {
           Lizzie.board.getHistory().getGameInfo().setKomi(Double.parseDouble(cmdParams[1]));
           Lizzie.board.getHistory().getGameInfo().changeKomi();
           // Lizzie.frame.komi = cmdParams[1];
-          if (Lizzie.frame.toolbar.setkomi != null)
-            Lizzie.frame.toolbar.setkomi.textFieldKomi.setText(cmdParams[1]);
+          if (LizzieFrame.toolbar.setkomi != null)
+            LizzieFrame.toolbar.setkomi.textFieldKomi.setText(cmdParams[1]);
         }
         Lizzie.leelaz.sendCommand(command);
         Lizzie.board.clearbestmovesafter(Lizzie.board.getHistory().getStart());
@@ -415,7 +411,7 @@ public class GtpConsolePane extends JDialog {
               resourceBundle.getString("GtpConsolePane.wrongPrevious") + "\r\n",
               new Color(255, 255, 0),
               false,
-              Lizzie.config.frameFontSize);
+              Config.frameFontSize);
       } else if (command.startsWith("pda")
           || command.startsWith("dympdacap")
           || command.startsWith("getpda")
@@ -427,17 +423,16 @@ public class GtpConsolePane extends JDialog {
               Double pda = Double.parseDouble(params[1]);
               Lizzie.leelaz.pda = pda;
               Lizzie.leelaz.isStaticPda = true;
-              if (Lizzie.frame.extraMode == 2) Lizzie.leelaz2.pda = 0;
-              if (Lizzie.frame.menu.setPda != null)
-                Lizzie.frame.menu.setPda.curPDA.setText(pda + "");
-              Lizzie.frame.menu.txtPDA.setText(pda + "");
+              if (LizzieFrame.extraMode == 2) Lizzie.leelaz2.pda = 0;
+              if (LizzieFrame.menu.setPda != null) LizzieFrame.menu.setPda.curPDA.setText(pda + "");
+              LizzieFrame.menu.txtPDA.setText(pda + "");
             } catch (Exception es) {
             }
           }
         }
         if (command.toLowerCase().startsWith("dympdacap")) {
           Lizzie.leelaz.sendCommand("pda 0");
-          Lizzie.frame.menu.txtPDA.setText("0.000");
+          LizzieFrame.menu.txtPDA.setText("0.000");
           Lizzie.leelaz.isStaticPda = false;
           String[] params = command.trim().split(" ");
           if (params.length == 2) {
@@ -456,8 +451,8 @@ public class GtpConsolePane extends JDialog {
           try {
             Double pdaCap = Double.parseDouble(params[1]);
             Lizzie.leelaz.pdaCap = pdaCap;
-            if (Lizzie.frame.menu.setPda != null)
-              Lizzie.frame.menu.setPda.txtDymCap.setText(pdaCap + "");
+            if (LizzieFrame.menu.setPda != null)
+              LizzieFrame.menu.setPda.txtDymCap.setText(pdaCap + "");
           } catch (Exception es) {
           }
         }
@@ -471,7 +466,7 @@ public class GtpConsolePane extends JDialog {
 
   public void addErrorLine(String line) {
     // TODO Auto-generated method stub
-    setDocs(line, new Color(255, 0, 0), false, Lizzie.config.frameFontSize);
+    setDocs(line, new Color(255, 0, 0), false, Config.frameFontSize);
   }
 
   public void setViewEnd() {

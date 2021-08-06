@@ -497,12 +497,12 @@ public class Board {
 
   public void savelistforswitch() {
     // System.out.println("保存board");
-    tempmovelist = getmovelist();
+    tempmovelist = getMoveList();
   }
 
   public void savelist(int movenumber) {
     // System.out.println("保存board");
-    tempmovelist = getmovelist();
+    tempmovelist = getMoveList();
     int length = tempmovelist.size() - movenumber;
     for (int i = 0; i < length; i++) {
       tempmovelist.remove(0);
@@ -549,7 +549,7 @@ public class Board {
         // TODO Auto-generated catch block
         e.printStackTrace();
       }
-      tempmovelist2 = getmovelist();
+      tempmovelist2 = getMoveList();
     }
     // clearforedit();
     SGFParser.loadFromStringforedit(boardstatbeforeedit);
@@ -567,7 +567,7 @@ public class Board {
         // TODO Auto-generated catch block
         e.printStackTrace();
       }
-      tempmovelist = getmovelist();
+      tempmovelist = getMoveList();
     }
     //  clearforedit();
     SGFParser.loadFromStringforedit(boardstatafteredit);
@@ -578,40 +578,27 @@ public class Board {
   }
 
   public void resetlistforeditmode() {
-
-    // System.out.println("恢复board和branch");
-    // setmovelist(tempallmovelist);
-    setmovelist(tempmovelist, false);
+    setMoveList(tempmovelist, false);
   }
 
   public void setlistforeditmode1() {
-    tempmovelist = getmovelist();
-    // System.out.println("恢复board和branch");
-    // setmovelist(tempallmovelist);
-    // setmovelist(tempmovelist);
+    tempmovelist = getMoveList();
   }
 
   public void setlistforeditmode2() {
-    // tempmovelist = getmovelist();
-    // System.out.println("恢复board和branch");
-    // setmovelist(tempallmovelist);
-    setmovelist(tempmovelist, false);
+    setMoveList(tempmovelist, false);
   }
 
   public void setlist(ArrayList<Movelist> list) {
-    // System.out.println("恢复board不恢复branch");
-
-    setmovelist(list, false);
+    setMoveList(list, false);
   }
 
   public void setlist() {
-    // System.out.println("恢复board不恢复branch");
-    setmovelist(tempmovelist, false);
+    setMoveList(tempmovelist, false);
   }
 
   public void setlistforswitch() {
-    // System.out.println("恢复board不恢复branch");
-    setmovelist(tempmovelist, false);
+    setMoveList(tempmovelist, false);
     tempmovelist.clear();
   }
 
@@ -880,7 +867,16 @@ public class Board {
     //  movelist.remove(lenth - movenum);
   }
 
-  public void setmovelist(ArrayList<Movelist> movelist, boolean forSpin) {
+  public synchronized void resetMoveList(ArrayList<Movelist> moveList) {
+    setMoveList(moveList, false);
+  }
+
+  public synchronized void resetMoves() {
+    ArrayList<Movelist> mv = Lizzie.board.getMoveList();
+    setMoveList(mv, false);
+  }
+
+  public void setMoveList(ArrayList<Movelist> movelist, boolean forSpin) {
     boolean oriPlaySound = Lizzie.config.playSound;
     Lizzie.config.playSound = false;
     Lizzie.board.isLoadingFile = true;
@@ -1072,31 +1068,34 @@ public class Board {
     }
   }
 
-  public ArrayList<Movelist> getmovelist() {
+  public synchronized void resendMoveToEngine(int index, Leelaz leelaz) {
+    ArrayList<Movelist> mv = getMoveList();
+    Lizzie.leelaz.sendCommand("clear_board");
+    Lizzie.board.restoreMoveNumber(index, mv, false, leelaz);
+  }
+
+  public ArrayList<Movelist> getMoveList() {
     ArrayList<Movelist> movelist = new ArrayList<Movelist>();
-    Optional<BoardHistoryNode> node = history.getCurrentHistoryNode().now();
-    Optional<int[]> passstep = Optional.empty();
-    while (node.isPresent()) {
-      Optional<int[]> lastMove = node.get().getData().lastMove;
-      if (lastMove == passstep) {
+    BoardHistoryNode node = history.getCurrentHistoryNode();
+    while (node.previous().isPresent()) {
+      Optional<int[]> lastMove = node.getData().lastMove;
+      if (!lastMove.isPresent()) {
         Movelist move = new Movelist();
         move.ispass = true;
-        move.isblack = node.get().getData().lastMoveColor.isBlack();
+        move.isblack = node.getData().lastMoveColor.isBlack();
         movelist.add(move);
       } else {
-        if (lastMove.isPresent()) {
-          int[] n = lastMove.get();
-          Movelist move = new Movelist();
-          move.x = n[0];
-          move.y = n[1];
-          move.ispass = false;
-          move.isblack = node.get().getData().lastMoveColor.isBlack();
-          move.movenum = node.get().getData().moveNumber;
-          movelist.add(move);
-        }
+        int[] n = lastMove.get();
+        Movelist move = new Movelist();
+        move.x = n[0];
+        move.y = n[1];
+        move.ispass = false;
+        move.isblack = node.getData().lastMoveColor.isBlack();
+        move.movenum = node.getData().moveNumber;
+        movelist.add(move);
       }
-      if (node.get().extraStones != null) {
-        for (ExtraStones stone : node.get().extraStones) {
+      if (node.extraStones != null) {
+        for (ExtraStones stone : node.extraStones) {
           Movelist move = new Movelist();
           move.x = stone.x;
           move.y = stone.y;
@@ -1106,9 +1105,8 @@ public class Board {
           movelist.add(move);
         }
       }
-      node = node.get().previous();
+      node = node.previous().get();
     }
-    if (movelist.size() > 0) movelist.remove(movelist.size() - 1);
     if (hasStartStone) {
       for (Movelist mv : startStonelist) {
         movelist.add(mv);
@@ -1261,7 +1259,7 @@ public class Board {
       tempMovelistForSpin = getmovelist(history.getCurrentHistoryNode().now());
     }
     history.getStart();
-    setmovelist(tempMovelistForSpin, true);
+    setMoveList(tempMovelistForSpin, true);
   }
 
   public void playMovelistAfter(
@@ -1453,21 +1451,6 @@ public class Board {
 
   public void passinsert(Stone color, boolean newBranch) {
     synchronized (this) {
-
-      // check to see if this move is being replayed in history
-      // if (history.getNext().map(n -> !n.lastMove.isPresent()).orElse(false) &&
-      // !newBranch) {
-      // // this is the next move in history. Just increment history so that we don't
-      // erase the
-      // // redo's
-      // history.next();
-      // Lizzie.leelaz.playMove(color, "pass");
-      // if (Lizzie.frame.isPlayingAgainstLeelaz)
-      // Lizzie.leelaz.genmove((history.isBlacksTurn() ? "B" : "W"));
-      //
-      // return;
-      // }
-
       Stone[] stones = history.getStones().clone();
       Zobrist zobrist = history.getZobrist();
 

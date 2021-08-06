@@ -23,6 +23,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 
+import featurecat.lizzie.rules.Board;
 //import featurecat.lizzie.rules.Board;
 import featurecat.lizzie.rules.BoardData;
 import featurecat.lizzie.rules.Movelist;
@@ -150,6 +151,8 @@ public class Leelaz {
 	public boolean doublePass = false;
 	public boolean outOfMoveNum = false;
 	public boolean played = false;
+	private boolean canSetNotPlayed=false;
+	
 	public boolean isKatago = false;
 	public boolean isKatagoCustom = false;
 	public boolean noAnalyze=false;
@@ -179,8 +182,7 @@ public class Leelaz {
 	public ArrayList<Integer> heatcount = new ArrayList<Integer>();
 	
 	public long pkMoveStartTime;
-	public long pkMoveTime;
-	public boolean isBackGroundThinking=false;
+	public long pkMoveTime;	
 	//private int prepareNoGetGenmoveInfo = -1;
 	//public long pkMoveTimeAll=0;
 	public long pkMoveTimeGame=0;
@@ -479,8 +481,7 @@ public class Leelaz {
 			return;
 		}
 		isLoaded=false;
-		canCheckAlive=false;
-		ArrayList<Movelist> mv = Lizzie.board.getmovelist();
+		canCheckAlive=false;		
 		startEngine(index);
 		Leelaz thisLeelz=this;
 		 Runnable syncBoard =
@@ -495,9 +496,10 @@ public class Leelaz {
 		                }
 		              }
 		              if(isPondering)
-		  Lizzie.board.restoreMoveNumber(index, mv, false,thisLeelz);
-		              else
-		            	  Lizzie.board.setmovelist(mv,false);
+		            	  Lizzie.board.resendMoveToEngine(index, thisLeelz);
+		              else {
+		            	  Lizzie.board.resetMoves();
+		              }		            	  
 		            }
          };
      Thread syncBoardTh = new Thread(syncBoard);
@@ -1042,8 +1044,6 @@ public class Leelaz {
 	private void parseLine(String line) {
 		//System.out.println(line);
 		synchronized (this) {			
-			if (!played) 
-			{
 				if (line.startsWith("inf")) {
 					if((isResponseUpToDate())) {
 									if (Lizzie.engineManager.isEngineGame) {
@@ -1084,21 +1084,8 @@ public class Leelaz {
 										} else {
 											this.bestMoves = parseInfo(line.substring(5));						
 										}	
-										if (!this.bestMoves.isEmpty()) {			
-											if(Lizzie.config.enginePkPonder)
-											{	
-												//if((Lizzie.board.getHistory().isBlacksTurn()&&this==Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.blackEngineIndex))||!Lizzie.board.getHistory().isBlacksTurn()&&this==Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.whiteEngineIndex))
-											if(!isBackGroundThinking)
-												{
-												//if(isResponseUpToDate())							
-													notifyAutoPK(false);
-													pkResign();							
-											}
-											}
-											else {
-												notifyAutoPK(false);
-												pkResign();
-											}
+										if (!this.bestMoves.isEmpty()) {
+												notifyAutoPK(false);											
 								        	  notifyAutoPlay(false);		
 								        	  if(Lizzie.config.isAutoAna)
 								        	  {
@@ -1119,7 +1106,7 @@ public class Leelaz {
 										if(!played)
 										Lizzie.frame.refresh(1);
 										// don't follow the maxAnalyzeTime rule if we are in analysis mode
-										if ((!Lizzie.engineManager.isEngineGame&&!Lizzie.config.isAutoAna))
+										if ((!EngineManager.isEngineGame&&!Lizzie.config.isAutoAna))
 												{											
 											 if(!outOfPlayoutsLimit&&Lizzie.config.limitPlayout&&getTotalPlayouts(bestMoves)>Lizzie.config.limitPlayouts) {
 												stopByLimit=true;
@@ -1566,14 +1553,7 @@ public class Leelaz {
 			{
 				isCommandLine=true;
 			}
-				parseHeatMap(line);
-		}else {
-			if(Lizzie.gtpConsole.isVisible()||Lizzie.config.alwaysGtp||!this.isLoaded)			
-				if(!line.startsWith("inf"))
-				Lizzie.gtpConsole.addLine(line+"\n");
-			  if (line.startsWith("=") || line.startsWith("?")) {
-				isCommandLine=true;}
-		}
+				parseHeatMap(line);		
 		}
 	}
 
@@ -1858,40 +1838,50 @@ public class Leelaz {
 
 	}
 
-	public void pkResign() {
-		if (!resigned || isResigning)
-			return;
-//		if(isManualB) {
-//			isManualB=false;
-//			blackResignMoveCounts=Lizzie.frame.toolbar.pkResignMoveCounts+1;
-//		}
-//		else
-//		if(isManualW) {
-//			isManualW=false;
-//			whiteResignMoveCounts=Lizzie.frame.toolbar.pkResignMoveCounts+1;
-//		}
-		isResigning = true;		
-		if(Lizzie.gtpConsole.isVisible()||Lizzie.config.alwaysGtp)
-		Lizzie.gtpConsole.addLine(oriEnginename+ resourceBundle.getString("Leelaz.resign")+"\n");
-	Lizzie.engineManager.stopEngineGame(currentEngineN, false);
-	//resigned = false;
-	}
+//	public void resignGame() {
+//		if (!resigned || isResigning)
+//			return;
+//		isResigning = true;		
+//		if(Lizzie.gtpConsole.isVisible()||Lizzie.config.alwaysGtp)
+//		Lizzie.gtpConsole.addLine(oriEnginename+ resourceBundle.getString("Leelaz.resign")+"\n");
+//	Lizzie.engineManager.stopEngineGame(currentEngineN, false);
+//	}
 
 	 
 	private void notifyAutoPK(boolean playImmediately) {
-		if (played||resigned||Lizzie.frame.toolbar.isPkStop) {
+		if (!Lizzie.engineManager.isEngineGame||played||Lizzie.frame.toolbar.isPkStop) {
 			return;
 		}
-		if (Lizzie.engineManager.isEngineGame) {
-			double curWR = this.bestMoves.get(0).oriwinrate;
-
+		if(resigned) {
+			nameCmd();
+			isResigning = true;		
+			if(Lizzie.gtpConsole.isVisible()||Lizzie.config.alwaysGtp)
+				Lizzie.gtpConsole.addLine(oriEnginename+ resourceBundle.getString("Leelaz.resign")+"\n");
+			Lizzie.engineManager.stopEngineGame(currentEngineN, false);
+			return;
+		}
+			boolean shouldPlay=false;
 			int time =0;			
 			int playouts = 0;
 			int firstPlayouts = 0;
 			int minMove=0;
 			int resginMoveCounts=2;
 			double resignWinrate=10.0;
-			if(currentEngineN==Lizzie.engineManager.engineGameInfo.blackEngineIndex)
+			MoveData best;
+			try {
+			 best=this.bestMoves.get(0);
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+				return;
+			}
+			double curWR = best.winrate;
+			int thisIdx=currentEngineN;
+			int blackIdx=Lizzie.engineManager.engineGameInfo.blackEngineIndex;
+			//int whiteIdx=Lizzie.engineManager.engineGameInfo.whiteEngineIndex;
+			boolean isBlackEngine=thisIdx==blackIdx;
+			if(isBlackEngine)
 			{	time=Lizzie.engineManager.engineGameInfo.timeBlack*1000;
 			playouts=Lizzie.engineManager.engineGameInfo.playoutsBlack;
 			firstPlayouts=Lizzie.engineManager.engineGameInfo.firstPlayoutsBlack;
@@ -1911,354 +1901,96 @@ public class Leelaz {
 			
 			   if (Lizzie.frame.toolbar.checkGameMaxMove&&Lizzie.board.getHistory().getMoveNumber() > Lizzie.frame.toolbar.maxGanmeMove) {
 				   outOfMoveNum=true;
-					resigned = true;
-
-				//	pkResign();
-				
-					nameCmd();
-				  return;
+					resigned = true;				
 			   }
 			   if(isZen)
 			   {
 				   if(Lizzie.board.getHistory().getCurrentHistoryNode().getData().moveNumber<3)
-				   playNow=true;
+					   shouldPlay=true;
 				}
-			   if(playImmediately)
-				   playNow=true;
-			if (firstPlayouts > 0||playNow) {
-				if (bestMoves.get(0).playouts >= firstPlayouts||playNow) {
+			   if(playImmediately||playNow)
+				   shouldPlay=true;		
+			   if(firstPlayouts>0&&best.playouts>=firstPlayouts)
+				   shouldPlay=true;	
+			   if(firstPlayouts>0&&best.playouts>=firstPlayouts)
+				   shouldPlay=true;	
+			   if (playouts > 0) 
+			   {
+					int sum = 0;
+					for (MoveData move : bestMoves) {
+						sum += move.playouts;
+					}
+					if (sum >= playouts) 
+						shouldPlay=true;	
+			   }
+				if (time > 0) {
+					if (System.currentTimeMillis() - startPonderTime >= time) {
+						shouldPlay=true;	
+						}
+					}
+				if(shouldPlay) {					
 					played = true;
-					playNow=false;
 					if ((curWR < resignWinrate)
 							&& Lizzie.board.getHistory().getMoveNumber() > minMove) {
-						if (Lizzie.board.getHistory().isBlacksTurn())
-							blackResignMoveCounts = blackResignMoveCounts + 1;
+						if (isBlackEngine)
+							{blackResignMoveCounts = blackResignMoveCounts + 1;
+							if(blackResignMoveCounts >= resginMoveCounts)							
+								resigned = true;							
+							}
 						else
-							whiteResignMoveCounts = whiteResignMoveCounts + 1;
+							{whiteResignMoveCounts = whiteResignMoveCounts + 1;		
+							if(whiteResignMoveCounts >= resginMoveCounts)
+								resigned = true;
+							}
 					} else {
-
-						if (blackResignMoveCounts > 0 || whiteResignMoveCounts > 0) {
-							if (Lizzie.board.getHistory().isBlacksTurn())
+							if (isBlackEngine)
 								blackResignMoveCounts = 0;
 							else
-								whiteResignMoveCounts = 0;
-						}
-					}
-					if (blackResignMoveCounts >= resginMoveCounts
-							|| whiteResignMoveCounts >= resginMoveCounts) {
-						if (bestMoves.get(0).coordinate.equals("pass")) {
-							Lizzie.board.pass();
-						} else {
-							int coords[] = Lizzie.board.convertNameToCoordinates(bestMoves.get(0).coordinate);
+								whiteResignMoveCounts = 0;						
+					}			
+					if(!resigned)
+					{
+						MoveData playMove=null;
+						if(Lizzie.frame.toolbar.isRandomMove&&Lizzie.board.getHistory().getMoveNumber()<=Lizzie.frame.toolbar.randomMove)
+							playMove=this.randomBestmove(bestMoves, Lizzie.frame.toolbar.randomDiffWinrate,false);
+						else
+							playMove=best;
+						int coords[] = Board.convertNameToCoordinates(playMove.coordinate);
+						if(coords[0]>=0&&coords[1]>=0)
+						{
 							Lizzie.board.place(coords[0], coords[1]);
 						}
-						resigned = true;
-				//		pkResign();					
-						nameCmd();
-						return;
-					}
-					
-					MoveData playMove=null;
-					if(Lizzie.frame.toolbar.isRandomMove&&Lizzie.board.getHistory().getMoveNumber()<=Lizzie.frame.toolbar.randomMove)
-						playMove=this.randomBestmove(bestMoves, Lizzie.frame.toolbar.randomDiffWinrate,false);
-					else
-						playMove=bestMoves.get(0);
-					if (playMove.coordinate.equals("pass")) {
-						Optional<int[]> passStep = Optional.empty();
-						Optional<int[]> lastMove = Lizzie.board.getLastMove();
-						if (lastMove == passStep) {
-							Lizzie.board.pass();
-							doublePass = true;
-							resigned = true;
-							nameCmdfornoponder();
-							return;
-						}
-						Lizzie.board.pass();
-						if ( this.currentEngineN == Lizzie.engineManager.engineGameInfo.blackEngineIndex) {
-								Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.blackEngineIndex)
-										.playMoveNoPonder("B", "pass");
-							Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.whiteEngineIndex).playMovePonder("B",
-									"pass");
-//							Lizzie.leelaz = Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.whiteEngineIndex);
-							// Lizzie.leelaz.isPondering=true;
-							
-							// Lizzie.leelaz.played=false;
-						}
-
 						else {
+							if(!Lizzie.board.getLastMove().isPresent())
+								{doublePass = true;
+								resigned = true;}
 							Lizzie.board.pass();							
-								Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.whiteEngineIndex)
-										.playMoveNoPonder("W", "pass");
-							Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.blackEngineIndex).playMovePonder("W",
-									"pass");
-//							Lizzie.leelaz = Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.blackEngineIndex);
-							// Lizzie.leelaz.isPondering=true;
-							
-							// Lizzie.leelaz.played=false;
 						}
-						return;
-					}
-
-					int coords[] = Lizzie.board.convertNameToCoordinates(playMove.coordinate);
-
-					// nameCmd();
-					Lizzie.board.place(coords[0], coords[1]);
-					if ( this.currentEngineN == Lizzie.engineManager.engineGameInfo.blackEngineIndex) {
+						if(!resigned) {
+						if (isBlackEngine) {
 							Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.blackEngineIndex).playMoveNoPonder("B",
-									Lizzie.board.convertCoordinatesToName(coords[0], coords[1]));
+									playMove.coordinate);
 						Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.whiteEngineIndex).playMovePonder("B",
-								Lizzie.board.convertCoordinatesToName(coords[0], coords[1]));
-
-//						Lizzie.leelaz = Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.whiteEngineIndex);
-						// Lizzie.leelaz.isPondering=true;
-					
-						// Lizzie.leelaz.played=false;
+								playMove.coordinate);
 					}
 
-					else { //
-							// Lizzie.leelaz.isPondering=true;
-						Lizzie.board.place(coords[0], coords[1]);					
+					else {			
 							Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.whiteEngineIndex).playMoveNoPonder("W",
-									Lizzie.board.convertCoordinatesToName(coords[0], coords[1]));
+									playMove.coordinate);
 						Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.blackEngineIndex).playMovePonder("W",
-								Lizzie.board.convertCoordinatesToName(coords[0], coords[1]));
-//						Lizzie.leelaz = Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.blackEngineIndex);
-						
-						// Lizzie.leelaz.played=false;
+								playMove.coordinate);
 					}
-					return;
+						}
+					}
 				}
-			}
-			if (playouts > 0) {
-				int sum = 0;
-				for (MoveData move : bestMoves) {
-					sum += move.playouts;
-				}
-				if (sum >= playouts||(isZen&&sum<-100)) {
-					played = true;
-					// if(playanyway)
-					// playanyway=false;
-					if (curWR < resignWinrate
-							&& Lizzie.board.getHistory().getMoveNumber() > minMove) {
-						if (Lizzie.board.getHistory().isBlacksTurn())
-							blackResignMoveCounts = blackResignMoveCounts + 1;
-						else
-							whiteResignMoveCounts = whiteResignMoveCounts + 1;
-					} else {
-
-						if (blackResignMoveCounts > 0 || whiteResignMoveCounts > 0) {
-							if (Lizzie.board.getHistory().isBlacksTurn())
-								blackResignMoveCounts = 0;
-							else
-								whiteResignMoveCounts = 0;
-						}
-					}
-					if (blackResignMoveCounts >=resginMoveCounts
-							|| whiteResignMoveCounts >= resginMoveCounts) {
-//						if (bestMoves.get(0).coordinate.equals("pass")) {
-//							Lizzie.board.pass();
-//						} else {
-//							int coords[] = Lizzie.board.convertNameToCoordinates(bestMoves.get(0).coordinate);
-//							Lizzie.board.place(coords[0], coords[1]);
-//						}
-						resigned = true;
-						// pkResign();
-						// System.out.println("认输2"+this.currentEngineN);
-						nameCmd();
-
-						return;
-					}
-
-					MoveData playMove=null;
-					if(Lizzie.frame.toolbar.isRandomMove&&Lizzie.board.getHistory().getMoveNumber()<=Lizzie.frame.toolbar.randomMove)
-						playMove=this.randomBestmove(bestMoves, Lizzie.frame.toolbar.randomDiffWinrate,false);
-					else
-						playMove=bestMoves.get(0);
-					if (playMove.coordinate.equals("pass")) {
-						Optional<int[]> passStep = Optional.empty();
-						Optional<int[]> lastMove = Lizzie.board.getLastMove();
-						if (lastMove == passStep) {
-							Lizzie.board.pass();
-							doublePass = true;
-							resigned = true;
-							nameCmd();
-							return;
-						}
-						Lizzie.board.pass();
-						if (this.currentEngineN == Lizzie.engineManager.engineGameInfo.blackEngineIndex) {						
-								Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.blackEngineIndex)
-										.playMoveNoPonder("B", "pass");
-							Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.whiteEngineIndex).playMovePonder("B",
-									"pass");
-							// Lizzie.leelaz=Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.whiteEngineIndex);
-							// Lizzie.leelaz.isPondering=true;
-							
-							// Lizzie.leelaz.played=false;
-						}
-
-						else {
-							Lizzie.board.pass();
-								Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.whiteEngineIndex)
-										.playMoveNoPonder("W", "pass");
-							Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.blackEngineIndex).playMovePonder("W",
-									"pass");
-							// Lizzie.leelaz=Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.blackEngineIndex);
-							// Lizzie.leelaz.isPondering=true;
-							
-							// Lizzie.leelaz.played=false;
-						}
-						return;
-					}
-
-					int coords[] = Lizzie.board.convertNameToCoordinates(playMove.coordinate);
-
-					// nameCmd();
-					Lizzie.board.place(coords[0], coords[1]);
-					if (this.currentEngineN == Lizzie.engineManager.engineGameInfo.blackEngineIndex) {
-							Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.blackEngineIndex).playMoveNoPonder("B",
-									Lizzie.board.convertCoordinatesToName(coords[0], coords[1]));
-						Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.whiteEngineIndex).playMovePonder("B",
-								Lizzie.board.convertCoordinatesToName(coords[0], coords[1]));
-						// Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.whiteEngineIndex).bestMoves
-						// = new ArrayList<>();
-						// Lizzie.leelaz=Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.whiteEngineIndex);
-						// Lizzie.leelaz.isPondering=true;
-					
-
-						// Lizzie.leelaz.played=false;
-					}
-
-					else {
-						// Lizzie.leelaz.isPondering=true;
-						Lizzie.board.place(coords[0], coords[1]);
-							Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.whiteEngineIndex).playMoveNoPonder("W",
-									Lizzie.board.convertCoordinatesToName(coords[0], coords[1]));
-						Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.blackEngineIndex).playMovePonder("W",
-								Lizzie.board.convertCoordinatesToName(coords[0], coords[1]));
-						// Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.blackEngineIndex).bestMoves
-						// = new ArrayList<>();
-						// Lizzie.leelaz=Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.blackEngineIndex);
-						
-
-						// Lizzie.leelaz.played=false;
-					}
-					return;
-
-				}
-			}
-
-			if (time > 0) {
-				if (System.currentTimeMillis() - startPonderTime >= time) {
-					played = true;
-					// if(playanyway)
-					// playanyway=false;
-					if (curWR < resignWinrate
-							&& Lizzie.board.getHistory().getMoveNumber() > minMove) {
-						if (Lizzie.board.getHistory().isBlacksTurn())
-							blackResignMoveCounts = blackResignMoveCounts + 1;
-						else
-							whiteResignMoveCounts = whiteResignMoveCounts + 1;
-					} else {
-
-						if (blackResignMoveCounts > 0 || whiteResignMoveCounts > 0) {
-							if (Lizzie.board.getHistory().isBlacksTurn())
-								blackResignMoveCounts = 0;
-							else
-								whiteResignMoveCounts = 0;
-						}
-					}
-					if (blackResignMoveCounts >= resginMoveCounts
-							|| whiteResignMoveCounts >= resginMoveCounts) {
-						if (bestMoves.get(0).coordinate.equals("pass")) {
-							Lizzie.board.pass();
-						} else {
-							int coords[] = Lizzie.board.convertNameToCoordinates(bestMoves.get(0).coordinate);
-							Lizzie.board.place(coords[0], coords[1]);
-						}
-						resigned = true;
-						// pkResign();
-						// System.out.println("认输2"+this.currentEngineN);
-						nameCmd();
-
-						return;
-					}
-
-					MoveData playMove=null;
-					if(Lizzie.frame.toolbar.isRandomMove&&Lizzie.board.getHistory().getMoveNumber()<=Lizzie.frame.toolbar.randomMove)
-						playMove=this.randomBestmove(bestMoves, Lizzie.frame.toolbar.randomDiffWinrate,false);
-					else
-						playMove=bestMoves.get(0);
-					if (playMove.coordinate.equals("pass")) {
-						Optional<int[]> passStep = Optional.empty();
-						Optional<int[]> lastMove = Lizzie.board.getLastMove();
-						if (lastMove == passStep) {
-							Lizzie.board.pass();
-							doublePass = true;
-							resigned = true;
-							nameCmd();
-							return;
-						}
-						Lizzie.board.pass();
-						if (this.currentEngineN == Lizzie.engineManager.engineGameInfo.blackEngineIndex) {
-								Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.blackEngineIndex)
-										.playMoveNoPonder("B", "pass");
-							Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.whiteEngineIndex).playMovePonder("B",
-									"pass");
-							// Lizzie.leelaz=Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.whiteEngineIndex);
-							// Lizzie.leelaz.isPondering=true;						
-							// Lizzie.leelaz.played=false;
-						}
-
-						else {
-							Lizzie.board.pass();
-								Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.whiteEngineIndex)
-										.playMoveNoPonder("W", "pass");
-							Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.blackEngineIndex).playMovePonder("W",
-									"pass");
-							// Lizzie.leelaz=Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.blackEngineIndex);
-							// Lizzie.leelaz.isPondering=true;						
-							// Lizzie.leelaz.played=false;
-						}
-						return;
-					}
-
-					int coords[] = Lizzie.board.convertNameToCoordinates(playMove.coordinate);
-
-					// nameCmd();
-					if (this.currentEngineN == Lizzie.engineManager.engineGameInfo.blackEngineIndex) {
-						Lizzie.board.place(coords[0], coords[1]);
-							Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.blackEngineIndex).playMoveNoPonder("B",
-									Lizzie.board.convertCoordinatesToName(coords[0], coords[1]));
-						Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.whiteEngineIndex).playMovePonder("B",
-								Lizzie.board.convertCoordinatesToName(coords[0], coords[1]));
-						// Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.whiteEngineIndex).bestMoves
-						// = new ArrayList<>();
-						// Lizzie.leelaz=Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.whiteEngineIndex);
-						// Lizzie.leelaz.isPondering=true;
-						
-
-						// Lizzie.leelaz.played=false;
-					}
-
-					else {
-						// Lizzie.leelaz.isPondering=true;
-						Lizzie.board.place(coords[0], coords[1]);
-							Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.whiteEngineIndex).playMoveNoPonder("W",
-									Lizzie.board.convertCoordinatesToName(coords[0], coords[1]));
-						Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.blackEngineIndex).playMovePonder("W",
-								Lizzie.board.convertCoordinatesToName(coords[0], coords[1]));
-						// Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.blackEngineIndex).bestMoves
-						// = new ArrayList<>();
-						// Lizzie.leelaz=Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.blackEngineIndex);						
-
-						// Lizzie.leelaz.played=false;
-					}
-					return;
-
-				}
-			}
-
-		}
+				if(resigned)
+				{
+					nameCmd();
+					isResigning = true;		
+					if(Lizzie.gtpConsole.isVisible()||Lizzie.config.alwaysGtp)
+						Lizzie.gtpConsole.addLine(oriEnginename+ resourceBundle.getString("Leelaz.resign")+"\n");
+					Lizzie.engineManager.stopEngineGame(currentEngineN, false);
+					}			
 	}
 
 	public void nameCmd() {
@@ -2409,19 +2141,8 @@ public class Leelaz {
 			          leela0110UpdatePonder();
 			        Lizzie.frame.refresh(1);
 			        Lizzie.frame.updateTitle();
-			        if (!this.bestMoves.isEmpty()) {			
-						if(Lizzie.config.enginePkPonder)
-						{	
-							if(!isBackGroundThinking)
-							{
-								notifyAutoPK(false);
-								pkResign();							
-						}
-						}
-						else {
+			        if (!this.bestMoves.isEmpty()) {	
 							notifyAutoPK(false);
-							pkResign();
-						}
 			        	  notifyAutoPlay(false);		
 			        	  if(Lizzie.config.isAutoAna)
 			        	  {
@@ -2472,21 +2193,8 @@ public class Leelaz {
 									// This should not be stale data when the command number match
 										this.bestMoves = parseInfo(line.substring(5));						
 										
-									if (!this.bestMoves.isEmpty()) {			
-										if(Lizzie.config.enginePkPonder)
-										{	
-											//if((Lizzie.board.getHistory().isBlacksTurn()&&this==Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.blackEngineIndex))||!Lizzie.board.getHistory().isBlacksTurn()&&this==Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.whiteEngineIndex))
-										if(!isBackGroundThinking)
-											{
-											//if(isResponseUpToDate())							
-												notifyAutoPK(false);
-												pkResign();							
-										}
-										}
-										else {
-											notifyAutoPK(false);
-											pkResign();
-										}
+									if (!this.bestMoves.isEmpty()) {	
+											notifyAutoPK(false);										
 							        	  notifyAutoPlay(false);		
 							        	  if(Lizzie.config.isAutoAna)
 							        	  {
@@ -2541,14 +2249,14 @@ public class Leelaz {
 							{
 								if(!isGamePaused)
 								{notifyAutoPK(true);
-							pkResign();}
+								}
 							}
 						}
 						}
 						else {
 							if(!isGamePaused) {
 							notifyAutoPK(true);
-							pkResign();}
+							}
 						}
 						if(Lizzie.frame.isAnaPlayingAgainstLeelaz&&!isGamePaused)
 						notifyAutoPlay(true);
@@ -2610,7 +2318,7 @@ public class Leelaz {
 						{
 							if(!isGamePaused)
 							{notifyAutoPK(true);
-						pkResign();}
+						}
 						}
 					}}
 					if(Lizzie.frame.isAnaPlayingAgainstLeelaz&&!isGamePaused)
@@ -2934,7 +2642,6 @@ parseHeatMap(line);
 	 * @param command a GTP command containing no newline characters
 	 */
 	public void sendCommand(String command) {	
-		//Lizzie.gtpConsole.addLine(command);		
 		if(Lizzie.frame.extraMode==2) {				
 			if((command.startsWith("heat")||command.startsWith("kata-raw"))&&!this.isKatago&&Lizzie.leelaz2!=null&&this==Lizzie.leelaz2)
 			heatcount = new ArrayList<Integer>();
@@ -3052,6 +2759,11 @@ parseHeatMap(line);
 		if (Lizzie.frame.isAutocounting) {
 			Lizzie.frame.zen.sendAndEstimate(command,true);		
 		}
+		if(canSetNotPlayed)
+		{
+			canSetNotPlayed=false;
+			played=false;
+		}
 	}
 
 	/** Sends a command from command queue for leelaz to execute if it is ready */
@@ -3099,6 +2811,11 @@ parseHeatMap(line);
 		}
 		if(Lizzie.config.alwaysGtp||Lizzie.gtpConsole.isVisible())
 			Lizzie.gtpConsole.addCommand(command, cmdNumber, oriEnginename);	
+		}
+		if(canSetNotPlayed)
+		{
+			canSetNotPlayed=false;
+			played=false;
 		}
 	}
 	
@@ -3226,8 +2943,6 @@ parseHeatMap(line);
 		if(Lizzie.config.enginePkPonder)
 		{		
 			synchronized (this) {
-				isBackGroundThinking=true;
-				played = false;
 				bestMoves = new ArrayList<>();
 				sendCommand("play " + colorString + " " + move);
 				pkponder();
@@ -3252,12 +2967,11 @@ parseHeatMap(line);
 	public void playMovePonder(String colorString, String move) {
 		Lizzie.frame.mouseOverCoordinate = Lizzie.frame.outOfBoundCoordinate;
 		synchronized (this) {
-			played = false;
+			canSetNotPlayed = true;
 			if(Lizzie.config.enginePkPonder)			
 			bestMoves = new ArrayList<>();
 			sendCommand("play " + colorString + " " + move);
 			pkponder();
-			isBackGroundThinking=false;
 		}
 		pkMoveStartTime=System.currentTimeMillis();
 	}
@@ -3267,11 +2981,9 @@ parseHeatMap(line);
 	//	canGetGenmoveInfo = false;
 		if(this.resigned)
 		{
-			this.genmoveResign(false);
 			return false;
 		}
 		synchronized (this) {
-			played = false;
 			sendCommand("play " + colorString + " " + move);
 		}	
 		Lizzie.frame.updateTitle();
@@ -3458,8 +3170,6 @@ parseHeatMap(line);
 	private String maybeAddPlayer() {
 		if(!canAddPlayer)
 			return "";
-		if(Lizzie.board.getHistory().getCurrentHistoryNode().next().isPresent()&&Lizzie.board.getHistory().isBlacksTurn()!=Lizzie.board.getHistory().getCurrentHistoryNode().next().get().getData().lastMoveColor.isBlack())
-				return	 (Lizzie.board.getHistory().getCurrentHistoryNode().next().get().getData().lastMoveColor.isBlack()?"b ":"w ");
 		else
 			return  (Lizzie.board.getHistory().isBlacksTurn()?"b ":"w ");
 	}

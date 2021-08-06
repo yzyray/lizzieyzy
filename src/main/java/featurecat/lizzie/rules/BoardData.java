@@ -485,7 +485,7 @@ public class BoardData {
 		this.verify = data.verify;
 		this.blackCaptures = data.blackCaptures;
 		this.whiteCaptures = data.whiteCaptures;
-		this.comment = data.comment;
+		this.comment = data.comment;		
 	}
 
 	public BoardData clone() {

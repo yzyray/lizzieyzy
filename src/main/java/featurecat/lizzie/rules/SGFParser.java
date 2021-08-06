@@ -301,7 +301,7 @@ public class SGFParser {
         isMultiGo = false,
         escaping = false,
         moveStart = false,
-        addPassForMove = true;
+        startNewBranch = true;
     boolean inProp = false;
 
     String tag = "";
@@ -333,7 +333,7 @@ public class SGFParser {
             subTreeDepth += 1;
             // Initialize the step count
             subTreeStepMap.put(subTreeDepth, Lizzie.board.getHistory().getCurrentHistoryNode());
-            addPassForMove = true;
+            startNewBranch = true;
             pendingProps = new HashMap<String, String>();
           } else {
             if (i > 0) {
@@ -396,7 +396,7 @@ public class SGFParser {
           } else if (tag.equals("B") || tag.equals("W")) {
 
             moveStart = true;
-            addPassForMove = true;
+            startNewBranch = true;
             int[] move = convertSgfPosToCoord(tagContent);
             // Save the step count
             //  subTreeStepMap.put(subTreeDepth, subTreeStepMap.get(subTreeDepth) + 1);
@@ -649,22 +649,21 @@ public class SGFParser {
               }
             }
           } else if (tag.equals("AB") || tag.equals("AW")) {
-            if (Lizzie.engineManager.currentEngineNo >= 0) Lizzie.engineManager.isEmpty = false;
+            if (EngineManager.currentEngineNo >= 0) EngineManager.isEmpty = false;
             int[] move = convertSgfPosToCoord(tagContent);
             Stone color = tag.equals("AB") ? Stone.BLACK : Stone.WHITE;
             if (moveStart) {
               Lizzie.board.addNodeProperty(tag, tagContent);
-              if (addPassForMove) {
+              if (startNewBranch) {
                 //   subTreeStepMap.put(subTreeDepth, subTreeStepMap.get(subTreeDepth) + 1);
-                boolean newBranch =
-                    Lizzie.board.getHistory().getCurrentHistoryNode().hasVariations();
+                boolean newBranch = true;
                 Lizzie.board
                     .getHistory()
                     .pass(Lizzie.board.getHistory().getLastMoveColor(), newBranch, true);
                 if (newBranch) {
                   processPendingPros(Lizzie.board.getHistory(), pendingProps);
                 }
-                addPassForMove = false;
+                startNewBranch = false;
               }
               Lizzie.board.addNodeProperty(tag, tagContent);
               if (move != null) {
@@ -682,7 +681,7 @@ public class SGFParser {
                 Lizzie.board.getHistory().flatten();
               }
             }
-            Lizzie.engineManager.isEmpty = true;
+            EngineManager.isEmpty = true;
 
           } else if (tag.equals("PB")) {
             blackPlayer = tagContent;
@@ -736,7 +735,7 @@ public class SGFParser {
               // Other SGF node properties
               if ("AE".equals(tag)) {
                 // remove a stone
-                if (addPassForMove) {
+                if (startNewBranch) {
                   // Save the step count
                   //    subTreeStepMap.put(subTreeDepth, subTreeStepMap.get(subTreeDepth) + 1);
                   Stone color =
@@ -750,7 +749,7 @@ public class SGFParser {
                   if (newBranch) {
                     processPendingPros(Lizzie.board.getHistory(), pendingProps);
                   }
-                  addPassForMove = false;
+                  startNewBranch = false;
                 }
                 Lizzie.board.addNodeProperty(tag, tagContent);
                 int[] move = convertSgfPosToCoord(tagContent);
@@ -2622,7 +2621,7 @@ public class SGFParser {
     return out.replaceAll("\\]", "\\\\]");
   }
 
-  public static BoardHistoryList parseSgf(String value) {
+  public static BoardHistoryList parseSgf(String value, boolean first) {
     BoardHistoryList history = null;
 
     // Drop anything outside "(;...)"
@@ -2652,13 +2651,13 @@ public class SGFParser {
     }
     history = new BoardHistoryList(BoardData.empty(boardWidth, boardHeight));
 
-    parseValue(value, history, false);
+    parseValue(value, history, false, first);
 
     return history;
   }
 
   private static BoardHistoryList parseValue(
-      String value, BoardHistoryList history, boolean isBranch) {
+      String value, BoardHistoryList history, boolean isBranch, boolean firstTime) {
 
     int subTreeDepth = 0;
     // Save the variation step count
@@ -2846,22 +2845,24 @@ public class SGFParser {
             whitePlayer = tagContent;
             history.getGameInfo().setPlayerWhite(whitePlayer);
           } else if (tag.equals("KM") && Lizzie.config.readKomi) {
-            try {
-              if (!tagContent.trim().isEmpty()) {
-                Double komi = Double.parseDouble(tagContent);
-                if (komi >= 200) {
-                  komi = komi / 100;
-                  if (komi == 3.5) komi = 7.0;
+            if (firstTime) {
+              try {
+                if (!tagContent.trim().isEmpty()) {
+                  Double komi = Double.parseDouble(tagContent);
+                  if (komi >= 200) {
+                    komi = komi / 100;
+                    if (komi == 3.5) komi = 7.0;
+                  }
+                  if (komi.toString().endsWith(".75") || komi.toString().endsWith(".25"))
+                    komi = komi * 2;
+                  if (Math.abs(komi) < Lizzie.board.boardWidth * Lizzie.board.boardHeight) {
+                    Lizzie.leelaz.komi(komi);
+                    history.getGameInfo().setKomi(komi);
+                  }
                 }
-                if (komi.toString().endsWith(".75") || komi.toString().endsWith(".25"))
-                  komi = komi * 2;
-                if (Math.abs(komi) < Lizzie.board.boardWidth * Lizzie.board.boardHeight) {
-                  Lizzie.leelaz.komi(komi);
-                  history.getGameInfo().setKomi(komi);
-                }
+              } catch (NumberFormatException e) {
+                e.printStackTrace();
               }
-            } catch (NumberFormatException e) {
-              e.printStackTrace();
             }
           } else if (tag.equals("HA")) {
             try {

@@ -1135,6 +1135,28 @@ public class FloatBoardRenderer {
 
   private void drawMoveRankMark(Graphics2D g) {
     g.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
+    Board board = Lizzie.board;
+    Optional<int[]> lastMoveOpt = branchOpt.map(b -> b.data.lastMove).orElse(board.getLastMove());
+
+    if (!lastMoveOpt.isPresent() && board.getData().moveNumber != 0) {
+      g.setColor(
+          board.getData().blackToPlay ? new Color(255, 255, 255, 80) : new Color(0, 0, 0, 80));
+      g.fillOval(
+          x + boardWidth / 2 - stoneRadius * 5 / 2,
+          y + boardHeight / 2 - stoneRadius * 5 / 2,
+          stoneRadius * 5,
+          stoneRadius * 5);
+      g.setColor(
+          board.getData().blackToPlay ? new Color(0, 0, 0, 200) : new Color(255, 255, 255, 200));
+      drawString(
+          g,
+          x + boardWidth / 2,
+          y + boardHeight / 2,
+          LizzieFrame.uiFont,
+          resourceBundle.getString("BoardRenderer.pass"),
+          stoneRadius * 3,
+          stoneRadius * 9 / 2);
+    }
     BoardHistoryNode node = Lizzie.board.getHistory().getCurrentHistoryNode();
     int limit = Lizzie.config.moveRankMarkLastMove;
     boolean shouldLimit = limit > 0;

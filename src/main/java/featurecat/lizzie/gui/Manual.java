@@ -1,6 +1,7 @@
 package featurecat.lizzie.gui;
 
 import featurecat.lizzie.Lizzie;
+import featurecat.lizzie.analysis.EngineManager;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -79,20 +80,11 @@ public class Manual extends JDialog {
                         Lizzie.engineManager.engineGameInfo.blackEngineIndex)
                     .resigned =
                 true;
-            //            Lizzie.engineManager.engineList.get(
-            //                        Lizzie.engineManager.engineGameInfo.blackEngineIndex)
-            //                    .isManualB =
-            //                true;
-            //            if (!Lizzie.engineManager.engineGameInfo.isGenmove) {
-            //              Lizzie.engineManager.engineList.get(
-            //                          Lizzie.engineManager.engineGameInfo.blackEngineIndex)
-            //                      .played =
-            //                  true;
-            //              Lizzie.engineManager
-            //                  .engineList
-            //                  .get(Lizzie.engineManager.engineGameInfo.blackEngineIndex)
-            //                  .nameCmd();
-            //            }
+            if (EngineManager.engineGameInfo.isGenmove)
+              Lizzie.engineManager
+                  .engineList
+                  .get(Lizzie.engineManager.engineGameInfo.blackEngineIndex)
+                  .genmoveResign(false);
           }
         });
     buttonPane.add(blackResign);
@@ -106,20 +98,11 @@ public class Manual extends JDialog {
                         Lizzie.engineManager.engineGameInfo.whiteEngineIndex)
                     .resigned =
                 true;
-            //            Lizzie.engineManager.engineList.get(
-            //                        Lizzie.engineManager.engineGameInfo.whiteEngineIndex)
-            //                    .isManualW =
-            //                true;
-            //            if (!Lizzie.engineManager.engineGameInfo.isGenmove) {
-            //              Lizzie.engineManager.engineList.get(
-            //                          Lizzie.engineManager.engineGameInfo.whiteEngineIndex)
-            //                      .played =
-            //                  true;
-            //              Lizzie.engineManager
-            //                  .engineList
-            //                  .get(Lizzie.engineManager.engineGameInfo.whiteEngineIndex)
-            //                  .nameCmd();
-            //            }
+            if (EngineManager.engineGameInfo.isGenmove)
+              Lizzie.engineManager
+                  .engineList
+                  .get(Lizzie.engineManager.engineGameInfo.whiteEngineIndex)
+                  .genmoveResign(false);
           }
         });
     buttonPane.add(whiteResign);

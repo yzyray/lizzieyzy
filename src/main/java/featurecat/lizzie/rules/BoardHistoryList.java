@@ -532,7 +532,7 @@ public class BoardHistoryList {
       // update history with this coordinate
       this.addOrGoto(newState, newBranch, changeMove, false);
       //   Lizzie.board.modifyEnd();
-      Lizzie.frame.renderVarTree(0, 0, false, false);
+      // Lizzie.frame.renderVarTree(0, 0, false, false);
     }
   }
 
