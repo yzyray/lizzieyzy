@@ -216,7 +216,7 @@ public class GtpConsolePane extends JDialog {
     doc.contentColor = col;
     doc.isCommand = isCommand;
     doc.fontSize = fontSize;
-    docQueue.addFirst(doc);
+    docQueue.addLast(doc);
   }
 
   public void insert(String str, AttributeSet attrSet) {

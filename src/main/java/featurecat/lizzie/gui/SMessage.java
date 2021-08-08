@@ -33,8 +33,14 @@ public class SMessage extends JDialog {
   public void setMessage(String message, int rows) {
     String regex = "[\u4e00-\u9fa5]";
     lblMessage.setText(message);
-    int width =
-        (int) (message.replaceAll(regex, "12").length() * (Config.frameFontSize / 1.6)) / rows;
+    String[] rowlines = message.split("\r\n");
+    int width = 100;
+    for (int i = 0; i < rowlines.length; i++) {
+      width =
+          Math.max(
+              width,
+              (int) (rowlines[i].replaceAll(regex, "12").length() * (Config.frameFontSize / 1.6)));
+    }
     int height = 80 + (rows - 1) * Config.menuHeight;
     setSize(width, height);
     setLocationRelativeTo(null);

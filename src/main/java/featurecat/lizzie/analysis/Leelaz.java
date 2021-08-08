@@ -686,7 +686,7 @@ public class Leelaz {
   private void parseLineForGenmovePk(String line) throws IOException {
     // Lizzie.gtpConsole.addLineforce(line);
 
-    if (line.startsWith("inf")) {
+    if (line.startsWith("info")) {
       if (this != Lizzie.leelaz && isResponseUpToDate()) {
         if (isKatago) {
           this.bestMoves = parseInfoKatago(line.substring(5));
@@ -1036,7 +1036,7 @@ public class Leelaz {
   private void parseLine(String line) {
     // System.out.println(line);
     synchronized (this) {
-      if (line.startsWith("inf")) {
+      if (line.startsWith("info")) {
         if ((isResponseUpToDate())) {
           if (Lizzie.engineManager.isEngineGame) {
             // Lizzie.frame.subBoardRenderer.reverseBestmoves = false;
@@ -1882,7 +1882,8 @@ public class Leelaz {
       nameCmd();
       isResigning = true;
       if (Lizzie.gtpConsole.isVisible() || Lizzie.config.alwaysGtp)
-        Lizzie.gtpConsole.addLine(oriEnginename +  " " +resourceBundle.getString("Leelaz.resign") + "\n");
+        Lizzie.gtpConsole.addLine(
+            oriEnginename + " " + resourceBundle.getString("Leelaz.resign") + "\n");
       Lizzie.engineManager.stopEngineGame(currentEngineN, false);
     }
   }
@@ -1974,7 +1975,15 @@ public class Leelaz {
     }
     if (!this.isLeela0110 || Lizzie.frame.isPlayingAgainstLeelaz)
       if (Lizzie.gtpConsole.isVisible() || Lizzie.config.alwaysGtp || !this.isLoaded)
-        if (!line.startsWith("inf")) Lizzie.gtpConsole.addErrorLine(line + "\n");
+        if (!line.startsWith("info")) Lizzie.gtpConsole.addErrorLine(line + "\n");
+    if (isZen) {
+      if (line.startsWith("info") && isLoaded) {
+        isLoaded = false;
+        SMessage msg = new SMessage();
+        msg.setMessage(Lizzie.resourceBundle.getString("Leelaz.updateZenGtp"), 2);
+        shutdown();
+      }
+    }
     if ((isLeela || isSai) && Lizzie.frame.isPlayingAgainstLeelaz && canGetSummaryInfo) {
       int k =
           (Lizzie.config.limitMaxSuggestion > 0 && !Lizzie.config.showNoSuggCircle
@@ -2040,7 +2049,7 @@ public class Leelaz {
         if (Lizzie.gtpConsole.isVisible() || Lizzie.config.alwaysGtp || !this.isLoaded)
           Lizzie.gtpConsole.addErrorLine(line + "\n");
       }
-    }  
+    }
     if (!this.isKatago) {
       if (line.startsWith("NN eval")) {
         String[] params = line.trim().split("=");

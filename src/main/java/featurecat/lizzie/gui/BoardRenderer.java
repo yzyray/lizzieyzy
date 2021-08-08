@@ -202,7 +202,8 @@ public class BoardRenderer {
     if (!isShowingBranch
         && Lizzie.config.allowMoveNumber == 0
         && !Lizzie.frame.isInPlayMode()
-        && Lizzie.config.moveRankMarkLastMove >= 0) drawMoveRankMark(g);
+        && Lizzie.config.moveRankMarkLastMove >= 0
+        && !shouldShowPreviousBestMoves()) drawMoveRankMark(g);
     else drawMoveNumbers(g);
 
     if (Lizzie.frame.isInScoreMode) {
