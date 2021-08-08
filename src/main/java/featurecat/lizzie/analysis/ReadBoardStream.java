@@ -17,7 +17,7 @@ public class ReadBoardStream extends Thread {
   public ReadBoardStream(Socket s) {
     socket = s;
     try {
-      in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+      in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
       out = new BufferedOutputStream(socket.getOutputStream());
       start();
     } catch (Exception e) {

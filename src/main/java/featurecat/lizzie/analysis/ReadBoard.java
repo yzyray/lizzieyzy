@@ -9,10 +9,11 @@ import featurecat.lizzie.rules.Board;
 import featurecat.lizzie.rules.BoardHistoryNode;
 import featurecat.lizzie.rules.Stone;
 import featurecat.lizzie.util.Utils;
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -33,14 +34,14 @@ public class ReadBoard {
           : (Lizzie.config.useLanguage == 1
               ? ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("zh", "CN"))
               : ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("en", "US")));
-  private BufferedInputStream inputStream;
+  private InputStreamReader inputStream;
   private BufferedOutputStream outputStream;
   private ScheduledExecutorService executor;
   ArrayList<Integer> tempcount = new ArrayList<Integer>();
   // private long startSyncTime = 0;
 
   public boolean isLoaded = false;
-  private int version = 730;
+  private int version = 808;
   private String engineCommand;
   public String currentEnginename = "";
   private int port = -1;
@@ -249,8 +250,8 @@ public class ReadBoard {
     }
   }
 
-  private void initializeStreams() {
-    inputStream = new BufferedInputStream(process.getInputStream());
+  private void initializeStreams() throws UnsupportedEncodingException {
+    inputStream = new InputStreamReader(process.getInputStream(), "UTF-8");
     outputStream = new BufferedOutputStream(process.getOutputStream());
   }
 
