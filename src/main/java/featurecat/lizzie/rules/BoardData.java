@@ -1,6 +1,7 @@
 package featurecat.lizzie.rules;
 
 import featurecat.lizzie.Lizzie;
+import featurecat.lizzie.analysis.EngineManager;
 //import featurecat.lizzie.analysis.Leelaz;
 import featurecat.lizzie.analysis.MoveData;
 import java.util.*;
@@ -194,7 +195,7 @@ public class BoardData {
 //		if(moves.isEmpty())
 //			return;
 		int plyouts= MoveData.getPlayouts(moves);
-		if(Lizzie.config.enableLizzieCache&&!Lizzie.config.isAutoAna&&!Lizzie.engineManager.isEngineGame) {
+		if(Lizzie.config.enableLizzieCache&&!Lizzie.config.isAutoAna&&!EngineManager.isEngineGame) {
 			if (!(plyouts > playouts ||isChanged||pda!=Lizzie.leelaz.pda)) {
 				return;
 			}

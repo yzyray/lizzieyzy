@@ -1096,7 +1096,7 @@ public class Leelaz {
           if ((!EngineManager.isEngineGame && !Lizzie.config.isAutoAna)) {
             if (!outOfPlayoutsLimit
                 && Lizzie.config.limitPlayout
-                && getTotalPlayouts(bestMoves) > Lizzie.config.limitPlayouts) {
+                && getBestMovesPlayouts() > Lizzie.config.limitPlayouts) {
               stopByLimit = true;
               stopByPlayouts = true;
               isPondering = !isPondering;
@@ -1561,11 +1561,7 @@ public class Leelaz {
           }
         }
         if (playouts > 0) {
-          int sum = 0;
-          for (MoveData move : bestMoves) {
-            sum += move.playouts;
-          }
-          if (sum >= playouts) {
+          if (MoveData.getPlayouts(bestMoves) >= playouts) {
             playNow = true;
           }
         }
@@ -1640,11 +1636,7 @@ public class Leelaz {
       return;
     }
     if (Lizzie.config.autoAnaDiffPlayouts > 0) {
-      int sum = 0;
-      for (MoveData move : bestMoves) {
-        sum += move.playouts;
-      }
-      if (sum >= Lizzie.config.autoAnaDiffPlayouts) {
+      if (MoveData.getPlayouts(bestMoves) >= Lizzie.config.autoAnaDiffPlayouts) {
         Lizzie.board.getHistory().getCurrentHistoryNode().diffAnalyzed = true;
         return;
       }
@@ -1682,11 +1674,7 @@ public class Leelaz {
       return;
     }
     if (Lizzie.config.autoAnaPlayouts > 0) {
-      int sum = 0;
-      for (MoveData move : bestMoves) {
-        sum += move.playouts;
-      }
-      if (sum >= Lizzie.config.autoAnaPlayouts) {
+      if (MoveData.getPlayouts(bestMoves) >= Lizzie.config.autoAnaPlayouts) {
         Lizzie.board.getHistory().getCurrentHistoryNode().analyzed = true;
         autoAnalysed = true;
         return;
@@ -1731,11 +1719,7 @@ public class Leelaz {
       return;
     }
     if (Lizzie.config.autoAnaPlayouts > 0) {
-      int sum = 0;
-      for (MoveData move : bestMoves) {
-        sum += move.playouts;
-      }
-      if (sum >= Lizzie.config.autoAnaPlayouts) {
+      if (MoveData.getPlayouts(bestMoves) >= Lizzie.config.autoAnaPlayouts) {
         analyzeNextMove(isLastMove);
         return;
       }
@@ -1834,11 +1818,7 @@ public class Leelaz {
     if (firstPlayouts > 0 && best.playouts >= firstPlayouts) shouldPlay = true;
     if (firstPlayouts > 0 && best.playouts >= firstPlayouts) shouldPlay = true;
     if (playouts > 0) {
-      int sum = 0;
-      for (MoveData move : bestMoves) {
-        sum += move.playouts;
-      }
-      if (sum >= playouts) shouldPlay = true;
+      if (MoveData.getPlayouts(bestMoves) >= playouts) shouldPlay = true;
     }
     if (time > 0) {
       if (System.currentTimeMillis() - startPonderTime >= time) {
@@ -2108,7 +2088,7 @@ public class Leelaz {
           if ((!Lizzie.engineManager.isEngineGame && !Lizzie.config.isAutoAna)) {
             if (!outOfPlayoutsLimit
                 && Lizzie.config.limitPlayout
-                && getTotalPlayouts(bestMoves) > Lizzie.config.limitPlayouts) {
+                && getBestMovesPlayouts() > Lizzie.config.limitPlayouts) {
               stopByLimit = true;
               stopByPlayouts = true;
               isPondering = !isPondering;
@@ -3204,8 +3184,7 @@ public class Leelaz {
       // final List<MoveData> moves = new ArrayList<MoveData>(Lizzie.board.getData().bestMoves);
 
       // get the total number of playouts in moves
-      int totalPlayouts = bestMoves.stream().mapToInt(move -> move.playouts).sum();
-      stats.totalPlayouts = totalPlayouts;
+      stats.totalPlayouts = MoveData.getPlayouts(bestMoves);
 
       // stats.maxWinrate = bestMoves.get(0).winrate;
       stats.maxWinrate = BoardData.getWinrateFromBestMoves(bestMoves);
@@ -3608,9 +3587,7 @@ public class Leelaz {
   }
 
   public int getBestMovesPlayouts() {
-    int totalPlayouts = 0;
-    for (MoveData move : bestMoves) totalPlayouts += move.playouts;
-    return totalPlayouts;
+    return MoveData.getPlayouts(bestMoves);
   }
 
   public boolean isStopPonderingByLimit() {
@@ -3619,12 +3596,6 @@ public class Leelaz {
 
   public long getStartPonderTime() {
     return startPonderTime;
-  }
-
-  private int getTotalPlayouts(List<MoveData> bestMoves) {
-    int totalPlayouts = 0;
-    for (MoveData move : bestMoves) totalPlayouts += move.playouts;
-    return totalPlayouts;
   }
 
   public synchronized void modifyStart() {

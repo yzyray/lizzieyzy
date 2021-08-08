@@ -30,6 +30,7 @@ public class MoveData {
   public double bestScoreMean;
   public boolean lastTimeUnlimited;
   public long lastTimeUnlimitedTime;
+  public boolean isSymmetry = false;
 
   public MoveData() {}
 
@@ -254,6 +255,9 @@ public class MoveData {
         }
         if (key.equals("scoreStdev")) {
           result.scoreStdev = Double.parseDouble(value);
+        }
+        if (key.equals("isSymmetryOf")) {
+          result.isSymmetry = true;
         }
       }
     }
@@ -493,6 +497,7 @@ public class MoveData {
   public static int getPlayouts(List<MoveData> moves) {
     int playouts = 0;
     for (MoveData move : moves) {
+      if (move.isSymmetry) continue;
       playouts += move.playouts;
     }
     return playouts;
