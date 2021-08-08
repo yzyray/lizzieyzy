@@ -7917,21 +7917,30 @@ public class LizzieFrame extends JFrame {
   }
 
   public Color getBlunderNodeColor(BoardHistoryNode node) {
+    if (node.previous().isPresent()) node = node.previous().get();
+    else return Color.WHITE;
     if (Lizzie.engineManager.isEngineGame || Lizzie.board.isPkBoard) {
       if (node.previous().isPresent() && node.previous().get().previous().isPresent()) {
         if (node.previous().get().previous().get().getData().getPlayouts() == 0
             || node.getData().getPlayouts() == 0) return Color.WHITE;
         double diffWinrate =
-            node.previous().get().previous().get().getData().getWinrate()
-                - node.getData().getWinrate();
-        double diffSocre =
-            node.previous().get().previous().get().getData().scoreMean - node.getData().scoreMean;
-        Optional<Double> st =
-            Lizzie.config.blunderWinrateThresholds.flatMap(
-                l ->
-                    l.stream()
-                        .filter(t -> (t >= Math.min(diffWinrate, diffSocre * 2)))
-                        .reduce((f, s) -> f));
+            node.getData().getWinrate()
+                - node.previous().get().previous().get().getData().getWinrate();
+        Optional<Double> st;
+        if (node.getData().isKataData) {
+          double diffSocre =
+              node.getData().scoreMean - node.previous().get().previous().get().getData().scoreMean;
+          st =
+              Lizzie.config.blunderWinrateThresholds.flatMap(
+                  l ->
+                      l.stream()
+                          .filter(t -> (t >= Math.min(diffWinrate, diffSocre * 2)))
+                          .reduce((f, s) -> f));
+        } else {
+          st =
+              Lizzie.config.blunderWinrateThresholds.flatMap(
+                  l -> l.stream().filter(t -> (t >= diffWinrate)).reduce((f, s) -> f));
+        }
         //            diffWinrate >= 0
         //                ? Lizzie.config.blunderWinrateThresholds.flatMap(
         //                    l -> l.stream().filter(t -> (t >= 0 && t <= diffWinrate)).reduce((f,
