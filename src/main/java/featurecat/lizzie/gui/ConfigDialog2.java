@@ -57,8 +57,6 @@ import javax.imageio.ImageIO;
 import javax.swing.AbstractCellEditor;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -80,7 +78,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
-import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.ListCellRenderer;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
@@ -256,6 +253,7 @@ public class ConfigDialog2 extends JDialog {
   private JCheckBox chkShowIndependentHawkEye;
   private JCheckBox chkUseIinCoordsName;
   private JCheckBox chkLimitTime;
+  private JCheckBox chkLoadKomi;
 
   private JCheckBox chkShowIndependentMainBoard;
   private JCheckBox chkCheckEngineAlive;
@@ -353,56 +351,58 @@ public class ConfigDialog2 extends JDialog {
 
     lblOriginLizzieInfo.setFont(new Font("Tahoma", Font.PLAIN, 14));
     // 注释这里
-    GroupLayout gl = new GroupLayout(aboutTab);
-    gl.setHorizontalGroup(
-        gl.createParallelGroup(Alignment.LEADING)
-            .addGroup(
-                gl.createSequentialGroup()
-                    .addGroup(
-                        gl.createParallelGroup(Alignment.LEADING)
-                            .addGroup(
-                                gl.createSequentialGroup()
-                                    .addContainerGap()
-                                    .addComponent(
-                                        lblLizzieInfo,
-                                        GroupLayout.DEFAULT_SIZE,
-                                        628,
-                                        Short.MAX_VALUE))
-                            .addGroup(
-                                gl.createSequentialGroup()
-                                    .addContainerGap()
-                                    .addComponent(lblOriginTitle))
-                            .addGroup(
-                                gl.createSequentialGroup()
-                                    .addContainerGap()
-                                    .addComponent(
-                                        lblOriginLizzieInfo,
-                                        GroupLayout.PREFERRED_SIZE,
-                                        620,
-                                        GroupLayout.PREFERRED_SIZE))
-                            .addGroup(
-                                gl.createSequentialGroup().addComponent(lblLizzieName).addGap(225)))
-                    .addContainerGap()));
-    gl.setVerticalGroup(
-        gl.createParallelGroup(Alignment.LEADING)
-            .addGroup(
-                gl.createSequentialGroup()
-                    .addGap(18)
-                    .addComponent(lblLizzieName)
-                    .addGap(18)
-                    .addPreferredGap(ComponentPlacement.RELATED)
-                    .addComponent(
-                        lblLizzieInfo, GroupLayout.PREFERRED_SIZE, 183, GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(ComponentPlacement.RELATED)
-                    .addComponent(lblOriginTitle)
-                    .addPreferredGap(ComponentPlacement.RELATED)
-                    .addComponent(
-                        lblOriginLizzieInfo,
-                        GroupLayout.PREFERRED_SIZE,
-                        282,
-                        GroupLayout.PREFERRED_SIZE)
-                    .addGap(126)));
-    aboutTab.setLayout(gl);
+    //    GroupLayout gl = new GroupLayout(aboutTab);
+    //    gl.setHorizontalGroup(
+    //        gl.createParallelGroup(Alignment.LEADING)
+    //            .addGroup(
+    //                gl.createSequentialGroup()
+    //                    .addGroup(
+    //                        gl.createParallelGroup(Alignment.LEADING)
+    //                            .addGroup(
+    //                                gl.createSequentialGroup()
+    //                                    .addContainerGap()
+    //                                    .addComponent(
+    //                                        lblLizzieInfo,
+    //                                        GroupLayout.DEFAULT_SIZE,
+    //                                        628,
+    //                                        Short.MAX_VALUE))
+    //                            .addGroup(
+    //                                gl.createSequentialGroup()
+    //                                    .addContainerGap()
+    //                                    .addComponent(lblOriginTitle))
+    //                            .addGroup(
+    //                                gl.createSequentialGroup()
+    //                                    .addContainerGap()
+    //                                    .addComponent(
+    //                                        lblOriginLizzieInfo,
+    //                                        GroupLayout.PREFERRED_SIZE,
+    //                                        620,
+    //                                        GroupLayout.PREFERRED_SIZE))
+    //                            .addGroup(
+    //
+    // gl.createSequentialGroup().addComponent(lblLizzieName).addGap(225)))
+    //                    .addContainerGap()));
+    //    gl.setVerticalGroup(
+    //        gl.createParallelGroup(Alignment.LEADING)
+    //            .addGroup(
+    //                gl.createSequentialGroup()
+    //                    .addGap(18)
+    //                    .addComponent(lblLizzieName)
+    //                    .addGap(18)
+    //                    .addPreferredGap(ComponentPlacement.RELATED)
+    //                    .addComponent(
+    //                        lblLizzieInfo, GroupLayout.PREFERRED_SIZE, 183,
+    // GroupLayout.PREFERRED_SIZE)
+    //                    .addPreferredGap(ComponentPlacement.RELATED)
+    //                    .addComponent(lblOriginTitle)
+    //                    .addPreferredGap(ComponentPlacement.RELATED)
+    //                    .addComponent(
+    //                        lblOriginLizzieInfo,
+    //                        GroupLayout.PREFERRED_SIZE,
+    //                        282,
+    //                        GroupLayout.PREFERRED_SIZE)
+    //                    .addGap(126)));
+    //    aboutTab.setLayout(gl);
     ButtonGroup group = new ButtonGroup();
     nf.setGroupingUsed(false);
     ButtonGroup showMoveGroup = new ButtonGroup();
@@ -595,7 +595,7 @@ public class ConfigDialog2 extends JDialog {
             }
           }
         });
-    chkShowSubBoard.setBounds(837, 23, 57, 23);
+    chkShowSubBoard.setBounds(837, 23, 26, 23);
     uiTab.add(chkShowSubBoard);
 
     JLabel lblShowStatus =
@@ -611,7 +611,7 @@ public class ConfigDialog2 extends JDialog {
             }
           }
         });
-    chkShowStatus.setBounds(837, 50, 57, 23);
+    chkShowStatus.setBounds(837, 50, 26, 23);
     uiTab.add(chkShowStatus);
 
     JLabel lblShowCoordinates =
@@ -627,7 +627,7 @@ public class ConfigDialog2 extends JDialog {
             }
           }
         });
-    chkShowCoordinates.setBounds(837, 102, 57, 23);
+    chkShowCoordinates.setBounds(837, 102, 26, 23);
     uiTab.add(chkShowCoordinates);
 
     JLabel lblShowMoveNumber =
@@ -692,7 +692,7 @@ public class ConfigDialog2 extends JDialog {
     lblShowBlunderBar.setBounds(608, 204, 214, 16);
     uiTab.add(lblShowBlunderBar);
     chkShowBlunderBar = new JCheckBox("");
-    chkShowBlunderBar.setBounds(837, 201, 38, 23);
+    chkShowBlunderBar.setBounds(837, 201, 26, 23);
     uiTab.add(chkShowBlunderBar);
 
     JLabel lblWinratePerspective =
@@ -762,7 +762,7 @@ public class ConfigDialog2 extends JDialog {
     lblAppendWinrateToComment.setBounds(608, 577, 221, 16);
     uiTab.add(lblAppendWinrateToComment);
     chkAppendWinrateToComment = new JCheckBox("");
-    chkAppendWinrateToComment.setBounds(837, 576, 23, 23);
+    chkAppendWinrateToComment.setBounds(837, 576, 26, 23);
     uiTab.add(chkAppendWinrateToComment);
 
     JLabel lblShowSuggestionMoveOrder =
@@ -771,7 +771,7 @@ public class ConfigDialog2 extends JDialog {
     lblShowSuggestionMoveOrder.setBounds(609, 231, 207, 16);
     uiTab.add(lblShowSuggestionMoveOrder);
     chkShowSuggLabel = new JCheckBox("");
-    chkShowSuggLabel.setBounds(837, 228, 57, 23);
+    chkShowSuggLabel.setBounds(837, 228, 26, 23);
     uiTab.add(chkShowSuggLabel);
 
     JLabel lblMaxValueReverseColor =
@@ -781,7 +781,7 @@ public class ConfigDialog2 extends JDialog {
     lblMaxValueReverseColor.setBounds(608, 285, 223, 16);
     uiTab.add(lblMaxValueReverseColor);
     chkMaxValueReverseColor = new JCheckBox("");
-    chkMaxValueReverseColor.setBounds(837, 282, 57, 23);
+    chkMaxValueReverseColor.setBounds(837, 282, 26, 23);
     uiTab.add(chkMaxValueReverseColor);
 
     JLabel lblShowVariationsOnMouse =
@@ -831,7 +831,7 @@ public class ConfigDialog2 extends JDialog {
     uiTab.add(showBlueRing);
 
     chkShowBlueRing = new JCheckBox("");
-    chkShowBlueRing.setBounds(837, 255, 57, 23);
+    chkShowBlueRing.setBounds(837, 255, 26, 23);
     uiTab.add(chkShowBlueRing);
 
     JLabel showNameInboard =
@@ -1291,7 +1291,7 @@ public class ConfigDialog2 extends JDialog {
     uiTab.add(lblShowTitleWinInfo);
 
     chkShowTitleWr = new JCheckBox(); // $NON-NLS-1$
-    chkShowTitleWr.setBounds(837, 546, 27, 23);
+    chkShowTitleWr.setBounds(837, 546, 26, 23);
     uiTab.add(chkShowTitleWr);
     chkShowTitleWr.setSelected(Lizzie.config.showTitleWr);
 
@@ -1309,7 +1309,7 @@ public class ConfigDialog2 extends JDialog {
     chkAlwaysGtp.setSelected(Lizzie.config.alwaysGtp);
 
     chkNoCapture = new JCheckBox(); // $NON-NLS-1$
-    chkNoCapture.setBounds(375, 636, 26, 23);
+    chkNoCapture.setBounds(397, 636, 26, 23);
     uiTab.add(chkNoCapture);
 
     chkNoCapture.addActionListener(
@@ -1343,18 +1343,18 @@ public class ConfigDialog2 extends JDialog {
     uiTab.add(lblSubBoardNotRefreshOnMouseOver);
 
     chkNoRefreshSub = new JCheckBox(); // $NON-NLS-1$
-    chkNoRefreshSub.setBounds(237, 599, 23, 23);
+    chkNoRefreshSub.setBounds(237, 606, 23, 23);
     uiTab.add(chkNoRefreshSub);
 
     JLabel lblEnableDoubleClickFindMove =
         new JLabel(
             resourceBundle.getString("LizzieConfig.lblEnableDoubleClickFindMove")); // ("启用双击找子");
-    lblEnableDoubleClickFindMove.setBounds(312, 609, 214, 15);
+    lblEnableDoubleClickFindMove.setBounds(312, 609, 207, 15);
     uiTab.add(lblEnableDoubleClickFindMove);
 
     JLabel lblEnableDragStone =
         new JLabel(resourceBundle.getString("LizzieConfig.lblEnableDragStone")); // ("启用拖拽棋子功能");
-    lblEnableDragStone.setBounds(608, 609, 223, 15);
+    lblEnableDragStone.setBounds(608, 609, 86, 15);
     uiTab.add(lblEnableDragStone);
 
     chkEnableDoubCli = new JCheckBox(); // $NON-NLS-1$
@@ -1362,7 +1362,7 @@ public class ConfigDialog2 extends JDialog {
     uiTab.add(chkEnableDoubCli);
 
     chkEnableDragStone = new JCheckBox();
-    chkEnableDragStone.setBounds(837, 606, 26, 23);
+    chkEnableDragStone.setBounds(685, 606, 26, 23);
     uiTab.add(chkEnableDragStone);
 
     JLabel lblLizzieCache = new JLabel(resourceBundle.getString("LizzieConfig.lizzieCache"));
@@ -1370,7 +1370,7 @@ public class ConfigDialog2 extends JDialog {
     uiTab.add(lblLizzieCache);
 
     chkLizzieCache = new JCheckBox();
-    chkLizzieCache.setBounds(837, 467, 23, 23);
+    chkLizzieCache.setBounds(837, 467, 26, 23);
     uiTab.add(chkLizzieCache);
 
     ImageIcon btnLizzieCacheIcon = new ImageIcon();
@@ -1472,7 +1472,7 @@ public class ConfigDialog2 extends JDialog {
     uiTab.add(lblKifuLoadLast);
 
     chkSgfLoadLast = new JCheckBox(); // $NON-NLS-1$
-    chkSgfLoadLast.setBounds(837, 636, 27, 23);
+    chkSgfLoadLast.setBounds(837, 636, 26, 23);
     uiTab.add(chkSgfLoadLast);
 
     lblLoadEstimate =
@@ -1508,7 +1508,7 @@ public class ConfigDialog2 extends JDialog {
     uiTab.add(lblShowMoveList);
 
     chkShowMoveList = new JCheckBox();
-    chkShowMoveList.setBounds(837, 76, 45, 23);
+    chkShowMoveList.setBounds(837, 76, 26, 23);
     uiTab.add(chkShowMoveList);
 
     JLabel lblShowIndependentMoveList =
@@ -1555,7 +1555,7 @@ public class ConfigDialog2 extends JDialog {
     uiTab.add(chkShowIndependentSubBoard);
 
     chkCheckEngineAlive = new JCheckBox();
-    chkCheckEngineAlive.setBounds(837, 438, 23, 23);
+    chkCheckEngineAlive.setBounds(837, 438, 26, 23);
     uiTab.add(chkCheckEngineAlive);
     chkCheckEngineAlive.setSelected(Lizzie.config.autoCheckEngineAlive);
 
@@ -1602,7 +1602,7 @@ public class ConfigDialog2 extends JDialog {
     uiTab.add(lblVariationRemoveDeadChain);
 
     chkVariationRemoveDeadChain = new JCheckBox();
-    chkVariationRemoveDeadChain.setBounds(837, 309, 23, 23);
+    chkVariationRemoveDeadChain.setBounds(837, 309, 26, 23);
     uiTab.add(chkVariationRemoveDeadChain);
 
     txtVariationReplayInterval = new JTextField();
@@ -1712,6 +1712,16 @@ public class ConfigDialog2 extends JDialog {
     txtLimitPlayouts.setText(Lizzie.config.limitPlayouts + "");
     txtLimitPlayouts.setEnabled(Lizzie.config.limitPlayout);
     txtMaxAnalyzeTime.setEnabled(Lizzie.config.limitTime);
+
+    JLabel lblLoadKomi = new JLabel(resourceBundle.getString("LizzieConfig.lblLoadKomi"));
+    lblLoadKomi.setBounds(Lizzie.config.isChinese ? 725 : 715, 609, 122, 15);
+    uiTab.add(lblLoadKomi);
+
+    chkLoadKomi = new JCheckBox();
+    chkLoadKomi.setBounds(837, 606, 26, 23);
+    uiTab.add(chkLoadKomi);
+
+    chkLoadKomi.setSelected(Lizzie.config.readKomi);
 
     if (Lizzie.config.isChinese) {
       chkLimitTime.setBounds(102, 412, 20, 23);
@@ -3491,6 +3501,8 @@ public class ConfigDialog2 extends JDialog {
   }
 
   private void saveConfig() {
+    Lizzie.config.readKomi = chkLoadKomi.isSelected();
+    Lizzie.config.uiConfig.put("read-komi", Lizzie.config.readKomi);
     Lizzie.config.limitTime = chkLimitTime.isSelected();
     Lizzie.config.limitPlayout = chkLimitPlayouts.isSelected();
     Lizzie.config.limitPlayouts =

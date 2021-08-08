@@ -2464,9 +2464,9 @@ public class Leelaz {
       started = false;
       isDownWithError = true;
       // isLoaded=false;
-      tryToDignostic(
-          resourceBundle.getString("Leelaz.engineEndUnormalHint"),
-          false); // ("打开Gtp窗口(快捷键E)查看报错信息");
+      tryToDignostic(resourceBundle.getString("Leelaz.engineEndUnormalHint"), false);
+      if (!Lizzie.gtpConsole.isVisible()) Lizzie.gtpConsole.setVisible(true);
+      // ("打开Gtp窗口(快捷键E)查看报错信息");
       // LizzieFrame.openMoreEngineDialog();
     }
   }

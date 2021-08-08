@@ -353,7 +353,6 @@ public class Menu extends JMenuBar {
     fileMenu.addSeparator();
     pasteSgf.addActionListener(
         new ActionListener() {
-
           @Override
           public void actionPerformed(ActionEvent e) {
             // TODO Auto-generated method stub
@@ -366,7 +365,6 @@ public class Menu extends JMenuBar {
     // loadKomi.setText("自动加载棋谱中的贴目");
     loadKomi.addActionListener(
         new ActionListener() {
-
           @Override
           public void actionPerformed(ActionEvent e) {
             // TODO Auto-generated method stub

@@ -183,7 +183,10 @@ public class AnalysisEngine {
     }
     if (this.useJavaSSH) javaSSHClosed = true;
     isLoaded = false;
-    if (!isNormalEnd) showErrMsg(resourceBundle.getString("Leelaz.engineEndUnormalHint"));
+    if (!isNormalEnd) {
+      showErrMsg(resourceBundle.getString("Leelaz.engineEndUnormalHint"));
+      if (!Lizzie.gtpConsole.isVisible()) Lizzie.gtpConsole.setVisible(true);
+    }
     process = null;
     shutdown();
     return;
