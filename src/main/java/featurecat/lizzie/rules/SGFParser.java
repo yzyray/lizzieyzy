@@ -43,17 +43,12 @@ public class SGFParser {
 
   public static boolean load(String filename, boolean showHint) throws IOException {
     // Clear the board
-    boolean oriEmpty = Lizzie.engineManager.isEmpty;
     islzFirst = false;
     islzFirst2 = true;
     islzloaded = false;
     isExtraMode2 = false;
     Lizzie.board.isLoadingFile = true;
     Lizzie.board.clear(false);
-    // if (Lizzie.engineManager.isEmpty) {
-    // oriEmpty = true;
-    // } else
-    Lizzie.engineManager.isEmpty = true;
     File file = new File(filename);
     if (!file.exists() || !file.canRead()) {
       return false;
@@ -72,7 +67,6 @@ public class SGFParser {
     String value = builder.toString();
     if (value.isEmpty()) {
       Lizzie.board.isLoadingFile = false;
-      Lizzie.engineManager.isEmpty = oriEmpty;
       return false;
     }
 
@@ -106,7 +100,6 @@ public class SGFParser {
       }
       Lizzie.frame.setAlwaysOnTop(onTop);
     }
-    if (Lizzie.engineManager.currentEngineNo >= 0) Lizzie.engineManager.isEmpty = oriEmpty;
     return returnValue;
   }
 
@@ -649,7 +642,6 @@ public class SGFParser {
               }
             }
           } else if (tag.equals("AB") || tag.equals("AW")) {
-            if (EngineManager.currentEngineNo >= 0) EngineManager.isEmpty = false;
             int[] move = convertSgfPosToCoord(tagContent);
             Stone color = tag.equals("AB") ? Stone.BLACK : Stone.WHITE;
             if (moveStart) {
@@ -681,8 +673,6 @@ public class SGFParser {
                 Lizzie.board.getHistory().flatten();
               }
             }
-            EngineManager.isEmpty = true;
-
           } else if (tag.equals("PB")) {
             blackPlayer = tagContent;
           } else if (tag.equals("PW")) {
