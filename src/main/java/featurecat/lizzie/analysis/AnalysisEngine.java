@@ -214,7 +214,7 @@ public class AnalysisEngine {
       mv.coordinate = moveInfo.getString("move");
       mv.playouts = moveInfo.getInt("visits");
       mv.winrate = moveInfo.getDouble("winrate") * 100;
-      mv.oriwinrate = mv.winrate;
+      // mv.oriwinrate = mv.winrate;
       mv.lcb = moveInfo.getDouble("lcb") * 100;
       mv.policy = moveInfo.getDouble("prior") * 100;
       mv.scoreMean = moveInfo.getDouble("scoreLead");

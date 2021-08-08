@@ -17,7 +17,7 @@ public class MoveData {
   // 待完成
   public List<String> pvVisits;
   public double lcb;
-  public double oriwinrate;
+  // public double oriwinrate;
   public double policy;
   // public int equalplayouts;
   public double scoreMean;
@@ -95,7 +95,7 @@ public class MoveData {
         if (key.equals("winrate")) {
           // support 0.16 0.15
           result.winrate = Integer.parseInt(value) / 100.0;
-          result.oriwinrate = result.winrate;
+          // result.oriwinrate = result.winrate;
           //          if (!islcb) {
           //            result.winrate = Integer.parseInt(value) / 100.0;
           //          }
@@ -173,7 +173,7 @@ public class MoveData {
         if (key.equals("winrate")) {
           // support 0.16 0.15
           result.winrate = Integer.parseInt(value) / 100.0;
-          result.oriwinrate = result.winrate;
+          // result.oriwinrate = result.winrate;
           //          if (!islcb) {
           //            result.winrate = Integer.parseInt(value) / 100.0;
           //          }
@@ -245,7 +245,7 @@ public class MoveData {
         if (key.equals("winrate")) {
           // support 0.16 0.15
           result.winrate = Double.parseDouble(value) * 100;
-          result.oriwinrate = result.winrate;
+          // result.oriwinrate = result.winrate;
         }
         //        if (key.equals("scoreLead")) {
         //          result.scoreMean = Double.parseDouble(value);
@@ -261,7 +261,7 @@ public class MoveData {
         }
       }
     }
-    if (result.winrate < 0) result.winrate = result.oriwinrate;
+    // if (result.winrate < 0) result.winrate = result.oriwinrate;
     result.isKataData = true;
     result.isSaiData = false;
     return result;
@@ -315,7 +315,7 @@ public class MoveData {
         if (key.equals("winrate")) {
           // support 0.16 0.15
           result.winrate = Integer.parseInt(value) / 100.0;
-          result.oriwinrate = result.winrate;
+          // result.oriwinrate = result.winrate;
           result.lcb = result.winrate;
         }
         if (key.equals("prior")) {
@@ -429,7 +429,7 @@ public class MoveData {
       result.coordinate = matchold.group(1);
       result.playouts = Integer.parseInt(matchold.group(2));
       result.winrate = Double.parseDouble(matchold.group(3));
-      result.oriwinrate = result.winrate;
+      // result.oriwinrate = result.winrate;
       result.policy = Double.parseDouble(matchold.group(4));
       result.variation =
           Arrays.asList(matchold.group(5).split(" ", Lizzie.config.limitBranchLength));

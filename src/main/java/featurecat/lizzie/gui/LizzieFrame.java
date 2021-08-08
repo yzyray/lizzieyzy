@@ -10370,7 +10370,7 @@ public class LizzieFrame extends JFrame {
                     && Lizzie.board.convertNameToCoordinates(move.coordinate)[1] == coords[1]) {
                   if (move.order == 0) {
                     move.isNextMove = true;
-                    move.bestWinrate = data2.get(0).oriwinrate;
+                    move.bestWinrate = data2.get(0).winrate;
                     move.bestScoreMean = data2.get(0).scoreMean;
                   } else {
                     if (data2.size() > 0 && !hasData && !next.getData().bestMoves.isEmpty()) {
@@ -10403,7 +10403,7 @@ public class LizzieFrame extends JFrame {
                     curMove.order = move.order;
                     curMove.isNextMove = true;
                     curMove.lcb = move.lcb;
-                    curMove.bestWinrate = data2.get(0).oriwinrate;
+                    curMove.bestWinrate = data2.get(0).winrate;
                     curMove.bestScoreMean = data2.get(0).scoreMean;
                     data2.add(0, curMove);
                   }

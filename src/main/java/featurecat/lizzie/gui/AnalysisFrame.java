@@ -768,9 +768,9 @@ public class AnalysisFrame extends JFrame {
               if (Board.convertNameToCoordinates(move.coordinate)[0] == coords[0]
                   && Board.convertNameToCoordinates(move.coordinate)[1] == coords[1]) {
                 if (move.order == 0) {
-                  move.oriwinrate = data2.get(0).oriwinrate;
+                  move.winrate = data2.get(0).winrate;
                   move.isNextMove = true;
-                  move.bestWinrate = data2.get(0).oriwinrate;
+                  move.bestWinrate = data2.get(0).winrate;
                   move.bestScoreMean = data2.get(0).scoreMean;
                 } else {
                   if (index == 1) {
@@ -782,14 +782,14 @@ public class AnalysisFrame extends JFrame {
                       curMove.playouts = next.getData().getPlayouts();
                       curMove.coordinate =
                           Lizzie.board.convertCoordinatesToName(coords[0], coords[1]);
-                      curMove.oriwinrate = 100.0 - next.getData().winrate;
+                      curMove.winrate = 100.0 - next.getData().winrate;
                       curMove.policy = 0;
                       curMove.scoreMean = -next.getData().scoreMean;
                       curMove.scoreStdev = 0;
                       curMove.order = move.order;
                       curMove.isNextMove = true;
                       curMove.lcb = 0;
-                      curMove.bestWinrate = data2.get(0).oriwinrate;
+                      curMove.bestWinrate = data2.get(0).winrate;
                       curMove.bestScoreMean = data2.get(0).scoreMean;
                       data2.add(0, curMove);
                       hasData = true;
@@ -804,14 +804,14 @@ public class AnalysisFrame extends JFrame {
                       curMove.playouts = next.getData().getPlayouts2();
                       curMove.coordinate =
                           Lizzie.board.convertCoordinatesToName(coords[0], coords[1]);
-                      curMove.oriwinrate = 100.0 - next.getData().winrate2;
+                      curMove.winrate = 100.0 - next.getData().winrate2;
                       curMove.policy = 0;
                       curMove.scoreMean = -next.getData().scoreMean2;
                       curMove.scoreStdev = 0;
                       curMove.order = move.order;
                       curMove.isNextMove = true;
                       curMove.lcb = 0;
-                      curMove.bestWinrate = data2.get(0).oriwinrate;
+                      curMove.bestWinrate = data2.get(0).winrate;
                       curMove.bestScoreMean = data2.get(0).scoreMean;
                       data2.add(0, curMove);
                       hasData = true;
@@ -822,14 +822,14 @@ public class AnalysisFrame extends JFrame {
                   curMove.order = move.order;
                   curMove.playouts = move.playouts;
                   curMove.coordinate = move.coordinate;
-                  curMove.oriwinrate = move.oriwinrate;
+                  curMove.winrate = move.winrate;
                   curMove.policy = move.policy;
                   curMove.scoreMean = move.scoreMean;
                   curMove.scoreStdev = move.scoreStdev;
                   curMove.order = move.order;
                   curMove.isNextMove = true;
                   curMove.lcb = move.lcb;
-                  curMove.bestWinrate = data2.get(0).oriwinrate;
+                  curMove.bestWinrate = data2.get(0).winrate;
                   curMove.bestScoreMean = data2.get(0).scoreMean;
                   data2.add(0, curMove);
                 }
@@ -842,14 +842,14 @@ public class AnalysisFrame extends JFrame {
                 MoveData curMove = new MoveData();
                 curMove.playouts = 0;
                 curMove.coordinate = Lizzie.board.convertCoordinatesToName(coords[0], coords[1]);
-                curMove.oriwinrate = 100.0 - next.getData().winrate;
+                curMove.winrate = 100.0 - next.getData().winrate;
                 curMove.policy = 0;
                 curMove.scoreMean = -next.getData().scoreMean;
                 curMove.scoreStdev = 0;
                 curMove.order = -100;
                 curMove.isNextMove = true;
                 curMove.lcb = 0;
-                curMove.bestWinrate = data2.get(0).oriwinrate;
+                curMove.bestWinrate = data2.get(0).winrate;
                 curMove.bestScoreMean = data2.get(0).scoreMean;
                 data2.add(0, curMove);
               }
@@ -858,14 +858,14 @@ public class AnalysisFrame extends JFrame {
                 MoveData curMove = new MoveData();
                 curMove.playouts = 0;
                 curMove.coordinate = Lizzie.board.convertCoordinatesToName(coords[0], coords[1]);
-                curMove.oriwinrate = 100.0 - next.getData().winrate2;
+                curMove.winrate = 100.0 - next.getData().winrate2;
                 curMove.policy = 0;
                 curMove.scoreMean = -next.getData().scoreMean2;
                 curMove.scoreStdev = 0;
                 curMove.order = -100;
                 curMove.isNextMove = true;
                 curMove.lcb = 0;
-                curMove.bestWinrate = data2.get(0).oriwinrate;
+                curMove.bestWinrate = data2.get(0).winrate;
                 curMove.bestScoreMean = data2.get(0).scoreMean;
                 data2.add(0, curMove);
               }
@@ -911,8 +911,8 @@ public class AnalysisFrame extends JFrame {
                   if (s1.lcb > s2.lcb) return -1;
                 }
                 if (sortnum == 3) {
-                  if (s1.oriwinrate < s2.oriwinrate) return 1;
-                  if (s1.oriwinrate > s2.oriwinrate) return -1;
+                  if (s1.winrate < s2.winrate) return 1;
+                  if (s1.winrate > s2.winrate) return -1;
                 }
                 if (sortnum == 4) {
                   if (s1.playouts < s2.playouts) return 1;
@@ -965,15 +965,15 @@ public class AnalysisFrame extends JFrame {
           case 3:
             if (data.isNextMove) {
               if (data.order != 0) {
-                double diff = data.oriwinrate - data.bestWinrate;
+                double diff = data.winrate - data.bestWinrate;
                 return (diff > 0 ? "↑" : "↓")
                     + String.format("%.1f", diff)
                     + "("
-                    + String.format("%.1f", data.oriwinrate)
+                    + String.format("%.1f", data.winrate)
                     + ")";
               }
             }
-            return String.format("%.1f", data.oriwinrate);
+            return String.format("%.1f", data.winrate);
           case 4:
             if (data.order == -100) return resourceBundle.getString("AnalysisFrame.exclude");
             else return Lizzie.frame.getPlayoutsString(data.playouts);

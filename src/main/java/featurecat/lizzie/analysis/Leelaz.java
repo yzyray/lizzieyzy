@@ -1574,7 +1574,7 @@ public class Leelaz {
         if (playNow) {
           if (Lizzie.frame.isAnaPlayingAgainstLeelaz && !Lizzie.frame.bothSync) {
             if (Lizzie.board.getHistory().getMoveNumber() >= Lizzie.config.anaGameResignStartMove) {
-              if (bestMoves.get(0).oriwinrate < Lizzie.config.anaGameResignPercent) {
+              if (bestMoves.get(0).winrate < Lizzie.config.anaGameResignPercent) {
                 this.anaGameResignCount++;
               } else this.anaGameResignCount = 0;
             }
