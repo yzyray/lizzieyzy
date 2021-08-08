@@ -122,4 +122,10 @@ public class EngineGameInfo {
     blackResignWinrate = whiteResignWinrate;
     whiteResignWinrate = temp3;
   }
+
+  public boolean isBlackEngine(int currentEngineIndex) {
+    // TODO Auto-generated method stub
+    if (currentEngineIndex == this.blackEngineIndex) return true;
+    else return false;
+  }
 }

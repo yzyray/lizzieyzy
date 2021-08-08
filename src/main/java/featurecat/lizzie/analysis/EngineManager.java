@@ -36,6 +36,7 @@ public class EngineManager {
   // public long startInfoTime = System.currentTimeMillis();
   // public long gameTime = System.currentTimeMillis();
   public static boolean isEmpty = false;
+  public static boolean noCommand = false;
   String name = "";
   public static EngineGameInfo engineGameInfo = new EngineGameInfo();
   public static boolean isEngineGame = false;
@@ -1180,8 +1181,8 @@ public class EngineManager {
   public void startNewEngineGame(boolean firstTime) {
     // engineGameInfo
     Lizzie.frame.setResult("");
+    isPreEngineGame = true;
     if (firstTime) {
-      isPreEngineGame = true;
       killOtherEngines(engineGameInfo.blackEngineIndex, engineGameInfo.whiteEngineIndex);
       Lizzie.leelaz.notPondering();
       if (currentEngineNo == engineGameInfo.blackEngineIndex
@@ -1205,9 +1206,10 @@ public class EngineManager {
       Lizzie.board.clear(true);
       ArrayList<Movelist> startList = getStartListForEnginePk();
       if (startList != null) {
-        isEmpty = true;
+        noCommand = true;
+        Lizzie.leelaz.clear();
         Lizzie.board.setlist(startList);
-        isEmpty = false;
+        noCommand = false;
       }
       if (!firstTime) {
         engineList.get(engineGameInfo.blackEngineIndex).notPondering();
@@ -1371,9 +1373,10 @@ public class EngineManager {
       Lizzie.board.clear(true);
       ArrayList<Movelist> startList = getStartListForEnginePk();
       if (startList != null) {
-        isEmpty = true;
+        noCommand = true;
+        Lizzie.leelaz.clear();
         Lizzie.board.setlist(startList);
-        isEmpty = false;
+        noCommand = false;
       }
       //      if (chkenginePkContinue.isSelected()) {
       //         isEmpty = true;

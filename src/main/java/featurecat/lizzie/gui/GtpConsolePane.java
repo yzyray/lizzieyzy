@@ -279,6 +279,18 @@ public class GtpConsolePane extends JDialog {
     }
   }
 
+  public void addCommandForEngineGame(
+      String command, int commandNumber, String engineName, boolean isBlack) {
+    if (command == null || command.trim().length() == 0) {
+      return;
+    }
+    setDocs(
+        (isBlack ? "●" : "○") + engineName + "> " + command + "\n",
+        Color.WHITE,
+        true,
+        Config.frameFontSize);
+  }
+
   public void addCommand(String command, int commandNumber, String engineName) {
     if (command == null || command.trim().length() == 0) {
       return;

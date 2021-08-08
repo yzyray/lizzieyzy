@@ -1743,7 +1743,8 @@ public class Leelaz {
     if (!this.doublePass
         && !this.outOfMoveNum
         && (Lizzie.gtpConsole.isVisible() || Lizzie.config.alwaysGtp))
-      Lizzie.gtpConsole.addLine(oriEnginename + resourceBundle.getString("Leelaz.resign") + "\n");
+      Lizzie.gtpConsole.addLine(
+          oriEnginename + " " + resourceBundle.getString("Leelaz.resign") + "\n");
     Lizzie.board.updateComment();
     if (needPass) Lizzie.board.pass();
     Lizzie.engineManager.stopEngineGame(currentEngineN, false);
@@ -1766,7 +1767,8 @@ public class Leelaz {
       nameCmd();
       isResigning = true;
       if (Lizzie.gtpConsole.isVisible() || Lizzie.config.alwaysGtp)
-        Lizzie.gtpConsole.addLine(oriEnginename + resourceBundle.getString("Leelaz.resign") + "\n");
+        Lizzie.gtpConsole.addLine(
+            oriEnginename + " " + resourceBundle.getString("Leelaz.resign") + "\n");
       Lizzie.engineManager.stopEngineGame(currentEngineN, false);
       return;
     }
@@ -2370,6 +2372,7 @@ public class Leelaz {
    * @param command a GTP command containing no newline characters
    */
   public void sendCommand(String command) {
+    if (Lizzie.engineManager.isEngineGame() && EngineManager.noCommand) return;
     if (Lizzie.frame.extraMode == 2) {
       if ((command.startsWith("heat") || command.startsWith("kata-raw"))
           && !this.isKatago
@@ -2531,7 +2534,14 @@ public class Leelaz {
       } catch (Exception e) {
         // e.printStackTrace();
       }
-      if (Lizzie.config.alwaysGtp || Lizzie.gtpConsole.isVisible())
+      if (Lizzie.engineManager.isEngineGame()) {
+        Lizzie.gtpConsole.addCommandForEngineGame(
+            command,
+            cmdNumber,
+            oriEnginename,
+            EngineManager.engineGameInfo.isBlackEngine(currentEngineN()));
+
+      } else if (Lizzie.config.alwaysGtp || Lizzie.gtpConsole.isVisible())
         Lizzie.gtpConsole.addCommand(command, cmdNumber, oriEnginename);
     }
     if (canSetNotPlayed) {

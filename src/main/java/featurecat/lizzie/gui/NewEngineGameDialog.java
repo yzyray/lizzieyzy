@@ -997,6 +997,7 @@ public class NewEngineGameDialog extends JDialog {
       if (handicap >= 2 && Lizzie.board.boardWidth == 19 && Lizzie.board.boardHeight == 19) {
         Lizzie.board.clear(false);
         placeHandicap(handicap);
+        Lizzie.leelaz.clear();
         Lizzie.frame.toolbar.isEngineGameHandicapToolbar = true;
       } else Lizzie.frame.toolbar.isEngineGameHandicapToolbar = false;
 
