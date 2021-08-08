@@ -629,9 +629,7 @@ public class Menu extends JMenuBar {
           @Override
           public void actionPerformed(ActionEvent e) {
             // TODO Auto-generated method stub
-            Lizzie.config.allowMoveNumber = 0;
-            Lizzie.config.uiConfig.put("allow-move-number", 0);
-            Lizzie.frame.refresh();
+            Lizzie.config.setMoveNumber(0);
           }
         });
     moveMenu.add(noMoveNum);
@@ -643,11 +641,7 @@ public class Menu extends JMenuBar {
           @Override
           public void actionPerformed(ActionEvent e) {
             // TODO Auto-generated method stub
-            Lizzie.config.allowMoveNumber = 1;
-            Lizzie.config.uiConfig.put("allow-move-number", 1);
-            Lizzie.config.onlyLastMoveNumber = 1;
-            Lizzie.config.uiConfig.put("only-last-move-number", 1);
-            Lizzie.frame.refresh();
+            Lizzie.config.setMoveNumber(1);
           }
         });
     moveMenu.add(lastOneMoveNum);
@@ -659,11 +653,7 @@ public class Menu extends JMenuBar {
           @Override
           public void actionPerformed(ActionEvent e) {
             // TODO Auto-generated method stub
-            Lizzie.config.allowMoveNumber = 5;
-            Lizzie.config.uiConfig.put("allow-move-number", 5);
-            Lizzie.config.onlyLastMoveNumber = 5;
-            Lizzie.config.uiConfig.put("only-last-move-number", 5);
-            Lizzie.frame.refresh();
+            Lizzie.config.setMoveNumber(5);
           }
         });
     moveMenu.add(lastFiveMoveNum);
@@ -675,11 +665,7 @@ public class Menu extends JMenuBar {
           @Override
           public void actionPerformed(ActionEvent e) {
             // TODO Auto-generated method stub
-            Lizzie.config.allowMoveNumber = 10;
-            Lizzie.config.uiConfig.put("allow-move-number", 10);
-            Lizzie.config.onlyLastMoveNumber = 10;
-            Lizzie.config.uiConfig.put("only-last-move-number", 10);
-            Lizzie.frame.refresh();
+            Lizzie.config.setMoveNumber(10);
           }
         });
     moveMenu.add(lastTenMoveNum);
@@ -691,9 +677,7 @@ public class Menu extends JMenuBar {
           @Override
           public void actionPerformed(ActionEvent e) {
             // TODO Auto-generated method stub
-            Lizzie.config.allowMoveNumber = -1;
-            Lizzie.config.uiConfig.put("allow-move-number", -1);
-            Lizzie.frame.refresh();
+            Lizzie.config.setMoveNumber(-1);
           }
         });
     moveMenu.add(allMoveNum);
@@ -7141,7 +7125,7 @@ public class Menu extends JMenuBar {
                   btnRankMark.getY() + btnRankMark.getHeight());
             }
           });
-      btnRankMark.setIcon(Lizzie.config.moveRankMarkLastMove < 0 ? rankMarkOff : rankMarkOn);
+      setBtnRankMark();
 
       JFontButton btnSetMain = new JFontButton(iconSetMain);
       btnSetMain.setPreferredSize(
@@ -8078,7 +8062,7 @@ public class Menu extends JMenuBar {
         new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
-            // TBD
+            Lizzie.config.hiddenMoveNumber();
             Lizzie.config.moveRankMarkLastMove = 1;
             Lizzie.config.uiConfig.put(
                 "move-rank-mark-last-move", Lizzie.config.moveRankMarkLastMove);
@@ -8090,6 +8074,7 @@ public class Menu extends JMenuBar {
         new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
+            Lizzie.config.hiddenMoveNumber();
             Lizzie.config.moveRankMarkLastMove = 0;
             Lizzie.config.uiConfig.put(
                 "move-rank-mark-last-move", Lizzie.config.moveRankMarkLastMove);
@@ -8101,7 +8086,7 @@ public class Menu extends JMenuBar {
         new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
-            // TBD
+            Lizzie.config.hiddenMoveNumber();
             Lizzie.config.txtMoveRankMarkLastMove =
                 Math.max(
                     1, Utils.parseTextToInt(txtCustomMove, Lizzie.config.txtMoveRankMarkLastMove));
@@ -8127,21 +8112,25 @@ public class Menu extends JMenuBar {
               rankCustomMove.setState(false);
               rankNoneMove.setState(false);
               rankLastMove.setState(false);
-              switch (Lizzie.config.moveRankMarkLastMove) {
-                case 0:
-                  rankAllMove.setState(true);
-                  break;
-                case 1:
-                  rankLastMove.setState(true);
-                  break;
-                case -1:
-                  rankNoneMove.setState(true);
-                  break;
-              }
-              if (Lizzie.config.moveRankMarkLastMove > 1
-                  && Lizzie.config.moveRankMarkLastMove == Lizzie.config.txtMoveRankMarkLastMove)
-                rankCustomMove.setState(true);
               txtCustomMove.setText(Lizzie.config.txtMoveRankMarkLastMove + "");
+              if (Lizzie.config.allowMoveNumber != 0) {
+                rankNoneMove.setState(true);
+              } else {
+                switch (Lizzie.config.moveRankMarkLastMove) {
+                  case 0:
+                    rankAllMove.setState(true);
+                    break;
+                  case 1:
+                    rankLastMove.setState(true);
+                    break;
+                  case -1:
+                    rankNoneMove.setState(true);
+                    break;
+                }
+                if (Lizzie.config.moveRankMarkLastMove > 1
+                    && Lizzie.config.moveRankMarkLastMove == Lizzie.config.txtMoveRankMarkLastMove)
+                  rankCustomMove.setState(true);
+              }
             }
           });
     } else {
@@ -8152,23 +8141,28 @@ public class Menu extends JMenuBar {
               rankCustomMove.setState(false);
               rankNoneMove.setState(false);
               rankLastMove.setState(false);
-              switch (Lizzie.config.moveRankMarkLastMove) {
-                case 0:
-                  rankAllMove.setState(true);
-                  break;
-                case 1:
-                  rankLastMove.setState(true);
-                  break;
-                case -1:
-                  rankNoneMove.setState(true);
-                  break;
-              }
-              if (Lizzie.config.moveRankMarkLastMove > 1
-                  && Lizzie.config.moveRankMarkLastMove == Lizzie.config.txtMoveRankMarkLastMove) {
-                rankCustomMove.setState(true);
-                setCustomMoves.setState(true);
-              }
               txtCustomMove.setText(Lizzie.config.txtMoveRankMarkLastMove + "");
+              if (Lizzie.config.allowMoveNumber != 0) {
+                rankNoneMove.setState(true);
+              } else {
+                switch (Lizzie.config.moveRankMarkLastMove) {
+                  case 0:
+                    rankAllMove.setState(true);
+                    break;
+                  case 1:
+                    rankLastMove.setState(true);
+                    break;
+                  case -1:
+                    rankNoneMove.setState(true);
+                    break;
+                }
+                if (Lizzie.config.moveRankMarkLastMove > 1
+                    && Lizzie.config.moveRankMarkLastMove
+                        == Lizzie.config.txtMoveRankMarkLastMove) {
+                  rankCustomMove.setState(true);
+                  setCustomMoves.setState(true);
+                }
+              }
             }
 
             @Override
@@ -9420,6 +9414,8 @@ public class Menu extends JMenuBar {
 
   public void setBtnRankMark() {
     if (btnRankMark != null)
-      btnRankMark.setIcon(Lizzie.config.moveRankMarkLastMove < 0 ? rankMarkOff : rankMarkOn);
+      if (Lizzie.config.allowMoveNumber == 0)
+        btnRankMark.setIcon(Lizzie.config.moveRankMarkLastMove < 0 ? rankMarkOff : rankMarkOn);
+      else btnRankMark.setIcon(rankMarkOff);
   }
 }

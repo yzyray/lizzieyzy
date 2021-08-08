@@ -34,7 +34,6 @@ public class MovenumberDialog extends JDialog {
               ? ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("zh", "CN"))
               : ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("en", "US")));
   private int changeMoveNumber;
-  private static JTextField defaultText = new JTextField();
 
   public MovenumberDialog() {
     // setType(Type.POPUP);
@@ -106,6 +105,7 @@ public class MovenumberDialog extends JDialog {
     Lizzie.config.uiConfig.put("allow-move-number", changeMoveNumber);
     Lizzie.config.onlyLastMoveNumber = changeMoveNumber;
     Lizzie.config.uiConfig.put("only-last-move-number", changeMoveNumber);
+    LizzieFrame.menu.setBtnRankMark();
     Lizzie.frame.refresh();
   }
 
@@ -121,8 +121,6 @@ public class MovenumberDialog extends JDialog {
   private boolean checkMove() {
 
     changeMoveNumber = txtFieldValue(txtMoveNumber);
-    // changePosition = getChangeToType();
-    Color c = defaultText.getBackground();
     if (changeMoveNumber <= 0) {
       txtMoveNumber.setToolTipText(
           resourceBundle.getString("LizzieChangeMove.txtMoveNumber.error"));

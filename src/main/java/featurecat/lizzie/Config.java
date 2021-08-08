@@ -1,5 +1,7 @@
 package featurecat.lizzie;
 
+import featurecat.lizzie.analysis.EngineManager;
+import featurecat.lizzie.gui.LizzieFrame;
 import featurecat.lizzie.theme.Theme;
 import featurecat.lizzie.util.Utils;
 import java.awt.Color;
@@ -1513,6 +1515,7 @@ public class Config {
     } else if (txtMoveRankMarkLastMove > 1 && moveRankMarkLastMove == txtMoveRankMarkLastMove) {
       moveRankMarkLastMove = 0;
     } else if (moveRankMarkLastMove == 0) moveRankMarkLastMove = -1;
+    if (moveRankMarkLastMove > 0) Lizzie.config.hiddenMoveNumber();
     uiConfig.put("move-rank-mark-last-move", moveRankMarkLastMove);
     Lizzie.frame.menu.setBtnRankMark();
   }
@@ -1534,9 +1537,14 @@ public class Config {
     uiConfig.put("show-moveall-inbranch", showMoveAllInBranch);
   }
 
+  public void hiddenMoveNumber() {
+    allowMoveNumber = 0;
+    uiConfig.put("allow-move-number", allowMoveNumber);
+  }
+
   public void toggleShowMoveNumber() {
     onlyLastMoveNumber = 1;
-    if (Lizzie.engineManager.isEngineGame && Lizzie.engineManager.engineGameInfo.isGenmove) {
+    if (EngineManager.isEngineGame && EngineManager.engineGameInfo.isGenmove) {
       allowMoveNumber = (allowMoveNumber == -1 ? onlyLastMoveNumber : -1);
     } else {
       if (this.onlyLastMoveNumber > 0) {
@@ -1547,6 +1555,7 @@ public class Config {
       }
     }
     uiConfig.put("allow-move-number", allowMoveNumber);
+    LizzieFrame.menu.setBtnRankMark();
   }
 
   //  public void toggleNodeColorMode() {
@@ -2479,5 +2488,17 @@ public class Config {
     }
     Lizzie.frame.refreshContainer();
     Lizzie.frame.repaint();
+  }
+
+  public void setMoveNumber(int num) {
+    // TODO Auto-generated method stub
+    Lizzie.config.allowMoveNumber = num;
+    Lizzie.config.uiConfig.put("allow-move-number", Lizzie.config.allowMoveNumber);
+    if (num != 0 && num != -1) {
+      Lizzie.config.onlyLastMoveNumber = 1;
+      Lizzie.config.uiConfig.put("only-last-move-number", 1);
+    }
+    Lizzie.frame.refresh();
+    LizzieFrame.menu.setBtnRankMark();
   }
 }

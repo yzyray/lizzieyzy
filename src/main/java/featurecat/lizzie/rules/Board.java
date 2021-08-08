@@ -3175,6 +3175,8 @@ public class Board {
     // System.out.println(playouts);
     if (playouts == 0) return;
     if ((playouts > previousNode.nodeInfo.playouts
+            || node.previous().get().getData().getPlayouts()
+                > previousNode.nodeInfo.previousPlayouts
             || previousNode.nodeInfo.changed
             || (previousNode.nodeInfo.nextNode != null && previousNode.nodeInfo.nextNode != node))
         && previousNode.getData().winrate >= 0) {
@@ -3275,6 +3277,8 @@ public class Board {
     playouts = node.getData().getPlayouts2();
     if (playouts == 0) return;
     if ((playouts > previousNode.nodeInfo2.playouts
+            || node.previous().get().getData().getPlayouts2()
+                > previousNode.nodeInfo2.previousPlayouts
             || previousNode.nodeInfo2.changed
             || (previousNode.nodeInfo2.nextNode != null && previousNode.nodeInfo2.nextNode != node))
         && previousNode.getData().winrate2 >= 0) {
