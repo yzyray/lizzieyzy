@@ -1882,7 +1882,7 @@ public class Leelaz {
       nameCmd();
       isResigning = true;
       if (Lizzie.gtpConsole.isVisible() || Lizzie.config.alwaysGtp)
-        Lizzie.gtpConsole.addLine(oriEnginename + resourceBundle.getString("Leelaz.resign") + "\n");
+        Lizzie.gtpConsole.addLine(oriEnginename +  " " +resourceBundle.getString("Leelaz.resign") + "\n");
       Lizzie.engineManager.stopEngineGame(currentEngineN, false);
     }
   }
@@ -2040,135 +2040,7 @@ public class Leelaz {
         if (Lizzie.gtpConsole.isVisible() || Lizzie.config.alwaysGtp || !this.isLoaded)
           Lizzie.gtpConsole.addErrorLine(line + "\n");
       }
-    }
-    if (isZen) {
-      if (!Lizzie.frame.isPlayingAgainstLeelaz && line.startsWith("inf")) {
-        this.canCheckAlive = true;
-        if ((isResponseUpToDate())) {
-          if (Lizzie.engineManager.isEngineGame) {
-            // Lizzie.frame.subBoardRenderer.reverseBestmoves = false;
-            // Lizzie.frame.boardRenderer.reverseBestmoves = false;
-            if (Lizzie.config.enginePkPonder) {
-              if ((Lizzie.board.getHistory().isBlacksTurn()
-                      && this
-                          == Lizzie.engineManager.engineList.get(
-                              Lizzie.engineManager.engineGameInfo.blackEngineIndex))
-                  || !Lizzie.board.getHistory().isBlacksTurn()
-                      && this
-                          == Lizzie.engineManager.engineList.get(
-                              Lizzie.engineManager.engineGameInfo.whiteEngineIndex)) {
-                Lizzie.leelaz = this;
-              }
-            } else Lizzie.leelaz = this;
-          }
-          // Clear switching prompt
-          // switching = false;
-
-          // Display engine command in the title
-          Lizzie.frame.updateTitle();
-
-          // This should not be stale data when the command number match
-          this.bestMoves = parseInfo(line.substring(5));
-
-          if (!this.bestMoves.isEmpty()) {
-            notifyAutoPK(false);
-            notifyAutoPlay(false);
-            if (Lizzie.config.isAutoAna) {
-              if (Lizzie.frame.isAutoAnalyzingDiffNode) {
-                nofityDiffAna();
-              } else if (Lizzie.config.analyzeAllBranch) {
-                notifyAutoAnaAllBranch();
-              } else {
-                notifyAutoAna();
-              }
-            }
-          }
-          if (!played) Lizzie.frame.refresh(1);
-          // don't follow the maxAnalyzeTime rule if we are in analysis mode
-          if ((!Lizzie.engineManager.isEngineGame && !Lizzie.config.isAutoAna)) {
-            if (!outOfPlayoutsLimit
-                && Lizzie.config.limitPlayout
-                && getBestMovesPlayouts() > Lizzie.config.limitPlayouts) {
-              stopByLimit = true;
-              stopByPlayouts = true;
-              isPondering = !isPondering;
-              nameCmd();
-            } else if (Lizzie.config.limitTime
-                && (System.currentTimeMillis() - startPonderTime)
-                    > Lizzie.config.maxAnalyzeTimeMillis) {
-              stopByLimit = true;
-              isPondering = !isPondering;
-              nameCmd();
-            }
-          }
-        } else {
-          if (Lizzie.config.isAutoAna) bestMoves = new ArrayList<>();
-          if (Lizzie.config.isAutoAna)
-            Lizzie.board.getHistory().getCurrentHistoryNode().getData().tryToClearBestMoves();
-        }
-        return;
-      }
-      if ((Lizzie.frame.isAnaPlayingAgainstLeelaz
-              || (Lizzie.engineManager.isEngineGame
-                  && !Lizzie.engineManager.engineGameInfo.isGenmove))
-          && line.contains("Nodes:")) {
-        if (!this.bestMoves.isEmpty()) {
-          if (Lizzie.config.enginePkPonder) {
-            if ((Lizzie.board.getHistory().isBlacksTurn()
-                    && this
-                        == Lizzie.engineManager.engineList.get(
-                            Lizzie.engineManager.engineGameInfo.blackEngineIndex))
-                || !Lizzie.board.getHistory().isBlacksTurn()
-                    && this
-                        == Lizzie.engineManager.engineList.get(
-                            Lizzie.engineManager.engineGameInfo.whiteEngineIndex)) {
-              if (isResponseUpToDate()) {
-                if (!isGamePaused) {
-                  notifyAutoPK(true);
-                }
-              }
-            }
-          } else {
-            if (!isGamePaused) {
-              notifyAutoPK(true);
-            }
-          }
-          if (Lizzie.frame.isAnaPlayingAgainstLeelaz && !isGamePaused) notifyAutoPlay(true);
-        }
-      }
-      if (Lizzie.engineManager.isEngineGame && Lizzie.engineManager.engineGameInfo.isGenmove) {
-        if (line.contains("->")) {
-          try {
-            MoveData mv = MoveData.fromSummaryZen(line);
-            if (mv != null) {
-              mv.order = bestMoves.size();
-              bestMoves.add(mv);
-            }
-          } catch (Exception ex) {
-            Lizzie.gtpConsole.addLine("genmovepk summary err");
-          }
-        }
-      }
-
-      if ((Lizzie.frame.isPlayingAgainstLeelaz || isInputCommand)) {
-        if (line.contains("->")) {
-          int k =
-              (Lizzie.config.limitMaxSuggestion > 0 && !Lizzie.config.showNoSuggCircle
-                  ? Lizzie.config.limitMaxSuggestion
-                  : 361);
-          if (bestMoves.size() < k) {
-            MoveData mv = MoveData.fromSummaryZen(line);
-            if (mv != null) {
-
-              mv.order = bestMoves.size();
-              bestMoves.add(mv);
-              Lizzie.board.getData().tryToSetBestMoves(bestMoves, currentEnginename, true);
-            }
-          }
-        }
-      }
-    }
-
+    }  
     if (!this.isKatago) {
       if (line.startsWith("NN eval")) {
         String[] params = line.trim().split("=");

@@ -1305,6 +1305,9 @@ public class EngineManager {
               } else {
                 Lizzie.leelaz = engineList.get(engineGameInfo.whiteEngineIndex);
               }
+              if (Lizzie.config.newEngineGameHandicap>0) {
+          		Lizzie.board.flatten();
+                }
               int cmdNumberTemp = Lizzie.leelaz.cmdNumber;
               Runnable runnable1 =
                   new Runnable() {
@@ -1368,8 +1371,8 @@ public class EngineManager {
       if (startList != null) {
         isEmpty = true;
         Lizzie.board.setlist(startList);
-        isEmpty = false;
-      }
+        isEmpty = false;        
+      }     
       //      if (chkenginePkContinue.isSelected()) {
       //         isEmpty = true;
       //        Lizzie.board.setlist(startGame);
@@ -1436,6 +1439,9 @@ public class EngineManager {
               //  if (engineList.get(engineGameInfo.whiteEngineIndex).isKatago)
               //    engineList.get(engineGameInfo.whiteEngineIndex).canGetChatInfo = true;
               if (startList != null) {
+            	  if (Lizzie.config.newEngineGameHandicap>0) {
+              		Lizzie.board.flatten();
+                    }
                 try {
                   Thread.sleep(1000);
                 } catch (InterruptedException e) {
@@ -2238,11 +2244,11 @@ public class EngineManager {
             + ": "
             + Lizzie.leelaz.oriEnginename);
     changeEngIco(1);
-    if (engineList.get(engineGameInfo.blackEngineIndex).isKatago
-        || engineList.get(engineGameInfo.blackEngineIndex).isSai)
-      Lizzie.board.isPkBoardKataW = true;
-    else if (engineList.get(engineGameInfo.whiteEngineIndex).isKatago
+    if (engineList.get(engineGameInfo.whiteEngineIndex).isKatago
         || engineList.get(engineGameInfo.whiteEngineIndex).isSai)
+      Lizzie.board.isPkBoardKataW = true;
+    else if (engineList.get(engineGameInfo.blackEngineIndex).isKatago
+        || engineList.get(engineGameInfo.blackEngineIndex).isSai)
       Lizzie.board.isPkBoardKataB = true;
     Lizzie.config.chkPkStartNum = false;
     Lizzie.frame.restoreWRN(engineGameInfo.isGenmove);
