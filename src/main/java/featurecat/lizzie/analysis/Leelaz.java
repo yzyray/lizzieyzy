@@ -2372,7 +2372,6 @@ public class Leelaz {
    * @param command a GTP command containing no newline characters
    */
   public void sendCommand(String command) {
-    if (Lizzie.engineManager.isEngineGame() && EngineManager.noCommand) return;
     if (Lizzie.frame.extraMode == 2) {
       if ((command.startsWith("heat") || command.startsWith("kata-raw"))
           && !this.isKatago

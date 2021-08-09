@@ -33,20 +33,13 @@ public class EngineManager {
   public static int currentEngineNo;
   private int engineNo = 1;
   public static int currentEngineNo2 = -1;
-  // public long startInfoTime = System.currentTimeMillis();
-  // public long gameTime = System.currentTimeMillis();
   public static boolean isEmpty = false;
-  public static boolean noCommand = false;
   String name = "";
   public static EngineGameInfo engineGameInfo = new EngineGameInfo();
   public static boolean isEngineGame = false;
   public static boolean isPreEngineGame = false;
   public static boolean isSaveingEngineSGF = false;
   Timer timer;
-  // Timer timer2;
-  // Timer timer3;
-  // Timer timer5;
-  // Timer timer4;
 
   public EngineManager(Config config, int index) throws JSONException, IOException {
     ArrayList<EngineData> engineData = Utils.getEngineData();
@@ -1206,10 +1199,7 @@ public class EngineManager {
       Lizzie.board.clear(true);
       ArrayList<Movelist> startList = getStartListForEnginePk();
       if (startList != null) {
-        noCommand = true;
-        Lizzie.leelaz.clear();
-        Lizzie.board.setlist(startList);
-        noCommand = false;
+        Lizzie.board.setMoveList(startList, false, true);
       }
       if (!firstTime) {
         engineList.get(engineGameInfo.blackEngineIndex).notPondering();
@@ -1373,10 +1363,7 @@ public class EngineManager {
       Lizzie.board.clear(true);
       ArrayList<Movelist> startList = getStartListForEnginePk();
       if (startList != null) {
-        noCommand = true;
-        Lizzie.leelaz.clear();
         Lizzie.board.setlist(startList);
-        noCommand = false;
       }
       //      if (chkenginePkContinue.isSelected()) {
       //         isEmpty = true;

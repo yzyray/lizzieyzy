@@ -578,7 +578,7 @@ public class Board {
   }
 
   public void resetlistforeditmode() {
-    setMoveList(tempmovelist, false);
+    setMoveList(tempmovelist, false, false);
   }
 
   public void setlistforeditmode1() {
@@ -586,19 +586,19 @@ public class Board {
   }
 
   public void setlistforeditmode2() {
-    setMoveList(tempmovelist, false);
+    setMoveList(tempmovelist, false, false);
   }
 
   public void setlist(ArrayList<Movelist> list) {
-    setMoveList(list, false);
+    setMoveList(list, false, false);
   }
 
   public void setlist() {
-    setMoveList(tempmovelist, false);
+    setMoveList(tempmovelist, false, false);
   }
 
   public void setlistforswitch() {
-    setMoveList(tempmovelist, false);
+    setMoveList(tempmovelist, false, false);
     tempmovelist.clear();
   }
 
@@ -868,15 +868,15 @@ public class Board {
   }
 
   public synchronized void resetMoveList(ArrayList<Movelist> moveList) {
-    setMoveList(moveList, false);
+    setMoveList(moveList, false, false);
   }
 
   public synchronized void resetMoves() {
     ArrayList<Movelist> mv = Lizzie.board.getMoveList();
-    setMoveList(mv, false);
+    setMoveList(mv, false, false);
   }
 
-  public void setMoveList(ArrayList<Movelist> movelist, boolean forSpin) {
+  public void setMoveList(ArrayList<Movelist> movelist, boolean forSpin, boolean noCommand) {
     boolean oriPlaySound = Lizzie.config.playSound;
     Lizzie.config.playSound = false;
     Lizzie.board.isLoadingFile = true;
@@ -892,12 +892,20 @@ public class Board {
     for (int i = 0; i < lenth; i++) {
       Movelist move = movelist.get(lenth - 1 - i);
       if (!move.ispass) {
-        if (history.getStones()[getIndex(move.x, move.y)] != Stone.EMPTY)
-          Lizzie.leelaz.playMove(
-              move.isblack ? Stone.BLACK : Stone.WHITE, convertCoordinatesToName(move.x, move.y));
-        place(move.x, move.y, move.isblack ? Stone.BLACK : Stone.WHITE);
+        if (noCommand) {
+          history.place(move.x, move.y, move.isblack ? Stone.BLACK : Stone.WHITE);
+        } else {
+          if (history.getStones()[getIndex(move.x, move.y)] != Stone.EMPTY)
+            Lizzie.leelaz.playMove(
+                move.isblack ? Stone.BLACK : Stone.WHITE, convertCoordinatesToName(move.x, move.y));
+          else place(move.x, move.y, move.isblack ? Stone.BLACK : Stone.WHITE);
+        }
       } else {
-        pass(move.isblack ? Stone.BLACK : Stone.WHITE);
+        if (noCommand) {
+          history.pass(move.isblack ? Stone.BLACK : Stone.WHITE);
+        } else {
+          pass(move.isblack ? Stone.BLACK : Stone.WHITE);
+        }
       }
     }
     Lizzie.config.playSound = oriPlaySound;
@@ -1080,10 +1088,12 @@ public class Board {
     while (node.previous().isPresent()) {
       Optional<int[]> lastMove = node.getData().lastMove;
       if (!lastMove.isPresent()) {
-        Movelist move = new Movelist();
-        move.ispass = true;
-        move.isblack = node.getData().lastMoveColor.isBlack();
-        movelist.add(move);
+        if (!node.getData().dummy) {
+          Movelist move = new Movelist();
+          move.ispass = true;
+          move.isblack = node.getData().lastMoveColor.isBlack();
+          movelist.add(move);
+        }
       } else {
         int[] n = lastMove.get();
         Movelist move = new Movelist();
@@ -1259,7 +1269,7 @@ public class Board {
       tempMovelistForSpin = getmovelist(history.getCurrentHistoryNode().now());
     }
     history.getStart();
-    setMoveList(tempMovelistForSpin, true);
+    setMoveList(tempMovelistForSpin, true, false);
   }
 
   public void playMovelistAfter(
@@ -1311,49 +1321,16 @@ public class Board {
 
   public void addtoAllMovelistAfter(
       BoardHistoryNode node, AllMovelist listHead, ArrayList<AllMovelist> tempListNode, int type) {
-
+    if (node == null) return;
     AllMovelist listNode = addToList(node, listHead, type);
     if (hasStartStone) {
       hasStartStone = false;
       for (int i = 0; i < startStonelist.size(); i++) {
         Movelist mv = startStonelist.get(i);
         if (!mv.ispass) {
-          AllMovelist move = new AllMovelist();
-          move.isblack = mv.isblack;
-          switch (type) {
-            case 0: // 不改变
-              move.x = mv.x;
-              move.y = mv.y;
-              break;
-            case 1: // 向右旋转
-              move.x = boardWidth - 1 - mv.y;
-              move.y = mv.x;
-              break;
-            case 2: // 向左旋转
-              move.x = mv.y;
-              move.y = boardHeight - 1 - mv.x;
-              break;
-            case 3: // 水平翻转
-              move.x = boardWidth - 1 - mv.x;
-              move.y = mv.y;
-              break;
-            case 4: // 垂直翻转
-              move.x = mv.x;
-              move.y = boardHeight - 1 - mv.y;
-              break;
-            case 6: // 交换黑白
-              move.x = mv.x;
-              move.y = mv.y;
-              move.isblack = !mv.isblack;
-              break;
-            default: // 不改变
-              move.x = -mv.x;
-              move.y = mv.y;
-          }
-          move.ispass = mv.ispass;
-          move.previous = listNode;
-          listNode.variations.add(move);
-          listNode = move;
+          int[] lastCoords = {mv.x, mv.y};
+          Optional<int[]> lastMove = Optional.of(lastCoords);
+          listNode = addMoveToList(lastMove, listNode, type, mv.isblack, "", false);
         }
       }
     }
@@ -1376,18 +1353,38 @@ public class Board {
   }
 
   public AllMovelist addToList(BoardHistoryNode node, AllMovelist list, int type) {
-    Optional<int[]> passstep = Optional.empty();
+    if (node.extraStones != null) {
+      for (ExtraStones stone : node.extraStones) {
+        int[] lastCoords = {stone.x, stone.y};
+        Optional<int[]> lastMove = Optional.of(lastCoords);
+        list = addMoveToList(lastMove, list, type, stone.isBlack, "", false);
+      }
+    }
     Optional<int[]> lastMove = node.getData().lastMove;
+    if (!lastMove.isPresent() && node.getData().dummy) return list;
+    boolean isBlack = node.getData().lastMoveColor.isBlack();
+    String comment = node.getData().comment;
+    boolean currentPosition = node == history.getCurrentHistoryNode();
+    return addMoveToList(lastMove, list, type, isBlack, comment, currentPosition);
+  }
+
+  private AllMovelist addMoveToList(
+      Optional<int[]> lastMove,
+      AllMovelist list,
+      int type,
+      boolean isBlack,
+      String comment,
+      boolean currentPosition) {
     AllMovelist move = new AllMovelist();
-    if (lastMove == passstep) {
+    if (!lastMove.isPresent()) {
       move.ispass = true;
       move.previous = list;
-      if (type == 6) move.isblack = !node.getData().lastMoveColor.isBlack();
-      else move.isblack = node.getData().lastMoveColor.isBlack();
+      if (type == 6) move.isblack = !isBlack;
+      else move.isblack = isBlack;
     } else {
       if (lastMove.isPresent()) {
         int[] n = lastMove.get();
-        move.isblack = node.getData().lastMoveColor.isBlack();
+        move.isblack = isBlack;
         switch (type) {
           case 0: // 不改变
             move.x = n[0];
@@ -1412,7 +1409,7 @@ public class Board {
           case 6: // 交换黑白
             move.x = n[0];
             move.y = n[1];
-            move.isblack = !node.getData().lastMoveColor.isBlack();
+            move.isblack = isBlack;
             break;
           default: // 不改变
             move.x = -n[0];
@@ -1424,8 +1421,8 @@ public class Board {
         move.previous = list;
       }
     }
-    move.comment = node.getData().comment;
-    if (node == history.getCurrentHistoryNode()) move.currentPosition = true;
+    move.comment = comment;
+    if (currentPosition) move.currentPosition = true;
     list.variations.add(move);
     return move;
   }
@@ -3592,30 +3589,26 @@ public class Board {
   }
 
   public void getMoveLinkedListAfterHelper(BoardHistoryNode node, MoveLinkedList head) {
-    MoveLinkedList move = new MoveLinkedList();
-    Optional<int[]> lastMove = node.getData().lastMove;
-    if (lastMove.isPresent()) {
-      int[] n = lastMove.get();
-      move.x = n[0];
-      move.y = n[1];
-      move.isPass = false;
-      move.isBlack = node.getData().lastMoveColor.isBlack();
-      move.moveNum = head.moveNum + 1;
-    } else {
-      if (!node.previous().isPresent()) move.needSkip = true;
-      move.isPass = true;
-      move.moveNum = head.moveNum + 1;
-      move.isBlack = node.getData().lastMoveColor.isBlack();
+    if (node.extraStones != null) {
+      for (int i = node.extraStones.size() - 1; i >= 0; i--) {
+        ExtraStones stone = node.extraStones.get(i);
+        int[] lastCoords = {stone.x, stone.y};
+        Optional<int[]> lastMove = Optional.of(lastCoords);
+        head = addMoveToLinedList(head, lastMove, stone.isBlack, false);
+      }
     }
-    head.variations.add(move);
-    move.previous = Optional.of(head);
+    Optional<int[]> lastMove = node.getData().lastMove;
+    if (lastMove.isPresent() || !node.getData().dummy)
+      head =
+          addMoveToLinedList(
+              head, lastMove, node.getData().lastMoveColor.isBlack(), !node.previous().isPresent());
     if (node.numberOfChildren() > 1) {
       // Variation
       for (BoardHistoryNode sub : node.getVariations()) {
-        getMoveLinkedListAfterHelper(sub, move);
+        getMoveLinkedListAfterHelper(sub, head);
       }
     } else if (node.numberOfChildren() == 1) {
-      getMoveLinkedListAfterHelper(node.next().orElse(null), move);
+      getMoveLinkedListAfterHelper(node.next().orElse(null), head);
     }
   }
 
@@ -3688,6 +3681,27 @@ public class Board {
     return node;
   }
 
+  private MoveLinkedList addMoveToLinedList(
+      MoveLinkedList head, Optional<int[]> lastMove, boolean isBlack, boolean needSkip) {
+    MoveLinkedList move = new MoveLinkedList();
+    if (lastMove.isPresent()) {
+      int[] n = lastMove.get();
+      move.x = n[0];
+      move.y = n[1];
+      move.isPass = false;
+      move.isBlack = isBlack;
+      move.moveNum = head.moveNum + 1;
+    } else {
+      move.needSkip = needSkip;
+      move.isPass = true;
+      move.moveNum = head.moveNum + 1;
+      move.isBlack = isBlack;
+    }
+    head.variations.add(move);
+    move.previous = Optional.of(head);
+    return move;
+  }
+
   public MoveLinkedList getMainMoveLinkedListBetween(
       BoardHistoryNode startNode, BoardHistoryNode endNode) {
     // TODO Auto-generated method stub
@@ -3695,23 +3709,16 @@ public class Board {
     MoveLinkedList returnHead = head;
     boolean needAddFirstNode = true;
     do {
-      MoveLinkedList move = new MoveLinkedList();
-      Optional<int[]> lastMove = endNode.getData().lastMove;
-      if (lastMove.isPresent()) {
-        int[] n = lastMove.get();
-        move.x = n[0];
-        move.y = n[1];
-        move.isPass = false;
-        move.isBlack = endNode.getData().lastMoveColor.isBlack();
-        move.moveNum = head.moveNum + 1;
-      } else {
-        move.isPass = true;
-        move.moveNum = head.moveNum + 1;
-        move.isBlack = endNode.getData().lastMoveColor.isBlack();
+      if (endNode.extraStones != null) {
+        for (ExtraStones stone : endNode.extraStones) {
+          int[] lastCoords = {stone.x, stone.y};
+          Optional<int[]> lastMove = Optional.of(lastCoords);
+          head = addMoveToLinedList(head, lastMove, stone.isBlack, false);
+        }
       }
-      head.variations.add(move);
-      move.previous = Optional.of(head);
-      head = move;
+      Optional<int[]> lastMove = endNode.getData().lastMove;
+      if (lastMove.isPresent() || !endNode.getData().dummy)
+        head = addMoveToLinedList(head, lastMove, endNode.getData().lastMoveColor.isBlack(), false);
       if (startNode == endNode) {
         needAddFirstNode = false;
         break;
@@ -3719,23 +3726,16 @@ public class Board {
       if (endNode.previous().isPresent()) endNode = endNode.previous().get();
     } while (endNode.previous().isPresent());
     if (needAddFirstNode) {
-      MoveLinkedList move = new MoveLinkedList();
-      Optional<int[]> lastMove = endNode.getData().lastMove;
-      if (lastMove.isPresent()) {
-        int[] n = lastMove.get();
-        move.x = n[0];
-        move.y = n[1];
-        move.isPass = false;
-        move.isBlack = endNode.getData().lastMoveColor.isBlack();
-        move.moveNum = head.moveNum + 1;
-      } else {
-        move.isPass = true;
-        move.moveNum = head.moveNum + 1;
-        move.isBlack = endNode.getData().lastMoveColor.isBlack();
+      if (endNode.extraStones != null) {
+        for (ExtraStones stone : endNode.extraStones) {
+          int[] lastCoords = {stone.x, stone.y};
+          Optional<int[]> lastMove = Optional.of(lastCoords);
+          head = addMoveToLinedList(head, lastMove, stone.isBlack, false);
+        }
       }
-      head.variations.add(move);
-      move.previous = Optional.of(head);
-      head = move;
+      Optional<int[]> lastMove = endNode.getData().lastMove;
+      if (lastMove.isPresent() || !endNode.getData().dummy)
+        head = addMoveToLinedList(head, lastMove, endNode.getData().lastMoveColor.isBlack(), false);
     }
     if (returnHead.variations.size() > 0) return returnHead.variations.get(0);
     else return null;

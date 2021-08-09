@@ -995,9 +995,8 @@ public class NewEngineGameDialog extends JDialog {
       resetFont();
 
       if (handicap >= 2 && Lizzie.board.boardWidth == 19 && Lizzie.board.boardHeight == 19) {
-        Lizzie.board.clear(false);
+        Lizzie.board.getHistory().clear();
         placeHandicap(handicap);
-        Lizzie.leelaz.clear();
         Lizzie.frame.toolbar.isEngineGameHandicapToolbar = true;
       } else Lizzie.frame.toolbar.isEngineGameHandicapToolbar = false;
 
@@ -1029,64 +1028,64 @@ public class NewEngineGameDialog extends JDialog {
     //  Lizzie.frame.toolbar.chkenginePkContinue.setSelected(true);
     switch (handicap) {
       case 2:
-        Lizzie.board.place(3, 15, Stone.BLACK);
-        Lizzie.board.place(15, 3, Stone.BLACK);
+        Lizzie.board.getHistory().place(3, 15, Stone.BLACK);
+        Lizzie.board.getHistory().place(15, 3, Stone.BLACK);
         break;
       case 3:
-        Lizzie.board.place(3, 3, Stone.BLACK);
-        Lizzie.board.place(15, 3, Stone.BLACK);
-        Lizzie.board.place(3, 15, Stone.BLACK);
+        Lizzie.board.getHistory().place(3, 3, Stone.BLACK);
+        Lizzie.board.getHistory().place(15, 3, Stone.BLACK);
+        Lizzie.board.getHistory().place(3, 15, Stone.BLACK);
         break;
       case 4:
-        Lizzie.board.place(3, 3, Stone.BLACK);
-        Lizzie.board.place(3, 15, Stone.BLACK);
-        Lizzie.board.place(15, 3, Stone.BLACK);
-        Lizzie.board.place(15, 15, Stone.BLACK);
+        Lizzie.board.getHistory().place(3, 3, Stone.BLACK);
+        Lizzie.board.getHistory().place(3, 15, Stone.BLACK);
+        Lizzie.board.getHistory().place(15, 3, Stone.BLACK);
+        Lizzie.board.getHistory().place(15, 15, Stone.BLACK);
         break;
       case 5:
-        Lizzie.board.place(3, 3, Stone.BLACK);
-        Lizzie.board.place(3, 15, Stone.BLACK);
-        Lizzie.board.place(15, 3, Stone.BLACK);
-        Lizzie.board.place(15, 15, Stone.BLACK);
-        Lizzie.board.place(9, 9, Stone.BLACK);
+        Lizzie.board.getHistory().place(3, 3, Stone.BLACK);
+        Lizzie.board.getHistory().place(3, 15, Stone.BLACK);
+        Lizzie.board.getHistory().place(15, 3, Stone.BLACK);
+        Lizzie.board.getHistory().place(15, 15, Stone.BLACK);
+        Lizzie.board.getHistory().place(9, 9, Stone.BLACK);
         break;
       case 6:
-        Lizzie.board.place(3, 3, Stone.BLACK);
-        Lizzie.board.place(3, 15, Stone.BLACK);
-        Lizzie.board.place(15, 3, Stone.BLACK);
-        Lizzie.board.place(15, 15, Stone.BLACK);
-        Lizzie.board.place(3, 9, Stone.BLACK);
-        Lizzie.board.place(15, 9, Stone.BLACK);
+        Lizzie.board.getHistory().place(3, 3, Stone.BLACK);
+        Lizzie.board.getHistory().place(3, 15, Stone.BLACK);
+        Lizzie.board.getHistory().place(15, 3, Stone.BLACK);
+        Lizzie.board.getHistory().place(15, 15, Stone.BLACK);
+        Lizzie.board.getHistory().place(3, 9, Stone.BLACK);
+        Lizzie.board.getHistory().place(15, 9, Stone.BLACK);
         break;
       case 7:
-        Lizzie.board.place(3, 3, Stone.BLACK);
-        Lizzie.board.place(3, 15, Stone.BLACK);
-        Lizzie.board.place(15, 3, Stone.BLACK);
-        Lizzie.board.place(15, 15, Stone.BLACK);
-        Lizzie.board.place(15, 9, Stone.BLACK);
-        Lizzie.board.place(3, 9, Stone.BLACK);
-        Lizzie.board.place(9, 9, Stone.BLACK);
+        Lizzie.board.getHistory().place(3, 3, Stone.BLACK);
+        Lizzie.board.getHistory().place(3, 15, Stone.BLACK);
+        Lizzie.board.getHistory().place(15, 3, Stone.BLACK);
+        Lizzie.board.getHistory().place(15, 15, Stone.BLACK);
+        Lizzie.board.getHistory().place(15, 9, Stone.BLACK);
+        Lizzie.board.getHistory().place(3, 9, Stone.BLACK);
+        Lizzie.board.getHistory().place(9, 9, Stone.BLACK);
         break;
       case 8:
-        Lizzie.board.place(3, 3, Stone.BLACK);
-        Lizzie.board.place(3, 15, Stone.BLACK);
-        Lizzie.board.place(15, 3, Stone.BLACK);
-        Lizzie.board.place(15, 15, Stone.BLACK);
-        Lizzie.board.place(9, 3, Stone.BLACK);
-        Lizzie.board.place(9, 15, Stone.BLACK);
-        Lizzie.board.place(3, 9, Stone.BLACK);
-        Lizzie.board.place(15, 9, Stone.BLACK);
+        Lizzie.board.getHistory().place(3, 3, Stone.BLACK);
+        Lizzie.board.getHistory().place(3, 15, Stone.BLACK);
+        Lizzie.board.getHistory().place(15, 3, Stone.BLACK);
+        Lizzie.board.getHistory().place(15, 15, Stone.BLACK);
+        Lizzie.board.getHistory().place(9, 3, Stone.BLACK);
+        Lizzie.board.getHistory().place(9, 15, Stone.BLACK);
+        Lizzie.board.getHistory().place(3, 9, Stone.BLACK);
+        Lizzie.board.getHistory().place(15, 9, Stone.BLACK);
         break;
       case 9:
-        Lizzie.board.place(3, 3, Stone.BLACK);
-        Lizzie.board.place(3, 15, Stone.BLACK);
-        Lizzie.board.place(15, 3, Stone.BLACK);
-        Lizzie.board.place(15, 15, Stone.BLACK);
-        Lizzie.board.place(9, 3, Stone.BLACK);
-        Lizzie.board.place(9, 15, Stone.BLACK);
-        Lizzie.board.place(3, 9, Stone.BLACK);
-        Lizzie.board.place(15, 9, Stone.BLACK);
-        Lizzie.board.place(9, 9, Stone.BLACK);
+        Lizzie.board.getHistory().place(3, 3, Stone.BLACK);
+        Lizzie.board.getHistory().place(3, 15, Stone.BLACK);
+        Lizzie.board.getHistory().place(15, 3, Stone.BLACK);
+        Lizzie.board.getHistory().place(15, 15, Stone.BLACK);
+        Lizzie.board.getHistory().place(9, 3, Stone.BLACK);
+        Lizzie.board.getHistory().place(9, 15, Stone.BLACK);
+        Lizzie.board.getHistory().place(3, 9, Stone.BLACK);
+        Lizzie.board.getHistory().place(15, 9, Stone.BLACK);
+        Lizzie.board.getHistory().place(9, 9, Stone.BLACK);
         break;
     }
   }
