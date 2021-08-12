@@ -3264,7 +3264,7 @@ public class Menu extends JMenuBar {
     clearBoard.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            Lizzie.board.clearManually();
+            Lizzie.board.clear(false);
             Lizzie.frame.refresh();
           }
         });

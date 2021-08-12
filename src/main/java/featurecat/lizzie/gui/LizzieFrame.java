@@ -7338,7 +7338,8 @@ public class LizzieFrame extends JFrame {
       return;
     }
     if (Lizzie.config.showTitleWr
-        && (!(isPlayingAgainstLeelaz || isAnaPlayingAgainstLeelaz) || syncBoard)) {
+        && (!(isPlayingAgainstLeelaz || isAnaPlayingAgainstLeelaz)
+            || (syncBoard || !isInPlayMode()))) {
 
       if (Lizzie.board.getHistory().getData().getPlayouts() > 0) {
         sb.append("[");

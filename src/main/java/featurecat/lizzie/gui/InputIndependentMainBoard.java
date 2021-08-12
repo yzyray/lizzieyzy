@@ -374,7 +374,7 @@ public class InputIndependentMainBoard implements KeyListener {
         // return;
         // }
         if (controlIsPressed(e)) {
-          Lizzie.board.clearManually();
+          Lizzie.board.clear(false);
           if (Lizzie.leelaz.isPondering()) {
             Lizzie.leelaz.ponder();
           }

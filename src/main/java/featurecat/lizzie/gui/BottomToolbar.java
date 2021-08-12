@@ -1005,7 +1005,7 @@ public class BottomToolbar extends JPanel {
     clearButton.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            Lizzie.board.clearManually();
+            Lizzie.board.clear(false);
             if (Lizzie.leelaz.isPondering()) {
               Lizzie.leelaz.ponder();
             }

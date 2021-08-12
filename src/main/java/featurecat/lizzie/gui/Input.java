@@ -534,7 +534,7 @@ public class Input implements MouseListener, KeyListener, MouseWheelListener, Mo
         // return;
         // }
         if (controlIsPressed(e)) {
-          Lizzie.board.clearManually();
+          Lizzie.board.clear(false);
           if (Lizzie.leelaz.isPondering()) {
             Lizzie.leelaz.ponder();
           }

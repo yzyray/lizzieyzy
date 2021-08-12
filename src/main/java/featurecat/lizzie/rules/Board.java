@@ -2732,21 +2732,20 @@ public class Board {
     startStonelist = new ArrayList<Movelist>();
     movelistwr.clear();
     initialize(isEngineGame);
+    isKataBoard = false;
     if (!isEngineGame) {
       cleanedittemp();
       isPkBoard = false;
       Lizzie.leelaz.clear();
-    }
-    isKataBoard = false;
-    if (!isEngineGame) {
       if (Lizzie.frame.readBoard != null
           && Lizzie.frame.readBoard.process != null
           && Lizzie.frame.readBoard.process.isAlive()) {
         Lizzie.board.getHistory().getGameInfo().resetAllNoKomi();
-        Lizzie.board.getHistory().getGameInfo().setKomi(komi);
+        Lizzie.leelaz.komi(komi);
       } else {
+        komi = Lizzie.leelaz.orikomi;
         Lizzie.board.getHistory().getGameInfo().resetAllNoKomi();
-        Lizzie.board.getHistory().getGameInfo().setKomi(komi);
+        Lizzie.leelaz.komi(komi);
       }
       if (LizzieFrame.urlSgf) {
         if (LizzieFrame.onlineDialog != null) {
@@ -2754,41 +2753,6 @@ public class Board {
         }
       }
     } else Lizzie.board.getHistory().getGameInfo().setKomi(komi);
-    Lizzie.frame.clearKataEstimate();
-  }
-
-  public void clearManually() {
-    LizzieFrame.winrateGraph.maxcoreMean = 30;
-    if (Lizzie.frame.readBoard != null && Lizzie.frame.syncBoard) {
-      Lizzie.frame.readBoard.firstSync = true;
-    }
-    double komi = history.getGameInfo().getKomi();
-    cleanedittemp();
-    isPkBoard = false;
-    isPkBoardKataB = false;
-    isPkBoardKataW = false;
-    Lizzie.frame.resetTitle();
-    hasStartStone = false;
-    startStonelist = new ArrayList<Movelist>();
-    movelistwr.clear();
-    initialize(false);
-    isKataBoard = false;
-    Lizzie.leelaz.clear();
-    if (Lizzie.frame.readBoard != null
-        && Lizzie.frame.readBoard.process != null
-        && Lizzie.frame.readBoard.process.isAlive()) {
-      Lizzie.board.getHistory().getGameInfo().resetAllNoKomi();
-      Lizzie.board.getHistory().getGameInfo().setKomi(komi);
-    } else {
-      Lizzie.board.getHistory().getGameInfo().resetAllNoKomi();
-      Lizzie.board.getHistory().getGameInfo().setKomi(Lizzie.leelaz.orikomi);
-      Lizzie.leelaz.sendCommand("komi " + Lizzie.leelaz.orikomi);
-    }
-    if (LizzieFrame.urlSgf) {
-      if (LizzieFrame.onlineDialog != null) {
-        LizzieFrame.onlineDialog.stopSync();
-      }
-    }
     Lizzie.frame.clearKataEstimate();
   }
 
