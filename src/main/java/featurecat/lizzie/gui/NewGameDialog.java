@@ -410,16 +410,17 @@ public class NewGameDialog extends JDialog {
     // btnNewButton.setMargin(new Insets(0,0, 0,0));
     panel.add(btnAboutAdvTime);
 
-    JFontCheckBox checkBox = new JFontCheckBox();
-    checkBox.setBounds(99, 4, 18, 18);
-    panel.add(checkBox);
+    JFontCheckBox chkUseAdvTime = new JFontCheckBox();
+    chkUseAdvTime.setBounds(99, 4, 18, 18);
+    chkUseAdvTime.setSelected(Lizzie.config.advanceTimeSettings);
+    panel.add(chkUseAdvTime);
 
-    checkBox.addActionListener(
+    chkUseAdvTime.addActionListener(
         new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
             // TODO Auto-generated method stub
-            Lizzie.config.advanceTimeSettings = checkBox.isSelected();
+            Lizzie.config.advanceTimeSettings = chkUseAdvTime.isSelected();
             if (Lizzie.config.advanceTimeSettings) {
               textTime.setEnabled(false);
               txtAdvanceTime.setEnabled(true);
@@ -427,9 +428,10 @@ public class NewGameDialog extends JDialog {
               textTime.setEnabled(true);
               txtAdvanceTime.setEnabled(false);
             }
+            Lizzie.config.uiConfig.put("advance-time-settings", Lizzie.config.advanceTimeSettings);
           }
         });
-    checkBox.setSelected(Lizzie.config.advanceTimeSettings);
+    chkUseAdvTime.setSelected(Lizzie.config.advanceTimeSettings);
 
     txtAdvanceTime = new JFontTextField();
     GridBagConstraints gbc_txtAdvanceTime = new GridBagConstraints();
@@ -456,13 +458,13 @@ public class NewGameDialog extends JDialog {
             // TODO Auto-generated method stub
             if (chkNoTime.isSelected()) {
               textTime.setEnabled(false);
-              checkBox.setEnabled(false);
+              chkUseAdvTime.setEnabled(false);
               btnAboutAdvTime.setEnabled(false);
               txtAdvanceTime.setEnabled(false);
               Lizzie.config.genmoveGameNoTime = true;
             } else {
               textTime.setEnabled(true);
-              checkBox.setEnabled(true);
+              chkUseAdvTime.setEnabled(true);
               btnAboutAdvTime.setEnabled(true);
               txtAdvanceTime.setEnabled(true);
               Lizzie.config.genmoveGameNoTime = false;
@@ -516,22 +518,22 @@ public class NewGameDialog extends JDialog {
     gbc_chkUsePlayMode.gridy = 10;
     contentPanel.add(chkUsePlayMode, gbc_chkUsePlayMode);
 
-    if (Lizzie.config.advanceTimeSettings) textTime.setEnabled(false);
-    else txtAdvanceTime.setEnabled(false);
-
     if (Lizzie.config.genmoveGameNoTime) {
       chkNoTime.setSelected(true);
       textTime.setEnabled(false);
-      checkBox.setEnabled(false);
+      chkUseAdvTime.setEnabled(false);
       btnAboutAdvTime.setEnabled(false);
       txtAdvanceTime.setEnabled(false);
     } else {
       chkNoTime.setSelected(false);
       textTime.setEnabled(true);
-      checkBox.setEnabled(true);
+      chkUseAdvTime.setEnabled(true);
       btnAboutAdvTime.setEnabled(true);
       txtAdvanceTime.setEnabled(true);
     }
+
+    if (Lizzie.config.advanceTimeSettings) textTime.setEnabled(false);
+    else txtAdvanceTime.setEnabled(false);
     if (checkContinuePlay.isSelected()) textFieldHandicap.setEnabled(false);
     else textFieldHandicap.setEnabled(true);
 

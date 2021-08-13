@@ -601,7 +601,6 @@ public class Config {
     File file = new File(fileName);
     if (!file.canRead()) {
       System.err.printf("Creating config file %s\n", fileName);
-
       try {
         writeConfig(defaultCfg, file);
       } catch (JSONException e) {
@@ -612,7 +611,6 @@ public class Config {
 
     FileInputStream fp = new FileInputStream(file);
     InputStreamReader reader = new InputStreamReader(fp, "utf-8");
-
     JSONObject mergedcfg = new JSONObject(new JSONTokener(reader));
     boolean modified = mergeDefaults(mergedcfg, defaultCfg);
 
@@ -781,8 +779,12 @@ public class Config {
     JSONObject defaultConfig = createDefaultConfig();
     JSONObject persistConfig = createPersistConfig();
     JSONObject saveBoardConf = createSaveBoardConfig();
-
-    this.persisted = loadAndMergeConfig(persistConfig, persistFilename, false);
+    try {
+      this.persisted = loadAndMergeConfig(persistConfig, persistFilename, false);
+    } catch (Exception e) {
+      e.printStackTrace();
+      this.persisted = persistConfig;
+    }
     // Main properties
     try {
       this.config = loadAndMergeConfig(defaultConfig, configFilename, true);

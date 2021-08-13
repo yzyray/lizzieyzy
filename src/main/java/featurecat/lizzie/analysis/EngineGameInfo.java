@@ -128,4 +128,8 @@ public class EngineGameInfo {
     if (currentEngineIndex == this.blackEngineIndex) return true;
     else return false;
   }
+
+  public boolean isFirstEnginePlayBlack() {
+    return firstEngineIndex == blackEngineIndex;
+  }
 }

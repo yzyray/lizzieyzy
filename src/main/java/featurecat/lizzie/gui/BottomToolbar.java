@@ -1005,6 +1005,7 @@ public class BottomToolbar extends JPanel {
     clearButton.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
+            if (Lizzie.engineManager.isEngineGame()) return;
             Lizzie.board.clear(false);
             if (Lizzie.leelaz.isPondering()) {
               Lizzie.leelaz.ponder();
@@ -1016,7 +1017,7 @@ public class BottomToolbar extends JPanel {
     lastButton.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            if (Lizzie.engineManager.isEngineGame) return;
+            if (Lizzie.engineManager.isEngineGame()) return;
             if (Lizzie.frame.commentEditPane.isVisible()) Lizzie.frame.setCommentEditable(false);
             Lizzie.frame.lastMove();
             setTxtUnfocuse();
@@ -1025,7 +1026,7 @@ public class BottomToolbar extends JPanel {
     firstButton.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            if (Lizzie.engineManager.isEngineGame) return;
+            if (Lizzie.engineManager.isEngineGame()) return;
             if (Lizzie.frame.commentEditPane.isVisible()) Lizzie.frame.setCommentEditable(false);
             Lizzie.frame.firstMove();
             setTxtUnfocuse();

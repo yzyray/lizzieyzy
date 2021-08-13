@@ -26,6 +26,7 @@ import featurecat.lizzie.analysis.ReadBoard;
 import featurecat.lizzie.rules.Board;
 import featurecat.lizzie.rules.BoardData;
 import featurecat.lizzie.rules.BoardHistoryNode;
+import featurecat.lizzie.rules.EngineCountDown;
 import featurecat.lizzie.rules.GIBParser;
 import featurecat.lizzie.rules.GroupInfo;
 import featurecat.lizzie.rules.MoveLinkedList;
@@ -3003,9 +3004,34 @@ public class LizzieFrame extends JFrame {
     }
   }
 
-  public static void sendAiTime() {
+  public static void sendAiTime(boolean needCountDown) {
     if (Lizzie.config.advanceTimeSettings) {
       Lizzie.leelaz.sendCommand(Lizzie.config.advanceTimeTxt);
+      if (needCountDown) {
+        String[] params = Lizzie.config.advanceTimeTxt.split(" ");
+        if (params.length == 4) {
+          try {
+            int leftMinutes = Integer.parseInt(params[1]);
+            int countDownSeconds = Integer.parseInt(params[2]);
+            int countDownMoves = Integer.parseInt(params[3]);
+            Lizzie.engineManager.playingAgainstHumanEngineCountDown = new EngineCountDown();
+            Lizzie.engineManager.setEngineCountDown(
+                Lizzie.engineManager.playingAgainstHumanEngineCountDown,
+                leftMinutes,
+                countDownSeconds,
+                countDownMoves,
+                Lizzie.leelaz);
+            Lizzie.engineManager.playingAgainstHumanEngineCountDown.initialize(
+                !Lizzie.frame.playerIsBlack);
+            Lizzie.engineManager.StartCountDown();
+          } catch (Exception e) {
+            e.printStackTrace();
+          }
+        }
+        if (Lizzie.engineManager.playingAgainstHumanEngineCountDown == null)
+          Utils.showMsgNoModal(
+              resourceBundle.getString("EngineManager.parseAdvcanceTimeSettingsFailed"));
+      }
     } else {
       Lizzie.leelaz.sendCommand(
           "time_settings 0 " + Lizzie.config.maxGameThinkingTimeSeconds + " 1");
@@ -3036,13 +3062,6 @@ public class LizzieFrame extends JFrame {
     GameInfo gameInfo = newGameDialog.gameInfo;
     Lizzie.board.getHistory().setGameInfo(gameInfo);
     Lizzie.leelaz.komi(gameInfo.getKomi());
-    // Lizzie.frame.komi = gameInfo.getKomi() + "";
-    if (!Lizzie.config.genmoveGameNoTime) sendAiTime();
-    //    Lizzie.leelaz.sendCommand(
-    //        "time_settings 0 "
-    //            +
-    // Lizzie.config.config.getJSONObject("leelaz").getInt("max-game-thinking-time-seconds")
-    //            + " 1");
     Lizzie.frame.playerIsBlack = playerIsBlack;
     Lizzie.frame.isPlayingAgainstLeelaz = true;
     // Lizzie.leelaz.isSettingHandicap=true;
@@ -3072,6 +3091,7 @@ public class LizzieFrame extends JFrame {
                   Lizzie.config.getMySaveTime(),
                   Lizzie.config.getMyByoyomiSeconds(),
                   Lizzie.config.getMyByoyomiTimes());
+            if (!Lizzie.config.genmoveGameNoTime) sendAiTime(true);
             clearWRNforGame(true);
             if (isHandicapGame) {
               Lizzie.board.getHistory().getData().blackToPlay = false;
@@ -9446,7 +9466,7 @@ public class LizzieFrame extends JFrame {
     }
     if (isGenmove) {
       if (!Lizzie.leelaz.isThinking) {
-        if (!Lizzie.config.genmoveGameNoTime) sendAiTime();
+        if (!Lizzie.config.genmoveGameNoTime) sendAiTime(true);
         isPlayingAgainstLeelaz = true;
         if (continueNow) {
           Lizzie.frame.playerIsBlack = !Lizzie.board.getData().blackToPlay;
@@ -10043,6 +10063,8 @@ public class LizzieFrame extends JFrame {
     }
     if (Lizzie.frame.isPlayingAgainstLeelaz) {
       stopTimer();
+      Lizzie.engineManager.clearPlayingAgainstHumanEngineCountDown();
+      Lizzie.engineManager.stopCountDown();
       setAsMain();
       restoreWRN(true);
       Lizzie.leelaz.setGameStatus(false);

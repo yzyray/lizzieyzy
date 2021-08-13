@@ -696,6 +696,8 @@ public class NewEngineGameDialog extends JDialog {
               txtBlackAdvanceTime.setEnabled(false);
               txtWhiteAdvanceTime.setEnabled(false);
             }
+            Lizzie.config.uiConfig.put(
+                "pk-advance-time-settings", Lizzie.config.pkAdvanceTimeSettings);
           }
         });
     chkUseAdvanceTime.setSelected(Lizzie.config.pkAdvanceTimeSettings);
@@ -977,10 +979,10 @@ public class NewEngineGameDialog extends JDialog {
       Lizzie.config.uiConfig.put("second-engine-min-move", Lizzie.config.secondEngineMinMove);
 
       if (Lizzie.config.pkAdvanceTimeSettings) {
-        Lizzie.config.advanceBlackTimeTxt = txtBlackAdvanceTime.getText();
-        Lizzie.config.advanceWhiteTimeTxt = txtWhiteAdvanceTime.getText();
-        Lizzie.config.uiConfig.put("advance-black-time-txt", txtBlackAdvanceTime.getText());
-        Lizzie.config.uiConfig.put("advance-white-time-txt", txtWhiteAdvanceTime.getText());
+        Lizzie.config.advanceBlackTimeTxt = txtBlackAdvanceTime.getText().trim();
+        Lizzie.config.advanceWhiteTimeTxt = txtWhiteAdvanceTime.getText().trim();
+        Lizzie.config.uiConfig.put("advance-black-time-txt", txtBlackAdvanceTime.getText().trim());
+        Lizzie.config.uiConfig.put("advance-white-time-txt", txtWhiteAdvanceTime.getText().trim());
       }
       // apply new values
       gameInfo.setPlayerBlack(playerBlack);

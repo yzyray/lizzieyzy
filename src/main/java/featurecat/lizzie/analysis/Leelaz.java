@@ -1271,7 +1271,7 @@ public class Leelaz {
           }
           if (!Lizzie.config.playponder) Lizzie.leelaz.nameCmdfornoponder();
         }
-        if (!isInputCommand && params.length >= 2) {
+        if (!isInputCommand && params.length == 2) {
           isPondering = false;
         }
         isThinking = false;
@@ -2571,6 +2571,10 @@ public class Leelaz {
    * @param move coordinate of the coordinate
    */
   public void playMove(Stone color, String move) {
+    playMove(color, move, false);
+  }
+
+  public void playMove(Stone color, String move, boolean reverse) {
     if (!isKatago || isSai) {
       if (move == "pass") {
         if (Lizzie.board.getHistory().getCurrentHistoryNode()
@@ -2606,53 +2610,12 @@ public class Leelaz {
       if ((stopByLimit || isPondering) && !Lizzie.frame.isPlayingAgainstLeelaz)
         if (Lizzie.config.isAutoAna
             || ((Lizzie.config.analyzeBlack && color == Stone.WHITE)
-                || (Lizzie.config.analyzeWhite && color == Stone.BLACK))) ponder();
+                || (Lizzie.config.analyzeWhite && color == Stone.BLACK))) ponder(reverse);
         else {
           nameCmdfornoponder();
           underPonder = true;
         }
     }
-  }
-
-  public void playMovewithavoid(Stone color, String move) {
-    if (Lizzie.engineManager.isEngineGame) {
-      return;
-    }
-    if (!isKatago || isSai) {
-      if (move == "pass") {
-        if (Lizzie.board.getHistory().getCurrentHistoryNode().previous().get()
-            != Lizzie.board.getHistory().getStart()) {
-          Optional<int[]> lastMove =
-              Lizzie.board.getHistory().getCurrentHistoryNode().previous().get().getData().lastMove;
-          if (!lastMove.isPresent()) {
-            this.setModifyEnd();
-            return;
-          }
-        }
-      }
-    }
-    String colorString;
-    switch (color) {
-      case BLACK:
-        colorString = "B";
-        break;
-      case WHITE:
-        colorString = "W";
-        break;
-      default:
-        throw new IllegalArgumentException(
-            "The stone color must be B or W, but was " + color.toString());
-    }
-    sendCommand("play " + colorString + " " + move);
-    bestMoves = new ArrayList<>();
-    if ((stopByLimit || isPondering) && !Lizzie.frame.isPlayingAgainstLeelaz)
-      if (Lizzie.config.isAutoAna
-          || ((Lizzie.config.analyzeBlack && color == Stone.WHITE)
-              || (Lizzie.config.analyzeWhite && color == Stone.BLACK))) ponder();
-      else {
-        nameCmdfornoponder();
-        underPonder = true;
-      }
   }
 
   public void playMoveNoPonder(Stone color, String move) {
@@ -2791,9 +2754,10 @@ public class Leelaz {
   //		isPondering = false;
   //	}
 
-  public void time_settings() {
-    Lizzie.leelaz.sendCommand("time_settings 0 " + Lizzie.config.maxGameThinkingTimeSeconds + " 1");
-  }
+  //  public void time_settings() {
+  //    Lizzie.leelaz.sendCommand("time_settings 0 " + Lizzie.config.maxGameThinkingTimeSeconds + "
+  // 1");
+  //  }
 
   public void clear() {
     synchronized (this) {
@@ -2820,6 +2784,10 @@ public class Leelaz {
   }
 
   public void undo() {
+    undo(false);
+  }
+
+  public void undo(boolean reverse) {
     synchronized (this) {
       sendCommand("undo");
       bestMoves = new ArrayList<>();
@@ -2827,7 +2795,7 @@ public class Leelaz {
         if (Lizzie.config.isAutoAna
             || ((Lizzie.config.analyzeBlack && Lizzie.board.getHistory().isBlacksTurn())
                 || (Lizzie.config.analyzeWhite && !Lizzie.board.getHistory().isBlacksTurn())))
-          ponder();
+          ponder(reverse);
         else {
           nameCmdfornoponder();
           underPonder = true;
@@ -2888,6 +2856,10 @@ public class Leelaz {
 
   /** This initializes leelaz's pondering mode at its current position */
   public void ponder() {
+    ponder(false);
+  }
+
+  public void ponder(boolean reverse) {
     if (noAnalyze) return;
     isPondering = true;
     underPonder = false;
@@ -2922,20 +2894,25 @@ public class Leelaz {
       if (this.isKatago) {
         sendCommand(
             "kata-analyze "
-                + maybeAddPlayer()
+                + maybeAddPlayer(reverse)
                 + getInterval()
                 + (Lizzie.config.showKataGoEstimate ? " ownership true" : "")
                 + (Lizzie.config.showPvVisits ? " pvVisits true" : ""));
       } else {
-        sendCommand("lz-analyze " + maybeAddPlayer() + getInterval());
+        sendCommand("lz-analyze " + maybeAddPlayer(reverse) + getInterval());
       }
     }
     Lizzie.frame.menu.toggleEngineMenuStatus(true, false);
   }
 
   private String maybeAddPlayer() {
+    return maybeAddPlayer(false);
+  }
+
+  private String maybeAddPlayer(boolean reverse) {
     if (!canAddPlayer) return "";
-    else return (Lizzie.board.getHistory().isBlacksTurn() ? "b " : "w ");
+    else if (reverse) return (Lizzie.board.getHistory().isBlacksTurn() ? "W " : "B ");
+    else return (Lizzie.board.getHistory().isBlacksTurn() ? "B " : "W ");
   }
 
   public int getInterval() {
@@ -3504,5 +3481,9 @@ public class Leelaz {
     // TODO Auto-generated method stub
     cmdNumber -= modifyNumber;
     modifyNumber = 0;
+  }
+
+  public void timeLeft(String color, int seconds, int moves) {
+    sendCommand("time_left " + color + " " + seconds + " " + moves);
   }
 }

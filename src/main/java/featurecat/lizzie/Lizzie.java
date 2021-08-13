@@ -374,8 +374,13 @@ public class Lizzie {
       Lizzie.config.uiConfig.put("default-engine", engineManager.currentEngineNo);
     }
     try {
-      config.save();
       config.persist();
+    } catch (Exception e) {
+      e.printStackTrace();
+      config.deletePersist(false);
+    }
+    try {
+      config.save();
       engineManager.forceKillAllEngines();
     } catch (Exception e) {
       e.printStackTrace();

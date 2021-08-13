@@ -362,7 +362,7 @@ public class GtpConsolePane extends JDialog {
           }
           if (command.toLowerCase().startsWith("genmove")) {
             if (!Lizzie.leelaz.isThinking) {
-              Lizzie.leelaz.time_settings();
+              // Lizzie.leelaz.time_settings();
               Lizzie.leelaz.isInputCommand = true;
               Lizzie.leelaz.genmove(param1);
             }

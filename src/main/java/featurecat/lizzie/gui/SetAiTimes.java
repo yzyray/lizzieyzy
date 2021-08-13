@@ -186,6 +186,7 @@ public class SetAiTimes extends JDialog {
               txtSetTime.setEnabled(true);
               txtAdvanceTime.setEditable(false);
             }
+            Lizzie.config.uiConfig.put("advance-time-settings", Lizzie.config.advanceTimeSettings);
           }
         });
     chckbxNewCheckBox.setSelected(Lizzie.config.advanceTimeSettings);
@@ -307,7 +308,7 @@ public class SetAiTimes extends JDialog {
           "max-game-thinking-time-seconds", txtFieldValue(txtSetTime));
       Lizzie.config.playponder = getPonder();
       Lizzie.config.leelazConfig.putOpt("play-ponder", Lizzie.config.playponder);
-      Lizzie.frame.sendAiTime();
+      LizzieFrame.sendAiTime(true);
 
       DecimalFormat FORMAT_HANDICAP = new DecimalFormat("0");
 
