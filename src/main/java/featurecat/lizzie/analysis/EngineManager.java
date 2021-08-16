@@ -255,51 +255,26 @@ public class EngineManager {
             resourceBundle.getString("EngineGameInfo.time") + Lizzie.config.advanceBlackTimeTxt;
         engineGameInfo.settingSecond +=
             resourceBundle.getString("EngineGameInfo.time") + Lizzie.config.advanceWhiteTimeTxt;
-        // aaa 解析time_settings记录
-        boolean blackParseSucess = false;
-        boolean whiteParseSucess = false;
-        if (Lizzie.config.advanceBlackTimeTxt.startsWith("time_settings")) {
-          String[] blackParams = Lizzie.config.advanceBlackTimeTxt.split(" ");
-          if (blackParams.length == 4) {
-            try {
-              int leftMinutes = Integer.parseInt(blackParams[1]);
-              int countDownSeconds = Integer.parseInt(blackParams[2]);
-              int countDownMoves = Integer.parseInt(blackParams[3]);
-              firstEngineCountDown = new EngineCountDown();
-              setEngineCountDown(
-                  firstEngineCountDown,
-                  leftMinutes,
-                  countDownSeconds,
-                  countDownMoves,
-                  engineList.get(engineGameInfo.firstEngineIndex));
-              blackParseSucess = true;
-            } catch (NumberFormatException e) {
-              e.printStackTrace();
-            }
-          }
-          String[] whiteParams = Lizzie.config.advanceWhiteTimeTxt.split(" ");
-          if (whiteParams.length == 4) {
-            try {
-              int leftMinutes = Integer.parseInt(whiteParams[1]);
-              int countDownSeconds = Integer.parseInt(whiteParams[2]);
-              int countDownMoves = Integer.parseInt(whiteParams[3]);
-              secondEngineCountDown = new EngineCountDown();
-              setEngineCountDown(
-                  secondEngineCountDown,
-                  leftMinutes,
-                  countDownSeconds,
-                  countDownMoves,
-                  engineList.get(engineGameInfo.secondEngineIndex));
-              whiteParseSucess = true;
-            } catch (NumberFormatException e) {
-              e.printStackTrace();
-            }
-          }
-          if (!blackParseSucess || !whiteParseSucess) {
-            Utils.showMsgNoModal(
-                resourceBundle.getString("EngineManager.parseAdvcanceTimeSettingsFailed"));
-          }
+        firstEngineCountDown = new EngineCountDown();
+        boolean firstEngineParseSucess =
+            firstEngineCountDown.setEngineCountDown(
+                Lizzie.config.advanceBlackTimeTxt, engineList.get(engineGameInfo.firstEngineIndex));
+        secondEngineCountDown = new EngineCountDown();
+        boolean secondEngineParseSucess =
+            secondEngineCountDown.setEngineCountDown(
+                Lizzie.config.advanceWhiteTimeTxt,
+                engineList.get(engineGameInfo.secondEngineIndex));
+        if (!firstEngineParseSucess) {
+          firstEngineCountDown = null;
+          Utils.showMsgNoModal(
+              resourceBundle.getString("EngineManager.parseAdvcanceTimeSettingsFailed"));
         }
+        if (!secondEngineParseSucess) {
+          secondEngineCountDown = null;
+          Utils.showMsgNoModal(
+              resourceBundle.getString("EngineManager.parseAdvcanceTimeSettingsFailed"));
+        }
+
       } else {
         if (engineGameInfo.timeFirstEngine > 0)
           engineGameInfo.settingFirst +=
@@ -2323,17 +2298,17 @@ public class EngineManager {
     return isPreEngineGame || isEngineGame;
   }
 
-  public void setEngineCountDown(
-      EngineCountDown engineCountDown,
-      int leftMinutes,
-      int countDownSeconds,
-      int countDownMoves,
-      Leelaz engine) {
-    engineCountDown.leftSeconds = leftMinutes * 60;
-    engineCountDown.countDownSeconds = countDownSeconds;
-    engineCountDown.countDownMoves = countDownMoves;
-    engineCountDown.engine = engine;
-  }
+  //  public void setEngineCountDown(
+  //      EngineCountDown engineCountDown,
+  //      int leftMinutes,
+  //      int countDownSeconds,
+  //      int countDownMoves,
+  //      Leelaz engine) {
+  //    engineCountDown.leftSeconds = leftMinutes * 60;
+  //    engineCountDown.countDownSeconds = countDownSeconds;
+  //    engineCountDown.countDownMoves = countDownMoves;
+  //    engineCountDown.engine = engine;
+  //  }
 
   private void clearFirstSecondEngineCountDown() {
     firstEngineCountDown = null;
@@ -2382,7 +2357,7 @@ public class EngineManager {
                       == playingAgainstHumanEngineCountDown.isPlayBlack)
                 countDown = playingAgainstHumanEngineCountDown;
               if (countDown != null) {
-                countDown.tempCount();
+                countDown.countDownCentiseconds();
               }
             }
           }

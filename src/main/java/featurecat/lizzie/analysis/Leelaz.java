@@ -3486,4 +3486,8 @@ public class Leelaz {
   public void timeLeft(String color, int seconds, int moves) {
     sendCommand("time_left " + color + " " + seconds + " " + moves);
   }
+
+  public void timeLeft(String color, String seconds, int moves) {
+    sendCommand("time_left " + color + " " + seconds + " " + moves);
+  }
 }

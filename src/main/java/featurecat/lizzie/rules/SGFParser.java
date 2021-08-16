@@ -19,6 +19,7 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 
 public class SGFParser {
   private static final SimpleDateFormat SGF_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
@@ -83,22 +84,24 @@ public class SGFParser {
         }
       }
     }
-    if (Lizzie.config.loadSgfLast) while (Lizzie.board.nextMove(false)) ;
-    Lizzie.board.clearAfterMove();
-    if (showHint) Lizzie.frame.refresh();
     if (isExtraMode2 && Lizzie.frame.extraMode != 2 && !Lizzie.config.isAutoAna && showHint) {
-      boolean onTop = Lizzie.frame.isAlwaysOnTop();
-      if (!onTop) Lizzie.frame.setAlwaysOnTop(true);
-      int ret =
-          JOptionPane.showConfirmDialog(
-              Lizzie.frame,
-              Lizzie.resourceBundle.getString("SGFParse.doubleEngineHint"),
-              Lizzie.resourceBundle.getString("SGFParse.doubleEngineHintTitle"),
-              JOptionPane.OK_CANCEL_OPTION);
-      if (ret == JOptionPane.OK_OPTION) {
-        Lizzie.config.toggleExtraMode(2);
-      }
-      Lizzie.frame.setAlwaysOnTop(onTop);
+      SwingUtilities.invokeLater(
+          new Runnable() {
+            public void run() {
+              if (Lizzie.config.loadSgfLast) while (Lizzie.board.nextMove(false)) ;
+              Lizzie.board.clearAfterMove();
+              if (showHint) Lizzie.frame.refresh();
+              int ret =
+                  JOptionPane.showConfirmDialog(
+                      Lizzie.frame,
+                      Lizzie.resourceBundle.getString("SGFParse.doubleEngineHint"),
+                      Lizzie.resourceBundle.getString("SGFParse.doubleEngineHintTitle"),
+                      JOptionPane.OK_CANCEL_OPTION);
+              if (ret == JOptionPane.OK_OPTION) {
+                Lizzie.config.toggleExtraMode(2);
+              }
+            }
+          });
     }
     return returnValue;
   }

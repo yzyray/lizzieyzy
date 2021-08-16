@@ -975,10 +975,7 @@ public class LizzieFrame extends JFrame {
               }
               String[] filePaths = filepath.split(", ");
               if (filePaths.length == 1) {
-                //                if (!(filepath.toLowerCase().endsWith(".sgf")
-                //                    || filepath.toLowerCase().endsWith(".gib"))) {
-                //                  return false;
-                //                }
+                boolean ponder = Lizzie.leelaz.isPondering() || !Lizzie.leelaz.isLoaded;
                 File file = new File(filepath);
                 File files[] = new File[1];
                 files[0] = file;
@@ -988,7 +985,10 @@ public class LizzieFrame extends JFrame {
                     && Lizzie.frame.analysisTable.frame.isVisible()) {
                   Lizzie.frame.analysisTable.refreshTable();
                 }
-                Lizzie.frame.refresh();
+                if (ponder) {
+                  Lizzie.leelaz.ponder();
+                }
+                refresh();
                 return true;
               } else if (filePaths.length > 1) {
                 File files[] = new File[filePaths.length];
@@ -3008,26 +3008,14 @@ public class LizzieFrame extends JFrame {
     if (Lizzie.config.advanceTimeSettings) {
       Lizzie.leelaz.sendCommand(Lizzie.config.advanceTimeTxt);
       if (needCountDown) {
-        String[] params = Lizzie.config.advanceTimeTxt.split(" ");
-        if (params.length == 4) {
-          try {
-            int leftMinutes = Integer.parseInt(params[1]);
-            int countDownSeconds = Integer.parseInt(params[2]);
-            int countDownMoves = Integer.parseInt(params[3]);
-            Lizzie.engineManager.playingAgainstHumanEngineCountDown = new EngineCountDown();
-            Lizzie.engineManager.setEngineCountDown(
-                Lizzie.engineManager.playingAgainstHumanEngineCountDown,
-                leftMinutes,
-                countDownSeconds,
-                countDownMoves,
-                Lizzie.leelaz);
-            Lizzie.engineManager.playingAgainstHumanEngineCountDown.initialize(
-                !Lizzie.frame.playerIsBlack);
-            Lizzie.engineManager.StartCountDown();
-          } catch (Exception e) {
-            e.printStackTrace();
-          }
-        }
+        Lizzie.engineManager.playingAgainstHumanEngineCountDown = new EngineCountDown();
+        if (!Lizzie.engineManager.playingAgainstHumanEngineCountDown.setEngineCountDown(
+            Lizzie.config.advanceTimeTxt, Lizzie.leelaz))
+          Lizzie.engineManager.playingAgainstHumanEngineCountDown = null;
+        Lizzie.engineManager.playingAgainstHumanEngineCountDown.initialize(
+            !Lizzie.frame.playerIsBlack);
+        Lizzie.engineManager.StartCountDown();
+
         if (Lizzie.engineManager.playingAgainstHumanEngineCountDown == null)
           Utils.showMsgNoModal(
               resourceBundle.getString("EngineManager.parseAdvcanceTimeSettingsFailed"));
@@ -3592,7 +3580,7 @@ public class LizzieFrame extends JFrame {
     //      file = new File(file.getPath() + ".sgf");
     //    }
     try {
-      System.out.println(file.getPath());
+      // System.out.println(file.getPath());
       if (file.getPath().toLowerCase().endsWith(".gib")) {
         GIBParser.load(file.getPath());
       } else {
@@ -3607,11 +3595,16 @@ public class LizzieFrame extends JFrame {
         }
       }
     } catch (IOException err) {
-      JOptionPane.showConfirmDialog(
-          Lizzie.frame,
-          resourceBundle.getString("LizzieFrame.prompt.failedToOpenFile"),
-          "Error",
-          JOptionPane.ERROR);
+      SwingUtilities.invokeLater(
+          new Runnable() {
+            public void run() {
+              JOptionPane.showConfirmDialog(
+                  Lizzie.frame,
+                  resourceBundle.getString("LizzieFrame.prompt.failedToOpenFile"),
+                  "Error",
+                  JOptionPane.ERROR);
+            }
+          });
     }
     Lizzie.board.setMovelistAll();
     if (showHint) {

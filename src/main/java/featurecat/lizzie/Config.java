@@ -2283,7 +2283,8 @@ public class Config {
     }
     persistedUi.put("fast-commands-width", fastCommandsWidth);
     persistedUi.put("fast-commands-height", fastCommandsHeight);
-    if (!isDeletingPersist) writeConfig(this.persisted, new File(persistFilename));
+    // if (!isDeletingPersist)
+    writeConfig(this.persisted, new File(persistFilename));
   }
 
   public void deletePersist(boolean showMsg) {
@@ -2291,6 +2292,18 @@ public class Config {
     new File(persistFilename).delete();
     isDeletingPersist = true;
     if (showMsg) Utils.showMsg(Lizzie.resourceBundle.getString("Config.deletePersistFile"));
+    else {
+      JSONObject persistConfig = createPersistConfig();
+      try {
+        this.persisted = loadAndMergeConfig(persistConfig, persistFilename, false);
+      } catch (Exception e) {
+        e.printStackTrace();
+        this.persisted = persistConfig;
+      }
+      persistedUi = persisted.getJSONObject("ui-persist");
+      fastCommandsWidth = persistedUi.optInt("fast-commands-width", 500);
+      fastCommandsHeight = persistedUi.optInt("fast-commands-height", 500);
+    }
   }
 
   private Color reverseColor(Color color) {
