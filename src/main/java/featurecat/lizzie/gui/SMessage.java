@@ -21,7 +21,7 @@ public class SMessage extends JDialog {
     lblMessage = new JTextArea("");
     lblMessage.setBackground(this.getBackground());
     lblMessage.setLineWrap(true);
-    lblMessage.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
+    lblMessage.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
     this.add(lblMessage);
     try {
       this.setIconImage(ImageIO.read(MoreEngines.class.getResourceAsStream("/assets/logo.png")));

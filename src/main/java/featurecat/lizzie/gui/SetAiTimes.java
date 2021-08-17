@@ -93,7 +93,7 @@ public class SetAiTimes extends JDialog {
 
               private DocumentFilter filter = new DigitOnlyFilter();
             });
-    txtSetTime.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
+    txtSetTime.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
     txtSetTime.setBounds(
         Lizzie.config.isFrameFontSmall() ? 326 : (Lizzie.config.isFrameFontMiddle() ? 336 : 376),
         47,

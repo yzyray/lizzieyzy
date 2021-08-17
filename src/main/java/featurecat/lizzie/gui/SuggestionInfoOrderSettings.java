@@ -6,6 +6,7 @@ import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
 import static java.lang.Math.min;
 import static java.lang.Math.round;
 
+import featurecat.lizzie.Config;
 import featurecat.lizzie.Lizzie;
 import featurecat.lizzie.analysis.MoveData;
 import featurecat.lizzie.rules.Board;
@@ -363,7 +364,7 @@ public class SuggestionInfoOrderSettings extends JDialog {
     currentShowWinrateInSuggestion = chkWinrate.isSelected();
     currentShowPlayoutsInSuggestion = chkPlayouts.isSelected();
     currentShowScoremeanInSuggestion = chkScoreLead.isSelected();
-    g.setFont(new Font("", Font.BOLD, Utils.zoomOut(27)));
+    g.setFont(new Font(Config.sysDefaultFontName, Font.BOLD, Utils.zoomOut(27)));
     g.setColor(Color.BLACK);
     g.drawString(
         Lizzie.resourceBundle.getString("SuggestionInfoOrderSettings.preview"),

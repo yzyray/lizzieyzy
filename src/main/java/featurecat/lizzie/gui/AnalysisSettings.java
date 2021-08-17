@@ -50,7 +50,7 @@ public class AnalysisSettings extends JDialog {
 
     engineCmd = new JFontTextArea();
     engineCmd.setBounds(10, 26, 566, 130);
-    engineCmd.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
+    engineCmd.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
     getContentPane().add(engineCmd);
 
     JLabel example =
@@ -292,7 +292,7 @@ public class AnalysisSettings extends JDialog {
               + ("font-size:" + Lizzie.config.frameFontSize)
               + "}";
       htmlStyle.addRule(style);
-      // setFont(new Font("", Font.PLAIN, Config.frameFontSize));
+      // setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
       setEditorKit(htmlKit);
       setDocument(htmlDoc);
       setText(text);

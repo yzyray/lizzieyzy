@@ -401,7 +401,7 @@ public class EnginePkConfig extends JDialog {
     getContentPane().add(chkPreviousBestmovesOnlyFirstMove);
 
     JTextArea textAreaHint = new JTextArea();
-    textAreaHint.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
+    textAreaHint.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
     textAreaHint.setLineWrap(true);
     textAreaHint.setText(resourceBundle.getString("EnginePkConfig.textAreaHint"));
     textAreaHint.setBackground(this.getBackground());

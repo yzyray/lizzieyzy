@@ -61,7 +61,7 @@ public class EngineFailedMessage extends JDialog {
 
     JTextArea engineCmd = new JTextArea();
     engineCmd.setLineWrap(true);
-    engineCmd.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
+    engineCmd.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
     //    engineCmd.setBounds(
     //        Lizzie.config.isFrameFontSmall() ? 72 : (Lizzie.config.isFrameFontMiddle() ? 90 :
     // 110),

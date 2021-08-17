@@ -21,7 +21,7 @@ public class Discribe extends JDialog {
 
     // getContentPane().setLayout(null);
     textAreaDiscribe = new JTextArea();
-    textAreaDiscribe.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
+    textAreaDiscribe.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
     textAreaDiscribe.setEditable(false);
     textAreaDiscribe.setLineWrap(true);
     textAreaDiscribe.setBackground(this.getBackground());

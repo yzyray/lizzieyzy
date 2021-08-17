@@ -87,7 +87,7 @@ public class SetFrameFontSize extends JDialog {
 
               private DocumentFilter filter = new DigitOnlyFilter();
             });
-    fontSize.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
+    fontSize.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
     fontSize.setBounds(
         Lizzie.config.isFrameFontSmall() ? 202 : (Lizzie.config.isFrameFontMiddle() ? 220 : 260),
         8,

@@ -9,11 +9,11 @@ public class JFontMenuItem extends JMenuItem {
   public JFontMenuItem(String text) {
     super();
     this.setText(text);
-    this.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
+    this.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
   }
 
   public JFontMenuItem() {
     super();
-    this.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
+    this.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
   }
 }

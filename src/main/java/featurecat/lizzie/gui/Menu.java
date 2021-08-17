@@ -153,7 +153,8 @@ public class Menu extends JMenuBar {
 
   public Menu() {
     setPreferredSize(new Dimension(100, Lizzie.config.menuHeight)); // 中25 大30
-    // headFont = new Font("", Font.PLAIN, Math.max(Lizzie.config.allFontSize, 12)); // 中16 大20
+    // headFont = new Font(Config.sysDefaultFontName, Font.PLAIN,
+    // Math.max(Lizzie.config.allFontSize, 12)); // 中16 大20
     final JFontMenu fileMenu = new JFontMenu(resourceBundle.getString("Menu.fileMenu")); // ("文件");
     fileMenu.setForeground(Color.BLACK);
     // fileMenu.setFont(headFont);
@@ -4820,14 +4821,18 @@ public class Menu extends JMenuBar {
 
     engineMenu = new JFontMenu(resourceBundle.getString("Menu.noEngine"));
     engineMenu.setForeground(Color.BLACK);
-    // headFont = new Font("", Font.BOLD, Math.max(Lizzie.config.frameFontSize, 15));
-    engineMenu.setFont(new Font("", Font.BOLD, Math.max(Lizzie.config.frameFontSize, 15)));
+    // headFont = new Font(Config.sysDefaultFontName, Font.BOLD,
+    // Math.max(Lizzie.config.frameFontSize, 15));
+    engineMenu.setFont(
+        new Font(Config.sysDefaultFontName, Font.BOLD, Math.max(Lizzie.config.frameFontSize, 15)));
     this.add(engineMenu);
 
     engineMenu2 = new JFontMenu(resourceBundle.getString("Menu.noEngine"));
     engineMenu2.setForeground(Color.BLACK);
-    engineMenu2.setFont(new Font("", Font.BOLD, Math.max(Lizzie.config.frameFontSize, 15)));
-    //   headFont = new Font("", Font.PLAIN, Math.max(Lizzie.config.allFontSize, 12));
+    engineMenu2.setFont(
+        new Font(Config.sysDefaultFontName, Font.BOLD, Math.max(Lizzie.config.frameFontSize, 15)));
+    //   headFont = new Font(Config.sysDefaultFontName, Font.PLAIN,
+    // Math.max(Lizzie.config.allFontSize, 12));
     this.add(engineMenu2);
 
     icon = new ImageIcon();
@@ -6005,7 +6010,7 @@ public class Menu extends JMenuBar {
       if (doubleMenuResign != null) remove(doubleMenuResign);
     }
     byoyomiTime = new JFontLabel();
-    byoyomiTime.setFont(new Font("", Font.BOLD, 15));
+    byoyomiTime.setFont(new Font(Config.sysDefaultFontName, Font.BOLD, 15));
     add(byoyomiTime);
     byoyomiTime.setVisible(LizzieFrame.isShowingByoTime);
 
@@ -9027,13 +9032,15 @@ public class Menu extends JMenuBar {
     engineMenu = new JFontMenu(resourceBundle.getString("Menu.noEngine"));
     engineMenu.setText(resourceBundle.getString("Menu.noEngine"));
     engineMenu.setForeground(Color.BLACK);
-    engineMenu.setFont(new Font("", Font.BOLD, Math.max(Lizzie.config.frameFontSize, 15)));
+    engineMenu.setFont(
+        new Font(Config.sysDefaultFontName, Font.BOLD, Math.max(Lizzie.config.frameFontSize, 15)));
     this.add(engineMenu);
     //   if (Lizzie.config.extraMode == 2) {
     engineMenu2 = new JFontMenu(resourceBundle.getString("Menu.noEngine"));
     engineMenu2.setText(resourceBundle.getString("Menu.noEngine"));
     engineMenu2.setForeground(Color.BLACK);
-    engineMenu2.setFont(new Font("", Font.BOLD, Math.max(Lizzie.config.frameFontSize, 15)));
+    engineMenu2.setFont(
+        new Font(Config.sysDefaultFontName, Font.BOLD, Math.max(Lizzie.config.frameFontSize, 15)));
     this.add(engineMenu2);
     //    }
     if (!Lizzie.config.showDoubleMenu) {

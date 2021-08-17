@@ -730,7 +730,7 @@ public class SetKataEngines extends JDialog {
               + ("font-size:" + Lizzie.config.frameFontSize)
               + "}";
       htmlStyle.addRule(style);
-      setFont(new Font("", Font.PLAIN, Config.frameFontSize));
+      setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
       setEditorKit(htmlKit);
       setDocument(htmlDoc);
       setText(text);

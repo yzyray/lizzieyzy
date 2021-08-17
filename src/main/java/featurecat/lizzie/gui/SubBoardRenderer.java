@@ -5,6 +5,7 @@ import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
+import featurecat.lizzie.Config;
 import featurecat.lizzie.Lizzie;
 import featurecat.lizzie.analysis.Branch;
 import featurecat.lizzie.analysis.Leelaz;
@@ -791,7 +792,7 @@ public class SubBoardRenderer {
 
     if (!suggestedMove.isPresent()) {
       g.setColor(new Color(0, 0, 0, 255));
-      g.setFont(new Font("", Font.BOLD, stoneRadius * 3 / 2));
+      g.setFont(new Font(Config.sysDefaultFontName, Font.BOLD, stoneRadius * 3 / 2));
       g.drawString(
           "" + (this.bestmovesNum + 1),
           boardWidth - stoneRadius * 9 / 5,
@@ -881,7 +882,7 @@ public class SubBoardRenderer {
       g.setColor(new Color(0, 0, 0, 255));
       // g.setFont(new Font("幼圆", Font.BOLD, stoneRadius * 5 / 4));
       //  g.drawString("变化", boardWidth - stoneRadius * 14 / 3, boardWidth - stoneRadius * 2 / 7);
-      g.setFont(new Font("", Font.BOLD, stoneRadius * 3 / 2));
+      g.setFont(new Font(Config.sysDefaultFontName, Font.BOLD, stoneRadius * 3 / 2));
       g.drawString(
           "" + (this.bestmovesNum + 1),
           boardWidth - stoneRadius * 9 / 5,

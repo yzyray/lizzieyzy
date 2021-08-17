@@ -1,5 +1,6 @@
 package featurecat.lizzie.gui;
 
+import featurecat.lizzie.Config;
 import featurecat.lizzie.Lizzie;
 import java.awt.Font;
 import java.awt.datatransfer.Clipboard;
@@ -107,7 +108,7 @@ public class JIMSendTextPane extends JTextPane implements MouseListener {
               Lizzie.config.commentFontSize > 0
                   ? Lizzie.config.commentFontSize
                   : Lizzie.config.frameFontSize));
-    else this.setFont(new Font("", Font.PLAIN, Lizzie.config.frameFontSize));
+    else this.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Lizzie.config.frameFontSize));
     this.setEditorKit(new WarpEditorKit());
   }
 

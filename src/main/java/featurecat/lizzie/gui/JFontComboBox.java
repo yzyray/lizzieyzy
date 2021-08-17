@@ -7,6 +7,6 @@ import javax.swing.JComboBox;
 public class JFontComboBox extends JComboBox {
   public JFontComboBox() {
     super();
-    this.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
+    this.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
   }
 }

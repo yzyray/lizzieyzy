@@ -27,7 +27,7 @@ public class Message extends JDialog {
     setAlwaysOnTop(true);
     //  setLocationByPlatform(true);
     lblmessage = new JLabel("", JLabel.CENTER);
-    lblmessage.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
+    lblmessage.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
     this.add(lblmessage);
     try {
       this.setIconImage(ImageIO.read(MoreEngines.class.getResourceAsStream("/assets/logo.png")));

@@ -364,7 +364,7 @@ public class NewGameDialog extends JDialog {
     //  textFieldHandicap.addPropertyChangeListener(evt -> modifyHandicap());
     textTime = new JTextField();
     textTime.setDocument(new IntDocument());
-    textTime.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
+    textTime.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
     textTime.setText(Lizzie.config.maxGameThinkingTimeSeconds + "");
     GridBagConstraints gbc_textTime = new GridBagConstraints();
     gbc_textTime.fill = GridBagConstraints.BOTH;

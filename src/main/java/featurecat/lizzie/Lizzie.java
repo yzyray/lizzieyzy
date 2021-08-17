@@ -269,10 +269,12 @@ public class Lizzie {
       }
       UIManager.put(
           "OptionPane.buttonFont",
-          new FontUIResource(new Font("", Font.PLAIN, config.frameFontSize)));
+          new FontUIResource(
+              new Font(Config.sysDefaultFontName, Font.PLAIN, config.frameFontSize)));
       UIManager.put(
           "OptionPane.messageFont",
-          new FontUIResource(new Font("", Font.PLAIN, config.frameFontSize)));
+          new FontUIResource(
+              new Font(Config.sysDefaultFontName, Font.PLAIN, config.frameFontSize)));
       if (config.useJavaLooks) {
         String lookAndFeel = UIManager.getCrossPlatformLookAndFeelClassName();
         UIManager.setLookAndFeel(lookAndFeel);

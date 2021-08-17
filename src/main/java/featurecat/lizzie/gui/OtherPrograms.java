@@ -153,8 +153,8 @@ public class OtherPrograms extends JPanel {
     command = new JFontTextArea(5, 80);
     command.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
     txtName.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
-    txtName.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
-    command.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
+    txtName.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
+    command.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
     JLabel lblCommand = new JLabel(resourceBundle.getString("MoreEngines.lblCommand"));
 
     save = new JButton(resourceBundle.getString("MoreEngines.save")); // ("保存");

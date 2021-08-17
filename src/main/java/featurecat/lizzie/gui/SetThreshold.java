@@ -80,9 +80,11 @@ public class SetThreshold extends JDialog {
 
   private void initContentPanel() {
     GridLayout gridLayout = new GridLayout(fromMoveList ? 4 : 3, 2, 4, 4);
-    dropWinRateChooser.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
-    dropScoreMeanChooser.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
-    playoutsChooser.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
+    dropWinRateChooser.setFont(
+        new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
+    dropScoreMeanChooser.setFont(
+        new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
+    playoutsChooser.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
     if (fromMoveList) {
       dropWinRateChooser.setValue(Lizzie.config.moveListWinrateThreshold);
       dropScoreMeanChooser.setValue(Lizzie.config.moveListScoreThreshold);

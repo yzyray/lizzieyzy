@@ -116,7 +116,8 @@ public class StartAnaDialog extends JDialog {
       txtAnalysisPlayouts = new JTextField();
       txtAnalysisPlayouts.setDocument(new IntDocument());
       txtAnalysisPlayouts.setText(Lizzie.config.batchAnalysisPlayouts + "");
-      txtAnalysisPlayouts.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
+      txtAnalysisPlayouts.setFont(
+          new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
       contentPanel.add(
           new JFontLabel(
               Lizzie.resourceBundle.getString(
@@ -207,18 +208,26 @@ public class StartAnaDialog extends JDialog {
 
   private void setTxtFontSize(boolean isReset) {
     if (isReset) {
-      Lizzie.frame.toolbar.txtFirstAnaMove.setFont(new Font("", Font.PLAIN, 12));
-      Lizzie.frame.toolbar.txtLastAnaMove.setFont(new Font("", Font.PLAIN, 12));
-      Lizzie.frame.toolbar.txtAnaTime.setFont(new Font("", Font.PLAIN, 12));
-      Lizzie.frame.toolbar.txtAnaPlayouts.setFont(new Font("", Font.PLAIN, 12));
-      Lizzie.frame.toolbar.txtAnaFirstPlayouts.setFont(new Font("", Font.PLAIN, 12));
-    } else {
-      Lizzie.frame.toolbar.txtFirstAnaMove.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
-      Lizzie.frame.toolbar.txtLastAnaMove.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
-      Lizzie.frame.toolbar.txtAnaTime.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
-      Lizzie.frame.toolbar.txtAnaPlayouts.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
+      Lizzie.frame.toolbar.txtFirstAnaMove.setFont(
+          new Font(Config.sysDefaultFontName, Font.PLAIN, 12));
+      Lizzie.frame.toolbar.txtLastAnaMove.setFont(
+          new Font(Config.sysDefaultFontName, Font.PLAIN, 12));
+      Lizzie.frame.toolbar.txtAnaTime.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, 12));
+      Lizzie.frame.toolbar.txtAnaPlayouts.setFont(
+          new Font(Config.sysDefaultFontName, Font.PLAIN, 12));
       Lizzie.frame.toolbar.txtAnaFirstPlayouts.setFont(
-          new Font("", Font.PLAIN, Config.frameFontSize));
+          new Font(Config.sysDefaultFontName, Font.PLAIN, 12));
+    } else {
+      Lizzie.frame.toolbar.txtFirstAnaMove.setFont(
+          new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
+      Lizzie.frame.toolbar.txtLastAnaMove.setFont(
+          new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
+      Lizzie.frame.toolbar.txtAnaTime.setFont(
+          new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
+      Lizzie.frame.toolbar.txtAnaPlayouts.setFont(
+          new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
+      Lizzie.frame.toolbar.txtAnaFirstPlayouts.setFont(
+          new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
     }
   }
 

@@ -10,13 +10,13 @@ import javax.swing.event.MenuListener;
 public class JFontMenu extends JMenu {
   public JFontMenu() {
     super();
-    this.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
+    this.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
   }
 
   public JFontMenu(String text) {
     super();
     this.setText(text);
-    this.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
+    this.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
     this.addMenuListener(
         new MenuListener() {
 

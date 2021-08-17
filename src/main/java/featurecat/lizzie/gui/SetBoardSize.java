@@ -82,7 +82,7 @@ public class SetBoardSize extends JDialog {
 
               private DocumentFilter filter = new DigitOnlyFilter();
             });
-    width.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
+    width.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
     buttonPane.add(width);
     width.setColumns(3);
 
@@ -100,7 +100,7 @@ public class SetBoardSize extends JDialog {
               private DocumentFilter filter = new DigitOnlyFilter();
             });
 
-    height.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
+    height.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
     buttonPane.add(height);
     height.setColumns(3);
 

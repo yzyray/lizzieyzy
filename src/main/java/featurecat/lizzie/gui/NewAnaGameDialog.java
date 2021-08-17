@@ -412,7 +412,7 @@ public class NewAnaGameDialog extends JDialog {
     // textFieldHandicap.addPropertyChangeListener(evt -> modifyHandicap());
     textTime = new JTextField();
     textTime.setDocument(new IntDocument());
-    textTime.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
+    textTime.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
     textTime.setText(Lizzie.config.maxGameThinkingTimeSeconds + "");
     chkUseTime.addActionListener(
         new ActionListener() {
@@ -437,7 +437,7 @@ public class NewAnaGameDialog extends JDialog {
     contentPanel.add(chkUsePlayouts, gbc_4); // ("AI每手总计算量(选填)"));
     textPlayouts = new JTextField();
     textPlayouts.setDocument(new IntDocument());
-    textPlayouts.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
+    textPlayouts.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
     textPlayouts.setText(Lizzie.frame.toolbar.txtAutoPlayPlayouts.getText());
     chkUsePlayouts.addActionListener(
         new ActionListener() {
@@ -463,7 +463,8 @@ public class NewAnaGameDialog extends JDialog {
     contentPanel.add(chkUseFirstPlayouts, gbc_5); // ("AI每手首位计算量(选填)"));
     textFirstPlayouts = new JTextField();
     textFirstPlayouts.setDocument(new IntDocument());
-    textFirstPlayouts.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
+    textFirstPlayouts.setFont(
+        new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
     textFirstPlayouts.setText(Lizzie.frame.toolbar.txtAutoPlayFirstPlayouts.getText());
     chkUseFirstPlayouts.addActionListener(
         new ActionListener() {

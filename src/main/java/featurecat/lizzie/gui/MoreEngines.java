@@ -137,7 +137,7 @@ public class MoreEngines extends JPanel {
     this.engineName.setFont(new Font("Microsoft YaHei", 0, 14));
     JFontLabel lblName = new JFontLabel(this.resourceBundle.getString("MoreEngines.lblName"));
     this.txtName = new JFontTextField();
-    this.txtName.setFont(new Font("", 0, Config.frameFontSize));
+    this.txtName.setFont(new Font(Config.sysDefaultFontName, 0, Config.frameFontSize));
     this.txtKomi = new JFontTextField();
     JFontLabel lblInitialCommand =
         new JFontLabel(resourceBundle.getString("MoreEngines.lblInitialCommand"));

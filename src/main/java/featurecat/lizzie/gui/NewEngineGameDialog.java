@@ -120,7 +120,8 @@ public class NewEngineGameDialog extends JDialog {
 
     JTextArea resignThresoldHint =
         new JTextArea(resourceBundle.getString("EnginePkConfig.lblresignGenmove"));
-    resignThresoldHint.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
+    resignThresoldHint.setFont(
+        new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
     resignThresoldHint.setLineWrap(true);
     resignThresoldHint.setFocusable(false);
     resignThresoldHint.setBackground(this.getBackground());
@@ -278,13 +279,14 @@ public class NewEngineGameDialog extends JDialog {
     nf.setGroupingUsed(false);
     textFieldHandicap = new JTextField();
     textFieldHandicap.setDocument(new IntDocument());
-    textFieldHandicap.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
+    textFieldHandicap.setFont(
+        new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
     textFieldHandicap.addPropertyChangeListener(evt -> modifyHandicap());
 
     enginePkBlack = Lizzie.frame.toolbar.enginePkBlack;
-    enginePkBlack.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
+    enginePkBlack.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
     enginePkWhite = Lizzie.frame.toolbar.enginePkWhite;
-    enginePkWhite.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
+    enginePkWhite.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
     JFontButton btnConfig =
         new JFontButton(resourceBundle.getString("NewEngineGameDialog.btnConfig")); // ("更多设置");
     btnConfig.setMargin(new Insets(0, 0, 0, 0));
@@ -847,19 +849,19 @@ public class NewEngineGameDialog extends JDialog {
           }
         });
     Lizzie.frame.toolbar.txtenginePkPlayputs.setFont(
-        new Font("", Font.PLAIN, Lizzie.config.frameFontSize));
+        new Font(Config.sysDefaultFontName, Font.PLAIN, Lizzie.config.frameFontSize));
     Lizzie.frame.toolbar.txtenginePkPlayputsWhite.setFont(
-        new Font("", Font.PLAIN, Lizzie.config.frameFontSize));
+        new Font(Config.sysDefaultFontName, Font.PLAIN, Lizzie.config.frameFontSize));
     Lizzie.frame.toolbar.txtenginePkFirstPlayputsWhite.setFont(
-        new Font("", Font.PLAIN, Lizzie.config.frameFontSize));
+        new Font(Config.sysDefaultFontName, Font.PLAIN, Lizzie.config.frameFontSize));
     Lizzie.frame.toolbar.txtenginePkFirstPlayputs.setFont(
-        new Font("", Font.PLAIN, Lizzie.config.frameFontSize));
+        new Font(Config.sysDefaultFontName, Font.PLAIN, Lizzie.config.frameFontSize));
     Lizzie.frame.toolbar.txtenginePkBatch.setFont(
-        new Font("", Font.PLAIN, Lizzie.config.frameFontSize));
+        new Font(Config.sysDefaultFontName, Font.PLAIN, Lizzie.config.frameFontSize));
     Lizzie.frame.toolbar.txtenginePkTime.setFont(
-        new Font("", Font.PLAIN, Lizzie.config.frameFontSize));
+        new Font(Config.sysDefaultFontName, Font.PLAIN, Lizzie.config.frameFontSize));
     Lizzie.frame.toolbar.txtenginePkTimeWhite.setFont(
-        new Font("", Font.PLAIN, Lizzie.config.frameFontSize));
+        new Font(Config.sysDefaultFontName, Font.PLAIN, Lizzie.config.frameFontSize));
   }
 
   //  private void togglePlayerIsBlack() {
@@ -1012,15 +1014,22 @@ public class NewEngineGameDialog extends JDialog {
   }
 
   private void resetFont() {
-    Lizzie.frame.toolbar.enginePkBlack.setFont(new Font("", Font.PLAIN, 12));
-    Lizzie.frame.toolbar.enginePkWhite.setFont(new Font("", Font.PLAIN, 12));
-    Lizzie.frame.toolbar.txtenginePkPlayputs.setFont(new Font("", Font.PLAIN, 12));
-    Lizzie.frame.toolbar.txtenginePkPlayputsWhite.setFont(new Font("", Font.PLAIN, 12));
-    Lizzie.frame.toolbar.txtenginePkFirstPlayputsWhite.setFont(new Font("", Font.PLAIN, 12));
-    Lizzie.frame.toolbar.txtenginePkFirstPlayputs.setFont(new Font("", Font.PLAIN, 12));
-    Lizzie.frame.toolbar.txtenginePkBatch.setFont(new Font("", Font.PLAIN, 12));
-    Lizzie.frame.toolbar.txtenginePkTime.setFont(new Font("", Font.PLAIN, 12));
-    Lizzie.frame.toolbar.txtenginePkTimeWhite.setFont(new Font("", Font.PLAIN, 12));
+    Lizzie.frame.toolbar.enginePkBlack.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, 12));
+    Lizzie.frame.toolbar.enginePkWhite.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, 12));
+    Lizzie.frame.toolbar.txtenginePkPlayputs.setFont(
+        new Font(Config.sysDefaultFontName, Font.PLAIN, 12));
+    Lizzie.frame.toolbar.txtenginePkPlayputsWhite.setFont(
+        new Font(Config.sysDefaultFontName, Font.PLAIN, 12));
+    Lizzie.frame.toolbar.txtenginePkFirstPlayputsWhite.setFont(
+        new Font(Config.sysDefaultFontName, Font.PLAIN, 12));
+    Lizzie.frame.toolbar.txtenginePkFirstPlayputs.setFont(
+        new Font(Config.sysDefaultFontName, Font.PLAIN, 12));
+    Lizzie.frame.toolbar.txtenginePkBatch.setFont(
+        new Font(Config.sysDefaultFontName, Font.PLAIN, 12));
+    Lizzie.frame.toolbar.txtenginePkTime.setFont(
+        new Font(Config.sysDefaultFontName, Font.PLAIN, 12));
+    Lizzie.frame.toolbar.txtenginePkTimeWhite.setFont(
+        new Font(Config.sysDefaultFontName, Font.PLAIN, 12));
   }
 
   private void placeHandicap(int handicap) {

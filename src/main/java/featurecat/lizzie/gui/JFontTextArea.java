@@ -23,21 +23,21 @@ public class JFontTextArea extends JTextArea implements MouseListener {
   public JFontTextArea() {
     super();
     this.setLineWrap(true);
-    this.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
+    this.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
     init();
   }
 
   public JFontTextArea(String text) {
     super();
     this.setText(text);
-    this.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
+    this.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
     this.setLineWrap(true);
     init();
   }
 
   public JFontTextArea(int rows, int columns) {
     super();
-    this.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
+    this.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
     this.setLineWrap(true);
     this.setRows(rows);
     this.setColumns(columns);

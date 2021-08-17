@@ -4603,7 +4603,7 @@ public class BottomToolbar extends JPanel {
   }
 
   //  public void setFontSize(int fontSize) {
-  //    Font smallFont = new Font("", Font.PLAIN, fontSize);
+  //    Font smallFont = new Font(Config.sysDefaultFontName, Font.PLAIN, fontSize);
   //    deleteMove.setFont(smallFont);
   //    share.setFont(smallFont);
   //    badMoves.setFont(smallFont);

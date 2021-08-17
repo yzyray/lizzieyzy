@@ -1410,7 +1410,7 @@ public class Leelaz {
           //							sendCommandToLeelazWithOutLog("lizzie_use");
           if (params[1].startsWith("KataGo") || isKatago) {
             canAddPlayer = true;
-            if (!Lizzie.config.firstLoadKataGo) {
+            if (Lizzie.config.firstLoadKataGo) {
               Utils.showHtmlMessage(
                   Lizzie.resourceBundle.getString("Message.title"),
                   Lizzie.resourceBundle.getString("Leelaz.kataGoPerformance"));

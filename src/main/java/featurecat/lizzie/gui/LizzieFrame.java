@@ -715,10 +715,12 @@ public class LizzieFrame extends JFrame {
                     ? 20
                     : (Lizzie.config.isFrameFontMiddle() ? 24 : 28)));
 
-    listTable.getTableHeader().setFont(new Font("", Font.PLAIN, Config.frameFontSize));
+    listTable
+        .getTableHeader()
+        .setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
     listTable.setRowHeight(Lizzie.config.menuHeight - 4);
     listTable.getTableHeader().setReorderingAllowed(false);
-    listTable.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
+    listTable.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
     DefaultTableCellRenderer cellRenderer = new DefaultTableCellRenderer();
     DefaultTableCellRenderer cellRenderer2 = new DefaultTableCellRenderer();
     cellRenderer.setBackground(new Color(208, 208, 208));
@@ -1860,9 +1862,11 @@ public class LizzieFrame extends JFrame {
                 Lizzie.config.isFrameFontSmall()
                     ? 20
                     : (Lizzie.config.isFrameFontMiddle() ? 24 : 28)));
-    table.getTableHeader().setFont(new Font("", Font.PLAIN, Config.frameFontSize));
+    table
+        .getTableHeader()
+        .setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
     table.setRowHeight(Lizzie.config.menuHeight - 4);
-    table.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
+    table.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
 
     //    table.getTableHeader().setBackground(new Color(51, 102, 255));
     ////    ((DefaultTableCellRenderer) table.getTableHeader().getDefaultRenderer())

@@ -8,12 +8,12 @@ public class JFontCheckBoxMenuItem extends JCheckBoxMenuItem {
 
   public JFontCheckBoxMenuItem() {
     super();
-    this.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
+    this.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
   }
 
   public JFontCheckBoxMenuItem(String text) {
     super();
     this.setText(text);
-    this.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
+    this.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
   }
 }

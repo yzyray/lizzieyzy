@@ -604,7 +604,7 @@ public class MoveListFrame extends JFrame {
         Lizzie.resourceBundle.getString("Movelistframe.statisticsPanel"), statisticsPanel);
     topPanel.addTab(
         Lizzie.resourceBundle.getString("Movelistframe.topPanle.simpleList"), minTablePanel);
-    topPanel.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
+    topPanel.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
     topPanel.addTab(
         Lizzie.resourceBundle.getString("Movelistframe.topPanle.detailList"), tablePanel);
     topPanel.setSelectedIndex(selectedIndexTop);
@@ -669,7 +669,7 @@ public class MoveListFrame extends JFrame {
     bigMistakePanel = new JPanel();
     bigScoreMistakePanel = new JPanel();
 
-    bottomPanel.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
+    bottomPanel.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
     bottomPanel.addTab(
         Lizzie.resourceBundle.getString("Movelistframe.winrateMatch"), matchPanelAll); // 胜率吻合图
     bottomPanel.addTab(
@@ -2536,7 +2536,7 @@ public class MoveListFrame extends JFrame {
       }
     }
     g.setColor(Color.BLACK);
-    g.setFont(new Font("", Font.PLAIN, 13));
+    g.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, 13));
     if (selectedIndex == 2) {
       g.drawString(
           Lizzie.resourceBundle.getString("Movelistframe.blackAnalyzed")
@@ -2811,7 +2811,7 @@ public class MoveListFrame extends JFrame {
         g.drawString(Lizzie.resourceBundle.getString("Movelistframe.unanalyzedLabel"), 285, 35);
       }
     } else if (selectedIndex == 4) {
-      g.setFont(new Font("", Font.PLAIN, 12));
+      g.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, 12));
       double allBlackWinrateDiff =
           parse1BlackWinrateDiff + parse2BlackWinrateDiff + parse3BlackWinrateDiff;
       double allBlackScoreDiff = parse1BlackScoreDiff + parse2BlackScoreDiff + parse3BlackScoreDiff;
@@ -2896,7 +2896,7 @@ public class MoveListFrame extends JFrame {
           25,
           35);
     } else if (selectedIndex == 5) {
-      g.setFont(new Font("", Font.PLAIN, 12));
+      g.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, 12));
       g.drawString(
           Lizzie.resourceBundle.getString("Movelistframe.blackOpen")
               + Lizzie.config.winrateDiffRange1
@@ -2991,7 +2991,7 @@ public class MoveListFrame extends JFrame {
           5,
           35);
     } else if (selectedIndex == 6) {
-      g.setFont(new Font("", Font.PLAIN, 12));
+      g.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, 12));
       g.drawString(
           Lizzie.resourceBundle.getString("Movelistframe.blackOpen")
               + Lizzie.config.scoreDiffRange1
@@ -3320,7 +3320,7 @@ public class MoveListFrame extends JFrame {
     // int       midline = (int) Math.ceil(winRateGridLines / 2.0);
     //      midy = posy + height / 2;
     //    }
-    g.setFont(new Font("", Font.BOLD, 10));
+    g.setFont(new Font(Config.sysDefaultFontName, Font.BOLD, 10));
     for (int i = 1; i <= winRateGridLines; i++) {
       double percent = i * 100.0 / (winRateGridLines + 1);
       int y = posy + height - (int) (height * percent / 100);
@@ -5122,7 +5122,9 @@ public class MoveListFrame extends JFrame {
           });
       BigMistakeList = AllBigMistakeList;
 
-      FontMetrics fm = g.getFontMetrics(new Font("", Font.PLAIN, Config.frameFontSize - 2));
+      FontMetrics fm =
+          g.getFontMetrics(
+              new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize - 2));
       g.setColor(Color.WHITE);
       int heightFont = fm.getAscent() - fm.getDescent();
       g.setStroke(new BasicStroke(1));
@@ -5188,7 +5190,9 @@ public class MoveListFrame extends JFrame {
           });
       BigMistakeList = AllBigMistakeList;
 
-      FontMetrics fm = g.getFontMetrics(new Font("", Font.PLAIN, Config.frameFontSize - 2));
+      FontMetrics fm =
+          g.getFontMetrics(
+              new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize - 2));
       g.setColor(Color.WHITE);
       int heightFont = fm.getAscent() - fm.getDescent();
       g.setStroke(new BasicStroke(1));
@@ -5693,7 +5697,7 @@ public class MoveListFrame extends JFrame {
               g.setColor(Color.YELLOW);
               g.drawLine(x, 0, x, posy + origParams[3]);
               g.setColor(Color.BLACK);
-              // g.setFont(new Font("", Font.BOLD, 10));
+              // g.setFont(new Font(Config.sysDefaultFontName, Font.BOLD, 10));
               g.drawString(moveNumString, x + 3, posy + this.origParams[3] - 10);
               g.setStroke(preStroke);
               g.setFont(new Font(Lizzie.config.fontName, Font.BOLD, 15));
@@ -5946,7 +5950,7 @@ public class MoveListFrame extends JFrame {
 
         moveNumString = "" + curMove.getData().moveNumber;
         g.setColor(Color.BLACK);
-        g.setFont(new Font("", Font.BOLD, 10));
+        g.setFont(new Font(Config.sysDefaultFontName, Font.BOLD, 10));
         g.drawString(moveNumString, x + 3, posy + this.origParams[3] - 5);
         if (cmovenumCase2 > 0) {
 
@@ -6220,15 +6224,16 @@ public class MoveListFrame extends JFrame {
           - height / 10
     };
     g.fillPolygon(xPoints, yPoints, 3);
-    g.setFont(new Font("", Font.PLAIN, Config.frameFontSize - 2));
-    FontMetrics fm = g.getFontMetrics(new Font("", Font.PLAIN, Config.frameFontSize - 2));
+    g.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize - 2));
+    FontMetrics fm =
+        g.getFontMetrics(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize - 2));
     int widthFont = fm.stringWidth(bigMistakeInfo.moveNumber + "");
     g.drawString(
         bigMistakeInfo.moveNumber + "",
         width / 20 + index * width / 10 - widthFont / 2,
         height - 5);
     //
-    g.setFont(new Font("", Font.PLAIN, Config.frameFontSize));
+    g.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
     g.drawString(
         String.format("%.1f", bigMistakeInfo.diffWinrate) + (isScore ? "" : "%"),
         width / 20 + index * width / 10 + height / 13,

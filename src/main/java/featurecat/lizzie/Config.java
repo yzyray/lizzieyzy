@@ -123,6 +123,7 @@ public class Config {
   public int leelaversion = 17;
   public int minimumBlunderBarWidth = 3;
   public int shadowSize = 75;
+  public static String sysDefaultFontName = "Dialog.plain";
   public String fontName = null;
   public String uiFontName = null;
   public String winrateFontName = null;
