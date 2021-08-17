@@ -404,7 +404,7 @@ public class NewGameDialog extends JDialog {
           }
         });
     btnAboutAdvTime.setBounds(81, 4, 18, 18);
-    // btnNewButton.setMargin(new Insets(0,0, 0,0));
+    btnAboutAdvTime.setFocusable(false);
     panel.add(btnAboutAdvTime);
 
     JFontCheckBox chkUseAdvTime = new JFontCheckBox();

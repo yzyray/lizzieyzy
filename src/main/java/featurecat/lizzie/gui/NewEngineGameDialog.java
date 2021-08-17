@@ -655,8 +655,8 @@ public class NewEngineGameDialog extends JDialog {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
-    JFontButton btnNewButton = new JFontButton(iconSettings); // $NON-NLS-1$
-    btnNewButton.addActionListener(
+    JFontButton aboutAdvanceTimeSettings = new JFontButton(iconSettings); // $NON-NLS-1$
+    aboutAdvanceTimeSettings.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             Utils.showHtmlMessage(
@@ -664,8 +664,9 @@ public class NewEngineGameDialog extends JDialog {
                 resourceBundle.getString("AdvanceTimeSettings.describe"));
           }
         });
-    btnNewButton.setBounds(125, 91, 18, 18);
-    contentPanel.add(btnNewButton);
+    aboutAdvanceTimeSettings.setBounds(125, 91, 18, 18);
+    aboutAdvanceTimeSettings.setFocusable(false);
+    contentPanel.add(aboutAdvanceTimeSettings);
 
     chkUseAdvanceTime = new JCheckBox(); // $NON-NLS-1$
     chkUseAdvanceTime.setBounds(143, 88, 20, 20);
