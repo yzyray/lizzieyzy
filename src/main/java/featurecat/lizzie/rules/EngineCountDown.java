@@ -187,37 +187,29 @@ public class EngineCountDown {
           currentCountDownMoves = countDownMoves;
           currentCountDownSecondsF = countDownSecondsF;
         }
-        engine.timeLeft(
-            color,
-            String.format("%.2f", currentCountDownSecondsF),
-            currentCountDownMoves,
-            isDuringMove);
+        engine.timeLeft(color, currentCountDownSecondsF, currentCountDownMoves, isDuringMove);
       } else {
-        engine.timeLeft(color, String.format("%.2f", currentMainSecondsF), 0, isDuringMove);
+        engine.timeLeft(color, currentMainSecondsF, 0, isDuringMove);
       }
     } else if (type == TimeType.kata_Traditional_byoyomi) {
       if (currentMainSecondsF <= 0) {
         currentCountDownSecondsF = countDownSecondsF;
-        engine.timeLeft(
-            color,
-            String.format("%.2f", currentCountDownSecondsF),
-            currentCountDownTimes,
-            isDuringMove);
+        engine.timeLeft(color, currentCountDownSecondsF, currentCountDownTimes, isDuringMove);
       } else {
-        engine.timeLeft(color, String.format("%.2f", currentMainSecondsF), 0, isDuringMove);
+        engine.timeLeft(color, currentMainSecondsF, 0, isDuringMove);
       }
     } else if (type == TimeType.kata_Fisher) {
       currentMainSecondsF = currentMainSecondsF + fischerIcrementSeconds;
-      engine.timeLeft(color, String.format("%.2f", currentMainSecondsF), 0, isDuringMove);
+      engine.timeLeft(color, currentMainSecondsF, 0, isDuringMove);
     } else if (type == TimeType.kata_Fisher_capped) {
       currentMainSecondsF = currentMainSecondsF + fischerIcrementSeconds;
       if (MainSecondsLimit > 0)
         currentMainSecondsF = Math.min(currentMainSecondsF, MainSecondsLimit);
       float thisMoveTime = currentMainSecondsF;
       if (MaxSecondsPerMove > 0) thisMoveTime = Math.min(MaxSecondsPerMove, thisMoveTime);
-      engine.timeLeft(color, String.format("%.2f", thisMoveTime), 0, isDuringMove);
+      engine.timeLeft(color, thisMoveTime, 0, isDuringMove);
     } else if (type == TimeType.kata_Absolute) {
-      engine.timeLeft(color, String.format("%.2f", currentMainSecondsF), 0, isDuringMove);
+      engine.timeLeft(color, currentMainSecondsF, 0, isDuringMove);
     }
   }
 
@@ -236,20 +228,18 @@ public class EngineCountDown {
         }
       }
     } else if (type == TimeType.kata_Canadian_byoyomi) {
-      if (currentMainSecondsF >= 0.01F) {
+      if (currentMainSecondsF > 0) {
         currentMainSecondsF = currentMainSecondsF - 0.01F;
       } else {
-        currentMainSecondsF = 0;
-        if (currentCountDownSecondsF >= 0.01F) {
+        if (currentCountDownSecondsF > 0) {
           currentCountDownSecondsF = currentCountDownSecondsF - 0.01F;
         }
       }
     } else if (type == TimeType.kata_Traditional_byoyomi) {
-      if (currentMainSecondsF >= 0.01F) {
+      if (currentMainSecondsF > 0) {
         currentMainSecondsF = currentMainSecondsF - 0.01F;
       } else {
-        currentMainSecondsF = 0;
-        if (currentCountDownSecondsF >= 0.01F) {
+        if (currentCountDownSecondsF > 0) {
           currentCountDownSecondsF = currentCountDownSecondsF - 0.01F;
         } else if (currentCountDownTimes > 0) {
           currentCountDownTimes--;
@@ -257,18 +247,18 @@ public class EngineCountDown {
         }
       }
     } else if (type == TimeType.kata_Fisher) {
-      if (currentMainSecondsF >= 0.01F) {
+      if (currentMainSecondsF > 0) {
         currentMainSecondsF = currentMainSecondsF - 0.01F;
       }
     } else if (type == TimeType.kata_Fisher_capped) {
-      if (currentMainSecondsF >= 0.01F) {
+      if (currentMainSecondsF > 0) {
         currentMainSecondsF = currentMainSecondsF - 0.01F;
       }
     }
     if (type == TimeType.kata_Absolute) {
-      if (currentMainSecondsF >= 0.01F) {
+      if (currentMainSecondsF > 0) {
         currentMainSecondsF = currentMainSecondsF - 0.01F;
-      }
+      } else currentMainSecondsF = 0;
     }
   }
 }

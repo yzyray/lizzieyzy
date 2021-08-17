@@ -3485,12 +3485,14 @@ public class Leelaz {
   }
 
   public void timeLeft(String color, int seconds, int moves, boolean isDuringMove) {
+    seconds = Math.max(0, seconds);
     sendCommand("time_left " + color + " " + seconds + " " + moves);
     if (isDuringMove) currentCmdNum++;
   }
 
-  public void timeLeft(String color, String seconds, int moves, boolean isDuringMove) {
-    sendCommand("time_left " + color + " " + seconds + " " + moves);
+  public void timeLeft(String color, float seconds, int moves, boolean isDuringMove) {
+    seconds = Math.max(0, seconds);
+    sendCommand("time_left " + color + " " + String.format("%.2f", seconds) + " " + moves);
     if (isDuringMove) currentCmdNum++;
   }
 }
