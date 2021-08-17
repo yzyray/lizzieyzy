@@ -238,17 +238,23 @@ public class EngineCountDown {
     } else if (type == TimeType.kata_Canadian_byoyomi) {
       if (currentMainSecondsF >= 0.01F) {
         currentMainSecondsF = currentMainSecondsF - 0.01F;
-      } else if (currentCountDownSecondsF >= 0.01F) {
-        currentCountDownSecondsF = currentCountDownSecondsF - 0.01F;
+      } else {
+        currentMainSecondsF = 0;
+        if (currentCountDownSecondsF >= 0.01F) {
+          currentCountDownSecondsF = currentCountDownSecondsF - 0.01F;
+        }
       }
     } else if (type == TimeType.kata_Traditional_byoyomi) {
       if (currentMainSecondsF >= 0.01F) {
         currentMainSecondsF = currentMainSecondsF - 0.01F;
-      } else if (currentCountDownSecondsF >= 0.01F) {
-        currentCountDownSecondsF = currentCountDownSecondsF - 0.01F;
-      } else if (currentCountDownTimes > 0) {
-        currentCountDownTimes--;
-        sendTimeLeft(true);
+      } else {
+        currentMainSecondsF = 0;
+        if (currentCountDownSecondsF >= 0.01F) {
+          currentCountDownSecondsF = currentCountDownSecondsF - 0.01F;
+        } else if (currentCountDownTimes > 0) {
+          currentCountDownTimes--;
+          sendTimeLeft(true);
+        }
       }
     } else if (type == TimeType.kata_Fisher) {
       if (currentMainSecondsF >= 0.01F) {
