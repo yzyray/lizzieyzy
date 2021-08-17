@@ -40,7 +40,7 @@ public class FirstUseSettings extends JDialog {
         this,
         Lizzie.config.isFrameFontSmall() ? 656 : (Lizzie.config.isFrameFontMiddle() ? 785 : 955),
         524);
-    setLocationRelativeTo(null);
+    setLocationRelativeTo(Lizzie.frame != null ? Lizzie.frame : null);
     getContentPane().setLayout(null);
 
     ImageIcon iconSettings = new ImageIcon();

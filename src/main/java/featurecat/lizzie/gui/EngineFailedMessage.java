@@ -155,7 +155,7 @@ public class EngineFailedMessage extends JDialog {
               }
             });
 
-    setLocationRelativeTo(null);
+    setLocationRelativeTo(Lizzie.frame != null ? Lizzie.frame : null);
     setVisible(true);
     setVisible(false);
   }

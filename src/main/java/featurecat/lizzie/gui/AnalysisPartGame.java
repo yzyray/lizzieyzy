@@ -87,6 +87,6 @@ public class AnalysisPartGame extends JDialog {
                 "AnalysisPartGame.lblNotice")); // ("注:手数为空代表从第一手开始分析/分析到最后一手为止");
     lblNotice.setBounds(10, 33, 601, 23);
     getContentPane().add(lblNotice);
-    setLocationRelativeTo(null);
+    setLocationRelativeTo(Lizzie.frame != null ? Lizzie.frame : null);
   }
 }

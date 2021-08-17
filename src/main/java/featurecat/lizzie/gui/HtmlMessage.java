@@ -78,6 +78,6 @@ public class HtmlMessage extends JDialog {
       e.printStackTrace();
     }
     pack();
-    setLocationRelativeTo(null);
+    setLocationRelativeTo(Lizzie.frame != null ? Lizzie.frame : null);
   }
 }

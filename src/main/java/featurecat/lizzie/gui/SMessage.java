@@ -43,7 +43,7 @@ public class SMessage extends JDialog {
     }
     int height = 80 + (rows - 1) * Config.menuHeight;
     setSize(width, height);
-    setLocationRelativeTo(null);
+    setLocationRelativeTo(Lizzie.frame != null ? Lizzie.frame : null);
     setVisible(true);
     Lizzie.setFrameSize(this, width, height);
     this.setModal(true);
@@ -54,7 +54,7 @@ public class SMessage extends JDialog {
     String regex = "[\u4e00-\u9fa5]";
     lblMessage.setText(message);
     setSize((int) (message.replaceAll(regex, "12").length() * (Config.frameFontSize / 1.6)), 80);
-    setLocationRelativeTo(null);
+    setLocationRelativeTo(Lizzie.frame);
     setVisible(true);
     Lizzie.setFrameSize(
         this, (int) (message.replaceAll(regex, "12").length() * (Config.frameFontSize / 1.6)), 80);

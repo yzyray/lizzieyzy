@@ -38,7 +38,7 @@ public class Discribe extends JDialog {
     textAreaDiscribe.setText(message);
     setTitle(title);
     // setSize(441, 272);
-    setLocationRelativeTo(null);
+    setLocationRelativeTo(Lizzie.frame != null ? Lizzie.frame : null);
     setVisible(true);
     // setSize(441, 273);
     if (Lizzie.config.isFrameFontSmall()) Lizzie.setFrameSize(this, 441, 273);
@@ -57,7 +57,7 @@ public class Discribe extends JDialog {
     textAreaDiscribe.setText(message);
     setTitle(title);
     // setSize(441, 272);
-    setLocationRelativeTo(null);
+    setLocationRelativeTo(Lizzie.frame != null ? Lizzie.frame : null);
     setVisible(true);
     // setSize(441, 273);
     if (Lizzie.config.isFrameFontSmall()) Lizzie.setFrameSize(this, 541, 200);
@@ -76,7 +76,7 @@ public class Discribe extends JDialog {
     textAreaDiscribe.setText(message);
     setTitle(title);
     setSize(width, height);
-    setLocationRelativeTo(null);
+    setLocationRelativeTo(Lizzie.frame != null ? Lizzie.frame : null);
     setVisible(true);
     // setSize(441, 273);
     Lizzie.setFrameSize(this, width, height);

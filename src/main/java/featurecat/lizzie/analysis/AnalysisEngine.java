@@ -416,7 +416,7 @@ public class AnalysisEngine {
       sendCommand(testRequest.toString());
       waitFrame = new WaitForAnalysis();
       if (Lizzie.config.analysisEnginePreLoad) waitFrame.setProgress(0, analyzeNumberCount);
-      waitFrame.setLocationRelativeTo(null);
+      waitFrame.setLocationRelativeTo(Lizzie.frame != null ? Lizzie.frame : null);
       waitFrame.setVisible(true);
     } else if (Lizzie.frame.isBatchAnalysisMode) {
       Lizzie.frame.flashAutoAnaSaveAndLoad();

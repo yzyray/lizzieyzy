@@ -259,7 +259,7 @@ public class AnalysisSettings extends JDialog {
 
     getContentPane().add(chkUseJavaSSH);
     getContentPane().add(setRemoteEngine);
-    setLocationRelativeTo(null);
+    setLocationRelativeTo(Lizzie.frame != null ? Lizzie.frame : null);
   }
 
   private class LinkLabel extends JTextPane {

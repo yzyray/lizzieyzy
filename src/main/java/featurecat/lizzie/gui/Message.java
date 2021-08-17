@@ -41,7 +41,7 @@ public class Message extends JDialog {
     lblmessage.setText(message);
     setSize(
         (int) (message.replaceAll(regex, "12").length() * (Lizzie.config.frameFontSize / 1.6)), 80);
-    setLocationRelativeTo(null);
+    setLocationRelativeTo(Lizzie.frame != null ? Lizzie.frame : null);
     setVisible(true);
     Lizzie.setFrameSize(
         this,
@@ -57,7 +57,7 @@ public class Message extends JDialog {
     lblmessage.setText(message);
     setSize(
         (int) (message.replaceAll(regex, "12").length() * (Lizzie.config.frameFontSize / 1.6)), 80);
-    setLocationRelativeTo(null);
+    setLocationRelativeTo(Lizzie.frame != null ? Lizzie.frame : null);
     setVisible(true);
     Lizzie.setFrameSize(
         this,
@@ -72,7 +72,7 @@ public class Message extends JDialog {
     lblmessage.setText(message);
     setSize(
         (int) (message.replaceAll(regex, "12").length() * (Lizzie.config.frameFontSize / 1.6)), 80);
-    setLocationRelativeTo(null);
+    setLocationRelativeTo(Lizzie.frame != null ? Lizzie.frame : null);
     setVisible(true);
     Lizzie.setFrameSize(
         this,
