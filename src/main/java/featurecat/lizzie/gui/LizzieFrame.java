@@ -3010,15 +3010,15 @@ public class LizzieFrame extends JFrame {
       if (needCountDown) {
         Lizzie.engineManager.playingAgainstHumanEngineCountDown = new EngineCountDown();
         if (!Lizzie.engineManager.playingAgainstHumanEngineCountDown.setEngineCountDown(
-            Lizzie.config.advanceTimeTxt, Lizzie.leelaz))
+            Lizzie.config.advanceTimeTxt, Lizzie.leelaz)) {
           Lizzie.engineManager.playingAgainstHumanEngineCountDown = null;
-        Lizzie.engineManager.playingAgainstHumanEngineCountDown.initialize(
-            !Lizzie.frame.playerIsBlack);
-        Lizzie.engineManager.StartCountDown();
-
-        if (Lizzie.engineManager.playingAgainstHumanEngineCountDown == null)
           Utils.showMsgNoModal(
               resourceBundle.getString("EngineManager.parseAdvcanceTimeSettingsFailed"));
+        } else {
+          Lizzie.engineManager.playingAgainstHumanEngineCountDown.initialize(
+              !Lizzie.frame.playerIsBlack);
+          Lizzie.engineManager.StartCountDown();
+        }
       }
     } else {
       Lizzie.leelaz.sendCommand(

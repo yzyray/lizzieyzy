@@ -5,6 +5,7 @@ import static java.lang.Math.round;
 import featurecat.lizzie.Config;
 import featurecat.lizzie.Lizzie;
 import featurecat.lizzie.gui.EngineData;
+import featurecat.lizzie.gui.HtmlMessage;
 import featurecat.lizzie.gui.LizzieFrame;
 import featurecat.lizzie.gui.Message;
 import featurecat.lizzie.gui.RemoteEngineData;
@@ -49,6 +50,11 @@ public class Utils {
   public static String pwd = java.io.File.separator;
   private static int msemaphoretryroom = 1;
   private static boolean alertedNoByoyomiSoundFile = false;
+
+  public static void showHtmlMessage(String title, String content) {
+    HtmlMessage htmlMessage = new HtmlMessage(title, content);
+    htmlMessage.setVisible(true);
+  }
 
   public static void addFiller(JComponent component, int width, int height) {
     Dimension FILLER_DIMENSION = new Dimension(width, height);

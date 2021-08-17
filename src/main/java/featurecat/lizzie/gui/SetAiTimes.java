@@ -2,6 +2,7 @@ package featurecat.lizzie.gui;
 
 import featurecat.lizzie.Config;
 import featurecat.lizzie.Lizzie;
+import featurecat.lizzie.util.Utils;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -152,12 +153,9 @@ public class SetAiTimes extends JDialog {
     btnNewButton.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            Discribe advancedTimeDiscribe = new Discribe();
-            advancedTimeDiscribe.setInfo(
-                resourceBundle.getString("AdvanceTimeSettings.descibe"),
+            Utils.showHtmlMessage(
                 resourceBundle.getString("AdvanceTimeSettings.title"),
-                600,
-                300);
+                resourceBundle.getString("AdvanceTimeSettings.describe"));
           }
         });
     btnNewButton.setBounds(144, 77, 18, 18);

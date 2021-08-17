@@ -659,12 +659,9 @@ public class NewEngineGameDialog extends JDialog {
     btnNewButton.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            Discribe advancedTimeDiscribe = new Discribe();
-            advancedTimeDiscribe.setInfo(
-                resourceBundle.getString("AdvanceTimeSettings.descibe"),
+            Utils.showHtmlMessage(
                 resourceBundle.getString("AdvanceTimeSettings.title"),
-                600,
-                300);
+                resourceBundle.getString("AdvanceTimeSettings.describe"));
           }
         });
     btnNewButton.setBounds(125, 91, 18, 18);
@@ -810,7 +807,7 @@ public class NewEngineGameDialog extends JDialog {
           }
         });
     cbxRandomSgf.setSelectedIndex(Lizzie.config.engineSgfStartRandom ? 1 : 0);
-    if (Lizzie.config.pkAdvanceTimeSettings) {
+    if (Lizzie.config.pkAdvanceTimeSettings && Lizzie.frame.toolbar.isGenmoveToolbar) {
       Lizzie.frame.toolbar.chkenginePkTime.setEnabled(false);
       txtBlackAdvanceTime.setEnabled(true);
       txtWhiteAdvanceTime.setEnabled(true);

@@ -50,7 +50,7 @@ public class EngineCountDown {
     if (paramsLength >= 2) {
       if (params[0].equals("time_settings") && paramsLength == 4) {
         try {
-          MainSeconds = Integer.parseInt(params[1]) * 60;
+          MainSeconds = Integer.parseInt(params[1]);
           countDownSeconds = Integer.parseInt(params[2]);
           countDownMoves = Integer.parseInt(params[3]);
           this.engine = engine;
@@ -70,7 +70,7 @@ public class EngineCountDown {
 
           if (params[1].equals("absolute") && paramsLength == 3) {
             try {
-              MainSecondsF = Float.parseFloat(params[2]) * 60f;
+              MainSecondsF = Float.parseFloat(params[2]);
               this.engine = engine;
               this.type = TimeType.kata_Absolute;
               return true;
@@ -82,7 +82,7 @@ public class EngineCountDown {
 
           if (params[1].equals("canadian") && paramsLength == 5) {
             try {
-              MainSecondsF = Float.parseFloat(params[2]) * 60f;
+              MainSecondsF = Float.parseFloat(params[2]);
               countDownSecondsF = Float.parseFloat(params[3]);
               countDownMoves = Integer.parseInt(params[4]);
               this.engine = engine;
@@ -96,7 +96,7 @@ public class EngineCountDown {
 
           if (params[1].equals("byoyomi") && paramsLength == 5) {
             try {
-              MainSecondsF = Float.parseFloat(params[2]) * 60f;
+              MainSecondsF = Float.parseFloat(params[2]);
               countDownSecondsF = Float.parseFloat(params[3]);
               countDownTimes = Integer.parseInt(params[4]);
               this.engine = engine;
@@ -110,7 +110,7 @@ public class EngineCountDown {
 
           if (params[1].equals("fischer") && paramsLength == 4) {
             try {
-              MainSecondsF = Float.parseFloat(params[2]) * 60f;
+              MainSecondsF = Float.parseFloat(params[2]);
               fischerIcrementSeconds = Float.parseFloat(params[3]);
               this.engine = engine;
               this.type = TimeType.kata_Fisher;
@@ -123,10 +123,13 @@ public class EngineCountDown {
 
           if (params[1].equals("fischer-capped") && paramsLength == 6) {
             try {
-              MainSecondsF = Float.parseFloat(params[2]) * 60f;
+              MainSecondsF = Float.parseFloat(params[2]);
               fischerIcrementSeconds = Float.parseFloat(params[3]);
               MainSecondsLimit = Float.parseFloat(params[4]);
               MaxSecondsPerMove = Float.parseFloat(params[5]);
+              if (MainSecondsLimit > 0) {
+                if (MainSecondsLimit < MainSecondsF) return false;
+              }
               this.engine = engine;
               this.type = TimeType.kata_Fisher_capped;
               return true;
@@ -156,10 +159,16 @@ public class EngineCountDown {
       currentMainSecondsF = MainSecondsF;
       currentCountDownSecondsF = countDownSecondsF;
       currentCountDownTimes = countDownTimes;
+    } else if (type == TimeType.kata_Fisher) {
+      currentMainSecondsF = MainSecondsF;
+    } else if (type == TimeType.kata_Fisher_capped) {
+      currentMainSecondsF = MainSecondsF;
+    } else if (type == TimeType.kata_Absolute) {
+      currentMainSecondsF = MainSecondsF;
     }
   }
 
-  public void sendTimeLeft() {
+  public void sendTimeLeft(boolean isDuringMove) {
     if (type == TimeType.Canadian_byoyomi) {
       if (currentMainSeconds <= 0) {
         currentCountDownMoves--;
@@ -167,9 +176,9 @@ public class EngineCountDown {
           currentCountDownMoves = countDownMoves;
           currentCountDownSeconds = countDownSeconds;
         }
-        engine.timeLeft(color, currentCountDownSeconds, currentCountDownMoves);
+        engine.timeLeft(color, currentCountDownSeconds, currentCountDownMoves, isDuringMove);
       } else {
-        engine.timeLeft(color, currentMainSeconds, 0);
+        engine.timeLeft(color, currentMainSeconds, 0, isDuringMove);
       }
     } else if (type == TimeType.kata_Canadian_byoyomi) {
       if (currentMainSecondsF <= 0) {
@@ -179,10 +188,36 @@ public class EngineCountDown {
           currentCountDownSecondsF = countDownSecondsF;
         }
         engine.timeLeft(
-            color, String.format("%.2f", currentCountDownSecondsF), currentCountDownMoves);
+            color,
+            String.format("%.2f", currentCountDownSecondsF),
+            currentCountDownMoves,
+            isDuringMove);
       } else {
-        engine.timeLeft(color, String.format("%.2f", currentMainSecondsF), 0);
+        engine.timeLeft(color, String.format("%.2f", currentMainSecondsF), 0, isDuringMove);
       }
+    } else if (type == TimeType.kata_Traditional_byoyomi) {
+      if (currentMainSecondsF <= 0) {
+        currentCountDownSecondsF = countDownSecondsF;
+        engine.timeLeft(
+            color,
+            String.format("%.2f", currentCountDownSecondsF),
+            currentCountDownTimes,
+            isDuringMove);
+      } else {
+        engine.timeLeft(color, String.format("%.2f", currentMainSecondsF), 0, isDuringMove);
+      }
+    } else if (type == TimeType.kata_Fisher) {
+      currentMainSecondsF = currentMainSecondsF + fischerIcrementSeconds;
+      engine.timeLeft(color, String.format("%.2f", currentMainSecondsF), 0, isDuringMove);
+    } else if (type == TimeType.kata_Fisher_capped) {
+      currentMainSecondsF = currentMainSecondsF + fischerIcrementSeconds;
+      if (MainSecondsLimit > 0)
+        currentMainSecondsF = Math.min(currentMainSecondsF, MainSecondsLimit);
+      float thisMoveTime = currentMainSecondsF;
+      if (MaxSecondsPerMove > 0) thisMoveTime = Math.min(MaxSecondsPerMove, thisMoveTime);
+      engine.timeLeft(color, String.format("%.2f", thisMoveTime), 0, isDuringMove);
+    } else if (type == TimeType.kata_Absolute) {
+      engine.timeLeft(color, String.format("%.2f", currentMainSecondsF), 0, isDuringMove);
     }
   }
 
@@ -201,10 +236,32 @@ public class EngineCountDown {
         }
       }
     } else if (type == TimeType.kata_Canadian_byoyomi) {
-      if (currentMainSecondsF > 0) {
+      if (currentMainSecondsF >= 0.01F) {
         currentMainSecondsF = currentMainSecondsF - 0.01F;
-      } else if (currentCountDownSecondsF > 0) {
+      } else if (currentCountDownSecondsF >= 0.01F) {
         currentCountDownSecondsF = currentCountDownSecondsF - 0.01F;
+      }
+    } else if (type == TimeType.kata_Traditional_byoyomi) {
+      if (currentMainSecondsF >= 0.01F) {
+        currentMainSecondsF = currentMainSecondsF - 0.01F;
+      } else if (currentCountDownSecondsF >= 0.01F) {
+        currentCountDownSecondsF = currentCountDownSecondsF - 0.01F;
+      } else if (currentCountDownTimes > 0) {
+        currentCountDownTimes--;
+        sendTimeLeft(true);
+      }
+    } else if (type == TimeType.kata_Fisher) {
+      if (currentMainSecondsF >= 0.01F) {
+        currentMainSecondsF = currentMainSecondsF - 0.01F;
+      }
+    } else if (type == TimeType.kata_Fisher_capped) {
+      if (currentMainSecondsF >= 0.01F) {
+        currentMainSecondsF = currentMainSecondsF - 0.01F;
+      }
+    }
+    if (type == TimeType.kata_Absolute) {
+      if (currentMainSecondsF >= 0.01F) {
+        currentMainSecondsF = currentMainSecondsF - 0.01F;
       }
     }
   }

@@ -98,11 +98,11 @@ public class Config {
   public boolean whiteSuggestionWhite = false;
   public boolean whiteSuggestionOrderWhite = false;
   public boolean advanceTimeSettings = false;
-  public String advanceTimeTxt = "time_settings 10 2 1";
+  public String advanceTimeTxt = "time_settings 120 2 1";
 
   public boolean pkAdvanceTimeSettings = false;
-  public String advanceBlackTimeTxt = "time_settings 10 2 1";
-  public String advanceWhiteTimeTxt = "time_settings 10 2 1";
+  public String advanceBlackTimeTxt = "time_settings 120 2 1";
+  public String advanceWhiteTimeTxt = "time_settings 120 2 1";
 
   public int extraMode = 0;
 

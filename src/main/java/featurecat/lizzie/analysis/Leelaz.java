@@ -1410,9 +1410,10 @@ public class Leelaz {
           //							sendCommandToLeelazWithOutLog("lizzie_use");
           if (params[1].startsWith("KataGo") || isKatago) {
             canAddPlayer = true;
-            if (Lizzie.config.firstLoadKataGo) {
-              SMessage msg = new SMessage();
-              msg.setMessage(Lizzie.resourceBundle.getString("Leelaz.kataGoPerformance"), 3);
+            if (!Lizzie.config.firstLoadKataGo) {
+              Utils.showHtmlMessage(
+                  Lizzie.resourceBundle.getString("Message.title"),
+                  Lizzie.resourceBundle.getString("Leelaz.kataGoPerformance"));
               Lizzie.config.firstLoadKataGo = false;
               Lizzie.config.uiConfig.put("first-load-katago", Lizzie.config.firstLoadKataGo);
             }
@@ -3483,11 +3484,13 @@ public class Leelaz {
     modifyNumber = 0;
   }
 
-  public void timeLeft(String color, int seconds, int moves) {
+  public void timeLeft(String color, int seconds, int moves, boolean isDuringMove) {
     sendCommand("time_left " + color + " " + seconds + " " + moves);
+    if (isDuringMove) currentCmdNum++;
   }
 
-  public void timeLeft(String color, String seconds, int moves) {
+  public void timeLeft(String color, String seconds, int moves, boolean isDuringMove) {
     sendCommand("time_left " + color + " " + seconds + " " + moves);
+    if (isDuringMove) currentCmdNum++;
   }
 }

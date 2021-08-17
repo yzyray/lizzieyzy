@@ -1752,18 +1752,18 @@ public class Board {
       if (EngineManager.isEngineGame) {
         if (color.isBlack()) {
           if (Lizzie.engineManager.firstEngineCountDown != null
-              && Lizzie.engineManager.firstEngineCountDown.isPlayBlack)
-            Lizzie.engineManager.firstEngineCountDown.sendTimeLeft();
-          else if (Lizzie.engineManager.secondEngineCountDown != null
-              && Lizzie.engineManager.secondEngineCountDown.isPlayBlack)
-            Lizzie.engineManager.secondEngineCountDown.sendTimeLeft();
-        } else {
-          if (Lizzie.engineManager.firstEngineCountDown != null
               && !Lizzie.engineManager.firstEngineCountDown.isPlayBlack)
-            Lizzie.engineManager.firstEngineCountDown.sendTimeLeft();
+            Lizzie.engineManager.firstEngineCountDown.sendTimeLeft(false);
           else if (Lizzie.engineManager.secondEngineCountDown != null
               && !Lizzie.engineManager.secondEngineCountDown.isPlayBlack)
-            Lizzie.engineManager.secondEngineCountDown.sendTimeLeft();
+            Lizzie.engineManager.secondEngineCountDown.sendTimeLeft(false);
+        } else {
+          if (Lizzie.engineManager.firstEngineCountDown != null
+              && Lizzie.engineManager.firstEngineCountDown.isPlayBlack)
+            Lizzie.engineManager.firstEngineCountDown.sendTimeLeft(false);
+          else if (Lizzie.engineManager.secondEngineCountDown != null
+              && Lizzie.engineManager.secondEngineCountDown.isPlayBlack)
+            Lizzie.engineManager.secondEngineCountDown.sendTimeLeft(false);
         }
       }
       if (forManual && !Lizzie.frame.isPlayingAgainstLeelaz && !Lizzie.leelaz.isInputCommand) {
@@ -1803,7 +1803,7 @@ public class Board {
       } else if (Lizzie.frame.isPlayingAgainstLeelaz
           && Lizzie.frame.playerIsBlack == getData().blackToPlay) {
         if (Lizzie.engineManager.playingAgainstHumanEngineCountDown != null)
-          Lizzie.engineManager.playingAgainstHumanEngineCountDown.sendTimeLeft();
+          Lizzie.engineManager.playingAgainstHumanEngineCountDown.sendTimeLeft(false);
         Lizzie.leelaz.playMove(color, convertCoordinatesToName(x, y), true);
         Lizzie.leelaz.genmove((Lizzie.board.getData().blackToPlay ? "w" : "b"));
       } else if (!Lizzie.frame.isPlayingAgainstLeelaz

@@ -398,12 +398,9 @@ public class NewGameDialog extends JDialog {
     btnAboutAdvTime.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            Discribe advancedTimeDiscribe = new Discribe();
-            advancedTimeDiscribe.setInfo(
-                resourceBundle.getString("AdvanceTimeSettings.descibe"),
+            Utils.showHtmlMessage(
                 resourceBundle.getString("AdvanceTimeSettings.title"),
-                600,
-                300);
+                resourceBundle.getString("AdvanceTimeSettings.describe"));
           }
         });
     btnAboutAdvTime.setBounds(81, 4, 18, 18);

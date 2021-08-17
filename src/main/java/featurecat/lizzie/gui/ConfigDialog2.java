@@ -57,6 +57,8 @@ import javax.imageio.ImageIO;
 import javax.swing.AbstractCellEditor;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -78,6 +80,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
+import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.ListCellRenderer;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
@@ -351,58 +354,56 @@ public class ConfigDialog2 extends JDialog {
 
     lblOriginLizzieInfo.setFont(new Font("Tahoma", Font.PLAIN, 14));
     // 注释这里
-    //    GroupLayout gl = new GroupLayout(aboutTab);
-    //    gl.setHorizontalGroup(
-    //        gl.createParallelGroup(Alignment.LEADING)
-    //            .addGroup(
-    //                gl.createSequentialGroup()
-    //                    .addGroup(
-    //                        gl.createParallelGroup(Alignment.LEADING)
-    //                            .addGroup(
-    //                                gl.createSequentialGroup()
-    //                                    .addContainerGap()
-    //                                    .addComponent(
-    //                                        lblLizzieInfo,
-    //                                        GroupLayout.DEFAULT_SIZE,
-    //                                        628,
-    //                                        Short.MAX_VALUE))
-    //                            .addGroup(
-    //                                gl.createSequentialGroup()
-    //                                    .addContainerGap()
-    //                                    .addComponent(lblOriginTitle))
-    //                            .addGroup(
-    //                                gl.createSequentialGroup()
-    //                                    .addContainerGap()
-    //                                    .addComponent(
-    //                                        lblOriginLizzieInfo,
-    //                                        GroupLayout.PREFERRED_SIZE,
-    //                                        620,
-    //                                        GroupLayout.PREFERRED_SIZE))
-    //                            .addGroup(
-    //
-    // gl.createSequentialGroup().addComponent(lblLizzieName).addGap(225)))
-    //                    .addContainerGap()));
-    //    gl.setVerticalGroup(
-    //        gl.createParallelGroup(Alignment.LEADING)
-    //            .addGroup(
-    //                gl.createSequentialGroup()
-    //                    .addGap(18)
-    //                    .addComponent(lblLizzieName)
-    //                    .addGap(18)
-    //                    .addPreferredGap(ComponentPlacement.RELATED)
-    //                    .addComponent(
-    //                        lblLizzieInfo, GroupLayout.PREFERRED_SIZE, 183,
-    // GroupLayout.PREFERRED_SIZE)
-    //                    .addPreferredGap(ComponentPlacement.RELATED)
-    //                    .addComponent(lblOriginTitle)
-    //                    .addPreferredGap(ComponentPlacement.RELATED)
-    //                    .addComponent(
-    //                        lblOriginLizzieInfo,
-    //                        GroupLayout.PREFERRED_SIZE,
-    //                        282,
-    //                        GroupLayout.PREFERRED_SIZE)
-    //                    .addGap(126)));
-    //    aboutTab.setLayout(gl);
+    GroupLayout gl = new GroupLayout(aboutTab);
+    gl.setHorizontalGroup(
+        gl.createParallelGroup(Alignment.LEADING)
+            .addGroup(
+                gl.createSequentialGroup()
+                    .addGroup(
+                        gl.createParallelGroup(Alignment.LEADING)
+                            .addGroup(
+                                gl.createSequentialGroup()
+                                    .addContainerGap()
+                                    .addComponent(
+                                        lblLizzieInfo,
+                                        GroupLayout.DEFAULT_SIZE,
+                                        628,
+                                        Short.MAX_VALUE))
+                            .addGroup(
+                                gl.createSequentialGroup()
+                                    .addContainerGap()
+                                    .addComponent(lblOriginTitle))
+                            .addGroup(
+                                gl.createSequentialGroup()
+                                    .addContainerGap()
+                                    .addComponent(
+                                        lblOriginLizzieInfo,
+                                        GroupLayout.PREFERRED_SIZE,
+                                        620,
+                                        GroupLayout.PREFERRED_SIZE))
+                            .addGroup(
+                                gl.createSequentialGroup().addComponent(lblLizzieName).addGap(225)))
+                    .addContainerGap()));
+    gl.setVerticalGroup(
+        gl.createParallelGroup(Alignment.LEADING)
+            .addGroup(
+                gl.createSequentialGroup()
+                    .addGap(18)
+                    .addComponent(lblLizzieName)
+                    .addGap(18)
+                    .addPreferredGap(ComponentPlacement.RELATED)
+                    .addComponent(
+                        lblLizzieInfo, GroupLayout.PREFERRED_SIZE, 183, GroupLayout.PREFERRED_SIZE)
+                    .addPreferredGap(ComponentPlacement.RELATED)
+                    .addComponent(lblOriginTitle)
+                    .addPreferredGap(ComponentPlacement.RELATED)
+                    .addComponent(
+                        lblOriginLizzieInfo,
+                        GroupLayout.PREFERRED_SIZE,
+                        282,
+                        GroupLayout.PREFERRED_SIZE)
+                    .addGap(126)));
+    aboutTab.setLayout(gl);
     ButtonGroup group = new ButtonGroup();
     nf.setGroupingUsed(false);
     ButtonGroup showMoveGroup = new ButtonGroup();
@@ -1246,12 +1247,9 @@ public class ConfigDialog2 extends JDialog {
     btnNewButton.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            Discribe advancedTimeDiscribe = new Discribe();
-            advancedTimeDiscribe.setInfo(
-                resourceBundle.getString("AdvanceTimeSettings.descibe"),
+            Utils.showHtmlMessage(
                 resourceBundle.getString("AdvanceTimeSettings.title"),
-                600,
-                300);
+                resourceBundle.getString("AdvanceTimeSettings.describe"));
           }
         });
     btnNewButton.setBounds(435, 441, 18, 18);
