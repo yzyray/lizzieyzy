@@ -3690,7 +3690,7 @@ public class BoardRenderer {
    * @param g
    */
   private void drawStoneMarkup(Graphics2D g) {
-
+    if (isShowingBranch) return;
     BoardData data = Lizzie.board.getHistory().getData();
 
     data.getProperties()

@@ -12,10 +12,8 @@ import featurecat.lizzie.analysis.Branch;
 import featurecat.lizzie.analysis.Leelaz;
 import featurecat.lizzie.analysis.MoveData;
 import featurecat.lizzie.rules.Board;
-import featurecat.lizzie.rules.BoardData;
 import featurecat.lizzie.rules.BoardHistoryNode;
 import featurecat.lizzie.rules.NodeInfo;
-import featurecat.lizzie.rules.SGFParser;
 import featurecat.lizzie.rules.Stone;
 import featurecat.lizzie.rules.Zobrist;
 import featurecat.lizzie.util.Utils;
@@ -2664,63 +2662,6 @@ public class FloatBoardRenderer {
       g.setPaint(paint);
     } else g.setPaint(new TexturePaint(img, new Rectangle(0, 0, img.getWidth(), img.getHeight())));
     g.fill(new Rectangle(x, y, width, height));
-  }
-
-  /**
-   * Draw stone Markups
-   *
-   * @param g
-   */
-  private void drawStoneMarkup(Graphics2D g) {
-
-    BoardData data = Lizzie.board.getHistory().getData();
-
-    data.getProperties()
-        .forEach(
-            (key, value) -> {
-              if (SGFParser.isListProperty(key)) {
-                String[] labels = value.split(",");
-                for (String label : labels) {
-                  String[] moves = label.split(":");
-                  int[] move = SGFParser.convertSgfPosToCoord(moves[0]);
-                  if (move != null) {
-                    Optional<int[]> lastMove =
-                        branchOpt.map(b -> b.data.lastMove).orElse(Lizzie.board.getLastMove());
-                    if (lastMove.map(m -> !Arrays.equals(move, m)).orElse(true)) {
-
-                      if (Lizzie.frame.floatBoard.isMouseOver(move[0], move[1])) continue;
-                      int moveX = x + scaledMarginWidth + squareWidth * move[0];
-                      int moveY = y + scaledMarginHeight + squareHeight * move[1];
-                      g.setColor(
-                          Lizzie.board.getStones()[Board.getIndex(move[0], move[1])].isBlack()
-                              ? Color.WHITE
-                              : Color.BLACK);
-                      g.setStroke(new BasicStroke(2));
-                      if ("LB".equals(key) && moves.length > 1) {
-                        // Label
-                        double labelRadius = stoneRadius * 1.4;
-                        drawString(
-                            g,
-                            moveX,
-                            moveY,
-                            LizzieFrame.uiFont,
-                            moves[1],
-                            (float) labelRadius,
-                            labelRadius);
-                      } else if ("TR".equals(key)) {
-                        drawTriangle(g, moveX, moveY, (stoneRadius + 1) * 2 / 3);
-                      } else if ("SQ".equals(key)) {
-                        drawSquare(g, moveX, moveY, (stoneRadius + 1) / 2);
-                      } else if ("CR".equals(key)) {
-                        drawCircle(g, moveX, moveY, stoneRadius * 2 / 3);
-                      } else if ("MA".equals(key)) {
-                        drawMarkX(g, moveX, moveY, (stoneRadius + 1) / 2);
-                      }
-                    }
-                  }
-                }
-              }
-            });
   }
 
   /** Draws the triangle of a circle centered at (centerX, centerY) with radius $radius$ */
