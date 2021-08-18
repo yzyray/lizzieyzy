@@ -166,6 +166,13 @@ public class ConfigDialog2 extends JDialog {
   public JRadioButton rdoShowMoveNumberAll;
   public JRadioButton rdoShowMoveNumberLast;
   public JTextField txtShowMoveNumber;
+
+  public JRadioButton rdoNoMark;
+  public JRadioButton rdoAllMark;
+  public JRadioButton rdoLastMark;
+  public JTextField txtLastMark;
+  JComboBox<String> comboMoveHint;
+
   public JCheckBox chkShowMoveAllInBranch;
   public JCheckBox chkShowBlunderBar;
   public JComboBox<String> chkShowWhiteSuggWhite;
@@ -281,8 +288,8 @@ public class ConfigDialog2 extends JDialog {
     setTitle(resourceBundle.getString("LizzieConfig.title.config"));
     setModalityType(ModalityType.APPLICATION_MODAL);
     // setType(Type.POPUP);
-    setBounds(100, 100, 890, 800);
-    Lizzie.setFrameSize(this, 890, 800);
+    setBounds(100, 100, 890, 834);
+    Lizzie.setFrameSize(this, 890, 825);
     try {
       setIconImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/logo.png")));
     } catch (IOException e) {
@@ -415,32 +422,32 @@ public class ConfigDialog2 extends JDialog {
     uiTab.setLayout(null);
     // setShowLcbWinrate();
     JLabel lblBoardSize = new JLabel(resourceBundle.getString("LizzieConfig.boardSize"));
-    lblBoardSize.setBounds(10, 517, 113, 16);
+    lblBoardSize.setBounds(10, 549, 113, 16);
     lblBoardSize.setHorizontalAlignment(SwingConstants.LEFT);
     uiTab.add(lblBoardSize);
 
     rdoBoardSize19 = new JRadioButton("19x19");
-    rdoBoardSize19.setBounds(130, 514, 64, 23);
+    rdoBoardSize19.setBounds(130, 546, 64, 23);
     uiTab.add(rdoBoardSize19);
 
     rdoBoardSize13 = new JRadioButton("13x13");
-    rdoBoardSize13.setBounds(199, 514, 64, 23);
+    rdoBoardSize13.setBounds(199, 546, 64, 23);
     uiTab.add(rdoBoardSize13);
 
     rdoBoardSize9 = new JRadioButton("9x9");
-    rdoBoardSize9.setBounds(267, 514, 45, 23);
+    rdoBoardSize9.setBounds(267, 546, 45, 23);
     uiTab.add(rdoBoardSize9);
 
     rdoBoardSize7 = new JRadioButton("7x7");
-    rdoBoardSize7.setBounds(322, 514, 52, 23);
+    rdoBoardSize7.setBounds(322, 546, 52, 23);
     uiTab.add(rdoBoardSize7);
 
     rdoBoardSize5 = new JRadioButton("5x5");
-    rdoBoardSize5.setBounds(377, 514, 45, 23);
+    rdoBoardSize5.setBounds(377, 546, 45, 23);
     uiTab.add(rdoBoardSize5);
 
     rdoBoardSize4 = new JRadioButton("4x4");
-    rdoBoardSize4.setBounds(429, 514, 45, 23);
+    rdoBoardSize4.setBounds(429, 546, 45, 23);
     uiTab.add(rdoBoardSize4);
 
     rdoBoardSizeOther = new JRadioButton("");
@@ -456,7 +463,7 @@ public class ConfigDialog2 extends JDialog {
             }
           }
         });
-    rdoBoardSizeOther.setBounds(479, 514, 23, 23);
+    rdoBoardSizeOther.setBounds(479, 546, 23, 23);
     uiTab.add(rdoBoardSizeOther);
     group.add(rdoBoardSize19);
     group.add(rdoBoardSize13);
@@ -474,12 +481,12 @@ public class ConfigDialog2 extends JDialog {
 
               private DocumentFilter filter = new DigitOnlyFilter();
             });
-    txtBoardWidth.setBounds(504, 514, 38, 26);
+    txtBoardWidth.setBounds(504, 546, 38, 26);
     uiTab.add(txtBoardWidth);
     txtBoardWidth.setColumns(10);
 
     lblBoardSign = new JLabel("x");
-    lblBoardSign.setBounds(544, 516, 26, 20);
+    lblBoardSign.setBounds(544, 548, 26, 20);
     uiTab.add(lblBoardSign);
 
     txtBoardHeight =
@@ -491,7 +498,7 @@ public class ConfigDialog2 extends JDialog {
 
               private DocumentFilter filter = new DigitOnlyFilter();
             });
-    txtBoardHeight.setBounds(551, 514, 38, 26);
+    txtBoardHeight.setBounds(551, 546, 38, 26);
     uiTab.add(txtBoardHeight);
     txtBoardHeight.setColumns(10);
 
@@ -646,6 +653,13 @@ public class ConfigDialog2 extends JDialog {
     rdoShowMoveNumberAll.setBounds(
         Lizzie.config.isChinese ? 176 : 181, 101, Lizzie.config.isChinese ? 52 : 42, 23);
     uiTab.add(rdoShowMoveNumberAll);
+    rdoShowMoveNumberAll.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            rdoNoMark.setSelected(true);
+            txtLastMark.setEnabled(false);
+          }
+        });
 
     rdoShowMoveNumberLast =
         new JRadioButton(resourceBundle.getString("LizzieConfig.title.showMoveNumberLast"));
@@ -657,6 +671,13 @@ public class ConfigDialog2 extends JDialog {
             } else {
               txtShowMoveNumber.setEnabled(false);
             }
+          }
+        });
+    rdoShowMoveNumberLast.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            rdoNoMark.setSelected(true);
+            txtLastMark.setEnabled(false);
           }
         });
     rdoShowMoveNumberLast.setBounds(225, 101, 50, 23);
@@ -690,33 +711,33 @@ public class ConfigDialog2 extends JDialog {
 
     JLabel lblShowBlunderBar =
         new JLabel(resourceBundle.getString("LizzieConfig.title.showBlunderBar"));
-    lblShowBlunderBar.setBounds(608, 204, 214, 16);
+    lblShowBlunderBar.setBounds(608, 236, 214, 16);
     uiTab.add(lblShowBlunderBar);
     chkShowBlunderBar = new JCheckBox("");
-    chkShowBlunderBar.setBounds(837, 201, 26, 23);
+    chkShowBlunderBar.setBounds(837, 233, 26, 23);
     uiTab.add(chkShowBlunderBar);
 
     JLabel lblWinratePerspective =
         new JLabel(
             resourceBundle.getString(
                 "LizzieConfig.lblWinratePerspective")); // ("胜率图视角"); //$NON-NLS-1$
-    lblWinratePerspective.setBounds(10, 204, 184, 16);
+    lblWinratePerspective.setBounds(10, 236, 184, 16);
     uiTab.add(lblWinratePerspective);
 
     rdoShowWinrateBlack =
         new JRadioButton(resourceBundle.getString("LizzieConfig.rdoShowWinrateBlack")); // ("黑方视角");
-    rdoShowWinrateBlack.setBounds(155, 202, 72, 23);
+    rdoShowWinrateBlack.setBounds(Lizzie.config.isChinese ? 155 : 162, 234, 60, 23);
     uiTab.add(rdoShowWinrateBlack);
 
     rdoShowWinrateBoth =
         new JRadioButton(resourceBundle.getString("LizzieConfig.rdoShowWinrateBoth")); // ("双方视角");
-    rdoShowWinrateBoth.setBounds(225, 202, 78, 23);
+    rdoShowWinrateBoth.setBounds(225, 234, 78, 23);
     uiTab.add(rdoShowWinrateBoth);
 
     JLabel lblShowWhiteSuggestionWhite =
         new JLabel(
             resourceBundle.getString("LizzieConfig.lblShowWhiteSuggestionWhite")); // ("轮白下选点字体白色");
-    lblShowWhiteSuggestionWhite.setBounds(312, 258, 214, 16);
+    lblShowWhiteSuggestionWhite.setBounds(312, 290, 214, 16);
     uiTab.add(lblShowWhiteSuggestionWhite);
     chkShowWhiteSuggWhite = new JComboBox<String>();
     chkShowWhiteSuggWhite.addItem(
@@ -727,7 +748,7 @@ public class ConfigDialog2 extends JDialog {
         resourceBundle.getString("LizzieConfig.chkShowWhiteSuggWhite3")); // ("仅角标");
     chkShowWhiteSuggWhite.addItem(
         resourceBundle.getString("LizzieConfig.chkShowWhiteSuggWhite4")); // ("全部");
-    chkShowWhiteSuggWhite.setBounds(504, 254, 67, 23);
+    chkShowWhiteSuggWhite.setBounds(504, 286, 67, 23);
     uiTab.add(chkShowWhiteSuggWhite);
     ShowWinratGroup.add(rdoShowWinrateBlack);
     ShowWinratGroup.add(rdoShowWinrateBoth);
@@ -736,7 +757,7 @@ public class ConfigDialog2 extends JDialog {
         new JLabel(
             resourceBundle.getString(
                 "LizzieConfig.lblSuggestionMoveColorConcentration")); // ("选点颜色集中程度");
-    lblSuggestionMoveColorConcentration.setBounds(10, 366, 222, 16);
+    lblSuggestionMoveColorConcentration.setBounds(10, 398, 222, 16);
     uiTab.add(lblSuggestionMoveColorConcentration);
     JComboBox<String> SuggestionColorRatio = new JComboBox<String>();
     SuggestionColorRatio.addItem(
@@ -745,7 +766,7 @@ public class ConfigDialog2 extends JDialog {
         resourceBundle.getString("LizzieConfig.SuggestionMoveColorConcentration2")); // ("一般");
     SuggestionColorRatio.addItem(
         resourceBundle.getString("LizzieConfig.SuggestionMoveColorConcentration3")); // ("分散");
-    SuggestionColorRatio.setBounds(Lizzie.config.isChinese ? 201 : 221, 363, 66, 23);
+    SuggestionColorRatio.setBounds(Lizzie.config.isChinese ? 201 : 221, 395, 66, 23);
     uiTab.add(SuggestionColorRatio);
     SuggestionColorRatio.setSelectedIndex(Lizzie.config.suggestionColorRatio - 1);
     SuggestionColorRatio.addItemListener(
@@ -760,54 +781,54 @@ public class ConfigDialog2 extends JDialog {
     JLabel lblAppendWinrateToComment =
         new JLabel(
             resourceBundle.getString("LizzieConfig.lblAppendWinrateToComment")); // ("记录胜率到评论中");
-    lblAppendWinrateToComment.setBounds(608, 577, 221, 16);
+    lblAppendWinrateToComment.setBounds(608, 609, 221, 16);
     uiTab.add(lblAppendWinrateToComment);
     chkAppendWinrateToComment = new JCheckBox("");
-    chkAppendWinrateToComment.setBounds(837, 576, 26, 23);
+    chkAppendWinrateToComment.setBounds(837, 608, 26, 23);
     uiTab.add(chkAppendWinrateToComment);
 
     JLabel lblShowSuggestionMoveOrder =
         new JLabel(
             resourceBundle.getString("LizzieConfig.lblShowSuggestionMoveOrder")); // ("显示选点右上方角标");
-    lblShowSuggestionMoveOrder.setBounds(609, 231, 207, 16);
+    lblShowSuggestionMoveOrder.setBounds(609, 263, 207, 16);
     uiTab.add(lblShowSuggestionMoveOrder);
     chkShowSuggLabel = new JCheckBox("");
-    chkShowSuggLabel.setBounds(837, 228, 26, 23);
+    chkShowSuggLabel.setBounds(837, 260, 26, 23);
     uiTab.add(chkShowSuggLabel);
 
     JLabel lblMaxValueReverseColor =
         new JLabel(
             resourceBundle.getString(
                 "LizzieConfig.lblMaxValueReverseColor")); // ("最高胜率计算量反色显示"); // $NON-NLS-1$
-    lblMaxValueReverseColor.setBounds(608, 285, 223, 16);
+    lblMaxValueReverseColor.setBounds(608, 317, 223, 16);
     uiTab.add(lblMaxValueReverseColor);
     chkMaxValueReverseColor = new JCheckBox("");
-    chkMaxValueReverseColor.setBounds(837, 282, 26, 23);
+    chkMaxValueReverseColor.setBounds(837, 314, 26, 23);
     uiTab.add(chkMaxValueReverseColor);
 
     JLabel lblShowVariationsOnMouse =
         new JLabel(
             resourceBundle.getString("LizzieConfig.lblShowVariationsOnMouse")); // ("鼠标悬停显示变化图");
-    lblShowVariationsOnMouse.setBounds(10, 231, 228, 16);
+    lblShowVariationsOnMouse.setBounds(10, 263, 228, 16);
     uiTab.add(lblShowVariationsOnMouse);
     chkShowVairationsOnMouse = new JCheckBox("");
-    chkShowVairationsOnMouse.setBounds(237, 228, 57, 23);
+    chkShowVairationsOnMouse.setBounds(237, 260, 57, 23);
     uiTab.add(chkShowVairationsOnMouse);
 
     JLabel lblNotRereshVairationsOnMouseOver =
         new JLabel(
             resourceBundle.getString(
                 "LizzieConfig.lblNotRereshVairationsOnMouseOver")); // ("鼠标悬停时 变化图不刷新");
-    lblNotRereshVairationsOnMouseOver.setBounds(312, 231, 230, 16);
+    lblNotRereshVairationsOnMouseOver.setBounds(312, 263, 230, 16);
     uiTab.add(lblNotRereshVairationsOnMouseOver);
     chkShowVairationsOnMouseNoRefresh = new JCheckBox("");
-    chkShowVairationsOnMouseNoRefresh.setBounds(532, 228, 57, 23);
+    chkShowVairationsOnMouseNoRefresh.setBounds(532, 260, 57, 23);
     uiTab.add(chkShowVairationsOnMouseNoRefresh);
 
     JLabel lblBoardPositionProportion =
         new JLabel(
             resourceBundle.getString("LizzieConfig.lblBoardPositionProportion")); // ("主界面偏移");
-    lblBoardPositionProportion.setBounds(312, 579, 162, 16);
+    lblBoardPositionProportion.setBounds(312, 611, 162, 16);
     uiTab.add(lblBoardPositionProportion);
     sldBoardPositionProportion = new JSlider();
     sldBoardPositionProportion.setPaintTicks(true);
@@ -823,39 +844,39 @@ public class ConfigDialog2 extends JDialog {
         });
     sldBoardPositionProportion.setValue(Lizzie.frame.BoardPositionProportion);
     sldBoardPositionProportion.setMaximum(8);
-    sldBoardPositionProportion.setBounds(439, 577, 157, 28);
+    sldBoardPositionProportion.setBounds(439, 609, 157, 28);
     uiTab.add(sldBoardPositionProportion);
 
     JLabel showBlueRing =
         new JLabel(resourceBundle.getString("LizzieConfig.showBlueRing")); // ("第一选点上显示蓝圈");
-    showBlueRing.setBounds(609, 258, 222, 16);
+    showBlueRing.setBounds(609, 290, 222, 16);
     uiTab.add(showBlueRing);
 
     chkShowBlueRing = new JCheckBox("");
-    chkShowBlueRing.setBounds(837, 255, 26, 23);
+    chkShowBlueRing.setBounds(837, 287, 26, 23);
     uiTab.add(chkShowBlueRing);
 
     JLabel showNameInboard =
         new JLabel(resourceBundle.getString("LizzieConfig.showNameInboard")); // "在棋盘下方显示黑白名字");
-    showNameInboard.setBounds(10, 579, 184, 16);
+    showNameInboard.setBounds(10, 611, 184, 16);
     uiTab.add(showNameInboard);
 
     chkShowName = new JCheckBox("");
-    chkShowName.setBounds(237, 576, 26, 23);
+    chkShowName.setBounds(237, 608, 26, 23);
     uiTab.add(chkShowName);
 
     JLabel lblAlwaysShowBlackWinrate =
         new JLabel(
             resourceBundle.getString("LizzieConfig.lblAlwaysShowBlackWinrate")); // ("总是显示黑胜率");
-    lblAlwaysShowBlackWinrate.setBounds(10, 258, 194, 16);
+    lblAlwaysShowBlackWinrate.setBounds(10, 290, 194, 16);
     uiTab.add(lblAlwaysShowBlackWinrate);
     chkAlwaysShowBlackWinrate = new JCheckBox("");
-    chkAlwaysShowBlackWinrate.setBounds(237, 255, 57, 23);
+    chkAlwaysShowBlackWinrate.setBounds(237, 287, 57, 23);
     uiTab.add(chkAlwaysShowBlackWinrate);
 
     JLabel lblLimitBestMoveNum =
         new JLabel(resourceBundle.getString("LizzieConfig.title.limitBestMoveNum"));
-    lblLimitBestMoveNum.setBounds(10, 285, 157, 16);
+    lblLimitBestMoveNum.setBounds(10, 317, 157, 16);
     uiTab.add(lblLimitBestMoveNum);
     txtLimitBestMoveNum =
         new JFormattedTextField(
@@ -866,13 +887,13 @@ public class ConfigDialog2 extends JDialog {
 
               private DocumentFilter filter = new DigitOnlyFilter();
             });
-    txtLimitBestMoveNum.setBounds(147, 283, 45, 20);
+    txtLimitBestMoveNum.setBounds(147, 315, 45, 20);
     uiTab.add(txtLimitBestMoveNum);
     txtLimitBestMoveNum.setColumns(10);
 
     JLabel lblLimitBranchLength =
         new JLabel(resourceBundle.getString("LizzieConfig.title.limitBranchLength"));
-    lblLimitBranchLength.setBounds(224, 285, 122, 16);
+    lblLimitBranchLength.setBounds(224, 317, 122, 16);
     uiTab.add(lblLimitBranchLength);
     txtLimitBranchLength =
         new JFormattedTextField(
@@ -883,7 +904,7 @@ public class ConfigDialog2 extends JDialog {
 
               private DocumentFilter filter = new DigitOnlyFilter();
             });
-    txtLimitBranchLength.setBounds(358, 283, 45, 20);
+    txtLimitBranchLength.setBounds(358, 315, 45, 20);
     uiTab.add(txtLimitBranchLength);
     txtLimitBranchLength.setColumns(10);
 
@@ -891,16 +912,16 @@ public class ConfigDialog2 extends JDialog {
         new JLabel(
             resourceBundle.getString(
                 "LizzieConfig.lblShowCircleForOutOfLimit")); // ("超限制(低计算)选点依然显示推荐圈");
-    lblShowCircleForOutOfLimit.setBounds(10, 312, 228, 16);
+    lblShowCircleForOutOfLimit.setBounds(10, 344, 228, 16);
     uiTab.add(lblShowCircleForOutOfLimit);
     chkShowNoSuggCircle = new JCheckBox("");
-    chkShowNoSuggCircle.setBounds(237, 309, 57, 23);
+    chkShowNoSuggCircle.setBounds(237, 341, 57, 23);
     uiTab.add(chkShowNoSuggCircle);
 
     JLabel lblNotShowMinPlayoutRatio =
         new JLabel(resourceBundle.getString("LizzieConfig.lblNotShowMinPlayoutRatio"));
     // 不显示低于最高计算量(%)的选点
-    lblNotShowMinPlayoutRatio.setBounds(312, 312, 228, 17);
+    lblNotShowMinPlayoutRatio.setBounds(312, 344, 228, 17);
     uiTab.add(lblNotShowMinPlayoutRatio);
 
     txtMinPlayoutRatioForStats =
@@ -912,24 +933,24 @@ public class ConfigDialog2 extends JDialog {
 
               private DocumentFilter filter = new DigitOnlyFilter("[^0-9\\.]++");
             });
-    txtMinPlayoutRatioForStats.setBounds(525, 310, 45, 20);
+    txtMinPlayoutRatioForStats.setBounds(525, 342, 45, 20);
     uiTab.add(txtMinPlayoutRatioForStats);
 
     JLabel lblSuggestionMoveInfo =
         new JLabel(resourceBundle.getString("LizzieConfig.title.suggestionMoveInfo"));
-    lblSuggestionMoveInfo.setBounds(10, 339, 64, 16);
+    lblSuggestionMoveInfo.setBounds(10, 371, 64, 16);
     uiTab.add(lblSuggestionMoveInfo);
     chkShowWinrateInSuggestion =
         new JCheckBox(resourceBundle.getString("LizzieConfig.title.showWinrateInSuggestion"));
-    chkShowWinrateInSuggestion.setBounds(80, 336, 68, 23);
+    chkShowWinrateInSuggestion.setBounds(80, 368, 68, 23);
     uiTab.add(chkShowWinrateInSuggestion);
     chkShowPlayoutsInSuggestion =
         new JCheckBox(resourceBundle.getString("LizzieConfig.title.showPlayoutsInSuggestion"));
-    chkShowPlayoutsInSuggestion.setBounds(145, 336, 75, 23);
+    chkShowPlayoutsInSuggestion.setBounds(145, 368, 75, 23);
     uiTab.add(chkShowPlayoutsInSuggestion);
     chkShowScoremeanInSuggestion =
         new JCheckBox(resourceBundle.getString("LizzieConfig.title.showScoremeanInSuggestion"));
-    chkShowScoremeanInSuggestion.setBounds(216, 336, 86, 23);
+    chkShowScoremeanInSuggestion.setBounds(216, 368, 86, 23);
     uiTab.add(chkShowScoremeanInSuggestion);
 
     JLabel lblGtpConsoleStyle =
@@ -994,7 +1015,7 @@ public class ConfigDialog2 extends JDialog {
                 "LizzieConfig.lblSuggestionMoveAndWinrateSettings")); // ("选点与胜率图选项:"); //
     // $NON-NLS-1$
     lblSuggestionMoveAndWinrateSettings.setFont(new Font("宋体", Font.BOLD, 14));
-    lblSuggestionMoveAndWinrateSettings.setBounds(10, 179, 395, 23);
+    lblSuggestionMoveAndWinrateSettings.setBounds(10, 206, 395, 23);
     uiTab.add(lblSuggestionMoveAndWinrateSettings);
 
     JLabel lblOtherSettings =
@@ -1002,28 +1023,28 @@ public class ConfigDialog2 extends JDialog {
             resourceBundle.getString(
                 "LizzieConfig.lblEngineSettings")); // ("其他选项:"); // $NON-NLS-1$
     lblOtherSettings.setFont(new Font("宋体", Font.BOLD, 14));
-    lblOtherSettings.setBounds(10, 389, 492, 23);
+    lblOtherSettings.setBounds(10, 421, 492, 23);
     uiTab.add(lblOtherSettings);
 
     JLabel lblEngineSettings =
         new JLabel(
             resourceBundle.getString("LizzieConfig.lblOtherSettings")); // ("引擎选项:"); // $NON-NLS-1$
     lblEngineSettings.setFont(new Font("宋体", Font.BOLD, 14));
-    lblEngineSettings.setBounds(10, 490, 492, 23);
+    lblEngineSettings.setBounds(10, 522, 492, 23);
     uiTab.add(lblEngineSettings);
 
     JLabel lblMaxAnalyzeTime =
         new JLabel(
             resourceBundle.getString(
                 "LizzieConfig.title.maxAnalyzeTime")); // ("最大分析时间"); // $NON-NLS-1$
-    lblMaxAnalyzeTime.setBounds(10, 415, 130, 16);
+    lblMaxAnalyzeTime.setBounds(10, 447, 130, 16);
     uiTab.add(lblMaxAnalyzeTime);
 
     JLabel lblManAiGameTime =
         new JLabel(
             resourceBundle.getString(
                 "LizzieConfig.title.lblManAiGameTime")); // ("人机对局AI每手用时"); // $NON-NLS-1$
-    lblManAiGameTime.setBounds(10, 441, 207, 16);
+    lblManAiGameTime.setBounds(10, 473, 207, 16);
     uiTab.add(lblManAiGameTime);
 
     txtMaxGameThinkingTime =
@@ -1037,11 +1058,11 @@ public class ConfigDialog2 extends JDialog {
             });
     txtMaxGameThinkingTime.setText("0");
     txtMaxGameThinkingTime.setColumns(10);
-    txtMaxGameThinkingTime.setBounds(215, 439, 40, 21);
+    txtMaxGameThinkingTime.setBounds(215, 471, 40, 21);
     uiTab.add(txtMaxGameThinkingTime);
 
     JLabel lblSeconds2 = new JLabel(resourceBundle.getString("LizzieConfig.title.seconds"));
-    lblSeconds2.setBounds(257, 441, 56, 16);
+    lblSeconds2.setBounds(257, 473, 56, 16);
     uiTab.add(lblSeconds2);
     chkShowWinrateInSuggestion.addChangeListener(
         new ChangeListener() {
@@ -1065,7 +1086,7 @@ public class ConfigDialog2 extends JDialog {
     JLabel lblAnalyzeUpdateInterval =
         new JLabel(
             resourceBundle.getString("LizzieConfig.title.analyzeUpdateInterval")); // ("分析结果刷新时间");
-    lblAnalyzeUpdateInterval.setBounds(312, 415, 184, 16);
+    lblAnalyzeUpdateInterval.setBounds(312, 447, 184, 16);
     uiTab.add(lblAnalyzeUpdateInterval);
 
     txtAnalyzeUpdateInterval =
@@ -1079,14 +1100,14 @@ public class ConfigDialog2 extends JDialog {
             });
     // formattedTextField_1.setText("0");
     txtAnalyzeUpdateInterval.setColumns(10);
-    txtAnalyzeUpdateInterval.setBounds(495, 413, 31, 21);
+    txtAnalyzeUpdateInterval.setBounds(495, 445, 31, 21);
     uiTab.add(txtAnalyzeUpdateInterval);
 
     JLabel lblSsh =
         new JLabel(
             resourceBundle.getString(
                 "LizzieConfig.title.SSHanalyzeUpdateInterval")); // ("SSH分析结果刷新时间");
-    lblSsh.setBounds(608, 415, 173, 16);
+    lblSsh.setBounds(608, 447, 173, 16);
     uiTab.add(lblSsh);
 
     txtAnalyzeUpdateIntervalSSH =
@@ -1100,33 +1121,33 @@ public class ConfigDialog2 extends JDialog {
             });
     // txtAnalyzeUpdateInterval.setText("1");
     txtAnalyzeUpdateIntervalSSH.setColumns(10);
-    txtAnalyzeUpdateIntervalSSH.setBounds(767, 413, 30, 21);
+    txtAnalyzeUpdateIntervalSSH.setBounds(767, 445, 30, 21);
     uiTab.add(txtAnalyzeUpdateIntervalSSH);
 
     JLabel lblMillseconds =
         new JLabel(
             resourceBundle.getString(
                 "LizzieConfig.title.centisecond")); // $NON-NLS-1$LizzieConfig.title.centisecond
-    lblMillseconds.setBounds(800, 415, 86, 16);
+    lblMillseconds.setBounds(800, 447, 86, 16);
     uiTab.add(lblMillseconds);
 
     JLabel lblMillseconds2 =
         new JLabel(resourceBundle.getString("LizzieConfig.title.centisecond")); // $NON-NLS-1$
-    lblMillseconds2.setBounds(530, 415, 72, 16);
+    lblMillseconds2.setBounds(530, 447, 72, 16);
     uiTab.add(lblMillseconds2);
 
     JLabel lblEngineFastSwitch =
         new JLabel(
             resourceBundle.getString("ConfigDialog2.lblEngineFastSwitch")); // ("是否启用引擎快速切换");
-    lblEngineFastSwitch.setBounds(312, 469, 179, 16);
+    lblEngineFastSwitch.setBounds(312, 501, 179, 16);
     uiTab.add(lblEngineFastSwitch);
 
     rdoFastSwitch = new JRadioButton(resourceBundle.getString("ConfigDialog2.yes"));
-    rdoFastSwitch.setBounds(487, 466, 52, 23);
+    rdoFastSwitch.setBounds(487, 498, 52, 23);
     uiTab.add(rdoFastSwitch);
 
     rdoNoFastSwitch = new JRadioButton(resourceBundle.getString("ConfigDialog2.no")); // ("否");
-    rdoNoFastSwitch.setBounds(536, 466, 53, 23);
+    rdoNoFastSwitch.setBounds(536, 498, 53, 23);
     uiTab.add(rdoNoFastSwitch);
 
     ButtonGroup fastgroup = new ButtonGroup();
@@ -1159,23 +1180,23 @@ public class ConfigDialog2 extends JDialog {
         new JLabel(
             resourceBundle.getString(
                 "LizzieConfig.lblMouseMoveRect")); // ("鼠标移动时显示小方块"); // $NON-NLS-1$
-    lblMouseMoveRect.setBounds(10, 549, 184, 16);
+    lblMouseMoveRect.setBounds(10, 581, 184, 16);
     uiTab.add(lblMouseMoveRect);
 
     rdoShowMoveRect =
         new JRadioButton(resourceBundle.getString("LizzieConfig.rdoShowMoveRect")); // ("是");
-    rdoShowMoveRect.setBounds(200, 546, 50, 23);
+    rdoShowMoveRect.setBounds(200, 578, 50, 23);
     uiTab.add(rdoShowMoveRect);
 
     rdoShowMoveRectOnPlay =
         new JRadioButton(
             resourceBundle.getString("LizzieConfig.rdoShowMoveRectOnPlay")); // ("仅对局时");
-    rdoShowMoveRectOnPlay.setBounds(273, 546, 105, 23);
+    rdoShowMoveRectOnPlay.setBounds(273, 578, 105, 23);
     uiTab.add(rdoShowMoveRectOnPlay);
 
     rdoNoShowMoveRect =
         new JRadioButton(resourceBundle.getString("LizzieConfig.rdoNoShowMoveRect")); // ("否");
-    rdoNoShowMoveRect.setBounds(380, 546, 42, 23);
+    rdoNoShowMoveRect.setBounds(380, 578, 42, 23);
     uiTab.add(rdoNoShowMoveRect);
 
     ButtonGroup rectgroup = new ButtonGroup();
@@ -1194,15 +1215,15 @@ public class ConfigDialog2 extends JDialog {
     JLabel lblBackgroundPonder =
         new JLabel(
             resourceBundle.getString("ConfigDialog2.lblBackgroundPonder")); // ("对弈时AI是否后台计算");
-    lblBackgroundPonder.setBounds(10, 469, 194, 16);
+    lblBackgroundPonder.setBounds(10, 501, 194, 16);
     uiTab.add(lblBackgroundPonder);
 
     rdoAIbackground = new JRadioButton(resourceBundle.getString("ConfigDialog2.yes")); // ("是");
-    rdoAIbackground.setBounds(199, 466, 58, 23);
+    rdoAIbackground.setBounds(199, 498, 58, 23);
     uiTab.add(rdoAIbackground);
 
     rdoNoAIbackground = new JRadioButton(resourceBundle.getString("ConfigDialog2.no")); // ("否");
-    rdoNoAIbackground.setBounds(254, 466, 58, 23);
+    rdoNoAIbackground.setBounds(254, 498, 58, 23);
     uiTab.add(rdoNoAIbackground);
 
     ButtonGroup backgroup = new ButtonGroup();
@@ -1228,11 +1249,11 @@ public class ConfigDialog2 extends JDialog {
         new JLabel(
             resourceBundle.getString(
                 "LizzieConfig.lblNoticeLimit")); // ("注: 0代表无限制"); // $NON-NLS-1$
-    lblNoticeLimit.setBounds(440, 285, 172, 15);
+    lblNoticeLimit.setBounds(440, 317, 172, 15);
     uiTab.add(lblNoticeLimit);
 
     JLabel lblAdvanceTime = new JLabel(resourceBundle.getString("ConfigDialog2.lblAdvanceTime"));
-    lblAdvanceTime.setBounds(312, 441, 122, 15);
+    lblAdvanceTime.setBounds(312, 473, 122, 15);
     uiTab.add(lblAdvanceTime);
 
     ImageIcon iconSettings = new ImageIcon();
@@ -1252,11 +1273,11 @@ public class ConfigDialog2 extends JDialog {
                 resourceBundle.getString("AdvanceTimeSettings.describe"));
           }
         });
-    btnNewButton.setBounds(435, 441, 18, 18);
+    btnNewButton.setBounds(435, 473, 18, 18);
     uiTab.add(btnNewButton);
 
     JCheckBox chckbxNewCheckBox = new JCheckBox(""); // $NON-NLS-1$
-    chckbxNewCheckBox.setBounds(452, 438, 22, 23);
+    chckbxNewCheckBox.setBounds(452, 470, 22, 23);
     uiTab.add(chckbxNewCheckBox);
 
     chckbxNewCheckBox.addActionListener(
@@ -1278,18 +1299,18 @@ public class ConfigDialog2 extends JDialog {
 
     txtAdvanceTime = new JTextField();
     txtAdvanceTime.setText(Lizzie.config.advanceTimeTxt); // $NON-NLS-1$
-    txtAdvanceTime.setBounds(474, 440, 130, 21);
+    txtAdvanceTime.setBounds(474, 472, 130, 21);
     uiTab.add(txtAdvanceTime);
 
     lblShowTitleWinInfo =
         new JLabel(
             resourceBundle.getString(
                 "LizzieConfig.lblShowTitleWinInfo")); // "标题上显示胜率等信息"); // $NON-NLS-1$
-    lblShowTitleWinInfo.setBounds(608, 549, 223, 15);
+    lblShowTitleWinInfo.setBounds(608, 581, 223, 15);
     uiTab.add(lblShowTitleWinInfo);
 
     chkShowTitleWr = new JCheckBox(); // $NON-NLS-1$
-    chkShowTitleWr.setBounds(837, 546, 26, 23);
+    chkShowTitleWr.setBounds(837, 578, 26, 23);
     uiTab.add(chkShowTitleWr);
     chkShowTitleWr.setSelected(Lizzie.config.showTitleWr);
 
@@ -1297,17 +1318,17 @@ public class ConfigDialog2 extends JDialog {
         new JLabel(
             resourceBundle.getString(
                 "LizzieConfig.lblAlwaysLogGtpInfo")); // ("总是记录GTP信息"); // $NON-NLS-1$
-    lblAlwaysLogGtpInfo.setBounds(608, 518, 223, 15);
+    lblAlwaysLogGtpInfo.setBounds(608, 550, 223, 15);
     uiTab.add(lblAlwaysLogGtpInfo);
 
     chkAlwaysGtp = new JCheckBox(); // $NON-NLS-1$
-    chkAlwaysGtp.setBounds(837, 514, 26, 23);
+    chkAlwaysGtp.setBounds(837, 546, 26, 23);
     uiTab.add(chkAlwaysGtp);
     // txtAdvanceTime.setColumns(10);
     chkAlwaysGtp.setSelected(Lizzie.config.alwaysGtp);
 
     chkNoCapture = new JCheckBox(); // $NON-NLS-1$
-    chkNoCapture.setBounds(397, 636, 26, 23);
+    chkNoCapture.setBounds(397, 668, 26, 23);
     uiTab.add(chkNoCapture);
 
     chkNoCapture.addActionListener(
@@ -1329,7 +1350,7 @@ public class ConfigDialog2 extends JDialog {
 
     JLabel lblGomoku =
         new JLabel(resourceBundle.getString("ConfigDialog2.lblGomoku")); // "五子棋"); // $NON-NLS-1$
-    lblGomoku.setBounds(312, 639, 110, 15);
+    lblGomoku.setBounds(312, 671, 110, 15);
     uiTab.add(lblGomoku);
 
     JLabel lblSubBoardNotRefreshOnMouseOver =
@@ -1337,38 +1358,38 @@ public class ConfigDialog2 extends JDialog {
             resourceBundle.getString(
                 "LizzieConfig.lblSubBoardNotRefreshOnMouseOver")); // ("鼠标悬停在小棋盘上时不刷新"); //
     // $NON-NLS-1$
-    lblSubBoardNotRefreshOnMouseOver.setBounds(10, 609, 228, 15);
+    lblSubBoardNotRefreshOnMouseOver.setBounds(10, 641, 228, 15);
     uiTab.add(lblSubBoardNotRefreshOnMouseOver);
 
     chkNoRefreshSub = new JCheckBox(); // $NON-NLS-1$
-    chkNoRefreshSub.setBounds(237, 606, 23, 23);
+    chkNoRefreshSub.setBounds(237, 638, 23, 23);
     uiTab.add(chkNoRefreshSub);
 
     JLabel lblEnableDoubleClickFindMove =
         new JLabel(
             resourceBundle.getString("LizzieConfig.lblEnableDoubleClickFindMove")); // ("启用双击找子");
-    lblEnableDoubleClickFindMove.setBounds(312, 609, 207, 15);
+    lblEnableDoubleClickFindMove.setBounds(312, 641, 207, 15);
     uiTab.add(lblEnableDoubleClickFindMove);
 
     JLabel lblEnableDragStone =
         new JLabel(resourceBundle.getString("LizzieConfig.lblEnableDragStone")); // ("启用拖拽棋子功能");
-    lblEnableDragStone.setBounds(608, 609, 86, 15);
+    lblEnableDragStone.setBounds(608, 641, 86, 15);
     uiTab.add(lblEnableDragStone);
 
     chkEnableDoubCli = new JCheckBox(); // $NON-NLS-1$
-    chkEnableDoubCli.setBounds(532, 606, 26, 23);
+    chkEnableDoubCli.setBounds(532, 638, 26, 23);
     uiTab.add(chkEnableDoubCli);
 
     chkEnableDragStone = new JCheckBox();
-    chkEnableDragStone.setBounds(685, 606, 26, 23);
+    chkEnableDragStone.setBounds(685, 638, 26, 23);
     uiTab.add(chkEnableDragStone);
 
     JLabel lblLizzieCache = new JLabel(resourceBundle.getString("LizzieConfig.lizzieCache"));
-    lblLizzieCache.setBounds(608, 470, 122, 15);
+    lblLizzieCache.setBounds(608, 502, 122, 15);
     uiTab.add(lblLizzieCache);
 
     chkLizzieCache = new JCheckBox();
-    chkLizzieCache.setBounds(837, 467, 26, 23);
+    chkLizzieCache.setBounds(837, 499, 26, 23);
     uiTab.add(chkLizzieCache);
 
     ImageIcon btnLizzieCacheIcon = new ImageIcon();
@@ -1381,7 +1402,7 @@ public class ConfigDialog2 extends JDialog {
     }
 
     JButton btnLizzieCache = new JButton(btnLizzieCacheIcon);
-    btnLizzieCache.setBounds(723, 469, 18, 18);
+    btnLizzieCache.setBounds(723, 501, 18, 18);
 
     btnLizzieCache.addActionListener(
         new ActionListener() {
@@ -1397,18 +1418,18 @@ public class ConfigDialog2 extends JDialog {
 
     JLabel lblRightClickFunction =
         new JLabel(resourceBundle.getString("LizzieConfig.lblRightClickFunction")); // "鼠标右键功能");
-    lblRightClickFunction.setBounds(10, 639, 139, 15);
+    lblRightClickFunction.setBounds(10, 671, 139, 15);
     uiTab.add(lblRightClickFunction);
 
     rdoRightClickMenu =
         new JRadioButton(
             resourceBundle.getString("LizzieConfig.rdoRightClickMenu")); // ("弹出菜单"); // $NON-NLS-1$
-    rdoRightClickMenu.setBounds(145, 635, 73, 23);
+    rdoRightClickMenu.setBounds(145, 667, 73, 23);
 
     rdoRightClickBack =
         new JRadioButton(
             resourceBundle.getString("LizzieConfig.rdoRightClickBack")); // ("回退一手"); // $NON-NLS-1$
-    rdoRightClickBack.setBounds(218, 635, 80, 23);
+    rdoRightClickBack.setBounds(218, 667, 80, 23);
 
     ButtonGroup bgp = new ButtonGroup();
     bgp.add(rdoRightClickMenu);
@@ -1427,14 +1448,14 @@ public class ConfigDialog2 extends JDialog {
     rdoBranchMoveOne =
         new JRadioButton(
             resourceBundle.getString("LizzieConfig.rdoBranchMoveOne")); // ("从1开始"); // $NON-NLS-1$
-    rdoBranchMoveOne.setBounds(200, 128, 104, 23);
+    rdoBranchMoveOne.setBounds(225, 128, 86, 23);
     uiTab.add(rdoBranchMoveOne);
 
     rdoBranchMoveContinue =
         new JRadioButton(
             resourceBundle.getString(
                 "LizzieConfig.rdoBranchMoveContinue")); // ("继续"); // $NON-NLS-1$
-    rdoBranchMoveContinue.setBounds(124, 128, 80, 23);
+    rdoBranchMoveContinue.setBounds(Lizzie.config.isChinese ? 112 : 121, 128, 80, 23);
     uiTab.add(rdoBranchMoveContinue);
 
     ButtonGroup branchMove = new ButtonGroup();
@@ -1466,35 +1487,35 @@ public class ConfigDialog2 extends JDialog {
         new JLabel(
             resourceBundle.getString(
                 "LizzieConfig.lblKifuLoadLast")); // ("加载棋谱后跳转到最后"); // $NON-NLS-1$
-    lblKifuLoadLast.setBounds(608, 639, 223, 15);
+    lblKifuLoadLast.setBounds(608, 671, 223, 15);
     uiTab.add(lblKifuLoadLast);
 
     chkSgfLoadLast = new JCheckBox(); // $NON-NLS-1$
-    chkSgfLoadLast.setBounds(837, 636, 26, 23);
+    chkSgfLoadLast.setBounds(837, 668, 26, 23);
     uiTab.add(chkSgfLoadLast);
 
     lblLoadEstimate =
         new JLabel(
             resourceBundle.getString(
                 "LizzieConfig.lblLoadEstimate")); // ("预加载形式判断引擎"); // $NON-NLS-1$
-    lblLoadEstimate.setBounds(312, 669, 214, 15);
+    lblLoadEstimate.setBounds(312, 701, 214, 15);
     uiTab.add(lblLoadEstimate);
 
     chkAutoLoadEstimate = new JCheckBox(); // $NON-NLS-1$
-    chkAutoLoadEstimate.setBounds(532, 666, 30, 23);
+    chkAutoLoadEstimate.setBounds(532, 698, 30, 23);
     uiTab.add(chkAutoLoadEstimate);
 
     JLabel lblEstimateEngine =
         new JLabel(resourceBundle.getString("LizzieConfig.lblEstimateEngine")); // ("形势判断引擎");
-    lblEstimateEngine.setBounds(10, 669, 139, 15);
+    lblEstimateEngine.setBounds(10, 701, 139, 15);
     uiTab.add(lblEstimateEngine);
 
     rdbtnKatago = new JRadioButton("KataGo"); // $NON-NLS-1$
-    rdbtnKatago.setBounds(145, 665, 67, 23);
+    rdbtnKatago.setBounds(145, 697, 67, 23);
     uiTab.add(rdbtnKatago);
 
     rdbtnZen = new JRadioButton("Zen"); // $NON-NLS-1$
-    rdbtnZen.setBounds(218, 665, 64, 23);
+    rdbtnZen.setBounds(218, 697, 64, 23);
     uiTab.add(rdbtnZen);
 
     ButtonGroup estimateEngineGroup = new ButtonGroup();
@@ -1511,20 +1532,20 @@ public class ConfigDialog2 extends JDialog {
 
     JLabel lblShowIndependentMoveList =
         new JLabel(resourceBundle.getString("LizzieConfig.lblShowIndependentMoveList"));
-    lblShowIndependentMoveList.setBounds(10, 156, 173, 15);
+    lblShowIndependentMoveList.setBounds(10, 182, 173, 15);
     uiTab.add(lblShowIndependentMoveList);
 
     chkShowIndependentMoveList = new JCheckBox();
-    chkShowIndependentMoveList.setBounds(237, 154, 45, 23);
+    chkShowIndependentMoveList.setBounds(237, 180, 45, 23);
     uiTab.add(chkShowIndependentMoveList);
 
     JLabel lblShowIndependentHawkEye =
         new JLabel(resourceBundle.getString("LizzieConfig.lblShowIndependentHawkEye"));
-    lblShowIndependentHawkEye.setBounds(312, 156, 214, 15);
+    lblShowIndependentHawkEye.setBounds(312, 182, 214, 15);
     uiTab.add(lblShowIndependentHawkEye);
 
     chkShowIndependentHawkEye = new JCheckBox();
-    chkShowIndependentHawkEye.setBounds(532, 154, 45, 23);
+    chkShowIndependentHawkEye.setBounds(532, 180, 45, 23);
     uiTab.add(chkShowIndependentHawkEye);
 
     JLabel lblIndepentMainBoard =
@@ -1553,22 +1574,22 @@ public class ConfigDialog2 extends JDialog {
     uiTab.add(chkShowIndependentSubBoard);
 
     chkCheckEngineAlive = new JCheckBox();
-    chkCheckEngineAlive.setBounds(837, 438, 26, 23);
+    chkCheckEngineAlive.setBounds(837, 470, 26, 23);
     uiTab.add(chkCheckEngineAlive);
     chkCheckEngineAlive.setSelected(Lizzie.config.autoCheckEngineAlive);
 
     JLabel lblCheckEngineAlive =
         new JLabel(resourceBundle.getString("LizzieConfig.chkCheckEngineAlive"));
-    lblCheckEngineAlive.setBounds(608, 441, 173, 15);
+    lblCheckEngineAlive.setBounds(608, 473, 173, 15);
     uiTab.add(lblCheckEngineAlive);
 
     JLabel lblShowPvVisits =
         new JLabel(resourceBundle.getString("ConfigDialog2.lblShowPvVisits")); // $NON-NLS-1$
-    lblShowPvVisits.setBounds(608, 339, 173, 15);
+    lblShowPvVisits.setBounds(608, 371, 173, 15);
     uiTab.add(lblShowPvVisits);
 
     comboBoxPvVisits = new JComboBox<String>();
-    comboBoxPvVisits.setBounds(767, 337, 99, 21);
+    comboBoxPvVisits.setBounds(767, 369, 99, 21);
     comboBoxPvVisits.addItem(resourceBundle.getString("FirstUseSettings.rdoNoPvVistits"));
     comboBoxPvVisits.addItem(resourceBundle.getString("FirstUseSettings.rdoLastPvVistits"));
     comboBoxPvVisits.addItem(resourceBundle.getString("FirstUseSettings.rdoEveryPvVistits"));
@@ -1576,7 +1597,7 @@ public class ConfigDialog2 extends JDialog {
 
     JLabel lblPvVisitsLimit =
         new JLabel(resourceBundle.getString("ConfigDialog2.lblPvVisitsLimit"));
-    lblPvVisitsLimit.setBounds(608, 366, 184, 15);
+    lblPvVisitsLimit.setBounds(608, 398, 184, 15);
     uiTab.add(lblPvVisitsLimit);
 
     txtPvVisitsLimit =
@@ -1588,7 +1609,7 @@ public class ConfigDialog2 extends JDialog {
 
               private DocumentFilter filter = new DigitOnlyFilter();
             });
-    txtPvVisitsLimit.setBounds(800, 363, 66, 21);
+    txtPvVisitsLimit.setBounds(800, 395, 66, 21);
     uiTab.add(txtPvVisitsLimit);
     txtPvVisitsLimit.setColumns(10);
     txtPvVisitsLimit.setText(Lizzie.config.pvVisitsLimit + "");
@@ -1596,31 +1617,31 @@ public class ConfigDialog2 extends JDialog {
     JLabel lblVariationRemoveDeadChain =
         new JLabel(
             resourceBundle.getString("ConfigDialog2.lblVariationRemoveDeadChain")); // $NON-NLS-1$
-    lblVariationRemoveDeadChain.setBounds(608, 312, 223, 15);
+    lblVariationRemoveDeadChain.setBounds(608, 344, 223, 15);
     uiTab.add(lblVariationRemoveDeadChain);
 
     chkVariationRemoveDeadChain = new JCheckBox();
-    chkVariationRemoveDeadChain.setBounds(837, 309, 26, 23);
+    chkVariationRemoveDeadChain.setBounds(837, 341, 26, 23);
     uiTab.add(chkVariationRemoveDeadChain);
 
     txtVariationReplayInterval = new JTextField();
-    txtVariationReplayInterval.setBounds(803, 668, 52, 18);
+    txtVariationReplayInterval.setBounds(803, 700, 52, 18);
     uiTab.add(txtVariationReplayInterval);
     txtVariationReplayInterval.setText(Lizzie.config.replayBranchIntervalSeconds * 1000 + "");
 
     JLabel lblVariationReplayInterval =
         new JLabel(
             resourceBundle.getString("ConfigDialog2.lblVariationReplayInterval")); // $NON-NLS-1$
-    lblVariationReplayInterval.setBounds(608, 669, 189, 15);
+    lblVariationReplayInterval.setBounds(608, 701, 189, 15);
     uiTab.add(lblVariationReplayInterval);
 
     chkShowScoreLeadLine = new JCheckBox();
-    chkShowScoreLeadLine.setBounds(532, 201, 26, 23);
+    chkShowScoreLeadLine.setBounds(532, 233, 26, 23);
     uiTab.add(chkShowScoreLeadLine);
 
     JLabel lblShowScoreLeadLine =
         new JLabel(resourceBundle.getString("ConfigDialog2.lblShowScoreLeadLine"));
-    lblShowScoreLeadLine.setBounds(312, 204, 190, 15);
+    lblShowScoreLeadLine.setBounds(312, 236, 190, 15);
     uiTab.add(lblShowScoreLeadLine);
 
     chkShowScoreLeadLine.setSelected(Lizzie.config.showScoreLeadLine);
@@ -1628,11 +1649,11 @@ public class ConfigDialog2 extends JDialog {
 
     JLabel lblShowMouseOverWinrateGraph =
         new JLabel(resourceBundle.getString("ConfigDialog2.lblShowMouseOverWinrateGraph"));
-    lblShowMouseOverWinrateGraph.setBounds(312, 366, 367, 15);
+    lblShowMouseOverWinrateGraph.setBounds(312, 398, 367, 15);
     uiTab.add(lblShowMouseOverWinrateGraph);
 
     chkShowMouseOverWinrateGraph = new JCheckBox();
-    chkShowMouseOverWinrateGraph.setBounds(Lizzie.config.isChinese ? 532 : 577, 363, 23, 23);
+    chkShowMouseOverWinrateGraph.setBounds(Lizzie.config.isChinese ? 532 : 577, 395, 23, 23);
     uiTab.add(chkShowMouseOverWinrateGraph);
 
     chkShowMouseOverWinrateGraph.setSelected(Lizzie.config.showMouseOverWinrateGraph);
@@ -1644,20 +1665,21 @@ public class ConfigDialog2 extends JDialog {
             Lizzie.frame.openSuggestionInfoCustom(Lizzie.frame.configDialog2);
           }
         });
-    btnSetOrder.setBounds(310, 337, Lizzie.config.isChinese ? 165 : 240, 23);
+    btnSetOrder.setBounds(310, 369, Lizzie.config.isChinese ? 165 : 240, 23);
     uiTab.add(btnSetOrder);
 
     JLabel lblUseIinCoords =
         new JLabel(resourceBundle.getString("ConfigDialog2.lblUseIinCoords")); // "在坐标中使用I");
-    lblUseIinCoords.setBounds(430, 639, 94, 15);
+    lblUseIinCoords.setBounds(430, 671, 94, 15);
     uiTab.add(lblUseIinCoords);
 
     chkUseIinCoordsName = new JCheckBox();
-    chkUseIinCoordsName.setBounds(532, 636, 26, 23);
+    chkUseIinCoordsName.setBounds(532, 668, 26, 23);
     uiTab.add(chkUseIinCoordsName);
     chkUseIinCoordsName.setSelected(Lizzie.config.useIinCoordsName);
 
     chkLimitTime = new JCheckBox();
+    chkLimitTime.setLocation(0, 32);
     uiTab.add(chkLimitTime);
 
     txtMaxAnalyzeTime =
@@ -1669,14 +1691,17 @@ public class ConfigDialog2 extends JDialog {
 
               private DocumentFilter filter = new DigitOnlyFilter();
             });
+    txtMaxAnalyzeTime.setLocation(0, 32);
     txtMaxAnalyzeTime.setText(String.valueOf(Lizzie.config.maxAnalyzeTimeMillis / 1000));
     uiTab.add(txtMaxAnalyzeTime);
 
     JLabel lblSeconds = new JLabel(resourceBundle.getString("LizzieConfig.title.seconds"));
+    lblSeconds.setLocation(0, 32);
 
     uiTab.add(lblSeconds);
 
     chkLimitPlayouts = new JCheckBox();
+    chkLimitPlayouts.setLocation(0, 32);
     uiTab.add(chkLimitPlayouts);
     txtLimitPlayouts =
         new JFormattedTextField(
@@ -1687,9 +1712,11 @@ public class ConfigDialog2 extends JDialog {
 
               private DocumentFilter filter = new DigitOnlyFilter();
             });
+    txtLimitPlayouts.setLocation(0, 32);
     uiTab.add(txtLimitPlayouts);
 
     JLabel lblLimitPlayouts = new JLabel(resourceBundle.getString("LizzieConfig.visits"));
+    lblLimitPlayouts.setLocation(0, 32);
     uiTab.add(lblLimitPlayouts);
 
     chkLimitTime.addActionListener(
@@ -1712,31 +1739,122 @@ public class ConfigDialog2 extends JDialog {
     txtMaxAnalyzeTime.setEnabled(Lizzie.config.limitTime);
 
     JLabel lblLoadKomi = new JLabel(resourceBundle.getString("LizzieConfig.lblLoadKomi"));
-    lblLoadKomi.setBounds(Lizzie.config.isChinese ? 725 : 715, 609, 122, 15);
+    lblLoadKomi.setBounds(
+        Lizzie.config.isChinese ? 725 : 715,
+        641,
+        122,
+        15); // aaaLizzie.config.isChinese ? 725 : 715, 609, 122, 15
     uiTab.add(lblLoadKomi);
 
     chkLoadKomi = new JCheckBox();
-    chkLoadKomi.setBounds(837, 606, 26, 23);
+    chkLoadKomi.setBounds(837, 638, 26, 23);
     uiTab.add(chkLoadKomi);
 
     chkLoadKomi.setSelected(Lizzie.config.readKomi);
 
+    JLabel lblShowMoveRank =
+        new JLabel(resourceBundle.getString("LizzieConfig.lblShowMoveRank")); // "落子评价标记"
+    lblShowMoveRank.setBounds(10, 156, 130, 15);
+    uiTab.add(lblShowMoveRank);
+
+    JLabel lblNextMoveHint =
+        new JLabel(resourceBundle.getString("LizzieConfig.lblNextMoveHint")); // ("下一手提示");
+    lblNextMoveHint.setBounds(312, 156, 122, 15);
+    uiTab.add(lblNextMoveHint);
+
+    rdoNoMark = new JRadioButton(resourceBundle.getString("LizzieConfig.title.showMoveNumberNo"));
+    rdoNoMark.setBounds(Lizzie.config.isChinese ? 112 : 121, 153, 62, 23);
+    uiTab.add(rdoNoMark);
+
+    rdoAllMark = new JRadioButton(resourceBundle.getString("LizzieConfig.title.showMoveNumberAll"));
+    rdoAllMark.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            rdoShowMoveNumberNo.setSelected(true);
+            txtShowMoveNumber.setEnabled(false);
+          }
+        });
+    rdoAllMark.setBounds(
+        Lizzie.config.isChinese ? 176 : 181, 153, Lizzie.config.isChinese ? 52 : 42, 23);
+    uiTab.add(rdoAllMark);
+
+    rdoLastMark =
+        new JRadioButton(resourceBundle.getString("LizzieConfig.title.showMoveNumberLast"));
+    rdoLastMark.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            rdoShowMoveNumberNo.setSelected(true);
+            txtShowMoveNumber.setEnabled(false);
+          }
+        });
+    rdoLastMark.addChangeListener(
+        new ChangeListener() {
+          public void stateChanged(ChangeEvent e) {
+            if (rdoLastMark.isSelected()) {
+              txtLastMark.setEnabled(true);
+            } else {
+              txtLastMark.setEnabled(false);
+            }
+          }
+        });
+    rdoLastMark.setBounds(225, 153, 50, 23);
+    uiTab.add(rdoLastMark);
+    ButtonGroup markGroup = new ButtonGroup();
+    markGroup.add(rdoNoMark);
+    markGroup.add(rdoAllMark);
+    markGroup.add(rdoLastMark);
+
+    txtLastMark =
+        new JFormattedTextField(
+            new InternationalFormatter(nf) {
+              protected DocumentFilter getDocumentFilter() {
+                return filter;
+              }
+
+              private DocumentFilter filter = new DigitOnlyFilter();
+            });
+    txtLastMark.setEnabled(false);
+    txtLastMark.setColumns(10);
+    txtLastMark.setBounds(275, 155, 28, 20);
+    uiTab.add(txtLastMark);
+    txtLastMark.setText(Lizzie.config.txtMoveRankMarkLastMove + "");
+    if (Lizzie.config.moveRankMarkLastMove < 0) rdoNoMark.setSelected(true);
+    else if (Lizzie.config.moveRankMarkLastMove == 0) rdoAllMark.setSelected(true);
+    else {
+      rdoLastMark.setSelected(true);
+      txtLastMark.setText(Lizzie.config.moveRankMarkLastMove + "");
+      txtLastMark.setEnabled(true);
+    }
+
+    comboMoveHint = new JComboBox<String>();
+    comboMoveHint.setBounds(503, 155, 67, 23);
+    uiTab.add(comboMoveHint);
+    comboMoveHint.addItem(resourceBundle.getString("LizzieConfig.comboMoveHint.none")); // ("无");
+    comboMoveHint.addItem(
+        resourceBundle.getString("LizzieConfig.comboMoveHint.circle")); // ("显示圈");
+    comboMoveHint.addItem(
+        resourceBundle.getString("LizzieConfig.comboMoveHint.winrate")); // ("显示胜率");
+    if (Lizzie.config.showNextMoves && Lizzie.config.showNextMoveBlunder)
+      comboMoveHint.setSelectedIndex(2);
+    else if (Lizzie.config.showNextMoves) comboMoveHint.setSelectedIndex(1);
+    else comboMoveHint.setSelectedIndex(0);
+
     if (Lizzie.config.isChinese) {
-      chkLimitTime.setBounds(102, 412, 20, 23);
-      txtMaxAnalyzeTime.setBounds(123, 413, 40, 21);
-      lblSeconds.setBounds(165, 415, 63, 16);
+      chkLimitTime.setBounds(102, 444, 20, 23);
+      txtMaxAnalyzeTime.setBounds(123, 445, 40, 21);
+      lblSeconds.setBounds(165, 446, 63, 16);
 
-      chkLimitPlayouts.setBounds(181, 412, 20, 23);
-      txtLimitPlayouts.setBounds(203, 413, 52, 21);
-      lblLimitPlayouts.setBounds(257, 415, 54, 16);
+      chkLimitPlayouts.setBounds(181, 444, 20, 23);
+      txtLimitPlayouts.setBounds(203, 445, 52, 21);
+      lblLimitPlayouts.setBounds(257, 446, 54, 16);
     } else {
-      chkLimitTime.setBounds(96, 412, 20, 23);
-      txtMaxAnalyzeTime.setBounds(117, 413, 40, 21);
-      lblSeconds.setBounds(160, 415, 63, 16);
+      chkLimitTime.setBounds(96, 444, 20, 23);
+      txtMaxAnalyzeTime.setBounds(117, 445, 40, 21);
+      lblSeconds.setBounds(160, 446, 63, 16);
 
-      chkLimitPlayouts.setBounds(209, 412, 20, 23);
-      txtLimitPlayouts.setBounds(230, 413, 52, 21);
-      lblLimitPlayouts.setBounds(285, 415, 54, 16);
+      chkLimitPlayouts.setBounds(209, 444, 20, 23);
+      txtLimitPlayouts.setBounds(230, 445, 52, 21);
+      lblLimitPlayouts.setBounds(285, 446, 54, 16);
     }
 
     if (!Lizzie.config.showPvVisits) {
@@ -3499,6 +3617,20 @@ public class ConfigDialog2 extends JDialog {
   }
 
   private void saveConfig() {
+    if (rdoLastMark.isSelected()) {
+      int lastRankMove = Utils.parseTextToInt(txtLastMark, 1);
+      Lizzie.config.moveRankMarkLastMove = lastRankMove;
+      if (lastRankMove > 1) Lizzie.config.txtMoveRankMarkLastMove = lastRankMove;
+    } else if (rdoAllMark.isSelected()) Lizzie.config.moveRankMarkLastMove = 0;
+    else {
+      Lizzie.config.moveRankMarkLastMove = -1;
+    }
+    Lizzie.config.uiConfig.put(
+        "txt-move-rank-mark-last-move", Lizzie.config.txtMoveRankMarkLastMove);
+    Lizzie.config.uiConfig.put("move-rank-mark-last-move", Lizzie.config.moveRankMarkLastMove);
+    if (comboMoveHint.getSelectedIndex() == 0) Lizzie.config.setShowNextMoves(false, false);
+    else if (comboMoveHint.getSelectedIndex() == 1) Lizzie.config.setShowNextMoves(true, false);
+    else if (comboMoveHint.getSelectedIndex() == 2) Lizzie.config.setShowNextMoves(true, true);
     Lizzie.config.readKomi = chkLoadKomi.isSelected();
     Lizzie.config.uiConfig.put("read-komi", Lizzie.config.readKomi);
     Lizzie.config.limitTime = chkLimitTime.isSelected();
