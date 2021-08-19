@@ -93,7 +93,7 @@ public class FloatBoard extends JDialog {
     posY = y;
     posWidth = width;
     posHeight = height;
-    setTitle(Lizzie.resourceBundle.getString("IndependentMainBoard.title"));
+    setTitle("FloatBoard");
     setAlwaysOnTop(true);
     try {
       this.setIconImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/logo.png")));

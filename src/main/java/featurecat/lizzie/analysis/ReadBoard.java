@@ -41,7 +41,7 @@ public class ReadBoard {
   // private long startSyncTime = 0;
 
   public boolean isLoaded = false;
-  private int version = 808;
+  private int version = 819;
   private String engineCommand;
   public String currentEnginename = "";
   private int port = -1;
@@ -60,7 +60,7 @@ public class ReadBoard {
   private boolean isSyncing = false;
   // private long startTime;
   private boolean javaReadBoard = false;
-  private String javaReadBoardName = "readboard-1.2-shaded.jar";
+  private String javaReadBoardName = "readboard-1.3-shaded.jar";
   private boolean waitSocket = true;
 
   public ReadBoard(boolean usePipe, boolean isJavaReadBoard) throws Exception {
