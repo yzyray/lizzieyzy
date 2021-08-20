@@ -2811,6 +2811,10 @@ public class Leelaz {
   }
 
   public void analyzeAvoid(String type, String coordList, int untilMove) {
+    analyzeAvoid(type, coordList, untilMove, false);
+  }
+
+  public void analyzeAvoid(String type, String coordList, int untilMove, boolean reverse) {
     bestMoves = new ArrayList<>();
     if (!isPondering) {
       isPondering = true;
@@ -2829,7 +2833,7 @@ public class Leelaz {
                     + (Lizzie.config.showKataGoEstimate ? " ownership true" : "")
                     + (Lizzie.config.showPvVisits ? " pvVisits true" : "")
                 : "lz-analyze %s%d %s"),
-            maybeAddPlayer(),
+            maybeAddPlayer(reverse),
             getInterval(),
             parameters));
     Lizzie.board.clearbestmoves();
@@ -2882,10 +2886,10 @@ public class Leelaz {
     if (Lizzie.frame.isKeepingForce || LizzieFrame.isKeepForcing) {
       if (LizzieFrame.allowcoords != "") {
         Lizzie.leelaz.analyzeAvoid(
-            "allow", LizzieFrame.allowcoords, Lizzie.config.selectAllowMoves);
+            "allow", LizzieFrame.allowcoords, Lizzie.config.selectAllowMoves, reverse);
       } else {
         Lizzie.leelaz.analyzeAvoid(
-            "avoid", LizzieFrame.avoidcoords, Lizzie.config.selectAvoidMoves);
+            "avoid", LizzieFrame.avoidcoords, Lizzie.config.selectAvoidMoves, reverse);
       }
     } else {
       LizzieFrame.isTempForcing = false;
