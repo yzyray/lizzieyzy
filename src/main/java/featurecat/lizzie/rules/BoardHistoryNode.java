@@ -3,7 +3,6 @@ package featurecat.lizzie.rules;
 import featurecat.lizzie.Lizzie;
 import featurecat.lizzie.analysis.EngineManager;
 import featurecat.lizzie.analysis.Leelaz;
-import featurecat.lizzie.util.Utils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -161,7 +160,7 @@ public class BoardHistoryNode {
           if (i != 0 && changeMove) {
             break;
           }
-          if (Lizzie.config.playSound) Utils.playVoiceFile();
+          // if (Lizzie.config.playSound) Utils.playVoiceFile();
           if (clearAfterMove) Lizzie.board.clearAfterMove();
           return variations.get(i);
         }
@@ -203,7 +202,7 @@ public class BoardHistoryNode {
       variations.add(node);
     }
     node.previous = Optional.of(this);
-    if (Lizzie.config.playSound) Utils.playVoiceFile();
+    // if (Lizzie.config.playSound) Utils.playVoiceFile();
     if (clearAfterMove) Lizzie.board.clearAfterMove();
     return node;
   }

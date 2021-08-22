@@ -348,7 +348,9 @@ public class OnlineDialog extends JDialog {
     chineseRule = 1;
     chineseFlag = false;
     String url = txtUrl.getText().trim();
-
+    if (url.endsWith("/0/0")) {
+      url = url.substring(0, url.length() - 5);
+    }
     Pattern up =
         Pattern.compile(
             "https*://(?s).*?([^\\./]+\\.[^\\./]+)/(?s).*?(live/[a-zA-Z]+/)([^/]+)/[0-9]+/([^/]+)[^\\n]*");

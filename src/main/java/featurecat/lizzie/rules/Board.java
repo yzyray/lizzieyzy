@@ -960,7 +960,7 @@ public class Board {
         //	        } catch (Exception ex) {
         //	        }
       } else {
-        passinsert(move.isblack ? Stone.BLACK : Stone.WHITE, false);
+        pass(move.isblack ? Stone.BLACK : Stone.WHITE, true, false, false);
       }
     }
     Lizzie.config.playSound = oriPlaySound;
@@ -1447,45 +1447,6 @@ public class Board {
     return mvnumbers;
   }
 
-  public void passinsert(Stone color, boolean newBranch) {
-    synchronized (this) {
-      Stone[] stones = history.getStones().clone();
-      Zobrist zobrist = history.getZobrist();
-
-      int moveNumber = history.getMoveNumber() + 1;
-      int[] moveNumberList =
-          newBranch && history.getNext(true).isPresent()
-              ? new int[Board.boardWidth * Board.boardHeight]
-              : history.getMoveNumberList().clone();
-
-      // build the new game state
-      BoardData newState =
-          new BoardData(
-              stones,
-              Optional.empty(),
-              color,
-              color.equals(Stone.WHITE),
-              zobrist,
-              moveNumber,
-              moveNumberList,
-              history.getData().blackCaptures,
-              history.getData().whiteCaptures,
-              0,
-              0);
-      history.addOrGoto(newState, newBranch, false);
-      // update leelaz with pass
-      if (!Lizzie.leelaz.isInputCommand) Lizzie.leelaz.playMove(color, "pass");
-
-      if (Lizzie.frame.isPlayingAgainstLeelaz
-          && Lizzie.frame.playerIsBlack != getData().blackToPlay)
-        Lizzie.leelaz.genmove((history.isBlacksTurn() ? "b" : "w"));
-
-      // update history with pass
-
-      Lizzie.frame.refresh();
-    }
-  }
-
   public void pass(Stone color, boolean newBranch, boolean dummy, boolean changeMove) {
     synchronized (this) {
 
@@ -1495,7 +1456,8 @@ public class Board {
         // erase the
         // redo's
         history.next();
-        if (!Lizzie.engineManager.isEngineGame) Lizzie.leelaz.playMove(color, "pass");
+        if (Lizzie.config.playSound) Utils.playVoiceFile();
+        if (!EngineManager.isEngineGame) Lizzie.leelaz.playMove(color, "pass");
 
         if (Lizzie.frame.isPlayingAgainstLeelaz
             && Lizzie.frame.playerIsBlack != getData().blackToPlay)
@@ -1530,7 +1492,7 @@ public class Board {
       newState.dummy = dummy;
       history.addOrGoto(newState, newBranch, changeMove);
       // update leelaz with pass
-      if (!Lizzie.leelaz.isInputCommand && !Lizzie.engineManager.isEngineGame)
+      if (!Lizzie.leelaz.isInputCommand && !EngineManager.isEngineGame)
         Lizzie.leelaz.playMove(color, "pass");
 
       if (Lizzie.frame.isPlayingAgainstLeelaz
@@ -1538,7 +1500,7 @@ public class Board {
         Lizzie.leelaz.genmove((history.isBlacksTurn() ? "b" : "w"));
 
       // update history with pass
-
+      if (Lizzie.config.playSound) Utils.playVoiceFile();
       Lizzie.frame.refresh();
     }
   }
@@ -1822,6 +1784,7 @@ public class Board {
       else history.addOrGoto(newState, newBranch, changeMove);
       updateIsBest();
       //   modifyEnd(false);
+      if (Lizzie.config.playSound) Utils.playVoiceFile();
       if (!forSync) Lizzie.frame.refresh();
     }
   }
