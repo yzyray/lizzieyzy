@@ -1386,6 +1386,7 @@ public class Menu extends JMenuBar {
             Lizzie.config.uiConfig.put("show-heat", false);
             Lizzie.config.uiConfig.put("subboard-raw", false);
             Lizzie.config.uiConfig.put("show-heat-aftercalc", false);
+            Lizzie.frame.refresh();
           }
         });
 
@@ -1415,6 +1416,7 @@ public class Menu extends JMenuBar {
             Lizzie.config.uiConfig.put("show-heat", false);
             Lizzie.config.uiConfig.put("subboard-raw", true);
             Lizzie.config.uiConfig.put("show-heat-aftercalc", false);
+            Lizzie.frame.refresh();
           }
         });
 
@@ -1443,6 +1445,7 @@ public class Menu extends JMenuBar {
             }
             Lizzie.config.uiConfig.put("show-heat", true);
             Lizzie.config.uiConfig.put("show-heat-aftercalc", false);
+            Lizzie.frame.refresh();
           }
         });
 
@@ -1472,6 +1475,7 @@ public class Menu extends JMenuBar {
             }
             Lizzie.config.uiConfig.put("show-heat", true);
             Lizzie.config.uiConfig.put("show-heat-aftercalc", true);
+            Lizzie.frame.refresh();
           }
         });
 

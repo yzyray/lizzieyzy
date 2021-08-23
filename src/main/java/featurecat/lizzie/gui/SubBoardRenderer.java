@@ -55,7 +55,6 @@ public class SubBoardRenderer {
 
   private BufferedImage cachedBackgroundImage = emptyImage;
   private boolean cachedBackgroundImageHasCoordinatesEnabled = false;
-  private int cachedX, cachedY;
   private int cachedBoardWidth = 0, cachedBoardHeight = 0;
   private BufferedImage cachedStonesImage = emptyImage;
   private BufferedImage cachedStonesImagedraged = emptyImage;
@@ -69,8 +68,6 @@ public class SubBoardRenderer {
   private BufferedImage cachedStonesShadowImagedraged = emptyImage;
   private Zobrist cachedZhash = new Zobrist(); // defaults to an empty board
 
-  private BufferedImage cachedBlackStoneImage = emptyImage;
-  private BufferedImage cachedWhiteStoneImage = emptyImage;
   private BufferedImage cachedHeatImage = emptyImage;
 
   private BufferedImage branchStonesImage = emptyImage;
@@ -92,7 +89,7 @@ public class SubBoardRenderer {
   private int maxAlpha = 240;
   public boolean showHeat = Lizzie.config.showHeat;
   public boolean showHeatAfterCalc = Lizzie.config.showHeatAfterCalc;
-  private long heatTime;
+  // private long heatTime;
 
   private int subOrder = 0;
   public boolean isMouseOver = false;
@@ -153,39 +150,16 @@ public class SubBoardRenderer {
       if (!isMouseOver || statChanged || wheeled) drawBranch();
       if (wheeled) wheeled = false;
     }
-    // }
-    // drawPlay(g);
-    // timer.lap("branch");
     if (!isMouseOver) drawStones();
+    if (!isShowingRawBoard()) {
+      drawLeelazSuggestions();
+    }
     renderImages(g);
-    // timer.lap("rendering images");
     if (Lizzie.frame.isInPlayMode()) return;
     if (!showHeat) {
       drawMoveNumbers(g);
       return;
     }
-
-    if (!isShowingRawBoard()) {
-      // drawMoveNumbers(g);
-      // if (Lizzie.config.showNextMoves) {
-      //   drawNextMoves(g);
-      // }
-      // timer.lap("movenumbers");
-      //   if (!Lizzie.frame.isPlayingAgainstLeelaz && Lizzie.config.showBestMovesNow()) {
-      //        if ((Lizzie.board.getHistory().isBlacksTurn()
-      //                && Lizzie.frame.toolbar.chkShowBlack.isSelected())
-      //            || (!Lizzie.board.getHistory().isBlacksTurn()
-      //                && Lizzie.frame.toolbar.chkShowWhite.isSelected())) {
-      drawLeelazSuggestions();
-      //       }
-      //    }
-
-      // drawStoneMarkup(g);
-    }
-
-    // timer.lap("leelaz");
-
-    // timer.print();
   }
 
   private void drawPlay(Graphics2D g) {
@@ -1064,12 +1038,10 @@ public class SubBoardRenderer {
    */
   private void drawLeelazSuggestions() {
 
-    if (System.currentTimeMillis() - heatTime < 300) return;
-    heatTime = System.currentTimeMillis();
     heatimage = new BufferedImage(boardWidth, boardHeight, TYPE_INT_ARGB);
     Graphics2D g = heatimage.createGraphics();
 
-    bestMoves = Lizzie.leelaz.getBestMoves();
+    bestMoves = Lizzie.board.getHistory().getData().bestMoves;
     if (bestMoves != null && !bestMoves.isEmpty()) {
 
       // Collections.sort(bestMoves);
@@ -1153,8 +1125,9 @@ public class SubBoardRenderer {
           int suggestionY = scaledMarginHeight + squareHeight * coords[1];
 
           int length = 0;
-          if (showHeatAfterCalc) length = (move.playouts * 40 / maxPlayouts) + stoneRadius;
-          else length = (int) (move.policy * 40 / maxPolicy) + stoneRadius;
+          if (showHeatAfterCalc)
+            length = (int) ((move.playouts * 2.7f * squareWidth) / maxPlayouts);
+          else length = (int) ((move.policy * 2.7f * squareWidth) / maxPolicy);
           drawHeat(g, suggestionX - length / 2, suggestionY - length / 2, length);
         }
       }
@@ -1390,23 +1363,11 @@ public class SubBoardRenderer {
       boolean isBlack = color.isBlack();
       // if (uiConfig.getBoolean("fancy-stones")) {
       // 需要恢复的
-      if (false) {
-        // drawShadow(gShadow, centerX, centerY, isGhost);
-        int size = stoneRadius * 2 + 1;
-        g.drawImage(
-            getScaleStone(isBlack, size),
-            centerX - stoneRadius,
-            centerY - stoneRadius,
-            size,
-            size,
-            null);
-      } else {
-        g.setColor(isBlack ? Color.BLACK : Color.WHITE);
-        fillCircle(g, centerX, centerY, stoneRadius);
-        if (!isBlack) {
-          g.setColor(Color.BLACK);
-          drawCircle(g, centerX, centerY, stoneRadius);
-        }
+      g.setColor(isBlack ? Color.BLACK : Color.WHITE);
+      fillCircle(g, centerX, centerY, stoneRadius);
+      if (!isBlack) {
+        g.setColor(Color.BLACK);
+        drawCircle(g, centerX, centerY, stoneRadius);
       }
     }
   }
@@ -1414,33 +1375,14 @@ public class SubBoardRenderer {
   private void drawHeat(Graphics2D g, int x, int y, int length) {
     // g.setRenderingHint(KEY_ALPHA_INTERPOLATION,
     // VALUE_ALPHA_INTERPOLATION_QUALITY);
-    g.setRenderingHint(KEY_INTERPOLATION, VALUE_INTERPOLATION_BILINEAR);
-    g.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
+    // g.setRenderingHint(KEY_INTERPOLATION, VALUE_INTERPOLATION_BILINEAR);
+    // g.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
 
     // if (uiConfig.getBoolean("fancy-stones")) {
     // 需要恢复的
 
     // drawShadow(gShadow, centerX, centerY, isGhost);
-
-    g.drawImage(getHeatStone(length), x, y, length, length, null);
-  }
-  /** Get scaled stone, if cached then return cached */
-  private BufferedImage getScaleStone(boolean isBlack, int size) {
-    BufferedImage stoneImage = isBlack ? cachedBlackStoneImage : cachedWhiteStoneImage;
-    if (stoneImage.getWidth() != size || stoneImage.getHeight() != size) {
-      stoneImage = new BufferedImage(size, size, TYPE_INT_ARGB);
-      Image img = isBlack ? Lizzie.config.theme.blackStone() : Lizzie.config.theme.whiteStone();
-      Graphics2D g2 = stoneImage.createGraphics();
-      g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-      g2.drawImage(img.getScaledInstance(size, size, java.awt.Image.SCALE_SMOOTH), 0, 0, null);
-      g2.dispose();
-      if (isBlack) {
-        cachedBlackStoneImage = stoneImage;
-      } else {
-        cachedWhiteStoneImage = stoneImage;
-      }
-    }
-    return stoneImage;
+    g.drawImage(getHeatStone(squareWidth * 3), x, y, length, length, null);
   }
 
   private BufferedImage getHeatStone(int size) {
