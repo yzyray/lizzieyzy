@@ -48,9 +48,9 @@ Add some new features on Lizzie's basis:`Hawk Eye`,`Flash Analyze`,`Batch Analyz
 
 `Estimate`: Use Katago(default)'s command:`kata-raw-nn or` ZenGTP's command `territory` to get raw territory,support automatically estimate after each move.	
 
-`Board Synchronization`: [Repository](https://github.com/yzyray/readboard) Two mode: foreground(board can't be moved or covered)/backgorund,optimize for FoxWQ、TYGEM、SINA platform allow sync by click a button,when sync from other platform or a picture or a movie you need select the rigon contains the board,support automatically carry moves for both sides,developed by C#,so only support windows.
+`Board Synchronization(C#)`: [Repository](https://github.com/yzyray/readboard) Two mode: foreground(board can't be moved or covered)/backgorund,optimize for FoxWQ、TYGEM、SINA platform allow sync by click a button,when sync from other platform or a picture or a movie you need select the rigon contains the board,support automatically carry moves for both sides,developed by C#,so only support windows.
 
-`Board Synchronization`: [Repository](https://github.com/yzyray/readboard_Boofcv) Foreground only,need select the rigon contains the board,support automatically carry moves for both sides.
+`Board Synchronization(Java)`: [Repository](https://github.com/yzyray/readboard_Boofcv) Foreground only,need select the rigon contains the board,support automatically carry moves for both sides.
 
 `Engine Game`: Allow a game or multiple games bettween two engines,can use some sgfs as opening books,support various commands:`lz-analyze`,`kata-analyze`,`genmove` to get moves,multiple games will collect some statistics: elo,stdev interval and etc.
 
