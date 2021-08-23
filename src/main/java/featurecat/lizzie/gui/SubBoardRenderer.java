@@ -151,7 +151,7 @@ public class SubBoardRenderer {
       if (wheeled) wheeled = false;
     }
     if (!isMouseOver) drawStones();
-    if (!isShowingRawBoard()) {
+    if (showHeat) {
       drawLeelazSuggestions();
     }
     renderImages(g);
