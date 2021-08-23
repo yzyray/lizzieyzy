@@ -3,7 +3,7 @@
 
 LizzieYzy 是一个引擎界面,修改自[Lizzie](https://github.com/featurecat/lizzie),可加载围棋引擎:[Katago](https://github.com/lightvector/KataGo)、[LeelaZero](https://github.com/leela-zero/leela-zero)、[Leela](https://github.com/gcp/Leela)、[ZenGTP](https://github.com/yzyray/ZenGTP)、[SAI](http://sai.unich.it)、[Pachi](https://github.com/pasky/pachi)以及其他标准GTP引擎。
 
-在Lizzie的基础上增加了一些新功能:`鹰眼分析`,`闪电分析`,`批量分析`,`形势判断`,`棋盘同步(仅支持windows)`,`引擎对局`,`上传分享`,`双引擎模式`,以及一些细节修改,可完美支持高分辨率,不会因为系统缩放而显示模糊
+在Lizzie的基础上增加了一些新功能:`鹰眼分析`,`闪电分析`,`批量分析`,`形势判断`,`棋盘同步`,`引擎对局`,`上传分享`,`双引擎模式`,以及一些细节修改,可完美支持高分辨率,不会因为系统缩放而显示模糊
 
 ## 新功能
 
@@ -15,7 +15,9 @@ LizzieYzy 是一个引擎界面,修改自[Lizzie](https://github.com/featurecat/
 
 `形式判断`: 使用Katago(默认)的`kata-raw-nn`命令或ZenGTP的`territory`命令获取粗略的领地判断,支持每一步自动形势判断
 
-`棋盘同步`: [相关仓库](https://github.com/yzyray/readboard) 前台(不可移动,遮挡)/后台(不占用鼠标,可遮挡)两种模式,特别优化了野狐、弈城、新浪平台可一键同步,其他平台或图片动画等需框选棋盘(将棋盘选在内即可,比棋盘大很多也没关系),支持双向同步、自动落子(溜狗),采用C#语言,因此只支持Windows
+`棋盘同步(C#)`: [相关仓库](https://github.com/yzyray/readboard)前台(不可移动,遮挡)/后台(不占用鼠标,可遮挡)两种模式,特别优化了野狐、弈城、新浪平台可一键同步,其他平台或图片动画等需框选棋盘(将棋盘选在内即可,比棋盘大很多也没关系),支持双向同步、自动落子(溜狗),采用C#语言,因此只支持Windows
+
+`棋盘同步(Java)`: [相关仓库](https://github.com/yzyray/readboard_Boofcv)仅前台,需框选棋盘(选择比棋盘大一些的区域),支持双向同步、自动落子(溜狗)
 
 `引擎对局`: 两个引擎之间的单盘/多盘对局,可加载多个SGF作为开局,支持使用不同命令获取引擎选点:`lz-analyze`、`kata-analyze`、`genmove`,多盘对局将会自动计算elo、标准差区间等信息
 
@@ -47,6 +49,8 @@ Add some new features on Lizzie's basis:`Hawk Eye`,`Flash Analyze`,`Batch Analyz
 `Estimate`: Use Katago(default)'s command:`kata-raw-nn or` ZenGTP's command `territory` to get raw territory,support automatically estimate after each move.	
 
 `Board Synchronization`: [Repository](https://github.com/yzyray/readboard) Two mode: foreground(board can't be moved or covered)/backgorund,optimize for FoxWQ、TYGEM、SINA platform allow sync by click a button,when sync from other platform or a picture or a movie you need select the rigon contains the board,support automatically carry moves for both sides,developed by C#,so only support windows.
+
+`Board Synchronization`: [Repository](https://github.com/yzyray/readboard_Boofcv)Foreground only,need select the rigon contains the board,support automatically carry moves for both sides.
 
 `Engine Game`: Allow a game or multiple games bettween two engines,can use some sgfs as opening books,support various commands:`lz-analyze`,`kata-analyze`,`genmove` to get moves,multiple games will collect some statistics: elo,stdev interval and etc.
 
