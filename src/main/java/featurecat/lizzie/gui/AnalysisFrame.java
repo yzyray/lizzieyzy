@@ -526,7 +526,7 @@ public class AnalysisFrame extends JFrame {
             + Lizzie.frame.getPlayoutsString(maxPlayouts)
             + " "
             + resourceBundle.getString("AnalysisFrame.concentration")
-            + String.format("%.2f", stable)
+            + String.format(Locale.ENGLISH, "%.2f", stable)
             + "%",
         5,
         15);
@@ -543,7 +543,11 @@ public class AnalysisFrame extends JFrame {
           double percents = (double) bestMoves.get(i).playouts / maxPlayouts;
           g.fillRect(20, minHeight + i * 20 + 2, (int) ((width - 80) * percents), 16);
           g.drawString(
-              String.format("%.2f", (double) bestMoves.get(i).playouts * 100 / totalPlayouts) + "%",
+              String.format(
+                      Locale.ENGLISH,
+                      "%.2f",
+                      (double) bestMoves.get(i).playouts * 100 / totalPlayouts)
+                  + "%",
               26 + (int) ((width - 80) * percents),
               minHeight + i * 20 + 15);
         }
@@ -961,26 +965,27 @@ public class AnalysisFrame extends JFrame {
             // else
             return data.coordinate;
           case 2:
-            return String.format("%.1f", data.lcb);
+            return String.format(Locale.ENGLISH, "%.1f", data.lcb);
           case 3:
             if (data.isNextMove) {
               if (data.order != 0) {
                 double diff = data.winrate - data.bestWinrate;
                 return (diff > 0 ? "↑" : "↓")
-                    + String.format("%.1f", diff)
+                    + String.format(Locale.ENGLISH, "%.1f", diff)
                     + "("
-                    + String.format("%.1f", data.winrate)
+                    + String.format(Locale.ENGLISH, "%.1f", data.winrate)
                     + ")";
               }
             }
-            return String.format("%.1f", data.winrate);
+            return String.format(Locale.ENGLISH, "%.1f", data.winrate);
           case 4:
             if (data.order == -100) return resourceBundle.getString("AnalysisFrame.exclude");
             else return Lizzie.frame.getPlayoutsString(data.playouts);
           case 5:
-            return String.format("%.1f", (double) data.playouts * 100 / totalPlayouts);
+            return String.format(
+                Locale.ENGLISH, "%.1f", (double) data.playouts * 100 / totalPlayouts);
           case 6:
-            return String.format("%.2f", data.policy);
+            return String.format(Locale.ENGLISH, "%.2f", data.policy);
           case 7:
             double score = data.scoreMean;
             if (Lizzie.engineManager.isEngineGame
@@ -1008,13 +1013,13 @@ public class AnalysisFrame extends JFrame {
             if (data.isNextMove && data.order != 0) {
               double diff = data.scoreMean - data.bestScoreMean;
               return (diff > 0 ? "↑" : "↓")
-                  + String.format("%.1f", diff)
+                  + String.format(Locale.ENGLISH, "%.1f", diff)
                   + "("
-                  + String.format("%.1f", score)
+                  + String.format(Locale.ENGLISH, "%.1f", score)
                   + ")";
-            } else return String.format("%.1f", score);
+            } else return String.format(Locale.ENGLISH, "%.1f", score);
           case 8:
-            return String.format("%.1f", data.scoreStdev);
+            return String.format(Locale.ENGLISH, "%.1f", data.scoreStdev);
           default:
             return "";
         }

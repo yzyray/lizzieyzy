@@ -10,6 +10,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -259,14 +260,16 @@ public class BatchShareFrame extends JDialog {
     }
     if (Lizzie.board.isPkBoard) bScore = "101"; // AI对局
     else {
-      if (analyzedBlack >= 20) bScore = String.format("%.1f", blackValue * 100 / analyzedBlack);
+      if (analyzedBlack >= 20)
+        bScore = String.format(Locale.ENGLISH, "%.1f", blackValue * 100 / analyzedBlack);
       else {
         bScore = "-1"; // 分析不足20手
       }
     }
     if (Lizzie.board.isPkBoard) wScore = "101";
     else {
-      if (analyzedWhite >= 20) wScore = String.format("%.1f", whiteValue * 100 / analyzedWhite);
+      if (analyzedWhite >= 20)
+        wScore = String.format(Locale.ENGLISH, "%.1f", whiteValue * 100 / analyzedWhite);
       else {
         wScore = "-1";
       }

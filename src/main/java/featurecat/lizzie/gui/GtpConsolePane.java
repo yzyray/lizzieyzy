@@ -20,6 +20,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.Locale;
@@ -61,6 +63,7 @@ public class GtpConsolePane extends JDialog {
   int checkCount = 0;
   private Font gtpFont;
   private ArrayDeque<DocType> docQueue;
+  private FileOutputStream bos;
 
   /** Creates a Gtp Console Window */
   public GtpConsolePane(Window owner) {
@@ -186,6 +189,14 @@ public class GtpConsolePane extends JDialog {
         });
     executor = Executors.newSingleThreadScheduledExecutor();
     executor.execute(this::read);
+    if (Lizzie.config.logGtpToFile) {
+      try {
+        bos = new FileOutputStream("LastGtpLogs.txt");
+      } catch (FileNotFoundException e1) {
+        // TODO Auto-generated catch block
+        e1.printStackTrace();
+      }
+    }
   }
 
   public void openCommands() {
@@ -240,6 +251,14 @@ public class GtpConsolePane extends JDialog {
       while (!docQueue.isEmpty()) {
         DocType doc = docQueue.removeFirst();
         addDocs(doc);
+        if (Lizzie.config.logGtpToFile && bos != null) {
+          try {
+            bos.write(doc.content.getBytes());
+          } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
+        }
       }
       if ((Lizzie.leelaz != null && !Lizzie.leelaz.isLoaded())
           || (EngineManager.isPreEngineGame

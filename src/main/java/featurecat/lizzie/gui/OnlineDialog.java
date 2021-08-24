@@ -349,7 +349,7 @@ public class OnlineDialog extends JDialog {
     chineseFlag = false;
     String url = txtUrl.getText().trim();
     if (url.endsWith("/0/0")) {
-      url = url.substring(0, url.length() - 5);
+      url = url.substring(0, url.length() - 4);
     }
     Pattern up =
         Pattern.compile(

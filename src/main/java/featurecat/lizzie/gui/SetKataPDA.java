@@ -9,6 +9,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.util.Locale;
 import java.util.ResourceBundle;
 import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
@@ -209,7 +210,7 @@ public class SetKataPDA extends JDialog {
         60,
         20);
     getContentPane().add(curPDA);
-    curPDA.setText(String.format("%.3f", Lizzie.leelaz.pda));
+    curPDA.setText(String.format(Locale.ENGLISH, "%.3f", Lizzie.leelaz.pda));
 
     chkAutoPDA =
         new JFontCheckBox(

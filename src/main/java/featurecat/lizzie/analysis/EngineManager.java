@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 import java.util.ResourceBundle;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -652,7 +653,7 @@ public class EngineManager {
             + ":"
             + engineGameInfo.getSecondEngineWins()
             + resourceBundle.getString("EngineGameInfo.gameWinrate")
-            + String.format("%.2f", wr * 100)
+            + String.format(Locale.ENGLISH, "%.2f", wr * 100)
             + "%");
     writer.write("\r\n");
     writer.write("\r\n");
@@ -673,10 +674,10 @@ public class EngineManager {
       writer.write(
           resourceBundle.getString("EngineGameInfo.secondEngineElo")
               + (elo > 0 ? "+" : "")
-              + String.format("%.2f", elo)
+              + String.format(Locale.ENGLISH, "%.2f", elo)
               + " ± "
               + (zxwr2 + zxwrc2 < 1 && zxwr2 + zxwrc2 > 0
-                  ? String.format("%.2f", Math.abs(elo2 - elo))
+                  ? String.format(Locale.ENGLISH, "%.2f", Math.abs(elo2 - elo))
                   : ""));
       if (Lizzie.engineManager.engineGameInfo.batchNumberCurrent < 50)
         writer.write("?(" + resourceBundle.getString("EngineGameInfo.notEnoughGames") + ")");
@@ -684,23 +685,23 @@ public class EngineManager {
     writer.write("\r\n");
     writer.write(
         resourceBundle.getString("EngineGameInfo.oneStdev") // "一个标准差置信区间为:"
-            + String.format("%.2f", zxwr * 100)
+            + String.format(Locale.ENGLISH, "%.2f", zxwr * 100)
             + "% ± "
-            + String.format("%.2f", zxwrc * 100)
+            + String.format(Locale.ENGLISH, "%.2f", zxwrc * 100)
             + "%");
     writer.write("\r\n");
     writer.write(
         resourceBundle.getString("EngineGameInfo.twoStdev") // "两个标准差置信区间为:"
-            + String.format("%.2f", zxwr2 * 100)
+            + String.format(Locale.ENGLISH, "%.2f", zxwr2 * 100)
             + "% ± "
-            + String.format("%.2f", zxwrc2 * 100)
+            + String.format(Locale.ENGLISH, "%.2f", zxwrc2 * 100)
             + "%");
     writer.write("\r\n");
     writer.write(
         resourceBundle.getString("EngineGameInfo.threeStdev") // "三个标准差置信区间为:"
-            + String.format("%.2f", zxwr3 * 100)
+            + String.format(Locale.ENGLISH, "%.2f", zxwr3 * 100)
             + "% ± "
-            + String.format("%.2f", zxwrc3 * 100)
+            + String.format(Locale.ENGLISH, "%.2f", zxwrc3 * 100)
             + "%");
     writer.write("\r\n");
 
@@ -715,13 +716,14 @@ public class EngineManager {
             + " VS "
             + engineList.get(engineGameInfo.secondEngineIndex).oriEnginename
             + resourceBundle.getString("EngineGameInfo.titleWinRate") //  + " 胜率 "
-            + String.format("%.1f", wr * 100)
+            + String.format(Locale.ENGLISH, "%.1f", wr * 100)
             + "%"
             + " 2σ "
-            + String.format("%.2f", zxwr2 * 100)
+            + String.format(Locale.ENGLISH, "%.2f", zxwr2 * 100)
             + "%±"
-            + String.format("%.2f", zxwrc2 * 100)
-            + "%"; // +" 3σ "+ String.format("%.2f", zxwr3*100)+"%±"+  String.format("%.2f",
+            + String.format(Locale.ENGLISH, "%.2f", zxwrc2 * 100)
+            + "%"; // +" 3σ "+ String.format(Locale.ENGLISH,"%.2f", zxwr3*100)+"%±"+
+    // String.format(Locale.ENGLISH,"%.2f",
     // zxwrc3*100)+"%";
 
     if (Lizzie.config.chkEngineSgfStart) {
@@ -1092,7 +1094,7 @@ public class EngineManager {
           if (Lizzie.config.checkRandomVisits)
             engineGameInfo.settingAll +=
                 resourceBundle.getString("EngineGameInfo.randomPlay3") // ",计算量不低于最高值"
-                    + String.format("%.1f", Lizzie.config.percentsRandomVisits)
+                    + String.format(Locale.ENGLISH, "%.1f", Lizzie.config.percentsRandomVisits)
                     + "%";
         }
       }

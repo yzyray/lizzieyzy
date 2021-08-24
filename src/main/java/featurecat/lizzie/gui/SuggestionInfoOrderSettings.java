@@ -28,6 +28,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.swing.ButtonGroup;
@@ -670,9 +671,9 @@ public class SuggestionInfoOrderSettings extends JDialog {
         boolean shouldShowMaxColorWinrate = canShowMaxColor && hasMaxWinrate;
         boolean shouldShowMaxColorPlayouts = canShowMaxColor && move.playouts == maxPlayouts;
         boolean shouldShowMaxColorScoreLead = canShowMaxColor && move.scoreMean == maxScoreMean;
-        String winrateText = String.format("%.1f", roundedWinrate);
+        String winrateText = String.format(Locale.ENGLISH, "%.1f", roundedWinrate);
         String playoutsText = Lizzie.frame.getPlayoutsString(move.playouts);
-        String scoreLeadText = String.format("%.1f", score);
+        String scoreLeadText = String.format(Locale.ENGLISH, "%.1f", score);
         if (currerentUseDefaultInfoRowOrder) {
           if (shouldShowMaxColorWinrate) g.setColor(maxColor);
           if (roundedWinrate < 10)
@@ -787,7 +788,7 @@ public class SuggestionInfoOrderSettings extends JDialog {
           if (shouldShowMaxColorRow3) g.setColor(oriColor);
         }
       } else if (showWinrate && showPlayouts) {
-        String winrateText = String.format("%.1f", roundedWinrate);
+        String winrateText = String.format(Locale.ENGLISH, "%.1f", roundedWinrate);
         String playoutsText = Lizzie.frame.getPlayoutsString(move.playouts);
         boolean shouldShowMaxColorWinrate = canShowMaxColor && hasMaxWinrate;
         boolean shouldShowMaxColorPlayouts = canShowMaxColor && move.playouts == maxPlayouts;
@@ -870,8 +871,8 @@ public class SuggestionInfoOrderSettings extends JDialog {
             score = -score;
           }
         }
-        String winrateText = String.format("%.1f", roundedWinrate);
-        String scoreLeadText = String.format("%.1f", score);
+        String winrateText = String.format(Locale.ENGLISH, "%.1f", roundedWinrate);
+        String scoreLeadText = String.format(Locale.ENGLISH, "%.1f", score);
         if (currerentUseDefaultInfoRowOrder
             || currentSuggestionInfoWinrate < currentSuggestionInfoScoreLead) {
           if (shouldShowMaxColorWinrate) g.setColor(maxColor);
@@ -951,7 +952,7 @@ public class SuggestionInfoOrderSettings extends JDialog {
           }
         }
         String playoutsText = Lizzie.frame.getPlayoutsString(move.playouts);
-        String scoreLeadText = String.format("%.1f", score);
+        String scoreLeadText = String.format(Locale.ENGLISH, "%.1f", score);
         if (currerentUseDefaultInfoRowOrder
             || currentSuggestionInfoPlayouts < currentSuggestionInfoScoreLead) {
           if (shouldShowMaxColorPlayouts) g.setColor(maxColor);
@@ -1012,7 +1013,7 @@ public class SuggestionInfoOrderSettings extends JDialog {
               suggestionX,
               suggestionY,
               LizzieFrame.winrateFont,
-              String.format("%.1f", roundedWinrate),
+              String.format(Locale.ENGLISH, "%.1f", roundedWinrate),
               squareWidth * 0.46f,
               stoneRadius * 1.9);
         } else {
@@ -1021,7 +1022,7 @@ public class SuggestionInfoOrderSettings extends JDialog {
               suggestionX,
               suggestionY,
               LizzieFrame.winrateFont,
-              String.format("%.1f", roundedWinrate),
+              String.format(Locale.ENGLISH, "%.1f", roundedWinrate),
               squareWidth * 0.46f,
               stoneRadius * 1.9);
         }
@@ -1059,7 +1060,7 @@ public class SuggestionInfoOrderSettings extends JDialog {
             suggestionX,
             suggestionY,
             LizzieFrame.winrateFont,
-            String.format("%.1f", score),
+            String.format(Locale.ENGLISH, "%.1f", score),
             stoneRadius,
             stoneRadius * 1.7);
         if (shouldShowMaxColorScoreLead) g.setColor(oriColor);

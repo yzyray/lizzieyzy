@@ -57,8 +57,6 @@ import javax.imageio.ImageIO;
 import javax.swing.AbstractCellEditor;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -80,7 +78,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
-import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.ListCellRenderer;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
@@ -107,20 +104,17 @@ public class ConfigDialog2 extends JDialog {
   private ResourceBundle resourceBundle =
       Lizzie.resourceBundle; // ResourceBundle.getBundle("l10n.DisplayStrings");
 
-  public String enginePath = "";
-  public String weightPath = "";
-  public String commandHelp = "";
-
+  private String enginePath = "";
   private String osName;
   private BufferedInputStream inputStream;
   private JSONObject leelazConfig = Lizzie.config.leelazConfig;
   private List<String> fontList;
   private Theme theme;
 
-  public JPanel uiTab;
-  public JPanel themeTab;
-  public JPanel aboutTab;
-  public JButton okButton;
+  private JPanel uiTab;
+  private JPanel themeTab;
+  private JPanel aboutTab;
+  private JButton okButton;
 
   // UI Tab
   private JFormattedTextField txtMaxAnalyzeTime;
@@ -141,101 +135,103 @@ public class ConfigDialog2 extends JDialog {
   private JRadioButton rdoLoadZen;
   private JRadioButton rdoNoLoadZen;
 
-  public JLabel lblBoardSign;
-  public JTextField txtBoardWidth;
-  public JTextField txtBoardHeight;
-  public JRadioButton rdoBoardSizeOther;
-  public JRadioButton rdoBoardSize19;
-  public JRadioButton rdoBoardSize13;
-  public JRadioButton rdoBoardSize9;
-  public JRadioButton rdoBoardSize7;
-  public JRadioButton rdoBoardSize5;
-  public JRadioButton rdoBoardSize4;
-  public JCheckBox chkShowName;
-  public JCheckBox chkShowBlueRing;
-  public JCheckBox chkShowNoSuggCircle;
-  public JFormattedTextField txtMinPlayoutRatioForStats;
-  public JCheckBox chkShowCaptured;
-  public JCheckBox chkShowWinrate;
-  public JCheckBox chkShowVariationGraph;
-  public JCheckBox chkShowComment;
-  public JCheckBox chkShowSubBoard;
-  public JCheckBox chkShowStatus;
-  public JCheckBox chkShowCoordinates;
-  public JRadioButton rdoShowMoveNumberNo;
-  public JRadioButton rdoShowMoveNumberAll;
-  public JRadioButton rdoShowMoveNumberLast;
-  public JTextField txtShowMoveNumber;
+  private JLabel lblBoardSign;
+  private JTextField txtBoardWidth;
+  private JTextField txtBoardHeight;
+  private JRadioButton rdoBoardSizeOther;
+  private JRadioButton rdoBoardSize19;
+  private JRadioButton rdoBoardSize13;
+  private JRadioButton rdoBoardSize9;
+  private JRadioButton rdoBoardSize7;
+  private JRadioButton rdoBoardSize5;
+  private JRadioButton rdoBoardSize4;
+  private JCheckBox chkShowName;
+  private JCheckBox chkShowBlueRing;
+  private JCheckBox chkShowNoSuggCircle;
+  private JFormattedTextField txtMinPlayoutRatioForStats;
+  private JCheckBox chkShowCaptured;
+  private JCheckBox chkShowWinrate;
+  private JCheckBox chkShowVariationGraph;
+  private JCheckBox chkShowComment;
+  private JCheckBox chkShowSubBoard;
+  private JCheckBox chkShowStatus;
+  private JCheckBox chkShowCoordinates;
+  private JRadioButton rdoShowMoveNumberNo;
+  private JRadioButton rdoShowMoveNumberAll;
+  private JRadioButton rdoShowMoveNumberLast;
+  private JTextField txtShowMoveNumber;
 
-  public JRadioButton rdoNoMark;
-  public JRadioButton rdoAllMark;
-  public JRadioButton rdoLastMark;
-  public JTextField txtLastMark;
+  private JRadioButton rdoNoMark;
+  private JRadioButton rdoAllMark;
+  private JRadioButton rdoLastMark;
+  private JTextField txtLastMark;
   JComboBox<String> comboMoveHint;
 
-  public JCheckBox chkShowMoveAllInBranch;
-  public JCheckBox chkShowBlunderBar;
-  public JComboBox<String> chkShowWhiteSuggWhite;
+  private JCheckBox chkShowMoveAllInBranch;
+  private JCheckBox chkShowBlunderBar;
+  private JComboBox<String> chkShowWhiteSuggWhite;
 
-  public JRadioButton rdoShowWinrateBlack;
-  public JRadioButton rdoShowWinrateBoth;
-  //  public JCheckBox chkDynamicWinrateGraphWidth;
-  public JCheckBox chkAppendWinrateToComment;
-  public JCheckBox chkShowSuggLabel;
-  public JCheckBox chkMaxValueReverseColor;
-  public JCheckBox chkShowVairationsOnMouse;
-  public JCheckBox chkShowVairationsOnMouseNoRefresh;
+  private JRadioButton rdoShowWinrateBlack;
+  private JRadioButton rdoShowWinrateBoth;
+  private JCheckBox chkAppendWinrateToComment;
+  private JCheckBox chkShowSuggLabel;
+  private JCheckBox chkMaxValueReverseColor;
+  private JCheckBox chkShowVairationsOnMouse;
+  private JCheckBox chkShowVairationsOnMouseNoRefresh;
 
-  public JCheckBox chkAlwaysShowBlackWinrate;
-  public JCheckBox chkAlwaysOnTop;
-  public JCheckBox chkShowQuickLinks;
+  private JCheckBox chkAlwaysShowBlackWinrate;
+  private JCheckBox chkAlwaysOnTop;
+  private JCheckBox chkShowQuickLinks;
+
+  private JCheckBox chkLogConsoleToFile;
+  private JCheckBox chkLogGtpToFile;
 
   //  public JCheckBox chkHoldBestMovesToSgf;
   //  public JCheckBox chkShowBestMovesByHold;
   //  public JCheckBox chkColorByWinrateInsteadOfVisits;
-  public JSlider sldBoardPositionProportion;
-  public JTextField txtLimitBestMoveNum;
-  public JTextField txtLimitBranchLength;
-  public JCheckBox chkShowWinrateInSuggestion;
-  public JCheckBox chkShowPlayoutsInSuggestion;
-  public JCheckBox chkShowScoremeanInSuggestion;
+  private JSlider sldBoardPositionProportion;
+  private JTextField txtLimitBestMoveNum;
+  private JTextField txtLimitBranchLength;
+  private JCheckBox chkShowWinrateInSuggestion;
+  private JCheckBox chkShowPlayoutsInSuggestion;
+  private JCheckBox chkShowScoremeanInSuggestion;
   // public JTextPane tpGtpConsoleStyle;
 
   // Theme Tab
-  public boolean isLoadedTheme = false;
-  public JComboBox<String> cmbThemes;
-  public JSpinner spnWinrateStrokeWidth;
-  public JSpinner spnMinimumBlunderBarWidth;
-  public JSpinner spnShadowSize;
-  public JComboBox<String> cmbFontName;
-  public JComboBox<String> cmbUiFontName;
-  public JComboBox<String> cmbWinrateFontName;
-  public JTextField txtBackgroundPath;
-  public JTextField txtBoardPath;
-  public JTextField txtBlackStonePath;
-  public JTextField txtWhiteStonePath;
-  public ColorLabel lblWinrateLineColor;
-  public ColorLabel lblWinrateMissLineColor;
-  public ColorLabel lblBlunderBarColor;
-  public ColorLabel lblScoreMeanLineColor;
-  public ColorLabel lblCommentBackgroundColor;
-  public ColorLabel lblCommentFontColor;
-  public ColorLabel lblBestMoveColor;
-  public JTextField txtCommentFontSize;
-  public JTextField txtBackgroundFilter;
-  public JRadioButton rdoStoneIndicatorDelta;
-  public JRadioButton rdoStoneIndicatorCircle;
-  public JRadioButton rdoStoneIndicatorSolid;
-  public JRadioButton rdoStoneIndicatorNo;
-  public JCheckBox chkShowCommentNodeColor;
-  public ColorLabel lblCommentNodeColor;
-  public JTable tblBlunderNodes;
-  public String[] columsBlunderNodes;
-  public JButton btnBackgroundPath;
-  public JButton btnBoardPath;
-  public JButton btnBlackStonePath;
-  public JButton btnWhiteStonePath;
-  public JPanel pnlBoardPreview;
+  private boolean isLoadedTheme = false;
+  private JComboBox<String> cmbThemes;
+  private JSpinner spnWinrateStrokeWidth;
+  private JSpinner spnMinimumBlunderBarWidth;
+  private JSpinner spnShadowSize;
+  private JComboBox<String> cmbFontName;
+  private JComboBox<String> cmbUiFontName;
+  private JComboBox<String> cmbWinrateFontName;
+  private JTextField txtBackgroundPath;
+  private JTextField txtBoardPath;
+  private JTextField txtBlackStonePath;
+  private JTextField txtWhiteStonePath;
+  private ColorLabel lblWinrateLineColor;
+  private ColorLabel lblWinrateMissLineColor;
+  private ColorLabel lblBlunderBarColor;
+  private ColorLabel lblScoreMeanLineColor;
+  private ColorLabel lblCommentBackgroundColor;
+  private ColorLabel lblCommentFontColor;
+  private ColorLabel lblBestMoveColor;
+  private JTextField txtCommentFontSize;
+  private JTextField txtBackgroundFilter;
+  private JRadioButton rdoStoneIndicatorDelta;
+  private JRadioButton rdoStoneIndicatorCircle;
+  private JRadioButton rdoStoneIndicatorSolid;
+  private JRadioButton rdoStoneIndicatorNo;
+  private JCheckBox chkShowCommentNodeColor;
+  private ColorLabel lblCommentNodeColor;
+  private JTable tblBlunderNodes;
+  private String[] columsBlunderNodes;
+  private JButton btnBackgroundPath;
+  private JButton btnBoardPath;
+  private JButton btnBlackStonePath;
+  private JButton btnWhiteStonePath;
+  private JPanel pnlBoardPreview;
   JTabbedPane tabbedPane;
   private JTextField txtAdvanceTime;
   private JLabel lblShowTitleWinInfo;
@@ -278,8 +274,8 @@ public class ConfigDialog2 extends JDialog {
   private JCheckBox chkPureBackground;
   private JCheckBox chkPureBoard;
   private JCheckBox chkPureStone;
-  public ColorLabel lblPureBackgroundColor;
-  public ColorLabel lblPureBoardColor;
+  private ColorLabel lblPureBackgroundColor;
+  private ColorLabel lblPureBoardColor;
   private JTextField txtLimitPlayouts;
   private JCheckBox chkLimitPlayouts;
 
@@ -361,56 +357,58 @@ public class ConfigDialog2 extends JDialog {
 
     lblOriginLizzieInfo.setFont(new Font("Tahoma", Font.PLAIN, 14));
     // 注释这里
-    GroupLayout gl = new GroupLayout(aboutTab);
-    gl.setHorizontalGroup(
-        gl.createParallelGroup(Alignment.LEADING)
-            .addGroup(
-                gl.createSequentialGroup()
-                    .addGroup(
-                        gl.createParallelGroup(Alignment.LEADING)
-                            .addGroup(
-                                gl.createSequentialGroup()
-                                    .addContainerGap()
-                                    .addComponent(
-                                        lblLizzieInfo,
-                                        GroupLayout.DEFAULT_SIZE,
-                                        628,
-                                        Short.MAX_VALUE))
-                            .addGroup(
-                                gl.createSequentialGroup()
-                                    .addContainerGap()
-                                    .addComponent(lblOriginTitle))
-                            .addGroup(
-                                gl.createSequentialGroup()
-                                    .addContainerGap()
-                                    .addComponent(
-                                        lblOriginLizzieInfo,
-                                        GroupLayout.PREFERRED_SIZE,
-                                        620,
-                                        GroupLayout.PREFERRED_SIZE))
-                            .addGroup(
-                                gl.createSequentialGroup().addComponent(lblLizzieName).addGap(225)))
-                    .addContainerGap()));
-    gl.setVerticalGroup(
-        gl.createParallelGroup(Alignment.LEADING)
-            .addGroup(
-                gl.createSequentialGroup()
-                    .addGap(18)
-                    .addComponent(lblLizzieName)
-                    .addGap(18)
-                    .addPreferredGap(ComponentPlacement.RELATED)
-                    .addComponent(
-                        lblLizzieInfo, GroupLayout.PREFERRED_SIZE, 183, GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(ComponentPlacement.RELATED)
-                    .addComponent(lblOriginTitle)
-                    .addPreferredGap(ComponentPlacement.RELATED)
-                    .addComponent(
-                        lblOriginLizzieInfo,
-                        GroupLayout.PREFERRED_SIZE,
-                        282,
-                        GroupLayout.PREFERRED_SIZE)
-                    .addGap(126)));
-    aboutTab.setLayout(gl);
+    //    GroupLayout gl = new GroupLayout(aboutTab);
+    //    gl.setHorizontalGroup(
+    //        gl.createParallelGroup(Alignment.LEADING)
+    //            .addGroup(
+    //                gl.createSequentialGroup()
+    //                    .addGroup(
+    //                        gl.createParallelGroup(Alignment.LEADING)
+    //                            .addGroup(
+    //                                gl.createSequentialGroup()
+    //                                    .addContainerGap()
+    //                                    .addComponent(
+    //                                        lblLizzieInfo,
+    //                                        GroupLayout.DEFAULT_SIZE,
+    //                                        628,
+    //                                        Short.MAX_VALUE))
+    //                            .addGroup(
+    //                                gl.createSequentialGroup()
+    //                                    .addContainerGap()
+    //                                    .addComponent(lblOriginTitle))
+    //                            .addGroup(
+    //                                gl.createSequentialGroup()
+    //                                    .addContainerGap()
+    //                                    .addComponent(
+    //                                        lblOriginLizzieInfo,
+    //                                        GroupLayout.PREFERRED_SIZE,
+    //                                        620,
+    //                                        GroupLayout.PREFERRED_SIZE))
+    //                            .addGroup(
+    //
+    // gl.createSequentialGroup().addComponent(lblLizzieName).addGap(225)))
+    //                    .addContainerGap()));
+    //    gl.setVerticalGroup(
+    //        gl.createParallelGroup(Alignment.LEADING)
+    //            .addGroup(
+    //                gl.createSequentialGroup()
+    //                    .addGap(18)
+    //                    .addComponent(lblLizzieName)
+    //                    .addGap(18)
+    //                    .addPreferredGap(ComponentPlacement.RELATED)
+    //                    .addComponent(
+    //                        lblLizzieInfo, GroupLayout.PREFERRED_SIZE, 183,
+    // GroupLayout.PREFERRED_SIZE)
+    //                    .addPreferredGap(ComponentPlacement.RELATED)
+    //                    .addComponent(lblOriginTitle)
+    //                    .addPreferredGap(ComponentPlacement.RELATED)
+    //                    .addComponent(
+    //                        lblOriginLizzieInfo,
+    //                        GroupLayout.PREFERRED_SIZE,
+    //                        282,
+    //                        GroupLayout.PREFERRED_SIZE)
+    //                    .addGap(126)));
+    //    aboutTab.setLayout(gl);
     ButtonGroup group = new ButtonGroup();
     nf.setGroupingUsed(false);
     ButtonGroup showMoveGroup = new ButtonGroup();
@@ -422,32 +420,32 @@ public class ConfigDialog2 extends JDialog {
     uiTab.setLayout(null);
     // setShowLcbWinrate();
     JLabel lblBoardSize = new JLabel(resourceBundle.getString("LizzieConfig.boardSize"));
-    lblBoardSize.setBounds(10, 549, 113, 16);
+    lblBoardSize.setBounds(10, 550, 113, 16);
     lblBoardSize.setHorizontalAlignment(SwingConstants.LEFT);
     uiTab.add(lblBoardSize);
 
     rdoBoardSize19 = new JRadioButton("19x19");
-    rdoBoardSize19.setBounds(130, 546, 64, 23);
+    rdoBoardSize19.setBounds(130, 547, 64, 23);
     uiTab.add(rdoBoardSize19);
 
     rdoBoardSize13 = new JRadioButton("13x13");
-    rdoBoardSize13.setBounds(199, 546, 64, 23);
+    rdoBoardSize13.setBounds(199, 547, 64, 23);
     uiTab.add(rdoBoardSize13);
 
     rdoBoardSize9 = new JRadioButton("9x9");
-    rdoBoardSize9.setBounds(267, 546, 45, 23);
+    rdoBoardSize9.setBounds(267, 547, 45, 23);
     uiTab.add(rdoBoardSize9);
 
     rdoBoardSize7 = new JRadioButton("7x7");
-    rdoBoardSize7.setBounds(322, 546, 52, 23);
+    rdoBoardSize7.setBounds(322, 547, 52, 23);
     uiTab.add(rdoBoardSize7);
 
     rdoBoardSize5 = new JRadioButton("5x5");
-    rdoBoardSize5.setBounds(377, 546, 45, 23);
+    rdoBoardSize5.setBounds(377, 547, 45, 23);
     uiTab.add(rdoBoardSize5);
 
     rdoBoardSize4 = new JRadioButton("4x4");
-    rdoBoardSize4.setBounds(429, 546, 45, 23);
+    rdoBoardSize4.setBounds(429, 547, 45, 23);
     uiTab.add(rdoBoardSize4);
 
     rdoBoardSizeOther = new JRadioButton("");
@@ -463,7 +461,7 @@ public class ConfigDialog2 extends JDialog {
             }
           }
         });
-    rdoBoardSizeOther.setBounds(479, 546, 23, 23);
+    rdoBoardSizeOther.setBounds(479, 547, 23, 23);
     uiTab.add(rdoBoardSizeOther);
     group.add(rdoBoardSize19);
     group.add(rdoBoardSize13);
@@ -784,7 +782,7 @@ public class ConfigDialog2 extends JDialog {
     lblAppendWinrateToComment.setBounds(608, 609, 221, 16);
     uiTab.add(lblAppendWinrateToComment);
     chkAppendWinrateToComment = new JCheckBox("");
-    chkAppendWinrateToComment.setBounds(837, 608, 26, 23);
+    chkAppendWinrateToComment.setBounds(837, 606, 26, 23);
     uiTab.add(chkAppendWinrateToComment);
 
     JLabel lblShowSuggestionMoveOrder =
@@ -1180,23 +1178,23 @@ public class ConfigDialog2 extends JDialog {
         new JLabel(
             resourceBundle.getString(
                 "LizzieConfig.lblMouseMoveRect")); // ("鼠标移动时显示小方块"); // $NON-NLS-1$
-    lblMouseMoveRect.setBounds(10, 581, 184, 16);
+    lblMouseMoveRect.setBounds(10, 580, 184, 16);
     uiTab.add(lblMouseMoveRect);
 
     rdoShowMoveRect =
         new JRadioButton(resourceBundle.getString("LizzieConfig.rdoShowMoveRect")); // ("是");
-    rdoShowMoveRect.setBounds(200, 578, 50, 23);
+    rdoShowMoveRect.setBounds(200, 577, 50, 23);
     uiTab.add(rdoShowMoveRect);
 
     rdoShowMoveRectOnPlay =
         new JRadioButton(
             resourceBundle.getString("LizzieConfig.rdoShowMoveRectOnPlay")); // ("仅对局时");
-    rdoShowMoveRectOnPlay.setBounds(273, 578, 105, 23);
+    rdoShowMoveRectOnPlay.setBounds(273, 577, 105, 23);
     uiTab.add(rdoShowMoveRectOnPlay);
 
     rdoNoShowMoveRect =
         new JRadioButton(resourceBundle.getString("LizzieConfig.rdoNoShowMoveRect")); // ("否");
-    rdoNoShowMoveRect.setBounds(380, 578, 42, 23);
+    rdoNoShowMoveRect.setBounds(380, 577, 42, 23);
     uiTab.add(rdoNoShowMoveRect);
 
     ButtonGroup rectgroup = new ButtonGroup();
@@ -1306,11 +1304,11 @@ public class ConfigDialog2 extends JDialog {
         new JLabel(
             resourceBundle.getString(
                 "LizzieConfig.lblShowTitleWinInfo")); // "标题上显示胜率等信息"); // $NON-NLS-1$
-    lblShowTitleWinInfo.setBounds(608, 581, 223, 15);
+    lblShowTitleWinInfo.setBounds(608, 182, 223, 15);
     uiTab.add(lblShowTitleWinInfo);
 
     chkShowTitleWr = new JCheckBox(); // $NON-NLS-1$
-    chkShowTitleWr.setBounds(837, 578, 26, 23);
+    chkShowTitleWr.setBounds(837, 180, 26, 23);
     uiTab.add(chkShowTitleWr);
     chkShowTitleWr.setSelected(Lizzie.config.showTitleWr);
 
@@ -1318,11 +1316,11 @@ public class ConfigDialog2 extends JDialog {
         new JLabel(
             resourceBundle.getString(
                 "LizzieConfig.lblAlwaysLogGtpInfo")); // ("总是记录GTP信息"); // $NON-NLS-1$
-    lblAlwaysLogGtpInfo.setBounds(608, 550, 223, 15);
+    lblAlwaysLogGtpInfo.setBounds(429, 580, 223, 15);
     uiTab.add(lblAlwaysLogGtpInfo);
 
     chkAlwaysGtp = new JCheckBox(); // $NON-NLS-1$
-    chkAlwaysGtp.setBounds(837, 546, 26, 23);
+    chkAlwaysGtp.setBounds(532, 578, 26, 23);
     uiTab.add(chkAlwaysGtp);
     // txtAdvanceTime.setColumns(10);
     chkAlwaysGtp.setSelected(Lizzie.config.alwaysGtp);
@@ -1829,6 +1827,31 @@ public class ConfigDialog2 extends JDialog {
     comboMoveHint = new JComboBox<String>();
     comboMoveHint.setBounds(503, 155, 67, 23);
     uiTab.add(comboMoveHint);
+
+    JLabel lblLogGtpToFile =
+        new JLabel(resourceBundle.getString("LizzieConfig.lblLogGtpToFile")); // ("记录GTP日志到文件");
+    lblLogGtpToFile.setBounds(608, 580, 105, 15);
+    uiTab.add(lblLogGtpToFile);
+
+    JLabel lblLogConsoleToFile =
+        new JLabel(resourceBundle.getString("LizzieConfig.lblLogConsoleToFile")); // ("记录控制台日志到文件");
+    lblLogConsoleToFile.setBounds(608, 550, 131, 15);
+    uiTab.add(lblLogConsoleToFile);
+
+    chkLogConsoleToFile = new JCheckBox();
+    chkLogConsoleToFile.setBounds(837, 547, 26, 23);
+    chkLogConsoleToFile.setToolTipText(
+        resourceBundle.getString("LizzieConfig.lblLogConsoleToFile.tooltips"));
+    uiTab.add(chkLogConsoleToFile);
+    chkLogConsoleToFile.setSelected(Lizzie.config.logConsoleToFile);
+
+    chkLogGtpToFile = new JCheckBox();
+    chkLogGtpToFile.setBounds(837, 577, 26, 23);
+    chkLogGtpToFile.setToolTipText(
+        resourceBundle.getString("LizzieConfig.lblLogGtpToFile.tooltips"));
+    uiTab.add(chkLogGtpToFile);
+    chkLogGtpToFile.setSelected(Lizzie.config.logGtpToFile);
+
     comboMoveHint.addItem(resourceBundle.getString("LizzieConfig.comboMoveHint.none")); // ("无");
     comboMoveHint.addItem(
         resourceBundle.getString("LizzieConfig.comboMoveHint.circle")); // ("显示圈");
@@ -2853,7 +2876,7 @@ public class ConfigDialog2 extends JDialog {
       while ((c = inputStream.read()) != -1) {
         line.append((char) c);
       }
-      commandHelp = line.toString();
+      line.toString();
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -3617,6 +3640,10 @@ public class ConfigDialog2 extends JDialog {
   }
 
   private void saveConfig() {
+    Lizzie.config.logConsoleToFile = chkLogConsoleToFile.isSelected();
+    Lizzie.config.logGtpToFile = chkLogGtpToFile.isSelected();
+    Lizzie.config.uiConfig.put("log-console-to-file", Lizzie.config.logConsoleToFile);
+    Lizzie.config.uiConfig.put("log-gtp-to-file", Lizzie.config.logGtpToFile);
     if (rdoLastMark.isSelected()) {
       int lastRankMove = Utils.parseTextToInt(txtLastMark, 1);
       Lizzie.config.moveRankMarkLastMove = lastRankMove;

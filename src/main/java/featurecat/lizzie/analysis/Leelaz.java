@@ -715,9 +715,9 @@ public class Leelaz {
         isDymPda = true;
         String[] params = line.trim().split(" ");
         if (params.length == 2) pda = Double.parseDouble(params[1]);
-        Lizzie.frame.menu.txtPDA.setText(String.format("%.3f", pda));
+        Lizzie.frame.menu.txtPDA.setText(String.format(Locale.ENGLISH, "%.3f", pda));
         if (Lizzie.frame.menu.setPda != null)
-          Lizzie.frame.menu.setPda.curPDA.setText(String.format("%.3f", pda));
+          Lizzie.frame.menu.setPda.curPDA.setText(String.format(Locale.ENGLISH, "%.3f", pda));
         if (Lizzie.config.chkAutoPDA) {
           sendCommand(Lizzie.config.AutoPDA);
           if (Lizzie.config.chkDymPDA) {
@@ -1027,9 +1027,9 @@ public class Leelaz {
 
       String[] params = line.trim().split(" ");
       if (params.length == 2) pda = Double.parseDouble(params[1]);
-      Lizzie.frame.menu.txtPDA.setText(String.format("%.3f", pda));
+      Lizzie.frame.menu.txtPDA.setText(String.format(Locale.ENGLISH, "%.3f", pda));
       if (Lizzie.frame.menu.setPda != null)
-        Lizzie.frame.menu.setPda.curPDA.setText(String.format("%.3f", pda));
+        Lizzie.frame.menu.setPda.curPDA.setText(String.format(Locale.ENGLISH, "%.3f", pda));
     }
   }
 
@@ -1129,9 +1129,9 @@ public class Leelaz {
 
           String[] params = line.trim().split(" ");
           if (params.length == 2) pda = Double.parseDouble(params[1]);
-          Lizzie.frame.menu.txtPDA.setText(String.format("%.3f", pda));
+          Lizzie.frame.menu.txtPDA.setText(String.format(Locale.ENGLISH, "%.3f", pda));
           if (Lizzie.frame.menu.setPda != null)
-            Lizzie.frame.menu.setPda.curPDA.setText(String.format("%.3f", pda));
+            Lizzie.frame.menu.setPda.curPDA.setText(String.format(Locale.ENGLISH, "%.3f", pda));
           if (Lizzie.config.chkAutoPDA) {
             sendCommand(Lizzie.config.AutoPDA);
             if (Lizzie.config.chkDymPDA) {
@@ -1193,9 +1193,9 @@ public class Leelaz {
           // String[] params = line.trim().split(",");
           String[] params = line.trim().split(" ");
           if (params.length == 2) pda = Double.parseDouble(params[1]);
-          Lizzie.frame.menu.txtPDA.setText(String.format("%.3f", pda));
+          Lizzie.frame.menu.txtPDA.setText(String.format(Locale.ENGLISH, "%.3f", pda));
           if (Lizzie.frame.menu.setPda != null)
-            Lizzie.frame.menu.setPda.curPDA.setText(String.format("%.3f", pda));
+            Lizzie.frame.menu.setPda.curPDA.setText(String.format(Locale.ENGLISH, "%.3f", pda));
         }
       } else {
         if (line.startsWith("| ST")) {
@@ -3000,7 +3000,7 @@ public class Leelaz {
   // if (Float.isNaN(dynamicKomi) || Float.isNaN(dynamicOppKomi)) {
   // return Optional.empty();
   // } else {
-  // return Optional.of(String.format("%.1f / %.1f", dynamicKomi,
+  // return Optional.of(String.format(Locale.ENGLISH,"%.1f / %.1f", dynamicKomi,
   // dynamicOppKomi));
   // }
   // }
@@ -3496,7 +3496,8 @@ public class Leelaz {
 
   public void timeLeft(String color, float seconds, int moves, boolean isDuringMove) {
     seconds = Math.max(0, seconds);
-    sendCommand("time_left " + color + " " + String.format("%.2f", seconds) + " " + moves);
+    sendCommand(
+        "time_left " + color + " " + String.format(Locale.ENGLISH, "%.2f", seconds) + " " + moves);
     if (isDuringMove) currentCmdNum++;
   }
 }

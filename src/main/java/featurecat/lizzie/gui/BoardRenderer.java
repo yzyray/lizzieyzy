@@ -464,17 +464,17 @@ public class BoardRenderer {
     if (leelaz.isKatago)
       wr =
           resourceBundle.getString("BoardRenderer.pureNetWhiteWinrate") // "纯网络:白胜率 "
-              + String.format("%.1f", leelaz.heatwinrate * 100)
+              + String.format(Locale.ENGLISH, "%.1f", leelaz.heatwinrate * 100)
               + " "
               + resourceBundle.getString("BoardRenderer.whiteScore") // " 白目差 "
-              + String.format("%.1f", leelaz.heatScore)
+              + String.format(Locale.ENGLISH, "%.1f", leelaz.heatScore)
               + " "
               + resourceBundle.getString("BoardRenderer.symmetry") // " 对称类型 "
               + leelaz.symmetry;
     else if (leelaz.heatwinrate >= 0) {
       wr =
           resourceBundle.getString("BoardRenderer.pureNetWinrate")
-              + String.format("%.1f", leelaz.heatwinrate * 100);
+              + String.format(Locale.ENGLISH, "%.1f", leelaz.heatwinrate * 100);
     } else {
       wr = resourceBundle.getString("BoardRenderer.noPureNetWinrate");
     }
@@ -2014,7 +2014,7 @@ public class BoardRenderer {
               g.setColor(color);
               fillCircle(g, suggestionX, suggestionY, stoneRadius);
             }
-            String text = String.format("%.1f", ((double) heatcount.get(i)) / 10);
+            String text = String.format(Locale.ENGLISH, "%.1f", ((double) heatcount.get(i)) / 10);
             if (!leelaz.iskataHeatmapShowOwner || !leelaz.isKatago) g.setColor(Color.WHITE);
             else {
               if (hue == cyanHue) g.setColor(new Color(255, 0, 0));
@@ -2105,7 +2105,7 @@ public class BoardRenderer {
             g.setColor(color);
             fillCircle(g, suggestionX, suggestionY, stoneRadius);
 
-            String text = String.format("%.1f", ((double) bestMoves.get(i).policy));
+            String text = String.format(Locale.ENGLISH, "%.1f", ((double) bestMoves.get(i).policy));
             g.setColor(Color.WHITE);
             drawString(
                 g,
@@ -2396,9 +2396,9 @@ public class BoardRenderer {
               boolean shouldShowMaxColorPlayouts = canShowMaxColor && move.playouts == maxPlayouts;
               boolean shouldShowMaxColorScoreLead =
                   canShowMaxColor && move.scoreMean == maxScoreMean;
-              String winrateText = String.format("%.1f", roundedWinrate);
+              String winrateText = String.format(Locale.ENGLISH, "%.1f", roundedWinrate);
               String playoutsText = Lizzie.frame.getPlayoutsString(move.playouts);
-              String scoreLeadText = String.format("%.1f", score);
+              String scoreLeadText = String.format(Locale.ENGLISH, "%.1f", score);
               if (Lizzie.config.useDefaultInfoRowOrder) {
                 if (shouldShowMaxColorWinrate) g.setColor(maxColor);
                 if (roundedWinrate < 10)
@@ -2513,7 +2513,7 @@ public class BoardRenderer {
                 if (shouldShowMaxColorRow3) g.setColor(oriColor);
               }
             } else if (showWinrate && showPlayouts) {
-              String winrateText = String.format("%.1f", roundedWinrate);
+              String winrateText = String.format(Locale.ENGLISH, "%.1f", roundedWinrate);
               String playoutsText = Lizzie.frame.getPlayoutsString(move.playouts);
               boolean shouldShowMaxColorWinrate = canShowMaxColor && hasMaxWinrate;
               boolean shouldShowMaxColorPlayouts = canShowMaxColor && move.playouts == maxPlayouts;
@@ -2596,8 +2596,8 @@ public class BoardRenderer {
                   score = -score;
                 }
               }
-              String winrateText = String.format("%.1f", roundedWinrate);
-              String scoreLeadText = String.format("%.1f", score);
+              String winrateText = String.format(Locale.ENGLISH, "%.1f", roundedWinrate);
+              String scoreLeadText = String.format(Locale.ENGLISH, "%.1f", score);
               if (Lizzie.config.useDefaultInfoRowOrder
                   || Lizzie.config.suggestionInfoWinrate < Lizzie.config.suggestionInfoScoreLead) {
                 if (shouldShowMaxColorWinrate) g.setColor(maxColor);
@@ -2678,7 +2678,7 @@ public class BoardRenderer {
                 }
               }
               String playoutsText = Lizzie.frame.getPlayoutsString(move.playouts);
-              String scoreLeadText = String.format("%.1f", score);
+              String scoreLeadText = String.format(Locale.ENGLISH, "%.1f", score);
               if (Lizzie.config.useDefaultInfoRowOrder
                   || Lizzie.config.suggestionInfoPlayouts < Lizzie.config.suggestionInfoScoreLead) {
                 if (shouldShowMaxColorPlayouts) g.setColor(maxColor);
@@ -2737,7 +2737,7 @@ public class BoardRenderer {
                     suggestionX,
                     suggestionY,
                     LizzieFrame.winrateFont,
-                    String.format("%.1f", roundedWinrate),
+                    String.format(Locale.ENGLISH, "%.1f", roundedWinrate),
                     squareWidth * 0.46f,
                     stoneRadius * 1.9);
               } else {
@@ -2746,7 +2746,7 @@ public class BoardRenderer {
                     suggestionX,
                     suggestionY,
                     LizzieFrame.winrateFont,
-                    String.format("%.1f", roundedWinrate),
+                    String.format(Locale.ENGLISH, "%.1f", roundedWinrate),
                     squareWidth * 0.46f,
                     stoneRadius * 1.9);
               }
@@ -2785,7 +2785,7 @@ public class BoardRenderer {
                   suggestionX,
                   suggestionY,
                   LizzieFrame.winrateFont,
-                  String.format("%.1f", score),
+                  String.format(Locale.ENGLISH, "%.1f", score),
                   stoneRadius,
                   stoneRadius * 1.7);
               if (shouldShowMaxColorScoreLead) g.setColor(oriColor);
@@ -3238,8 +3238,8 @@ public class BoardRenderer {
       }
     }
     if (Lizzie.config.showWinrateInSuggestion && Lizzie.config.showScoremeanInSuggestion) {
-      nextBlunderWinrate = String.format("%.1f", winrate);
-      nextBlunderScore = String.format("%.1f", score);
+      nextBlunderWinrate = String.format(Locale.ENGLISH, "%.1f", winrate);
+      nextBlunderScore = String.format(Locale.ENGLISH, "%.1f", score);
       showBlunderWinrate = true;
       showBlunderScore = true;
       if (Lizzie.config.suggestionInfoWinrate <= Lizzie.config.suggestionInfoScoreLead) {
@@ -3288,7 +3288,7 @@ public class BoardRenderer {
     } else if (Lizzie.config.showScoremeanInSuggestion) {
       showBlunderWinrate = false;
       showBlunderScore = true;
-      nextBlunderScore = String.format("%.1f", score);
+      nextBlunderScore = String.format(Locale.ENGLISH, "%.1f", score);
       drawString(
           g,
           moveX,
@@ -3300,7 +3300,7 @@ public class BoardRenderer {
           squareWidth * 0.835,
           0);
     } else if (Lizzie.config.showWinrateInSuggestion) {
-      nextBlunderWinrate = String.format("%.1f", winrate);
+      nextBlunderWinrate = String.format(Locale.ENGLISH, "%.1f", winrate);
       showBlunderWinrate = true;
       showBlunderScore = false;
       drawString(
@@ -3332,7 +3332,7 @@ public class BoardRenderer {
     if (Lizzie.config.showWinrateInSuggestion) {
       if (isGoodMove) g.setColor(Color.BLACK);
       else g.setColor(Color.WHITE);
-      nextBlunderWinrate = String.format("%.1f", winrate);
+      nextBlunderWinrate = String.format(Locale.ENGLISH, "%.1f", winrate);
       showBlunderWinrate = true;
       showBlunderScore = false;
       drawString(

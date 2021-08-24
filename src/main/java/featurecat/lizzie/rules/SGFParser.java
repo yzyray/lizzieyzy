@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -934,7 +935,7 @@ public class SGFParser {
 
     BoardHistoryNode startNode = Lizzie.board.getHistory().getStart();
     if (analyzedBlack >= 10) {
-      String bAiScore = String.format("%.1f", blackValue * 100 / analyzedBlack);
+      String bAiScore = String.format(Locale.ENGLISH, "%.1f", blackValue * 100 / analyzedBlack);
       String infoString =
           Lizzie.resourceBundle.getString("SGFParse.blackAiScore")
               + bAiScore
@@ -949,7 +950,7 @@ public class SGFParser {
       else startNode.getData().comment += "\n" + infoString;
     }
     if (analyzedWhite >= 10) {
-      String wAiScore = String.format("%.1f", whiteValue * 100 / analyzedWhite);
+      String wAiScore = String.format(Locale.ENGLISH, "%.1f", whiteValue * 100 / analyzedWhite);
       String infoString =
           Lizzie.resourceBundle.getString("SGFParse.whiteAiScore")
               + wAiScore
@@ -1546,7 +1547,7 @@ public class SGFParser {
     //        String.format(
     //            wf,
     //           blackWinrate ? "黑" : "白",
-    //            String.format("%.1f%%", 100 - curWR),
+    //            String.format(Locale.ENGLISH,"%.1f%%", 100 - curWR),
     //            lastMoveDiff,
     //            engine,
     //            playouts);
@@ -1590,13 +1591,13 @@ public class SGFParser {
                 blackWinrate
                     ? Lizzie.resourceBundle.getString("SGFParse.black")
                     : Lizzie.resourceBundle.getString("SGFParse.white"),
-                String.format("%.1f%%", 100 - curWR),
+                String.format(Locale.ENGLISH, "%.1f%%", 100 - curWR),
                 lastMoveDiff,
-                String.format("%.1f", score),
+                String.format(Locale.ENGLISH, "%.1f", score),
                 diffScore,
                 engine,
                 playouts,
-                String.format("%.1f", data.getKomi()));
+                String.format(Locale.ENGLISH, "%.1f", data.getKomi()));
       } else {
         double score = node.getData().scoreMean;
         if (data.blackToPlay) {
@@ -1634,19 +1635,19 @@ public class SGFParser {
                 blackWinrate
                     ? Lizzie.resourceBundle.getString("SGFParse.black")
                     : Lizzie.resourceBundle.getString("SGFParse.white"),
-                String.format("%.1f%%", 100 - curWR),
+                String.format(Locale.ENGLISH, "%.1f%%", 100 - curWR),
                 lastMoveDiff,
-                String.format("%.1f", score),
+                String.format(Locale.ENGLISH, "%.1f", score),
                 diffScore,
-                String.format("%.1f", scoreStdev),
+                String.format(Locale.ENGLISH, "%.1f", scoreStdev),
                 engine,
                 playouts,
                 data.pda != 0
-                    ? String.format("%.1f", data.getKomi())
+                    ? String.format(Locale.ENGLISH, "%.1f", data.getKomi())
                         + " "
                         + Lizzie.resourceBundle.getString("SGFParse.pda")
                         + data.pda
-                    : String.format("%.1f", data.getKomi()));
+                    : String.format(Locale.ENGLISH, "%.1f", data.getKomi()));
       }
     } else {
       String wf =
@@ -1664,11 +1665,11 @@ public class SGFParser {
               blackWinrate
                   ? Lizzie.resourceBundle.getString("SGFParse.black")
                   : Lizzie.resourceBundle.getString("SGFParse.white"),
-              String.format("%.1f%%", 100 - curWR),
+              String.format(Locale.ENGLISH, "%.1f%%", 100 - curWR),
               lastMoveDiff,
               engine,
               playouts,
-              String.format("%.1f", data.getKomi()));
+              String.format(Locale.ENGLISH, "%.1f", data.getKomi()));
     }
 
     if (!data.comment.isEmpty()) {
@@ -1790,7 +1791,7 @@ public class SGFParser {
     //        String.format(
     //            wf,
     //           blackWinrate ? "黑" : "白",
-    //            String.format("%.1f%%", 100 - curWR),
+    //            String.format(Locale.ENGLISH,"%.1f%%", 100 - curWR),
     //            lastMoveDiff,
     //            engine,
     //            playouts);
@@ -1842,13 +1843,13 @@ public class SGFParser {
                 blackWinrate
                     ? Lizzie.resourceBundle.getString("SGFParse.white")
                     : Lizzie.resourceBundle.getString("SGFParse.black"),
-                String.format("%.1f%%", curWR),
+                String.format(Locale.ENGLISH, "%.1f%%", curWR),
                 lastMoveDiff,
-                String.format("%.1f", score),
+                String.format(Locale.ENGLISH, "%.1f", score),
                 diffScore,
                 engine,
                 playouts,
-                String.format("%.1f", data.getKomi()));
+                String.format(Locale.ENGLISH, "%.1f", data.getKomi()));
       } else {
         double score = node.getData().scoreMean;
         if (data.blackToPlay) {
@@ -1884,19 +1885,19 @@ public class SGFParser {
                 blackWinrate
                     ? Lizzie.resourceBundle.getString("SGFParse.white")
                     : Lizzie.resourceBundle.getString("SGFParse.black"),
-                String.format("%.1f%%", curWR),
+                String.format(Locale.ENGLISH, "%.1f%%", curWR),
                 lastMoveDiff,
-                String.format("%.1f", score),
+                String.format(Locale.ENGLISH, "%.1f", score),
                 diffScore,
-                String.format("%.1f", scoreStdev),
+                String.format(Locale.ENGLISH, "%.1f", scoreStdev),
                 engine,
                 playouts,
                 data.pda != 0
-                    ? String.format("%.1f", data.getKomi())
+                    ? String.format(Locale.ENGLISH, "%.1f", data.getKomi())
                         + " "
                         + Lizzie.resourceBundle.getString("SGFParse.pda")
                         + data.pda
-                    : String.format("%.1f", data.getKomi()));
+                    : String.format(Locale.ENGLISH, "%.1f", data.getKomi()));
       }
     } else {
       String wf =
@@ -1914,11 +1915,11 @@ public class SGFParser {
               blackWinrate
                   ? Lizzie.resourceBundle.getString("SGFParse.white")
                   : Lizzie.resourceBundle.getString("SGFParse.black"),
-              String.format("%.1f%%", curWR),
+              String.format(Locale.ENGLISH, "%.1f%%", curWR),
               lastMoveDiff,
               engine,
               playouts,
-              String.format("%.1f", data.getKomi()));
+              String.format(Locale.ENGLISH, "%.1f", data.getKomi()));
     }
     return nc;
   }
@@ -1981,13 +1982,13 @@ public class SGFParser {
                 blackWinrate
                     ? Lizzie.resourceBundle.getString("SGFParse.black")
                     : Lizzie.resourceBundle.getString("SGFParse.white"),
-                String.format("%.1f%%", curWR),
+                String.format(Locale.ENGLISH, "%.1f%%", curWR),
                 lastMoveDiff,
-                String.format("%.1f", score),
+                String.format(Locale.ENGLISH, "%.1f", score),
                 diffScore,
                 engine,
                 playouts,
-                String.format("%.1f", data.getKomi()));
+                String.format(Locale.ENGLISH, "%.1f", data.getKomi()));
       } else {
         double score = node.getData().scoreMean;
         if (data.blackToPlay) {
@@ -2023,14 +2024,15 @@ public class SGFParser {
                 blackWinrate
                     ? Lizzie.resourceBundle.getString("SGFParse.black")
                     : Lizzie.resourceBundle.getString("SGFParse.white"),
-                String.format("%.1f%%", curWR),
+                String.format(Locale.ENGLISH, "%.1f%%", curWR),
                 lastMoveDiff,
-                String.format("%.1f", score),
+                String.format(Locale.ENGLISH, "%.1f", score),
                 diffScore,
-                String.format("%.1f", scoreStdev),
+                String.format(Locale.ENGLISH, "%.1f", scoreStdev),
                 engine,
                 playouts,
-                String.format("%.1f", data.getKomi()) + getPdaWrnString(data.pda, data.wrn));
+                String.format(Locale.ENGLISH, "%.1f", data.getKomi())
+                    + getPdaWrnString(data.pda, data.wrn));
       }
     } else {
       String wf =
@@ -2048,11 +2050,11 @@ public class SGFParser {
               blackWinrate
                   ? Lizzie.resourceBundle.getString("SGFParse.black")
                   : Lizzie.resourceBundle.getString("SGFParse.white"),
-              String.format("%.1f%%", curWR),
+              String.format(Locale.ENGLISH, "%.1f%%", curWR),
               lastMoveDiff,
               engine,
               playouts,
-              String.format("%.1f", data.getKomi()));
+              String.format(Locale.ENGLISH, "%.1f", data.getKomi()));
     }
 
     if (!data.comment.isEmpty() && !EngineManager.isSaveingEngineSGF) {
@@ -2157,9 +2159,10 @@ public class SGFParser {
 
     String curWinrate = "";
     //	    if (Lizzie.config.handicapInsteadOfWinrate) {
-    //	      curWinrate = String.format("%.2f", Leelaz.winrateToHandicap(100 - curWR));
+    //	      curWinrate = String.format(Locale.ENGLISH,"%.2f", Leelaz.winrateToHandicap(100 -
+    // curWR));
     //	    } else {
-    curWinrate = String.format("%.1f%%", 100 - curWR);
+    curWinrate = String.format(Locale.ENGLISH, "%.1f%%", 100 - curWR);
     //   }
 
     String lastMoveDiff = "";
@@ -2220,13 +2223,13 @@ public class SGFParser {
                 blackWinrate
                     ? Lizzie.resourceBundle.getString("SGFParse.black")
                     : Lizzie.resourceBundle.getString("SGFParse.white"),
-                String.format("%.1f%%", 100 - curWR),
+                String.format(Locale.ENGLISH, "%.1f%%", 100 - curWR),
                 lastMoveDiff,
-                String.format("%.1f", score),
+                String.format(Locale.ENGLISH, "%.1f", score),
                 diffScore,
                 engine,
                 playouts,
-                String.format("%.1f", data.getKomi()));
+                String.format(Locale.ENGLISH, "%.1f", data.getKomi()));
       } else {
         double score = data.scoreMean2;
         if (data.blackToPlay) {
@@ -2264,19 +2267,19 @@ public class SGFParser {
                 blackWinrate
                     ? Lizzie.resourceBundle.getString("SGFParse.black")
                     : Lizzie.resourceBundle.getString("SGFParse.white"),
-                String.format("%.1f%%", 100 - curWR),
+                String.format(Locale.ENGLISH, "%.1f%%", 100 - curWR),
                 lastMoveDiff,
-                String.format("%.1f", score),
+                String.format(Locale.ENGLISH, "%.1f", score),
                 diffScore,
-                String.format("%.1f", scoreStdev),
+                String.format(Locale.ENGLISH, "%.1f", scoreStdev),
                 engine,
                 playouts,
                 data.pda2 != 0
-                    ? String.format("%.1f", data.getKomi())
+                    ? String.format(Locale.ENGLISH, "%.1f", data.getKomi())
                         + " "
                         + Lizzie.resourceBundle.getString("SGFParse.pda")
                         + data.pda2
-                    : String.format("%.1f", data.getKomi()));
+                    : String.format(Locale.ENGLISH, "%.1f", data.getKomi()));
       }
     } else {
       String wf =
@@ -2294,11 +2297,11 @@ public class SGFParser {
               blackWinrate
                   ? Lizzie.resourceBundle.getString("SGFParse.black")
                   : Lizzie.resourceBundle.getString("SGFParse.white"),
-              String.format("%.1f%%", 100 - curWR),
+              String.format(Locale.ENGLISH, "%.1f%%", 100 - curWR),
               lastMoveDiff,
               engine,
               playouts,
-              String.format("%.1f", data.getKomi()));
+              String.format(Locale.ENGLISH, "%.1f", data.getKomi()));
     }
 
     if (!data.comment.isEmpty()) {
@@ -2387,7 +2390,7 @@ public class SGFParser {
     boolean validWinrate = (data.getPlayouts() > 0);
     double curWR = validWinrate ? data.winrate : 100 - lastWR;
     String curWinrate = "";
-    curWinrate = String.format("%.1f", 100 - curWR);
+    curWinrate = String.format(Locale.ENGLISH, "%.1f", 100 - curWR);
 
     if (data.isKataData) {
       if (data.pda != 0) {
@@ -2397,8 +2400,8 @@ public class SGFParser {
             data.engineName,
             curWinrate,
             playouts,
-            String.format("%.1f", data.scoreMean),
-            String.format("%.1f", data.scoreStdev),
+            String.format(Locale.ENGLISH, "%.1f", data.scoreMean),
+            String.format(Locale.ENGLISH, "%.1f", data.scoreStdev),
             data.pda,
             data.bestMovesToString());
       } else {
@@ -2408,8 +2411,8 @@ public class SGFParser {
             data.engineName,
             curWinrate,
             playouts,
-            String.format("%.1f", data.scoreMean),
-            String.format("%.1f", data.scoreStdev),
+            String.format(Locale.ENGLISH, "%.1f", data.scoreMean),
+            String.format(Locale.ENGLISH, "%.1f", data.scoreStdev),
             data.bestMovesToString());
       }
     }
@@ -2435,7 +2438,7 @@ public class SGFParser {
     boolean validWinrate = (data.getPlayouts2() > 0);
     double curWR = validWinrate ? data.winrate2 : 100 - lastWR;
     String curWinrate = "";
-    curWinrate = String.format("%.1f", 100 - curWR);
+    curWinrate = String.format(Locale.ENGLISH, "%.1f", 100 - curWR);
 
     if (data.isKataData2) {
       if (data.pda != 0) {
@@ -2445,8 +2448,8 @@ public class SGFParser {
             data.engineName2,
             curWinrate,
             playouts,
-            String.format("%.1f", data.scoreMean2),
-            String.format("%.1f", data.scoreStdev2),
+            String.format(Locale.ENGLISH, "%.1f", data.scoreMean2),
+            String.format(Locale.ENGLISH, "%.1f", data.scoreStdev2),
             data.pda2,
             data.bestMovesToString2());
       } else {
@@ -2456,8 +2459,8 @@ public class SGFParser {
             data.engineName2,
             curWinrate,
             playouts,
-            String.format("%.1f", data.scoreMean2),
-            String.format("%.1f", data.scoreStdev2),
+            String.format(Locale.ENGLISH, "%.1f", data.scoreMean2),
+            String.format(Locale.ENGLISH, "%.1f", data.scoreStdev2),
             data.bestMovesToString2());
       }
     }
@@ -3269,7 +3272,7 @@ class BlunderMoves implements Comparable<BlunderMoves> {
     return moveNumber
         + "("
         + (diffWinrate > 0 ? "+" : "-")
-        + String.format("%.1f", Math.abs(diffWinrate))
+        + String.format(Locale.ENGLISH, "%.1f", Math.abs(diffWinrate))
         + "%)";
   }
 

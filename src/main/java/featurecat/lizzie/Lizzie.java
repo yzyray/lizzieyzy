@@ -13,10 +13,13 @@ import featurecat.lizzie.gui.LoadEngine;
 import featurecat.lizzie.gui.Message;
 import featurecat.lizzie.gui.SocketCheckVersion;
 import featurecat.lizzie.rules.Board;
+import featurecat.lizzie.util.MultiOutputStream;
 import featurecat.lizzie.util.Utils;
 import java.awt.Font;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.net.InetAddress;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -53,6 +56,34 @@ public class Lizzie {
   public static void main(String[] args) throws IOException {
     mainArgs = args;
     config = new Config();
+
+    if (config.logConsoleToFile) {
+      PrintStream oldPrintStream = System.out;
+      FileOutputStream bos = new FileOutputStream("LastConsoleLogs.txt");
+      MultiOutputStream multi = new MultiOutputStream(new PrintStream(bos), oldPrintStream);
+      System.setOut(new PrintStream(multi));
+
+      PrintStream oldErrorPrintStream = System.err;
+      FileOutputStream bosError = new FileOutputStream("LastErrorLogs.txt");
+      MultiOutputStream multiError =
+          new MultiOutputStream(new PrintStream(bosError), oldErrorPrintStream);
+      System.setErr(new PrintStream(multiError));
+      //    Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+      //        @Override
+      //        public void uncaughtException(Thread thread, Throwable ex) {
+      //        	ex.printStackTrace();
+      //            StringWriter sw = new StringWriter();
+      //            ex.printStackTrace(new PrintWriter(sw, true));
+      //            try {
+      //            	bosError.write("===========\n".getBytes());
+      //            	bosError.write(sw.toString().getBytes());
+      //			} catch (IOException e) {
+      //				// TODO Auto-generated catch block
+      //				e.printStackTrace();
+      //			}
+      //        }
+      //    });
+    }
     // -Dsun.java2d.uiScale=1.0
     // -Dsun.java2d.uiScale.enabled=false
     // -Dsun.java2d.win.uiScaleX=1.25 -Dsun.java2d.win.uiScaleY=1.25

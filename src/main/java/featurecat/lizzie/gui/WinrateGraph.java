@@ -7,6 +7,7 @@ import featurecat.lizzie.analysis.Leelaz;
 import featurecat.lizzie.rules.BoardHistoryNode;
 import java.awt.*;
 import java.awt.geom.Point2D;
+import java.util.Locale;
 import java.util.Optional;
 
 public class WinrateGraph {
@@ -316,7 +317,7 @@ public class WinrateGraph {
                   DOT_RADIUS * 2);
               Font f = new Font(Config.sysDefaultFontName, Font.BOLD, largeEnough ? 17 : 16);
               g.setFont(f);
-              String wrString = String.format("%.1f", wr);
+              String wrString = String.format(Locale.ENGLISH, "%.1f", wr);
               int stringWidth = g.getFontMetrics().stringWidth(wrString);
               int xPos = posx + (movenum * width / numMoves) - stringWidth / 2;
               xPos = Math.max(xPos, origParams[0]);
@@ -348,7 +349,7 @@ public class WinrateGraph {
               Font f = new Font(Config.sysDefaultFontName, Font.BOLD, largeEnough ? 17 : 16);
               g.setFont(f);
               g.setColor(Color.WHITE);
-              String wrString = String.format("%.1f", wr);
+              String wrString = String.format(Locale.ENGLISH, "%.1f", wr);
               int stringWidth = g.getFontMetrics().stringWidth(wrString);
               int xPos = posx + (movenum * width / numMoves) - stringWidth / 2;
               xPos = Math.max(xPos, origParams[0]);
@@ -377,7 +378,7 @@ public class WinrateGraph {
         movenum = movenum - 1;
       }
       if (saveCurMovenum > 1) {
-        String wrString = String.format("%.1f", saveCurWr);
+        String wrString = String.format(Locale.ENGLISH, "%.1f", saveCurWr);
         int stringWidth = g.getFontMetrics().stringWidth(wrString);
         int xPos = posx + (saveCurMovenum * width / numMoves) - stringWidth / 2;
         xPos = Math.max(xPos, origParams[0]);
@@ -820,7 +821,7 @@ public class WinrateGraph {
               Font f = new Font(Config.sysDefaultFontName, Font.BOLD, 16);
               g.setFont(f);
 
-              String wrString = String.format("%.1f", wr);
+              String wrString = String.format(Locale.ENGLISH, "%.1f", wr);
               int stringWidth = g.getFontMetrics().stringWidth(wrString);
               int x = posx + (movenum * width / numMoves) - stringWidth / 2;
               x = Math.max(x, origParams[0]);
@@ -853,7 +854,7 @@ public class WinrateGraph {
                   DOT_RADIUS * 2,
                   DOT_RADIUS * 2);
 
-              wrString = String.format("%.1f", 100 - wr);
+              wrString = String.format(Locale.ENGLISH, "%.1f", 100 - wr);
               stringWidth = g.getFontMetrics().stringWidth(wrString);
               x = posx + (movenum * width / numMoves) - stringWidth / 2;
               x = Math.max(x, origParams[0]);
@@ -1025,7 +1026,7 @@ public class WinrateGraph {
             g.setFont(f);
             double scoreHeight = convertcoreMean(drawcurscoreMean) * height / 2 / maxcoreMean;
 
-            String scoreString = String.format("%.1f", drawcurscoreMean);
+            String scoreString = String.format(Locale.ENGLISH, "%.1f", drawcurscoreMean);
             int stringWidth = g.getFontMetrics().stringWidth(scoreString);
             int x = posx + (curmovenum * width / numMoves) - stringWidth / 2;
             x = Math.max(x, origParams[0]);
@@ -1127,7 +1128,7 @@ public class WinrateGraph {
             g.setFont(f);
             double scoreHeight = convertcoreMean(drawcurscoreMean) * height / 2 / maxcoreMean;
 
-            String scoreString = String.format("%.1f", drawcurscoreMean);
+            String scoreString = String.format(Locale.ENGLISH, "%.1f", drawcurscoreMean);
             int stringWidth = g.getFontMetrics().stringWidth(scoreString);
             int x = posx + (curmovenum * width / numMoves) - stringWidth / 2;
             x = Math.max(x, origParams[0]);
@@ -1220,7 +1221,7 @@ public class WinrateGraph {
         mwrHeight = origParams[1] + origParams[3] - 2;
       }
 
-      String mwrString = String.format("%.1f", mwr);
+      String mwrString = String.format(Locale.ENGLISH, "%.1f", mwr);
       int stringWidth = g.getFontMetrics().stringWidth(mwrString);
       int x = posx + (mmovenum * width / numMoves) - stringWidth / 2;
       x = Math.max(x, origParams[0]);
@@ -1257,7 +1258,7 @@ public class WinrateGraph {
       if (mScoreHeight > origParams[1] + origParams[3]) {
         mScoreHeight = Math.max(origParams[1] + origParams[3], mwrHeight - mWinFontHeight);
       }
-      String scoreString = String.format("%.1f", drawmSoreMean);
+      String scoreString = String.format(Locale.ENGLISH, "%.1f", drawmSoreMean);
       int stringWidth = g.getFontMetrics().stringWidth(scoreString);
       int x = posx + (mScoreMoveNum * width / numMoves) - stringWidth / 2;
       x = Math.max(x, origParams[0]);
@@ -1279,7 +1280,7 @@ public class WinrateGraph {
       if (cwrHeight > origParams[1] + origParams[3]) {
         cwrHeight = origParams[1] + origParams[3] - 2;
       }
-      String wrString = String.format("%.1f", cwr);
+      String wrString = String.format(Locale.ENGLISH, "%.1f", cwr);
       int stringWidth = g.getFontMetrics().stringWidth(wrString);
       int x = posx + (cmovenum * width / numMoves) - stringWidth / 2;
       x = Math.max(x, origParams[0]);
@@ -1328,7 +1329,7 @@ public class WinrateGraph {
           } else scoreAjustMove = -1;
         }
       }
-      String scoreString = String.format("%.1f", drawCurSoreMean);
+      String scoreString = String.format(Locale.ENGLISH, "%.1f", drawCurSoreMean);
       int stringWidth = g.getFontMetrics().stringWidth(scoreString);
       int x = posx + (curScoreMoveNum * width / numMoves) - stringWidth / 2;
       x = Math.max(x, origParams[0]);

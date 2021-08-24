@@ -18,6 +18,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.util.Locale;
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -196,7 +197,7 @@ public class ScoreResult extends JDialog {
         (blackAll >= whiteAll
                 ? Lizzie.resourceBundle.getString("ScoreResult.blackWin")
                 : Lizzie.resourceBundle.getString("ScoreResult.whiteWin"))
-            + String.format("%.1f", Math.abs(blackAll - whiteAll))
+            + String.format(Locale.ENGLISH, "%.1f", Math.abs(blackAll - whiteAll))
             + Lizzie.resourceBundle.getString("ScoreResult.points"));
     if (blackAll >= whiteAll) {
       scoreResult.setBackground(Color.BLACK);

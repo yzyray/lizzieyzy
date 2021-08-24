@@ -406,7 +406,7 @@ public class BoardData {
 			sb.append(" winrate ").append((int) (move.winrate * 100));
 			sb.append(" prior ").append((int) (move.policy * 100));
 			if (isKataData)
-				sb.append(" scoreMean ").append(String.format("%.2f", move.scoreMean));
+				sb.append(" scoreMean ").append(String.format(Locale.ENGLISH,"%.2f", move.scoreMean));
 			sb.append(" pv ").append(move.variation==null?"":move.variation.stream().reduce((a, b) -> a + " " + b).get());
 			if (isKataData&&move.pvVisits!=null)
 				sb.append(" pvVisits ").append(move.pvVisits.stream().reduce((a, b) -> a + " " + b).get());

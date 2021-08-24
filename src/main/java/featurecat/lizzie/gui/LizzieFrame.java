@@ -1820,10 +1820,10 @@ public class LizzieFrame extends JFrame {
               return Board.convertCoordinatesToName(data.coords[0], data.coords[1]);
             case 2:
               return (data.diffWinrate < 0 ? "+" : "-")
-                  + String.format("%.2f", Math.abs(data.diffWinrate));
+                  + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.diffWinrate));
             case 3:
               return (data.scoreMeanDiff < 0 ? "+" : "-")
-                  + String.format("%.2f", Math.abs(data.scoreMeanDiff));
+                  + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.scoreMeanDiff));
             default:
               return "";
           }
@@ -1835,11 +1835,11 @@ public class LizzieFrame extends JFrame {
               return Board.convertCoordinatesToName(data.coords[0], data.coords[1]);
             case 2:
               return (data.diffWinrate > 0 ? "+" : "-")
-                  + String.format("%.2f", Math.abs(data.diffWinrate));
+                  + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.diffWinrate));
 
             case 3:
               return (data.scoreMeanDiff > 0 ? "+" : "-")
-                  + String.format("%.2f", Math.abs(data.scoreMeanDiff));
+                  + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.scoreMeanDiff));
             default:
               return "";
           }
@@ -4056,7 +4056,7 @@ public class LizzieFrame extends JFrame {
                   + getPlayoutsString(Lizzie.board.getData().getPlayouts())
                   + " "
                   + resourceBundle.getString("LizzieFrame.winrate")
-                  + String.format("%.1f%%", Lizzie.board.getData().winrate);
+                  + String.format(Locale.ENGLISH, "%.1f%%", Lizzie.board.getData().winrate);
           drawPonderingStateForExtraMode2(g, text1comm, leftInset + commentX1 + 5, maxSize, 18);
           // }
 
@@ -4070,7 +4070,7 @@ public class LizzieFrame extends JFrame {
                   + getPlayoutsString(Lizzie.board.getData().getPlayouts2())
                   + " "
                   + resourceBundle.getString("LizzieFrame.winrate")
-                  + String.format("%.1f%%", Lizzie.board.getData().winrate2);
+                  + String.format(Locale.ENGLISH, "%.1f%%", Lizzie.board.getData().winrate2);
           drawPonderingStateForExtraMode2(
               g, text2comm, maxSize + leftInset + commentX2 + 5, maxSize, 18);
           //  }
@@ -5478,7 +5478,8 @@ public class LizzieFrame extends JFrame {
       return round(playoutsDouble) + "k";
     } else if (playouts >= 1_000) {
       double playoutsDouble = (double) playouts / 1_000; // 1265 -> 12.65
-      return String.format("%.1f", playoutsDouble) + "k"; // round(playoutsDouble) / 10.0 + "k";
+      return String.format(Locale.ENGLISH, "%.1f", playoutsDouble)
+          + "k"; // round(playoutsDouble) / 10.0 + "k";
     } else {
       return String.valueOf(playouts);
     }
@@ -5769,13 +5770,13 @@ public class LizzieFrame extends JFrame {
       text =
           text
               + resourceBundle.getString("LizzieFrame.scoreLead")
-              + String.format("%.1f", scoreOnStatic);
+              + String.format(Locale.ENGLISH, "%.1f", scoreOnStatic);
       if (Lizzie.engineManager.isEngineGame && !Lizzie.leelaz.isSai)
         text =
             text
                 + " "
                 + resourceBundle.getString("LizzieFrame.scoreStdev")
-                + String.format("%.1f", scoreStdev)
+                + String.format(Locale.ENGLISH, "%.1f", scoreStdev)
                 + " ";
     }
     if (Lizzie.leelaz.isColorEngine) {
@@ -5824,12 +5825,12 @@ public class LizzieFrame extends JFrame {
           text
               + " "
               + resourceBundle.getString("LizzieFrame.display.lastMove")
-              + ((wr > 0 ? "+" : "-") + String.format("%.1f%%", Math.abs(wr)));
+              + ((wr > 0 ? "+" : "-") + String.format(Locale.ENGLISH, "%.1f%%", Math.abs(wr)));
       if (isKataStyle && !Lizzie.engineManager.isEngineGame) {
         text =
             text
                 + " "
-                + ((score > 0 ? "+" : "-") + String.format("%.1f", Math.abs(score)))
+                + ((score > 0 ? "+" : "-") + String.format(Locale.ENGLISH, "%.1f", Math.abs(score)))
                 + resourceBundle.getString("LizzieFrame.pts"); // + "目";
       }
       drawString(
@@ -5865,8 +5866,8 @@ public class LizzieFrame extends JFrame {
 
       int fontHeigt = g.getFontMetrics().getAscent() - g.getFontMetrics().getDescent();
       g.setColor(Color.WHITE);
-      String winStringB = String.format("%.1f%%", blackWR);
-      String winStringW = String.format("%.1f%%", whiteWR);
+      String winStringB = String.format(Locale.ENGLISH, "%.1f%%", blackWR);
+      String winStringW = String.format(Locale.ENGLISH, "%.1f%%", whiteWR);
       g.drawString(
           winStringB, barPosxB + 2 * strokeRadius, posY + barHeight - (barHeight - fontHeigt) / 2);
       int swW = g.getFontMetrics().stringWidth(winStringW);
@@ -6084,8 +6085,8 @@ public class LizzieFrame extends JFrame {
         }
       }
     }
-    String bAiScore = String.format("%.1f", blackValue * 100 / analyzedBlack);
-    String wAiScore = String.format("%.1f", whiteValue * 100 / analyzedWhite);
+    String bAiScore = String.format(Locale.ENGLISH, "%.1f", blackValue * 100 / analyzedBlack);
+    String wAiScore = String.format(Locale.ENGLISH, "%.1f", whiteValue * 100 / analyzedWhite);
     if (!isSmallCap) {
       if (isCounting) {
         drawStringMid(
@@ -7365,7 +7366,7 @@ public class LizzieFrame extends JFrame {
         if (!Lizzie.board.getHistory().isBlacksTurn()) winRateC = 100 - winRateC;
         winRate = winRateC > -100 && winRateC < 100 ? winRateC : winRate;
         sb.append(
-            String.format("%.1f", winRate)
+            String.format(Locale.ENGLISH, "%.1f", winRate)
                 + " "
                 + Lizzie.frame.getPlayoutsString(
                     Lizzie.board.getHistory().getData().getPlayouts()));
@@ -7384,7 +7385,7 @@ public class LizzieFrame extends JFrame {
             }
             score = scoreC;
           }
-          sb.append(" " + String.format("%.1f", score));
+          sb.append(" " + String.format(Locale.ENGLISH, "%.1f", score));
         }
         sb.append("] ");
       } else if (Lizzie.leelaz.isPondering()
@@ -7401,11 +7402,11 @@ public class LizzieFrame extends JFrame {
         BoardData data =
             Lizzie.board.getHistory().getCurrentHistoryNode().previous().get().getData();
         sb.append(
-            String.format("%.1f", winRate)
+            String.format(Locale.ENGLISH, "%.1f", winRate)
                 + " "
                 + Lizzie.frame.getPlayoutsString(data.getPlayouts()));
         if (data.isKataData) {
-          sb.append(" " + String.format("%.1f", score));
+          sb.append(" " + String.format(Locale.ENGLISH, "%.1f", score));
         }
         sb.append("] ");
       }
@@ -10498,7 +10499,7 @@ public class LizzieFrame extends JFrame {
               if (data.order != 0) {
                 double diff = data.winrate - data.bestWinrate;
                 return (diff > 0 ? "↑" : "↓")
-                    + String.format("%.1f", diff)
+                    + String.format(Locale.ENGLISH, "%.1f", diff)
                     + "("
                     + String.format(
                         "%.1f",
@@ -10518,7 +10519,8 @@ public class LizzieFrame extends JFrame {
           case 3:
             return Lizzie.frame.getPlayoutsString(data.playouts);
           case 4:
-            return String.format("%.1f", (double) data.playouts * 100 / totalPlayouts);
+            return String.format(
+                Locale.ENGLISH, "%.1f", (double) data.playouts * 100 / totalPlayouts);
           case 5:
             double score = data.scoreMean;
             if (Lizzie.engineManager.isEngineGame
@@ -10552,11 +10554,11 @@ public class LizzieFrame extends JFrame {
             if (data.isNextMove && data.order != 0) {
               double diff = data.scoreMean - data.bestScoreMean;
               return (diff > 0 ? "↑" : "↓")
-                  + String.format("%.1f", diff)
+                  + String.format(Locale.ENGLISH, "%.1f", diff)
                   + "("
-                  + String.format("%.1f", score)
+                  + String.format(Locale.ENGLISH, "%.1f", score)
                   + ")";
-            } else return String.format("%.1f", score);
+            } else return String.format(Locale.ENGLISH, "%.1f", score);
           default:
             return "";
         }

@@ -39,6 +39,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -2542,26 +2543,26 @@ public class MoveListFrame extends JFrame {
           Lizzie.resourceBundle.getString("Movelistframe.blackAnalyzed")
               + analyzedBlack
               + Lizzie.resourceBundle.getString("Movelistframe.movedAndAverage")
-              + String.format("%.2f", winratediffBlack / analyzedBlack)
+              + String.format(Locale.ENGLISH, "%.2f", winratediffBlack / analyzedBlack)
               + Lizzie.resourceBundle.getString("Movelistframe.percentAndStdev")
-              + String.format("%.1f", winratediffVarianceBlack / analyzedBlack)
+              + String.format(Locale.ENGLISH, "%.1f", winratediffVarianceBlack / analyzedBlack)
               + Lizzie.resourceBundle.getString("Movelistframe.above")
               + Lizzie.config.winrateDiffRange1
               + "%："
               + range1Black
               + Lizzie.resourceBundle.getString("Movelistframe.movedAndAverage")
-              + String.format("%.2f", winratediffBlack1 / range1Black)
+              + String.format(Locale.ENGLISH, "%.2f", winratediffBlack1 / range1Black)
               + Lizzie.resourceBundle.getString("Movelistframe.percentAndStdev")
-              + String.format("%.1f", winratediffVarianceBlack1 / range1Black)
+              + String.format(Locale.ENGLISH, "%.1f", winratediffVarianceBlack1 / range1Black)
               + Lizzie.resourceBundle.getString("Movelistframe.rightBrackets")
               + Lizzie.resourceBundle.getString("Movelistframe.above")
               + Lizzie.config.winrateDiffRange2
               + "%："
               + range2Black
               + Lizzie.resourceBundle.getString("Movelistframe.movedAndAverage")
-              + String.format("%.2f", winratediffBlack2 / range2Black)
+              + String.format(Locale.ENGLISH, "%.2f", winratediffBlack2 / range2Black)
               + Lizzie.resourceBundle.getString("Movelistframe.percentAndStdev")
-              + String.format("%.1f", winratediffVarianceBlack2 / range2Black)
+              + String.format(Locale.ENGLISH, "%.1f", winratediffVarianceBlack2 / range2Black)
               + Lizzie.resourceBundle.getString("Movelistframe.rightBrackets"),
           5,
           15);
@@ -2570,26 +2571,26 @@ public class MoveListFrame extends JFrame {
           Lizzie.resourceBundle.getString("Movelistframe.whiteAnalyzed")
               + analyzedWhite
               + Lizzie.resourceBundle.getString("Movelistframe.movedAndAverage")
-              + String.format("%.2f", winratediffWhite / analyzedWhite)
+              + String.format(Locale.ENGLISH, "%.2f", winratediffWhite / analyzedWhite)
               + Lizzie.resourceBundle.getString("Movelistframe.percentAndStdev")
-              + String.format("%.1f", winratediffVarianceWhite / analyzedWhite)
+              + String.format(Locale.ENGLISH, "%.1f", winratediffVarianceWhite / analyzedWhite)
               + Lizzie.resourceBundle.getString("Movelistframe.above")
               + Lizzie.config.winrateDiffRange1
               + "%："
               + range1White
               + Lizzie.resourceBundle.getString("Movelistframe.movedAndAverage")
-              + String.format("%.2f", winratediffWhite1 / range1White)
+              + String.format(Locale.ENGLISH, "%.2f", winratediffWhite1 / range1White)
               + Lizzie.resourceBundle.getString("Movelistframe.percentAndStdev")
-              + String.format("%.1f", winratediffVarianceWhite1 / range1White)
+              + String.format(Locale.ENGLISH, "%.1f", winratediffVarianceWhite1 / range1White)
               + Lizzie.resourceBundle.getString("Movelistframe.rightBrackets")
               + Lizzie.resourceBundle.getString("Movelistframe.above")
               + Lizzie.config.winrateDiffRange2
               + "%："
               + range2White
               + Lizzie.resourceBundle.getString("Movelistframe.movedAndAverage")
-              + String.format("%.2f", winratediffWhite2 / range2White)
+              + String.format(Locale.ENGLISH, "%.2f", winratediffWhite2 / range2White)
               + Lizzie.resourceBundle.getString("Movelistframe.percentAndStdev")
-              + String.format("%.1f", winratediffVarianceWhite2 / range2White)
+              + String.format(Locale.ENGLISH, "%.1f", winratediffVarianceWhite2 / range2White)
               + Lizzie.resourceBundle.getString("Movelistframe.rightBrackets"),
           5,
           35);
@@ -2598,26 +2599,26 @@ public class MoveListFrame extends JFrame {
           Lizzie.resourceBundle.getString("Movelistframe.blackAnalyzed")
               + analyzedBlackS
               + Lizzie.resourceBundle.getString("Movelistframe.movedAndAverage")
-              + String.format("%.2f", scorediffBlack / analyzedBlackS)
+              + String.format(Locale.ENGLISH, "%.2f", scorediffBlack / analyzedBlackS)
               + Lizzie.resourceBundle.getString("Movelistframe.scoreAndStdev")
-              + String.format("%.1f", scorediffVarianceBlack / analyzedBlackS)
+              + String.format(Locale.ENGLISH, "%.1f", scorediffVarianceBlack / analyzedBlackS)
               + Lizzie.resourceBundle.getString("Movelistframe.above")
               + Lizzie.config.scoreDiffRange1
               + Lizzie.resourceBundle.getString("Movelistframe.scorePoints")
               + range1BlackS
               + Lizzie.resourceBundle.getString("Movelistframe.movedAndAverage")
-              + String.format("%.2f", scorediffBlack1 / range1BlackS)
+              + String.format(Locale.ENGLISH, "%.2f", scorediffBlack1 / range1BlackS)
               + Lizzie.resourceBundle.getString("Movelistframe.stdev")
-              + String.format("%.1f", scorediffVarianceBlack1 / range1BlackS)
+              + String.format(Locale.ENGLISH, "%.1f", scorediffVarianceBlack1 / range1BlackS)
               + Lizzie.resourceBundle.getString("Movelistframe.rightBrackets")
               + Lizzie.resourceBundle.getString("Movelistframe.above")
               + Lizzie.config.scoreDiffRange2
               + Lizzie.resourceBundle.getString("Movelistframe.scorePoints")
               + range2BlackS
               + Lizzie.resourceBundle.getString("Movelistframe.movedAndAverage")
-              + String.format("%.2f", scorediffBlack2 / range2BlackS)
+              + String.format(Locale.ENGLISH, "%.2f", scorediffBlack2 / range2BlackS)
               + Lizzie.resourceBundle.getString("Movelistframe.stdev")
-              + String.format("%.1f", scorediffVarianceBlack2 / range2BlackS)
+              + String.format(Locale.ENGLISH, "%.1f", scorediffVarianceBlack2 / range2BlackS)
               + Lizzie.resourceBundle.getString("Movelistframe.rightBrackets"),
           5,
           15);
@@ -2626,35 +2627,41 @@ public class MoveListFrame extends JFrame {
           Lizzie.resourceBundle.getString("Movelistframe.whiteAnalyzed")
               + analyzedWhiteS
               + Lizzie.resourceBundle.getString("Movelistframe.movedAndAverage")
-              + String.format("%.2f", scorediffWhite / analyzedWhiteS)
+              + String.format(Locale.ENGLISH, "%.2f", scorediffWhite / analyzedWhiteS)
               + Lizzie.resourceBundle.getString("Movelistframe.scoreAndStdev")
-              + String.format("%.1f", scorediffVarianceWhite / analyzedWhiteS)
+              + String.format(Locale.ENGLISH, "%.1f", scorediffVarianceWhite / analyzedWhiteS)
               + Lizzie.resourceBundle.getString("Movelistframe.above")
               + Lizzie.config.scoreDiffRange1
               + Lizzie.resourceBundle.getString("Movelistframe.scorePoints")
               + range1WhiteS
               + Lizzie.resourceBundle.getString("Movelistframe.movedAndAverage")
-              + String.format("%.2f", scorediffWhite1 / range1WhiteS)
+              + String.format(Locale.ENGLISH, "%.2f", scorediffWhite1 / range1WhiteS)
               + Lizzie.resourceBundle.getString("Movelistframe.stdev")
-              + String.format("%.1f", scorediffVarianceWhite1 / range1WhiteS)
+              + String.format(Locale.ENGLISH, "%.1f", scorediffVarianceWhite1 / range1WhiteS)
               + Lizzie.resourceBundle.getString("Movelistframe.rightBrackets")
               + Lizzie.resourceBundle.getString("Movelistframe.above")
               + Lizzie.config.scoreDiffRange2
               + Lizzie.resourceBundle.getString("Movelistframe.scorePoints")
               + range2WhiteS
               + Lizzie.resourceBundle.getString("Movelistframe.movedAndAverage")
-              + String.format("%.2f", scorediffWhite2 / range2WhiteS)
+              + String.format(Locale.ENGLISH, "%.2f", scorediffWhite2 / range2WhiteS)
               + Lizzie.resourceBundle.getString("Movelistframe.stdev")
-              + String.format("%.1f", scorediffVarianceWhite2 / range2WhiteS)
+              + String.format(Locale.ENGLISH, "%.1f", scorediffVarianceWhite2 / range2WhiteS)
               + Lizzie.resourceBundle.getString("Movelistframe.rightBrackets"),
           5,
           35);
     } else if (selectedIndex == 0) {
       String percentBlack =
-          String.format("%.1f", ((float) blackMatch / (blackMoves > 0 ? blackMoves : 1)) * 100)
+          String.format(
+                  Locale.ENGLISH,
+                  "%.1f",
+                  ((float) blackMatch / (blackMoves > 0 ? blackMoves : 1)) * 100)
               + "%";
       String percentWhite =
-          String.format("%.1f", ((float) whiteMatch / (whiteMoves > 0 ? whiteMoves : 1)) * 100)
+          String.format(
+                  Locale.ENGLISH,
+                  "%.1f",
+                  ((float) whiteMatch / (whiteMoves > 0 ? whiteMoves : 1)) * 100)
               + "%";
       g.drawString(
           Lizzie.resourceBundle.getString("Movelistframe.blackMatch")
@@ -2664,12 +2671,12 @@ public class MoveListFrame extends JFrame {
               + " "
               + percentBlack
               + Lizzie.resourceBundle.getString("Movelistframe.AIscore")
-              + String.format("%.2f", blackTrueValue * 100 / analyzedBlack)
+              + String.format(Locale.ENGLISH, "%.2f", blackTrueValue * 100 / analyzedBlack)
               + Lizzie.resourceBundle.getString("Movelistframe.avgDifference")
-              + String.format("%.2f", winratediffBlack / analyzedBlack)
+              + String.format(Locale.ENGLISH, "%.2f", winratediffBlack / analyzedBlack)
               + "%"
               + "/ "
-              + String.format("%.2f", scorediffBlack / analyzedBlack),
+              + String.format(Locale.ENGLISH, "%.2f", scorediffBlack / analyzedBlack),
           25,
           15);
       g.drawString(
@@ -2680,12 +2687,12 @@ public class MoveListFrame extends JFrame {
               + " "
               + percentWhite
               + Lizzie.resourceBundle.getString("Movelistframe.AIscore")
-              + String.format("%.2f", whiteTrueValue * 100 / analyzedWhite)
+              + String.format(Locale.ENGLISH, "%.2f", whiteTrueValue * 100 / analyzedWhite)
               + Lizzie.resourceBundle.getString("Movelistframe.avgDifference")
-              + String.format("%.2f", winratediffWhite / analyzedWhite)
+              + String.format(Locale.ENGLISH, "%.2f", winratediffWhite / analyzedWhite)
               + "%"
               + "/ "
-              + String.format("%.2f", scorediffWhite / analyzedWhite),
+              + String.format(Locale.ENGLISH, "%.2f", scorediffWhite / analyzedWhite),
           25,
           35);
       g.drawString(
@@ -2748,21 +2755,21 @@ public class MoveListFrame extends JFrame {
     } else if (selectedIndex == 1) {
       g.drawString(
           Lizzie.resourceBundle.getString("Movelistframe.blackAIScore")
-              + String.format("%.2f", blackTrueValue * 100 / analyzedBlack),
+              + String.format(Locale.ENGLISH, "%.2f", blackTrueValue * 100 / analyzedBlack),
           // + Lizzie.resourceBundle.getString("Movelistframe.accordingTo")
-          //  + String.format("%.2f", blackTrueValue * 100 / analyzedBlack)
+          //  + String.format(Locale.ENGLISH,"%.2f", blackTrueValue * 100 / analyzedBlack)
           //              + Lizzie.resourceBundle.getString("Movelistframe.matchTemperature")
-          //              + String.format("%.1f", Lizzie.config.matchAiTemperature)
+          //              + String.format(Locale.ENGLISH,"%.1f", Lizzie.config.matchAiTemperature)
           //    + ")",
           25,
           15);
       g.drawString(
           Lizzie.resourceBundle.getString("Movelistframe.whiteAIScore")
-              + String.format("%.2f", whiteTrueValue * 100 / analyzedWhite),
+              + String.format(Locale.ENGLISH, "%.2f", whiteTrueValue * 100 / analyzedWhite),
           //    + Lizzie.resourceBundle.getString("Movelistframe.accordingTo")
-          //     + String.format("%.2f", whiteValue * 100 / analyzedWhite)
+          //     + String.format(Locale.ENGLISH,"%.2f", whiteValue * 100 / analyzedWhite)
           //              + Lizzie.resourceBundle.getString("Movelistframe.matchTemperature")
-          //              + String.format("%.1f", Lizzie.config.matchAiTemperature)
+          //              + String.format(Locale.ENGLISH,"%.1f", Lizzie.config.matchAiTemperature)
           //       + ")",
           //  + Lizzie.resourceBundle.getString("Movelistframe.hintLeftQuestionMark"),
           25,
@@ -2825,35 +2832,41 @@ public class MoveListFrame extends JFrame {
           Lizzie.resourceBundle.getString("Movelistframe.blackDifference")
               + Lizzie.resourceBundle.getString("Movelistframe.allWinrate")
               + (allBlakAnalyzed > 0
-                  ? String.format("%.1f", allBlackWinrateDiff / allBlakAnalyzed)
+                  ? String.format(Locale.ENGLISH, "%.1f", allBlackWinrateDiff / allBlakAnalyzed)
                   : "0")
               + Lizzie.resourceBundle.getString("Movelistframe.percentAndScore")
               + (allBlakAnalyzed > 0
-                  ? String.format("%.1f", allBlackScoreDiff / allBlakAnalyzed)
+                  ? String.format(Locale.ENGLISH, "%.1f", allBlackScoreDiff / allBlakAnalyzed)
                   : "0")
               + Lizzie.resourceBundle.getString("Movelistframe.openAndWinrate")
               + (parse1BlackAnalyzed > 0
-                  ? String.format("%.1f", parse1BlackWinrateDiff / parse1BlackAnalyzed)
+                  ? String.format(
+                      Locale.ENGLISH, "%.1f", parse1BlackWinrateDiff / parse1BlackAnalyzed)
                   : "0")
               + Lizzie.resourceBundle.getString("Movelistframe.percentAndScore")
               + (parse1BlackAnalyzed > 0
-                  ? String.format("%.1f", parse1BlackScoreDiff / parse1BlackAnalyzed)
+                  ? String.format(
+                      Locale.ENGLISH, "%.1f", parse1BlackScoreDiff / parse1BlackAnalyzed)
                   : "0")
               + Lizzie.resourceBundle.getString("Movelistframe.middleAndWinrate")
               + (parse2BlackAnalyzed > 0
-                  ? String.format("%.1f", parse2BlackWinrateDiff / parse2BlackAnalyzed)
+                  ? String.format(
+                      Locale.ENGLISH, "%.1f", parse2BlackWinrateDiff / parse2BlackAnalyzed)
                   : "0")
               + Lizzie.resourceBundle.getString("Movelistframe.percentAndScore")
               + (parse2BlackAnalyzed > 0
-                  ? String.format("%.1f", parse2BlackScoreDiff / parse2BlackAnalyzed)
+                  ? String.format(
+                      Locale.ENGLISH, "%.1f", parse2BlackScoreDiff / parse2BlackAnalyzed)
                   : "0")
               + Lizzie.resourceBundle.getString("Movelistframe.endAndWinrate")
               + (parse3BlackAnalyzed > 0
-                  ? String.format("%.1f", parse3BlackWinrateDiff / parse3BlackAnalyzed)
+                  ? String.format(
+                      Locale.ENGLISH, "%.1f", parse3BlackWinrateDiff / parse3BlackAnalyzed)
                   : "0")
               + Lizzie.resourceBundle.getString("Movelistframe.percentAndScore")
               + (parse3BlackAnalyzed > 0
-                  ? String.format("%.1f", parse3BlackScoreDiff / parse3BlackAnalyzed)
+                  ? String.format(
+                      Locale.ENGLISH, "%.1f", parse3BlackScoreDiff / parse3BlackAnalyzed)
                   : "0")
               + Lizzie.resourceBundle.getString("Movelistframe.rightBrackets"),
           25,
@@ -2862,35 +2875,41 @@ public class MoveListFrame extends JFrame {
           Lizzie.resourceBundle.getString("Movelistframe.whiteDifference")
               + Lizzie.resourceBundle.getString("Movelistframe.allWinrate")
               + (allWhiteAnalyzed > 0
-                  ? String.format("%.1f", allWhiteWinrateDiff / allWhiteAnalyzed)
+                  ? String.format(Locale.ENGLISH, "%.1f", allWhiteWinrateDiff / allWhiteAnalyzed)
                   : "0")
               + Lizzie.resourceBundle.getString("Movelistframe.percentAndScore")
               + (allWhiteAnalyzed > 0
-                  ? String.format("%.1f", allWhiteScoreDiff / allWhiteAnalyzed)
+                  ? String.format(Locale.ENGLISH, "%.1f", allWhiteScoreDiff / allWhiteAnalyzed)
                   : "0")
               + Lizzie.resourceBundle.getString("Movelistframe.openAndWinrate")
               + (parse1WhiteAnalyzed > 0
-                  ? String.format("%.1f", parse1WhiteWinrateDiff / parse1WhiteAnalyzed)
+                  ? String.format(
+                      Locale.ENGLISH, "%.1f", parse1WhiteWinrateDiff / parse1WhiteAnalyzed)
                   : "0")
               + Lizzie.resourceBundle.getString("Movelistframe.percentAndScore")
               + (parse1WhiteAnalyzed > 0
-                  ? String.format("%.1f", parse1WhiteScoreDiff / parse1WhiteAnalyzed)
+                  ? String.format(
+                      Locale.ENGLISH, "%.1f", parse1WhiteScoreDiff / parse1WhiteAnalyzed)
                   : "0")
               + Lizzie.resourceBundle.getString("Movelistframe.middleAndWinrate")
               + (parse2WhiteAnalyzed > 0
-                  ? String.format("%.1f", parse2WhiteWinrateDiff / parse2WhiteAnalyzed)
+                  ? String.format(
+                      Locale.ENGLISH, "%.1f", parse2WhiteWinrateDiff / parse2WhiteAnalyzed)
                   : "0")
               + Lizzie.resourceBundle.getString("Movelistframe.percentAndScore")
               + (parse2WhiteAnalyzed > 0
-                  ? String.format("%.1f", parse2WhiteScoreDiff / parse2WhiteAnalyzed)
+                  ? String.format(
+                      Locale.ENGLISH, "%.1f", parse2WhiteScoreDiff / parse2WhiteAnalyzed)
                   : "0")
               + Lizzie.resourceBundle.getString("Movelistframe.endAndWinrate")
               + (parse3WhiteAnalyzed > 0
-                  ? String.format("%.1f", parse3WhiteWinrateDiff / parse3WhiteAnalyzed)
+                  ? String.format(
+                      Locale.ENGLISH, "%.1f", parse3WhiteWinrateDiff / parse3WhiteAnalyzed)
                   : "0")
               + Lizzie.resourceBundle.getString("Movelistframe.percentAndScore")
               + (parse3WhiteAnalyzed > 0
-                  ? String.format("%.1f", parse3WhiteScoreDiff / parse3WhiteAnalyzed)
+                  ? String.format(
+                      Locale.ENGLISH, "%.1f", parse3WhiteScoreDiff / parse3WhiteAnalyzed)
                   : "0")
               + Lizzie.resourceBundle.getString("Movelistframe.rightBrackets"),
           25,
@@ -4740,11 +4759,13 @@ public class MoveListFrame extends JFrame {
                     ? ((percentBlackAll - 0.75) * height * 4 / 7 + height * 3 / 5)
                     : percentBlackAll * height * 4 / 5));
         g.drawString(
-            String.format("%.1f", percentBlackAll * 100),
+            String.format(Locale.ENGLISH, "%.1f", percentBlackAll * 100),
             (int)
                 (posx
                     + 1.5 * width / 16
-                    - g.getFontMetrics().stringWidth(String.format("%.1f", percentBlackAll * 100))
+                    - g.getFontMetrics()
+                            .stringWidth(
+                                String.format(Locale.ENGLISH, "%.1f", percentBlackAll * 100))
                         / 2),
             posy
                 + height * 4 / 5
@@ -4770,12 +4791,13 @@ public class MoveListFrame extends JFrame {
                     ? ((percentBlackParse1 - 0.75) * height * 4 / 7 + height * 3 / 5)
                     : percentBlackParse1 * height * 4 / 5));
         g.drawString(
-            String.format("%.1f", percentBlackParse1 * 100),
+            String.format(Locale.ENGLISH, "%.1f", percentBlackParse1 * 100),
             (int)
                 (posx
                     + 5.5 * width / 16
                     - g.getFontMetrics()
-                            .stringWidth(String.format("%.1f", percentBlackParse1 * 100))
+                            .stringWidth(
+                                String.format(Locale.ENGLISH, "%.1f", percentBlackParse1 * 100))
                         / 2),
             posy
                 + height * 4 / 5
@@ -4801,12 +4823,13 @@ public class MoveListFrame extends JFrame {
                     ? ((percentBlackParse2 - 0.75) * height * 4 / 7 + height * 3 / 5)
                     : percentBlackParse2 * height * 4 / 5));
         g.drawString(
-            String.format("%.1f", percentBlackParse2 * 100),
+            String.format(Locale.ENGLISH, "%.1f", percentBlackParse2 * 100),
             (int)
                 (posx
                     + 9.5 * width / 16
                     - g.getFontMetrics()
-                            .stringWidth(String.format("%.1f", percentBlackParse2 * 100))
+                            .stringWidth(
+                                String.format(Locale.ENGLISH, "%.1f", percentBlackParse2 * 100))
                         / 2),
             posy
                 + height * 4 / 5
@@ -4832,12 +4855,13 @@ public class MoveListFrame extends JFrame {
                     ? ((percentBlackParse3 - 0.75) * height * 4 / 7 + height * 3 / 5)
                     : percentBlackParse3 * height * 4 / 5));
         g.drawString(
-            String.format("%.1f", percentBlackParse3 * 100),
+            String.format(Locale.ENGLISH, "%.1f", percentBlackParse3 * 100),
             (int)
                 (posx
                     + 13.5 * width / 16
                     - g.getFontMetrics()
-                            .stringWidth(String.format("%.1f", percentBlackParse3 * 100))
+                            .stringWidth(
+                                String.format(Locale.ENGLISH, "%.1f", percentBlackParse3 * 100))
                         / 2),
             posy
                 + height * 4 / 5
@@ -4865,11 +4889,13 @@ public class MoveListFrame extends JFrame {
                     ? ((percentWhiteAll - 0.75) * height * 4 / 7 + height * 3 / 5)
                     : percentWhiteAll * height * 4 / 5));
         g.drawString(
-            String.format("%.1f", percentWhiteAll * 100),
+            String.format(Locale.ENGLISH, "%.1f", percentWhiteAll * 100),
             (int)
                 (posx
                     + 2.5 * width / 16
-                    - g.getFontMetrics().stringWidth(String.format("%.1f", percentWhiteAll * 100))
+                    - g.getFontMetrics()
+                            .stringWidth(
+                                String.format(Locale.ENGLISH, "%.1f", percentWhiteAll * 100))
                         / 2),
             posy
                 + height * 4 / 5
@@ -4895,12 +4921,13 @@ public class MoveListFrame extends JFrame {
                     ? ((percentWhiteParse1 - 0.75) * height * 4 / 7 + height * 3 / 5)
                     : percentWhiteParse1 * height * 4 / 5));
         g.drawString(
-            String.format("%.1f", percentWhiteParse1 * 100),
+            String.format(Locale.ENGLISH, "%.1f", percentWhiteParse1 * 100),
             (int)
                 (posx
                     + 6.5 * width / 16
                     - g.getFontMetrics()
-                            .stringWidth(String.format("%.1f", percentWhiteParse1 * 100))
+                            .stringWidth(
+                                String.format(Locale.ENGLISH, "%.1f", percentWhiteParse1 * 100))
                         / 2),
             posy
                 + height * 4 / 5
@@ -4926,12 +4953,13 @@ public class MoveListFrame extends JFrame {
                     ? ((percentWhiteParse2 - 0.75) * height * 4 / 7 + height * 3 / 5)
                     : percentWhiteParse2 * height * 4 / 5));
         g.drawString(
-            String.format("%.1f", percentWhiteParse2 * 100),
+            String.format(Locale.ENGLISH, "%.1f", percentWhiteParse2 * 100),
             (int)
                 (posx
                     + 10.5 * width / 16
                     - g.getFontMetrics()
-                            .stringWidth(String.format("%.1f", percentWhiteParse2 * 100))
+                            .stringWidth(
+                                String.format(Locale.ENGLISH, "%.1f", percentWhiteParse2 * 100))
                         / 2),
             posy
                 + height * 4 / 5
@@ -4956,12 +4984,13 @@ public class MoveListFrame extends JFrame {
                     ? ((percentWhiteParse3 - 0.75) * height * 4 / 7 + height * 3 / 5)
                     : percentWhiteParse3 * height * 4 / 5));
         g.drawString(
-            String.format("%.1f", percentWhiteParse3 * 100),
+            String.format(Locale.ENGLISH, "%.1f", percentWhiteParse3 * 100),
             (int)
                 (posx
                     + 14.5 * width / 16
                     - g.getFontMetrics()
-                            .stringWidth(String.format("%.1f", percentWhiteParse3 * 100))
+                            .stringWidth(
+                                String.format(Locale.ENGLISH, "%.1f", percentWhiteParse3 * 100))
                         / 2),
             posy
                 + height * 4 / 5
@@ -5705,7 +5734,7 @@ public class MoveListFrame extends JFrame {
                 g.setColor(Color.BLACK);
                 if (analyzedB >= 1)
                   g.drawString(
-                      String.format("%.1f", lastMatchValueB),
+                      String.format(Locale.ENGLISH, "%.1f", lastMatchValueB),
                       posx + (movenum * width / numMoves) - 5,
                       posy
                           + height
@@ -5717,7 +5746,7 @@ public class MoveListFrame extends JFrame {
                 g.setColor(Color.WHITE);
                 if (analyzedW >= 1)
                   g.drawString(
-                      String.format("%.1f", lastMatchValueW),
+                      String.format(Locale.ENGLISH, "%.1f", lastMatchValueW),
                       posx + (movenum * width / numMoves) - 5,
                       posy
                           + height
@@ -5730,7 +5759,7 @@ public class MoveListFrame extends JFrame {
                 g.setColor(Color.BLACK);
                 if (analyzedB >= 1)
                   g.drawString(
-                      String.format("%.1f", lastMatchValueB),
+                      String.format(Locale.ENGLISH, "%.1f", lastMatchValueB),
                       posx + (movenum * width / numMoves) - 5,
                       posy
                           + height
@@ -5955,7 +5984,8 @@ public class MoveListFrame extends JFrame {
         if (cmovenumCase2 > 0) {
 
           g.setFont(new Font(Lizzie.config.fontName, Font.BOLD, 13));
-          int mw = g.getFontMetrics().stringWidth(String.format("%.1f", cdiffwinCase2));
+          int mw =
+              g.getFontMetrics().stringWidth(String.format(Locale.ENGLISH, "%.1f", cdiffwinCase2));
           // int mh = g.getFontMetrics().getHeight();
 
           // if(cmovenumCase2<numMoves/2)
@@ -5963,13 +5993,13 @@ public class MoveListFrame extends JFrame {
           g.setColor(Color.RED);
           if (cdiffwinCase2 <= 0) {
             g.drawString(
-                String.format("%.1f", cdiffwinCase2),
+                String.format(Locale.ENGLISH, "%.1f", cdiffwinCase2),
                 posx + (int) ((cmovenumCase2 + 1.5) * width / numMoves - mw / 2),
                 (int) (posy + height + 13 - (int) (height * 3 / 8)));
           } else {
             {
               g.drawString(
-                  "+" + String.format("%.1f", cdiffwinCase2),
+                  "+" + String.format(Locale.ENGLISH, "%.1f", cdiffwinCase2),
                   posx + (int) ((cmovenumCase2 + 1.5) * width / numMoves - mw / 2),
                   (int)
                       (posy
@@ -6099,7 +6129,7 @@ public class MoveListFrame extends JFrame {
         if (cmovenum > 0) {
           Font f = new Font(Lizzie.config.uiFontName, Font.BOLD, 16);
           g.setFont(f);
-          String wrString = String.format("%.1f", cwr);
+          String wrString = String.format(Locale.ENGLISH, "%.1f", cwr);
           int strWidth = g.getFontMetrics().stringWidth(wrString);
           int cPosX =
               posx
@@ -6131,12 +6161,12 @@ public class MoveListFrame extends JFrame {
               g.setFont(new Font(Lizzie.config.uiFontName, Font.BOLD, 13));
               if (numMoves - cmovenum < 2) {
                 g.drawString(
-                    String.format("%.1f", cScore),
+                    String.format(Locale.ENGLISH, "%.1f", cScore),
                     posx + (cmovenum * width / numMoves) - 13,
                     posy + height / 2 - (int) (convertcoreMean(cScore) * height / 2 / maxcoreMean));
               } else
                 g.drawString(
-                    String.format("%.1f", cScore),
+                    String.format(Locale.ENGLISH, "%.1f", cScore),
                     posx + (cmovenum * width / numMoves),
                     posy + height / 2 - (int) (convertcoreMean(cScore) * height / 2 / maxcoreMean));
             }
@@ -6149,12 +6179,12 @@ public class MoveListFrame extends JFrame {
           if (mmovenum > 0)
             if (mwr > 50)
               g.drawString(
-                  String.format("%.1f", mwr),
+                  String.format(Locale.ENGLISH, "%.1f", mwr),
                   mPosX,
                   posy + (height - (int) (convertWinrate(mwr) * height / 100)) + 6 * DOT_RADIUS);
             else
               g.drawString(
-                  String.format("%.1f", mwr),
+                  String.format(Locale.ENGLISH, "%.1f", mwr),
                   mPosX,
                   posy + (height - (int) (convertWinrate(mwr) * height / 100)) - 2 * DOT_RADIUS);
           g.setColor(Color.YELLOW);
@@ -6169,12 +6199,12 @@ public class MoveListFrame extends JFrame {
             g.setFont(new Font(Lizzie.config.uiFontName, Font.BOLD, 13));
             if (numMoves - mmovenum < 2) {
               g.drawString(
-                  String.format("%.1f", mScore),
+                  String.format(Locale.ENGLISH, "%.1f", mScore),
                   posx + (mmovenum * width / numMoves) - 13,
                   posy + height / 2 - (int) (convertcoreMean(mScore) * height / 2 / maxcoreMean));
             } else
               g.drawString(
-                  String.format("%.1f", mScore),
+                  String.format(Locale.ENGLISH, "%.1f", mScore),
                   posx + (mmovenum * width / numMoves),
                   posy + height / 2 - (int) (convertcoreMean(mScore) * height / 2 / maxcoreMean));
           }
@@ -6235,7 +6265,7 @@ public class MoveListFrame extends JFrame {
     //
     g.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
     g.drawString(
-        String.format("%.1f", bigMistakeInfo.diffWinrate) + (isScore ? "" : "%"),
+        String.format(Locale.ENGLISH, "%.1f", bigMistakeInfo.diffWinrate) + (isScore ? "" : "%"),
         width / 20 + index * width / 10 + height / 13,
         (int) (height * 0.15 + height * 0.7 * (100 - bigMistakeInfo.currentMoveWinRate) / 100.0));
   }
@@ -6765,7 +6795,7 @@ public class MoveListFrame extends JFrame {
         valueWidth,
         valueRowHeight,
         blackAccuracy,
-        String.format("%.1f", blackAccuracy * 100),
+        String.format(Locale.ENGLISH, "%.1f", blackAccuracy * 100),
         Color.BLACK,
         Color.BLACK,
         Color.PINK,
@@ -6778,7 +6808,7 @@ public class MoveListFrame extends JFrame {
         valueWidth,
         valueRowHeight,
         blackMatch,
-        String.format("%.1f", blackMatch * 100) + "%",
+        String.format(Locale.ENGLISH, "%.1f", blackMatch * 100) + "%",
         Color.BLACK,
         Color.BLACK,
         Color.PINK,
@@ -6792,7 +6822,7 @@ public class MoveListFrame extends JFrame {
         valueWidth,
         valueRowHeight,
         blackBest,
-        String.format("%.1f", blackBest * 100) + "%",
+        String.format(Locale.ENGLISH, "%.1f", blackBest * 100) + "%",
         Color.BLACK,
         Color.BLACK,
         Color.PINK,
@@ -6806,7 +6836,7 @@ public class MoveListFrame extends JFrame {
         valueWidth,
         valueRowHeight,
         blackAvgScoreLoss / maxAvgWinLoss,
-        String.format("%.1f", blackAvgScoreLoss),
+        String.format(Locale.ENGLISH, "%.1f", blackAvgScoreLoss),
         Color.BLACK,
         Color.BLACK,
         Color.PINK,
@@ -6820,7 +6850,7 @@ public class MoveListFrame extends JFrame {
         valueWidth,
         valueRowHeight,
         blackAvgWinLoss / maxAvgWinLoss,
-        String.format("%.1f", blackAvgWinLoss) + "%",
+        String.format(Locale.ENGLISH, "%.1f", blackAvgWinLoss) + "%",
         Color.BLACK,
         Color.BLACK,
         Color.PINK,
@@ -6834,7 +6864,7 @@ public class MoveListFrame extends JFrame {
         valueWidth,
         valueRowHeight,
         whiteAccracy,
-        String.format("%.1f", whiteAccracy * 100),
+        String.format(Locale.ENGLISH, "%.1f", whiteAccracy * 100),
         Color.WHITE,
         Color.WHITE,
         Color.BLUE,
@@ -6848,7 +6878,7 @@ public class MoveListFrame extends JFrame {
         valueWidth,
         valueRowHeight,
         whiteMatch,
-        String.format("%.1f", whiteMatch * 100) + "%",
+        String.format(Locale.ENGLISH, "%.1f", whiteMatch * 100) + "%",
         Color.WHITE,
         Color.WHITE,
         Color.BLUE,
@@ -6862,7 +6892,7 @@ public class MoveListFrame extends JFrame {
         valueWidth,
         valueRowHeight,
         whiteBest,
-        String.format("%.1f", whiteBest * 100) + "%",
+        String.format(Locale.ENGLISH, "%.1f", whiteBest * 100) + "%",
         Color.WHITE,
         Color.WHITE,
         Color.BLUE,
@@ -6876,7 +6906,7 @@ public class MoveListFrame extends JFrame {
         valueWidth,
         valueRowHeight,
         whiteAvgScoreLoss / maxAvgWinLoss,
-        String.format("%.1f", whiteAvgScoreLoss),
+        String.format(Locale.ENGLISH, "%.1f", whiteAvgScoreLoss),
         Color.WHITE,
         Color.WHITE,
         Color.BLUE,
@@ -6890,7 +6920,7 @@ public class MoveListFrame extends JFrame {
         valueWidth,
         valueRowHeight,
         whiteAvgWinLoss / maxAvgWinLoss,
-        String.format("%.1f", whiteAvgWinLoss) + "%",
+        String.format(Locale.ENGLISH, "%.1f", whiteAvgWinLoss) + "%",
         Color.WHITE,
         Color.WHITE,
         Color.BLUE,
@@ -7699,22 +7729,23 @@ public class MoveListFrame extends JFrame {
                 return Board.convertCoordinatesToName(data.coords[0], data.coords[1]);
               case 3:
                 return (data.diffWinrate < 0 ? "+" : "-")
-                    + String.format("%.2f", Math.abs(data.diffWinrate))
+                    + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.diffWinrate))
                     + (data.diffWinrate < 0 ? "↑" : "↓");
               case 4:
                 return (data.scoreMeanDiff < 0 ? "+" : "-")
-                    + String.format("%.2f", Math.abs(data.scoreMeanDiff))
+                    + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.scoreMeanDiff))
                     + (data.scoreMeanDiff < 0 ? "↑" : "↓");
               case 5:
-                return String.format("%.2f", 100 - data.winrate);
+                return String.format(Locale.ENGLISH, "%.2f", 100 - data.winrate);
               case 6:
                 if (data.previousPlayouts > 0) {
-                  return String.format("%.2f", 100 - (data.winrate - data.diffWinrate));
+                  return String.format(
+                      Locale.ENGLISH, "%.2f", 100 - (data.winrate - data.diffWinrate));
                 } else {
                   return "";
                 }
               case 7:
-                return String.format("%.2f", data.scoreMeanBoard);
+                return String.format(Locale.ENGLISH, "%.2f", data.scoreMeanBoard);
               case 8:
                 return Lizzie.frame.getPlayoutsString(data.previousPlayouts);
               case 9:
@@ -7735,22 +7766,22 @@ public class MoveListFrame extends JFrame {
                 return Board.convertCoordinatesToName(data.coords[0], data.coords[1]);
               case 3:
                 return (data.diffWinrate > 0 ? "+" : "-")
-                    + String.format("%.2f", Math.abs(data.diffWinrate))
+                    + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.diffWinrate))
                     + (data.diffWinrate > 0 ? "↑" : "↓");
               case 4:
                 return (data.scoreMeanDiff > 0 ? "+" : "-")
-                    + String.format("%.2f", Math.abs(data.scoreMeanDiff))
+                    + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.scoreMeanDiff))
                     + (data.scoreMeanDiff > 0 ? "↑" : "↓");
               case 5:
-                return String.format("%.2f", data.winrate);
+                return String.format(Locale.ENGLISH, "%.2f", data.winrate);
               case 6:
                 if (data.previousPlayouts > 0) {
-                  return String.format("%.2f", data.winrate - data.diffWinrate);
+                  return String.format(Locale.ENGLISH, "%.2f", data.winrate - data.diffWinrate);
                 } else {
                   return "";
                 }
               case 7:
-                return String.format("%.2f", data.scoreMeanBoard);
+                return String.format(Locale.ENGLISH, "%.2f", data.scoreMeanBoard);
               case 8:
                 return Lizzie.frame.getPlayoutsString(data.previousPlayouts);
               case 9:
@@ -7781,13 +7812,14 @@ public class MoveListFrame extends JFrame {
                 return Board.convertCoordinatesToName(data.coords[0], data.coords[1]);
               case 3:
                 return (data.diffWinrate < 0 ? "+" : "-")
-                    + String.format("%.2f", Math.abs(data.diffWinrate))
+                    + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.diffWinrate))
                     + (data.diffWinrate < 0 ? "↑" : "↓");
               case 4:
-                return String.format("%.2f", 100 - data.winrate);
+                return String.format(Locale.ENGLISH, "%.2f", 100 - data.winrate);
               case 5:
                 if (data.previousPlayouts > 0) {
-                  return String.format("%.2f", 100 - (data.winrate - data.diffWinrate));
+                  return String.format(
+                      Locale.ENGLISH, "%.2f", 100 - (data.winrate - data.diffWinrate));
                 } else {
                   return "";
                 }
@@ -7811,13 +7843,13 @@ public class MoveListFrame extends JFrame {
                 return Board.convertCoordinatesToName(data.coords[0], data.coords[1]);
               case 3:
                 return (data.diffWinrate > 0 ? "+" : "-")
-                    + String.format("%.2f", Math.abs(data.diffWinrate))
+                    + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.diffWinrate))
                     + (data.diffWinrate > 0 ? "↑" : "↓");
               case 4:
-                return String.format("%.2f", data.winrate);
+                return String.format(Locale.ENGLISH, "%.2f", data.winrate);
               case 5:
                 if (data.previousPlayouts > 0) {
-                  return String.format("%.2f", data.winrate - data.diffWinrate);
+                  return String.format(Locale.ENGLISH, "%.2f", data.winrate - data.diffWinrate);
                 } else {
                   return "";
                 }
@@ -8062,12 +8094,12 @@ public class MoveListFrame extends JFrame {
                 return Board.convertCoordinatesToName(data.coords[0], data.coords[1]);
               case 2:
                 return (data.diffWinrate < 0 ? "+" : "-")
-                    + String.format("%.2f", Math.abs(data.diffWinrate))
+                    + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.diffWinrate))
                     + (data.diffWinrate < 0 ? "↑" : "↓");
 
               case 3:
                 return (data.scoreMeanDiff < 0 ? "+" : "-")
-                    + String.format("%.2f", Math.abs(data.scoreMeanDiff))
+                    + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.scoreMeanDiff))
                     + (data.scoreMeanDiff < 0 ? "↑" : "↓");
               case 4:
                 return "-";
@@ -8082,11 +8114,11 @@ public class MoveListFrame extends JFrame {
                 return Board.convertCoordinatesToName(data.coords[0], data.coords[1]);
               case 2:
                 return (data.diffWinrate > 0 ? "+" : "-")
-                    + String.format("%.2f", Math.abs(data.diffWinrate))
+                    + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.diffWinrate))
                     + (data.diffWinrate > 0 ? "↑" : "↓");
               case 3:
                 return (data.scoreMeanDiff > 0 ? "+" : "-")
-                    + String.format("%.2f", Math.abs(data.scoreMeanDiff))
+                    + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.scoreMeanDiff))
                     + (data.scoreMeanDiff > 0 ? "↑" : "↓");
               case 4:
                 return String.format(
@@ -8106,7 +8138,7 @@ public class MoveListFrame extends JFrame {
                 return Board.convertCoordinatesToName(data.coords[0], data.coords[1]);
               case 2:
                 return (data.diffWinrate < 0 ? "+" : "-")
-                    + String.format("%.2f", Math.abs(data.diffWinrate))
+                    + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.diffWinrate))
                     + (data.diffWinrate < 0 ? "↑" : "↓");
               case 3:
                 return String.format(
@@ -8124,7 +8156,7 @@ public class MoveListFrame extends JFrame {
                 return Board.convertCoordinatesToName(data.coords[0], data.coords[1]);
               case 2:
                 return (data.diffWinrate > 0 ? "+" : "-")
-                    + String.format("%.2f", Math.abs(data.diffWinrate))
+                    + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.diffWinrate))
                     + (data.diffWinrate > 0 ? "↑" : "↓");
               case 3:
                 return String.format(
@@ -8353,11 +8385,11 @@ public class MoveListFrame extends JFrame {
                 return Board.convertCoordinatesToName(data.coords[0], data.coords[1]);
               case 2:
                 return (data.diffWinrate < 0 ? "+" : "-")
-                    + String.format("%.2f", Math.abs(data.diffWinrate))
+                    + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.diffWinrate))
                     + (data.diffWinrate < 0 ? "↑" : "↓");
               case 3:
                 return (data.scoreMeanDiff < 0 ? "+" : "-")
-                    + String.format("%.2f", Math.abs(data.scoreMeanDiff))
+                    + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.scoreMeanDiff))
                     + (data.scoreMeanDiff < 0 ? "↑" : "↓");
               case 4:
                 return "-";
@@ -8372,11 +8404,11 @@ public class MoveListFrame extends JFrame {
                 return Board.convertCoordinatesToName(data.coords[0], data.coords[1]);
               case 2:
                 return (data.diffWinrate > 0 ? "+" : "-")
-                    + String.format("%.2f", Math.abs(data.diffWinrate))
+                    + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.diffWinrate))
                     + (data.diffWinrate > 0 ? "↑" : "↓");
               case 3:
                 return (data.scoreMeanDiff > 0 ? "+" : "-")
-                    + String.format("%.2f", Math.abs(data.scoreMeanDiff))
+                    + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.scoreMeanDiff))
                     + (data.scoreMeanDiff > 0 ? "↑" : "↓");
               case 4:
                 return String.format(
@@ -8396,7 +8428,7 @@ public class MoveListFrame extends JFrame {
                 return Board.convertCoordinatesToName(data.coords[0], data.coords[1]);
               case 2:
                 return (data.diffWinrate < 0 ? "+" : "-")
-                    + String.format("%.2f", Math.abs(data.diffWinrate))
+                    + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.diffWinrate))
                     + (data.diffWinrate < 0 ? "↑" : "↓");
               case 3:
                 return String.format(
@@ -8414,7 +8446,7 @@ public class MoveListFrame extends JFrame {
                 return Board.convertCoordinatesToName(data.coords[0], data.coords[1]);
               case 2:
                 return (data.diffWinrate > 0 ? "+" : "-")
-                    + String.format("%.2f", Math.abs(data.diffWinrate))
+                    + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.diffWinrate))
                     + (data.diffWinrate > 0 ? "↑" : "↓");
               case 3:
                 return String.format(

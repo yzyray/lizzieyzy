@@ -558,6 +558,8 @@ public class Config {
   public int txtMoveRankMarkLastMove = 3;
   public int moveRankMarkLastMove = 1; // -1关闭 0全部
   public boolean disableMoveRankInOrigin = false;
+  public boolean logConsoleToFile = false;
+  public boolean logGtpToFile = false;
 
   private JSONObject loadAndMergeSaveBoardConfig(
       JSONObject defaultCfg, String fileName, boolean needValidation) throws IOException {
@@ -1211,6 +1213,8 @@ public class Config {
     txtMoveRankMarkLastMove = uiConfig.optInt("txt-move-rank-mark-last-move", 3);
     moveRankMarkLastMove = uiConfig.optInt("move-rank-mark-last-move", 1);
     disableMoveRankInOrigin = uiConfig.optBoolean("disable-move-rank-in-origin", false);
+    logConsoleToFile = uiConfig.optBoolean("log-console-to-file", false);
+    logGtpToFile = uiConfig.optBoolean("log-gtp-to-file", false);
     showScrollVariation = uiConfig.optBoolean("show-scroll-variation", true);
     ignoreOutOfWidth = uiConfig.optBoolean("ignore-out-of-width", false);
     enginePkPonder = uiConfig.optBoolean("engine-pk-ponder", false);
