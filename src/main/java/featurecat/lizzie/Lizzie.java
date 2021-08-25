@@ -42,7 +42,7 @@ public class Lizzie {
   public static Leelaz leelaz;
   public static Leelaz leelaz2;
   public static String lizzieVersion = "yzy2.4.2";
-  public static String checkVersion = "210812";
+  public static String checkVersion = "210825";
   public static boolean readMode = false;
   private static String[] mainArgs;
   public static EngineManager engineManager;
