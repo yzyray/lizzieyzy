@@ -1831,12 +1831,12 @@ public class ConfigDialog2 extends JDialog {
 
     JLabel lblLogGtpToFile =
         new JLabel(resourceBundle.getString("LizzieConfig.lblLogGtpToFile")); // ("记录GTP日志到文件");
-    lblLogGtpToFile.setBounds(608, 580, 105, 15);
+    lblLogGtpToFile.setBounds(608, 580, 205, 15);
     uiTab.add(lblLogGtpToFile);
 
     JLabel lblLogConsoleToFile =
         new JLabel(resourceBundle.getString("LizzieConfig.lblLogConsoleToFile")); // ("记录控制台日志到文件");
-    lblLogConsoleToFile.setBounds(608, 550, 131, 15);
+    lblLogConsoleToFile.setBounds(608, 550, 205, 15);
     uiTab.add(lblLogConsoleToFile);
 
     chkLogConsoleToFile = new JCheckBox();
