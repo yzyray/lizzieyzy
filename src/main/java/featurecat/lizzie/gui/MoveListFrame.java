@@ -301,7 +301,7 @@ public class MoveListFrame extends JFrame {
     dataModel = getTableModel();
     table = new JTable(dataModel);
 
-    winrateFont = new Font("Microsoft YaHei", Font.PLAIN, Math.max(Config.frameFontSize, 14));
+    winrateFont = new Font("Microsoft YaHei", Font.BOLD, Math.max(Config.frameFontSize, 14));
     headFont = new Font("Microsoft YaHei", Font.PLAIN, Math.max(Config.frameFontSize, 13));
 
     table.getTableHeader().setFont(headFont);
