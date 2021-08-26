@@ -41,7 +41,7 @@ public class ReadBoard {
   // private long startSyncTime = 0;
 
   public boolean isLoaded = false;
-  private int version = 819;
+  private int version = 826;
   private String engineCommand;
   public String currentEnginename = "";
   private int port = -1;
@@ -60,7 +60,7 @@ public class ReadBoard {
   private boolean isSyncing = false;
   // private long startTime;
   private boolean javaReadBoard = false;
-  private String javaReadBoardName = "readboard-1.3-shaded.jar";
+  private String javaReadBoardName = "readboard-1.4-shaded.jar";
   private boolean waitSocket = true;
 
   public ReadBoard(boolean usePipe, boolean isJavaReadBoard) throws Exception {
@@ -316,9 +316,19 @@ public class ReadBoard {
     //      if (Lizzie.frame.playerIsBlack && !Lizzie.board.getHistory().isBlacksTurn()) return;
     //      if (!Lizzie.frame.playerIsBlack && Lizzie.board.getHistory().isBlacksTurn()) return;
     //    }
+    if (line.startsWith("playpon")) {
+      String[] params = line.split(" ");
+      if (params.length == 2) {
+        if (params[1].startsWith("on")) {
+          Lizzie.config.readBoardPonder = true;
+        } else if (params[1].startsWith("off")) {
+          Lizzie.config.readBoardPonder = false;
+        }
+      }
+    }
     if (line.startsWith("re=")) {
       String[] params = line.substring(3).split(",");
-      if (params.length == Lizzie.board.boardWidth) {
+      if (params.length == Board.boardWidth) {
         for (int i = 0; i < params.length; i++)
           tempcount.add(Integer.parseInt(params[i].substring(0, 1)));
       }
@@ -832,6 +842,7 @@ public class ReadBoard {
 
   public void sendLossFocus() {
     // TODO Auto-generated method stub
+    if (!Lizzie.config.readBoardGetFocus) return;
     sendCommand("loss");
   }
 

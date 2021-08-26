@@ -3648,6 +3648,18 @@ public class Menu extends JMenuBar {
         });
     readBoardSettings.add(alwaysKeepBoardStatSync);
 
+    final JFontCheckBoxMenuItem readBoardGetFocus =
+        new JFontCheckBoxMenuItem(
+            resourceBundle.getString("Menu.readBoardGetFocus")); // 滚轮控制变化图时自动获取焦点
+    readBoardGetFocus.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.config.readBoardGetFocus = !Lizzie.config.readBoardGetFocus;
+            Lizzie.config.uiConfig.put("read-board-get-focus", Lizzie.config.readBoardGetFocus);
+          }
+        });
+    readBoardSettings.add(readBoardGetFocus);
+
     live.addMenuListener(
         new MenuListener() {
 
@@ -3656,11 +3668,10 @@ public class Menu extends JMenuBar {
             else EnableEnterYikeGame.setState(false);
             if (Lizzie.config.alwaysGotoLastOnLive) alwaysGoToLastMove.setState(true);
             else alwaysGoToLastMove.setState(false);
-            if (Lizzie.config.alwaysSyncBoardStat) {
-              alwaysKeepBoardStatSync.setState(true);
-            } else {
-              alwaysKeepBoardStatSync.setState(false);
-            }
+            if (Lizzie.config.alwaysSyncBoardStat) alwaysKeepBoardStatSync.setState(true);
+            else alwaysKeepBoardStatSync.setState(false);
+            if (Lizzie.config.readBoardGetFocus) readBoardGetFocus.setState(true);
+            else readBoardGetFocus.setState(false);
           }
 
           @Override

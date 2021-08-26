@@ -5,7 +5,6 @@ import featurecat.lizzie.gui.EngineData;
 import featurecat.lizzie.gui.EngineFailedMessage;
 import featurecat.lizzie.gui.LizzieFrame;
 import featurecat.lizzie.gui.Message;
-import featurecat.lizzie.gui.SMessage;
 import featurecat.lizzie.rules.Board;
 import featurecat.lizzie.rules.BoardData;
 import featurecat.lizzie.rules.Stone;
@@ -1592,19 +1591,18 @@ public class Leelaz {
             playMove = this.randomBestmove(bestMoves, Lizzie.config.anaGameRandomWinrateDiff, true);
           else playMove = bestMoves.get(0);
 
-          int coords[] = Lizzie.board.convertNameToCoordinates(playMove.coordinate);
+          int coords[] = Board.convertNameToCoordinates(playMove.coordinate);
           Lizzie.board.place(coords[0], coords[1]);
           if ((Lizzie.board.getData().blackToPlay
-                  && Lizzie.frame.toolbar.chkAutoPlayBlack.isSelected())
+                  && LizzieFrame.toolbar.chkAutoPlayBlack.isSelected())
               || (!Lizzie.board.getData().blackToPlay
-                  && Lizzie.frame.toolbar.chkAutoPlayWhite.isSelected())) {
+                  && LizzieFrame.toolbar.chkAutoPlayWhite.isSelected())) {
             Lizzie.board.place(coords[0], coords[1]);
           }
-          if (!Lizzie.config.playponder && !Lizzie.frame.syncBoard) {
-            if (!(Lizzie.frame.toolbar.chkAutoPlayWhite.isSelected()
-                && Lizzie.frame.toolbar.chkAutoPlayBlack.isSelected())) {
-              nameCmd();
-            }
+          if (Lizzie.frame.bothSync) {
+            if (!Lizzie.config.readBoardPonder) nameCmd();
+          } else if (!Lizzie.config.playponder) {
+            nameCmd();
           }
         }
       }
@@ -1982,8 +1980,9 @@ public class Leelaz {
     if (isZen) {
       if (line.startsWith("info") && isLoaded) {
         isLoaded = false;
-        SMessage msg = new SMessage();
-        msg.setMessage(Lizzie.resourceBundle.getString("Leelaz.updateZenGtp"), 2);
+        Utils.showHtmlMessage(
+            resourceBundle.getString("Message.title"),
+            Lizzie.resourceBundle.getString("Leelaz.updateZenGtp"));
         shutdown();
       }
     }

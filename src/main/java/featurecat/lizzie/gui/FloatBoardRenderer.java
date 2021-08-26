@@ -1491,8 +1491,7 @@ public class FloatBoardRenderer {
    */
   private void drawLeelazSuggestions(Graphics2D g) {
     //  g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
-    int minAlpha = 20;
-    int minAlphaP = 32;
+    int minAlpha = 32;
     // float winrateHueFactor = 0.9f;
     float alphaFactor = 5.0f;
     float redHue = Color.RGBtoHSB(2, 0, 0, null)[0];
@@ -1564,7 +1563,7 @@ public class FloatBoardRenderer {
           float saturation = 1.0f;
           float brightness = 0.85f;
           float alpha =
-              minAlphaP + (maxAlpha - minAlphaP) * max(0, (float) log(percent) / alphaFactor + 1);
+              minAlpha + (maxAlpha - minAlpha) * max(0, (float) log(percent) / alphaFactor + 1);
 
           Color hsbColor = Color.getHSBColor(hue, saturation, brightness);
           Color color =
@@ -1656,7 +1655,7 @@ public class FloatBoardRenderer {
           float saturation = 1.0f;
           float brightness = 0.85f;
           float alpha =
-              minAlphaP + (maxAlpha - minAlphaP) * max(0, (float) log(percent) / alphaFactor + 1);
+              minAlpha + (maxAlpha - minAlpha) * max(0, (float) log(percent) / alphaFactor + 1);
 
           Color hsbColor = Color.getHSBColor(hue, saturation, brightness);
           Color color =
@@ -1746,13 +1745,9 @@ public class FloatBoardRenderer {
           float saturation = 1.0f;
           float brightness = 0.85f;
           float alpha;
-          if (percentPlayouts < 0.05 && !isBestMove)
-            alpha =
-                minAlpha
-                    + (maxAlpha - minAlpha)
-                        * max(0, (float) log(percentPlayouts) / alphaFactor + 1);
-          else
-            alpha = 32 + (maxAlpha - 32) * max(0, (float) log(percentPlayouts) / alphaFactor + 1);
+          alpha =
+              minAlpha
+                  + (maxAlpha - minAlpha) * max(0, (float) log(percentPlayouts) / alphaFactor + 1);
 
           Color hsbColor = Color.getHSBColor(hue, saturation, brightness);
           Color color =
@@ -1775,31 +1770,42 @@ public class FloatBoardRenderer {
           }
           if (!branchOpt.isPresent()) {
             {
-              if (isFancyBoard) {
-                g.setPaint(paint);
-                Composite comp = g.getComposite();
-                fillCircle(g, suggestionX, suggestionY, stoneRadius);
-                g.setComposite(comp);
-              } else {
-                g.setColor(noFancyColor);
-                Composite comp = g.getComposite();
-                fillCircle(g, suggestionX, suggestionY, stoneRadius);
-                g.setComposite(comp);
-              }
-              g.setColor(Color.GRAY);
-              if (lackOfPlayouts)
-                drawCircleMin(g, suggestionX, suggestionY, stoneRadius + 1, 26.5f);
-              else drawCircle(g, suggestionX, suggestionY, stoneRadius + 1, 26.5f);
-              g.setColor(color);
-              if (isBestMove) fillCircleBest(g, suggestionX, suggestionY, stoneRadius);
-              else fillCircle(g, suggestionX, suggestionY, stoneRadius);
-              if (isBestMove) {
-                if (Lizzie.config.showBlueRing) {
-                  g.setColor(Color.BLUE.brighter());
-                  drawCircleBest(g, suggestionX, suggestionY, stoneRadius + 1, 15f);
+              if (!hasBackground) {
+                if (isFancyBoard) {
+                  g.setPaint(paint);
+                  Composite comp = g.getComposite();
+                  g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC, 0.8f));
+                  fillCircle(g, suggestionX, suggestionY, stoneRadius + 1);
+                  g.setComposite(comp);
                 } else {
-                  g.setColor(Color.GRAY);
-                  drawCircle(g, suggestionX, suggestionY, stoneRadius + 1, 26.5f);
+                  g.setColor(noFancyColor);
+                  Composite comp = g.getComposite();
+                  g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC, 0.8f));
+                  fillCircle(g, suggestionX, suggestionY, stoneRadius + 1);
+                  g.setComposite(comp);
+                }
+                if (isBestMove) {
+                  g.setColor(color);
+                  fillCircleBest(g, suggestionX, suggestionY, stoneRadius);
+                  if (Lizzie.config.showBlueRing) {
+                    g.setColor(Color.BLUE.brighter());
+                    drawCircleBest(g, suggestionX, suggestionY, stoneRadius + 1, 15f);
+                  } else {
+                    g.setColor(Color.GRAY);
+                    drawCircle(g, suggestionX, suggestionY, stoneRadius + 1, 26.5f);
+                  }
+                } else {
+                  g.setColor(color);
+                  if (percentPlayouts >= 0.05) {
+                    fillCircle(g, suggestionX, suggestionY, stoneRadius);
+                    g.setColor(Color.GRAY);
+                    drawCircle(g, suggestionX, suggestionY, stoneRadius + 1, 26.5f);
+                  } else {
+                    fillCircle(g, suggestionX, suggestionY, stoneRadius + 1);
+                    g.setColor(
+                        new Color(128, 128, 128, 255 * (int) Math.pow(percentPlayouts, 1 / 3D)));
+                    drawCircle(g, suggestionX, suggestionY, stoneRadius + 1, 26.5f);
+                  }
                 }
               }
             }
@@ -2310,7 +2316,7 @@ public class FloatBoardRenderer {
     BufferedImage newUnImportantSugg = new BufferedImage(boardWidth, boardHeight, TYPE_INT_ARGB);
     Graphics2D g = newUnImportantSugg.createGraphics();
     g.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
-    int minAlpha = 20;
+    int minAlpha = 32;
     // float winrateHueFactor = 0.9f;
     float alphaFactor = 5.0f;
     float redHue = Color.RGBtoHSB(2, 0, 0, null)[0];
@@ -2367,33 +2373,29 @@ public class FloatBoardRenderer {
           float saturation = 1.0f;
           float brightness = 0.85f;
           float alpha;
-          if (percentPlayouts < 0.05)
-            alpha =
-                minAlpha
-                    + (maxAlpha - minAlpha)
-                        * max(0, (float) log(percentPlayouts) / alphaFactor + 1);
-          else
-            alpha = 32 + (maxAlpha - 32) * max(0, (float) log(percentPlayouts) / alphaFactor + 1);
+          alpha =
+              minAlpha
+                  + (maxAlpha - minAlpha) * max(0, (float) log(percentPlayouts) / alphaFactor + 1);
 
           Color hsbColor = Color.getHSBColor(hue, saturation, brightness);
           Color color =
               new Color(hsbColor.getRed(), hsbColor.getGreen(), hsbColor.getBlue(), (int) alpha);
           if (!branchOpt.isPresent()) {
-            g.setColor(new Color(155, 155, 155));
-            drawCircleMin(g, suggestionX, suggestionY, stoneRadius + 1, 28.5f);
             if (isFancyBoard) {
               g.setPaint(paint);
               Composite comp = g.getComposite();
-              fillCircle(g, suggestionX, suggestionY, stoneRadius);
+              g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC, 0.8f));
+              fillCircle(g, suggestionX, suggestionY, stoneRadius + 1);
               g.setComposite(comp);
             } else {
               g.setColor(noFancyColor);
               Composite comp = g.getComposite();
-              fillCircle(g, suggestionX, suggestionY, stoneRadius);
+              g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC, 0.8f));
+              fillCircle(g, suggestionX, suggestionY, stoneRadius + 1);
               g.setComposite(comp);
             }
             g.setColor(color);
-            fillCircle(g, suggestionX, suggestionY, stoneRadius);
+            fillCircle(g, suggestionX, suggestionY, stoneRadius + 1);
           }
         }
       }

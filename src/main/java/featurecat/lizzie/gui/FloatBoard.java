@@ -38,10 +38,10 @@ public class FloatBoard extends JDialog {
   private static final long serialVersionUID = 1L;
 
   //  private boolean isLocked;
-  public static boolean isMouseOver = false;
+  private boolean isMouseOver = false;
   private boolean isReplayVariation = false;
   // private JButton lockUnlock;
-  public int[] mouseOverCoordinate = Lizzie.frame.outOfBoundCoordinate;
+  public int[] mouseOverCoordinate = LizzieFrame.outOfBoundCoordinate;
   public Optional<List<String>> variationOpt;
   private int curSuggestionMoveOrderByNumber = -1;
   public int selectCoordsX1;
@@ -366,7 +366,6 @@ public class FloatBoard extends JDialog {
                     }
                   }
                 if (isCurMouseOver) {
-                  if (!isMouseOver) Lizzie.frame.readBoard.sendLossFocus();
                   clearMoved();
                   needRepaint = true;
                   isMouseOver = true;
@@ -403,6 +402,7 @@ public class FloatBoard extends JDialog {
   }
 
   private void doBranch(int moveTo) {
+    Lizzie.frame.readBoard.sendLossFocus();
     if (moveTo > 0) {
       if (boardRenderer.isShowingNormalBoard()) {
         setDisplayedBranchLength(2);

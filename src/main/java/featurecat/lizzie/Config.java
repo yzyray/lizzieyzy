@@ -560,6 +560,8 @@ public class Config {
   public boolean disableMoveRankInOrigin = false;
   public boolean logConsoleToFile = false;
   public boolean logGtpToFile = false;
+  public boolean readBoardPonder = false;
+  public boolean readBoardGetFocus = true;
 
   private JSONObject loadAndMergeSaveBoardConfig(
       JSONObject defaultCfg, String fileName, boolean needValidation) throws IOException {
@@ -1215,6 +1217,7 @@ public class Config {
     disableMoveRankInOrigin = uiConfig.optBoolean("disable-move-rank-in-origin", false);
     logConsoleToFile = uiConfig.optBoolean("log-console-to-file", false);
     logGtpToFile = uiConfig.optBoolean("log-gtp-to-file", false);
+    readBoardGetFocus = uiConfig.optBoolean("read-board-get-focus", true);
     showScrollVariation = uiConfig.optBoolean("show-scroll-variation", true);
     ignoreOutOfWidth = uiConfig.optBoolean("ignore-out-of-width", false);
     enginePkPonder = uiConfig.optBoolean("engine-pk-ponder", false);

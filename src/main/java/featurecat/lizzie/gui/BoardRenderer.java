@@ -218,9 +218,9 @@ public class BoardRenderer {
         // timer.lap("movenumbers");
         if (Lizzie.config.showBestMovesNow()) {
           if ((Lizzie.board.getHistory().isBlacksTurn()
-                  && Lizzie.frame.toolbar.chkShowBlack.isSelected())
+                  && LizzieFrame.toolbar.chkShowBlack.isSelected())
               || (!Lizzie.board.getHistory().isBlacksTurn()
-                  && Lizzie.frame.toolbar.chkShowWhite.isSelected())) {
+                  && LizzieFrame.toolbar.chkShowWhite.isSelected())) {
             if (!Lizzie.frame.isShowingHeatmap && !Lizzie.frame.isShowingPolicy) {
               drawUnimportantSuggCount = drawUnimportantSuggCount + 1;
               if (drawUnimportantSuggCount > 100 / getInterval()) {
@@ -1928,8 +1928,7 @@ public class BoardRenderer {
    */
   private void drawLeelazSuggestions(Graphics2D g) {
     //  g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
-    int minAlpha = 20;
-    int minAlphaP = 32;
+    int minAlpha = 32;
     // float winrateHueFactor = 0.9f;
     float alphaFactor = 5.0f;
     float redHue = Color.RGBtoHSB(2, 0, 0, null)[0];
@@ -2002,7 +2001,7 @@ public class BoardRenderer {
           float saturation = 1.0f;
           float brightness = 0.85f;
           float alpha =
-              minAlphaP + (maxAlpha - minAlphaP) * max(0, (float) log(percent) / alphaFactor + 1);
+              minAlpha + (maxAlpha - minAlpha) * max(0, (float) log(percent) / alphaFactor + 1);
 
           Color hsbColor = Color.getHSBColor(hue, saturation, brightness);
           Color color =
@@ -2010,7 +2009,7 @@ public class BoardRenderer {
           if (!branchOpt.isPresent()) {
             if (!leelaz.iskataHeatmapShowOwner || !leelaz.isKatago) {
               drawShadiwCache2();
-              drawShadow2(g, suggestionX, suggestionY, alpha / 255.0f);
+              drawShadow2(g, suggestionX, suggestionY);
               g.setColor(color);
               fillCircle(g, suggestionX, suggestionY, stoneRadius);
             }
@@ -2094,14 +2093,14 @@ public class BoardRenderer {
           float saturation = 1.0f;
           float brightness = 0.85f;
           float alpha =
-              minAlphaP + (maxAlpha - minAlphaP) * max(0, (float) log(percent) / alphaFactor + 1);
+              minAlpha + (maxAlpha - minAlpha) * max(0, (float) log(percent) / alphaFactor + 1);
 
           Color hsbColor = Color.getHSBColor(hue, saturation, brightness);
           Color color =
               new Color(hsbColor.getRed(), hsbColor.getGreen(), hsbColor.getBlue(), (int) alpha);
           if (!branchOpt.isPresent()) {
             drawShadiwCache2();
-            drawShadow2(g, suggestionX, suggestionY, alpha / 255.0f);
+            drawShadow2(g, suggestionX, suggestionY);
             g.setColor(color);
             fillCircle(g, suggestionX, suggestionY, stoneRadius);
 
@@ -2213,13 +2212,9 @@ public class BoardRenderer {
           float saturation = 1.0f;
           float brightness = 0.85f;
           float alpha;
-          if (percentPlayouts < 0.05 && !isBestMove)
-            alpha =
-                minAlpha
-                    + (maxAlpha - minAlpha)
-                        * max(0, (float) log(percentPlayouts) / alphaFactor + 1);
-          else
-            alpha = 32 + (maxAlpha - 32) * max(0, (float) log(percentPlayouts) / alphaFactor + 1);
+          alpha =
+              minAlpha
+                  + (maxAlpha - minAlpha) * max(0, (float) log(percentPlayouts) / alphaFactor + 1);
 
           Color hsbColor = Color.getHSBColor(hue, saturation, brightness);
           Color color =
@@ -2267,51 +2262,59 @@ public class BoardRenderer {
                   blackToPlay);
             }
           }
-          boolean needSkipNumbers = (outOfOrder || lackOfPlayouts) && !isMouseOver && !needShow;
+          boolean needSkipNumbers =
+              (outOfOrder || lackOfPlayouts) && !isMouseOver && !isBestMove && !needShow;
           if (!branchOpt.isPresent()) {
             if (shouldShowPreviousBestMoves()
                 && (Lizzie.board.getStones()[Board.getIndex(coords[0], coords[1])].isBlack()
                     || Lizzie.board.getStones()[Board.getIndex(coords[0], coords[1])].isWhite())) {
 
             } else {
-              if (!needSkipNumbers) {
+              if (!hasBackground) {
                 if (isFancyBoard) {
                   g.setPaint(paint);
                   Composite comp = g.getComposite();
                   if (percentPlayouts < 0.05 && !isMouseOver && !needShow) {
                     g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 0.8f));
                   }
-                  fillCircle(g, suggestionX, suggestionY, stoneRadius);
+                  fillCircle(g, suggestionX, suggestionY, stoneRadius + 1);
                   g.setComposite(comp);
                 } else {
                   g.setColor(noFancyColor);
                   Composite comp = g.getComposite();
-                  if (fraction < 0.05)
+                  if (percentPlayouts < 0.05)
                     g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 0.8f));
-                  fillCircle(g, suggestionX, suggestionY, stoneRadius);
+                  fillCircle(g, suggestionX, suggestionY, stoneRadius + 1);
                   g.setComposite(comp);
                 }
-                g.setColor(Color.GRAY);
-                if (percentPlayouts <= Lizzie.config.minPlayoutRatioForStats)
-                  drawCircleMin(g, suggestionX, suggestionY, stoneRadius + 1, 26.5f);
-                else drawCircle(g, suggestionX, suggestionY, stoneRadius + 1, 26.5f);
-              } else {
-                g.setColor(new Color(155, 155, 155));
-                drawCircleMin(g, suggestionX, suggestionY, stoneRadius + 1, 28.5f);
-              }
-              g.setColor(color);
-              if (isBestMove && Lizzie.config.showBlueRing)
-                fillCircleBest(g, suggestionX, suggestionY, stoneRadius);
-              else fillCircle(g, suggestionX, suggestionY, stoneRadius);
-              if (isBestMove) {
-                if (Lizzie.config.showBlueRing) {
-                  g.setColor(color.BLUE.brighter());
-                  drawCircleBest(g, suggestionX, suggestionY, stoneRadius + 1, 15f);
+                if (isBestMove) {
+                  g.setColor(color);
+                  fillCircleBest(g, suggestionX, suggestionY, stoneRadius);
+                  if (Lizzie.config.showBlueRing) {
+                    g.setColor(Color.BLUE.brighter());
+                    drawCircleBest(g, suggestionX, suggestionY, stoneRadius + 1, 15f);
+                  } else {
+                    g.setColor(Color.GRAY);
+                    drawCircle(g, suggestionX, suggestionY, stoneRadius + 1, 26.5f);
+                  }
                 } else {
-                  g.setColor(color.GRAY);
-                  drawCircle(g, suggestionX, suggestionY, stoneRadius + 1, 26.5f);
+                  g.setColor(color);
+                  if (percentPlayouts >= 0.05) {
+                    fillCircle(g, suggestionX, suggestionY, stoneRadius);
+                    g.setColor(Color.GRAY);
+                    drawCircle(g, suggestionX, suggestionY, stoneRadius + 1, 26.5f);
+                  } else {
+                    fillCircle(g, suggestionX, suggestionY, stoneRadius + 1);
+                    g.setColor(
+                        new Color(128, 128, 128, 255 * (int) Math.pow(percentPlayouts, 1 / 3D)));
+                    drawCircle(g, suggestionX, suggestionY, stoneRadius + 1, 26.5f);
+                  }
                 }
               }
+              //              else if(!hasBackground){
+              //            	  g.setColor(color);
+              //                  fillCircle(g, suggestionX, suggestionY, stoneRadius+1);
+              //            	  }
             }
           }
           if (needSkipNumbers) {
@@ -2818,12 +2821,12 @@ public class BoardRenderer {
     if (!unImportantCleared) {
       unImportantSugg = new BufferedImage(boardWidth, boardHeight, TYPE_INT_ARGB);
       unImportantCleared = true;
-      drawUnimportantSuggCount = 100;
     }
     nextMoveX = -2;
     nextMoveY = -2;
     isMouseOverNextBlunder = false;
-    hasDrawBackground = new boolean[Lizzie.board.boardHeight * Lizzie.board.boardWidth];
+    drawUnimportantSuggCount = 101;
+    hasDrawBackground = new boolean[Board.boardHeight * Board.boardWidth];
     clearBranch();
   }
 
@@ -2831,7 +2834,7 @@ public class BoardRenderer {
     BufferedImage newUnImportantSugg = new BufferedImage(boardWidth, boardHeight, TYPE_INT_ARGB);
     Graphics2D g = newUnImportantSugg.createGraphics();
     g.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
-    int minAlpha = 20;
+    int minAlpha = 32;
     float alphaFactor = 5.0f;
     float redHue = Color.RGBtoHSB(2, 0, 0, null)[0];
     float greenHue = Color.RGBtoHSB(0, 255, 0, null)[0];
@@ -2866,7 +2869,7 @@ public class BoardRenderer {
               Lizzie.config.limitMaxSuggestion > 0
                   && move.order + 1 > Lizzie.config.limitMaxSuggestion
                   && !move.lastTimeUnlimited;
-          if (!outOfOrder && move.order < 25) {
+          if (!outOfOrder && move.order < 20) {
             hasDrawBackground[Board.getIndex(coords[0], coords[1])] = false;
             continue;
           }
@@ -2920,22 +2923,32 @@ public class BoardRenderer {
           float saturation = 1.0f;
           float brightness = 0.85f;
           float alpha;
-          if (percentPlayouts < 0.05)
-            alpha =
-                minAlpha
-                    + (maxAlpha - minAlpha)
-                        * max(0, (float) log(percentPlayouts) / alphaFactor + 1);
-          else
-            alpha = 32 + (maxAlpha - 32) * max(0, (float) log(percentPlayouts) / alphaFactor + 1);
+          alpha =
+              minAlpha
+                  + (maxAlpha - minAlpha) * max(0, (float) log(percentPlayouts) / alphaFactor + 1);
 
           Color hsbColor = Color.getHSBColor(hue, saturation, brightness);
           Color color =
               new Color(hsbColor.getRed(), hsbColor.getGreen(), hsbColor.getBlue(), (int) alpha);
           if (!branchOpt.isPresent()) {
-            g.setColor(new Color(155, 155, 155));
-            drawCircleMin(g, suggestionX, suggestionY, stoneRadius + 1, 28.5f);
+            if (isFancyBoard) {
+              g.setPaint(paint);
+              Composite comp = g.getComposite();
+              if (percentPlayouts < 0.05) {
+                g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC, 0.8f));
+              }
+              fillCircle(g, suggestionX, suggestionY, stoneRadius + 1);
+              g.setComposite(comp);
+            } else {
+              g.setColor(noFancyColor);
+              Composite comp = g.getComposite();
+              if (percentPlayouts < 0.05)
+                g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC, 0.8f));
+              fillCircle(g, suggestionX, suggestionY, stoneRadius + 1);
+              g.setComposite(comp);
+            }
             g.setColor(color);
-            fillCircle(g, suggestionX, suggestionY, stoneRadius);
+            fillCircle(g, suggestionX, suggestionY, stoneRadius + 1);
           }
         }
       }
@@ -3499,7 +3512,7 @@ public class BoardRenderer {
     }
   }
 
-  private void drawShadow2(Graphics2D g1, int centerX, int centerY, float shadowStrength) {
+  private void drawShadow2(Graphics2D g1, int centerX, int centerY) {
     g1.drawImage(
         cachedGhostShadow2, centerX - cachedStoneCenter2, centerY - cachedStoneCenter2, null);
   }
@@ -3788,8 +3801,11 @@ public class BoardRenderer {
     g.drawOval(centerX - radius, centerY - radius, 2 * radius, 2 * radius);
   }
 
-  private void drawCircleMin(Graphics2D g, int centerX, int centerY, int radius, float f) {
+  private void drawCircleMin(
+      Graphics2D g, int centerX, int centerY, int radius, float f, int alpha) {
     g.setStroke(new BasicStroke(Math.min(radius / f, 0.5f)));
+    if (alpha > 30) alpha = 30;
+    g.setColor(new Color(0, 0, 0, alpha));
     g.drawOval(centerX - radius, centerY - radius, 2 * radius, 2 * radius);
   }
   //  private void drawCircle2(Graphics2D g, int centerX, int centerY, int radius) {
