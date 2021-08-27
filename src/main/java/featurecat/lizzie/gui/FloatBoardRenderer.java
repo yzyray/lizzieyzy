@@ -1786,26 +1786,23 @@ public class FloatBoardRenderer {
                 }
                 if (isBestMove) {
                   g.setColor(color);
-                  fillCircleBest(g, suggestionX, suggestionY, stoneRadius);
+                  fillCircle(g, suggestionX, suggestionY, stoneRadius + 1);
                   if (Lizzie.config.showBlueRing) {
                     g.setColor(Color.BLUE.brighter());
                     drawCircleBest(g, suggestionX, suggestionY, stoneRadius + 1, 15f);
                   } else {
-                    g.setColor(Color.GRAY);
+                    float alphaCircle =
+                        32 + (128 - 32) * max(0, (float) log(percentPlayouts) / alphaFactor + 1);
+                    g.setColor(new Color(0, 0, 0, (int) alphaCircle));
                     drawCircle(g, suggestionX, suggestionY, stoneRadius + 1, 26.5f);
                   }
                 } else {
                   g.setColor(color);
-                  if (percentPlayouts >= 0.05) {
-                    fillCircle(g, suggestionX, suggestionY, stoneRadius);
-                    g.setColor(Color.GRAY);
-                    drawCircle(g, suggestionX, suggestionY, stoneRadius + 1, 26.5f);
-                  } else {
-                    fillCircle(g, suggestionX, suggestionY, stoneRadius + 1);
-                    g.setColor(
-                        new Color(128, 128, 128, 255 * (int) Math.pow(percentPlayouts, 1 / 3D)));
-                    drawCircle(g, suggestionX, suggestionY, stoneRadius + 1, 26.5f);
-                  }
+                  fillCircle(g, suggestionX, suggestionY, stoneRadius + 1);
+                  float alphaCircle =
+                      32 + (128 - 32) * max(0, (float) log(percentPlayouts) / alphaFactor + 1);
+                  g.setColor(new Color(0, 0, 0, (int) alphaCircle));
+                  drawCircle(g, suggestionX, suggestionY, stoneRadius + 1, 26.5f);
                 }
               }
             }
@@ -2396,6 +2393,10 @@ public class FloatBoardRenderer {
             }
             g.setColor(color);
             fillCircle(g, suggestionX, suggestionY, stoneRadius + 1);
+            float alphaCircle =
+                32 + (200 - 32) * max(0, (float) log(percentPlayouts) / alphaFactor + 1);
+            g.setColor(new Color(0, 0, 0, Math.min(128, (int) alphaCircle)));
+            drawCircle(g, suggestionX, suggestionY, stoneRadius + 1, 26.5f);
           }
         }
       }
@@ -2694,9 +2695,9 @@ public class FloatBoardRenderer {
         2 * radius + 1 + (Lizzie.config.isScaled ? 2 : 0));
   }
 
-  private void fillCircleBest(Graphics2D g, int centerX, int centerY, int radius) {
-    g.fillOval(centerX - radius - 1, centerY - radius - 1, 2 * radius + 3, 2 * radius + 3);
-  }
+  //  private void fillCircleBest(Graphics2D g, int centerX, int centerY, int radius) {
+  //    g.fillOval(centerX - radius - 1, centerY - radius - 1, 2 * radius + 3, 2 * radius + 3);
+  //  }
 
   /** Draws the outline of a circle centered at (centerX, centerY) with radius $radius$ */
   private void drawCircle(Graphics2D g, int centerX, int centerY, int radius) {
