@@ -5280,6 +5280,26 @@ public class MoveListFrame extends JFrame {
         int playouts = isMainEngine ? node.getData().getPlayouts() : node.getData().getPlayouts2();
         switch (selectedIndex) {
           case 0:
+            if (playouts <= 0
+                && checkBlack.isSelected()
+                && !node.previous().get().previous().isPresent()) {
+              if (lastMatch && lastMatchBlack) {
+                g.setColor(new Color(0, 0, 255, 100));
+                int[] xPoints = {
+                  posx + ((movenum + 1) * width / numMoves),
+                  posx + ((movenum + 1) * width / numMoves),
+                  posx + ((movenum) * width / numMoves),
+                  posx + ((movenum) * width / numMoves)
+                };
+                int[] yPoints = {
+                  posy + height - (int) (convertWinrate(lastWr) * height / 100),
+                  origParams[3],
+                  origParams[3],
+                  posy + height - (int) (convertWinrate(50) * height / 100)
+                };
+                g.fillPolygon(xPoints, yPoints, 4);
+              }
+            }
             if (playouts > 0) {
               if (wr < 0) {
                 wr = 100 - lastWr;
@@ -5293,8 +5313,10 @@ public class MoveListFrame extends JFrame {
               if (lastOkMove > 0) {
                 if (node.getData().moveNumber <= Lizzie.config.matchAiLastMove
                     && (node.getData().moveNumber + 1) > Lizzie.config.matchAiFirstMove) {
+
                   if (nodeInfo.isMatchAi || lastMatch) {
                     int lostMoves = lastOkMove - movenum;
+
                     if (checkBlack.isSelected()
                         && ((nodeInfo.isBlack && nodeInfo.isMatchAi)
                             || (lastMatch && lastMatchBlack))) {
