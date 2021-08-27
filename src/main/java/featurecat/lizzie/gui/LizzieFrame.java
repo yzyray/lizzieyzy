@@ -6061,7 +6061,7 @@ public class LizzieFrame extends JFrame {
     if (!isInPlayMode()) {
       if (!Lizzie.engineManager.isEngineGame) {
         BoardHistoryNode node = Lizzie.board.getHistory().getCurrentHistoryNode();
-        if (node.nodeInfo.analyzed) {
+        if (node.nodeInfo.analyzedMatchValue) {
           if (node.nodeInfo.isBlack) {
             blackValue = blackValue + node.nodeInfo.percentsMatch;
             analyzedBlack = analyzedBlack + 1;
@@ -6073,7 +6073,7 @@ public class LizzieFrame extends JFrame {
         while (node.previous().isPresent()) {
           node = node.previous().get();
           NodeInfo nodeInfo = node.nodeInfo;
-          if (nodeInfo.analyzed) {
+          if (nodeInfo.analyzedMatchValue) {
             if (nodeInfo.isBlack) {
               blackValue = blackValue + nodeInfo.percentsMatch;
               analyzedBlack = analyzedBlack + 1;

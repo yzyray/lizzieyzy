@@ -3102,15 +3102,12 @@ public class Board {
     if (!node.previous().isPresent()) {
       return;
     }
-    if (Lizzie.frame.extraMode == 2) {
+    if (LizzieFrame.extraMode == 2) {
       updateMovelist2(node);
     }
     BoardHistoryNode previousNode = node.previous().get();
     int movenumer = node.getData().moveNumber;
-    int playouts = 0;
-    playouts = node.getData().getPlayouts();
-    // System.out.println(playouts);
-    if (playouts == 0) return;
+    int playouts = node.getData().getPlayouts();
     if ((playouts > previousNode.nodeInfo.playouts
             || node.previous().get().getData().getPlayouts()
                 > previousNode.nodeInfo.previousPlayouts
@@ -3123,7 +3120,7 @@ public class Board {
 
       double winrateDiff = lastWinrateDiff(node);
       Optional<int[]> passstep = Optional.empty();
-      if (Lizzie.board.isPkBoard) {
+      if (Lizzie.board.isPkBoard && playouts > 0) {
         if (node.isMainTrunk() && node.previous().get().isMainTrunk()) {
           if (node.getData().lastMove.isPresent()
               && previousNode.previous().isPresent()
@@ -3162,10 +3159,17 @@ public class Board {
           boolean isblack = !node.getData().blackToPlay;
           int previousplayouts = 0;
           previousplayouts = previousNode.getData().getPlayouts();
-          previousNode.nodeInfo.analyzed = previousNode.getData().getPlayouts() > 0;
+          previousNode.nodeInfo.analyzed = previousNode.getData().getPlayouts() > 0 && playouts > 0;
+          previousNode.nodeInfo.analyzedMatchValue = previousNode.getData().getPlayouts() > 0;
           previousNode.nodeInfo.isBest = isBest;
-          previousNode.nodeInfo.diffWinrate = winrateDiff;
-          previousNode.nodeInfo.winrate = 100 - node.getData().winrate;
+          if (previousNode.nodeInfo.analyzed) {
+            previousNode.nodeInfo.diffWinrate = winrateDiff;
+            if (node.getData().isKataData) {
+              previousNode.nodeInfo.scoreMeanDiff = lastScoreMeanDiff(node);
+              previousNode.nodeInfo.scoreMeanBoard = node.getData().scoreMeanBoard;
+            }
+            previousNode.nodeInfo.winrate = 100 - node.getData().winrate;
+          }
           previousNode.nodeInfo.coords = coords;
           previousNode.nodeInfo.isBlack = isblack;
           previousNode.nodeInfo.playouts = playouts;
@@ -3174,16 +3178,19 @@ public class Board {
           previousNode.nodeInfo.isMatchAi = isMatchAi;
           previousNode.nodeInfo.percentsMatch = percentsMatch;
           previousNode.nodeInfo.nextNode = node;
-          if (node.getData().isKataData) {
-            previousNode.nodeInfo.scoreMeanDiff = lastScoreMeanDiff(node);
-            previousNode.nodeInfo.scoreMeanBoard = node.getData().scoreMeanBoard;
-          }
-
           if (node.isMainTrunk() && node.previous().get().isMainTrunk()) {
-            previousNode.nodeInfoMain.analyzed = previousNode.getData().getPlayouts() > 0;
-            previousNode.nodeInfoMain.diffWinrate = winrateDiff;
+            previousNode.nodeInfoMain.analyzed =
+                previousNode.getData().getPlayouts() > 0 && playouts > 0;
+            previousNode.nodeInfoMain.analyzedMatchValue = previousNode.getData().getPlayouts() > 0;
+            if (previousNode.nodeInfoMain.analyzed) {
+              previousNode.nodeInfoMain.diffWinrate = winrateDiff;
+              if (node.getData().isKataData) {
+                previousNode.nodeInfoMain.scoreMeanDiff = lastScoreMeanDiff(node);
+                previousNode.nodeInfoMain.scoreMeanBoard = node.getData().scoreMeanBoard;
+              }
+              previousNode.nodeInfoMain.winrate = 100 - node.getData().winrate;
+            }
             previousNode.nodeInfoMain.isBest = isBest;
-            previousNode.nodeInfoMain.winrate = 100 - node.getData().winrate;
             previousNode.nodeInfoMain.coords = coords;
             previousNode.nodeInfoMain.isBlack = isblack;
             previousNode.nodeInfoMain.playouts = playouts;
@@ -3191,10 +3198,6 @@ public class Board {
             previousNode.nodeInfoMain.previousPlayouts = previousplayouts;
             previousNode.nodeInfoMain.isMatchAi = isMatchAi;
             previousNode.nodeInfoMain.percentsMatch = percentsMatch;
-            if (node.getData().isKataData) {
-              previousNode.nodeInfoMain.scoreMeanDiff = lastScoreMeanDiff(node);
-              previousNode.nodeInfoMain.scoreMeanBoard = node.getData().scoreMeanBoard;
-            }
           }
         }
       }
@@ -3212,7 +3215,6 @@ public class Board {
     int movenumer = node.getData().moveNumber;
     int playouts = 0;
     playouts = node.getData().getPlayouts2();
-    if (playouts == 0) return;
     if ((playouts > previousNode.nodeInfo2.playouts
             || node.previous().get().getData().getPlayouts2()
                 > previousNode.nodeInfo2.previousPlayouts

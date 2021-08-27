@@ -2,6 +2,7 @@ package featurecat.lizzie.rules;
 
 public class NodeInfo {
   public boolean analyzed;
+  public boolean analyzedMatchValue;
   public boolean changed;
   public boolean changed2;
   public int[] coords;

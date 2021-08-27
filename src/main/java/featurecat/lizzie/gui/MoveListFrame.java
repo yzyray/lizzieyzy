@@ -10,7 +10,6 @@ import featurecat.lizzie.analysis.EngineManager;
 import featurecat.lizzie.rules.Board;
 import featurecat.lizzie.rules.BoardHistoryNode;
 import featurecat.lizzie.rules.NodeInfo;
-import featurecat.lizzie.rules.Stone;
 import featurecat.lizzie.util.Utils;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -164,31 +163,37 @@ public class MoveListFrame extends JFrame {
 
   private double parse1BlackValue = 0;
   private int parse1BlackAnalyzed = 0;
+  private int parse1BlackMatchAnalyzed = 0;
   private double parse1BlackWinrateDiff = 0;
   private double parse1BlackScoreDiff = 0;
 
   private double parse2BlackValue = 0;
   private int parse2BlackAnalyzed = 0;
+  private int parse2BlackMatchAnalyzed = 0;
   private double parse2BlackWinrateDiff = 0;
   private double parse2BlackScoreDiff = 0;
 
   private double parse3BlackValue = 0;
   private int parse3BlackAnalyzed = 0;
+  private int parse3BlackMatchAnalyzed = 0;
   private double parse3BlackWinrateDiff = 0;
   private double parse3BlackScoreDiff = 0;
 
   private double parse1WhiteValue = 0;
   private int parse1WhiteAnalyzed = 0;
+  private int parse1WhiteMatchAnalyzed = 0;
   private double parse1WhiteWinrateDiff = 0;
   private double parse1WhiteScoreDiff = 0;
 
   private double parse2WhiteValue = 0;
   private int parse2WhiteAnalyzed = 0;
+  private int parse2WhiteMatchAnalyzed = 0;
   private double parse2WhiteWinrateDiff = 0;
   private double parse2WhiteScoreDiff = 0;
 
   private double parse3WhiteValue = 0;
   private int parse3WhiteAnalyzed = 0;
+  private int parse3WhiteMatchAnalyzed = 0;
   private double parse3WhiteWinrateDiff = 0;
   private double parse3WhiteScoreDiff = 0;
   boolean isMainEngine = true;
@@ -2086,17 +2091,18 @@ public class MoveListFrame extends JFrame {
 
   public void drawMin(Graphics2D g, int posx, int posy, int width, int height) {
     int blackMatch = 0;
-    int blackMoves = 0;
     int whiteMatch = 0;
-    int whiteMoves = 0;
     int all = 0;
     int analyzed = 0;
+    int analyzedMatch = 0;
     // double blackValue = 0;
     // double whiteValue = 0;
     double blackTrueValue = 0;
     double whiteTrueValue = 0;
     int analyzedBlack = 0;
     int analyzedWhite = 0;
+    int analyzedMatchBlack = 0;
+    int analyzedMatchWhite = 0;
 
     double winratediffBlack = 0;
     double winratediffWhite = 0;
@@ -2144,31 +2150,37 @@ public class MoveListFrame extends JFrame {
     if (selectedIndex == 4) {
       parse1BlackValue = 0;
       parse1BlackAnalyzed = 0;
+      parse1BlackMatchAnalyzed = 0;
       parse1BlackWinrateDiff = 0;
       parse1BlackScoreDiff = 0;
 
       parse2BlackValue = 0;
       parse2BlackAnalyzed = 0;
+      parse2BlackMatchAnalyzed = 0;
       parse2BlackWinrateDiff = 0;
       parse2BlackScoreDiff = 0;
 
       parse3BlackValue = 0;
       parse3BlackAnalyzed = 0;
+      parse3BlackMatchAnalyzed = 0;
       parse3BlackWinrateDiff = 0;
       parse3BlackScoreDiff = 0;
 
       parse1WhiteValue = 0;
       parse1WhiteAnalyzed = 0;
+      parse1WhiteMatchAnalyzed = 0;
       parse1WhiteWinrateDiff = 0;
       parse1WhiteScoreDiff = 0;
 
       parse2WhiteValue = 0;
       parse2WhiteAnalyzed = 0;
+      parse2WhiteMatchAnalyzed = 0;
       parse2WhiteWinrateDiff = 0;
       parse2WhiteScoreDiff = 0;
 
       parse3WhiteValue = 0;
       parse3WhiteAnalyzed = 0;
+      parse3WhiteMatchAnalyzed = 0;
       parse3WhiteWinrateDiff = 0;
       parse3WhiteScoreDiff = 0;
     }
@@ -2363,6 +2375,30 @@ public class MoveListFrame extends JFrame {
                   parse3WhiteScoreDiff += Math.abs(nodeInfo.getScoreMeanDiff());
               }
             }
+          } else if (nodeInfo.analyzedMatchValue) {
+            if (nodeInfo.isBlack) {
+              if (nodeInfo.moveNum <= Lizzie.config.openingEndMove) {
+                parse1BlackMatchAnalyzed++;
+                parse1BlackValue += nodeInfo.percentsMatch;
+              } else if (nodeInfo.moveNum <= Lizzie.config.middleEndMove) {
+                parse2BlackMatchAnalyzed++;
+                parse2BlackValue += nodeInfo.percentsMatch;
+              } else {
+                parse3BlackMatchAnalyzed++;
+                parse3BlackValue += nodeInfo.percentsMatch;
+              }
+            } else {
+              if (nodeInfo.moveNum <= Lizzie.config.openingEndMove) {
+                parse1WhiteMatchAnalyzed++;
+                parse1WhiteValue += nodeInfo.percentsMatch;
+              } else if (nodeInfo.moveNum <= Lizzie.config.middleEndMove) {
+                parse2WhiteMatchAnalyzed++;
+                parse2WhiteValue += nodeInfo.percentsMatch;
+              } else {
+                parse3WhiteMatchAnalyzed++;
+                parse3WhiteValue += nodeInfo.percentsMatch;
+              }
+            }
           }
         } else if (selectedIndex == 5) {
           if (nodeInfo.analyzed) {
@@ -2503,34 +2539,37 @@ public class MoveListFrame extends JFrame {
         } else {
           if (nodeInfo.analyzed) {
             if (nodeInfo.isBlack) {
-              //              blackValue =
-              //                  blackValue
-              //                      + Math.pow(
-              //                          nodeInfo.percentsMatch, (double) 1 /
-              // Lizzie.config.matchAiTemperature);
+              if (nodeInfo.isMatchAi) blackMatch = blackMatch + 1;
               blackTrueValue = blackTrueValue + nodeInfo.percentsMatch;
               if (nodeInfo.getWinrateDiff() < 0)
                 winratediffBlack = winratediffBlack + Math.abs(nodeInfo.getWinrateDiff());
               if (nodeInfo.getScoreMeanDiff() < 0)
                 scorediffBlack = scorediffBlack + Math.abs(nodeInfo.getScoreMeanDiff());
               analyzedBlack = analyzedBlack + 1;
+              analyzedMatchBlack++;
             } else {
+              if (nodeInfo.isMatchAi) whiteMatch = whiteMatch + 1;
               whiteTrueValue = whiteTrueValue + nodeInfo.percentsMatch;
               if (nodeInfo.getWinrateDiff() < 0)
                 winratediffWhite = winratediffWhite + Math.abs(nodeInfo.getWinrateDiff());
               if (nodeInfo.getScoreMeanDiff() < 0)
                 scorediffWhite = scorediffWhite + Math.abs(nodeInfo.getScoreMeanDiff());
               analyzedWhite = analyzedWhite + 1;
+              analyzedMatchWhite++;
             }
 
             analyzed = analyzed + 1;
+            analyzedMatch++;
+          } else if (nodeInfo.analyzedMatchValue) {
+            analyzedMatch++;
             if (nodeInfo.isBlack) {
-              blackMoves = blackMoves + 1;
               if (nodeInfo.isMatchAi) blackMatch = blackMatch + 1;
-            }
-            if (!nodeInfo.isBlack) {
-              whiteMoves = whiteMoves + 1;
+              blackTrueValue = blackTrueValue + nodeInfo.percentsMatch;
+              analyzedMatchBlack++;
+            } else {
               if (nodeInfo.isMatchAi) whiteMatch = whiteMatch + 1;
+              whiteTrueValue = whiteTrueValue + nodeInfo.percentsMatch;
+              analyzedMatchWhite++;
             }
           }
         }
@@ -2655,23 +2694,23 @@ public class MoveListFrame extends JFrame {
           String.format(
                   Locale.ENGLISH,
                   "%.1f",
-                  ((float) blackMatch / (blackMoves > 0 ? blackMoves : 1)) * 100)
+                  ((float) blackMatch / (analyzedMatchBlack > 0 ? analyzedMatchBlack : 1)) * 100)
               + "%";
       String percentWhite =
           String.format(
                   Locale.ENGLISH,
                   "%.1f",
-                  ((float) whiteMatch / (whiteMoves > 0 ? whiteMoves : 1)) * 100)
+                  ((float) whiteMatch / (analyzedMatchWhite > 0 ? analyzedMatchWhite : 1)) * 100)
               + "%";
       g.drawString(
           Lizzie.resourceBundle.getString("Movelistframe.blackMatch")
               + blackMatch
               + "/"
-              + blackMoves
+              + analyzedMatchBlack
               + " "
               + percentBlack
               + Lizzie.resourceBundle.getString("Movelistframe.AIscore")
-              + String.format(Locale.ENGLISH, "%.2f", blackTrueValue * 100 / analyzedBlack)
+              + String.format(Locale.ENGLISH, "%.2f", blackTrueValue * 100 / analyzedMatchBlack)
               + Lizzie.resourceBundle.getString("Movelistframe.avgDifference")
               + String.format(Locale.ENGLISH, "%.2f", winratediffBlack / analyzedBlack)
               + "%"
@@ -2683,11 +2722,11 @@ public class MoveListFrame extends JFrame {
           Lizzie.resourceBundle.getString("Movelistframe.whiteMatch")
               + whiteMatch
               + "/"
-              + whiteMoves
+              + analyzedMatchWhite
               + " "
               + percentWhite
               + Lizzie.resourceBundle.getString("Movelistframe.AIscore")
-              + String.format(Locale.ENGLISH, "%.2f", whiteTrueValue * 100 / analyzedWhite)
+              + String.format(Locale.ENGLISH, "%.2f", whiteTrueValue * 100 / analyzedMatchWhite)
               + Lizzie.resourceBundle.getString("Movelistframe.avgDifference")
               + String.format(Locale.ENGLISH, "%.2f", winratediffWhite / analyzedWhite)
               + "%"
@@ -2699,7 +2738,7 @@ public class MoveListFrame extends JFrame {
           Lizzie.resourceBundle.getString("Movelistframe.allmoves")
               + all
               + Lizzie.resourceBundle.getString("Movelistframe.analyzed")
-              + analyzed,
+              + analyzedMatch,
           491,
           15);
 
@@ -2755,7 +2794,7 @@ public class MoveListFrame extends JFrame {
     } else if (selectedIndex == 1) {
       g.drawString(
           Lizzie.resourceBundle.getString("Movelistframe.blackAIScore")
-              + String.format(Locale.ENGLISH, "%.2f", blackTrueValue * 100 / analyzedBlack),
+              + String.format(Locale.ENGLISH, "%.2f", blackTrueValue * 100 / analyzedMatchBlack),
           // + Lizzie.resourceBundle.getString("Movelistframe.accordingTo")
           //  + String.format(Locale.ENGLISH,"%.2f", blackTrueValue * 100 / analyzedBlack)
           //              + Lizzie.resourceBundle.getString("Movelistframe.matchTemperature")
@@ -2765,7 +2804,7 @@ public class MoveListFrame extends JFrame {
           15);
       g.drawString(
           Lizzie.resourceBundle.getString("Movelistframe.whiteAIScore")
-              + String.format(Locale.ENGLISH, "%.2f", whiteTrueValue * 100 / analyzedWhite),
+              + String.format(Locale.ENGLISH, "%.2f", whiteTrueValue * 100 / analyzedMatchWhite),
           //    + Lizzie.resourceBundle.getString("Movelistframe.accordingTo")
           //     + String.format(Locale.ENGLISH,"%.2f", whiteValue * 100 / analyzedWhite)
           //              + Lizzie.resourceBundle.getString("Movelistframe.matchTemperature")
@@ -2779,7 +2818,7 @@ public class MoveListFrame extends JFrame {
             Lizzie.resourceBundle.getString("Movelistframe.allmoves")
                 + all
                 + Lizzie.resourceBundle.getString("Movelistframe.analyzed")
-                + analyzed,
+                + analyzedMatch,
             160,
             15);
         g.setColor(Color.BLACK);
@@ -3210,7 +3249,7 @@ public class MoveListFrame extends JFrame {
               : (isMainEngine ? node.nodeInfo : node.nodeInfo2);
       if (node.getData().moveNumber <= Lizzie.config.matchAiLastMove
           && (node.getData().moveNumber + 1) > Lizzie.config.matchAiFirstMove) {
-        if (nodeInfo.analyzed) {
+        if (nodeInfo.analyzedMatchValue) {
           if (node.getData().blackToPlay) {
             blackValue = blackValue + nodeInfo.percentsMatch;
             //                    + Math.pow(
@@ -4651,25 +4690,27 @@ public class MoveListFrame extends JFrame {
 
     if (selectedIndex == 4) {
       double percentBlackParse1 =
-          parse1BlackAnalyzed > 0 ? parse1BlackValue / parse1BlackAnalyzed : 0;
+          parse1BlackAnalyzed > 0 ? parse1BlackValue / parse1BlackMatchAnalyzed : 0;
       double percentBlackParse2 =
-          parse2BlackAnalyzed > 0 ? parse2BlackValue / parse2BlackAnalyzed : 0;
+          parse2BlackAnalyzed > 0 ? parse2BlackValue / parse2BlackMatchAnalyzed : 0;
       double percentBlackParse3 =
-          parse3BlackAnalyzed > 0 ? parse3BlackValue / parse3BlackAnalyzed : 0;
-      int blackAllAnalyzed = parse1BlackAnalyzed + parse2BlackAnalyzed + parse3BlackAnalyzed;
+          parse3BlackAnalyzed > 0 ? parse3BlackValue / parse3BlackMatchAnalyzed : 0;
+      int blackAllAnalyzed =
+          parse1BlackMatchAnalyzed + parse2BlackMatchAnalyzed + parse3BlackMatchAnalyzed;
       double percentBlackAll =
           blackAllAnalyzed > 0
               ? (parse1BlackValue + parse2BlackValue + parse3BlackValue) / blackAllAnalyzed
               : 0;
 
       double percentWhiteParse1 =
-          parse1WhiteAnalyzed > 0 ? parse1WhiteValue / parse1WhiteAnalyzed : 0;
+          parse1WhiteAnalyzed > 0 ? parse1WhiteValue / parse1WhiteMatchAnalyzed : 0;
       double percentWhiteParse2 =
-          parse2WhiteAnalyzed > 0 ? parse2WhiteValue / parse2WhiteAnalyzed : 0;
+          parse2WhiteAnalyzed > 0 ? parse2WhiteValue / parse2WhiteMatchAnalyzed : 0;
       double percentWhiteParse3 =
-          parse3WhiteAnalyzed > 0 ? parse3WhiteValue / parse3WhiteAnalyzed : 0;
+          parse3WhiteAnalyzed > 0 ? parse3WhiteValue / parse3WhiteMatchAnalyzed : 0;
 
-      int whiteAllAnalyzed = parse1WhiteAnalyzed + parse2WhiteAnalyzed + parse3WhiteAnalyzed;
+      int whiteAllAnalyzed =
+          parse1WhiteMatchAnalyzed + parse2WhiteMatchAnalyzed + parse3WhiteMatchAnalyzed;
       double percentWhiteAll =
           whiteAllAnalyzed > 0
               ? (parse1WhiteValue + parse2WhiteValue + parse3WhiteValue) / whiteAllAnalyzed
@@ -5229,12 +5270,13 @@ public class MoveListFrame extends JFrame {
       for (int i = 0; i < BigMistakeList.size(); i++)
         drawOneBigMistakePoint(g, width, height, BigMistakeList.get(i), i, true);
     } else {
+      boolean lastMatch = false;
+      boolean lastMatchBlack = false;
       while (node.previous().isPresent()
           && (selectedIndex != 2 && selectedIndex != 3
               || ((selectedIndex == 2 || selectedIndex == 3)
                   && ((node.getData().moveNumber + 2) > Lizzie.config.matchAiFirstMove)))) {
         double wr = isMainEngine ? node.getData().winrate : node.getData().winrate2;
-        boolean firstOk = true;
         int playouts = isMainEngine ? node.getData().getPlayouts() : node.getData().getPlayouts2();
         switch (selectedIndex) {
           case 0:
@@ -5251,12 +5293,11 @@ public class MoveListFrame extends JFrame {
               if (lastOkMove > 0) {
                 if (node.getData().moveNumber <= Lizzie.config.matchAiLastMove
                     && (node.getData().moveNumber + 1) > Lizzie.config.matchAiFirstMove) {
-                  if (nodeInfo.isMatchAi) {
+                  if (nodeInfo.isMatchAi || lastMatch) {
                     int lostMoves = lastOkMove - movenum;
                     if (checkBlack.isSelected()
-                        && (!node.getData().lastMoveColor.equals(Stone.BLACK)
-                            || (node.getData().lastMoveColor.equals(Stone.BLACK)
-                                && nodeInfo.isMatchAi))) {
+                        && ((nodeInfo.isBlack && nodeInfo.isMatchAi)
+                            || (lastMatch && lastMatchBlack))) {
                       g.setColor(new Color(0, 0, 255, 100));
                       if (lostMoves == 1) {
                         int[] xPoints = {
@@ -5272,7 +5313,21 @@ public class MoveListFrame extends JFrame {
                           posy + height - (int) (convertWinrate(wr) * height / 100)
                         };
                         g.fillPolygon(xPoints, yPoints, 4);
-                      } else if (lostMoves > 1) {
+                      } else if (lostMoves == 2 && (nodeInfo.isBlack && nodeInfo.isMatchAi)) {
+                        int[] xPoints = {
+                          posx + ((movenum + 2) * width / numMoves),
+                          posx + ((movenum + 2) * width / numMoves),
+                          posx + (movenum * width / numMoves),
+                          posx + (movenum * width / numMoves)
+                        };
+                        int[] yPoints = {
+                          posy + height - (int) (convertWinrate(lastWr) * height / 100),
+                          origParams[3],
+                          origParams[3],
+                          posy + height - (int) (convertWinrate(wr) * height / 100)
+                        };
+                        g.fillPolygon(xPoints, yPoints, 4);
+                      } else if (lostMoves > 1 && (nodeInfo.isBlack && nodeInfo.isMatchAi)) {
                         int[] xPoints = {
                           posx + ((movenum + 1) * width / numMoves),
                           posx + ((movenum + 1) * width / numMoves),
@@ -5280,13 +5335,7 @@ public class MoveListFrame extends JFrame {
                           posx + (movenum * width / numMoves)
                         };
                         int[] yPoints = {
-                          posy
-                              + height
-                              - (int) (convertWinrate(lastWr) * height / 100)
-                              + ((int) (convertWinrate(lastWr) * height / 100)
-                                      - (int) (convertWinrate(wr) * height / 100))
-                                  * (lostMoves - 1)
-                                  / lostMoves,
+                          posy + height - (int) (convertWinrate(lastWr) * height / 100),
                           origParams[3],
                           origParams[3],
                           posy + height - (int) (convertWinrate(wr) * height / 100)
@@ -5295,9 +5344,8 @@ public class MoveListFrame extends JFrame {
                       }
                     }
                     if (checkWhite.isSelected()
-                        && (node.getData().lastMoveColor.equals(Stone.BLACK)
-                            || (!node.getData().lastMoveColor.equals(Stone.BLACK)
-                                && nodeInfo.isMatchAi))) {
+                        && ((!nodeInfo.isBlack && nodeInfo.isMatchAi)
+                            || (lastMatch && !lastMatchBlack))) {
                       g.setColor(new Color(0, 255, 0, 100));
                       if (lostMoves == 1) {
                         int[] xPoints = {
@@ -5313,78 +5361,10 @@ public class MoveListFrame extends JFrame {
                           posy + height - (int) (convertWinrate(wr) * height / 100)
                         };
                         g.fillPolygon(xPoints, yPoints, 4);
-                      } else if (lostMoves > 1) {
+                      } else if (lostMoves == 2 && (!nodeInfo.isBlack && nodeInfo.isMatchAi)) {
                         int[] xPoints = {
-                          posx + ((movenum + 1) * width / numMoves),
-                          posx + ((movenum + 1) * width / numMoves),
-                          posx + (movenum * width / numMoves),
-                          posx + (movenum * width / numMoves)
-                        };
-                        int[] yPoints = {
-                          posy
-                              + height
-                              - (int) (convertWinrate(lastWr) * height / 100)
-                              + ((int) (convertWinrate(lastWr) * height / 100)
-                                      - (int) (convertWinrate(wr) * height / 100))
-                                  * (lostMoves - 1)
-                                  / lostMoves,
-                          0,
-                          0,
-                          posy + height - (int) (convertWinrate(wr) * height / 100)
-                        };
-                        g.fillPolygon(xPoints, yPoints, 4);
-                      }
-                    }
-                  } else if (showBranch.getSelectedIndex() == 0
-                      ? node.previous().get().nodeInfoMain.isMatchAi
-                      : node.previous().get().nodeInfo.isMatchAi) {
-                    int lostMoves = lastOkMove - movenum;
-                    if (checkBlack.isSelected()
-                        && (node.getData().lastMoveColor.equals(Stone.BLACK))) {
-                      g.setColor(new Color(0, 0, 255, 100));
-                      if (lostMoves == 1) {
-                        int[] xPoints = {
-                          posx + ((movenum + 1) * width / numMoves),
-                          posx + ((movenum + 1) * width / numMoves),
-                          posx + (movenum * width / numMoves),
-                          posx + (movenum * width / numMoves)
-                        };
-                        int[] yPoints = {
-                          posy + height - (int) (convertWinrate(lastWr) * height / 100),
-                          origParams[3],
-                          origParams[3],
-                          posy + height - (int) (convertWinrate(wr) * height / 100)
-                        };
-                        g.fillPolygon(xPoints, yPoints, 4);
-                      } else if (lostMoves > 1) {
-                        int[] xPoints = {
-                          posx + ((movenum + 1) * width / numMoves),
-                          posx + ((movenum + 1) * width / numMoves),
-                          posx + (movenum * width / numMoves),
-                          posx + (movenum * width / numMoves)
-                        };
-                        int[] yPoints = {
-                          posy
-                              + height
-                              - (int) (convertWinrate(lastWr) * height / 100)
-                              + ((int) (convertWinrate(lastWr) * height / 100)
-                                      - (int) (convertWinrate(wr) * height / 100))
-                                  * (lostMoves - 1)
-                                  / lostMoves,
-                          origParams[3],
-                          origParams[3],
-                          posy + height - (int) (convertWinrate(wr) * height / 100)
-                        };
-                        g.fillPolygon(xPoints, yPoints, 4);
-                      }
-                    }
-                    if (checkWhite.isSelected()
-                        && (!node.getData().lastMoveColor.equals(Stone.BLACK))) {
-                      g.setColor(new Color(0, 255, 0, 100));
-                      if (lostMoves == 1) {
-                        int[] xPoints = {
-                          posx + ((movenum + 1) * width / numMoves),
-                          posx + ((movenum + 1) * width / numMoves),
+                          posx + ((movenum + 2) * width / numMoves),
+                          posx + ((movenum + 2) * width / numMoves),
                           posx + (movenum * width / numMoves),
                           posx + (movenum * width / numMoves)
                         };
@@ -5395,7 +5375,7 @@ public class MoveListFrame extends JFrame {
                           posy + height - (int) (convertWinrate(wr) * height / 100)
                         };
                         g.fillPolygon(xPoints, yPoints, 4);
-                      } else if (lostMoves > 1) {
+                      } else if (lostMoves > 2 && (!nodeInfo.isBlack && nodeInfo.isMatchAi)) {
                         int[] xPoints = {
                           posx + ((movenum + 1) * width / numMoves),
                           posx + ((movenum + 1) * width / numMoves),
@@ -5403,13 +5383,7 @@ public class MoveListFrame extends JFrame {
                           posx + (movenum * width / numMoves)
                         };
                         int[] yPoints = {
-                          posy
-                              + height
-                              - (int) (convertWinrate(lastWr) * height / 100)
-                              + ((int) (convertWinrate(lastWr) * height / 100)
-                                      - (int) (convertWinrate(wr) * height / 100))
-                                  * (lostMoves - 1)
-                                  / lostMoves,
+                          posy + height - (int) (convertWinrate(lastWr) * height / 100),
                           0,
                           0,
                           posy + height - (int) (convertWinrate(wr) * height / 100)
@@ -5455,189 +5429,9 @@ public class MoveListFrame extends JFrame {
                       posx + (movenum * width / numMoves),
                       posy + height - (int) (convertWinrate(wr) * height / 100));
                 }
-
-              } else if (firstOk) {
-                firstOk = false;
-                if (!lastNodeAnalyzed) {
-                  if (node.getData().moveNumber <= Lizzie.config.matchAiLastMove
-                      && (node.getData().moveNumber + 1) > Lizzie.config.matchAiFirstMove) {
-                    if (node.nodeInfo.isMatchAi) {
-
-                      int lostMoves = lastNodeMove - movenum;
-                      if (checkBlack.isSelected()
-                          && (!node.getData().lastMoveColor.equals(Stone.BLACK)
-                              || (node.getData().lastMoveColor.equals(Stone.BLACK)
-                                  && node.previous().get().nodeInfo.isMatchAi)
-                              || node.getData().moveNumber == 1)) {
-                        g.setColor(new Color(0, 0, 255, 100));
-                        if (lostMoves == 1) {
-                          int[] xPoints = {
-                            posx + ((movenum + 1) * width / numMoves),
-                            posx + ((movenum + 1) * width / numMoves),
-                            posx + (movenum * width / numMoves),
-                            posx + (movenum * width / numMoves)
-                          };
-                          int[] yPoints = {
-                            posy + height - (int) (convertWinrate(wr) * height / 100),
-                            origParams[3],
-                            origParams[3],
-                            posy + height - (int) (convertWinrate(wr) * height / 100)
-                          };
-                          g.fillPolygon(xPoints, yPoints, 4);
-                        } else if (lostMoves > 1) {
-                          int[] xPoints = {
-                            posx + ((movenum + 1) * width / numMoves),
-                            posx + ((movenum + 1) * width / numMoves),
-                            posx + (movenum * width / numMoves),
-                            posx + (movenum * width / numMoves)
-                          };
-                          int[] yPoints = {
-                            posy + height - (int) (convertWinrate(wr) * height / 100),
-                            origParams[3],
-                            origParams[3],
-                            posy + height - (int) (convertWinrate(wr) * height / 100)
-                          };
-                          g.fillPolygon(xPoints, yPoints, 4);
-                        }
-                      }
-                      if (checkWhite.isSelected()
-                          && (node.getData().lastMoveColor.equals(Stone.BLACK)
-                              || (!node.getData().lastMoveColor.equals(Stone.BLACK)
-                                  && node.previous().get().nodeInfo.isMatchAi))) {
-                        g.setColor(new Color(0, 255, 0, 100));
-                        if (lostMoves == 1) {
-                          int[] xPoints = {
-                            posx + ((movenum + 1) * width / numMoves),
-                            posx + ((movenum + 1) * width / numMoves),
-                            posx + (movenum * width / numMoves),
-                            posx + (movenum * width / numMoves)
-                          };
-                          int[] yPoints = {
-                            posy + height - (int) (convertWinrate(wr) * height / 100),
-                            0,
-                            0,
-                            posy + height - (int) (convertWinrate(wr) * height / 100)
-                          };
-                          g.fillPolygon(xPoints, yPoints, 4);
-                        } else if (lostMoves > 1) {
-                          int[] xPoints = {
-                            posx + ((movenum + 1) * width / numMoves),
-                            posx + ((movenum + 1) * width / numMoves),
-                            posx + (movenum * width / numMoves),
-                            posx + (movenum * width / numMoves)
-                          };
-                          int[] yPoints = {
-                            posy + height - (int) (convertWinrate(wr) * height / 100),
-                            0,
-                            0,
-                            posy + height - (int) (convertWinrate(wr) * height / 100)
-                          };
-                          g.fillPolygon(xPoints, yPoints, 4);
-                        }
-                      }
-                    } else if (node.previous().get().nodeInfo.isMatchAi) {
-                      int lostMoves = lastOkMove - movenum;
-                      if (checkBlack.isSelected()
-                          && (node.getData().lastMoveColor.equals(Stone.BLACK)
-                              || node.getData().moveNumber == 1)) {
-                        g.setColor(new Color(0, 0, 255, 120));
-                        if (lostMoves == 1) {
-                          int[] xPoints = {
-                            posx + ((movenum + 1) * width / numMoves),
-                            posx + ((movenum + 1) * width / numMoves),
-                            posx + (movenum * width / numMoves),
-                            posx + (movenum * width / numMoves)
-                          };
-                          int[] yPoints = {
-                            posy + height - (int) (convertWinrate(lastWr) * height / 100),
-                            origParams[3],
-                            origParams[3],
-                            posy + height - (int) (convertWinrate(wr) * height / 100)
-                          };
-                          g.fillPolygon(xPoints, yPoints, 4);
-                        } else if (lostMoves > 1) {
-                          int[] xPoints = {
-                            posx + ((movenum + 1) * width / numMoves),
-                            posx + ((movenum + 1) * width / numMoves),
-                            posx + (movenum * width / numMoves),
-                            posx + (movenum * width / numMoves)
-                          };
-                          int[] yPoints = {
-                            posy
-                                + height
-                                - (int) (convertWinrate(lastWr) * height / 100)
-                                + ((int) (convertWinrate(lastWr) * height / 100)
-                                        - (int) (convertWinrate(wr) * height / 100))
-                                    * (lostMoves - 1)
-                                    / lostMoves,
-                            origParams[3],
-                            origParams[3],
-                            posy + height - (int) (convertWinrate(wr) * height / 100)
-                          };
-                          g.fillPolygon(xPoints, yPoints, 4);
-                        }
-                      }
-                      if (checkWhite.isSelected()
-                          && (!node.getData().lastMoveColor.equals(Stone.BLACK))) {
-                        g.setColor(new Color(0, 255, 0, 120));
-                        if (lostMoves == 1) {
-                          int[] xPoints = {
-                            posx + ((movenum + 1) * width / numMoves),
-                            posx + ((movenum + 1) * width / numMoves),
-                            posx + (movenum * width / numMoves),
-                            posx + (movenum * width / numMoves)
-                          };
-                          int[] yPoints = {
-                            posy + height - (int) (convertWinrate(lastWr) * height / 100),
-                            0,
-                            0,
-                            posy + height - (int) (convertWinrate(wr) * height / 100)
-                          };
-                          g.fillPolygon(xPoints, yPoints, 4);
-                        } else if (lostMoves > 1) {
-                          int[] xPoints = {
-                            posx + ((movenum + 1) * width / numMoves),
-                            posx + ((movenum + 1) * width / numMoves),
-                            posx + (movenum * width / numMoves),
-                            posx + (movenum * width / numMoves)
-                          };
-                          int[] yPoints = {
-                            posy
-                                + height
-                                - (int) (convertWinrate(lastWr) * height / 100)
-                                + ((int) (convertWinrate(lastWr) * height / 100)
-                                        - (int) (convertWinrate(wr) * height / 100))
-                                    * (lostMoves - 1)
-                                    / lostMoves,
-                            0,
-                            0,
-                            posy + height - (int) (convertWinrate(wr) * height / 100)
-                          };
-                          g.fillPolygon(xPoints, yPoints, 4);
-                        }
-                      }
-                    }
-                  }
-                  g.setColor(Color.ORANGE);
-                  g.drawLine(
-                      posx + (lastNodeMove * width / numMoves),
-                      posy + height - (int) (convertWinrate(wr) * height / 100),
-                      posx + ((movenum + 1) * width / numMoves),
-                      posy + height - (int) (convertWinrate(wr) * height / 100));
-                  if (node.getData().moveNumber <= Lizzie.config.matchAiLastMove
-                      && (node.getData().moveNumber + 1) > Lizzie.config.matchAiFirstMove)
-                    g.setColor(Color.CYAN);
-                  else g.setColor(Color.ORANGE);
-                  g.drawLine(
-                      posx + ((movenum + 1) * width / numMoves),
-                      posy + height - (int) (convertWinrate(wr) * height / 100),
-                      posx + (movenum * width / numMoves),
-                      posy + height - (int) (convertWinrate(wr) * height / 100));
-                  cwr = wr;
-                  cmovenum = -1;
-                }
               }
-
+              lastMatch = nodeInfo.isMatchAi;
+              lastMatchBlack = nodeInfo.isBlack;
               if (node == curMove) {
                 cwr = wr;
                 cmovenum = movenum;
@@ -5684,7 +5478,7 @@ public class MoveListFrame extends JFrame {
             if (analyzed >= 1) {
               if ((node.getData().moveNumber <= Lizzie.config.matchAiLastMove
                       && (node.getData().moveNumber + 1) > Lizzie.config.matchAiFirstMove)
-                  && nodeinfo.analyzed) {
+                  && nodeinfo.analyzedMatchValue) {
                 if (node.getData().blackToPlay) {
                   g.setColor(new Color(0, 0, 0, 200));
                   lastMatchValue = lastMatchValueB;
@@ -6072,6 +5866,8 @@ public class MoveListFrame extends JFrame {
           double lastscoreMean = -500;
           //   int curmovenum = -1;
           //   double drawcurscoreMean = 0;
+          maxcoreMean = Lizzie.board.isPkBoard ? 15 : 30;
+          setMaxScoreMean(node);
           while (node.previous().isPresent()) {
             if (!node.getData().bestMoves.isEmpty()) {
 
@@ -6083,7 +5879,6 @@ public class MoveListFrame extends JFrame {
               }
               if (Lizzie.config.scoreMeanWinrateGraphBoard)
                 curscoreMean = curscoreMean + Lizzie.board.getHistory().getGameInfo().getKomi();
-              if (Math.abs(curscoreMean) > maxcoreMean) maxcoreMean = Math.abs(curscoreMean);
 
               if (node == curMove) {
                 cScore = curscoreMean;
@@ -6616,6 +6411,16 @@ public class MoveListFrame extends JFrame {
     g.drawRect(valueStartXWhite - 1, valueStartY - 1, valueWidth + 1, valueHeight + 1);
   }
 
+  public void setMaxScoreMean(BoardHistoryNode lastMove) {
+    while (lastMove.previous().isPresent()) {
+      Double scoreMean = lastMove.getData().scoreMean;
+      if (Math.abs(scoreMean) > maxcoreMean) maxcoreMean = Math.abs(scoreMean);
+      lastMove = lastMove.previous().get();
+    }
+    Double scoreMean = lastMove.getData().scoreMean;
+    if (Math.abs(scoreMean) > maxcoreMean) maxcoreMean = Math.abs(scoreMean);
+  }
+
   public void drawKeyPanel(Graphics2D g, int width, int height) {
     g.setColor(new Color(200, 200, 200));
     g.fillRect(0, 0, width, height);
@@ -6715,6 +6520,7 @@ public class MoveListFrame extends JFrame {
     double blackAccracyValue = 0;
     double blackWinLossValue = 0;
     double blackScoreLossValue = 0;
+    int blackMatchAnalyzedCount = 0;
 
     int whiteAnalyzedCount = 0;
     int whiteMatchCount = 0;
@@ -6722,6 +6528,7 @@ public class MoveListFrame extends JFrame {
     double whiteAccracyValue = 0;
     double whiteWinLossValue = 0;
     double whiteScoreLossValue = 0;
+    int whiteMatchAnalyzedCount = 0;
     BoardHistoryNode node = Lizzie.board.getHistory().getCurrentHistoryNode();
     if (showBranch.getSelectedIndex() == 0 && !node.isMainTrunk()) {
       node = Lizzie.board.getHistory().getMainEnd();
@@ -6737,7 +6544,6 @@ public class MoveListFrame extends JFrame {
               : (isMainEngine ? node.nodeInfo : node.nodeInfo2);
       if ((node.getData().moveNumber <= Lizzie.config.matchAiLastMove
           && (node.getData().moveNumber + 1) > Lizzie.config.matchAiFirstMove)) {
-
         if (nodeInfo.analyzed) {
           if (nodeInfo.isBlack) {
             blackAccracyValue = blackAccracyValue + nodeInfo.percentsMatch;
@@ -6746,6 +6552,7 @@ public class MoveListFrame extends JFrame {
             if (nodeInfo.getScoreMeanDiff() < 0)
               blackScoreLossValue = blackScoreLossValue + Math.abs(nodeInfo.getScoreMeanDiff());
             blackAnalyzedCount++;
+            blackMatchAnalyzedCount++;
             if (nodeInfo.isBest) blackBestCount++;
           } else {
             whiteAccracyValue = whiteAccracyValue + nodeInfo.percentsMatch;
@@ -6754,6 +6561,7 @@ public class MoveListFrame extends JFrame {
             if (nodeInfo.getScoreMeanDiff() < 0)
               whiteScoreLossValue = whiteScoreLossValue + Math.abs(nodeInfo.getScoreMeanDiff());
             whiteAnalyzedCount++;
+            whiteMatchAnalyzedCount++;
             if (nodeInfo.isBest) whiteBestCount++;
           }
 
@@ -6764,20 +6572,32 @@ public class MoveListFrame extends JFrame {
           if (!nodeInfo.isBlack) {
             if (nodeInfo.isMatchAi) whiteMatchCount++;
           }
+        } else if (nodeInfo.analyzedMatchValue) {
+          if (nodeInfo.isBlack) {
+            blackAccracyValue = blackAccracyValue + nodeInfo.percentsMatch;
+            if (nodeInfo.isMatchAi) blackMatchCount++;
+            if (nodeInfo.isBest) blackBestCount++;
+            blackMatchAnalyzedCount++;
+          } else {
+            whiteAccracyValue = whiteAccracyValue + nodeInfo.percentsMatch;
+            if (nodeInfo.isMatchAi) whiteMatchCount++;
+            if (nodeInfo.isBest) whiteBestCount++;
+            whiteMatchAnalyzedCount++;
+          }
         }
       }
     }
-    double blackAccuracy = blackAccracyValue / blackAnalyzedCount;
-    double blackMatch = blackMatchCount / (double) blackAnalyzedCount;
+    double blackAccuracy = blackAccracyValue / blackMatchAnalyzedCount;
+    double blackMatch = blackMatchCount / (double) blackMatchAnalyzedCount;
     double blackAvgWinLoss = blackWinLossValue / blackAnalyzedCount;
     double blackAvgScoreLoss = blackScoreLossValue / blackAnalyzedCount;
-    double blackBest = blackBestCount / (double) blackAnalyzedCount;
+    double blackBest = blackBestCount / (double) blackMatchAnalyzedCount;
 
-    double whiteAccracy = whiteAccracyValue / whiteAnalyzedCount;
-    double whiteMatch = whiteMatchCount / (double) whiteAnalyzedCount;
+    double whiteAccracy = whiteAccracyValue / whiteMatchAnalyzedCount;
+    double whiteMatch = whiteMatchCount / (double) whiteMatchAnalyzedCount;
     double whiteAvgWinLoss = whiteWinLossValue / whiteAnalyzedCount;
     double whiteAvgScoreLoss = whiteScoreLossValue / whiteAnalyzedCount;
-    double whiteBest = whiteBestCount / (double) whiteAnalyzedCount;
+    double whiteBest = whiteBestCount / (double) whiteMatchAnalyzedCount;
 
     double maxAvgWinLoss = 10;
     if (blackAvgWinLoss > maxAvgWinLoss) maxAvgWinLoss = blackAvgWinLoss;
