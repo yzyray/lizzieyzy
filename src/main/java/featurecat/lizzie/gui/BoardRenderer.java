@@ -61,6 +61,7 @@ public class BoardRenderer {
   private int scaledMarginHeight, availableHeight, squareHeight;
   public Optional<Branch> branchOpt = Optional.empty();
   private List<MoveData> bestMoves = new ArrayList<MoveData>();
+  private int[] bestCoords = {-1, -1};
   private MoveData mouseOverTemp = new MoveData();
   private BoardHistoryNode mouseOverTempNode;
 
@@ -145,6 +146,7 @@ public class BoardRenderer {
   private boolean showBlunderScore;
   private String nextBlunderWinrate;
   private String nextBlunderScore;
+  private boolean isNextMoveContainsBest = false;
 
   public void setOrder(int index) {
     // TODO Auto-generated method stub
@@ -211,6 +213,7 @@ public class BoardRenderer {
       if (!Lizzie.config.isShowingMarkupTools) drawStoneMarkup(g);
       this.shouldIgnoreBestMove = false;
       if (!isMouseOverNextBlunder) isShowingNextMoveBlunder = false;
+      isNextMoveContainsBest = false;
       if (!isShowingRawBoard()) {
         if (Lizzie.config.showNextMoves && !isShowingBranch) {
           drawNextMoves(g);
@@ -2145,6 +2148,7 @@ public class BoardRenderer {
           if (!coordsOpt.isPresent()) {
             continue;
           }
+          boolean blackToPlay = Lizzie.board.getData().blackToPlay;
           if (this.shouldIgnoreBestMove) {
             int[] coords = coordsOpt.get();
             if (coords[0] == this.ignoreBestMoveX && coords[1] == this.ignoreBestMoveY) {
@@ -2157,7 +2161,6 @@ public class BoardRenderer {
               if (Lizzie.config.showSuggestionOrder && move.order == 0) {
                 int suggestionX = x + scaledMarginWidth + squareWidth * coords[0];
                 int suggestionY = y + scaledMarginHeight + squareHeight * coords[1];
-                boolean blackToPlay = Lizzie.board.getData().blackToPlay;
                 if (shouldShowPreviousBestMoves()) blackToPlay = !blackToPlay;
                 drawStringForOrder(
                     g,
@@ -2247,7 +2250,7 @@ public class BoardRenderer {
             }
           if (!branchOpt.isPresent() || isMouseOver) {
             if (Lizzie.config.showSuggestionOrder && move.order == 0) {
-              boolean blackToPlay = Lizzie.board.getData().blackToPlay;
+
               if (shouldShowPreviousBestMoves()) blackToPlay = !blackToPlay;
               drawStringForOrder(
                   g,
@@ -2291,7 +2294,7 @@ public class BoardRenderer {
                   g.setColor(color);
                   fillCircle(g, suggestionX, suggestionY, stoneRadius + 1);
                   if (Lizzie.config.showBlueRing) {
-                    g.setColor(Color.BLUE.brighter());
+                    g.setColor(isNextMoveContainsBest ? new Color(0, 0, 255, 140) : Color.BLUE);
                     drawCircleBest(g, suggestionX, suggestionY, stoneRadius + 1, 15f);
                   } else {
                     float alphaCircle =
@@ -2961,6 +2964,9 @@ public class BoardRenderer {
     if (nexts.size() > 0) {
       color = nexts.get(0).getData().lastMoveColor == Stone.BLACK ? Color.BLACK : Color.WHITE;
       g.setColor(color);
+      if (!bestMoves.isEmpty()) {
+        bestCoords = Board.convertNameToCoordinates(bestMoves.get(0).coordinate);
+      }
       for (int i = 0; i < nexts.size(); i++) {
         boolean first = (i == 0);
         nexts
@@ -2969,6 +2975,8 @@ public class BoardRenderer {
             .lastMove
             .ifPresent(
                 nextMove -> {
+                  if (bestCoords[0] == nextMove[0] && bestCoords[1] == nextMove[1])
+                    isNextMoveContainsBest = true;
                   int moveX = x + scaledMarginWidth + squareWidth * nextMove[0];
                   int moveY = y + scaledMarginHeight + squareHeight * nextMove[1];
                   if (first) {
@@ -2993,13 +3001,12 @@ public class BoardRenderer {
                               Lizzie.board.getHistory().getData().bestMoves.get(0);
                           nextVisits = nextMoveData.playouts;
                           int[] nextCoords =
-                              Lizzie.board.convertNameToCoordinates(nextMoveData.coordinate);
+                              Board.convertNameToCoordinates(nextMoveData.coordinate);
                           nextPvX = nextCoords[0];
                           nextPvY = nextCoords[1];
                           nextPv = new ArrayList<String>();
                           for (String v : nextMoveData.variation) nextPv.add(v);
-                          nextPv.add(
-                              0, Lizzie.board.convertCoordinatesToName(nextMove[0], nextMove[1]));
+                          nextPv.add(0, Board.convertCoordinatesToName(nextMove[0], nextMove[1]));
                           nextPvVisits = new ArrayList<String>();
                           if (nextMoveData.pvVisits != null && !nextMoveData.pvVisits.isEmpty()) {
                             for (String v : nextMoveData.pvVisits) nextPvVisits.add(v);
