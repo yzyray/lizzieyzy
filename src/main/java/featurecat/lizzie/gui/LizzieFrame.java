@@ -212,7 +212,8 @@ public class LizzieFrame extends JFrame {
   private long lastAutocomTime = System.currentTimeMillis();
   private int autoIntervalCom;
   // private int autoInterval;
-  private long lastAutosaveTime = System.currentTimeMillis();
+  // private long lastAutosaveTime = System.currentTimeMillis();
+  private int autosaveTime = 0;
   public boolean isReplayVariation = false;
   public RightClickMenu RightClickMenu;
   public RightClickMenu2 RightClickMenu2;
@@ -1595,6 +1596,12 @@ public class LizzieFrame extends JFrame {
           public void run() {
             if (!isDrawVisitsInTitle) {
               visitsString = "";
+              try {
+                autosaveMaybe();
+                updateMoveListMaybe();
+              } catch (Exception e) {
+                e.printStackTrace();
+              }
               return;
             }
             if (Lizzie.leelaz == null
@@ -1622,6 +1629,8 @@ public class LizzieFrame extends JFrame {
                 visitsTemp[visitsCount].node = Lizzie.board.getHistory().getCurrentHistoryNode();
                 visitsTemp[visitsCount].Playouts = totalPlayouts;
               }
+              autosaveMaybe();
+              updateMoveListMaybe();
             } catch (Exception e) {
               e.printStackTrace();
             }
@@ -5200,7 +5209,6 @@ public class LizzieFrame extends JFrame {
       if (Lizzie.config.showWinrateGraph && cachedWinrateImage != null && !showControls)
         g0.drawImage(cachedWinrateImage, grx, gry, null);
     }
-    autosaveMaybe();
   }
 
   private String getLoadingText() {
@@ -5245,6 +5253,10 @@ public class LizzieFrame extends JFrame {
     if (independentMainBoard != null && independentMainBoard.isVisible())
       independentMainBoard.refresh();
     if (floatBoard != null && floatBoard.isVisible()) floatBoard.refresh();
+  }
+
+  private void updateMoveListMaybe() {
+    Lizzie.board.updateMovelist(Lizzie.board.getHistory().getCurrentHistoryNode());
   }
 
   private Graphics2D createBackground(int width, int hight) {
@@ -7300,9 +7312,9 @@ public class LizzieFrame extends JFrame {
 
   private void autosaveMaybe() {
     if (Lizzie.config.autoSaveOnExit && !Lizzie.engineManager.isEngineGame) {
-      long currentTime = System.currentTimeMillis();
-      if (currentTime - lastAutosaveTime >= 60000) {
-        lastAutosaveTime = currentTime;
+      autosaveTime++;
+      if (autosaveTime >= 60) {
+        autosaveTime = 0;
         saveAutoGame(2);
       }
     }
