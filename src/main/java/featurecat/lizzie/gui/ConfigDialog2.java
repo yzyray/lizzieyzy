@@ -1569,7 +1569,8 @@ public class ConfigDialog2 extends JDialog {
         resourceBundle.getString("LizzieConfig.chkShowIndependentSubBoard1"));
     chkShowIndependentSubBoard.addItem(
         resourceBundle.getString("LizzieConfig.chkShowIndependentSubBoard2"));
-    chkShowIndependentSubBoard.setBounds(765, 152, 102, 23);
+    chkShowIndependentSubBoard.setBounds(
+        Lizzie.config.isChinese ? 765 : 780, 152, Lizzie.config.isChinese ? 102 : 87, 23);
     uiTab.add(chkShowIndependentSubBoard);
 
     chkCheckEngineAlive = new JCheckBox();
