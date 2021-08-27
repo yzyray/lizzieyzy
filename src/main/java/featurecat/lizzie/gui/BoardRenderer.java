@@ -146,7 +146,7 @@ public class BoardRenderer {
   private boolean showBlunderScore;
   private String nextBlunderWinrate;
   private String nextBlunderScore;
-  private boolean isNextMoveContainsBest = false;
+  private boolean isNextMoveOnBest = false;
 
   public void setOrder(int index) {
     // TODO Auto-generated method stub
@@ -213,7 +213,7 @@ public class BoardRenderer {
       if (!Lizzie.config.isShowingMarkupTools) drawStoneMarkup(g);
       this.shouldIgnoreBestMove = false;
       if (!isMouseOverNextBlunder) isShowingNextMoveBlunder = false;
-      isNextMoveContainsBest = false;
+      isNextMoveOnBest = false;
       if (!isShowingRawBoard()) {
         if (Lizzie.config.showNextMoves && !isShowingBranch) {
           drawNextMoves(g);
@@ -2294,7 +2294,10 @@ public class BoardRenderer {
                   g.setColor(color);
                   fillCircle(g, suggestionX, suggestionY, stoneRadius + 1);
                   if (Lizzie.config.showBlueRing) {
-                    g.setColor(isNextMoveContainsBest ? new Color(0, 0, 255, 140) : Color.BLUE);
+                    Color ringColor;
+                    if (isNextMoveOnBest) ringColor = new Color(0, 0, 255, blackToPlay ? 210 : 140);
+                    else ringColor = Color.BLUE;
+                    g.setColor(ringColor);
                     drawCircleBest(g, suggestionX, suggestionY, stoneRadius + 1, 15f);
                   } else {
                     float alphaCircle =
@@ -2975,8 +2978,9 @@ public class BoardRenderer {
             .lastMove
             .ifPresent(
                 nextMove -> {
-                  if (bestCoords[0] == nextMove[0] && bestCoords[1] == nextMove[1])
-                    isNextMoveContainsBest = true;
+                  if (first && bestCoords[0] == nextMove[0] && bestCoords[1] == nextMove[1]) {
+                    isNextMoveOnBest = true;
+                  }
                   int moveX = x + scaledMarginWidth + squareWidth * nextMove[0];
                   int moveY = y + scaledMarginHeight + squareHeight * nextMove[1];
                   if (first) {
