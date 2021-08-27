@@ -5280,9 +5280,9 @@ public class MoveListFrame extends JFrame {
         int playouts = isMainEngine ? node.getData().getPlayouts() : node.getData().getPlayouts2();
         switch (selectedIndex) {
           case 0:
-            if (playouts <= 0
-                && checkBlack.isSelected()
-                && !node.previous().get().previous().isPresent()) {
+            if (!node.previous().get().previous().isPresent()
+                && playouts <= 0
+                && checkBlack.isSelected()) {
               if (lastMatch && lastMatchBlack) {
                 g.setColor(new Color(0, 0, 255, 100));
                 int[] xPoints = {
