@@ -2417,7 +2417,8 @@ public class Leelaz {
           && (cmdQueue.peekLast().startsWith("lz-analyze")
               || cmdQueue.peekLast().startsWith("kata-analyze")
               || cmdQueue.peekLast().startsWith("kata-raw")
-              || cmdQueue.peekLast().startsWith("heatmap"))) {
+              || cmdQueue.peekLast().startsWith("heatmap")
+              || cmdQueue.peekLast().startsWith("stop"))) {
         cmdQueue.removeLast();
         cmdNumber--;
       }
@@ -2509,7 +2510,8 @@ public class Leelaz {
           || (cmdQueue.peekFirst().startsWith("lz-analyze")
                   || cmdQueue.peekFirst().startsWith("kata-analyze")
                   || cmdQueue.peekFirst().startsWith("kata-raw")
-                  || cmdQueue.peekFirst().startsWith("heatmap"))
+                  || cmdQueue.peekFirst().startsWith("heatmap")
+                  || cmdQueue.peekLast().startsWith("stop"))
               && !isResponseUpToPreDate()) {
         return;
       }
@@ -2615,6 +2617,7 @@ public class Leelaz {
           nameCmdfornoponder();
           underPonder = true;
         }
+      if (!isPondering && !Lizzie.config.playponder && isKatago) sendCommand("stop");
     }
   }
 
