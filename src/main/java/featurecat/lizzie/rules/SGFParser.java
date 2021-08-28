@@ -6,6 +6,7 @@ import featurecat.lizzie.Lizzie;
 import featurecat.lizzie.analysis.EngineManager;
 import featurecat.lizzie.analysis.GameInfo;
 import featurecat.lizzie.analysis.MoveData;
+import featurecat.lizzie.gui.LizzieFrame;
 import featurecat.lizzie.util.EncodingDetector;
 import featurecat.lizzie.util.Utils;
 import java.io.*;
@@ -815,26 +816,6 @@ public class SGFParser {
     }
   }
 
-  //  private static void appendGameTime() {
-  //    BoardHistoryNode node = Lizzie.board.getHistory().getStart();
-  //    boolean blackComplete = false;
-  //    boolean whiteComplete = false;
-  //
-  //
-  //    node.getData().comment =
-  //            node.getData().comment
-  //
-  //        whiteComplete = true;
-  //    Lizzie.engineManager.engineGameInfo.firstEngineTotleTime +=
-  //
-  // Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.firstEngineIndex)
-  //            .pkMoveTimeGame;
-  //    Lizzie.engineManager.engineGameInfo.secondEngineTotleTime +=
-  //
-  // Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.secondEngineIndex)
-  //            .pkMoveTimeGame;
-  //  }
-
   public static void appendGameTimeAndPlayouts() {
     BoardHistoryNode node = Lizzie.board.getHistory().getStart();
     long blackPlayouts = 0;
@@ -859,12 +840,11 @@ public class SGFParser {
       node.getData().comment =
           node.getData().comment
               + Lizzie.resourceBundle.getString("SGFParse.startGameSgf")
-              + Lizzie.frame.toolbar.currentEnginePkSgfNum
+              + LizzieFrame.toolbar.currentEnginePkSgfNum
               + "\n";
     node.getData().comment +=
         Lizzie.resourceBundle.getString("SGFParse.blackTotalTime")
-            + +Lizzie.engineManager.engineList.get(
-                        Lizzie.engineManager.engineGameInfo.blackEngineIndex)
+            + +Lizzie.engineManager.engineList.get(EngineManager.engineGameInfo.blackEngineIndex)
                     .pkMoveTimeGame
                 / (float) 1000
             + Lizzie.resourceBundle.getString("SGFParse.seconds")
@@ -875,36 +855,28 @@ public class SGFParser {
     node.getData().comment +=
         "\n"
             + Lizzie.resourceBundle.getString("SGFParse.whiteTotalTime")
-            + Lizzie.engineManager.engineList.get(
-                        Lizzie.engineManager.engineGameInfo.whiteEngineIndex)
+            + Lizzie.engineManager.engineList.get(EngineManager.engineGameInfo.whiteEngineIndex)
                     .pkMoveTimeGame
                 / (float) 1000
             + Lizzie.resourceBundle.getString("SGFParse.seconds")
             + " "
             + Lizzie.resourceBundle.getString("SGFParse.totalVisits")
             + +whitePlayouts;
-    if (Lizzie.engineManager.engineGameInfo.firstEngineIndex
-        == Lizzie.engineManager.engineGameInfo.blackEngineIndex) {
-      Lizzie.engineManager.engineGameInfo.firstEngineTotlePlayouts += blackPlayouts;
-      Lizzie.engineManager.engineGameInfo.secondEngineTotlePlayouts += whitePlayouts;
+    if (EngineManager.engineGameInfo.firstEngineIndex
+        == EngineManager.engineGameInfo.blackEngineIndex) {
+      EngineManager.engineGameInfo.firstEngineTotlePlayouts += blackPlayouts;
+      EngineManager.engineGameInfo.secondEngineTotlePlayouts += whitePlayouts;
 
     } else {
-      Lizzie.engineManager.engineGameInfo.firstEngineTotlePlayouts += whitePlayouts;
-      Lizzie.engineManager.engineGameInfo.secondEngineTotlePlayouts += blackPlayouts;
+      EngineManager.engineGameInfo.firstEngineTotlePlayouts += whitePlayouts;
+      EngineManager.engineGameInfo.secondEngineTotlePlayouts += blackPlayouts;
     }
-    Lizzie.engineManager.engineGameInfo.firstEngineTotleTime +=
-        Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.firstEngineIndex)
+    EngineManager.engineGameInfo.firstEngineTotleTime +=
+        Lizzie.engineManager.engineList.get(EngineManager.engineGameInfo.firstEngineIndex)
             .pkMoveTimeGame;
-    Lizzie.engineManager.engineGameInfo.secondEngineTotleTime +=
-        Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.secondEngineIndex)
+    EngineManager.engineGameInfo.secondEngineTotleTime +=
+        Lizzie.engineManager.engineList.get(EngineManager.engineGameInfo.secondEngineIndex)
             .pkMoveTimeGame;
-    //    if (reverse) {
-    //      Lizzie.frame.toolbar.pkBlackPlayouts += whitePlayouts;
-    //      Lizzie.frame.toolbar.pkWhitePlayouts += blackPlayouts;
-    //    } else {
-    //      Lizzie.frame.toolbar.pkBlackPlayouts += blackPlayouts;
-    //      Lizzie.frame.toolbar.pkWhitePlayouts += whitePlayouts;
-    //    }
   }
 
   public static void appendAiScoreBlunder() {
@@ -1684,7 +1656,7 @@ public class SGFParser {
                 + " )"
                 + Lizzie.resourceBundle.getString("SGFParse.winrate")
                 + " [0-9\\.\\-]+%* \\(*[0-9.\\-+]*%*\\)*\n\\("
-                + engine
+                + ".*"
                 + " / [0-9\\.]*[kmKM]* "
                 + Lizzie.resourceBundle.getString("SGFParse.playouts")
                 + "\\)\\n"
@@ -1704,7 +1676,7 @@ public class SGFParser {
                       ? Lizzie.resourceBundle.getString("SGFParse.leadBoard")
                       : Lizzie.resourceBundle.getString("SGFParse.leadScore"))
                   + " [0-9\\.\\-+]* \\(*[0-9.\\-+]*\\)*\n\\("
-                  + engine
+                  + ".*"
                   + " / [0-9\\.]*[kmKM]* "
                   + Lizzie.resourceBundle.getString("SGFParse.playouts")
                   + "\\)\\n"
@@ -1725,7 +1697,7 @@ public class SGFParser {
                   + " [0-9\\.\\-+]* \\(*[0-9.\\-+]*\\)* "
                   + Lizzie.resourceBundle.getString("SGFParse.stdev")
                   + " [0-9\\.\\-+]*\n\\("
-                  + engine
+                  + ".*"
                   + " / [0-9\\.]*[kmKM]* "
                   + Lizzie.resourceBundle.getString("SGFParse.playouts")
                   + "\\)\\n"
@@ -2069,7 +2041,7 @@ public class SGFParser {
                 + " )"
                 + Lizzie.resourceBundle.getString("SGFParse.winrate")
                 + " [0-9\\.\\-]+%* \\(*[0-9.\\-+]*%*\\)*\n\\("
-                + engine
+                + ".*"
                 + " / [0-9\\.]*[kmKM]* "
                 + Lizzie.resourceBundle.getString("SGFParse.playouts")
                 + "\\)\\n"
@@ -2089,7 +2061,7 @@ public class SGFParser {
                       ? Lizzie.resourceBundle.getString("SGFParse.leadBoard")
                       : Lizzie.resourceBundle.getString("SGFParse.leadScore"))
                   + " [0-9\\.\\-+]* \\(*[0-9.\\-+]*\\)*\n\\("
-                  + engine
+                  + ".*"
                   + " / [0-9\\.]*[kmKM]* "
                   + Lizzie.resourceBundle.getString("SGFParse.playouts")
                   + "\\)\\n"
@@ -2110,7 +2082,7 @@ public class SGFParser {
                   + " [0-9\\.\\-+]* \\(*[0-9.\\-+]*\\)* "
                   + Lizzie.resourceBundle.getString("SGFParse.stdev")
                   + " [0-9\\.\\-+]*\n\\("
-                  + engine
+                  + ".*"
                   + " / [0-9\\.]*[kmKM]* "
                   + Lizzie.resourceBundle.getString("SGFParse.playouts")
                   + "\\)\\n"
@@ -2316,7 +2288,7 @@ public class SGFParser {
                 + " )"
                 + Lizzie.resourceBundle.getString("SGFParse.winrate")
                 + " [0-9\\.\\-]+%* \\(*[0-9.\\-+]*%*\\)*\n\\("
-                + engine
+                + ".*"
                 + " / [0-9\\.]*[kmKM]* "
                 + Lizzie.resourceBundle.getString("SGFParse.playouts")
                 + "\\)\\n"
@@ -2336,7 +2308,7 @@ public class SGFParser {
                       ? Lizzie.resourceBundle.getString("SGFParse.leadBoard")
                       : Lizzie.resourceBundle.getString("SGFParse.leadScore"))
                   + " [0-9\\.\\-+]* \\(*[0-9.\\-+]*\\)*\n\\("
-                  + engine
+                  + ".*"
                   + " / [0-9\\.]*[kmKM]* "
                   + Lizzie.resourceBundle.getString("SGFParse.playouts")
                   + "\\)\\n"
@@ -2357,7 +2329,7 @@ public class SGFParser {
                   + " [0-9\\.\\-+]* \\(*[0-9.\\-+]*\\)* "
                   + Lizzie.resourceBundle.getString("SGFParse.stdev")
                   + " [0-9\\.\\-+]*\n\\("
-                  + engine
+                  + ".*"
                   + " / [0-9\\.]*[kmKM]* "
                   + Lizzie.resourceBundle.getString("SGFParse.playouts")
                   + "\\)\\n"

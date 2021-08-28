@@ -3802,7 +3802,6 @@ public class Menu extends JMenuBar {
             Lizzie.frame.toolbar.setVisible(true);
             if (Lizzie.config.showDoubleMenu) doubleMenu(false);
             Lizzie.frame.reSetLoc();
-            Lizzie.frame.repaintLaterMaybe();
           }
         });
 
@@ -3817,7 +3816,6 @@ public class Menu extends JMenuBar {
             Lizzie.frame.toolbar.setVisible(false);
             if (Lizzie.config.showDoubleMenu) doubleMenu(false);
             Lizzie.frame.reSetLoc();
-            Lizzie.frame.repaintLaterMaybe();
           }
         });
 
@@ -3846,14 +3844,12 @@ public class Menu extends JMenuBar {
                       Lizzie.frame.toolbarHeight = 70;
                       Lizzie.frame.toolbar.setVisible(true);
                       Lizzie.frame.reSetLoc();
-                      Lizzie.frame.repaintLaterMaybe();
                     }
                   });
             } else {
               Lizzie.frame.toolbarHeight = 26;
               Lizzie.frame.toolbar.setVisible(true);
               Lizzie.frame.reSetLoc();
-              Lizzie.frame.repaintLaterMaybe();
             }
           }
         });
@@ -6246,7 +6242,7 @@ public class Menu extends JMenuBar {
       e.printStackTrace();
     }
 
-    JFontPopupMenu selectAllowPopup = new JFontPopupMenu();
+    JPopupMenu selectAllowPopup = new JPopupMenu();
     JFontCheckBoxMenuItem selectAllowCustomMove = new JFontCheckBoxMenuItem();
     JFontTextField txtLimitLengthAllow = new JFontTextField();
     txtLimitLengthAllow.setDocument(new IntDocument());
@@ -6409,7 +6405,7 @@ public class Menu extends JMenuBar {
           }
         });
 
-    JFontPopupMenu selectAvoidPopup = new JFontPopupMenu();
+    JPopupMenu selectAvoidPopup = new JPopupMenu();
     JFontCheckBoxMenuItem selectAvoidCustomMove = new JFontCheckBoxMenuItem();
     JFontTextField txtLimitLengthAvoid = new JFontTextField();
     txtLimitLengthAllow.setDocument(new IntDocument());
@@ -6604,7 +6600,7 @@ public class Menu extends JMenuBar {
       doubleMenuNewGame.setFocusable(false);
       doubleMenuPauseGame.setFocusable(false);
 
-      JFontPopupMenu newGamePopup = new JFontPopupMenu();
+      JPopupMenu newGamePopup = new JPopupMenu();
 
       JFontMenuItem engineGame =
           new JFontMenuItem(resourceBundle.getString("Menu.newEngineGame")); // ("引擎对局(Alt+E)");
@@ -6974,7 +6970,7 @@ public class Menu extends JMenuBar {
             }
           });
 
-      JFontPopupMenu flashAnalyzePopup = new JFontPopupMenu();
+      JPopupMenu flashAnalyzePopup = new JPopupMenu();
       JFontMenuItem flashAnalyzeAllGame =
           new JFontMenuItem(resourceBundle.getString("Menu.flashAnalyzeAllGame")); // "闪电分析(全局)");
       flashAnalyzeAllGame.addActionListener(
@@ -7041,7 +7037,7 @@ public class Menu extends JMenuBar {
               }
             });
       } else {
-        JFontPopupMenu autoAnalyzePopup = new JFontPopupMenu();
+        JPopupMenu autoAnalyzePopup = new JPopupMenu();
         final JFontMenuItem autoAnalyze =
             new JFontMenuItem(resourceBundle.getString("Menu.autoAnalyze")); // ("自动分析(A)");
         autoAnalyze.addActionListener(
@@ -7125,7 +7121,7 @@ public class Menu extends JMenuBar {
             }
           });
 
-      JFontPopupMenu rankMarkPopup = new JFontPopupMenu();
+      JPopupMenu rankMarkPopup = new JPopupMenu();
       addRankMarkMenu(rankMarkPopup, null);
 
       btnRankMark = new JFontButton();
@@ -7358,7 +7354,7 @@ public class Menu extends JMenuBar {
         e.printStackTrace();
       }
 
-      JFontPopupMenu selectAllowPopup = new JFontPopupMenu();
+      JPopupMenu selectAllowPopup = new JPopupMenu();
       JFontCheckBoxMenuItem selectAllowCustomMove = new JFontCheckBoxMenuItem();
       JFontTextField txtLimitLengthAllow = new JFontTextField();
       txtLimitLengthAllow.setDocument(new IntDocument());
@@ -7523,7 +7519,7 @@ public class Menu extends JMenuBar {
             }
           });
 
-      JFontPopupMenu selectAvoidPopup = new JFontPopupMenu();
+      JPopupMenu selectAvoidPopup = new JPopupMenu();
       JFontCheckBoxMenuItem selectAvoidCustomMove = new JFontCheckBoxMenuItem();
       JFontTextField txtLimitLengthAvoid = new JFontTextField();
       txtLimitLengthAllow.setDocument(new IntDocument());
@@ -7719,7 +7715,7 @@ public class Menu extends JMenuBar {
     doubleMenuNewGame.setFocusable(false);
     doubleMenuPauseGame.setFocusable(false);
 
-    JFontPopupMenu newGamePopup = new JFontPopupMenu();
+    JPopupMenu newGamePopup = new JPopupMenu();
 
     JFontMenuItem engineGame =
         new JFontMenuItem(resourceBundle.getString("Menu.newEngineGame")); // ("引擎对局(Alt+E)");
@@ -7911,7 +7907,7 @@ public class Menu extends JMenuBar {
     }
   }
 
-  private void addRankMarkMenu(JFontPopupMenu rankPopupMenu, JMenu rankJMenu) {
+  private void addRankMarkMenu(JPopupMenu rankPopupMenu, JMenu rankJMenu) {
     JFontCheckBoxMenuItem rankCustomMove = new JFontCheckBoxMenuItem();
     JFontTextField txtCustomMove = new JFontTextField();
     txtCustomMove.setDocument(new IntDocument());
@@ -9362,7 +9358,6 @@ public class Menu extends JMenuBar {
     else btnDoubleMenu.setIcon(iconDown);
     updateMenuAfterEngine(false);
     if (!Lizzie.config.showDoubleMenu) updateMenuStatus();
-    if (Lizzie.frame != null) Lizzie.frame.repaintLaterMaybe();
   }
 
   public void toggleEngineMenuStatus(boolean isPondering, boolean isThinking) {

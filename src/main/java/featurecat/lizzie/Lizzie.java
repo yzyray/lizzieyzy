@@ -222,7 +222,6 @@ public class Lizzie {
     LizzieFrame.menu.doubleMenu(true);
     frame.reSetLoc();
     frame.showMainPanel();
-    if (Config.isScaled) frame.repaint();
     frame.addResizeLis();
     SwingUtilities.invokeLater(
         new Thread() {

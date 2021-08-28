@@ -2,6 +2,7 @@ package featurecat.lizzie.gui;
 
 import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
 
+import featurecat.lizzie.Config;
 import featurecat.lizzie.Lizzie;
 import featurecat.lizzie.analysis.MoveData;
 import featurecat.lizzie.rules.Board;
@@ -77,6 +78,7 @@ public class FloatBoard extends JDialog {
   private int tempX, tempY, tempWidth, tempHeight;
   private boolean showPosBtn = false;
 
+  @SuppressWarnings("deprecation")
   public FloatBoard(int x, int y, int width, int height, int boardType, boolean isScaled) {
     tempX = x;
     tempY = y;
@@ -447,7 +449,7 @@ public class FloatBoard extends JDialog {
       g0.dispose();
     }
     //   g.drawImage(cachedImage, 0, 0, null);
-    if (Lizzie.config.isScaled) {
+    if (Config.isScaled) {
       Graphics2D g1 = (Graphics2D) g;
       final AffineTransform t = g1.getTransform();
       t.setToScale(1, 1);
@@ -514,12 +516,12 @@ public class FloatBoard extends JDialog {
     if (index >= bestMoves.size()) return;
     if (curSuggestionMoveOrderByNumber == index) {
       curSuggestionMoveOrderByNumber = -1;
-      mouseOverCoordinate = Lizzie.frame.outOfBoundCoordinate;
+      mouseOverCoordinate = LizzieFrame.outOfBoundCoordinate;
       return;
     }
     curSuggestionMoveOrderByNumber = index;
     mouseOverCoordinate =
-        Lizzie.board.convertNameToCoordinates(
+        Board.convertNameToCoordinates(
             Lizzie.board.getHistory().getData().bestMoves.get(index).coordinate);
   }
 
@@ -531,7 +533,7 @@ public class FloatBoard extends JDialog {
   public boolean isMouseOverSuggestions() {
     List<MoveData> bestMoves = Lizzie.board.getHistory().getData().bestMoves;
     for (int i = 0; i < bestMoves.size(); i++) {
-      Optional<int[]> c = Lizzie.board.asCoordinates(bestMoves.get(i).coordinate);
+      Optional<int[]> c = Board.asCoordinates(bestMoves.get(i).coordinate);
       if (c.isPresent()) {
         if (isMouseOver2(c.get()[0], c.get()[1])) {
           List<String> variation = bestMoves.get(i).variation;
@@ -627,8 +629,8 @@ public class FloatBoard extends JDialog {
   }
 
   public boolean isMouseOver(int x, int y) {
-    if (!Lizzie.frame.toolbar.chkShowBlack.isSelected()
-        && !Lizzie.frame.toolbar.chkShowBlack.isSelected()) {
+    if (!LizzieFrame.toolbar.chkShowBlack.isSelected()
+        && !LizzieFrame.toolbar.chkShowBlack.isSelected()) {
       return false;
     }
     if (Lizzie.config.showSuggestionVariations)

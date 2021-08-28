@@ -4,6 +4,7 @@ import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
 
+import featurecat.lizzie.Config;
 import featurecat.lizzie.Lizzie;
 import featurecat.lizzie.analysis.MoveData;
 import featurecat.lizzie.rules.Board;
@@ -105,6 +106,10 @@ public class IndependentMainBoard extends JFrame {
           @Override
           protected void paintComponent(Graphics g) {
             super.paintComponent(g);
+            if (Config.isScaled) {
+              Graphics2D g1 = (Graphics2D) g;
+              g1.scale(1.0 / Lizzie.javaScaleFactor, 1.0 / Lizzie.javaScaleFactor);
+            }
             paintMianPanel(g);
           }
         };
@@ -677,15 +682,7 @@ public class IndependentMainBoard extends JFrame {
     boardRenderer.draw(g0);
     g0.dispose();
     this.cachedImage = cachedImage;
-    if (Lizzie.config.isScaled) {
-      Graphics2D g1 = (Graphics2D) g;
-      final AffineTransform t = g1.getTransform();
-      t.setToScale(1, 1);
-      g1.setTransform(t);
-      g1.drawImage(this.cachedImage, 0, 0, null);
-    } else {
-      g.drawImage(this.cachedImage, 0, 0, null);
-    }
+    g.drawImage(this.cachedImage, 0, 0, null);
   }
 
   private void setDisplayedBranchLength(int n) {

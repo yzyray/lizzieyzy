@@ -24,7 +24,6 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.font.TextAttribute;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.HashMap;
@@ -79,7 +78,10 @@ public class SuggestionInfoOrderSettings extends JDialog {
         new JPanel(true) {
           @Override
           protected void paintComponent(Graphics g) {
-            super.paintComponent(g);
+            if (Config.isScaled) {
+              Graphics2D g1 = (Graphics2D) g;
+              g1.scale(1.0 / Lizzie.javaScaleFactor, 1.0 / Lizzie.javaScaleFactor);
+            }
             paintMianPanel(g);
           }
         };
@@ -397,15 +399,8 @@ public class SuggestionInfoOrderSettings extends JDialog {
     Color colorMoveLeela = new Color(11, 227, 0, 237);
     drawMove(move2, g, Utils.zoomOut(350), Utils.zoomOut(100), colorMoveLeela, false);
 
-    if (Lizzie.config.isScaled) {
-      Graphics2D g1 = (Graphics2D) g0;
-      final AffineTransform t = g1.getTransform();
-      t.setToScale(1, 1);
-      g1.setTransform(t);
-      g1.drawImage(cachedImage, 0, 0, null);
-    } else {
-      g0.drawImage(cachedImage, 0, 0, null);
-    }
+    g0.drawImage(cachedImage, 0, 0, null);
+
     g.dispose();
   }
 

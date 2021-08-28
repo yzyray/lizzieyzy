@@ -1498,7 +1498,7 @@ public class MoveListFrame extends JFrame {
     // checkWhitetxt.setText("白:");
     // }
 
-    JFontPopupMenu exportMin1 = new JFontPopupMenu();
+    JPopupMenu exportMin1 = new JPopupMenu();
     final JMenuItem exportMenu =
         new JFontMenuItem(Lizzie.resourceBundle.getString("JTabel.export"));
     exportMin1.add(exportMenu);
@@ -1526,7 +1526,7 @@ public class MoveListFrame extends JFrame {
           }
         });
 
-    JFontPopupMenu exportMin2 = new JFontPopupMenu();
+    JPopupMenu exportMin2 = new JPopupMenu();
     final JMenuItem exportMenu2 =
         new JFontMenuItem(Lizzie.resourceBundle.getString("JTabel.export"));
     exportMin2.add(exportMenu2);
@@ -1554,7 +1554,7 @@ public class MoveListFrame extends JFrame {
           }
         });
 
-    JFontPopupMenu exportFull = new JFontPopupMenu();
+    JPopupMenu exportFull = new JPopupMenu();
     final JMenuItem exportMenuFull =
         new JFontMenuItem(Lizzie.resourceBundle.getString("JTabel.export"));
     exportFull.add(exportMenuFull);

@@ -83,12 +83,7 @@ public class RightClickMenu extends JPopupMenu {
 			                  this.cancel();
 			                }
 			              },
-			              200);
-			      if(Lizzie.config.isScaled)
-			    	  Lizzie.frame.repaint();
-			      if(Lizzie.frame.independentMainBoard!=null&&Lizzie.frame.independentMainBoard.isVisible())
-			    	  Lizzie.frame.independentMainBoard.repaint();
-				
+			              200);				
 			}
 
 			public void popupMenuWillBecomeVisible(PopupMenuEvent e) {

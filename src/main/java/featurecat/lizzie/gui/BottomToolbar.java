@@ -37,6 +37,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -71,8 +72,8 @@ public class BottomToolbar extends JPanel {
   JButton setMain;
   JButton batchOpen;
   JButton refresh;
-  JFontPopupMenu yike;
-  JFontPopupMenu sharePopup;
+  JPopupMenu yike;
+  JPopupMenu sharePopup;
   JButton tryPlay;
   JButton analyzeList;
   JButton move;
@@ -575,7 +576,7 @@ public class BottomToolbar extends JPanel {
           }
         });
 
-    JFontPopupMenu flashAnalyzePopup = new JFontPopupMenu();
+    JPopupMenu flashAnalyzePopup = new JPopupMenu();
     final JMenuItem flashAnalyzeAllGame =
         new JFontMenuItem(resourceBundle.getString("Menu.flashAnalyzeAllGame"));
     flashAnalyzePopup.add(flashAnalyzeAllGame);
@@ -617,7 +618,7 @@ public class BottomToolbar extends JPanel {
           }
         });
 
-    sharePopup = new JFontPopupMenu();
+    sharePopup = new JPopupMenu();
     JMenuItem shareCurSgf =
         new JMenuItem(Lizzie.resourceBundle.getString("BottomToolbar.shareCurSgf")); // ("分享当前棋谱");
     shareCurSgf.addActionListener(
@@ -702,7 +703,7 @@ public class BottomToolbar extends JPanel {
     sharePopup.setVisible(true);
     sharePopup.setVisible(false);
 
-    yike = new JFontPopupMenu();
+    yike = new JPopupMenu();
     JMenuItem yikeLive =
         new JMenuItem(Lizzie.resourceBundle.getString("BottomToolbar.yikeLive")); // ("弈客直播");
     yikeLive.addActionListener(
@@ -799,7 +800,7 @@ public class BottomToolbar extends JPanel {
             Lizzie.frame.refresh();
           }
         });
-    JFontPopupMenu autoAnalyzePopup = new JFontPopupMenu();
+    JPopupMenu autoAnalyzePopup = new JPopupMenu();
     final JFontMenuItem autoAnalyze =
         new JFontMenuItem(resourceBundle.getString("Menu.autoAnalyze")); // ("自动分析(A)");
     // aboutItem.setMnemonic('A');
@@ -895,9 +896,7 @@ public class BottomToolbar extends JPanel {
             } else {
               Lizzie.frame.toolbarHeight = 26;
             }
-
             Lizzie.frame.reSetLoc();
-            Lizzie.frame.repaintLaterMaybe();
           }
         });
     analyse.addActionListener(

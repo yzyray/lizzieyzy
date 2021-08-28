@@ -103,9 +103,7 @@ public class FloatBoardRenderer {
   public static final int SHOW_NORMAL_BOARD = -2;
 
   private int displayedBranchLength = SHOW_NORMAL_BOARD;
-  private int cachedDisplayedBranchLength = SHOW_RAW_BOARD;
-  public boolean[] hasDrawBackground =
-      new boolean[Lizzie.board.boardHeight * Lizzie.board.boardWidth];
+  public boolean[] hasDrawBackground = new boolean[Board.boardHeight * Board.boardWidth];
   private boolean showingBranch = false;
   private boolean isFancyBoard = true;
   private Color noFancyColor;
@@ -1789,7 +1787,7 @@ public class FloatBoardRenderer {
                   fillCircle(g, suggestionX, suggestionY, stoneRadius + 1);
                   if (Lizzie.config.showBlueRing) {
                     g.setColor(Color.BLUE.brighter());
-                    drawCircleBest(g, suggestionX, suggestionY, stoneRadius + 1, 15f);
+                    drawCircle(g, suggestionX, suggestionY, stoneRadius + 1, 15f);
                   } else {
                     float alphaCircle =
                         32 + (128 - 32) * max(0, (float) log(percentPlayouts) / alphaFactor + 1);
@@ -2604,59 +2602,6 @@ public class FloatBoardRenderer {
     return cachedWallpaperImage;
   }
 
-  /**
-   * Draw scale smooth image, enhanced display quality (Not use, for future) This function use the
-   * traditional Image.getScaledInstance() method to provide the nice quality, but the performance
-   * is poor. Recommended for use in a few drawings
-   */
-  // public void drawScaleSmoothImage(Graphics2D g, BufferedImage img, int x, int
-  // y, int width,
-  // int height, ImageObserver observer) {
-  // BufferedImage newstone = new BufferedImage(width, height, TYPE_INT_ARGB);
-  // Graphics2D g2 = newstone.createGraphics();
-  // g2.drawImage(img.getScaledInstance(width, height,
-  // java.awt.Image.SCALE_SMOOTH), 0, 0,
-  // observer);
-  // g2.dispose();
-  // g.drawImage(newstone, x, y, width, height, observer);
-  // }
-
-  /**
-   * Draw scale smooth image, enhanced display quality (Not use, for future) This functions use a
-   * multi-step approach to prevent the information loss and produces a much higher quality that is
-   * close to the Image.getScaledInstance() and faster than Image.getScaledInstance() method.
-   */
-  // public void drawScaleImage(Graphics2D g, BufferedImage img, int x, int y, int
-  // width, int
-  // height, ImageObserver observer) {
-  // BufferedImage newstone = (BufferedImage)img;
-  // int w = img.getWidth();
-  // int h = img.getHeight();
-  // do {
-  // if (w > width) {
-  // w /= 2;
-  // if (w < width) {
-  // w = width;
-  // }
-  // }
-  // if (h > height) {
-  // h /= 2;
-  // if (h < height) {
-  // h = height;
-  // }
-  // }
-  // BufferedImage tmp = new BufferedImage(w, h, TYPE_INT_ARGB);
-  // Graphics2D g2 = tmp.createGraphics();
-  // g2.setRenderingHint(KEY_INTERPOLATION,
-  // VALUE_INTERPOLATION_BICUBIC);
-  // g2.drawImage(newstone, 0, 0, w, h, null);
-  // g2.dispose();
-  // newstone = tmp;
-  // }
-  // while (w != width || h != height);
-  // g.drawImage(newstone, x, y, width, height, observer);
-  // }
-
   /** Draw texture image */
   public void drawTextureImage(
       Graphics2D g, BufferedImage img, int x, int y, int width, int height, boolean createPaint) {
@@ -2667,32 +2612,9 @@ public class FloatBoardRenderer {
     g.fill(new Rectangle(x, y, width, height));
   }
 
-  /** Draws the triangle of a circle centered at (centerX, centerY) with radius $radius$ */
-  private void drawTriangle(Graphics2D g, int centerX, int centerY, int radius) {
-    int offset = (int) (3.0 / 2.0 * radius / Math.sqrt(3.0));
-    int x[] = {centerX, centerX - offset, centerX + offset};
-    int y[] = {centerY - radius, centerY + radius / 2, centerY + radius / 2};
-    g.drawPolygon(x, y, 3);
-  }
-
-  /** Draws the square of a circle centered at (centerX, centerY) with radius $radius$ */
-  private void drawSquare(Graphics2D g, int centerX, int centerY, int radius) {
-    g.drawRect(centerX - radius, centerY - radius, radius * 2, radius * 2);
-  }
-
-  /** Draws the mark(X) of a circle centered at (centerX, centerY) with radius $radius$ */
-  private void drawMarkX(Graphics2D g, int centerX, int centerY, int radius) {
-    g.drawLine(centerX - radius, centerY - radius, centerX + radius, centerY + radius);
-    g.drawLine(centerX - radius, centerY + radius, centerX + radius, centerY - radius);
-  }
-
   /** Fills in a circle centered at (centerX, centerY) with radius $radius$ */
   private void fillCircle(Graphics2D g, int centerX, int centerY, int radius) {
-    g.fillOval(
-        centerX - radius - (Lizzie.config.isScaled ? 1 : 0),
-        centerY - radius - (Lizzie.config.isScaled ? 1 : 0),
-        2 * radius + 1 + (Lizzie.config.isScaled ? 2 : 0),
-        2 * radius + 1 + (Lizzie.config.isScaled ? 2 : 0));
+    g.fillOval(centerX - radius, centerY - radius, 2 * radius + 1, 2 * radius + 1);
   }
 
   //  private void fillCircleBest(Graphics2D g, int centerX, int centerY, int radius) {
@@ -2705,22 +2627,9 @@ public class FloatBoardRenderer {
     g.drawOval(centerX - radius, centerY - radius, 2 * radius, 2 * radius);
   }
 
-  private void drawCircleBest(Graphics2D g, int centerX, int centerY, int radius, float f) {
-    g.setStroke(new BasicStroke(radius / f));
-    g.drawOval(
-        centerX - radius - 1 + (Lizzie.config.isScaled ? 1 : 0),
-        centerY - radius - 1 + (Lizzie.config.isScaled ? 1 : 0),
-        2 * radius + 2 + (Lizzie.config.isScaled ? -1 : 0),
-        2 * radius + 2 + (Lizzie.config.isScaled ? -1 : 0));
-  }
-
   private void drawCircle(Graphics2D g, int centerX, int centerY, int radius, float f) {
     g.setStroke(new BasicStroke(radius / f));
-    g.drawOval(
-        centerX - radius,
-        centerY - radius,
-        2 * radius + (Lizzie.config.isScaled ? 1 : 0),
-        2 * radius + (Lizzie.config.isScaled ? 1 : 0));
+    g.drawOval(centerX - radius, centerY - radius, 2 * radius, 2 * radius);
   }
 
   private void drawCircleMin(Graphics2D g, int centerX, int centerY, int radius, float f) {

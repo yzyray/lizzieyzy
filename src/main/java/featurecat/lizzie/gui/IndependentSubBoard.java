@@ -2,6 +2,7 @@ package featurecat.lizzie.gui;
 
 import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
 
+import featurecat.lizzie.Config;
 import featurecat.lizzie.Lizzie;
 import featurecat.lizzie.util.Utils;
 import java.awt.Cursor;
@@ -20,7 +21,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import javax.imageio.ImageIO;
@@ -72,7 +72,10 @@ public class IndependentSubBoard extends JFrame {
           @Override
           protected void paintComponent(Graphics g) {
             super.paintComponent(g);
-
+            if (Config.isScaled) {
+              Graphics2D g1 = (Graphics2D) g;
+              g1.scale(1.0 / Lizzie.javaScaleFactor, 1.0 / Lizzie.javaScaleFactor);
+            }
             paintMianPanel(g);
           }
         };
@@ -355,15 +358,7 @@ public class IndependentSubBoard extends JFrame {
     subBoardRenderer.draw(g0);
     g0.dispose();
     this.cachedImage = cachedImage;
-    if (Lizzie.config.isScaled) {
-      Graphics2D g1 = (Graphics2D) g;
-      final AffineTransform t = g1.getTransform();
-      t.setToScale(1, 1);
-      g1.setTransform(t);
-      g1.drawImage(cachedImage, 0, 0, null);
-    } else {
-      g.drawImage(cachedImage, 0, 0, null);
-    }
+    g.drawImage(cachedImage, 0, 0, null);
   }
 
   public void refresh() {

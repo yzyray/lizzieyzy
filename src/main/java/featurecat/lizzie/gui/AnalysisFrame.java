@@ -1,9 +1,5 @@
 package featurecat.lizzie.gui;
 
-import static java.awt.RenderingHints.KEY_ANTIALIASING;
-import static java.awt.RenderingHints.VALUE_ANTIALIAS_ON;
-import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
-
 import featurecat.lizzie.Lizzie;
 import featurecat.lizzie.analysis.Leelaz;
 import featurecat.lizzie.analysis.MoveData;
@@ -25,7 +21,6 @@ import java.awt.event.MouseWheelListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowStateListener;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -98,8 +93,7 @@ public class AnalysisFrame extends JFrame {
     }
     table = new JTable(dataModel);
 
-    winrateFont =
-        new Font("Microsoft YaHei", Font.PLAIN, Math.max(Lizzie.config.frameFontSize, 14));
+    winrateFont = new Font("Microsoft YaHei", Font.BOLD, Math.max(Lizzie.config.frameFontSize, 14));
     headFont = new Font("Microsoft YaHei", Font.PLAIN, Math.max(Lizzie.config.frameFontSize, 13));
 
     table.getTableHeader().setFont(headFont);
@@ -501,8 +495,7 @@ public class AnalysisFrame extends JFrame {
     if (index == 1) bestMoves = Lizzie.board.getData().bestMoves;
     else if (index == 2) bestMoves = Lizzie.board.getData().bestMoves2;
     if (bestMoves == null || bestMoves.isEmpty()) return;
-    BufferedImage cachedImage = new BufferedImage(width, height, TYPE_INT_ARGB);
-    Graphics2D g = (Graphics2D) cachedImage.getGraphics();
+    Graphics2D g = (Graphics2D) g0;
     g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     for (MoveData move : bestMoves) {
       totalPlayouts += move.playouts;
@@ -554,13 +547,13 @@ public class AnalysisFrame extends JFrame {
         }
       }
     }
-    if (Lizzie.config.isScaled) {
-      Graphics2D g1 = (Graphics2D) g0;
-      g1.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-      g1.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
-      g1.drawImage(cachedImage, 0, 0, null);
-    } else g0.drawImage(cachedImage, 0, 0, null);
-    g.dispose();
+    //    if (Config.isScaled) {
+    //      Graphics2D g1 = (Graphics2D) g0;
+    //      g1.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+    //      g1.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
+    //      g1.drawImage(cachedImage, 0, 0, null);
+    //    } else g0.drawImage(cachedImage, 0, 0, null);
+    //    g.dispose();
   }
 
   class ColorTableCellRenderer extends DefaultTableCellRenderer {

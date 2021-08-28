@@ -66,11 +66,6 @@ private boolean isFromIndependent;
 			                }
 			              },
 			              200);
-			      if(Lizzie.config.isScaled)
-			      {	  Lizzie.frame.repaint();
-			      if(Lizzie.frame.independentMainBoard!=null&&Lizzie.frame.independentMainBoard.isVisible())
-			    	  Lizzie.frame.independentMainBoard.repaint();
-			      }
 			}
 
 			public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
