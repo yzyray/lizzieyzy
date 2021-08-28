@@ -6,7 +6,6 @@ import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
 import static java.awt.image.BufferedImage.TYPE_INT_RGB;
 import static java.lang.Math.max;
 import static java.lang.Math.min;
-import static java.lang.Math.round;
 
 import com.jhlabs.image.GaussianFilter;
 import com.teamdev.jxbrowser.chromium.Browser;
@@ -1033,7 +1032,6 @@ public class LizzieFrame extends JFrame {
         });
 
     // Allow change font in the config
-   
 
     htmlKit = new HtmlKit();
     htmlDoc = (HTMLDocument) htmlKit.createDefaultDocument();
@@ -5442,7 +5440,7 @@ public class LizzieFrame extends JFrame {
     g.drawString(
         text, x + (width - stringWidth) / 2, y + stringHeight + (height - stringHeight) / 2);
   }
-  
+
   /**
    * Truncate text that is too long for the given width
    *
@@ -7326,8 +7324,7 @@ public class LizzieFrame extends JFrame {
         sb.append(
             String.format(Locale.ENGLISH, "%.1f", winRate)
                 + " "
-                + Utils.getPlayoutsString(
-                    Lizzie.board.getHistory().getData().getPlayouts()));
+                + Utils.getPlayoutsString(Lizzie.board.getHistory().getData().getPlayouts()));
         //   }
 
         if (Lizzie.board.getHistory().getData().isKataData) {

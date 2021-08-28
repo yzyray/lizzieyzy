@@ -3128,7 +3128,7 @@ public class Board {
           }
         }
       } else {
-        if (node.getData().lastMove!=null&&node.getData().lastMove.isPresent()) {
+        if (node.getData().lastMove != null && node.getData().lastMove.isPresent()) {
           Map<String, Object> matchAiMap =
               isMatchAi(node, Lizzie.config.matchAiMoves, Lizzie.config.matchAiPercentsPlayouts);
           double percentsMatch =
@@ -3161,8 +3161,7 @@ public class Board {
           previousNode.nodeInfo.percentsMatch = percentsMatch;
           previousNode.nodeInfo.nextNode = node;
           if (node.isMainTrunk() && node.previous().get().isMainTrunk()) {
-            previousNode.nodeInfoMain.analyzed =
-            		previousplayouts > 0 && playouts > 0;
+            previousNode.nodeInfoMain.analyzed = previousplayouts > 0 && playouts > 0;
             previousNode.nodeInfoMain.analyzedMatchValue = previousplayouts > 0;
             if (previousNode.nodeInfoMain.analyzed) {
               previousNode.nodeInfoMain.diffWinrate = winrateDiff;
@@ -3226,7 +3225,7 @@ public class Board {
           }
         }
       } else {
-        if (node.getData().lastMove!=null&&node.getData().lastMove.isPresent()) {
+        if (node.getData().lastMove != null && node.getData().lastMove.isPresent()) {
           Map<String, Object> matchAiMap =
               isMatchAi2(node, Lizzie.config.matchAiMoves, Lizzie.config.matchAiPercentsPlayouts);
           double percentsMatch =
@@ -3237,16 +3236,16 @@ public class Board {
           boolean isblack = !node.getData().blackToPlay;
           int previousplayouts = 0;
           previousplayouts = previousNode.getData().getPlayouts2();
-          previousNode.nodeInfo2.analyzed = previousplayouts> 0 && playouts > 0;
+          previousNode.nodeInfo2.analyzed = previousplayouts > 0 && playouts > 0;
           previousNode.nodeInfo2.analyzedMatchValue = previousplayouts > 0;
           if (previousNode.nodeInfo2.analyzed) {
-              previousNode.nodeInfo2.diffWinrate = winrateDiff;
-              if (node.getData().isKataData2) {
-                previousNode.nodeInfo2.scoreMeanDiff = lastScoreMeanDiff2(node);
-                previousNode.nodeInfo2.scoreMeanBoard = node.getData().scoreMeanBoard2;
-              }
-              previousNode.nodeInfo2.winrate = 100 - node.getData().winrate2;
+            previousNode.nodeInfo2.diffWinrate = winrateDiff;
+            if (node.getData().isKataData2) {
+              previousNode.nodeInfo2.scoreMeanDiff = lastScoreMeanDiff2(node);
+              previousNode.nodeInfo2.scoreMeanBoard = node.getData().scoreMeanBoard2;
             }
+            previousNode.nodeInfo2.winrate = 100 - node.getData().winrate2;
+          }
           previousNode.nodeInfo2.isBest = isBest;
           previousNode.nodeInfo2.coords = coords;
           previousNode.nodeInfo2.isBlack = isblack;
@@ -3259,15 +3258,15 @@ public class Board {
 
           if (node.isMainTrunk()) {
             previousNode.nodeInfoMain2.analyzed = previousplayouts > 0 && playouts > 0;
-            previousNode.nodeInfoMain2.analyzedMatchValue = previousplayouts> 0;
+            previousNode.nodeInfoMain2.analyzedMatchValue = previousplayouts > 0;
             if (previousNode.nodeInfoMain2.analyzed) {
-                previousNode.nodeInfoMain2.diffWinrate = winrateDiff;
-                if (node.getData().isKataData2) {
-                  previousNode.nodeInfoMain2.scoreMeanDiff = lastScoreMeanDiff2(node);
-                  previousNode.nodeInfoMain2.scoreMeanBoard = node.getData().scoreMeanBoard2;
-                }
-                previousNode.nodeInfoMain2.winrate = 100 - node.getData().winrate2;
+              previousNode.nodeInfoMain2.diffWinrate = winrateDiff;
+              if (node.getData().isKataData2) {
+                previousNode.nodeInfoMain2.scoreMeanDiff = lastScoreMeanDiff2(node);
+                previousNode.nodeInfoMain2.scoreMeanBoard = node.getData().scoreMeanBoard2;
               }
+              previousNode.nodeInfoMain2.winrate = 100 - node.getData().winrate2;
+            }
             previousNode.nodeInfoMain2.isBest = isBest;
             previousNode.nodeInfoMain2.coords = coords;
             previousNode.nodeInfoMain2.isBlack = isblack;

@@ -275,13 +275,11 @@ public class SuggestionInfoOrderSettings extends JDialog {
             }
             if (Lizzie.frame != null && Lizzie.frame.menu != null)
               Lizzie.frame.menu.refreshDoubleMoveInfoStatus();
-            if(Lizzie.frame.configDialog2 != null&&Lizzie.frame.configDialog2.isVisible())
-            {
-            	Lizzie.frame.configDialog2.setChkSuggestionInfo();
+            if (Lizzie.frame.configDialog2 != null && Lizzie.frame.configDialog2.isVisible()) {
+              Lizzie.frame.configDialog2.setChkSuggestionInfo();
             }
-            if(Lizzie.firstUseSettings != null&&Lizzie.firstUseSettings.isVisible())
-            {
-            	Lizzie.firstUseSettings.setChkSuggestionInfo();
+            if (Lizzie.firstUseSettings != null && Lizzie.firstUseSettings.isVisible()) {
+              Lizzie.firstUseSettings.setChkSuggestionInfo();
             }
           }
         });
@@ -664,9 +662,9 @@ public class SuggestionInfoOrderSettings extends JDialog {
       Color oriColor = g.getColor();
       if (showScoreLead && showPlayouts && showWinrate) {
         double score = move.scoreMean;
-          if (Lizzie.config.showKataGoBoardScoreMean) {
-            score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
-          }        
+        if (Lizzie.config.showKataGoBoardScoreMean) {
+          score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
+        }
         boolean shouldShowMaxColorWinrate = canShowMaxColor && hasMaxWinrate;
         boolean shouldShowMaxColorPlayouts = canShowMaxColor && move.playouts == maxPlayouts;
         boolean shouldShowMaxColorScoreLead = canShowMaxColor && move.scoreMean == maxScoreMean;

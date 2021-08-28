@@ -59,32 +59,32 @@ public class Lizzie {
     mainArgs = args;
     config = new Config();
     try {
-    	LizzieFrame.uiFont = new Font("SansSerif", Font.TRUETYPE_FONT, 12);
-        //          Font.createFont(
-        //              Font.TRUETYPE_FONT,
-        //              Thread.currentThread()
-        //                  .getContextClassLoader()
-        //                  .getResourceAsStream("fonts/OpenSans-Regular.ttf"));
-    	LizzieFrame.winrateFont =
-            Font.createFont(
-                Font.TRUETYPE_FONT,
-                Thread.currentThread()
-                    .getContextClassLoader()
-                    .getResourceAsStream("fonts/OpenSans-Semibold.ttf"));
-      } catch (IOException | FontFormatException e) {
-        e.printStackTrace();
-      }
+      LizzieFrame.uiFont = new Font("SansSerif", Font.TRUETYPE_FONT, 12);
+      //          Font.createFont(
+      //              Font.TRUETYPE_FONT,
+      //              Thread.currentThread()
+      //                  .getContextClassLoader()
+      //                  .getResourceAsStream("fonts/OpenSans-Regular.ttf"));
+      LizzieFrame.winrateFont =
+          Font.createFont(
+              Font.TRUETYPE_FONT,
+              Thread.currentThread()
+                  .getContextClassLoader()
+                  .getResourceAsStream("fonts/OpenSans-Semibold.ttf"));
+    } catch (IOException | FontFormatException e) {
+      e.printStackTrace();
+    }
     if (Lizzie.config.uiFontName != null
-            && !(Lizzie.config.uiFontName.equals("Lizzie默认")
-                || Lizzie.config.uiFontName.equals("Lizzie Default"))) {
-          LizzieFrame.uiFont = new Font(Lizzie.config.uiFontName, Font.PLAIN, 12);
-        }
+        && !(Lizzie.config.uiFontName.equals("Lizzie默认")
+            || Lizzie.config.uiFontName.equals("Lizzie Default"))) {
+      LizzieFrame.uiFont = new Font(Lizzie.config.uiFontName, Font.PLAIN, 12);
+    }
     LizzieFrame.playoutsFont = new Font(Lizzie.config.fontName, Font.PLAIN, 12);
-        if (Lizzie.config.winrateFontName != null
-            && !(Lizzie.config.winrateFontName.equals("Lizzie默认")
-                || Lizzie.config.winrateFontName.equals("Lizzie Default"))) {
-        	LizzieFrame.winrateFont = new Font(Lizzie.config.winrateFontName, Font.BOLD, 12);
-        }
+    if (Lizzie.config.winrateFontName != null
+        && !(Lizzie.config.winrateFontName.equals("Lizzie默认")
+            || Lizzie.config.winrateFontName.equals("Lizzie Default"))) {
+      LizzieFrame.winrateFont = new Font(Lizzie.config.winrateFontName, Font.BOLD, 12);
+    }
     if (config.logConsoleToFile) {
       PrintStream oldPrintStream = System.out;
       FileOutputStream bos = new FileOutputStream("LastConsoleLogs.txt");
@@ -210,10 +210,10 @@ public class Lizzie {
           (int) (width - 20 + (Config.isScaled ? 1.0 : Math.sqrt(Lizzie.sysScaleFactor)) * 20),
           (int) (height - 20 + (Config.isScaled ? 1.0 : Lizzie.sysScaleFactor) * 25));
   }
-  
+
   public static void openFirstUseSettings(boolean isOnload) {
-	  firstUseSettings = new FirstUseSettings(isOnload);
-      firstUseSettings.setVisible(true);
+    firstUseSettings = new FirstUseSettings(isOnload);
+    firstUseSettings.setVisible(true);
   }
 
   public static void start(int index) {

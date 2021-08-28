@@ -1935,13 +1935,13 @@ public class ConfigDialog2 extends JDialog {
   }
 
   public void setChkSuggestionInfo() {
-	// TODO Auto-generated method stub
-	    chkShowWinrateInSuggestion.setSelected(Lizzie.config.showWinrateInSuggestion);
-	    chkShowPlayoutsInSuggestion.setSelected(Lizzie.config.showPlayoutsInSuggestion);
-	    chkShowScoremeanInSuggestion.setSelected(Lizzie.config.showScoremeanInSuggestion);
-}
+    // TODO Auto-generated method stub
+    chkShowWinrateInSuggestion.setSelected(Lizzie.config.showWinrateInSuggestion);
+    chkShowPlayoutsInSuggestion.setSelected(Lizzie.config.showPlayoutsInSuggestion);
+    chkShowScoremeanInSuggestion.setSelected(Lizzie.config.showScoremeanInSuggestion);
+  }
 
-class ComsWorker extends SwingWorker<Void, Integer> {
+  class ComsWorker extends SwingWorker<Void, Integer> {
 
     private JDialog owner;
 

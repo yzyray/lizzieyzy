@@ -30,7 +30,6 @@ public class FirstUseSettings extends JDialog {
   private JCheckBox chkLimitTime;
   private JCheckBox chkLimitPlayouts;
   private JDialog thisDialog = this;
-  
 
   public FirstUseSettings(boolean firstTime) {
     this.setModal(true);
@@ -460,8 +459,7 @@ public class FirstUseSettings extends JDialog {
     lblSuggestionInfo.setBounds(10, 206, 285, 22);
     getContentPane().add(lblSuggestionInfo);
 
-     chkWinrate =
-        new JFontCheckBox(Lizzie.resourceBundle.getString("FirstUseSettings.chkWinrate"));
+    chkWinrate = new JFontCheckBox(Lizzie.resourceBundle.getString("FirstUseSettings.chkWinrate"));
     chkWinrate.setBounds(
         Lizzie.config.isFrameFontSmall() ? 240 : (Lizzie.config.isFrameFontMiddle() ? 310 : 380),
         208,
@@ -469,8 +467,7 @@ public class FirstUseSettings extends JDialog {
         23);
     getContentPane().add(chkWinrate);
 
-    chkPlayouts =
-        new JFontCheckBox(Lizzie.resourceBundle.getString("FirstUseSettings.chkVisits"));
+    chkPlayouts = new JFontCheckBox(Lizzie.resourceBundle.getString("FirstUseSettings.chkVisits"));
     chkPlayouts.setBounds(
         Lizzie.config.isFrameFontSmall() ? 350 : (Lizzie.config.isFrameFontMiddle() ? 420 : 520),
         208,
@@ -511,7 +508,7 @@ public class FirstUseSettings extends JDialog {
     getContentPane().add(btnCustomOrder);
 
     setChkSuggestionInfo();
-   
+
     JFontButton defaultSettings =
         new JFontButton(
             Lizzie.resourceBundle.getString("FirstUseSettings.defaultSettings")); // ("加载默认设置");
@@ -556,7 +553,8 @@ public class FirstUseSettings extends JDialog {
     btnApply.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            if (firstTime&&!chkPlayouts.isSelected()
+            if (firstTime
+                && !chkPlayouts.isSelected()
                 && !chkScoreLead.isSelected()
                 && !chkWinrate.isSelected()) {
               Utils.showMsg(
@@ -806,11 +804,10 @@ public class FirstUseSettings extends JDialog {
         });
   }
 
-
-public void setChkSuggestionInfo() {
-	// TODO Auto-generated method stub
-	chkWinrate.setSelected(Lizzie.config.showWinrateInSuggestion);
+  public void setChkSuggestionInfo() {
+    // TODO Auto-generated method stub
+    chkWinrate.setSelected(Lizzie.config.showWinrateInSuggestion);
     chkPlayouts.setSelected(Lizzie.config.showPlayoutsInSuggestion);
     chkScoreLead.setSelected(Lizzie.config.showScoremeanInSuggestion);
-}
+  }
 }
