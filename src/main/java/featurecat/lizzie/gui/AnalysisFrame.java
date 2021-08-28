@@ -9,6 +9,8 @@ import featurecat.lizzie.analysis.Leelaz;
 import featurecat.lizzie.analysis.MoveData;
 import featurecat.lizzie.rules.Board;
 import featurecat.lizzie.rules.BoardHistoryNode;
+import featurecat.lizzie.util.Utils;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -520,10 +522,10 @@ public class AnalysisFrame extends JFrame {
     g.setFont(new Font(Lizzie.config.uiFontName, Font.PLAIN, 13));
     g.drawString(
         resourceBundle.getString("AnalysisFrame.totalVisits")
-            + Lizzie.frame.getPlayoutsString(totalPlayouts)
+            + Utils.getPlayoutsString(totalPlayouts)
             + " "
             + resourceBundle.getString("AnalysisFrame.maxVisits")
-            + Lizzie.frame.getPlayoutsString(maxPlayouts)
+            + Utils.getPlayoutsString(maxPlayouts)
             + " "
             + resourceBundle.getString("AnalysisFrame.concentration")
             + String.format(Locale.ENGLISH, "%.2f", stable)
@@ -980,7 +982,7 @@ public class AnalysisFrame extends JFrame {
             return String.format(Locale.ENGLISH, "%.1f", data.winrate);
           case 4:
             if (data.order == -100) return resourceBundle.getString("AnalysisFrame.exclude");
-            else return Lizzie.frame.getPlayoutsString(data.playouts);
+            else return Utils.getPlayoutsString(data.playouts);
           case 5:
             return String.format(
                 Locale.ENGLISH, "%.1f", (double) data.playouts * 100 / totalPlayouts);

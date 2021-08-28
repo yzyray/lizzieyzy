@@ -3080,23 +3080,6 @@ public class Board {
     Thread thread = new Thread(runnable);
     thread.start();
   }
-  //
-  //  public void updateMovelist(BoardHistoryNode node) {
-  //    if (isLoadingFile) return;
-  //    Runnable runnable =
-  //        new Runnable() {
-  //          public void run() {
-  //            try {
-  //              updateMovelistTh(node);
-  //            } catch (Exception e) {
-  //              // TODO Auto-generated catch block
-  //              e.printStackTrace();
-  //            }
-  //          }
-  //        };
-  //    threadUpdateMoveList = new Thread(runnable);
-  //    threadUpdateMoveList.start();
-  //  }
 
   public void updateMovelist(BoardHistoryNode node) {
     if (!node.previous().isPresent()) {
@@ -3119,17 +3102,16 @@ public class Board {
       }
 
       double winrateDiff = lastWinrateDiff(node);
-      Optional<int[]> passstep = Optional.empty();
       if (Lizzie.board.isPkBoard && playouts > 0) {
         if (node.isMainTrunk() && node.previous().get().isMainTrunk()) {
           if (node.getData().lastMove.isPresent()
               && previousNode.previous().isPresent()
-              && !(previousNode.getData().lastMove == passstep)) {
+              && previousNode.getData().lastMove.isPresent()) {
             int[] coords = node.getData().lastMove.get();
             boolean isblack = !node.getData().blackToPlay;
             int previousplayouts = 0;
             previousplayouts = previousNode.previous().get().getData().getPlayouts();
-            previousNode.nodeInfo.analyzed = previousNode.getData().getPlayouts() > 0;
+            previousNode.nodeInfo.analyzed = previousplayouts > 0;
             node.nodeInfo.diffWinrate = winrateDiff;
             previousNode.nodeInfo.winrate = 100 - node.previous().get().getData().winrate;
             previousNode.nodeInfo.coords = coords;
@@ -3146,7 +3128,7 @@ public class Board {
           }
         }
       } else {
-        if (!(node.getData().lastMove == passstep) && !(node.getData().lastMove.get() == null)) {
+        if (node.getData().lastMove!=null&&node.getData().lastMove.isPresent()) {
           Map<String, Object> matchAiMap =
               isMatchAi(node, Lizzie.config.matchAiMoves, Lizzie.config.matchAiPercentsPlayouts);
           double percentsMatch =
@@ -3159,8 +3141,8 @@ public class Board {
           boolean isblack = !node.getData().blackToPlay;
           int previousplayouts = 0;
           previousplayouts = previousNode.getData().getPlayouts();
-          previousNode.nodeInfo.analyzed = previousNode.getData().getPlayouts() > 0 && playouts > 0;
-          previousNode.nodeInfo.analyzedMatchValue = previousNode.getData().getPlayouts() > 0;
+          previousNode.nodeInfo.analyzed = previousplayouts > 0 && playouts > 0;
+          previousNode.nodeInfo.analyzedMatchValue = previousplayouts > 0;
           previousNode.nodeInfo.isBest = isBest;
           if (previousNode.nodeInfo.analyzed) {
             previousNode.nodeInfo.diffWinrate = winrateDiff;
@@ -3180,8 +3162,8 @@ public class Board {
           previousNode.nodeInfo.nextNode = node;
           if (node.isMainTrunk() && node.previous().get().isMainTrunk()) {
             previousNode.nodeInfoMain.analyzed =
-                previousNode.getData().getPlayouts() > 0 && playouts > 0;
-            previousNode.nodeInfoMain.analyzedMatchValue = previousNode.getData().getPlayouts() > 0;
+            		previousplayouts > 0 && playouts > 0;
+            previousNode.nodeInfoMain.analyzedMatchValue = previousplayouts > 0;
             if (previousNode.nodeInfoMain.analyzed) {
               previousNode.nodeInfoMain.diffWinrate = winrateDiff;
               if (node.getData().isKataData) {
@@ -3202,9 +3184,6 @@ public class Board {
         }
       }
     }
-    //    if (Lizzie.aiFrame.isVisible()) {
-    //      Lizzie.aiFrame.repaint();
-    //    }
   }
 
   public void updateMovelist2(BoardHistoryNode node) {
@@ -3213,8 +3192,7 @@ public class Board {
     }
     BoardHistoryNode previousNode = node.previous().get();
     int movenumer = node.getData().moveNumber;
-    int playouts = 0;
-    playouts = node.getData().getPlayouts2();
+    int playouts = node.getData().getPlayouts2();
     if ((playouts > previousNode.nodeInfo2.playouts
             || node.previous().get().getData().getPlayouts2()
                 > previousNode.nodeInfo2.previousPlayouts
@@ -3225,16 +3203,15 @@ public class Board {
         previousNode.nodeInfo2.changed = false;
       }
       double winrateDiff = lastWinrateDiff2(node);
-      Optional<int[]> passstep = Optional.empty();
       if (Lizzie.board.isPkBoard) {
         if (node.getData().lastMove.isPresent()
             && previousNode.previous().isPresent()
-            && !(previousNode.getData().lastMove == passstep)) {
+            && previousNode.getData().lastMove.isPresent()) {
           int[] coords = node.getData().lastMove.get();
           boolean isblack = !node.getData().blackToPlay;
           int previousplayouts = 0;
           previousplayouts = previousNode.previous().get().getData().getPlayouts2();
-          previousNode.nodeInfo2.analyzed = previousNode.getData().getPlayouts2() > 0;
+          previousNode.nodeInfo2.analyzed = previousplayouts > 0;
           node.nodeInfo2.diffWinrate = winrateDiff;
           previousNode.nodeInfo2.winrate = 100 - node.previous().get().getData().winrate2;
           previousNode.nodeInfo2.coords = coords;
@@ -3249,7 +3226,7 @@ public class Board {
           }
         }
       } else {
-        if (!(node.getData().lastMove == passstep) && !(node.getData().lastMove.get() == null)) {
+        if (node.getData().lastMove!=null&&node.getData().lastMove.isPresent()) {
           Map<String, Object> matchAiMap =
               isMatchAi2(node, Lizzie.config.matchAiMoves, Lizzie.config.matchAiPercentsPlayouts);
           double percentsMatch =
@@ -3260,11 +3237,17 @@ public class Board {
           boolean isblack = !node.getData().blackToPlay;
           int previousplayouts = 0;
           previousplayouts = previousNode.getData().getPlayouts2();
-
-          previousNode.nodeInfo2.analyzed = previousNode.getData().getPlayouts2() > 0;
+          previousNode.nodeInfo2.analyzed = previousplayouts> 0 && playouts > 0;
+          previousNode.nodeInfo2.analyzedMatchValue = previousplayouts > 0;
+          if (previousNode.nodeInfo2.analyzed) {
+              previousNode.nodeInfo2.diffWinrate = winrateDiff;
+              if (node.getData().isKataData2) {
+                previousNode.nodeInfo2.scoreMeanDiff = lastScoreMeanDiff2(node);
+                previousNode.nodeInfo2.scoreMeanBoard = node.getData().scoreMeanBoard2;
+              }
+              previousNode.nodeInfo2.winrate = 100 - node.getData().winrate2;
+            }
           previousNode.nodeInfo2.isBest = isBest;
-          previousNode.nodeInfo2.diffWinrate = winrateDiff;
-          previousNode.nodeInfo2.winrate = 100 - node.getData().winrate2;
           previousNode.nodeInfo2.coords = coords;
           previousNode.nodeInfo2.isBlack = isblack;
           previousNode.nodeInfo2.playouts = playouts;
@@ -3273,16 +3256,19 @@ public class Board {
           previousNode.nodeInfo2.isMatchAi = isMatchAi;
           previousNode.nodeInfo2.percentsMatch = percentsMatch;
           previousNode.nodeInfo2.nextNode = node;
-          if (node.getData().isKataData2) {
-            previousNode.nodeInfo2.scoreMeanDiff = lastScoreMeanDiff2(node);
-            previousNode.nodeInfo2.scoreMeanBoard = node.getData().scoreMeanBoard2;
-          }
 
           if (node.isMainTrunk()) {
-            previousNode.nodeInfoMain2.analyzed = previousNode.getData().getPlayouts2() > 0;
+            previousNode.nodeInfoMain2.analyzed = previousplayouts > 0 && playouts > 0;
+            previousNode.nodeInfoMain2.analyzedMatchValue = previousplayouts> 0;
+            if (previousNode.nodeInfoMain2.analyzed) {
+                previousNode.nodeInfoMain2.diffWinrate = winrateDiff;
+                if (node.getData().isKataData2) {
+                  previousNode.nodeInfoMain2.scoreMeanDiff = lastScoreMeanDiff2(node);
+                  previousNode.nodeInfoMain2.scoreMeanBoard = node.getData().scoreMeanBoard2;
+                }
+                previousNode.nodeInfoMain2.winrate = 100 - node.getData().winrate2;
+              }
             previousNode.nodeInfoMain2.isBest = isBest;
-            previousNode.nodeInfoMain2.diffWinrate = winrateDiff;
-            previousNode.nodeInfoMain2.winrate = 100 - node.getData().winrate2;
             previousNode.nodeInfoMain2.coords = coords;
             previousNode.nodeInfoMain2.isBlack = isblack;
             previousNode.nodeInfoMain2.playouts = playouts;
@@ -3290,10 +3276,6 @@ public class Board {
             previousNode.nodeInfoMain2.previousPlayouts = previousplayouts;
             previousNode.nodeInfoMain2.isMatchAi = isMatchAi;
             previousNode.nodeInfoMain2.percentsMatch = percentsMatch;
-            if (node.getData().isKataData2) {
-              previousNode.nodeInfoMain2.scoreMeanDiff = lastScoreMeanDiff2(node);
-              previousNode.nodeInfoMain2.scoreMeanBoard = node.getData().scoreMeanBoard2;
-            }
           }
         }
       }

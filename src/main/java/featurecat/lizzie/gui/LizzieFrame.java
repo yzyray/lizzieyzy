@@ -493,27 +493,6 @@ public class LizzieFrame extends JFrame {
   public static boolean isKeepForcing = false;
   public static boolean isTempForcing = false;
 
-  static {
-    // load fonts
-
-    try {
-      uiFont = new Font("SansSerif", Font.TRUETYPE_FONT, 12);
-      //          Font.createFont(
-      //              Font.TRUETYPE_FONT,
-      //              Thread.currentThread()
-      //                  .getContextClassLoader()
-      //                  .getResourceAsStream("fonts/OpenSans-Regular.ttf"));
-      winrateFont =
-          Font.createFont(
-              Font.TRUETYPE_FONT,
-              Thread.currentThread()
-                  .getContextClassLoader()
-                  .getResourceAsStream("fonts/OpenSans-Semibold.ttf"));
-    } catch (IOException | FontFormatException e) {
-      e.printStackTrace();
-    }
-  }
-
   /** Creates a window */
   public LizzieFrame() {
     super(DEFAULT_TITLE);
@@ -1054,17 +1033,7 @@ public class LizzieFrame extends JFrame {
         });
 
     // Allow change font in the config
-    if (Lizzie.config.uiFontName != null
-        && !(Lizzie.config.uiFontName.equals("Lizzie默认")
-            || Lizzie.config.uiFontName.equals("Lizzie Default"))) {
-      uiFont = new Font(Lizzie.config.uiFontName, Font.PLAIN, 12);
-    }
-    playoutsFont = new Font(Lizzie.config.fontName, Font.PLAIN, 12);
-    if (Lizzie.config.winrateFontName != null
-        && !(Lizzie.config.winrateFontName.equals("Lizzie默认")
-            || Lizzie.config.winrateFontName.equals("Lizzie Default"))) {
-      winrateFont = new Font(Lizzie.config.winrateFontName, Font.BOLD, 12);
-    }
+   
 
     htmlKit = new HtmlKit();
     htmlDoc = (HTMLDocument) htmlKit.createDefaultDocument();
@@ -4062,7 +4031,7 @@ public class LizzieFrame extends JFrame {
           //  }
           String text1comm =
               resourceBundle.getString("LizzieFrame.visits")
-                  + getPlayoutsString(Lizzie.board.getData().getPlayouts())
+                  + Utils.getPlayoutsString(Lizzie.board.getData().getPlayouts())
                   + " "
                   + resourceBundle.getString("LizzieFrame.winrate")
                   + String.format(Locale.ENGLISH, "%.1f%%", Lizzie.board.getData().winrate);
@@ -4076,7 +4045,7 @@ public class LizzieFrame extends JFrame {
           //    }
           String text2comm =
               resourceBundle.getString("LizzieFrame.visits")
-                  + getPlayoutsString(Lizzie.board.getData().getPlayouts2())
+                  + Utils.getPlayoutsString(Lizzie.board.getData().getPlayouts2())
                   + " "
                   + resourceBundle.getString("LizzieFrame.winrate")
                   + String.format(Locale.ENGLISH, "%.1f%%", Lizzie.board.getData().winrate2);
@@ -5473,30 +5442,7 @@ public class LizzieFrame extends JFrame {
     g.drawString(
         text, x + (width - stringWidth) / 2, y + stringHeight + (height - stringHeight) / 2);
   }
-
-  /**
-   * @return a shorter, rounded string version of playouts. e.g. 345 -> 345, 1265 -> 1.3k, 44556 ->
-   *     45k, 133523 -> 134k, 1234567 -> 1.2m
-   */
-  public String getPlayoutsString(int playouts) {
-    //    if (Lizzie.leelaz != null && Lizzie.leelaz.isZen) {
-    //      if (playouts < 0) return "库";
-    //    }
-    if (playouts >= 10_000_000) {
-      double playoutsDouble = (double) playouts / 100_000; // 1234567 -> 12.34567
-      return round(playoutsDouble) / 10.0 + "m";
-    } else if (playouts >= 10_000) {
-      double playoutsDouble = (double) playouts / 1_000; // 13265 -> 13.265
-      return round(playoutsDouble) + "k";
-    } else if (playouts >= 1_000) {
-      double playoutsDouble = (double) playouts / 1_000; // 1265 -> 12.65
-      return String.format(Locale.ENGLISH, "%.1f", playoutsDouble)
-          + "k"; // round(playoutsDouble) / 10.0 + "k";
-    } else {
-      return String.valueOf(playouts);
-    }
-  }
-
+  
   /**
    * Truncate text that is too long for the given width
    *
@@ -7380,7 +7326,7 @@ public class LizzieFrame extends JFrame {
         sb.append(
             String.format(Locale.ENGLISH, "%.1f", winRate)
                 + " "
-                + Lizzie.frame.getPlayoutsString(
+                + Utils.getPlayoutsString(
                     Lizzie.board.getHistory().getData().getPlayouts()));
         //   }
 
@@ -7416,7 +7362,7 @@ public class LizzieFrame extends JFrame {
         sb.append(
             String.format(Locale.ENGLISH, "%.1f", winRate)
                 + " "
-                + Lizzie.frame.getPlayoutsString(data.getPlayouts()));
+                + Utils.getPlayoutsString(data.getPlayouts()));
         if (data.isKataData) {
           sb.append(" " + String.format(Locale.ENGLISH, "%.1f", score));
         }
@@ -10529,7 +10475,7 @@ public class LizzieFrame extends JFrame {
                     ? (Lizzie.board.getHistory().isBlacksTurn() ? data.winrate : 100 - data.winrate)
                     : data.winrate);
           case 3:
-            return Lizzie.frame.getPlayoutsString(data.playouts);
+            return Utils.getPlayoutsString(data.playouts);
           case 4:
             return String.format(
                 Locale.ENGLISH, "%.1f", (double) data.playouts * 100 / totalPlayouts);
@@ -12206,7 +12152,7 @@ public class LizzieFrame extends JFrame {
     }
   }
 
-  public void openSuggestionInfoCustom(Window owner) {
+  public static void openSuggestionInfoCustom(Window owner) {
     // TODO Auto-generated method stub
     SuggestionInfoOrderSettings suggestionInfoOrderSettings =
         new SuggestionInfoOrderSettings(owner);

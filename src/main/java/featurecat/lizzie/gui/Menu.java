@@ -915,7 +915,7 @@ public class Menu extends JMenuBar {
         new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
-            Lizzie.frame.openSuggestionInfoCustom(Lizzie.frame);
+            LizzieFrame.openSuggestionInfoCustom(Lizzie.frame);
           }
         });
     Suggestions.add(customInfoOrdr);
@@ -4608,8 +4608,7 @@ public class Menu extends JMenuBar {
     initSettings.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            FirstUseSettings firstUseSettings = new FirstUseSettings(false);
-            firstUseSettings.setVisible(true);
+            Lizzie.openFirstUseSettings(false);
           }
         });
 

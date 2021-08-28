@@ -275,6 +275,14 @@ public class SuggestionInfoOrderSettings extends JDialog {
             }
             if (Lizzie.frame != null && Lizzie.frame.menu != null)
               Lizzie.frame.menu.refreshDoubleMoveInfoStatus();
+            if(Lizzie.frame.configDialog2 != null&&Lizzie.frame.configDialog2.isVisible())
+            {
+            	Lizzie.frame.configDialog2.setChkSuggestionInfo();
+            }
+            if(Lizzie.firstUseSettings != null&&Lizzie.firstUseSettings.isVisible())
+            {
+            	Lizzie.firstUseSettings.setChkSuggestionInfo();
+            }
           }
         });
     okButton.setBounds(150, 101, 93, 25);
@@ -581,7 +589,7 @@ public class SuggestionInfoOrderSettings extends JDialog {
     // drawShadow2(g, suggestionX, suggestionY, true, alpha / 255.0f);
     //   g.setColor(color);
     if (Lizzie.config.showSuggestionOrder && move.order == 0) {
-      boolean blackToPlay = Lizzie.board.getData().blackToPlay;
+      boolean blackToPlay = true;
       drawStringForOrder(
           g,
           (int) round(suggestionX + squareWidth * 0.43) + 1,
@@ -616,7 +624,7 @@ public class SuggestionInfoOrderSettings extends JDialog {
     double roundedWinrate = round(move.winrate * 10) / 10.0;
 
     if (Lizzie.config.showSuggestionOrder && move.order < 9 && move.order > 0) {
-      boolean blackToPlay = Lizzie.board.getData().blackToPlay;
+      boolean blackToPlay = true;
       drawStringForOrder(
           g,
           (int) round(suggestionX + squareWidth * 0.43),
@@ -656,23 +664,14 @@ public class SuggestionInfoOrderSettings extends JDialog {
       Color oriColor = g.getColor();
       if (showScoreLead && showPlayouts && showWinrate) {
         double score = move.scoreMean;
-        if (Lizzie.board.getHistory().isBlacksTurn()) {
           if (Lizzie.config.showKataGoBoardScoreMean) {
             score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
-          }
-        } else {
-          if (Lizzie.config.showKataGoBoardScoreMean) {
-            score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
-          }
-          if (Lizzie.config.winrateAlwaysBlack) {
-            score = -score;
-          }
-        }
+          }        
         boolean shouldShowMaxColorWinrate = canShowMaxColor && hasMaxWinrate;
         boolean shouldShowMaxColorPlayouts = canShowMaxColor && move.playouts == maxPlayouts;
         boolean shouldShowMaxColorScoreLead = canShowMaxColor && move.scoreMean == maxScoreMean;
         String winrateText = String.format(Locale.ENGLISH, "%.1f", roundedWinrate);
-        String playoutsText = Lizzie.frame.getPlayoutsString(move.playouts);
+        String playoutsText = Utils.getPlayoutsString(move.playouts);
         String scoreLeadText = String.format(Locale.ENGLISH, "%.1f", score);
         if (currerentUseDefaultInfoRowOrder) {
           if (shouldShowMaxColorWinrate) g.setColor(maxColor);
@@ -789,7 +788,7 @@ public class SuggestionInfoOrderSettings extends JDialog {
         }
       } else if (showWinrate && showPlayouts) {
         String winrateText = String.format(Locale.ENGLISH, "%.1f", roundedWinrate);
-        String playoutsText = Lizzie.frame.getPlayoutsString(move.playouts);
+        String playoutsText = Utils.getPlayoutsString(move.playouts);
         boolean shouldShowMaxColorWinrate = canShowMaxColor && hasMaxWinrate;
         boolean shouldShowMaxColorPlayouts = canShowMaxColor && move.playouts == maxPlayouts;
         if (currerentUseDefaultInfoRowOrder
@@ -951,7 +950,7 @@ public class SuggestionInfoOrderSettings extends JDialog {
             score = -score;
           }
         }
-        String playoutsText = Lizzie.frame.getPlayoutsString(move.playouts);
+        String playoutsText = Utils.getPlayoutsString(move.playouts);
         String scoreLeadText = String.format(Locale.ENGLISH, "%.1f", score);
         if (currerentUseDefaultInfoRowOrder
             || currentSuggestionInfoPlayouts < currentSuggestionInfoScoreLead) {
@@ -1035,7 +1034,7 @@ public class SuggestionInfoOrderSettings extends JDialog {
             suggestionX,
             suggestionY,
             LizzieFrame.playoutsFont,
-            Lizzie.frame.getPlayoutsString(move.playouts),
+            Utils.getPlayoutsString(move.playouts),
             stoneRadius,
             stoneRadius * 1.9);
         if (shouldShowMaxColorPlayouts) g.setColor(oriColor);

@@ -24,9 +24,13 @@ public class FirstUseSettings extends JDialog {
   private JFontTextField txtLimitVariation;
   private JFontTextField txtMaxAnalyzeTime;
   private JFontTextField txtMaxAnalyzePlayouts;
+  private JFontCheckBox chkPlayouts;
+  private JFontCheckBox chkScoreLead;
+  private JFontCheckBox chkWinrate;
   private JCheckBox chkLimitTime;
   private JCheckBox chkLimitPlayouts;
   private JDialog thisDialog = this;
+  
 
   public FirstUseSettings(boolean firstTime) {
     this.setModal(true);
@@ -456,7 +460,7 @@ public class FirstUseSettings extends JDialog {
     lblSuggestionInfo.setBounds(10, 206, 285, 22);
     getContentPane().add(lblSuggestionInfo);
 
-    JFontCheckBox chkWinrate =
+     chkWinrate =
         new JFontCheckBox(Lizzie.resourceBundle.getString("FirstUseSettings.chkWinrate"));
     chkWinrate.setBounds(
         Lizzie.config.isFrameFontSmall() ? 240 : (Lizzie.config.isFrameFontMiddle() ? 310 : 380),
@@ -465,7 +469,7 @@ public class FirstUseSettings extends JDialog {
         23);
     getContentPane().add(chkWinrate);
 
-    JFontCheckBox chkPlayouts =
+    chkPlayouts =
         new JFontCheckBox(Lizzie.resourceBundle.getString("FirstUseSettings.chkVisits"));
     chkPlayouts.setBounds(
         Lizzie.config.isFrameFontSmall() ? 350 : (Lizzie.config.isFrameFontMiddle() ? 420 : 520),
@@ -474,7 +478,7 @@ public class FirstUseSettings extends JDialog {
         23);
     getContentPane().add(chkPlayouts);
 
-    JFontCheckBox chkScoreLead =
+    chkScoreLead =
         new JFontCheckBox(Lizzie.resourceBundle.getString("FirstUseSettings.chkScoreLead"));
     chkScoreLead.setBounds(
         Lizzie.config.isFrameFontSmall() ? 460 : (Lizzie.config.isFrameFontMiddle() ? 530 : 660),
@@ -501,15 +505,13 @@ public class FirstUseSettings extends JDialog {
     btnCustomOrder.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            Lizzie.frame.openSuggestionInfoCustom(thisDialog);
+            LizzieFrame.openSuggestionInfoCustom(thisDialog);
           }
         });
     getContentPane().add(btnCustomOrder);
 
-    chkWinrate.setSelected(Lizzie.config.showWinrateInSuggestion);
-    chkPlayouts.setSelected(Lizzie.config.showPlayoutsInSuggestion);
-    chkScoreLead.setSelected(Lizzie.config.showScoremeanInSuggestion);
-
+    setChkSuggestionInfo();
+   
     JFontButton defaultSettings =
         new JFontButton(
             Lizzie.resourceBundle.getString("FirstUseSettings.defaultSettings")); // ("加载默认设置");
@@ -554,7 +556,7 @@ public class FirstUseSettings extends JDialog {
     btnApply.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            if (!chkPlayouts.isSelected()
+            if (firstTime&&!chkPlayouts.isSelected()
                 && !chkScoreLead.isSelected()
                 && !chkWinrate.isSelected()) {
               Utils.showMsg(
@@ -617,7 +619,6 @@ public class FirstUseSettings extends JDialog {
             }
             int limitVariation = 0;
             int limitSuggestion = 0;
-            int limitPvVisits = 0;
             int maxAnalyzeTime = (int) (Lizzie.config.maxAnalyzeTimeMillis / 1000);
             long maxAnalyzePlayouts = Lizzie.config.limitPlayouts;
             try {
@@ -804,4 +805,12 @@ public class FirstUseSettings extends JDialog {
           }
         });
   }
+
+
+public void setChkSuggestionInfo() {
+	// TODO Auto-generated method stub
+	chkWinrate.setSelected(Lizzie.config.showWinrateInSuggestion);
+    chkPlayouts.setSelected(Lizzie.config.showPlayoutsInSuggestion);
+    chkScoreLead.setSelected(Lizzie.config.showScoremeanInSuggestion);
+}
 }

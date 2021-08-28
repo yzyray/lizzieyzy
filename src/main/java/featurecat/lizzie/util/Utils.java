@@ -50,7 +50,7 @@ public class Utils {
   public static String pwd = java.io.File.separator;
   private static int msemaphoretryroom = 1;
   private static boolean alertedNoByoyomiSoundFile = false;
-
+  
   public static void showHtmlMessage(String title, String content) {
     HtmlMessage htmlMessage = new HtmlMessage(title, content);
     htmlMessage.setVisible(true);

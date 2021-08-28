@@ -1873,7 +1873,7 @@ public class BoardRenderer {
         (int) (stoneY - squareWidth * 0.2),
         LizzieFrame.uiFont,
         Font.PLAIN,
-        Lizzie.frame.getPlayoutsString(pvVisits),
+        Utils.getPlayoutsString(pvVisits),
         (float) (squareWidth * 0.33),
         squareWidth * 0.8,
         1);
@@ -1908,7 +1908,7 @@ public class BoardRenderer {
         (int) (stoneY - squareWidth * 0.2),
         LizzieFrame.uiFont,
         Font.PLAIN,
-        Lizzie.frame.getPlayoutsString(pvVisits),
+        Utils.getPlayoutsString(pvVisits),
         (float) (squareWidth * 0.33),
         squareWidth * 0.8,
         1);
@@ -2399,7 +2399,7 @@ public class BoardRenderer {
               boolean shouldShowMaxColorScoreLead =
                   canShowMaxColor && move.scoreMean == maxScoreMean;
               String winrateText = String.format(Locale.ENGLISH, "%.1f", roundedWinrate);
-              String playoutsText = Lizzie.frame.getPlayoutsString(move.playouts);
+              String playoutsText = Utils.getPlayoutsString(move.playouts);
               String scoreLeadText = String.format(Locale.ENGLISH, "%.1f", score);
               if (Lizzie.config.useDefaultInfoRowOrder) {
                 if (shouldShowMaxColorWinrate) g.setColor(maxColor);
@@ -2516,7 +2516,7 @@ public class BoardRenderer {
               }
             } else if (showWinrate && showPlayouts) {
               String winrateText = String.format(Locale.ENGLISH, "%.1f", roundedWinrate);
-              String playoutsText = Lizzie.frame.getPlayoutsString(move.playouts);
+              String playoutsText = Utils.getPlayoutsString(move.playouts);
               boolean shouldShowMaxColorWinrate = canShowMaxColor && hasMaxWinrate;
               boolean shouldShowMaxColorPlayouts = canShowMaxColor && move.playouts == maxPlayouts;
               if (Lizzie.config.useDefaultInfoRowOrder
@@ -2679,7 +2679,7 @@ public class BoardRenderer {
                   score = -score;
                 }
               }
-              String playoutsText = Lizzie.frame.getPlayoutsString(move.playouts);
+              String playoutsText = Utils.getPlayoutsString(move.playouts);
               String scoreLeadText = String.format(Locale.ENGLISH, "%.1f", score);
               if (Lizzie.config.useDefaultInfoRowOrder
                   || Lizzie.config.suggestionInfoPlayouts < Lizzie.config.suggestionInfoScoreLead) {
@@ -2761,7 +2761,7 @@ public class BoardRenderer {
                   suggestionX,
                   suggestionY,
                   LizzieFrame.playoutsFont,
-                  Lizzie.frame.getPlayoutsString(move.playouts),
+                  Utils.getPlayoutsString(move.playouts),
                   stoneRadius,
                   stoneRadius * 1.9);
               if (shouldShowMaxColorPlayouts) g.setColor(oriColor);

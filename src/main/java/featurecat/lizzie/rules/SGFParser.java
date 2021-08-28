@@ -1505,7 +1505,7 @@ public class SGFParser {
     BoardData data = node.getData();
     String engine = node.getData().engineName;
     engine = engine.replaceAll(" ", "");
-    String playouts = Lizzie.frame.getPlayoutsString(data.getPlayouts());
+    String playouts = Utils.getPlayoutsString(data.getPlayouts());
 
     // Last winrate
     Optional<BoardData> lastNode = node.previous().flatMap(n -> Optional.of(n.getData()));
@@ -1749,7 +1749,7 @@ public class SGFParser {
     BoardData data = node.getData();
     String engine = node.getData().engineName;
     engine = engine.replaceAll(" ", "");
-    String playouts = Lizzie.frame.getPlayoutsString(data.getPlayouts());
+    String playouts = Utils.getPlayoutsString(data.getPlayouts());
 
     // Last winrate
     Optional<BoardData> lastNode = node.previous().flatMap(n -> Optional.of(n.getData()));
@@ -1929,7 +1929,7 @@ public class SGFParser {
     BoardData data = node.getData();
     String engine = node.getData().engineName;
     engine = engine.replaceAll(" ", "");
-    String playouts = Lizzie.frame.getPlayoutsString(data.getPlayouts());
+    String playouts = Utils.getPlayoutsString(data.getPlayouts());
     // Last winrate
     Optional<BoardData> lastNode;
     if (node.previous().isPresent())
@@ -2140,7 +2140,7 @@ public class SGFParser {
     BoardData data = node.getData();
     String engine = node.getData().engineName2;
     engine = engine.replaceAll(" ", "");
-    String playouts = Lizzie.frame.getPlayoutsString(data.getPlayouts2());
+    String playouts = Utils.getPlayoutsString(data.getPlayouts2());
 
     Optional<BoardData> lastNode = node.previous().flatMap(n -> Optional.of(n.getData()));
     boolean validLastWinrate = lastNode.isPresent();
@@ -2379,7 +2379,7 @@ public class SGFParser {
     BoardData data = node.getData();
 
     // Playouts
-    String playouts = Lizzie.frame.getPlayoutsString(data.getPlayouts());
+    String playouts = Utils.getPlayoutsString(data.getPlayouts());
 
     // Last winrate
     Optional<BoardData> lastNode = node.previous().flatMap(n -> Optional.of(n.getData()));
@@ -2427,7 +2427,7 @@ public class SGFParser {
     BoardData data = node.getData();
 
     // Playouts
-    String playouts = Lizzie.frame.getPlayoutsString(data.getPlayouts2());
+    String playouts = Utils.getPlayoutsString(data.getPlayouts2());
 
     // Last winrate
     Optional<BoardData> lastNode = node.previous().flatMap(n -> Optional.of(n.getData()));

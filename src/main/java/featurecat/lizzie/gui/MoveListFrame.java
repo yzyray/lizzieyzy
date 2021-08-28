@@ -7589,9 +7589,9 @@ public class MoveListFrame extends JFrame {
               case 7:
                 return String.format(Locale.ENGLISH, "%.2f", data.scoreMeanBoard);
               case 8:
-                return Lizzie.frame.getPlayoutsString(data.previousPlayouts);
+                return Utils.getPlayoutsString(data.previousPlayouts);
               case 9:
-                return Lizzie.frame.getPlayoutsString(data.playouts);
+                return Utils.getPlayoutsString(data.playouts);
               case 10:
                 return "-";
               default:
@@ -7625,9 +7625,9 @@ public class MoveListFrame extends JFrame {
               case 7:
                 return String.format(Locale.ENGLISH, "%.2f", data.scoreMeanBoard);
               case 8:
-                return Lizzie.frame.getPlayoutsString(data.previousPlayouts);
+                return Utils.getPlayoutsString(data.previousPlayouts);
               case 9:
-                return Lizzie.frame.getPlayoutsString(data.playouts);
+                return Utils.getPlayoutsString(data.playouts);
               case 10:
                 return String.format(
                     "%.1f",
@@ -7666,9 +7666,9 @@ public class MoveListFrame extends JFrame {
                   return "";
                 }
               case 6:
-                return Lizzie.frame.getPlayoutsString(data.previousPlayouts);
+                return Utils.getPlayoutsString(data.previousPlayouts);
               case 7:
-                return Lizzie.frame.getPlayoutsString(data.playouts);
+                return Utils.getPlayoutsString(data.playouts);
               case 8:
                 return "-";
               default:
@@ -7696,9 +7696,9 @@ public class MoveListFrame extends JFrame {
                   return "";
                 }
               case 6:
-                return Lizzie.frame.getPlayoutsString(data.previousPlayouts);
+                return Utils.getPlayoutsString(data.previousPlayouts);
               case 7:
-                return Lizzie.frame.getPlayoutsString(data.playouts);
+                return Utils.getPlayoutsString(data.playouts);
               case 8:
                 return String.format(
                     "%.1f",

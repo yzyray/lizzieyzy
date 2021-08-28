@@ -995,9 +995,7 @@ public class ConfigDialog2 extends JDialog {
     // sldBoardPositionProportion.setValue(Lizzie.config.boardPositionProportion);
     txtLimitBestMoveNum.setText(String.valueOf(Lizzie.config.limitMaxSuggestion));
     txtLimitBranchLength.setText(String.valueOf(Lizzie.config.limitBranchLength));
-    chkShowWinrateInSuggestion.setSelected(Lizzie.config.showWinrateInSuggestion);
-    chkShowPlayoutsInSuggestion.setSelected(Lizzie.config.showPlayoutsInSuggestion);
-    chkShowScoremeanInSuggestion.setSelected(Lizzie.config.showScoremeanInSuggestion);
+    setChkSuggestionInfo();
     // tpGtpConsoleStyle.setText(Lizzie.config.gtpConsoleStyle);
 
     JLabel lblViewSettings =
@@ -1662,7 +1660,7 @@ public class ConfigDialog2 extends JDialog {
     btnSetOrder.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            Lizzie.frame.openSuggestionInfoCustom(Lizzie.frame.configDialog2);
+            LizzieFrame.openSuggestionInfoCustom(Lizzie.frame.configDialog2);
           }
         });
     btnSetOrder.setBounds(310, 369, Lizzie.config.isChinese ? 165 : 240, 23);
@@ -1936,7 +1934,14 @@ public class ConfigDialog2 extends JDialog {
     setLocationRelativeTo(getOwner());
   }
 
-  class ComsWorker extends SwingWorker<Void, Integer> {
+  public void setChkSuggestionInfo() {
+	// TODO Auto-generated method stub
+	    chkShowWinrateInSuggestion.setSelected(Lizzie.config.showWinrateInSuggestion);
+	    chkShowPlayoutsInSuggestion.setSelected(Lizzie.config.showPlayoutsInSuggestion);
+	    chkShowScoremeanInSuggestion.setSelected(Lizzie.config.showScoremeanInSuggestion);
+}
+
+class ComsWorker extends SwingWorker<Void, Integer> {
 
     private JDialog owner;
 
