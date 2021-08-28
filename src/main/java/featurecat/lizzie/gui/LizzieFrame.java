@@ -1581,15 +1581,11 @@ public class LizzieFrame extends JFrame {
               if (tempCount >= 0) {
                 long speed = (totalPlayouts - lastPlayouts) / tempCount;
                 if (speed >= 0) {
-                  visitsString = String.format(" %d v/s", speed);
-                  // updateTitle();
+                  visitsString =
+                      String.format(
+                          " %d " + resourceBundle.getString("LizzieFrame.speedUnit"), speed);
                 }
               }
-              // if(visitsString.equals(""))
-              //  visitsString = " - v/s";
-              // else {
-              // visitsString = " - v/s";
-              // }
               visitsCount++;
               if (visitsCount > 3) visitsCount = 0;
               if (totalPlayouts > 0) {
@@ -7380,7 +7376,7 @@ public class LizzieFrame extends JFrame {
       } else sb.append(Lizzie.leelaz.oriEnginename);
       if (!Lizzie.engineManager.isEmpty) {
         if (Lizzie.leelaz.isPondering()) sb.append(visitsString + " ");
-        else sb.append(" - v/s ");
+        else sb.append(" - " + resourceBundle.getString("LizzieFrame.speedUnit") + " ");
       }
       sb.append(playerTitle);
       sb.append(resultTitle);
