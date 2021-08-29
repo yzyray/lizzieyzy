@@ -2418,7 +2418,7 @@ public class Leelaz {
               || cmdQueue.peekLast().startsWith("kata-analyze")
               || cmdQueue.peekLast().startsWith("kata-raw")
               || cmdQueue.peekLast().startsWith("heatmap")
-              || cmdQueue.peekLast().startsWith("stop"))) {
+              || cmdQueue.peekLast().startsWith("stop-ponder"))) {
         cmdQueue.removeLast();
         cmdNumber--;
       }
@@ -2506,16 +2506,18 @@ public class Leelaz {
       if (requireResponseBeforeSend && !isResponseUpToPreDate()) {
         return;
       }
-      if (cmdQueue.isEmpty()
-          || (cmdQueue.peekFirst().startsWith("lz-analyze")
-                  || cmdQueue.peekFirst().startsWith("kata-analyze")
-                  || cmdQueue.peekFirst().startsWith("kata-raw")
-                  || cmdQueue.peekFirst().startsWith("heatmap")
-                  || cmdQueue.peekLast().startsWith("stop"))
-              && !isResponseUpToPreDate()) {
+      if (cmdQueue.isEmpty()) {
         return;
       }
+      if (!isResponseUpToPreDate()) {
+        if (cmdQueue.peekFirst().startsWith("lz-analyze")
+            || cmdQueue.peekFirst().startsWith("kata-analyze")
+            || cmdQueue.peekFirst().startsWith("kata-raw")
+            || cmdQueue.peekFirst().startsWith("heatmap")
+            || cmdQueue.peekFirst().startsWith("stop-ponder")) return;
+      }
       String command = cmdQueue.removeFirst();
+      if (command.equals("stop-ponder")) command = "stop";
       sendCommandToLeelaz(command);
     }
   }
@@ -2617,7 +2619,7 @@ public class Leelaz {
           nameCmdfornoponder();
           underPonder = true;
         }
-      if (!isPondering && !Lizzie.config.playponder && isKatago) sendCommand("stop");
+      if (!isPondering && !Lizzie.config.playponder && isKatago) sendCommand("stop-ponder");
     }
   }
 

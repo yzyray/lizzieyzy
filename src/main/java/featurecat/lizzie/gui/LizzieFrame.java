@@ -646,7 +646,7 @@ public class LizzieFrame extends JFrame {
               if (RightClickMenu2 != null && RightClickMenu2.isVisible()) return;
               undoForRightClick();
             } else {
-              if (!Lizzie.engineManager.isEngineGame)
+              if (!EngineManager.isEngineGame)
                 variationTree.onClicked(Utils.zoomOut(e.getX()), Utils.zoomOut(e.getY()));
               renderVarTree(0, 0, false, false);
             }
