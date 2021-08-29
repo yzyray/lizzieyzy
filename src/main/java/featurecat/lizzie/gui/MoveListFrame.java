@@ -3441,11 +3441,7 @@ public class MoveListFrame extends JFrame {
           g.setColor(Color.GRAY);
           g.drawLine(posx, y, posx + width, y);
         } else g.drawLine(posx, y, posx + width - 25, y);
-        if (selectedIndex < 5)
-          g.drawString(
-              (selectedIndex == 1 ? 80 : 100) * i / 4 + (selectedIndex == 1 ? 20 : 0) + "",
-              3,
-              y + 3);
+        if (selectedIndex < 5) g.drawString(100 * i / 4 + "", 3, y + 3);
       }
     }
     if (selectedIndex == 5) {
@@ -5520,15 +5516,9 @@ public class MoveListFrame extends JFrame {
                     posx + ((movenum + 2) * width / numMoves),
                     posy
                         + height
-                        - Math.max(
-                            ((int)
-                                    ((lastMatchValue > 0 ? lastMatchValue : matchValue)
-                                        * height
-                                        / 100)
-                                - 20),
-                            0),
+                        - (int) ((lastMatchValue > 0 ? lastMatchValue : matchValue) * height / 100),
                     posx + (movenum * width / numMoves),
-                    posy + height - Math.max(((int) (matchValue * height / 100) - 20), 0));
+                    (int) (posy + height - matchValue * height / 100));
               }
             }
             if (!Double.isNaN(blackMatchValue)) lastMatchValueB = blackMatchValue;
@@ -5554,11 +5544,8 @@ public class MoveListFrame extends JFrame {
                       posx + (movenum * width / numMoves) - 5,
                       posy
                           + height
-                          - Math.max(
-                              ((int) (Math.max(lastMatchValueB, lastMatchValueW) * height / 100)
-                                      - 20)
-                                  + 4,
-                              0));
+                          - (int) (Math.max(lastMatchValueB, lastMatchValueW) * height / 100)
+                          - 4);
                 g.setColor(Color.WHITE);
                 if (analyzedW >= 1)
                   g.drawString(
@@ -5566,11 +5553,8 @@ public class MoveListFrame extends JFrame {
                       posx + (movenum * width / numMoves) - 5,
                       posy
                           + height
-                          - Math.max(
-                              ((int) (Math.min(lastMatchValueB, lastMatchValueW) * height / 100)
-                                      - 20)
-                                  - 16,
-                              0));
+                          - (int) (Math.min(lastMatchValueB, lastMatchValueW) * height / 100)
+                          + 16);
               } else {
                 g.setColor(Color.BLACK);
                 if (analyzedB >= 1)
@@ -5579,11 +5563,8 @@ public class MoveListFrame extends JFrame {
                       posx + (movenum * width / numMoves) - 5,
                       posy
                           + height
-                          - Math.max(
-                              ((int) (Math.min(lastMatchValueB, lastMatchValueW) * height / 100)
-                                      - 20)
-                                  - 16,
-                              0));
+                          - (int) (Math.min(lastMatchValueB, lastMatchValueW) * height / 100)
+                          + 16);
                 g.setColor(Color.WHITE);
                 if (analyzedW >= 1)
                   g.drawString(
@@ -5591,11 +5572,8 @@ public class MoveListFrame extends JFrame {
                       posx + (movenum * width / numMoves) - 5,
                       posy
                           + height
-                          - Math.max(
-                              ((int) (Math.max(lastMatchValueB, lastMatchValueW) * height / 100)
-                                      - 20)
-                                  + 4,
-                              0));
+                          - (int) (Math.max(lastMatchValueB, lastMatchValueW) * height / 100)
+                          - 4);
               }
             }
             break;
