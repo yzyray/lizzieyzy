@@ -63,7 +63,7 @@ public class NewEngineGameDialog extends JDialog {
   private JCheckBox chkSGFstart;
   private JFontButton btnSGFstart;
   private ActionListener chkEnginePkContinueListener;
-  private ActionListener chkBatchGameListener;
+  // private ActionListener chkBatchGameListener;
   private JFontLabel lblsgf =
       new JFontLabel(Lizzie.resourceBundle.getString("NewEngineGameDialog.lblsgf"));
 
@@ -570,20 +570,20 @@ public class NewEngineGameDialog extends JDialog {
           }
         };
 
-    chkBatchGameListener =
-        new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            if (LizzieFrame.toolbar.chkenginePkBatch.isSelected()) {
-              chkSGFstart.setEnabled(true);
-              lblsgf.setEnabled(true);
-            } else {
-              chkSGFstart.setEnabled(false);
-              lblsgf.setEnabled(false);
-            }
-          }
-        };
+    //    chkBatchGameListener =
+    //        new ActionListener() {
+    //          public void actionPerformed(ActionEvent e) {
+    //            if (LizzieFrame.toolbar.chkenginePkBatch.isSelected()) {
+    //              chkSGFstart.setEnabled(true);
+    //              lblsgf.setEnabled(true);
+    //            } else {
+    //              chkSGFstart.setEnabled(false);
+    //              lblsgf.setEnabled(false);
+    //            }
+    //          }
+    //        };
     LizzieFrame.toolbar.chkenginePkContinue.addActionListener(chkEnginePkContinueListener);
-    LizzieFrame.toolbar.chkenginePkBatch.addActionListener(chkBatchGameListener);
+    // LizzieFrame.toolbar.chkenginePkBatch.addActionListener(chkBatchGameListener);
 
     JFontLabel lblBatchGame =
         new JFontLabel(
@@ -794,7 +794,7 @@ public class NewEngineGameDialog extends JDialog {
             }
           }
         });
-    chkSGFstart.setEnabled(LizzieFrame.toolbar.chkenginePkBatch.isSelected());
+    // chkSGFstart.setEnabled(LizzieFrame.toolbar.chkenginePkBatch.isSelected());
 
     btnSGFstart =
         new JFontButton(
@@ -819,7 +819,7 @@ public class NewEngineGameDialog extends JDialog {
         180,
         20);
     contentPanel.add(lblsgf);
-    lblsgf.setEnabled(LizzieFrame.toolbar.chkenginePkBatch.isSelected());
+    // lblsgf.setEnabled(LizzieFrame.toolbar.chkenginePkBatch.isSelected());
 
     cbxRandomSgf = new JFontComboBox();
     cbxRandomSgf.addItem(
@@ -879,7 +879,7 @@ public class NewEngineGameDialog extends JDialog {
           public void windowClosing(WindowEvent e) {
             LizzieFrame.toolbar.chkenginePkContinue.removeActionListener(
                 chkEnginePkContinueListener);
-            LizzieFrame.toolbar.chkenginePkBatch.removeActionListener(chkBatchGameListener);
+            //  LizzieFrame.toolbar.chkenginePkBatch.removeActionListener(chkBatchGameListener);
             resetFont();
           }
         });
@@ -942,13 +942,16 @@ public class NewEngineGameDialog extends JDialog {
   public void apply() {
     try {
       // validate data
-      if (Lizzie.config.chkEngineSgfStart
-          && (Lizzie.frame.enginePKSgfString == null || Lizzie.frame.enginePKSgfString.isEmpty())) {
-        Utils.showMsg(Lizzie.resourceBundle.getString("NewEngineGameDialog.message"));
-        return;
+      if (Lizzie.config.chkEngineSgfStart) {
+        if (Lizzie.frame.enginePKSgfString == null || Lizzie.frame.enginePKSgfString.isEmpty()) {
+          Utils.showMsg(Lizzie.resourceBundle.getString("NewEngineGameDialog.message"));
+          return;
+        } else if (Lizzie.frame.enginePKSgfString.size() > 1
+            && !LizzieFrame.toolbar.chkenginePkBatch.isSelected())
+          Utils.showMsg(Lizzie.resourceBundle.getString("NewEngineGameDialog.multiSgfNotBatch"));
       }
       LizzieFrame.toolbar.chkenginePkContinue.removeActionListener(chkEnginePkContinueListener);
-      LizzieFrame.toolbar.chkenginePkBatch.removeActionListener(chkBatchGameListener);
+      //  LizzieFrame.toolbar.chkenginePkBatch.removeActionListener(chkBatchGameListener);
       String playerBlack =
           Lizzie.engineManager.engineList.get(LizzieFrame.toolbar.engineBlackToolbar)
               .currentEnginename;
