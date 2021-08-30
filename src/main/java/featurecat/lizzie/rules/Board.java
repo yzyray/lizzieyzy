@@ -490,38 +490,23 @@ public class Board {
   }
 
   public void clearbestmoves2() {
-    history.getCurrentHistoryNode().getData().setPlayouts(0);
+    if (history.getCurrentHistoryNode().getData().getPlayouts2() > 0)
+      history.getCurrentHistoryNode().getData().isChanged2 = true;
   }
 
-  //  public void savelist() {
-  //    // System.out.println("保存board");
-  //    tempmovelist = getmovelist();
-  //    // temphistory = history;
-  //    clearForSavelist();
-  //    setlist();
-  //  }
-
   public void savelistforswitch() {
-    // System.out.println("保存board");
     tempmovelist = getMoveList();
   }
 
   public void savelist(int movenumber) {
-    // System.out.println("保存board");
     tempmovelist = getMoveList();
     int length = tempmovelist.size() - movenumber;
     for (int i = 0; i < length; i++) {
       tempmovelist.remove(0);
     }
-    // temphistory = history;
-    // clear();
-    // setlist();
   }
 
   public ArrayList<Movelist> savelistforeditmode() {
-    // System.out.println("保存board");
-    // tempmovelist = getmovelist();
-
     if (boardstatbeforeedit == "") {
       try {
         boardstatbeforeedit = SGFParser.saveToString(false);
@@ -534,9 +519,6 @@ public class Board {
     tempallmovelist = getallmovelist();
     boardstatafteredit = "";
     tempmovelist2 = new ArrayList<Movelist>();
-
-    // clear();
-    // setlist();
     return tempmovelist;
   }
 
@@ -557,7 +539,6 @@ public class Board {
       }
       tempmovelist2 = getMoveList();
     }
-    // clearforedit();
     SGFParser.loadFromStringforedit(boardstatbeforeedit);
     setmovelistForEditClean(tempmovelist);
     boardstatbeforeedit = "";
@@ -575,7 +556,6 @@ public class Board {
       }
       tempmovelist = getMoveList();
     }
-    //  clearforedit();
     SGFParser.loadFromStringforedit(boardstatafteredit);
     setmovelistForEditClean(tempmovelist2);
     boardstatafteredit = "";
@@ -4129,6 +4109,7 @@ public class Board {
     else {
       getHistory().getCurrentHistoryNode().getData().blackToPlay =
           !getHistory().getCurrentHistoryNode().getData().blackToPlay;
+      clearbestmoves();
       if (Lizzie.leelaz.isPondering()) Lizzie.leelaz.ponder();
     }
   }

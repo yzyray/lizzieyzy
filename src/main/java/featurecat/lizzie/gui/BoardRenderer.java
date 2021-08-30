@@ -2997,18 +2997,23 @@ public class BoardRenderer {
                         && !Lizzie.frame.isShowingPolicy) {
                       BoardData nextData = nexts.get(0).getData();
                       BoardData thisData = Lizzie.board.getHistory().getData();
-                      if (nextData.bestMoves != null
-                          && nextData.bestMoves.size() > 0
-                          && !nextData.isChanged
-                          && thisData.bestMoves != null
-                          && thisData.bestMoves.size() > 0) {
+                      boolean isMain = this.boardIndex != 1;
+                      List<MoveData> thisBestMoves =
+                          isMain ? thisData.bestMoves : thisData.bestMoves2;
+                      List<MoveData> nextBestMoves =
+                          isMain ? nextData.bestMoves : nextData.bestMoves2;
+                      if (nextBestMoves != null
+                          && nextBestMoves.size() > 0
+                          && !(isMain ? nextData.isChanged : nextData.isChanged2)
+                          && thisBestMoves != null
+                          && thisBestMoves.size() > 0) {
                         if (notEnoughSuggestionAt(nextMove[0], nextMove[1], bestMoves)) {
                           isShowingNextMoveBlunder = true;
                           nextMoveX = nextMove[0];
                           nextMoveY = nextMove[1];
-                          MoveData nextMoveData = nexts.get(0).getData().bestMoves.get(0);
-                          MoveData thisMoveData =
-                              Lizzie.board.getHistory().getData().bestMoves.get(0);
+
+                          MoveData nextMoveData = nextBestMoves.get(0);
+                          MoveData thisMoveData = thisBestMoves.get(0);
                           nextVisits = nextMoveData.playouts;
                           int[] nextCoords =
                               Board.convertNameToCoordinates(nextMoveData.coordinate);

@@ -598,7 +598,7 @@ public class OnlineDialog extends JDialog {
           }
         });
 
-    if (needSchedule && !isStoped && type == 1) {
+    if (needSchedule && !isStoped && type == 101) { // 弈客暂时不需要刷新了
       timer =
           new Timer(
               refreshTime * 1000,
