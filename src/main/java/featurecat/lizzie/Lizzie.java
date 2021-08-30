@@ -403,7 +403,12 @@ public class Lizzie {
         leelaz.setResponseUpToDate();
         Lizzie.config.notStartPondering = false;
       } else {
-        leelaz.ponder();
+        if ((Lizzie.config.ponderOnStart || Lizzie.leelaz.isPondering())
+            || !Lizzie.board.getHistory().isEmptyBoard()) {
+          leelaz.ponder();
+        } else {
+          Lizzie.frame.refresh();
+        }
         leelaz.setResponseUpToDate();
       }
     }
