@@ -57,8 +57,6 @@ import javax.imageio.ImageIO;
 import javax.swing.AbstractCellEditor;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -80,7 +78,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
-import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.ListCellRenderer;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
@@ -124,12 +121,6 @@ public class ConfigDialog2 extends JDialog {
   private JFormattedTextField txtMaxGameThinkingTime;
   private JFormattedTextField txtAnalyzeUpdateInterval;
   private JFormattedTextField txtAnalyzeUpdateIntervalSSH;
-
-  private JRadioButton rdoAIbackground;
-  private JRadioButton rdoNoAIbackground;
-
-  private JRadioButton rdoFastSwitch;
-  private JRadioButton rdoNoFastSwitch;
 
   private JRadioButton rdoShowMoveRect;
   private JRadioButton rdoShowMoveRectOnPlay;
@@ -282,6 +273,9 @@ public class ConfigDialog2 extends JDialog {
   private ColorLabel lblPureBoardColor;
   private JTextField txtLimitPlayouts;
   private JCheckBox chkLimitPlayouts;
+  private JCheckBox chkFastSwtich;
+  private JCheckBox chkPonder;
+  private JCheckBox chkStopAtEmpty;
 
   public ConfigDialog2() {
     setAlwaysOnTop(Lizzie.frame.isAlwaysOnTop());
@@ -361,56 +355,58 @@ public class ConfigDialog2 extends JDialog {
 
     lblOriginLizzieInfo.setFont(new Font("Tahoma", Font.PLAIN, 14));
     // 注释这里
-    GroupLayout gl = new GroupLayout(aboutTab);
-    gl.setHorizontalGroup(
-        gl.createParallelGroup(Alignment.LEADING)
-            .addGroup(
-                gl.createSequentialGroup()
-                    .addGroup(
-                        gl.createParallelGroup(Alignment.LEADING)
-                            .addGroup(
-                                gl.createSequentialGroup()
-                                    .addContainerGap()
-                                    .addComponent(
-                                        lblLizzieInfo,
-                                        GroupLayout.DEFAULT_SIZE,
-                                        628,
-                                        Short.MAX_VALUE))
-                            .addGroup(
-                                gl.createSequentialGroup()
-                                    .addContainerGap()
-                                    .addComponent(lblOriginTitle))
-                            .addGroup(
-                                gl.createSequentialGroup()
-                                    .addContainerGap()
-                                    .addComponent(
-                                        lblOriginLizzieInfo,
-                                        GroupLayout.PREFERRED_SIZE,
-                                        620,
-                                        GroupLayout.PREFERRED_SIZE))
-                            .addGroup(
-                                gl.createSequentialGroup().addComponent(lblLizzieName).addGap(225)))
-                    .addContainerGap()));
-    gl.setVerticalGroup(
-        gl.createParallelGroup(Alignment.LEADING)
-            .addGroup(
-                gl.createSequentialGroup()
-                    .addGap(18)
-                    .addComponent(lblLizzieName)
-                    .addGap(18)
-                    .addPreferredGap(ComponentPlacement.RELATED)
-                    .addComponent(
-                        lblLizzieInfo, GroupLayout.PREFERRED_SIZE, 183, GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(ComponentPlacement.RELATED)
-                    .addComponent(lblOriginTitle)
-                    .addPreferredGap(ComponentPlacement.RELATED)
-                    .addComponent(
-                        lblOriginLizzieInfo,
-                        GroupLayout.PREFERRED_SIZE,
-                        282,
-                        GroupLayout.PREFERRED_SIZE)
-                    .addGap(126)));
-    aboutTab.setLayout(gl);
+    //    GroupLayout gl = new GroupLayout(aboutTab);
+    //    gl.setHorizontalGroup(
+    //        gl.createParallelGroup(Alignment.LEADING)
+    //            .addGroup(
+    //                gl.createSequentialGroup()
+    //                    .addGroup(
+    //                        gl.createParallelGroup(Alignment.LEADING)
+    //                            .addGroup(
+    //                                gl.createSequentialGroup()
+    //                                    .addContainerGap()
+    //                                    .addComponent(
+    //                                        lblLizzieInfo,
+    //                                        GroupLayout.DEFAULT_SIZE,
+    //                                        628,
+    //                                        Short.MAX_VALUE))
+    //                            .addGroup(
+    //                                gl.createSequentialGroup()
+    //                                    .addContainerGap()
+    //                                    .addComponent(lblOriginTitle))
+    //                            .addGroup(
+    //                                gl.createSequentialGroup()
+    //                                    .addContainerGap()
+    //                                    .addComponent(
+    //                                        lblOriginLizzieInfo,
+    //                                        GroupLayout.PREFERRED_SIZE,
+    //                                        620,
+    //                                        GroupLayout.PREFERRED_SIZE))
+    //                            .addGroup(
+    //
+    // gl.createSequentialGroup().addComponent(lblLizzieName).addGap(225)))
+    //                    .addContainerGap()));
+    //    gl.setVerticalGroup(
+    //        gl.createParallelGroup(Alignment.LEADING)
+    //            .addGroup(
+    //                gl.createSequentialGroup()
+    //                    .addGap(18)
+    //                    .addComponent(lblLizzieName)
+    //                    .addGap(18)
+    //                    .addPreferredGap(ComponentPlacement.RELATED)
+    //                    .addComponent(
+    //                        lblLizzieInfo, GroupLayout.PREFERRED_SIZE, 183,
+    // GroupLayout.PREFERRED_SIZE)
+    //                    .addPreferredGap(ComponentPlacement.RELATED)
+    //                    .addComponent(lblOriginTitle)
+    //                    .addPreferredGap(ComponentPlacement.RELATED)
+    //                    .addComponent(
+    //                        lblOriginLizzieInfo,
+    //                        GroupLayout.PREFERRED_SIZE,
+    //                        282,
+    //                        GroupLayout.PREFERRED_SIZE)
+    //                    .addGap(126)));
+    // aboutTab.setLayout(gl);
     ButtonGroup group = new ButtonGroup();
     nf.setGroupingUsed(false);
     ButtonGroup showMoveGroup = new ButtonGroup();
@@ -1137,42 +1133,8 @@ public class ConfigDialog2 extends JDialog {
     JLabel lblEngineFastSwitch =
         new JLabel(
             resourceBundle.getString("ConfigDialog2.lblEngineFastSwitch")); // ("是否启用引擎快速切换");
-    lblEngineFastSwitch.setBounds(312, 501, 179, 16);
+    lblEngineFastSwitch.setBounds(160, 500, 122, 16);
     uiTab.add(lblEngineFastSwitch);
-
-    rdoFastSwitch = new JRadioButton(resourceBundle.getString("ConfigDialog2.yes"));
-    rdoFastSwitch.setBounds(487, 498, 52, 23);
-    uiTab.add(rdoFastSwitch);
-
-    rdoNoFastSwitch = new JRadioButton(resourceBundle.getString("ConfigDialog2.no")); // ("否");
-    rdoNoFastSwitch.setBounds(536, 498, 53, 23);
-    uiTab.add(rdoNoFastSwitch);
-
-    ButtonGroup fastgroup = new ButtonGroup();
-    fastgroup.add(rdoFastSwitch);
-    fastgroup.add(rdoNoFastSwitch);
-
-    if (Lizzie.config.fastChange) {
-      rdoFastSwitch.setSelected(true);
-    } else {
-      rdoNoFastSwitch.setSelected(true);
-    }
-
-    JLabel label_11 = new JLabel("是否预加载Zen(用于点目)");
-    label_11.setBounds(277, 634, 157, 16);
-    // uiTab.add(label_11);
-
-    rdoLoadZen = new JRadioButton("是");
-    rdoLoadZen.setBounds(442, 542, 41, 23);
-    //  uiTab.add(rdoLoadZen);
-
-    rdoNoLoadZen = new JRadioButton("否");
-    rdoNoLoadZen.setBounds(491, 542, 42, 23);
-    //  uiTab.add(rdoNoLoadZen);
-
-    ButtonGroup zengroup = new ButtonGroup();
-    zengroup.add(rdoLoadZen);
-    zengroup.add(rdoNoLoadZen);
 
     JLabel lblMouseMoveRect =
         new JLabel(
@@ -1213,26 +1175,8 @@ public class ConfigDialog2 extends JDialog {
     JLabel lblBackgroundPonder =
         new JLabel(
             resourceBundle.getString("ConfigDialog2.lblBackgroundPonder")); // ("对弈时AI是否后台计算");
-    lblBackgroundPonder.setBounds(10, 501, 194, 16);
+    lblBackgroundPonder.setBounds(10, 500, 122, 16);
     uiTab.add(lblBackgroundPonder);
-
-    rdoAIbackground = new JRadioButton(resourceBundle.getString("ConfigDialog2.yes")); // ("是");
-    rdoAIbackground.setBounds(199, 498, 58, 23);
-    uiTab.add(rdoAIbackground);
-
-    rdoNoAIbackground = new JRadioButton(resourceBundle.getString("ConfigDialog2.no")); // ("否");
-    rdoNoAIbackground.setBounds(254, 498, 58, 23);
-    uiTab.add(rdoNoAIbackground);
-
-    ButtonGroup backgroup = new ButtonGroup();
-    backgroup.add(rdoAIbackground);
-    backgroup.add(rdoNoAIbackground);
-
-    if (Lizzie.config.playponder) {
-      rdoAIbackground.setSelected(true);
-    } else {
-      rdoNoAIbackground.setSelected(true);
-    }
 
     tabbedPane.addTab(resourceBundle.getString("LizzieConfig.title.theme"), null, themeTab, null);
     tabbedPane.addTab(resourceBundle.getString("LizzieConfig.title.about"), null, aboutTab, null);
@@ -1297,7 +1241,7 @@ public class ConfigDialog2 extends JDialog {
 
     txtAdvanceTime = new JTextField();
     txtAdvanceTime.setText(Lizzie.config.advanceTimeTxt); // $NON-NLS-1$
-    txtAdvanceTime.setBounds(474, 472, 130, 21);
+    txtAdvanceTime.setBounds(474, 471, 130, 21);
     uiTab.add(txtAdvanceTime);
 
     lblShowTitleWinInfo =
@@ -1382,11 +1326,11 @@ public class ConfigDialog2 extends JDialog {
     uiTab.add(chkEnableDragStone);
 
     JLabel lblLizzieCache = new JLabel(resourceBundle.getString("LizzieConfig.lizzieCache"));
-    lblLizzieCache.setBounds(608, 502, 122, 15);
+    lblLizzieCache.setBounds(608, 500, 86, 15);
     uiTab.add(lblLizzieCache);
 
     chkLizzieCache = new JCheckBox();
-    chkLizzieCache.setBounds(837, 499, 26, 23);
+    chkLizzieCache.setBounds(837, 497, 26, 23);
     uiTab.add(chkLizzieCache);
 
     ImageIcon btnLizzieCacheIcon = new ImageIcon();
@@ -1399,7 +1343,7 @@ public class ConfigDialog2 extends JDialog {
     }
 
     JButton btnLizzieCache = new JButton(btnLizzieCacheIcon);
-    btnLizzieCache.setBounds(723, 501, 18, 18);
+    btnLizzieCache.setBounds(690, 500, 18, 18);
 
     btnLizzieCache.addActionListener(
         new ActionListener() {
@@ -1860,6 +1804,25 @@ public class ConfigDialog2 extends JDialog {
         resourceBundle.getString("LizzieConfig.lblLogGtpToFile.tooltips"));
     uiTab.add(chkLogGtpToFile);
     chkLogGtpToFile.setSelected(Lizzie.config.logGtpToFile);
+
+    chkPonder = new JCheckBox();
+    chkPonder.setBounds(125, 497, 26, 23);
+    uiTab.add(chkPonder);
+    chkPonder.setSelected(Lizzie.config.playponder);
+
+    chkFastSwtich = new JCheckBox();
+    chkFastSwtich.setBounds(270, 497, 26, 23);
+    uiTab.add(chkFastSwtich);
+    chkFastSwtich.setSelected(Lizzie.config.fastChange);
+
+    JLabel lblStopAtEmpty = new JLabel(resourceBundle.getString("LizzieConfig.lblStopAtEmpty"));
+    lblStopAtEmpty.setBounds(312, 500, 130, 15);
+    uiTab.add(lblStopAtEmpty);
+
+    chkStopAtEmpty = new JCheckBox();
+    chkStopAtEmpty.setBounds(532, 497, 38, 23);
+    uiTab.add(chkStopAtEmpty);
+    chkStopAtEmpty.setSelected(Lizzie.config.stopAtEmptyBoard);
 
     comboMoveHint.addItem(resourceBundle.getString("LizzieConfig.comboMoveHint.none")); // ("无");
     comboMoveHint.addItem(
@@ -3827,10 +3790,12 @@ public class ConfigDialog2 extends JDialog {
         Lizzie.config.uiConfig.put("advance-time-txt", txtAdvanceTime.getText());
       }
 
-      Lizzie.config.playponder = rdoAIbackground.isSelected();
+      Lizzie.config.playponder = chkPonder.isSelected();
       leelazConfig.putOpt("play-ponder", Lizzie.config.playponder);
-      Lizzie.config.fastChange = rdoFastSwitch.isSelected();
+      Lizzie.config.fastChange = chkFastSwtich.isSelected();
       leelazConfig.putOpt("fast-engine-change", Lizzie.config.fastChange);
+      Lizzie.config.stopAtEmptyBoard = chkStopAtEmpty.isSelected();
+      leelazConfig.putOpt("stop-at-empty-board", Lizzie.config.stopAtEmptyBoard);
       if (Lizzie.frame.shouldShowRect() && !rdoShowMoveRect.isSelected()) {
         if (Lizzie.frame.boardRenderer != null) Lizzie.frame.boardRenderer.removeblock();
         if (Lizzie.config.extraMode == 2) {
@@ -3876,7 +3841,7 @@ public class ConfigDialog2 extends JDialog {
       Lizzie.config.uiConfig.putOpt("show-blue-ring", chkShowBlueRing.isSelected());
       Lizzie.config.showBlueRing = chkShowBlueRing.isSelected();
 
-      Lizzie.config.leelazConfig.putOpt("show-nosugg-circle", chkShowNoSuggCircle.isSelected());
+      leelazConfig.putOpt("show-nosugg-circle", chkShowNoSuggCircle.isSelected());
       Lizzie.config.showNoSuggCircle = chkShowNoSuggCircle.isSelected();
 
       Lizzie.frame.setAlwaysOnTop(chkAlwaysOnTop.isSelected());
@@ -3990,9 +3955,9 @@ public class ConfigDialog2 extends JDialog {
       Lizzie.config.uiConfig.putOpt(
           "board-position-proportion", Lizzie.config.boardPositionProportion);
       Lizzie.config.limitMaxSuggestion = txtFieldIntValue(txtLimitBestMoveNum);
-      Lizzie.config.leelazConfig.put("limit-max-suggestion", Lizzie.config.limitMaxSuggestion);
+      leelazConfig.put("limit-max-suggestion", Lizzie.config.limitMaxSuggestion);
       Lizzie.config.limitBranchLength = txtFieldIntValue(txtLimitBranchLength);
-      Lizzie.config.leelazConfig.put("limit-branch-length", Lizzie.config.limitBranchLength);
+      leelazConfig.put("limit-branch-length", Lizzie.config.limitBranchLength);
       suggestionMoveInfoChanged();
       Lizzie.config.uiConfig.putOpt(
           "show-winrate-in-suggestion", Lizzie.config.showWinrateInSuggestion);

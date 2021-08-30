@@ -246,6 +246,11 @@ public class BoardHistoryList {
     else return false;
   }
 
+  public boolean noStoneBoard() {
+    if (!head.previous().isPresent() && !Lizzie.board.hasStartStone) return true;
+    else return false;
+  }
+
   //  public BoardHistoryNode getRecentAnalyzedNode() {
   //    BoardHistoryNode node = head;
   //    if (!node.getData().bestMoves.isEmpty()) return node;

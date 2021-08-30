@@ -566,6 +566,7 @@ public class Config {
   public int otherSizeWidth = 21;
   public int otherSizeHeight = 21;
   public boolean useFoxStyleCoords = false;
+  public boolean stopAtEmptyBoard = false;
 
   private JSONObject loadAndMergeSaveBoardConfig(
       JSONObject defaultCfg, String fileName, boolean needValidation) throws IOException {
@@ -1255,6 +1256,7 @@ public class Config {
     deleteMove = uiConfig.optBoolean("deleteMove", true);
     // showlcbwinrate = config.getJSONObject("leelaz").optBoolean("show-lcb-winrate", false);
     playponder = leelazConfig.optBoolean("play-ponder", true);
+    stopAtEmptyBoard = leelazConfig.optBoolean("stop-at-empty-board", false);
     maxGameThinkingTimeSeconds = leelazConfig.optInt("max-game-thinking-time-seconds", 2);
 
     // showlcbcolor = config.getJSONObject("leelaz").optBoolean("show-lcb-color", false);

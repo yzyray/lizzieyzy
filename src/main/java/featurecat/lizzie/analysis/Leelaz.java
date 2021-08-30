@@ -1115,15 +1115,17 @@ public class Leelaz {
           // don't follow the maxAnalyzeTime rule if we are in analysis mode
           if ((!EngineManager.isEngineGame && !Lizzie.config.isAutoAna)) {
             if (!outOfPlayoutsLimit
-                && Lizzie.config.limitPlayout
-                && getBestMovesPlayouts() > Lizzie.config.limitPlayouts) {
+                && ((Lizzie.config.limitPlayout
+                        && getBestMovesPlayouts() > Lizzie.config.limitPlayouts)
+                    || (Lizzie.config.stopAtEmptyBoard
+                        && Lizzie.board.getHistory().noStoneBoard()))) {
               stopByLimit = true;
               stopByPlayouts = true;
               isPondering = !isPondering;
               nameCmd();
-            } else if (Lizzie.config.limitTime
+            } else if ((Lizzie.config.limitTime
                 && (System.currentTimeMillis() - startPonderTime)
-                    > Lizzie.config.maxAnalyzeTimeMillis) {
+                    > Lizzie.config.maxAnalyzeTimeMillis)) {
               stopByLimit = true;
               isPondering = !isPondering;
               nameCmd();
