@@ -780,7 +780,7 @@ public class BoardRenderer {
               g,
               scaledMarginWidth + squareWidth * i,
               scaledMarginHeight * 4 / 10,
-              Lizzie.frame.uiFont,
+              LizzieFrame.uiFont,
               Board.asName(i),
               stoneRadius * 4 / 5,
               stoneRadius);
@@ -795,7 +795,7 @@ public class BoardRenderer {
                 g,
                 scaledMarginWidth + squareWidth * i,
                 -scaledMarginHeight * 4 / 10 + boardHeight,
-                Lizzie.frame.uiFont,
+                LizzieFrame.uiFont,
                 Board.asName(i),
                 stoneRadius * 4 / 5,
                 stoneRadius);
@@ -805,16 +805,22 @@ public class BoardRenderer {
               g,
               scaledMarginWidth * 4 / 10,
               scaledMarginHeight + squareHeight * i,
-              Lizzie.frame.uiFont,
-              "" + (Board.boardHeight <= 25 ? (Board.boardHeight - i) : (i + 1)),
+              LizzieFrame.uiFont,
+              ""
+                  + (Board.boardHeight <= 25 && !Lizzie.config.useFoxStyleCoords
+                      ? (Board.boardHeight - i)
+                      : (i + 1)),
               stoneRadius * 4 / 5,
               stoneRadius);
           drawString(
               g,
               -scaledMarginWidth * 4 / 10 + boardWidth,
               scaledMarginHeight + squareHeight * i,
-              Lizzie.frame.uiFont,
-              "" + (Board.boardHeight <= 25 ? (Board.boardHeight - i) : (i + 1)),
+              LizzieFrame.uiFont,
+              ""
+                  + (Board.boardHeight <= 25 && !Lizzie.config.useFoxStyleCoords
+                      ? (Board.boardHeight - i)
+                      : (i + 1)),
               stoneRadius * 4 / 5,
               stoneRadius);
         }

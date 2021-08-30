@@ -563,6 +563,10 @@ public class Config {
   public boolean readBoardPonder = false;
   public boolean readBoardGetFocus = true;
 
+  public int otherSizeWidth = 21;
+  public int otherSizeHeight = 21;
+  public boolean useFoxStyleCoords = false;
+
   private JSONObject loadAndMergeSaveBoardConfig(
       JSONObject defaultCfg, String fileName, boolean needValidation) throws IOException {
 
@@ -1218,6 +1222,9 @@ public class Config {
     logConsoleToFile = uiConfig.optBoolean("log-console-to-file", false);
     logGtpToFile = uiConfig.optBoolean("log-gtp-to-file", false);
     readBoardGetFocus = uiConfig.optBoolean("read-board-get-focus", true);
+    otherSizeWidth = uiConfig.optInt("other-size-width", 21);
+    otherSizeHeight = uiConfig.optInt("other-size-height", 21);
+    useFoxStyleCoords = uiConfig.optBoolean("use-fox-style-coords", false);
     showScrollVariation = uiConfig.optBoolean("show-scroll-variation", true);
     ignoreOutOfWidth = uiConfig.optBoolean("ignore-out-of-width", false);
     enginePkPonder = uiConfig.optBoolean("engine-pk-ponder", false);
@@ -2525,5 +2532,12 @@ public class Config {
     }
     Lizzie.frame.refresh();
     LizzieFrame.menu.setBtnRankMark();
+  }
+
+  public void saveOtherBoardSize(int width, int height) {
+    otherSizeWidth = width;
+    otherSizeHeight = height;
+    uiConfig.put("other-size-width", otherSizeWidth);
+    uiConfig.put("other-size-height", otherSizeHeight);
   }
 }

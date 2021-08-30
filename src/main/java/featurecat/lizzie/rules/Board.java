@@ -42,6 +42,7 @@ public class Board {
 
   private static final String alphabet = "ABCDEFGHJKLMNOPQRSTUVWXYZ";
   private static final String alphabetWithI = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  private static final String alphabetFox = "ZYXWVUTSRQPONMLKJIHGFEDCBA";
 
   private BoardHistoryList history;
   // private boolean scoreMode;
@@ -176,8 +177,12 @@ public class Board {
   }
 
   public static String asName(int c) {
-    String alphabetString = Lizzie.config.useIinCoordsName ? alphabetWithI : alphabet;
-    if (boardWidth > (Lizzie.config.useIinCoordsName ? 26 : 25)) {
+    String alphabetString =
+        Lizzie.config.useIinCoordsName || Lizzie.config.useFoxStyleCoords
+            ? alphabetWithI
+            : alphabet;
+    if (boardWidth
+        > (Lizzie.config.useIinCoordsName || Lizzie.config.useFoxStyleCoords ? 26 : 25)) {
       return String.valueOf(c + 1);
     }
     StringBuilder name = new StringBuilder();
