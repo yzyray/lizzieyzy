@@ -2661,7 +2661,7 @@ public class Board {
     node.nodeInfoMain.playouts = node.nodeInfo.playouts;
     node.nodeInfoMain.previousPlayouts = node.nodeInfo.previousPlayouts;
     node.nodeInfoMain.scoreMeanDiff = node.nodeInfo.scoreMeanDiff;
-    node.nodeInfoMain.scoreMeanBoard = node.nodeInfo.scoreMeanBoard;
+    node.nodeInfoMain.scoreLead = node.nodeInfo.scoreLead;
     node.nodeInfoMain.isMatchAi = node.nodeInfo.isMatchAi;
   }
 
@@ -3122,7 +3122,7 @@ public class Board {
             previousNode.nodeInfo.nextNode = node;
             if (node.getData().isKataData) {
               node.nodeInfo.scoreMeanDiff = lastScoreMeanDiff(node);
-              previousNode.nodeInfo.scoreMeanBoard = node.getData().scoreMeanBoard;
+              previousNode.nodeInfo.scoreLead = node.getData().scoreMean;
             }
             previousNode.nodeInfoMain = previousNode.nodeInfo;
           }
@@ -3148,7 +3148,7 @@ public class Board {
             previousNode.nodeInfo.diffWinrate = winrateDiff;
             if (node.getData().isKataData) {
               previousNode.nodeInfo.scoreMeanDiff = lastScoreMeanDiff(node);
-              previousNode.nodeInfo.scoreMeanBoard = node.getData().scoreMeanBoard;
+              previousNode.nodeInfo.scoreLead = node.getData().scoreMean;
             }
             previousNode.nodeInfo.winrate = 100 - node.getData().winrate;
           }
@@ -3167,7 +3167,7 @@ public class Board {
               previousNode.nodeInfoMain.diffWinrate = winrateDiff;
               if (node.getData().isKataData) {
                 previousNode.nodeInfoMain.scoreMeanDiff = lastScoreMeanDiff(node);
-                previousNode.nodeInfoMain.scoreMeanBoard = node.getData().scoreMeanBoard;
+                previousNode.nodeInfoMain.scoreLead = node.getData().scoreMean;
               }
               previousNode.nodeInfoMain.winrate = 100 - node.getData().winrate;
             }
@@ -3221,7 +3221,7 @@ public class Board {
           previousNode.nodeInfo2.nextNode = node;
           if (node.getData().isKataData2) {
             previousNode.nodeInfo2.scoreMeanDiff = lastScoreMeanDiff2(node);
-            previousNode.nodeInfo2.scoreMeanBoard = node.getData().scoreMeanBoard2;
+            previousNode.nodeInfo2.scoreLead = node.getData().scoreMean2;
           }
         }
       } else {
@@ -3242,7 +3242,7 @@ public class Board {
             previousNode.nodeInfo2.diffWinrate = winrateDiff;
             if (node.getData().isKataData2) {
               previousNode.nodeInfo2.scoreMeanDiff = lastScoreMeanDiff2(node);
-              previousNode.nodeInfo2.scoreMeanBoard = node.getData().scoreMeanBoard2;
+              previousNode.nodeInfo2.scoreLead = node.getData().scoreMean2;
             }
             previousNode.nodeInfo2.winrate = 100 - node.getData().winrate2;
           }
@@ -3263,7 +3263,7 @@ public class Board {
               previousNode.nodeInfoMain2.diffWinrate = winrateDiff;
               if (node.getData().isKataData2) {
                 previousNode.nodeInfoMain2.scoreMeanDiff = lastScoreMeanDiff2(node);
-                previousNode.nodeInfoMain2.scoreMeanBoard = node.getData().scoreMeanBoard2;
+                previousNode.nodeInfoMain2.scoreLead = node.getData().scoreMean2;
               }
               previousNode.nodeInfoMain2.winrate = 100 - node.getData().winrate2;
             }

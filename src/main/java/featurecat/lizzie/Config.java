@@ -2103,11 +2103,13 @@ public class Config {
           Lizzie.frame.moveListFrame.table.getColumnModel().getColumn(7).getWidth());
       badmoveslistPos.put(
           Lizzie.frame.moveListFrame.table.getColumnModel().getColumn(8).getWidth());
-      if (Lizzie.frame.moveListFrame.table.getColumnCount() == 11) {
+      if (Lizzie.frame.moveListFrame.table.getColumnCount() == 12) {
         badmoveslistPos.put(
             Lizzie.frame.moveListFrame.table.getColumnModel().getColumn(9).getWidth());
         badmoveslistPos.put(
             Lizzie.frame.moveListFrame.table.getColumnModel().getColumn(10).getWidth());
+        badmoveslistPos.put(
+            Lizzie.frame.moveListFrame.table.getColumnModel().getColumn(11).getWidth());
       }
       persistedUi.put("badmoves-list-position", badmoveslistPos);
     } else {

@@ -1345,15 +1345,14 @@ public class ConfigDialog2 extends JDialog {
           }
         });
 
-    JLabel lblGomoku =
-        new JLabel(resourceBundle.getString("ConfigDialog2.lblGomoku")); // "五子棋"); // $NON-NLS-1$
+    JLabel lblGomoku = new JLabel(resourceBundle.getString("ConfigDialog2.lblGomoku")); // "五子棋");
     lblGomoku.setBounds(312, 671, 110, 15);
     uiTab.add(lblGomoku);
 
     JLabel lblSubBoardNotRefreshOnMouseOver =
         new JLabel(
             resourceBundle.getString(
-                "LizzieConfig.lblSubBoardNotRefreshOnMouseOver")); // ("鼠标悬停在小棋盘上时不刷新"); //
+                "LizzieConfig.lblSubBoardNotRefreshOnMouseOver")); // ("鼠标悬停在小棋盘上时不刷新");
     // $NON-NLS-1$
     lblSubBoardNotRefreshOnMouseOver.setBounds(10, 641, 228, 15);
     uiTab.add(lblSubBoardNotRefreshOnMouseOver);

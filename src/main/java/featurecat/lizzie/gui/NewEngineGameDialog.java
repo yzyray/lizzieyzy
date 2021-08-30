@@ -7,6 +7,7 @@ package featurecat.lizzie.gui;
 import featurecat.lizzie.Config;
 import featurecat.lizzie.Lizzie;
 import featurecat.lizzie.analysis.GameInfo;
+import featurecat.lizzie.rules.Board;
 import featurecat.lizzie.rules.Stone;
 import featurecat.lizzie.util.Utils;
 import java.awt.*;
@@ -20,7 +21,6 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.util.ResourceBundle;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -62,7 +62,10 @@ public class NewEngineGameDialog extends JDialog {
   private JCheckBox chkUseAdvanceTime;
   private JCheckBox chkSGFstart;
   private JFontButton btnSGFstart;
-  private ActionListener chkenginePkContinueListener;
+  private ActionListener chkEnginePkContinueListener;
+  private ActionListener chkBatchGameListener;
+  private JFontLabel lblsgf =
+      new JFontLabel(Lizzie.resourceBundle.getString("NewEngineGameDialog.lblsgf"));
 
   private boolean cancelled = true;
   private GameInfo gameInfo;
@@ -72,7 +75,7 @@ public class NewEngineGameDialog extends JDialog {
     initComponents();
   }
 
-  private final ResourceBundle resourceBundle = Lizzie.resourceBundle;
+  // private final ResourceBundle resourceBundle = Lizzie.resourceBundle;
   private JFontTextField txtBlackAdvanceTime;
   private JFontTextField txtWhiteAdvanceTime;
 
@@ -85,7 +88,7 @@ public class NewEngineGameDialog extends JDialog {
         Lizzie.config.isFrameFontSmall() ? 445 : (Lizzie.config.isFrameFontMiddle() ? 515 : 595),
         Lizzie.config.isFrameFontSmall() ? 408 : (Lizzie.config.isFrameFontMiddle() ? 409 : 421));
     setResizable(false);
-    setTitle(resourceBundle.getString("NewEngineGameDialog.title")); // "引擎对战");
+    setTitle(Lizzie.resourceBundle.getString("NewEngineGameDialog.title")); // "引擎对战");
     setModal(true);
     try {
       this.setIconImage(ImageIO.read(MoreEngines.class.getResourceAsStream("/assets/logo.png")));
@@ -119,7 +122,7 @@ public class NewEngineGameDialog extends JDialog {
     //    checkBoxPlayerIsBlack.addChangeListener(evt -> togglePlayerIsBlack());
 
     JTextArea resignThresoldHint =
-        new JTextArea(resourceBundle.getString("EnginePkConfig.lblresignGenmove"));
+        new JTextArea(Lizzie.resourceBundle.getString("EnginePkConfig.lblresignGenmove"));
     resignThresoldHint.setFont(
         new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
     resignThresoldHint.setLineWrap(true);
@@ -128,13 +131,15 @@ public class NewEngineGameDialog extends JDialog {
 
     JFontLabel lblresignSettingBlack =
         new JFontLabel(
-            resourceBundle.getString("EnginePkConfig.lblresignSettingBlack")); // ("认输阈值:");
+            Lizzie.resourceBundle.getString("EnginePkConfig.lblresignSettingBlack")); // ("认输阈值:");
     JFontLabel lblresignSettingBlackConsistent =
-        new JFontLabel(resourceBundle.getString("EnginePkConfig.lblresignSettingConsistent"));
+        new JFontLabel(
+            Lizzie.resourceBundle.getString("EnginePkConfig.lblresignSettingConsistent"));
     JFontLabel lblresignSettingBlack2 =
-        new JFontLabel(resourceBundle.getString("EnginePkConfig.lblresignSetting2")); // ("手胜率低于");
+        new JFontLabel(
+            Lizzie.resourceBundle.getString("EnginePkConfig.lblresignSetting2")); // ("手胜率低于");
     JFontLabel lblresignSettingBlack3 =
-        new JFontLabel(resourceBundle.getString("EnginePkConfig.lblresignSetting3"));
+        new JFontLabel(Lizzie.resourceBundle.getString("EnginePkConfig.lblresignSetting3"));
     JFontLabel lblresignSettingBlack4 = new JFontLabel("%");
 
     txtresignSettingBlack = new JFontTextField();
@@ -202,13 +207,14 @@ public class NewEngineGameDialog extends JDialog {
         Lizzie.config.isFrameFontSmall() ? 20 : (Lizzie.config.isFrameFontMiddle() ? 22 : 24));
 
     JFontLabel lblresignSettingWhite =
-        new JFontLabel(resourceBundle.getString("EnginePkConfig.lblresignSettingWhite"));
+        new JFontLabel(Lizzie.resourceBundle.getString("EnginePkConfig.lblresignSettingWhite"));
     JFontLabel lblresignSettingWhiteConsistent =
-        new JFontLabel(resourceBundle.getString("EnginePkConfig.lblresignSettingConsistent"));
+        new JFontLabel(
+            Lizzie.resourceBundle.getString("EnginePkConfig.lblresignSettingConsistent"));
     JFontLabel lblresignSettingWhite2 =
-        new JFontLabel(resourceBundle.getString("EnginePkConfig.lblresignSetting2"));
+        new JFontLabel(Lizzie.resourceBundle.getString("EnginePkConfig.lblresignSetting2"));
     JFontLabel lblresignSettingWhite3 =
-        new JFontLabel(resourceBundle.getString("EnginePkConfig.lblresignSetting3"));
+        new JFontLabel(Lizzie.resourceBundle.getString("EnginePkConfig.lblresignSetting3"));
     JFontLabel lblresignSettingWhite4 = new JFontLabel("%");
 
     txtresignSettingWhite = new JFontTextField();
@@ -283,12 +289,13 @@ public class NewEngineGameDialog extends JDialog {
         new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
     textFieldHandicap.addPropertyChangeListener(evt -> modifyHandicap());
 
-    enginePkBlack = Lizzie.frame.toolbar.enginePkBlack;
+    enginePkBlack = LizzieFrame.toolbar.enginePkBlack;
     enginePkBlack.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
-    enginePkWhite = Lizzie.frame.toolbar.enginePkWhite;
+    enginePkWhite = LizzieFrame.toolbar.enginePkWhite;
     enginePkWhite.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
     JFontButton btnConfig =
-        new JFontButton(resourceBundle.getString("NewEngineGameDialog.btnConfig")); // ("更多设置");
+        new JFontButton(
+            Lizzie.resourceBundle.getString("NewEngineGameDialog.btnConfig")); // ("更多设置");
     btnConfig.setMargin(new Insets(0, 0, 0, 0));
     btnConfig.addActionListener(
         new ActionListener() {
@@ -298,7 +305,7 @@ public class NewEngineGameDialog extends JDialog {
             EnginePkConfig engineconfig = new EnginePkConfig(false);
             engineconfig.setVisible(true);
             engineconfig.setAlwaysOnTop(true);
-            if (Lizzie.frame.toolbar.isGenmoveToolbar) {
+            if (LizzieFrame.toolbar.isGenmoveToolbar) {
               chkDisableWRNInGame.setVisible(false);
               txtresignSettingBlack.setVisible(false);
               txtresignSettingBlack2.setVisible(false);
@@ -322,16 +329,16 @@ public class NewEngineGameDialog extends JDialog {
               txtWhiteAdvanceTime.setEnabled(true);
               chkUseAdvanceTime.setEnabled(true);
               if (Lizzie.config.pkAdvanceTimeSettings) {
-                Lizzie.frame.toolbar.chkenginePkTime.setEnabled(false);
-                Lizzie.frame.toolbar.txtenginePkTime.setEnabled(false);
-                Lizzie.frame.toolbar.txtenginePkTimeWhite.setEnabled(false);
+                LizzieFrame.toolbar.chkenginePkTime.setEnabled(false);
+                LizzieFrame.toolbar.txtenginePkTime.setEnabled(false);
+                LizzieFrame.toolbar.txtenginePkTimeWhite.setEnabled(false);
                 txtBlackAdvanceTime.setEnabled(true);
                 txtWhiteAdvanceTime.setEnabled(true);
               } else {
-                Lizzie.frame.toolbar.chkenginePkTime.setEnabled(true);
-                if (Lizzie.frame.toolbar.chkenginePkTime.isSelected()) {
-                  Lizzie.frame.toolbar.txtenginePkTime.setEnabled(true);
-                  Lizzie.frame.toolbar.txtenginePkTimeWhite.setEnabled(true);
+                LizzieFrame.toolbar.chkenginePkTime.setEnabled(true);
+                if (LizzieFrame.toolbar.chkenginePkTime.isSelected()) {
+                  LizzieFrame.toolbar.txtenginePkTime.setEnabled(true);
+                  LizzieFrame.toolbar.txtenginePkTimeWhite.setEnabled(true);
                 }
                 txtBlackAdvanceTime.setEnabled(false);
                 txtWhiteAdvanceTime.setEnabled(false);
@@ -356,10 +363,10 @@ public class NewEngineGameDialog extends JDialog {
               lblresignSettingWhite2.setVisible(true);
               lblresignSettingWhite3.setVisible(true);
               lblresignSettingWhite4.setVisible(true);
-              Lizzie.frame.toolbar.chkenginePkTime.setEnabled(true);
-              if (Lizzie.frame.toolbar.chkenginePkTime.isSelected()) {
-                Lizzie.frame.toolbar.txtenginePkTime.setEnabled(true);
-                Lizzie.frame.toolbar.txtenginePkTimeWhite.setEnabled(true);
+              LizzieFrame.toolbar.chkenginePkTime.setEnabled(true);
+              if (LizzieFrame.toolbar.chkenginePkTime.isSelected()) {
+                LizzieFrame.toolbar.txtenginePkTime.setEnabled(true);
+                LizzieFrame.toolbar.txtenginePkTimeWhite.setEnabled(true);
               }
               txtBlackAdvanceTime.setEnabled(false);
               txtWhiteAdvanceTime.setEnabled(false);
@@ -369,16 +376,17 @@ public class NewEngineGameDialog extends JDialog {
         });
 
     JFontLabel lblB =
-        new JFontLabel(resourceBundle.getString("NewEngineGameDialog.lblB")); // ("黑方设置");
+        new JFontLabel(Lizzie.resourceBundle.getString("NewEngineGameDialog.lblB")); // ("黑方设置");
     lblB.setHorizontalAlignment(JLabel.CENTER);
     JFontLabel lblW =
-        new JFontLabel(resourceBundle.getString("NewEngineGameDialog.lblW")); // ("白方设置");
+        new JFontLabel(Lizzie.resourceBundle.getString("NewEngineGameDialog.lblW")); // ("白方设置");
     lblW.setHorizontalAlignment(JLabel.CENTER);
     lblB.setBounds(165, 2, 113, 20);
     lblW.setBounds(288, 2, 113, 20);
 
     JFontLabel lblengine =
-        new JFontLabel(resourceBundle.getString("NewEngineGameDialog.lblengine")); // ("选择引擎");
+        new JFontLabel(
+            Lizzie.resourceBundle.getString("NewEngineGameDialog.lblengine")); // ("选择引擎");
     lblengine.setBounds(5, 30, 120, 20);
 
     enginePkBlack.setBounds(
@@ -411,21 +419,22 @@ public class NewEngineGameDialog extends JDialog {
                   : enginePkBlack.getSelectedIndex()));
 
     JFontLabel lblTime =
-        new JFontLabel(resourceBundle.getString("NewEngineGameDialog.lblTime")); // ("每手时间(秒)");
+        new JFontLabel(
+            Lizzie.resourceBundle.getString("NewEngineGameDialog.lblTime")); // ("每手时间(秒)");
     lblTime.setBounds(5, 60, 136, 20);
-    Lizzie.frame.toolbar.chkenginePkTime.setBounds(
+    LizzieFrame.toolbar.chkenginePkTime.setBounds(
         143,
         Lizzie.config.isFrameFontSmall() ? 60 : (Lizzie.config.isFrameFontMiddle() ? 59 : 58),
         20,
         Lizzie.config.isFrameFontSmall() ? 20 : (Lizzie.config.isFrameFontMiddle() ? 22 : 24));
-    Lizzie.frame.toolbar.txtenginePkTime.setBounds(
+    LizzieFrame.toolbar.txtenginePkTime.setBounds(
         167,
         Lizzie.config.isFrameFontSmall() ? 60 : (Lizzie.config.isFrameFontMiddle() ? 59 : 58),
         113,
         Lizzie.config.isFrameFontSmall()
             ? 20
             : (Lizzie.config.isFrameFontMiddle() ? 22 : 24)); // (134, 60, 113, 20);
-    Lizzie.frame.toolbar.txtenginePkTimeWhite.setBounds(
+    LizzieFrame.toolbar.txtenginePkTimeWhite.setBounds(
         290,
         Lizzie.config.isFrameFontSmall() ? 60 : (Lizzie.config.isFrameFontMiddle() ? 59 : 58),
         113,
@@ -433,31 +442,32 @@ public class NewEngineGameDialog extends JDialog {
             ? 20
             : (Lizzie.config.isFrameFontMiddle() ? 22 : 24)); // (255, 60, 113, 20);
     contentPanel.add(lblTime);
-    contentPanel.add(Lizzie.frame.toolbar.chkenginePkTime);
-    contentPanel.add(Lizzie.frame.toolbar.txtenginePkTime);
-    contentPanel.add(Lizzie.frame.toolbar.txtenginePkTimeWhite);
-    if (!Lizzie.frame.toolbar.chkenginePkTime.isSelected()) {
-      Lizzie.frame.toolbar.txtenginePkTime.setEnabled(false);
-      Lizzie.frame.toolbar.txtenginePkTimeWhite.setEnabled(false);
+    contentPanel.add(LizzieFrame.toolbar.chkenginePkTime);
+    contentPanel.add(LizzieFrame.toolbar.txtenginePkTime);
+    contentPanel.add(LizzieFrame.toolbar.txtenginePkTimeWhite);
+    if (!LizzieFrame.toolbar.chkenginePkTime.isSelected()) {
+      LizzieFrame.toolbar.txtenginePkTime.setEnabled(false);
+      LizzieFrame.toolbar.txtenginePkTimeWhite.setEnabled(false);
     }
 
     JFontLabel lblPlayout =
-        new JFontLabel(resourceBundle.getString("NewEngineGameDialog.lblPlayout")); // ("总计算量");
+        new JFontLabel(
+            Lizzie.resourceBundle.getString("NewEngineGameDialog.lblPlayout")); // ("总计算量");
 
     lblPlayout.setBounds(5, 120, 136, 20);
-    Lizzie.frame.toolbar.chkenginePkPlayouts.setBounds(
+    LizzieFrame.toolbar.chkenginePkPlayouts.setBounds(
         143,
         Lizzie.config.isFrameFontSmall() ? 120 : (Lizzie.config.isFrameFontMiddle() ? 119 : 118),
         20,
         Lizzie.config.isFrameFontSmall() ? 20 : (Lizzie.config.isFrameFontMiddle() ? 22 : 24));
-    Lizzie.frame.toolbar.txtenginePkPlayputs.setBounds(
+    LizzieFrame.toolbar.txtenginePkPlayputs.setBounds(
         167,
         Lizzie.config.isFrameFontSmall() ? 120 : (Lizzie.config.isFrameFontMiddle() ? 119 : 118),
         113,
         Lizzie.config.isFrameFontSmall()
             ? 20
             : (Lizzie.config.isFrameFontMiddle() ? 22 : 24)); // (134, 120, 113, 20);
-    Lizzie.frame.toolbar.txtenginePkPlayputsWhite.setBounds(
+    LizzieFrame.toolbar.txtenginePkPlayputsWhite.setBounds(
         290,
         Lizzie.config.isFrameFontSmall() ? 120 : (Lizzie.config.isFrameFontMiddle() ? 119 : 118),
         113,
@@ -465,27 +475,27 @@ public class NewEngineGameDialog extends JDialog {
             ? 20
             : (Lizzie.config.isFrameFontMiddle() ? 22 : 24)); // (255, 120, 113, 20);
     contentPanel.add(lblPlayout);
-    contentPanel.add(Lizzie.frame.toolbar.chkenginePkPlayouts);
-    contentPanel.add(Lizzie.frame.toolbar.txtenginePkPlayputs);
-    contentPanel.add(Lizzie.frame.toolbar.txtenginePkPlayputsWhite);
-    if (!Lizzie.frame.toolbar.chkenginePkPlayouts.isSelected()) {
-      Lizzie.frame.toolbar.txtenginePkPlayputs.setEnabled(false);
-      Lizzie.frame.toolbar.txtenginePkPlayputsWhite.setEnabled(false);
+    contentPanel.add(LizzieFrame.toolbar.chkenginePkPlayouts);
+    contentPanel.add(LizzieFrame.toolbar.txtenginePkPlayputs);
+    contentPanel.add(LizzieFrame.toolbar.txtenginePkPlayputsWhite);
+    if (!LizzieFrame.toolbar.chkenginePkPlayouts.isSelected()) {
+      LizzieFrame.toolbar.txtenginePkPlayputs.setEnabled(false);
+      LizzieFrame.toolbar.txtenginePkPlayputsWhite.setEnabled(false);
     }
 
     JFontLabel lblFirstPlayout =
         new JFontLabel(
-            resourceBundle.getString("NewEngineGameDialog.lblFirstPlayout")); // ("首位计算量");
+            Lizzie.resourceBundle.getString("NewEngineGameDialog.lblFirstPlayout")); // ("首位计算量");
     lblFirstPlayout.setBounds(5, 150, 136, 20);
-    Lizzie.frame.toolbar.chkenginePkFirstPlayputs.setBounds(143, 150, 20, 20);
-    Lizzie.frame.toolbar.txtenginePkFirstPlayputs.setBounds(
+    LizzieFrame.toolbar.chkenginePkFirstPlayputs.setBounds(143, 150, 20, 20);
+    LizzieFrame.toolbar.txtenginePkFirstPlayputs.setBounds(
         167,
         Lizzie.config.isFrameFontSmall() ? 150 : (Lizzie.config.isFrameFontMiddle() ? 149 : 148),
         113,
         Lizzie.config.isFrameFontSmall()
             ? 20
             : (Lizzie.config.isFrameFontMiddle() ? 22 : 24)); // (134, 150, 113, 20);
-    Lizzie.frame.toolbar.txtenginePkFirstPlayputsWhite.setBounds(
+    LizzieFrame.toolbar.txtenginePkFirstPlayputsWhite.setBounds(
         290,
         Lizzie.config.isFrameFontSmall() ? 150 : (Lizzie.config.isFrameFontMiddle() ? 149 : 148),
         113,
@@ -494,18 +504,18 @@ public class NewEngineGameDialog extends JDialog {
             : (Lizzie.config.isFrameFontMiddle() ? 22 : 24)); // (255, 150, 113, 20);
 
     contentPanel.add(lblFirstPlayout);
-    contentPanel.add(Lizzie.frame.toolbar.chkenginePkFirstPlayputs);
-    contentPanel.add(Lizzie.frame.toolbar.txtenginePkFirstPlayputs);
-    contentPanel.add(Lizzie.frame.toolbar.txtenginePkFirstPlayputsWhite);
-    if (!Lizzie.frame.toolbar.chkenginePkFirstPlayputs.isSelected()) {
-      Lizzie.frame.toolbar.txtenginePkFirstPlayputs.setEnabled(false);
-      Lizzie.frame.toolbar.txtenginePkFirstPlayputsWhite.setEnabled(false);
+    contentPanel.add(LizzieFrame.toolbar.chkenginePkFirstPlayputs);
+    contentPanel.add(LizzieFrame.toolbar.txtenginePkFirstPlayputs);
+    contentPanel.add(LizzieFrame.toolbar.txtenginePkFirstPlayputsWhite);
+    if (!LizzieFrame.toolbar.chkenginePkFirstPlayputs.isSelected()) {
+      LizzieFrame.toolbar.txtenginePkFirstPlayputs.setEnabled(false);
+      LizzieFrame.toolbar.txtenginePkFirstPlayputsWhite.setEnabled(false);
     }
 
-    JFontLabel komi = new JFontLabel(resourceBundle.getString("NewEngineGameDialog.komi"));
+    JFontLabel komi = new JFontLabel(Lizzie.resourceBundle.getString("NewEngineGameDialog.komi"));
     JFontLabel handicap =
         new JFontLabel(
-            resourceBundle.getString("NewEngineGameDialog.handicap")); // ("让子(仅支持19路棋盘)");
+            Lizzie.resourceBundle.getString("NewEngineGameDialog.handicap")); // ("让子(仅支持19路棋盘)");
     komi.setBounds(5, 240, 45, 20);
     textFieldKomi.setBounds(
         Lizzie.config.isFrameFontSmall() ? 38 : (Lizzie.config.isFrameFontMiddle() ? 42 : 47),
@@ -528,24 +538,26 @@ public class NewEngineGameDialog extends JDialog {
     contentPanel.add(textFieldHandicap);
 
     JFontLabel lblContinue =
-        new JFontLabel(resourceBundle.getString("NewEngineGameDialog.lblContinue")); // ("当前局面续弈");
+        new JFontLabel(
+            Lizzie.resourceBundle.getString("NewEngineGameDialog.lblContinue")); // ("当前局面续弈");
 
     lblContinue.setBounds(25, 270, 136, 20);
-    Lizzie.frame.toolbar.chkenginePkContinue.setBounds(5, 270, 20, 20);
+    LizzieFrame.toolbar.chkenginePkContinue.setBounds(5, 270, 20, 20);
     contentPanel.add(lblContinue);
-    contentPanel.add(Lizzie.frame.toolbar.chkenginePkContinue);
+    contentPanel.add(LizzieFrame.toolbar.chkenginePkContinue);
 
-    chkenginePkContinueListener =
+    chkEnginePkContinueListener =
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            if (Lizzie.frame.toolbar.chkenginePkContinue.isSelected()) {
+            if (LizzieFrame.toolbar.chkenginePkContinue.isSelected()) {
               chkSGFstart.setSelected(false);
               Lizzie.config.chkEngineSgfStart = false;
-              // Lizzie.config.uiConfig.put("engine-sgf-start", Lizzie.config.chkEngineSgfStart);
               btnSGFstart.setEnabled(false);
               cbxRandomSgf.setEnabled(false);
+              handicap.setEnabled(false);
               textFieldHandicap.setEnabled(false);
             } else {
+              handicap.setEnabled(true);
               textFieldHandicap.setEnabled(true);
               if (chkSGFstart.isSelected()) {
                 btnSGFstart.setEnabled(true);
@@ -557,21 +569,36 @@ public class NewEngineGameDialog extends JDialog {
             }
           }
         };
-    Lizzie.frame.toolbar.chkenginePkContinue.addActionListener(chkenginePkContinueListener);
+
+    chkBatchGameListener =
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            if (LizzieFrame.toolbar.chkenginePkBatch.isSelected()) {
+              chkSGFstart.setEnabled(true);
+              lblsgf.setEnabled(true);
+            } else {
+              chkSGFstart.setEnabled(false);
+              lblsgf.setEnabled(false);
+            }
+          }
+        };
+    LizzieFrame.toolbar.chkenginePkContinue.addActionListener(chkEnginePkContinueListener);
+    LizzieFrame.toolbar.chkenginePkBatch.addActionListener(chkBatchGameListener);
 
     JFontLabel lblBatchGame =
-        new JFontLabel(resourceBundle.getString("NewEngineGameDialog.lblBatchGame")); // ("多盘");
+        new JFontLabel(
+            Lizzie.resourceBundle.getString("NewEngineGameDialog.lblBatchGame")); // ("多盘");
     lblBatchGame.setBounds(
         Lizzie.config.isFrameFontSmall() ? 279 : (Lizzie.config.isFrameFontMiddle() ? 283 : 288),
         240,
         160,
         20);
-    Lizzie.frame.toolbar.chkenginePkBatch.setBounds(
+    LizzieFrame.toolbar.chkenginePkBatch.setBounds(
         Lizzie.config.isFrameFontSmall() ? 350 : (Lizzie.config.isFrameFontMiddle() ? 375 : 410),
         240,
         20,
         20);
-    Lizzie.frame.toolbar.txtenginePkBatch.setBounds(
+    LizzieFrame.toolbar.txtenginePkBatch.setBounds(
         Lizzie.config.isFrameFontSmall() ? 370 : (Lizzie.config.isFrameFontMiddle() ? 395 : 430),
         Lizzie.config.isFrameFontSmall() ? 241 : (Lizzie.config.isFrameFontMiddle() ? 240 : 239),
         40,
@@ -582,8 +609,8 @@ public class NewEngineGameDialog extends JDialog {
         Lizzie.config.isFrameFontSmall() ? 80 : (Lizzie.config.isFrameFontMiddle() ? 80 : 100),
         Lizzie.config.isFrameFontSmall() ? 23 : (Lizzie.config.isFrameFontMiddle() ? 25 : 26));
     contentPanel.add(lblBatchGame);
-    contentPanel.add(Lizzie.frame.toolbar.chkenginePkBatch);
-    contentPanel.add(Lizzie.frame.toolbar.txtenginePkBatch);
+    contentPanel.add(LizzieFrame.toolbar.chkenginePkBatch);
+    contentPanel.add(LizzieFrame.toolbar.txtenginePkBatch);
     contentPanel.add(btnConfig);
 
     textFieldKomi.setEnabled(true);
@@ -601,7 +628,7 @@ public class NewEngineGameDialog extends JDialog {
 
     JFontLabel lblAdvanceTime =
         new JFontLabel(
-            resourceBundle.getString(
+            Lizzie.resourceBundle.getString(
                 "NewEngineGameDialog.lblAdvanceTime")); // ("高级时间设置"); // $NON-NLS-1$
     lblAdvanceTime.setBounds(5, 90, 136, 20);
     contentPanel.add(lblAdvanceTime);
@@ -626,7 +653,7 @@ public class NewEngineGameDialog extends JDialog {
 
     txtBlackAdvanceTime.setText(Lizzie.config.advanceBlackTimeTxt);
     txtWhiteAdvanceTime.setText(Lizzie.config.advanceWhiteTimeTxt);
-    if (!Lizzie.frame.toolbar.isGenmoveToolbar) {
+    if (!LizzieFrame.toolbar.isGenmoveToolbar) {
       txtBlackAdvanceTime.setEnabled(false);
       txtWhiteAdvanceTime.setEnabled(false);
     } else {
@@ -662,8 +689,8 @@ public class NewEngineGameDialog extends JDialog {
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             Utils.showHtmlMessage(
-                resourceBundle.getString("AdvanceTimeSettings.title"),
-                resourceBundle.getString("AdvanceTimeSettings.describe"));
+                Lizzie.resourceBundle.getString("AdvanceTimeSettings.title"),
+                Lizzie.resourceBundle.getString("AdvanceTimeSettings.describe"));
           }
         });
     aboutAdvanceTimeSettings.setBounds(125, 91, 18, 18);
@@ -673,7 +700,7 @@ public class NewEngineGameDialog extends JDialog {
     chkUseAdvanceTime = new JCheckBox(); // $NON-NLS-1$
     chkUseAdvanceTime.setBounds(143, 88, 20, 20);
     contentPanel.add(chkUseAdvanceTime);
-    if (!Lizzie.frame.toolbar.isGenmoveToolbar) chkUseAdvanceTime.setEnabled(false);
+    if (!LizzieFrame.toolbar.isGenmoveToolbar) chkUseAdvanceTime.setEnabled(false);
 
     chkUseAdvanceTime.addActionListener(
         new ActionListener() {
@@ -682,16 +709,16 @@ public class NewEngineGameDialog extends JDialog {
             // TODO Auto-generated method stub
             Lizzie.config.pkAdvanceTimeSettings = chkUseAdvanceTime.isSelected();
             if (Lizzie.config.pkAdvanceTimeSettings) {
-              Lizzie.frame.toolbar.chkenginePkTime.setEnabled(false);
-              Lizzie.frame.toolbar.txtenginePkTime.setEnabled(false);
-              Lizzie.frame.toolbar.txtenginePkTimeWhite.setEnabled(false);
+              LizzieFrame.toolbar.chkenginePkTime.setEnabled(false);
+              LizzieFrame.toolbar.txtenginePkTime.setEnabled(false);
+              LizzieFrame.toolbar.txtenginePkTimeWhite.setEnabled(false);
               txtBlackAdvanceTime.setEnabled(true);
               txtWhiteAdvanceTime.setEnabled(true);
             } else {
-              Lizzie.frame.toolbar.chkenginePkTime.setEnabled(true);
-              if (Lizzie.frame.toolbar.chkenginePkTime.isSelected()) {
-                Lizzie.frame.toolbar.txtenginePkTime.setEnabled(true);
-                Lizzie.frame.toolbar.txtenginePkTimeWhite.setEnabled(true);
+              LizzieFrame.toolbar.chkenginePkTime.setEnabled(true);
+              if (LizzieFrame.toolbar.chkenginePkTime.isSelected()) {
+                LizzieFrame.toolbar.txtenginePkTime.setEnabled(true);
+                LizzieFrame.toolbar.txtenginePkTimeWhite.setEnabled(true);
               }
               txtBlackAdvanceTime.setEnabled(false);
               txtWhiteAdvanceTime.setEnabled(false);
@@ -704,7 +731,7 @@ public class NewEngineGameDialog extends JDialog {
 
     JCheckBox checkBoxAllowPonder =
         new JFontCheckBox(
-            resourceBundle.getString(
+            Lizzie.resourceBundle.getString(
                 "NewEngineGameDialog.checkBoxAllowPonder")); // ("允许后台计算(同一台电脑对战时不可勾选)");
     checkBoxAllowPonder.setBounds(
         5,
@@ -723,7 +750,7 @@ public class NewEngineGameDialog extends JDialog {
     contentPanel.add(checkBoxAllowPonder);
 
     chkDisableWRNInGame =
-        new JFontCheckBox(resourceBundle.getString("NewAnaGameDialog.lblDisableWRNInGame"));
+        new JFontCheckBox(Lizzie.resourceBundle.getString("NewAnaGameDialog.lblDisableWRNInGame"));
     chkDisableWRNInGame.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
@@ -739,9 +766,9 @@ public class NewEngineGameDialog extends JDialog {
         23);
     chkDisableWRNInGame.setSelected(Lizzie.config.disableWRNInGame);
     contentPanel.add(chkDisableWRNInGame);
-    chkDisableWRNInGame.setVisible(!Lizzie.frame.toolbar.isGenmoveToolbar);
+    chkDisableWRNInGame.setVisible(!LizzieFrame.toolbar.isGenmoveToolbar);
 
-    chkSGFstart = new JCheckBox("");
+    chkSGFstart = new JCheckBox();
     chkSGFstart.setBounds(
         Lizzie.config.isFrameFontSmall() ? 257 : (Lizzie.config.isFrameFontMiddle() ? 257 : 277),
         269,
@@ -752,20 +779,26 @@ public class NewEngineGameDialog extends JDialog {
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             if (chkSGFstart.isSelected()) {
-              Lizzie.frame.toolbar.chkenginePkContinue.setSelected(false);
+              LizzieFrame.toolbar.chkenginePkContinue.setSelected(false);
               Lizzie.config.chkEngineSgfStart = true;
               btnSGFstart.setEnabled(true);
               cbxRandomSgf.setEnabled(true);
+              handicap.setEnabled(false);
+              textFieldHandicap.setEnabled(false);
             } else {
               Lizzie.config.chkEngineSgfStart = false;
               btnSGFstart.setEnabled(false);
               cbxRandomSgf.setEnabled(false);
+              handicap.setEnabled(true);
+              textFieldHandicap.setEnabled(true);
             }
           }
         });
+    chkSGFstart.setEnabled(LizzieFrame.toolbar.chkenginePkBatch.isSelected());
 
     btnSGFstart =
-        new JFontButton(resourceBundle.getString("NewEngineGameDialog.btnSGFstart")); // ("多选SGF");
+        new JFontButton(
+            Lizzie.resourceBundle.getString("NewEngineGameDialog.btnSGFstart")); // ("多选SGF");
     btnSGFstart.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
@@ -780,18 +813,19 @@ public class NewEngineGameDialog extends JDialog {
     contentPanel.add(btnSGFstart);
     btnSGFstart.setMargin(new Insets(0, 0, 0, 0));
 
-    JFontLabel lblsgf =
-        new JFontLabel(resourceBundle.getString("NewEngineGameDialog.lblsgf")); // ("加载开局SGF");
     lblsgf.setBounds(
         Lizzie.config.isFrameFontSmall() ? 160 : (Lizzie.config.isFrameFontMiddle() ? 130 : 110),
         270,
         180,
         20);
     contentPanel.add(lblsgf);
+    lblsgf.setEnabled(LizzieFrame.toolbar.chkenginePkBatch.isSelected());
 
     cbxRandomSgf = new JFontComboBox();
-    cbxRandomSgf.addItem(resourceBundle.getString("NewEngineGameDialog.cbxRandomSgf1")); // ("顺序");
-    cbxRandomSgf.addItem(resourceBundle.getString("NewEngineGameDialog.cbxRandomSgf2")); // ("随机");
+    cbxRandomSgf.addItem(
+        Lizzie.resourceBundle.getString("NewEngineGameDialog.cbxRandomSgf1")); // ("顺序");
+    cbxRandomSgf.addItem(
+        Lizzie.resourceBundle.getString("NewEngineGameDialog.cbxRandomSgf2")); // ("随机");
     cbxRandomSgf.setBounds(
         Lizzie.config.isFrameFontSmall() ? 277 : (Lizzie.config.isFrameFontMiddle() ? 277 : 297),
         Lizzie.config.isFrameFontSmall() ? 270 : (Lizzie.config.isFrameFontMiddle() ? 269 : 268),
@@ -810,21 +844,21 @@ public class NewEngineGameDialog extends JDialog {
           }
         });
     cbxRandomSgf.setSelectedIndex(Lizzie.config.engineSgfStartRandom ? 1 : 0);
-    if (Lizzie.config.pkAdvanceTimeSettings && Lizzie.frame.toolbar.isGenmoveToolbar) {
-      Lizzie.frame.toolbar.chkenginePkTime.setEnabled(false);
+    if (Lizzie.config.pkAdvanceTimeSettings && LizzieFrame.toolbar.isGenmoveToolbar) {
+      LizzieFrame.toolbar.chkenginePkTime.setEnabled(false);
       txtBlackAdvanceTime.setEnabled(true);
       txtWhiteAdvanceTime.setEnabled(true);
     } else {
-      Lizzie.frame.toolbar.chkenginePkTime.setEnabled(true);
-      if (Lizzie.frame.toolbar.chkenginePkTime.isSelected()) {
-        Lizzie.frame.toolbar.txtenginePkTime.setEnabled(true);
-        Lizzie.frame.toolbar.txtenginePkTimeWhite.setEnabled(true);
+      LizzieFrame.toolbar.chkenginePkTime.setEnabled(true);
+      if (LizzieFrame.toolbar.chkenginePkTime.isSelected()) {
+        LizzieFrame.toolbar.txtenginePkTime.setEnabled(true);
+        LizzieFrame.toolbar.txtenginePkTimeWhite.setEnabled(true);
       }
       txtBlackAdvanceTime.setEnabled(false);
       txtWhiteAdvanceTime.setEnabled(false);
     }
     chkSGFstart.setSelected(Lizzie.config.chkEngineSgfStart);
-    if (Lizzie.frame.toolbar.chkenginePkContinue.isSelected()) {
+    if (LizzieFrame.toolbar.chkenginePkContinue.isSelected()) {
       chkSGFstart.setSelected(false);
       btnSGFstart.setEnabled(false);
       cbxRandomSgf.setEnabled(false);
@@ -843,25 +877,26 @@ public class NewEngineGameDialog extends JDialog {
     addWindowListener(
         new WindowAdapter() {
           public void windowClosing(WindowEvent e) {
-            Lizzie.frame.toolbar.chkenginePkContinue.removeActionListener(
-                chkenginePkContinueListener);
+            LizzieFrame.toolbar.chkenginePkContinue.removeActionListener(
+                chkEnginePkContinueListener);
+            LizzieFrame.toolbar.chkenginePkBatch.removeActionListener(chkBatchGameListener);
             resetFont();
           }
         });
-    Lizzie.frame.toolbar.txtenginePkPlayputs.setFont(
-        new Font(Config.sysDefaultFontName, Font.PLAIN, Lizzie.config.frameFontSize));
-    Lizzie.frame.toolbar.txtenginePkPlayputsWhite.setFont(
-        new Font(Config.sysDefaultFontName, Font.PLAIN, Lizzie.config.frameFontSize));
-    Lizzie.frame.toolbar.txtenginePkFirstPlayputsWhite.setFont(
-        new Font(Config.sysDefaultFontName, Font.PLAIN, Lizzie.config.frameFontSize));
-    Lizzie.frame.toolbar.txtenginePkFirstPlayputs.setFont(
-        new Font(Config.sysDefaultFontName, Font.PLAIN, Lizzie.config.frameFontSize));
-    Lizzie.frame.toolbar.txtenginePkBatch.setFont(
-        new Font(Config.sysDefaultFontName, Font.PLAIN, Lizzie.config.frameFontSize));
-    Lizzie.frame.toolbar.txtenginePkTime.setFont(
-        new Font(Config.sysDefaultFontName, Font.PLAIN, Lizzie.config.frameFontSize));
-    Lizzie.frame.toolbar.txtenginePkTimeWhite.setFont(
-        new Font(Config.sysDefaultFontName, Font.PLAIN, Lizzie.config.frameFontSize));
+    LizzieFrame.toolbar.txtenginePkPlayputs.setFont(
+        new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
+    LizzieFrame.toolbar.txtenginePkPlayputsWhite.setFont(
+        new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
+    LizzieFrame.toolbar.txtenginePkFirstPlayputsWhite.setFont(
+        new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
+    LizzieFrame.toolbar.txtenginePkFirstPlayputs.setFont(
+        new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
+    LizzieFrame.toolbar.txtenginePkBatch.setFont(
+        new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
+    LizzieFrame.toolbar.txtenginePkTime.setFont(
+        new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
+    LizzieFrame.toolbar.txtenginePkTimeWhite.setFont(
+        new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
   }
 
   //  private void togglePlayerIsBlack() {
@@ -892,7 +927,7 @@ public class NewEngineGameDialog extends JDialog {
     ((GridBagLayout) buttonBar.getLayout()).columnWeights = new double[] {1.0, 0.0};
 
     // ---- okButton ----
-    okButton.setText(resourceBundle.getString("NewEngineGameDialog.okButton")); // ("确定");
+    okButton.setText(Lizzie.resourceBundle.getString("NewEngineGameDialog.okButton")); // ("确定");
     okButton.addActionListener(e -> apply());
 
     int center = GridBagConstraints.CENTER;
@@ -909,18 +944,16 @@ public class NewEngineGameDialog extends JDialog {
       // validate data
       if (Lizzie.config.chkEngineSgfStart
           && (Lizzie.frame.enginePKSgfString == null || Lizzie.frame.enginePKSgfString.isEmpty())) {
-        //        Message msg = new Message();
-        //        msg.setMessage("勾选\"加载开局SGF\"后请至少选择一个开局SGF棋谱");
-        //        msg.setVisible(true);
-        Utils.showMsg(resourceBundle.getString("NewEngineGameDialog.message"));
+        Utils.showMsg(Lizzie.resourceBundle.getString("NewEngineGameDialog.message"));
         return;
       }
-      Lizzie.frame.toolbar.chkenginePkContinue.removeActionListener(chkenginePkContinueListener);
+      LizzieFrame.toolbar.chkenginePkContinue.removeActionListener(chkEnginePkContinueListener);
+      LizzieFrame.toolbar.chkenginePkBatch.removeActionListener(chkBatchGameListener);
       String playerBlack =
-          Lizzie.engineManager.engineList.get(Lizzie.frame.toolbar.engineBlackToolbar)
+          Lizzie.engineManager.engineList.get(LizzieFrame.toolbar.engineBlackToolbar)
               .currentEnginename;
       String playerWhite =
-          Lizzie.engineManager.engineList.get(Lizzie.frame.toolbar.engineWhiteToolbar)
+          Lizzie.engineManager.engineList.get(LizzieFrame.toolbar.engineWhiteToolbar)
               .currentEnginename;
       double komi = 7.5;
       try {
@@ -928,7 +961,7 @@ public class NewEngineGameDialog extends JDialog {
       } catch (NumberFormatException err) {
       }
       int handicap =
-          Lizzie.frame.toolbar.chkenginePkContinue.isSelected()
+          !textFieldHandicap.isEnabled()
               ? 0
               : FORMAT_HANDICAP.parse(textFieldHandicap.getText()).intValue();
       try {
@@ -996,45 +1029,44 @@ public class NewEngineGameDialog extends JDialog {
 
       resetFont();
 
-      if (handicap >= 2 && Lizzie.board.boardWidth == 19 && Lizzie.board.boardHeight == 19) {
+      if (handicap >= 2 && Board.boardWidth == 19 && Board.boardHeight == 19) {
         Lizzie.board.getHistory().clear();
         placeHandicap(handicap);
-        Lizzie.frame.toolbar.isEngineGameHandicapToolbar = true;
-      } else Lizzie.frame.toolbar.isEngineGameHandicapToolbar = false;
+        LizzieFrame.toolbar.isEngineGameHandicapToolbar = true;
+      } else LizzieFrame.toolbar.isEngineGameHandicapToolbar = false;
 
       Lizzie.board.getHistory().setGameInfo(gameInfo);
       Lizzie.leelaz.komi(gameInfo.getKomi());
       // Lizzie.frame.komi = gameInfo.getKomi() + "";
 
-      Lizzie.frame.toolbar.chkenginePk.setSelected(true);
-      if (Lizzie.frame.toolbar.startEngineGame()) setVisible(false);
+      LizzieFrame.toolbar.chkenginePk.setSelected(true);
+      if (LizzieFrame.toolbar.startEngineGame()) setVisible(false);
     } catch (ParseException e) {
       // hide input mistakes.
     }
   }
 
   private void resetFont() {
-    Lizzie.frame.toolbar.enginePkBlack.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, 12));
-    Lizzie.frame.toolbar.enginePkWhite.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, 12));
-    Lizzie.frame.toolbar.txtenginePkPlayputs.setFont(
+    LizzieFrame.toolbar.enginePkBlack.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, 12));
+    LizzieFrame.toolbar.enginePkWhite.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, 12));
+    LizzieFrame.toolbar.txtenginePkPlayputs.setFont(
         new Font(Config.sysDefaultFontName, Font.PLAIN, 12));
-    Lizzie.frame.toolbar.txtenginePkPlayputsWhite.setFont(
+    LizzieFrame.toolbar.txtenginePkPlayputsWhite.setFont(
         new Font(Config.sysDefaultFontName, Font.PLAIN, 12));
-    Lizzie.frame.toolbar.txtenginePkFirstPlayputsWhite.setFont(
+    LizzieFrame.toolbar.txtenginePkFirstPlayputsWhite.setFont(
         new Font(Config.sysDefaultFontName, Font.PLAIN, 12));
-    Lizzie.frame.toolbar.txtenginePkFirstPlayputs.setFont(
+    LizzieFrame.toolbar.txtenginePkFirstPlayputs.setFont(
         new Font(Config.sysDefaultFontName, Font.PLAIN, 12));
-    Lizzie.frame.toolbar.txtenginePkBatch.setFont(
+    LizzieFrame.toolbar.txtenginePkBatch.setFont(
         new Font(Config.sysDefaultFontName, Font.PLAIN, 12));
-    Lizzie.frame.toolbar.txtenginePkTime.setFont(
+    LizzieFrame.toolbar.txtenginePkTime.setFont(
         new Font(Config.sysDefaultFontName, Font.PLAIN, 12));
-    Lizzie.frame.toolbar.txtenginePkTimeWhite.setFont(
+    LizzieFrame.toolbar.txtenginePkTimeWhite.setFont(
         new Font(Config.sysDefaultFontName, Font.PLAIN, 12));
   }
 
   private void placeHandicap(int handicap) {
     // TODO Auto-generated method stub
-    //  Lizzie.frame.toolbar.chkenginePkContinue.setSelected(true);
     switch (handicap) {
       case 2:
         Lizzie.board.getHistory().place(3, 15, Stone.BLACK);

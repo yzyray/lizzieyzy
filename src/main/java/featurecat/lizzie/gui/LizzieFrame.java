@@ -3471,7 +3471,7 @@ public class LizzieFrame extends JFrame {
       for (int i = 0; i < files.length; i++) {
         loadFile(files[i], true, true);
         Lizzie.board.isLoadingFile = true;
-        enginePKSgfString.add(Lizzie.board.getallmovelist()); // 改为读取到String组中
+        enginePKSgfString.add(Lizzie.board.getallmovelist());
         SgfWinLossList sgfWinLoss = new SgfWinLossList();
         sgfWinLoss.SgfNumber = i;
         enginePkSgfWinLoss.add(sgfWinLoss);

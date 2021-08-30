@@ -28,8 +28,8 @@ public class BoardData {
 	public double scoreMean2;
 	public double scoreStdev;
 	public double scoreStdev2;
-	public double scoreMeanBoard;
-	public double scoreMeanBoard2;
+	//public double scoreMeanBoard;
+	//public double scoreMeanBoard2;
 	public List<MoveData> bestMoves;
 	public List<MoveData> bestMovesOutOfRange;
 	public List<MoveData> bestMoves2;
@@ -214,10 +214,10 @@ public class BoardData {
 					Lizzie.leelaz.scoreMean = moves.get(0).scoreMean;
 					Lizzie.leelaz.scoreStdev = moves.get(0).scoreStdev;}
 					isKataData=true;
-					if(blackToPlay)
-					scoreMeanBoard = moves.get(0).scoreMean+Lizzie.board.getHistory().getGameInfo().getKomi();
-					else
-						scoreMeanBoard=-moves.get(0).scoreMean+Lizzie.board.getHistory().getGameInfo().getKomi();
+//					if(blackToPlay)
+//					scoreMeanBoard = moves.get(0).scoreMean+Lizzie.board.getHistory().getGameInfo().getKomi();
+//					else
+//						scoreMeanBoard=-moves.get(0).scoreMean+Lizzie.board.getHistory().getGameInfo().getKomi();
 				}				
 				else
 					isKataData=false;
@@ -333,10 +333,10 @@ public class BoardData {
 					if(Lizzie.leelaz2!=null	&&isFromLeelaz) {
 					Lizzie.leelaz2.scoreMean = moves.get(0).scoreMean;
 					Lizzie.leelaz2.scoreStdev = moves.get(0).scoreStdev;}
-					if(blackToPlay)
-						scoreMeanBoard2 = moves.get(0).scoreMean+Lizzie.board.getHistory().getGameInfo().getKomi();
-						else
-							scoreMeanBoard2=-moves.get(0).scoreMean+Lizzie.board.getHistory().getGameInfo().getKomi();
+//					if(blackToPlay)
+//						scoreMeanBoard2 = moves.get(0).scoreMean+Lizzie.board.getHistory().getGameInfo().getKomi();
+//						else
+//							scoreMeanBoard2=-moves.get(0).scoreMean+Lizzie.board.getHistory().getGameInfo().getKomi();
 					isKataData2=true;
 				}
 				else

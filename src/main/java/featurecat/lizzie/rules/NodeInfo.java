@@ -13,7 +13,7 @@ public class NodeInfo {
   public int playouts;
   public int previousPlayouts;
   public double scoreMeanDiff;
-  public double scoreMeanBoard;
+  public double scoreLead;
   public boolean isMatchAi;
   public double percentsMatch;
   public boolean isBest;

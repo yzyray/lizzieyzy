@@ -808,6 +808,7 @@ public class Leelaz {
           genmoveResign(false);
           return;
         }
+        checkForGomokuFullBoard(true);
         boolean isPassingLose = false;
         if (params[1].startsWith("Passing")) {
           isPassingLose = true;
@@ -1032,23 +1033,43 @@ public class Leelaz {
     }
   }
 
+  private void checkForGomokuFullBoard(boolean isGenmove) {
+    // TODO Auto-generated method stub
+    if (!Lizzie.config.noCapture) return;
+    Stone[] stones = Lizzie.board.getData().stones;
+    for (Stone stone : stones) {
+      if (stone == Stone.EMPTY) return;
+    }
+    if (isGenmove) {
+      genmoveNode++;
+      pkMoveTime = System.currentTimeMillis() - pkMoveStartTime;
+      pkMoveTimeGame = pkMoveTimeGame + pkMoveTime;
+      outOfMoveNum = true;
+      nameCmdfornoponder();
+      genmoveResign(false);
+    } else {
+      outOfMoveNum = true;
+      resigned = true;
+    }
+  }
+
   private void parseLine(String line) {
     // System.out.println(line);
     synchronized (this) {
       if (line.startsWith("info")) {
         if ((isResponseUpToDate())) {
-          if (Lizzie.engineManager.isEngineGame) {
+          if (EngineManager.isEngineGame) {
             // Lizzie.frame.subBoardRenderer.reverseBestmoves = false;
             // Lizzie.frame.boardRenderer.reverseBestmoves = false;
             if (Lizzie.config.enginePkPonder) {
               if ((Lizzie.board.getHistory().isBlacksTurn()
                       && this
                           == Lizzie.engineManager.engineList.get(
-                              Lizzie.engineManager.engineGameInfo.blackEngineIndex))
+                              EngineManager.engineGameInfo.blackEngineIndex))
                   || !Lizzie.board.getHistory().isBlacksTurn()
                       && this
                           == Lizzie.engineManager.engineList.get(
-                              Lizzie.engineManager.engineGameInfo.whiteEngineIndex)) {
+                              EngineManager.engineGameInfo.whiteEngineIndex)) {
                 Lizzie.leelaz = this;
               }
             } else Lizzie.leelaz = this;
@@ -1878,6 +1899,7 @@ public class Leelaz {
           }
         }
       }
+      checkForGomokuFullBoard(false);
     }
     if (resigned) {
       nameCmd();
@@ -2509,7 +2531,7 @@ public class Leelaz {
       if (cmdQueue.isEmpty()) {
         return;
       }
-      if (!isResponseUpToPreDate()) {
+      if (!isResponseUpToPreCommand()) {
         if (cmdQueue.peekFirst().startsWith("lz-analyze")
             || cmdQueue.peekFirst().startsWith("kata-analyze")
             || cmdQueue.peekFirst().startsWith("kata-raw")
@@ -2562,6 +2584,11 @@ public class Leelaz {
   private boolean isResponseUpToPreDate() {
     // Use >= instead of == for avoiding hang-up, though it cannot happen
     return currentCmdNum >= cmdNumber - 2; // &&currentCmdNum >=ignoreCmdNumber;
+  }
+
+  private boolean isResponseUpToPreCommand() {
+    // Use >= instead of == for avoiding hang-up, though it cannot happen
+    return currentCmdNum >= cmdNumber - 3; // &&currentCmdNum >=ignoreCmdNumber;
   }
 
   public void setResponseUpToDate() {

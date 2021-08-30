@@ -1332,14 +1332,14 @@ public class MoveListFrame extends JFrame {
     table.getColumnModel().getColumn(2).setPreferredWidth(57);
     table.getColumnModel().getColumn(3).setPreferredWidth(72);
     table.getColumnModel().getColumn(4).setPreferredWidth(77);
-    table.getColumnModel().getColumn(5).setPreferredWidth(74);
-    table.getColumnModel().getColumn(6).setPreferredWidth(76);
-    table.getColumnModel().getColumn(7).setPreferredWidth(71);
-    table.getColumnModel().getColumn(8).setPreferredWidth(40);
+    table.getColumnModel().getColumn(5).setPreferredWidth(70);
+    table.getColumnModel().getColumn(6).setPreferredWidth(70);
+    table.getColumnModel().getColumn(7).setPreferredWidth(70);
+    table.getColumnModel().getColumn(8).setPreferredWidth(70);
     if (persisted && Lizzie.config.persistedUi.optJSONArray("badmoves-list-position") != null) {
       JSONArray pos = Lizzie.config.persistedUi.getJSONArray("badmoves-list-position");
       if (table.getColumnCount() == 11
-          && Lizzie.config.persistedUi.optJSONArray("badmoves-list-position").length() == 16) {
+          && Lizzie.config.persistedUi.optJSONArray("badmoves-list-position").length() == 17) {
         table.getColumnModel().getColumn(0).setPreferredWidth(pos.getInt(5));
         table.getColumnModel().getColumn(1).setPreferredWidth(pos.getInt(6));
         table.getColumnModel().getColumn(2).setPreferredWidth(pos.getInt(7));
@@ -1351,7 +1351,7 @@ public class MoveListFrame extends JFrame {
         table.getColumnModel().getColumn(8).setPreferredWidth(pos.getInt(13));
         table.getColumnModel().getColumn(9).setPreferredWidth(pos.getInt(14));
         table.getColumnModel().getColumn(10).setPreferredWidth(pos.getInt(15));
-        //  sortnum = pos.getInt(0);
+        table.getColumnModel().getColumn(11).setPreferredWidth(pos.getInt(16));
       } else if (Lizzie.config.persistedUi.optJSONArray("badmoves-list-position").length() >= 14) {
         table.getColumnModel().getColumn(0).setPreferredWidth(pos.getInt(5));
         table.getColumnModel().getColumn(1).setPreferredWidth(pos.getInt(6));
@@ -1362,22 +1362,8 @@ public class MoveListFrame extends JFrame {
         table.getColumnModel().getColumn(6).setPreferredWidth(pos.getInt(11));
         table.getColumnModel().getColumn(7).setPreferredWidth(pos.getInt(12));
         table.getColumnModel().getColumn(8).setPreferredWidth(pos.getInt(13));
-        // sortnum = pos.getInt(0);
       }
     }
-    //    if (!isKatago
-    //        && sortnum == 4
-    //        && Lizzie.config.persistedUi.optJSONArray("badmoves-list-position").length() == 16) {
-    //      //sortnum = 3;
-    //    }
-    //    if (!true) {
-    //      if (isKatago) {
-    //        hideColumn(table, 10);
-    //      } else {
-    //        hideColumn(table, 8);
-    //      }
-    //    }
-    // table.setDefaultRenderer(Object.class, new TableStyle());
     ((DefaultTableCellRenderer) table.getTableHeader().getDefaultRenderer())
         .setHorizontalAlignment(JLabel.CENTER);
     JTableHeader header = table.getTableHeader();
@@ -7114,7 +7100,7 @@ public class MoveListFrame extends JFrame {
 
     return new AbstractTableModel() {
       public int getColumnCount() {
-        if (isKatago) return 11;
+        if (isKatago) return 12;
         else return 9;
       }
 
@@ -7176,14 +7162,17 @@ public class MoveListFrame extends JFrame {
             return Lizzie.resourceBundle.getString("Movelistframe.minTableColumnScoreDiff");
           if (column == 5)
             return Lizzie.resourceBundle.getString("Movelistframe.tableColumnThisWin");
-          if (column == 6) return Lizzie.resourceBundle.getString("Movelistframe.tableColumnAiWin");
+          if (column == 6)
+            return Lizzie.resourceBundle.getString("Movelistframe.tableColumnBestWin");
           if (column == 7)
-            return Lizzie.resourceBundle.getString("Movelistframe.tableColumnScoreBoard");
+            return Lizzie.resourceBundle.getString("Movelistframe.tableColumnThisScore");
           if (column == 8)
-            return Lizzie.resourceBundle.getString("Movelistframe.tableColumnPlayouts");
+            return Lizzie.resourceBundle.getString("Movelistframe.tableColumnBestScore");
           if (column == 9)
-            return Lizzie.resourceBundle.getString("Movelistframe.tableColumnNextPlayouts");
+            return Lizzie.resourceBundle.getString("Movelistframe.tableColumnPlayouts");
           if (column == 10)
+            return Lizzie.resourceBundle.getString("Movelistframe.tableColumnNextPlayouts");
+          if (column == 11)
             return Lizzie.resourceBundle.getString("Movelistframe.minTableColumnAiScore");
         } else {
           if (column == 0) return Lizzie.resourceBundle.getString("Movelistframe.tableColumnColor");
@@ -7195,7 +7184,8 @@ public class MoveListFrame extends JFrame {
             return Lizzie.resourceBundle.getString("Movelistframe.minTableColumnWinDiff");
           if (column == 4)
             return Lizzie.resourceBundle.getString("Movelistframe.tableColumnThisWin");
-          if (column == 5) return Lizzie.resourceBundle.getString("Movelistframe.tableColumnAiWin");
+          if (column == 5)
+            return Lizzie.resourceBundle.getString("Movelistframe.tableColumnBestWin");
           if (column == 6)
             return Lizzie.resourceBundle.getString("Movelistframe.tableColumnPlayouts");
           if (column == 7)
@@ -7288,18 +7278,24 @@ public class MoveListFrame extends JFrame {
                       if (s1.winrate - s1.diffWinrate > s2.winrate - s2.diffWinrate) return -1;
                     }
                     if (sortnum == 7) {
-                      if (s1.scoreMeanBoard < s2.scoreMeanBoard) return 1;
-                      if (s1.scoreMeanBoard > s2.scoreMeanBoard) return -1;
+                      if (s1.scoreLead < s2.scoreLead) return 1;
+                      if (s1.scoreLead > s2.scoreLead) return -1;
                     }
                     if (sortnum == 8) {
+                      if (s1.scoreLead - s1.scoreMeanDiff < s2.scoreLead - s2.scoreMeanDiff)
+                        return 1;
+                      if (s1.scoreLead - s1.scoreMeanDiff > s2.scoreLead - s2.scoreMeanDiff)
+                        return -1;
+                    }
+                    if (sortnum == 9) {
                       if (s1.previousPlayouts < s2.previousPlayouts) return 1;
                       if (s1.previousPlayouts > s2.previousPlayouts) return -1;
                     }
-                    if (sortnum == 9) {
+                    if (sortnum == 10) {
                       if (s1.playouts < s2.playouts) return 1;
                       if (s1.playouts > s2.playouts) return -1;
                     }
-                    if (sortnum == 10) {
+                    if (sortnum == 11) {
                       if (s1.percentsMatch < s2.percentsMatch) return 1;
                       if (s1.percentsMatch > s2.percentsMatch) return -1;
                     }
@@ -7343,18 +7339,22 @@ public class MoveListFrame extends JFrame {
                       if (s1.winrate - s1.diffWinrate < s2.winrate - s2.diffWinrate) return -1;
                     }
                     if (sortnum == 7) {
-                      if (s1.scoreMeanBoard > s2.scoreMeanBoard) return 1;
-                      if (s1.scoreMeanBoard < s2.scoreMeanBoard) return -1;
+                      if (s1.scoreLead > s2.scoreLead) return 1;
+                      if (s1.scoreLead < s2.scoreLead) return -1;
                     }
                     if (sortnum == 8) {
+                      if (s1.scoreLead - s1.scoreMeanDiff > s2.scoreLead - s2.scoreLead) return 1;
+                      if (s1.scoreLead - s1.scoreLead < s2.scoreLead - s2.scoreLead) return -1;
+                    }
+                    if (sortnum == 9) {
                       if (s1.previousPlayouts > s2.previousPlayouts) return 1;
                       if (s1.previousPlayouts < s2.previousPlayouts) return -1;
                     }
-                    if (sortnum == 9) {
+                    if (sortnum == 10) {
                       if (s1.playouts > s2.playouts) return 1;
                       if (s1.playouts < s2.playouts) return -1;
                     }
-                    if (sortnum == 10) {
+                    if (sortnum == 11) {
                       if (s1.percentsMatch > s2.percentsMatch) return 1;
                       if (s1.percentsMatch < s2.percentsMatch) return -1;
                     }
@@ -7443,43 +7443,6 @@ public class MoveListFrame extends JFrame {
                     if (sortnum == 8) {
                       if (s1.percentsMatch > s2.percentsMatch) return 1;
                       if (s1.percentsMatch < s2.percentsMatch) return -1;
-                      //                      if (s2.previousPlayouts > 0
-                      //                          && s2.moveNum <= (Lizzie.config.matchAiLastMove +
-                      // 1)
-                      //                          && s2.moveNum > Lizzie.config.matchAiFirstMove) {
-                      //                        if (!s2.isMatchAi) {
-                      //                          if (s1.previousPlayouts > 0
-                      //                              && s1.moveNum <=
-                      // (Lizzie.config.matchAiLastMove
-                      // + 1)
-                      //                              && s1.moveNum >
-                      // Lizzie.config.matchAiFirstMove)
-                      // {
-                      //                            if (!s1.isMatchAi) return 0;
-                      //                            else return 1;
-                      //                          } else {
-                      //                            return 1;
-                      //                          }
-                      //                        } else {
-                      //                          if (s1.previousPlayouts > 0
-                      //                              && s1.moveNum <=
-                      // (Lizzie.config.matchAiLastMove
-                      // + 1)
-                      //                              && s1.moveNum >
-                      // Lizzie.config.matchAiFirstMove)
-                      // {
-                      //                            if (!s1.isMatchAi) return -1;
-                      //                            else return 0;
-                      //                          } else {
-                      //                            return 1;
-                      //                          }
-                      //                        }
-                      //                      } else if (s1.previousPlayouts > 0
-                      //                          && s1.moveNum <= (Lizzie.config.matchAiLastMove +
-                      // 1)
-                      //                          && s1.moveNum > Lizzie.config.matchAiFirstMove) {
-                      //                        return -1;
-                      //                      } else return 0;
                     }
                   }
                   return 0;
@@ -7532,10 +7495,6 @@ public class MoveListFrame extends JFrame {
                           .get()
                           .nodeInfo2));
         }
-        // featurecat.lizzie.analysis.MoveDataSorter MoveDataSorter = new
-        // MoveDataSorter(data2);
-        // ArrayList sortedMoveData = MoveDataSorter.getSortedMoveDataByPolicy();
-
         NodeInfo data = data2.get(row);
         if (isKatago) {
           if (Lizzie.board.isPkBoard) {
@@ -7558,19 +7517,16 @@ public class MoveListFrame extends JFrame {
               case 5:
                 return String.format(Locale.ENGLISH, "%.2f", 100 - data.winrate);
               case 6:
-                if (data.previousPlayouts > 0) {
-                  return String.format(
-                      Locale.ENGLISH, "%.2f", 100 - (data.winrate - data.diffWinrate));
-                } else {
-                  return "";
-                }
+                return "-";
               case 7:
-                return String.format(Locale.ENGLISH, "%.2f", data.scoreMeanBoard);
+                return String.format(Locale.ENGLISH, "%.2f", -data.scoreLead);
               case 8:
-                return Utils.getPlayoutsString(data.previousPlayouts);
+                return "-";
               case 9:
-                return Utils.getPlayoutsString(data.playouts);
+                return Utils.getPlayoutsString(data.previousPlayouts);
               case 10:
+                return Utils.getPlayoutsString(data.playouts);
+              case 11:
                 return "-";
               default:
                 return "";
@@ -7601,12 +7557,14 @@ public class MoveListFrame extends JFrame {
                   return "";
                 }
               case 7:
-                return String.format(Locale.ENGLISH, "%.2f", data.scoreMeanBoard);
+                return String.format(Locale.ENGLISH, "%.2f", -data.scoreLead);
               case 8:
-                return Utils.getPlayoutsString(data.previousPlayouts);
+                return String.format(Locale.ENGLISH, "%.2f", -data.scoreLead - data.scoreMeanDiff);
               case 9:
-                return Utils.getPlayoutsString(data.playouts);
+                return Utils.getPlayoutsString(data.previousPlayouts);
               case 10:
+                return Utils.getPlayoutsString(data.playouts);
+              case 11:
                 return String.format(
                     "%.1f",
                     // Math.pow(data.percentsMatch, (double) 1 / Lizzie.config.matchAiTemperature)
@@ -7637,12 +7595,7 @@ public class MoveListFrame extends JFrame {
               case 4:
                 return String.format(Locale.ENGLISH, "%.2f", 100 - data.winrate);
               case 5:
-                if (data.previousPlayouts > 0) {
-                  return String.format(
-                      Locale.ENGLISH, "%.2f", 100 - (data.winrate - data.diffWinrate));
-                } else {
-                  return "";
-                }
+                return "-";
               case 6:
                 return Utils.getPlayoutsString(data.previousPlayouts);
               case 7:
