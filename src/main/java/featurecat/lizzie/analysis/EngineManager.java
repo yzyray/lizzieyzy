@@ -898,8 +898,7 @@ public class EngineManager {
     if (engineGameInfo.isBatchGame) {
       if (engineList.get(resgnEngineIndex).doublePass) {
         engineGameInfo.doublePassGame++;
-      } else if (LizzieFrame.toolbar.checkGameMaxMove
-          && Lizzie.board.getHistory().getMoveNumber() > LizzieFrame.toolbar.maxGanmeMove) {
+      } else if (engineList.get(resgnEngineIndex).outOfMoveNum) {
         engineGameInfo.maxMoveGame++;
       } else {
         if (resgnEngineIndex == engineGameInfo.firstEngineIndex) {
