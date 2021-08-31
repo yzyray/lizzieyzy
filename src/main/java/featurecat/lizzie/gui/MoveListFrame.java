@@ -5268,10 +5268,13 @@ public class MoveListFrame extends JFrame {
         int playouts = isMainEngine ? node.getData().getPlayouts() : node.getData().getPlayouts2();
         switch (selectedIndex) {
           case 0:
-            if (!node.previous().get().previous().isPresent()
-                && playouts <= 0
-                && checkBlack.isSelected()) {
-              if (lastMatch && lastMatchBlack) {
+            if (!node.previous().get().previous().isPresent() && checkBlack.isSelected()) {
+              firstNode = node.previous().get();
+              NodeInfo firstNodeInfo =
+                  showBranch.getSelectedIndex() == 0
+                      ? (isMainEngine ? firstNode.nodeInfoMain : firstNode.nodeInfoMain2)
+                      : (isMainEngine ? firstNode.nodeInfo : firstNode.nodeInfo2);
+              if (firstNodeInfo.analyzedMatchValue && firstNodeInfo.isBlack) {
                 g.setColor(new Color(0, 0, 255, 100));
                 int[] xPoints = {
                   posx + ((movenum + 1) * width / numMoves),
@@ -5283,7 +5286,12 @@ public class MoveListFrame extends JFrame {
                   posy + height - (int) (convertWinrate(lastWr) * height / 100),
                   origParams[3],
                   origParams[3],
-                  posy + height - (int) (convertWinrate(50) * height / 100)
+                  posy
+                      + height
+                      - (int)
+                          (convertWinrate(firstNodeInfo.analyzed ? firstNode.getData().winrate : 50)
+                              * height
+                              / 100)
                 };
                 g.fillPolygon(xPoints, yPoints, 4);
               }
