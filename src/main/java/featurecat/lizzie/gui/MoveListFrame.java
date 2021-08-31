@@ -2317,6 +2317,7 @@ public class MoveListFrame extends JFrame {
             if (nodeInfo.isBlack) {
               if (nodeInfo.moveNum <= Lizzie.config.openingEndMove) {
                 parse1BlackAnalyzed++;
+                parse1BlackMatchAnalyzed++;
                 parse1BlackValue += nodeInfo.percentsMatch;
                 if (nodeInfo.getWinrateDiff() < 0)
                   parse1BlackWinrateDiff += Math.abs(nodeInfo.getWinrateDiff());
@@ -2324,6 +2325,7 @@ public class MoveListFrame extends JFrame {
                   parse1BlackScoreDiff += Math.abs(nodeInfo.getScoreMeanDiff());
               } else if (nodeInfo.moveNum <= Lizzie.config.middleEndMove) {
                 parse2BlackAnalyzed++;
+                parse2BlackMatchAnalyzed++;
                 parse2BlackValue += nodeInfo.percentsMatch;
                 if (nodeInfo.getWinrateDiff() < 0)
                   parse2BlackWinrateDiff += Math.abs(nodeInfo.getWinrateDiff());
@@ -2331,6 +2333,7 @@ public class MoveListFrame extends JFrame {
                   parse2BlackScoreDiff += Math.abs(nodeInfo.getScoreMeanDiff());
               } else {
                 parse3BlackAnalyzed++;
+                parse3BlackMatchAnalyzed++;
                 parse3BlackValue += nodeInfo.percentsMatch;
                 if (nodeInfo.getWinrateDiff() < 0)
                   parse3BlackWinrateDiff += Math.abs(nodeInfo.getWinrateDiff());
@@ -2340,6 +2343,7 @@ public class MoveListFrame extends JFrame {
             } else {
               if (nodeInfo.moveNum <= Lizzie.config.openingEndMove) {
                 parse1WhiteAnalyzed++;
+                parse1WhiteMatchAnalyzed++;
                 parse1WhiteValue += nodeInfo.percentsMatch;
                 if (nodeInfo.getWinrateDiff() < 0)
                   parse1WhiteWinrateDiff += Math.abs(nodeInfo.getWinrateDiff());
@@ -2347,6 +2351,7 @@ public class MoveListFrame extends JFrame {
                   parse1WhiteScoreDiff += Math.abs(nodeInfo.getScoreMeanDiff());
               } else if (nodeInfo.moveNum <= Lizzie.config.middleEndMove) {
                 parse2WhiteAnalyzed++;
+                parse2WhiteMatchAnalyzed++;
                 parse2WhiteValue += nodeInfo.percentsMatch;
                 if (nodeInfo.getWinrateDiff() < 0)
                   parse2WhiteWinrateDiff += Math.abs(nodeInfo.getWinrateDiff());
@@ -2354,6 +2359,7 @@ public class MoveListFrame extends JFrame {
                   parse2WhiteScoreDiff += Math.abs(nodeInfo.getScoreMeanDiff());
               } else {
                 parse3WhiteAnalyzed++;
+                parse3WhiteMatchAnalyzed++;
                 parse3WhiteValue += nodeInfo.percentsMatch;
                 if (nodeInfo.getWinrateDiff() < 0)
                   parse3WhiteWinrateDiff += Math.abs(nodeInfo.getWinrateDiff());
@@ -4672,11 +4678,11 @@ public class MoveListFrame extends JFrame {
 
     if (selectedIndex == 4) {
       double percentBlackParse1 =
-          parse1BlackAnalyzed > 0 ? parse1BlackValue / parse1BlackMatchAnalyzed : 0;
+          parse1BlackMatchAnalyzed > 0 ? parse1BlackValue / parse1BlackMatchAnalyzed : 0;
       double percentBlackParse2 =
-          parse2BlackAnalyzed > 0 ? parse2BlackValue / parse2BlackMatchAnalyzed : 0;
+          parse2BlackMatchAnalyzed > 0 ? parse2BlackValue / parse2BlackMatchAnalyzed : 0;
       double percentBlackParse3 =
-          parse3BlackAnalyzed > 0 ? parse3BlackValue / parse3BlackMatchAnalyzed : 0;
+          parse3BlackMatchAnalyzed > 0 ? parse3BlackValue / parse3BlackMatchAnalyzed : 0;
       int blackAllAnalyzed =
           parse1BlackMatchAnalyzed + parse2BlackMatchAnalyzed + parse3BlackMatchAnalyzed;
       double percentBlackAll =
@@ -4685,11 +4691,11 @@ public class MoveListFrame extends JFrame {
               : 0;
 
       double percentWhiteParse1 =
-          parse1WhiteAnalyzed > 0 ? parse1WhiteValue / parse1WhiteMatchAnalyzed : 0;
+          parse1WhiteMatchAnalyzed > 0 ? parse1WhiteValue / parse1WhiteMatchAnalyzed : 0;
       double percentWhiteParse2 =
-          parse2WhiteAnalyzed > 0 ? parse2WhiteValue / parse2WhiteMatchAnalyzed : 0;
+          parse2WhiteMatchAnalyzed > 0 ? parse2WhiteValue / parse2WhiteMatchAnalyzed : 0;
       double percentWhiteParse3 =
-          parse3WhiteAnalyzed > 0 ? parse3WhiteValue / parse3WhiteMatchAnalyzed : 0;
+          parse3WhiteMatchAnalyzed > 0 ? parse3WhiteValue / parse3WhiteMatchAnalyzed : 0;
 
       int whiteAllAnalyzed =
           parse1WhiteMatchAnalyzed + parse2WhiteMatchAnalyzed + parse3WhiteMatchAnalyzed;
