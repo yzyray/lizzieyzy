@@ -1763,7 +1763,7 @@ public class Board {
           && Lizzie.frame.readBoard.process.isAlive()) {
         Lizzie.frame.readBoard.sendCommand("place " + x + " " + y);
       }
-      if (Lizzie.frame.urlSgf) history.addOrGoto(newState, newBranch, true);
+      if (LizzieFrame.urlSgf) history.addOrGoto(newState, newBranch, true);
       else history.addOrGoto(newState, newBranch, changeMove);
       updateIsBest();
       //   modifyEnd(false);
@@ -1835,6 +1835,7 @@ public class Board {
                 0.0,
                 0));
     history.setGameInfo(oldHistory.getGameInfo());
+    if (Lizzie.leelaz.isPondering()) Lizzie.leelaz.ponder();
   }
 
   /**

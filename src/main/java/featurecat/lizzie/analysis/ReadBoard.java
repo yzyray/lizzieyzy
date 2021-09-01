@@ -357,7 +357,7 @@ public class ReadBoard {
       if (params.length >= 3) {
         int boardWidth = Integer.parseInt(params[1]);
         int boardHeight = Integer.parseInt(params[2]);
-        if (boardWidth != Lizzie.board.boardWidth || boardHeight != Lizzie.board.boardHeight) {
+        if (boardWidth != Board.boardWidth || boardHeight != Board.boardHeight) {
           Lizzie.board.reopen(boardWidth, boardHeight);
         } else {
           Lizzie.board.clear(false);
@@ -377,8 +377,8 @@ public class ReadBoard {
       Lizzie.frame.bothSync = false;
     }
     if (line.startsWith("stopAutoPlay")) {
-      Lizzie.frame.toolbar.chkAutoPlay.setSelected(false);
-      Lizzie.frame.toolbar.isAutoPlay = false;
+      LizzieFrame.toolbar.chkAutoPlay.setSelected(false);
+      LizzieFrame.toolbar.isAutoPlay = false;
     }
     if (line.startsWith("endsync")) {
       noMsg = true;
@@ -410,40 +410,40 @@ public class ReadBoard {
         int firstPlayouts = Integer.parseInt(playParams[2]);
         int time = Integer.parseInt(playParams[0]);
         if (time > 0) {
-          Lizzie.frame.toolbar.txtAutoPlayTime.setText(time + "");
-          Lizzie.frame.toolbar.chkAutoPlayTime.setSelected(true);
+          LizzieFrame.toolbar.txtAutoPlayTime.setText(time + "");
+          LizzieFrame.toolbar.chkAutoPlayTime.setSelected(true);
         } else {
-          Lizzie.frame.toolbar.txtAutoPlayTime.setText(
+          LizzieFrame.toolbar.txtAutoPlayTime.setText(
               Lizzie.config.leelazConfig.getInt("max-game-thinking-time-seconds") + "");
-          Lizzie.frame.toolbar.chkAutoPlayTime.setSelected(true);
+          LizzieFrame.toolbar.chkAutoPlayTime.setSelected(true);
         }
         if (playouts > 0) {
-          Lizzie.frame.toolbar.txtAutoPlayPlayouts.setText(playouts + "");
-          Lizzie.frame.toolbar.chkAutoPlayPlayouts.setSelected(true);
-        } else Lizzie.frame.toolbar.chkAutoPlayPlayouts.setSelected(false);
+          LizzieFrame.toolbar.txtAutoPlayPlayouts.setText(playouts + "");
+          LizzieFrame.toolbar.chkAutoPlayPlayouts.setSelected(true);
+        } else LizzieFrame.toolbar.chkAutoPlayPlayouts.setSelected(false);
         if (firstPlayouts > 0) {
-          Lizzie.frame.toolbar.txtAutoPlayFirstPlayouts.setText(firstPlayouts + "");
-          Lizzie.frame.toolbar.chkAutoPlayFirstPlayouts.setSelected(true);
-        } else Lizzie.frame.toolbar.chkAutoPlayFirstPlayouts.setSelected(false);
+          LizzieFrame.toolbar.txtAutoPlayFirstPlayouts.setText(firstPlayouts + "");
+          LizzieFrame.toolbar.chkAutoPlayFirstPlayouts.setSelected(true);
+        } else LizzieFrame.toolbar.chkAutoPlayFirstPlayouts.setSelected(false);
         if (params[1].equals("black")) {
-          Lizzie.frame.toolbar.chkAutoPlayBlack.setSelected(true);
-          Lizzie.frame.toolbar.chkAutoPlayWhite.setSelected(false);
-          Lizzie.frame.toolbar.chkAutoPlay.setSelected(true);
-          Lizzie.frame.toolbar.chkShowBlack.setSelected(true);
-          Lizzie.frame.toolbar.chkShowWhite.setSelected(true);
+          LizzieFrame.toolbar.chkAutoPlayBlack.setSelected(true);
+          LizzieFrame.toolbar.chkAutoPlayWhite.setSelected(false);
+          LizzieFrame.toolbar.chkAutoPlay.setSelected(true);
+          LizzieFrame.toolbar.chkShowBlack.setSelected(true);
+          LizzieFrame.toolbar.chkShowWhite.setSelected(true);
           Lizzie.config.UsePureNetInGame = false;
           Lizzie.frame.isAnaPlayingAgainstLeelaz = true;
-          Lizzie.frame.toolbar.isAutoPlay = true;
+          LizzieFrame.toolbar.isAutoPlay = true;
           Lizzie.frame.clearWRNforGame(false);
         } else if (params[1].equals("white")) {
-          Lizzie.frame.toolbar.chkAutoPlayBlack.setSelected(false);
-          Lizzie.frame.toolbar.chkAutoPlayWhite.setSelected(true);
-          Lizzie.frame.toolbar.chkAutoPlay.setSelected(true);
-          Lizzie.frame.toolbar.chkShowBlack.setSelected(true);
-          Lizzie.frame.toolbar.chkShowWhite.setSelected(true);
+          LizzieFrame.toolbar.chkAutoPlayBlack.setSelected(false);
+          LizzieFrame.toolbar.chkAutoPlayWhite.setSelected(true);
+          LizzieFrame.toolbar.chkAutoPlay.setSelected(true);
+          LizzieFrame.toolbar.chkShowBlack.setSelected(true);
+          LizzieFrame.toolbar.chkShowWhite.setSelected(true);
           Lizzie.config.UsePureNetInGame = false;
           Lizzie.frame.isAnaPlayingAgainstLeelaz = true;
-          Lizzie.frame.toolbar.isAutoPlay = true;
+          LizzieFrame.toolbar.isAutoPlay = true;
           Lizzie.frame.clearWRNforGame(false);
         }
         Lizzie.leelaz.ponder();
@@ -457,9 +457,9 @@ public class ReadBoard {
       if (params.length == 2) {
         int firstPlayouts = Integer.parseInt(params[1]);
         if (firstPlayouts > 0) {
-          Lizzie.frame.toolbar.txtAutoPlayFirstPlayouts.setText(firstPlayouts + "");
-          Lizzie.frame.toolbar.chkAutoPlayFirstPlayouts.setSelected(true);
-        } else Lizzie.frame.toolbar.chkAutoPlayFirstPlayouts.setSelected(false);
+          LizzieFrame.toolbar.txtAutoPlayFirstPlayouts.setText(firstPlayouts + "");
+          LizzieFrame.toolbar.chkAutoPlayFirstPlayouts.setSelected(true);
+        } else LizzieFrame.toolbar.chkAutoPlayFirstPlayouts.setSelected(false);
       }
     }
     if (line.startsWith("playoutschanged")) {
@@ -467,9 +467,9 @@ public class ReadBoard {
       if (params.length == 2) {
         int playouts = Integer.parseInt(params[1]);
         if (playouts > 0) {
-          Lizzie.frame.toolbar.txtAutoPlayPlayouts.setText(playouts + "");
-          Lizzie.frame.toolbar.chkAutoPlayPlayouts.setSelected(true);
-        } else Lizzie.frame.toolbar.chkAutoPlayPlayouts.setSelected(false);
+          LizzieFrame.toolbar.txtAutoPlayPlayouts.setText(playouts + "");
+          LizzieFrame.toolbar.chkAutoPlayPlayouts.setSelected(true);
+        } else LizzieFrame.toolbar.chkAutoPlayPlayouts.setSelected(false);
       }
     }
     if (line.startsWith("timechanged")) {
@@ -477,12 +477,12 @@ public class ReadBoard {
       if (params.length == 2) {
         int time = Integer.parseInt(params[1]);
         if (time > 0) {
-          Lizzie.frame.toolbar.txtAutoPlayTime.setText(time + "");
-          Lizzie.frame.toolbar.chkAutoPlayTime.setSelected(true);
+          LizzieFrame.toolbar.txtAutoPlayTime.setText(time + "");
+          LizzieFrame.toolbar.chkAutoPlayTime.setSelected(true);
         } else {
-          Lizzie.frame.toolbar.txtAutoPlayTime.setText(
+          LizzieFrame.toolbar.txtAutoPlayTime.setText(
               Lizzie.config.leelazConfig.getInt("max-game-thinking-time-seconds") + "");
-          Lizzie.frame.toolbar.chkAutoPlayTime.setSelected(true);
+          LizzieFrame.toolbar.chkAutoPlayTime.setSelected(true);
         }
       }
     }
@@ -563,7 +563,7 @@ public class ReadBoard {
     //      if (thisTime - startSyncTime < Lizzie.config.readBoardArg2 / 2) return;
     //      startSyncTime = thisTime;
     //    }
-    if (tempcount.size() > Lizzie.board.boardWidth * Lizzie.board.boardHeight) {
+    if (tempcount.size() > Board.boardWidth * Board.boardHeight) {
       tempcount = new ArrayList<Integer>();
       return;
     }
@@ -581,10 +581,10 @@ public class ReadBoard {
     boolean needRefresh = false;
     for (int i = 0; i < tempcount.size(); i++) {
       int m = tempcount.get(i);
-      int y = i / Lizzie.board.boardWidth;
-      int x = i % Lizzie.board.boardWidth;
-      if (((holdLastMove && m == 3) || m == 1) && !stones[Lizzie.board.getIndex(x, y)].isBlack()) {
-        if (stones[Lizzie.board.getIndex(x, y)].isWhite()) {
+      int y = i / Board.boardWidth;
+      int x = i % Board.boardWidth;
+      if (((holdLastMove && m == 3) || m == 1) && !stones[Board.getIndex(x, y)].isBlack()) {
+        if (stones[Board.getIndex(x, y)].isWhite()) {
           Lizzie.board.clear(false);
           needReSync = true;
           needRefresh = true;
@@ -604,8 +604,8 @@ public class ReadBoard {
         played = true;
         playedMove = playedMove + 1;
       }
-      if (((holdLastMove && m == 4) || m == 2) && !stones[Lizzie.board.getIndex(x, y)].isWhite()) {
-        if (stones[Lizzie.board.getIndex(x, y)].isBlack()) {
+      if (((holdLastMove && m == 4) || m == 2) && !stones[Board.getIndex(x, y)].isWhite()) {
+        if (stones[Board.getIndex(x, y)].isBlack()) {
           Lizzie.board.clear(false);
           needReSync = true;
           needRefresh = true;
@@ -627,8 +627,8 @@ public class ReadBoard {
         playedMove = playedMove + 1;
       }
 
-      if (!holdLastMove && m == 3 && !stones[Lizzie.board.getIndex(x, y)].isBlack()) {
-        if (stones[Lizzie.board.getIndex(x, y)].isWhite()) {
+      if (!holdLastMove && m == 3 && !stones[Board.getIndex(x, y)].isBlack()) {
+        if (stones[Board.getIndex(x, y)].isWhite()) {
           Lizzie.board.clear(false);
           needReSync = true;
           needRefresh = true;
@@ -641,8 +641,8 @@ public class ReadBoard {
         lastY = y;
         isLastBlack = true;
       }
-      if (!holdLastMove && m == 4 && !stones[Lizzie.board.getIndex(x, y)].isWhite()) {
-        if (stones[Lizzie.board.getIndex(x, y)].isBlack()) {
+      if (!holdLastMove && m == 4 && !stones[Board.getIndex(x, y)].isWhite()) {
+        if (stones[Board.getIndex(x, y)].isBlack()) {
           Lizzie.board.clear(false);
           needReSync = true;
           needRefresh = true;
@@ -679,79 +679,79 @@ public class ReadBoard {
     if ((Lizzie.config.alwaysSyncBoardStat) || showInBoard) {
       for (int i = 0; i < tempcount.size(); i++) {
         int m = tempcount.get(i);
-        int y = i / Lizzie.board.boardWidth;
-        int x = i % Lizzie.board.boardWidth;
+        int y = i / Board.boardWidth;
+        int x = i % Board.boardWidth;
         if (Lizzie.frame.bothSync
             && Lizzie.board.getHistory().getMainEnd().previous().isPresent()) {
           Stone[] stonesPrev =
               Lizzie.board.getHistory().getMainEnd().previous().get().getData().stones;
           if (m == 0
-              && stones[Lizzie.board.getIndex(x, y)] != Stone.EMPTY
-              && stonesPrev[Lizzie.board.getIndex(x, y)] != Stone.EMPTY) {
+              && stones[Board.getIndex(x, y)] != Stone.EMPTY
+              && stonesPrev[Board.getIndex(x, y)] != Stone.EMPTY) {
             // Lizzie.board.clear(false);
             //  needRefresh = true;
             needReSync = true;
             break;
           }
           if (m == 1
-              && !stones[Lizzie.board.getIndex(x, y)].isBlack()
-              && !stonesPrev[Lizzie.board.getIndex(x, y)].isBlack()) {
+              && !stones[Board.getIndex(x, y)].isBlack()
+              && !stonesPrev[Board.getIndex(x, y)].isBlack()) {
             //  Lizzie.board.clear(false);
             //   needRefresh = true;
             needReSync = true;
             break;
           }
           if (m == 2
-              && !stones[Lizzie.board.getIndex(x, y)].isWhite()
-              && !stonesPrev[Lizzie.board.getIndex(x, y)].isWhite()) {
+              && !stones[Board.getIndex(x, y)].isWhite()
+              && !stonesPrev[Board.getIndex(x, y)].isWhite()) {
             // Lizzie.board.clear(false);
             //  needRefresh = true;
             needReSync = true;
             break;
           }
           if (m == 3
-              && !stones[Lizzie.board.getIndex(x, y)].isBlack()
-              && !stonesPrev[Lizzie.board.getIndex(x, y)].isBlack()) {
+              && !stones[Board.getIndex(x, y)].isBlack()
+              && !stonesPrev[Board.getIndex(x, y)].isBlack()) {
             // Lizzie.board.clear(false);
             //  needRefresh = true;
             needReSync = true;
             break;
           }
           if (m == 4
-              && !stones[Lizzie.board.getIndex(x, y)].isWhite()
-              && !stonesPrev[Lizzie.board.getIndex(x, y)].isWhite()) {
+              && !stones[Board.getIndex(x, y)].isWhite()
+              && !stonesPrev[Board.getIndex(x, y)].isWhite()) {
             //  Lizzie.board.clear(false);
             //  needRefresh = true;
             needReSync = true;
             break;
           }
         } else {
-          if (m == 0 && stones[Lizzie.board.getIndex(x, y)] != Stone.EMPTY) {
+          if (m == 0 && stones[Board.getIndex(x, y)] != Stone.EMPTY) {
             // Lizzie.board.clear(false);
             //  needRefresh = true;
             needReSync = true;
             break;
           }
 
-          if (m == 1 && !stones[Lizzie.board.getIndex(x, y)].isBlack()) {
+          if (m == 1 && !stones[Board.getIndex(x, y)].isBlack()) {
             //  Lizzie.board.clear(false);
             //   needRefresh = true;
             needReSync = true;
             break;
           }
-          if (m == 2 && !stones[Lizzie.board.getIndex(x, y)].isWhite()) {
+          if (m == 2 && !stones[Board.getIndex(x, y)].isWhite()) {
             // Lizzie.board.clear(false);
             //  needRefresh = true;
             needReSync = true;
             break;
           }
-          if (m == 3 && !stones[Lizzie.board.getIndex(x, y)].isBlack()) {
+          if (m == 3 && !stones[Board.getIndex(x, y)].isBlack()) {
             // Lizzie.board.clear(false);
             //  needRefresh = true;
             needReSync = true;
             break;
           }
-          if (m == 4 && !stones[Lizzie.board.getIndex(x, y)].isWhite()) {
+          if (m == 4 && !stones[Board.getIndex(x, y)].isWhite()) {
             //  Lizzie.board.clear(false);
             //  needRefresh = true;
             needReSync = true;
