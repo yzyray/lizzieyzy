@@ -42,8 +42,6 @@ public class Board {
 
   private static final String alphabet = "ABCDEFGHJKLMNOPQRSTUVWXYZ";
   private static final String alphabetWithI = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  private static final String alphabetFox = "ZYXWVUTSRQPONMLKJIHGFEDCBA";
-
   private BoardHistoryList history;
   // private boolean scoreMode;
   private boolean analysisMode;

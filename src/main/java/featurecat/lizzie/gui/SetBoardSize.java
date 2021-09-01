@@ -210,7 +210,11 @@ public class SetBoardSize extends JDialog {
     else if (Board.boardHeight == 15 && Board.boardWidth == 15) rdo15.setSelected(true);
     else if (Board.boardHeight == 13 && Board.boardWidth == 13) rdo13.setSelected(true);
     else if (Board.boardHeight == 9 && Board.boardWidth == 9) rdo9.setSelected(true);
-    else rdoOther.setSelected(true);
+    else {
+      rdoOther.setSelected(true);
+      Lizzie.config.otherSizeWidth = Board.boardWidth;
+      Lizzie.config.otherSizeHeight = Board.boardHeight;
+    }
     if (!rdoOther.isSelected()) {
       width.setEnabled(false);
       height.setEnabled(false);

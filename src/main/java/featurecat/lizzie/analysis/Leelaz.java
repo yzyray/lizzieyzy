@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.Random;
-import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Executors;
@@ -38,12 +37,6 @@ import org.json.JSONObject;
  * www.github.com/gcp/leela-zero
  */
 public class Leelaz {
-  private final ResourceBundle resourceBundle =
-      Lizzie.config.useLanguage == 0
-          ? ResourceBundle.getBundle("l10n.DisplayStrings")
-          : (Lizzie.config.useLanguage == 1
-              ? ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("zh", "CN"))
-              : ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("en", "US")));
   // private static final long MINUTE = 60 * 1000; // number of milliseconds in a minute
 
   // private long maxAnalyzeTimeMillis; // , maxThinkingTimeMillis;
@@ -237,7 +230,7 @@ public class Leelaz {
 
   public String getEngineCommand() {
     if (oriEngineCommand.startsWith("encryption||"))
-      return resourceBundle.getString("Leelaz.encryption");
+      return Lizzie.resourceBundle.getString("Leelaz.encryption");
     return engineCommand;
   }
 
@@ -287,7 +280,7 @@ public class Leelaz {
   //	}
 
   public String getEngineName(int index) {
-    if (index < 0) return resourceBundle.getString("Menu.noEngine");
+    if (index < 0) return Lizzie.resourceBundle.getString("Menu.noEngine");
     ArrayList<EngineData> engineData = Utils.getEngineData();
     currentEnginename = engineData.get(index).name;
     oriEnginename = currentEnginename;
@@ -305,7 +298,7 @@ public class Leelaz {
 
   public void startEngine(int index) throws IOException {
     if (engineCommand.trim().isEmpty()) {
-      Utils.showMsg(resourceBundle.getString("EngineFaied.empty"));
+      Utils.showMsg(Lizzie.resourceBundle.getString("EngineFaied.empty"));
       return;
     }
     canAddPlayer = false;
@@ -348,10 +341,10 @@ public class Leelaz {
         String err = e.getLocalizedMessage();
         try {
           tryToDignostic(
-              resourceBundle.getString("Leelaz.engineFailed")
+              Lizzie.resourceBundle.getString("Leelaz.engineFailed")
                   + ": "
                   + ((err == null)
-                      ? resourceBundle.getString("Leelaz.engineStartNoExceptionMessage")
+                      ? Lizzie.resourceBundle.getString("Leelaz.engineStartNoExceptionMessage")
                       : err),
               true);
           LizzieFrame.openMoreEngineDialog();
@@ -1255,22 +1248,22 @@ public class Leelaz {
 
                 if (msg == null || !msg.isVisible()) {
                   msg = new Message();
-                  msg.setMessage(resourceBundle.getString("Leelaz.blackWinAiResign"));
+                  msg.setMessage(Lizzie.resourceBundle.getString("Leelaz.blackWinAiResign"));
                   //     msg.setVisible(true);
                 }
                 GameInfo gameInfo = Lizzie.board.getHistory().getGameInfo();
-                gameInfo.setResult(resourceBundle.getString("Leelaz.blackWin"));
-                Lizzie.frame.setResult(resourceBundle.getString("Leelaz.blackWin"));
+                gameInfo.setResult(Lizzie.resourceBundle.getString("Leelaz.blackWin"));
+                Lizzie.frame.setResult(Lizzie.resourceBundle.getString("Leelaz.blackWin"));
 
               } else {
                 if (msg == null || !msg.isVisible()) {
                   msg = new Message();
-                  msg.setMessage(resourceBundle.getString("Leelaz.whiteWinAiResign"));
+                  msg.setMessage(Lizzie.resourceBundle.getString("Leelaz.whiteWinAiResign"));
                   //     msg.setVisible(true);
                 }
                 GameInfo gameInfo = Lizzie.board.getHistory().getGameInfo();
-                gameInfo.setResult(resourceBundle.getString("Leelaz.whiteWin"));
-                Lizzie.frame.setResult(resourceBundle.getString("Leelaz.whiteWin"));
+                gameInfo.setResult(Lizzie.resourceBundle.getString("Leelaz.whiteWin"));
+                Lizzie.frame.setResult(Lizzie.resourceBundle.getString("Leelaz.whiteWin"));
               }
               togglePonder();
               return;
@@ -1366,20 +1359,20 @@ public class Leelaz {
 
                 if (msg == null || !msg.isVisible()) {
                   msg = new Message();
-                  msg.setMessage(resourceBundle.getString("Leelaz.blackWinAiResign"));
+                  msg.setMessage(Lizzie.resourceBundle.getString("Leelaz.blackWinAiResign"));
                 }
                 GameInfo gameInfo = Lizzie.board.getHistory().getGameInfo();
-                gameInfo.setResult(resourceBundle.getString("Leelaz.blackWin"));
-                Lizzie.frame.setResult(resourceBundle.getString("Leelaz.blackWin"));
+                gameInfo.setResult(Lizzie.resourceBundle.getString("Leelaz.blackWin"));
+                Lizzie.frame.setResult(Lizzie.resourceBundle.getString("Leelaz.blackWin"));
 
               } else {
                 if (msg == null || !msg.isVisible()) {
                   msg = new Message();
-                  msg.setMessage(resourceBundle.getString("Leelaz.whiteWinAiResign"));
+                  msg.setMessage(Lizzie.resourceBundle.getString("Leelaz.whiteWinAiResign"));
                 }
                 GameInfo gameInfo = Lizzie.board.getHistory().getGameInfo();
-                gameInfo.setResult(resourceBundle.getString("Leelaz.whiteWin"));
-                Lizzie.frame.setResult(resourceBundle.getString("Leelaz.whiteWin"));
+                gameInfo.setResult(Lizzie.resourceBundle.getString("Leelaz.whiteWin"));
+                Lizzie.frame.setResult(Lizzie.resourceBundle.getString("Leelaz.whiteWin"));
               }
               togglePonder();
               return;
@@ -1603,7 +1596,7 @@ public class Leelaz {
             }
             if (this.anaGameResignCount >= Lizzie.config.anaGameResignMove) {
               Lizzie.frame.togglePonderMannul();
-              Utils.showMsg(oriEnginename + " " + resourceBundle.getString("Leelaz.resign"));
+              Utils.showMsg(oriEnginename + " " + Lizzie.resourceBundle.getString("Leelaz.resign"));
               return;
             }
           }
@@ -1766,7 +1759,7 @@ public class Leelaz {
         && !this.outOfMoveNum
         && (Lizzie.gtpConsole.isVisible() || Lizzie.config.alwaysGtp))
       Lizzie.gtpConsole.addLine(
-          oriEnginename + " " + resourceBundle.getString("Leelaz.resign") + "\n");
+          oriEnginename + " " + Lizzie.resourceBundle.getString("Leelaz.resign") + "\n");
     Lizzie.board.updateComment();
     if (needPass) Lizzie.board.pass();
     Lizzie.engineManager.stopEngineGame(currentEngineN, false);
@@ -1790,7 +1783,7 @@ public class Leelaz {
       isResigning = true;
       if (Lizzie.gtpConsole.isVisible() || Lizzie.config.alwaysGtp)
         Lizzie.gtpConsole.addLine(
-            oriEnginename + " " + resourceBundle.getString("Leelaz.resign") + "\n");
+            oriEnginename + " " + Lizzie.resourceBundle.getString("Leelaz.resign") + "\n");
       Lizzie.engineManager.stopEngineGame(currentEngineN, false);
       return;
     }
@@ -1908,7 +1901,7 @@ public class Leelaz {
       isResigning = true;
       if (Lizzie.gtpConsole.isVisible() || Lizzie.config.alwaysGtp)
         Lizzie.gtpConsole.addLine(
-            oriEnginename + " " + resourceBundle.getString("Leelaz.resign") + "\n");
+            oriEnginename + " " + Lizzie.resourceBundle.getString("Leelaz.resign") + "\n");
       Lizzie.engineManager.stopEngineGame(currentEngineN, false);
     }
   }
@@ -1996,7 +1989,7 @@ public class Leelaz {
     // TODO Auto-generated method stub
     if (!this.isLoaded) {
       if (line.toLowerCase().contains("cl_platform_not_found"))
-        Utils.showMsg(resourceBundle.getString("Leelaz.openclPlatfromNotFound"));
+        Utils.showMsg(Lizzie.resourceBundle.getString("Leelaz.openclPlatfromNotFound"));
     }
     if (!this.isLeela0110 || Lizzie.frame.isPlayingAgainstLeelaz)
       if (Lizzie.gtpConsole.isVisible() || Lizzie.config.alwaysGtp || !this.isLoaded)
@@ -2005,7 +1998,7 @@ public class Leelaz {
       if (line.startsWith("info") && isLoaded) {
         isLoaded = false;
         Utils.showHtmlMessage(
-            resourceBundle.getString("Message.title"),
+            Lizzie.resourceBundle.getString("Message.title"),
             Lizzie.resourceBundle.getString("Leelaz.updateZenGtp"));
         shutdown();
       }
@@ -2351,7 +2344,7 @@ public class Leelaz {
       started = false;
       isDownWithError = true;
       // isLoaded=false;
-      tryToDignostic(resourceBundle.getString("Leelaz.engineEndUnormalHint"), false);
+      tryToDignostic(Lizzie.resourceBundle.getString("Leelaz.engineEndUnormalHint"), false);
       if (!Lizzie.gtpConsole.isVisible()) Lizzie.gtpConsole.setVisible(true);
       // ("打开Gtp窗口(快捷键E)查看报错信息");
       // LizzieFrame.openMoreEngineDialog();

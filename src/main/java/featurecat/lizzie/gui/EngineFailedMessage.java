@@ -46,7 +46,7 @@ public class EngineFailedMessage extends JDialog {
         9,
         (int)
             (lblEngineFaied.getText().replaceAll(regex, "12").length()
-                * (Lizzie.config.frameFontSize / 1.9)),
+                * (Config.frameFontSize / 1.9)),
         20);
     Lizzie.setFrameSize(
         this,
@@ -56,19 +56,12 @@ public class EngineFailedMessage extends JDialog {
                 : (Lizzie.config.isFrameFontMiddle() ? 660 : 730),
             (int)
                 (lblEngineFaied.getText().replaceAll(regex, "12").length()
-                    * (Lizzie.config.frameFontSize / 1.9))),
+                    * (Config.frameFontSize / 1.9))),
         canUseCmdDignostic ? 190 : 160);
 
     JTextArea engineCmd = new JTextArea();
     engineCmd.setLineWrap(true);
     engineCmd.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
-    //    engineCmd.setBounds(
-    //        Lizzie.config.isFrameFontSmall() ? 72 : (Lizzie.config.isFrameFontMiddle() ? 90 :
-    // 110),
-    //        40,
-    //        Lizzie.config.isFrameFontSmall() ? 476 : (Lizzie.config.isFrameFontMiddle() ? 550 :
-    // 600),
-    //        70);
     engineCmd.setText(command);
 
     JScrollPane scrollPane = new JScrollPane(engineCmd);

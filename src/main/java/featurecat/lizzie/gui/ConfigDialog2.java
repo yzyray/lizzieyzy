@@ -3207,6 +3207,8 @@ public class ConfigDialog2 extends JDialog {
         rdoBoardSizeOther.setSelected(true);
         txtBoardWidth.setEnabled(true);
         txtBoardHeight.setEnabled(true);
+        Lizzie.config.otherSizeWidth = width;
+        Lizzie.config.otherSizeHeight = height;
         break;
     }
     txtBoardWidth.setText(Lizzie.config.otherSizeWidth + "");
