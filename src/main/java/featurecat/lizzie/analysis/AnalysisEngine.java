@@ -185,7 +185,7 @@ public class AnalysisEngine {
     isLoaded = false;
     if (!isNormalEnd) {
       showErrMsg(resourceBundle.getString("Leelaz.engineEndUnormalHint"));
-      if (!Lizzie.gtpConsole.isVisible()) Lizzie.gtpConsole.setVisible(true);
+      if (!isPreLoad && !Lizzie.gtpConsole.isVisible()) Lizzie.gtpConsole.setVisible(true);
     }
     process = null;
     shutdown();
