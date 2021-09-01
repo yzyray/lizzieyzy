@@ -2300,10 +2300,7 @@ public class BoardRenderer {
                   g.setColor(color);
                   fillCircle(g, suggestionX, suggestionY, stoneRadius + 1);
                   if (Lizzie.config.showBlueRing) {
-                    Color ringColor;
-                    if (isNextMoveOnBest) ringColor = new Color(0, 0, 255, blackToPlay ? 210 : 140);
-                    else ringColor = Color.BLUE;
-                    g.setColor(ringColor);
+                    g.setColor(new Color(0, 0, 255, isNextMoveOnBest ? 170 : 255));
                     drawCircleBest(g, suggestionX, suggestionY, stoneRadius + 1, 15f);
                   } else {
                     float alphaCircle =
@@ -3819,36 +3816,6 @@ public class BoardRenderer {
     g.setStroke(new BasicStroke(radius / f));
     g.drawOval(centerX - radius, centerY - radius, 2 * radius, 2 * radius);
   }
-
-  private void drawCircleMin(
-      Graphics2D g, int centerX, int centerY, int radius, float f, int alpha) {
-    g.setStroke(new BasicStroke(Math.min(radius / f, 0.5f)));
-    if (alpha > 30) alpha = 30;
-    g.setColor(new Color(0, 0, 0, alpha));
-    g.drawOval(centerX - radius, centerY - radius, 2 * radius, 2 * radius);
-  }
-  //  private void drawCircle2(Graphics2D g, int centerX, int centerY, int radius) {
-  //
-  //    g.setStroke(new BasicStroke(radius / 26.5f));
-  //
-  //    g.drawOval(centerX - radius, centerY - radius, 2 * radius, 2 * radius);
-  //  }
-
-  // private void drawCircle4(Graphics2D g, int centerX, int centerY, int radius)
-  // {
-  // g.setStroke(new BasicStroke(1f));
-  // g.drawOval(centerX - radius, centerY - radius, 2 * radius, 2 * radius);
-  // }
-
-  //  private void drawCircle3(Graphics2D g, int centerX, int centerY, int radius) {
-  //    g.setStroke(new BasicStroke(radius / 5f));
-  //    g.drawOval(centerX - radius, centerY - radius, 2 * radius, 2 * radius);
-  //  }
-  //
-  //  private void drawCircle4(Graphics2D g, int centerX, int centerY, int radius) {
-  //    g.setStroke(new BasicStroke(radius / 11f));
-  //    g.drawOval(centerX - radius, centerY - radius, 2 * radius, 2 * radius);
-  //  }
 
   private void drawPolygon(Graphics2D g, int centerX, int centerY, int radius) {
     int[] xPoints = {centerX, centerX - (radius / 2), centerX + (radius / 2)};
