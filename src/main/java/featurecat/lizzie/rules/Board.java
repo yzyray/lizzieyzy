@@ -291,7 +291,7 @@ public class Board {
         }
       }
     }
-    Lizzie.frame.toolbar.stopAutoAna(false, false);
+    LizzieFrame.toolbar.stopAutoAna(false, false);
   }
 
   public void analyzeAllNodesAfter(BoardHistoryNode node) {
@@ -314,12 +314,12 @@ public class Board {
     if (Lizzie.board.getHistory().getCurrentHistoryNode().isMainTrunk()) {
       if (Lizzie.config.autoAnaEndMove != -1) {
         if (Lizzie.config.autoAnaEndMove < Lizzie.board.getHistory().getData().moveNumber) {
-          Lizzie.frame.toolbar.stopAutoAna(true, false);
+          LizzieFrame.toolbar.stopAutoAna(true, false);
           return;
         }
       }
       if (!node.next().isPresent()) {
-        Lizzie.frame.toolbar.stopAutoAna(true, false);
+        LizzieFrame.toolbar.stopAutoAna(true, false);
         return;
       }
     }
@@ -429,7 +429,7 @@ public class Board {
       node.nodeInfoMain.changed = true;
     }
 
-    if (Lizzie.frame.extraMode == 2) {
+    if (LizzieFrame.extraMode == 2) {
       if (node.getData().getPlayouts2() > 0) {
         node.nodeInfo2.changed = true;
         node.nodeInfoMain2.changed = true;
@@ -643,9 +643,9 @@ public class Board {
   }
 
   public void clearHasDrawBackground() {
-    Lizzie.frame.boardRenderer.hasDrawBackground = new boolean[boardHeight * boardWidth];
-    if (Lizzie.frame.boardRenderer2 != null)
-      Lizzie.frame.boardRenderer2.hasDrawBackground = new boolean[boardHeight * boardWidth];
+    LizzieFrame.boardRenderer.hasDrawBackground = new boolean[boardHeight * boardWidth];
+    if (LizzieFrame.boardRenderer2 != null)
+      LizzieFrame.boardRenderer2.hasDrawBackground = new boolean[boardHeight * boardWidth];
   }
 
   public boolean isForceRefresh() {
@@ -816,7 +816,6 @@ public class Board {
   }
 
   public void editmovelistswitch(ArrayList<Movelist> movelist, int[] coords) {
-    int lenth = movelist.size();
     // if (Lizzie.board.hasStartStone) movenum += startStonelist.size();
     for (Movelist move : movelist) {
       if (move.x == coords[0] && move.y == coords[1]) {
@@ -840,7 +839,6 @@ public class Board {
   }
 
   public void editmovelistdelete(ArrayList<Movelist> movelist, int[] coords) {
-    int lenth = movelist.size();
     //   if (Lizzie.board.hasStartStone) movenum += startStonelist.size();
     for (Movelist move : movelist) {
       if (move.x == coords[0] && move.y == coords[1]) {
@@ -1522,12 +1520,12 @@ public class Board {
 
   private void modifyStart() {
     Lizzie.leelaz.modifyStart();
-    if (Lizzie.frame.extraMode == 2 && Lizzie.leelaz2 != null) Lizzie.leelaz2.modifyStart();
+    if (LizzieFrame.extraMode == 2 && Lizzie.leelaz2 != null) Lizzie.leelaz2.modifyStart();
   }
 
   private void modifyEnd() {
     Lizzie.leelaz.setModifyEnd();
-    if (Lizzie.frame.extraMode == 2 && Lizzie.leelaz2 != null) Lizzie.leelaz2.setModifyEnd();
+    if (LizzieFrame.extraMode == 2 && Lizzie.leelaz2 != null) Lizzie.leelaz2.setModifyEnd();
   }
 
   public void place(
@@ -1539,8 +1537,8 @@ public class Board {
       boolean forSync,
       boolean forManual) {
     boolean noCheckSuiKo = false;
-    Lizzie.frame.boardRenderer.removedrawmovestone();
-    Lizzie.frame.suggestionclick = Lizzie.frame.outOfBoundCoordinate;
+    LizzieFrame.boardRenderer.removedrawmovestone();
+    Lizzie.frame.suggestionclick = LizzieFrame.outOfBoundCoordinate;
     if (Lizzie.frame.isCounting) {
       Lizzie.frame.clearKataEstimate();
       Lizzie.estimateResults.btnEstimate.setText(
@@ -1549,14 +1547,14 @@ public class Board {
       Lizzie.frame.isCounting = false;
     }
     updateWinrate();
-    if (Lizzie.engineManager.isEngineGame) SGFParser.appendTime();
+    if (EngineManager.isEngineGame) SGFParser.appendTime();
     synchronized (this) {
       if (!isValid(x, y) || (history.getStones()[getIndex(x, y)] != Stone.EMPTY && !newBranch))
         return;
       // modifyStart();
       if (!forSync
           && !Lizzie.frame.bothSync
-          && (Lizzie.frame.urlSgf || Lizzie.frame.syncBoard)
+          && (LizzieFrame.urlSgf || Lizzie.frame.syncBoard)
           && Lizzie.board.getHistory().getCurrentHistoryNode()
               == Lizzie.board.getHistory().getMainEnd()) {
         //      newBranch = true;
@@ -1575,13 +1573,13 @@ public class Board {
           }
         }
         if (!hasVairation) {
-          boolean isEmpty = Lizzie.engineManager.isEmpty;
-          Lizzie.engineManager.isEmpty = true;
+          boolean isEmpty = EngineManager.isEmpty;
+          EngineManager.isEmpty = true;
           Lizzie.board.pass(color, false, true);
           Lizzie.board.previousMove(false);
           Lizzie.board.getHistory().place(x, y, color, true);
           noCheckSuiKo = true;
-          Lizzie.engineManager.isEmpty = isEmpty;
+          EngineManager.isEmpty = isEmpty;
           Lizzie.leelaz.playMove(color, convertCoordinatesToName(x, y));
           // modifyEnd(false);
           return;
@@ -1614,7 +1612,7 @@ public class Board {
             && Lizzie.frame.playerIsBlack != getData().blackToPlay) {
           Lizzie.leelaz.playMove(color, convertCoordinatesToName(x, y));
           Lizzie.leelaz.genmove((Lizzie.board.getData().blackToPlay ? "b" : "w"));
-        } else if (!Lizzie.frame.isPlayingAgainstLeelaz && !Lizzie.engineManager.isEngineGame) {
+        } else if (!Lizzie.frame.isPlayingAgainstLeelaz && !EngineManager.isEngineGame) {
           Lizzie.leelaz.playMove(color, convertCoordinatesToName(x, y));
         }
         //  modifyEnd(false);
@@ -1712,35 +1710,33 @@ public class Board {
         }
       }
       if (forManual && !Lizzie.frame.isPlayingAgainstLeelaz && !Lizzie.leelaz.isInputCommand) {
-        Lizzie.frame.toolbar.isPkStop = true;
+        LizzieFrame.toolbar.isPkStop = true;
         String move = convertCoordinatesToName(x, y);
         if (getHistory().isBlacksTurn()) {
           Lizzie.leelaz =
-              Lizzie.engineManager.engineList.get(
-                  Lizzie.engineManager.engineGameInfo.whiteEngineIndex);
+              Lizzie.engineManager.engineList.get(EngineManager.engineGameInfo.whiteEngineIndex);
           Lizzie.engineManager
               .engineList
-              .get(Lizzie.engineManager.engineGameInfo.blackEngineIndex)
+              .get(EngineManager.engineGameInfo.blackEngineIndex)
               .playMoveNoPonder(color, move);
           if (Lizzie.config.enginePkPonder) {
             Lizzie.engineManager
                 .engineList
-                .get(Lizzie.engineManager.engineGameInfo.blackEngineIndex)
-                .ponder(true);
+                .get(EngineManager.engineGameInfo.blackEngineIndex)
+                .ponder(true, color.isWhite());
           }
         } else {
           Lizzie.leelaz =
-              Lizzie.engineManager.engineList.get(
-                  Lizzie.engineManager.engineGameInfo.blackEngineIndex);
+              Lizzie.engineManager.engineList.get(EngineManager.engineGameInfo.blackEngineIndex);
           Lizzie.engineManager
               .engineList
-              .get(Lizzie.engineManager.engineGameInfo.whiteEngineIndex)
+              .get(EngineManager.engineGameInfo.whiteEngineIndex)
               .playMoveNoPonder(color, move);
           if (Lizzie.config.enginePkPonder) {
             Lizzie.engineManager
                 .engineList
-                .get(Lizzie.engineManager.engineGameInfo.whiteEngineIndex)
-                .ponder(true);
+                .get(EngineManager.engineGameInfo.whiteEngineIndex)
+                .ponder(true, color.isWhite());
           }
         }
         Lizzie.leelaz.playMovePonder(color.isBlack() ? "B" : "W", move);
@@ -1749,12 +1745,12 @@ public class Board {
           && Lizzie.frame.playerIsBlack == getData().blackToPlay) {
         if (Lizzie.engineManager.playingAgainstHumanEngineCountDown != null)
           Lizzie.engineManager.playingAgainstHumanEngineCountDown.sendTimeLeft(false);
-        Lizzie.leelaz.playMove(color, convertCoordinatesToName(x, y), true);
+        Lizzie.leelaz.playMove(color, convertCoordinatesToName(x, y), true, color.isWhite());
         Lizzie.leelaz.genmove((Lizzie.board.getData().blackToPlay ? "w" : "b"));
       } else if (!Lizzie.frame.isPlayingAgainstLeelaz
           && !Lizzie.leelaz.isInputCommand
           && !EngineManager.isEngineGame) {
-        Lizzie.leelaz.playMove(color, convertCoordinatesToName(x, y), true);
+        Lizzie.leelaz.playMove(color, convertCoordinatesToName(x, y), true, color.isWhite());
       }
       if (!forSync
           && Lizzie.frame.bothSync
@@ -1835,7 +1831,6 @@ public class Board {
                 0.0,
                 0));
     history.setGameInfo(oldHistory.getGameInfo());
-    if (Lizzie.leelaz.isPondering()) Lizzie.leelaz.ponder();
   }
 
   /**
@@ -1997,8 +1992,8 @@ public class Board {
 
   public int moveNumberByCoord(int[] coord) {
     int moveNumber = 0;
-    if (Lizzie.board.isValid(coord)) {
-      int index = Lizzie.board.getIndex(coord[0], coord[1]);
+    if (Board.isValid(coord)) {
+      int index = Board.getIndex(coord[0], coord[1]);
       if (Lizzie.board.getHistory().getStones()[index] != Stone.EMPTY) {
         BoardHistoryNode cur = Lizzie.board.getHistory().getCurrentHistoryNode();
         moveNumber = cur.getData().moveNumberList[index];
@@ -2030,8 +2025,8 @@ public class Board {
   public int moveNumberByXY(int x, int y) {
     int moveNumber = -1;
     int coord[] = {x, y};
-    if (Lizzie.board.isValid(coord)) {
-      int index = Lizzie.board.getIndex(coord[0], coord[1]);
+    if (Board.isValid(coord)) {
+      int index = Board.getIndex(coord[0], coord[1]);
       if (Lizzie.board.getHistory().getStones()[index] != Stone.EMPTY) {
         BoardHistoryNode cur = Lizzie.board.getHistory().getCurrentHistoryNode();
         moveNumber = cur.getData().moveNumberList[index];
@@ -2075,34 +2070,34 @@ public class Board {
     if (!Lizzie.leelaz.isPondering()) Lizzie.frame.clearKataEstimate();
     if (Lizzie.frame.priorityMoveCoords.size() > 0) Lizzie.frame.priorityMoveCoords.clear();
     if (isLoadingFile) return;
-    Lizzie.frame.clickbadmove = Lizzie.frame.outOfBoundCoordinate;
+    Lizzie.frame.clickbadmove = LizzieFrame.outOfBoundCoordinate;
     if (Lizzie.config.showMouseOverWinrateGraph
         && Lizzie.config.showWinrateGraph
-        && Lizzie.frame.winrateGraph.mouseOverNode != null) {
-      Lizzie.frame.winrateGraph.clearMouseOverNode();
+        && LizzieFrame.winrateGraph.mouseOverNode != null) {
+      LizzieFrame.winrateGraph.clearMouseOverNode();
     }
     if (Lizzie.frame.clickOrder != -1) {
       Lizzie.frame.clickOrder = -1;
       Lizzie.frame.hasMoveOutOfList = false;
       // Lizzie.frame.boardRenderer.startNormalBoard();
-      Lizzie.frame.suggestionclick = Lizzie.frame.outOfBoundCoordinate;
-      Lizzie.frame.mouseOverCoordinate = Lizzie.frame.outOfBoundCoordinate;
+      Lizzie.frame.suggestionclick = LizzieFrame.outOfBoundCoordinate;
+      Lizzie.frame.mouseOverCoordinate = LizzieFrame.outOfBoundCoordinate;
       // Lizzie.frame.boardRenderer.clearBranch();
 
       Lizzie.frame.selectedorder = -1;
       Lizzie.frame.currentRow = -1;
     }
-    if (Lizzie.frame.toolbar.chkAutoSub.isSelected()) {
-      Lizzie.frame.toolbar.displayedSubBoardBranchLength = 1;
-      Lizzie.frame.subBoardRenderer.setDisplayedBranchLength(1);
-      Lizzie.frame.subBoardRenderer.wheeled = false;
+    if (LizzieFrame.toolbar.chkAutoSub.isSelected()) {
+      LizzieFrame.toolbar.displayedSubBoardBranchLength = 1;
+      LizzieFrame.subBoardRenderer.setDisplayedBranchLength(1);
+      LizzieFrame.subBoardRenderer.wheeled = false;
     } else {
-      Lizzie.frame.subBoardRenderer.clearAfterMove();
+      LizzieFrame.subBoardRenderer.clearAfterMove();
     }
 
     //  Lizzie.frame.subBoardRenderer.bestmovesNum = 0;
-    Lizzie.frame.subBoardRenderer.clearAfterMove();
-    if (Lizzie.frame.extraMode == 1) {
+    LizzieFrame.subBoardRenderer.clearAfterMove();
+    if (LizzieFrame.extraMode == 1) {
       //  Lizzie.frame.subBoardRenderer2.bestmovesNum = 1;
       //   Lizzie.frame.subBoardRenderer3.bestmovesNum = 2;
       //  Lizzie.frame.subBoardRenderer4.bestmovesNum = 3;
@@ -2110,11 +2105,11 @@ public class Board {
       Lizzie.frame.subBoardRenderer3.clearAfterMove();
       Lizzie.frame.subBoardRenderer4.clearAfterMove();
     }
-    Lizzie.frame.boardRenderer.removedrawmovestone();
-    if (Lizzie.frame.extraMode == 2) {
-      Lizzie.frame.boardRenderer2.removedrawmovestone();
+    LizzieFrame.boardRenderer.removedrawmovestone();
+    if (LizzieFrame.extraMode == 2) {
+      LizzieFrame.boardRenderer2.removedrawmovestone();
     }
-    Lizzie.frame.suggestionclick = Lizzie.frame.outOfBoundCoordinate;
+    Lizzie.frame.suggestionclick = LizzieFrame.outOfBoundCoordinate;
     if (Lizzie.frame.analysisFrame != null && Lizzie.frame.analysisFrame.isVisible()) {
       Lizzie.frame.analysisFrame.selectedorder = -1;
       Lizzie.frame.analysisFrame.clickOrder = -1;
@@ -2132,14 +2127,14 @@ public class Board {
     }
     // Lizzie.frame.isShowingHeatmap = false;
     if (Lizzie.frame.independentMainBoard != null) {
-      Lizzie.frame.independentMainBoard.mouseOverCoordinate = Lizzie.frame.outOfBoundCoordinate;
+      Lizzie.frame.independentMainBoard.mouseOverCoordinate = LizzieFrame.outOfBoundCoordinate;
       // Lizzie.frame.independentMainBoard.boardRenderer.startNormalBoard();
       // Lizzie.frame.independentMainBoard.boardRenderer.clearBranch();
       Lizzie.frame.independentMainBoard.boardRenderer.clearAfterMove();
       Lizzie.frame.independentMainBoard.boardRenderer.removedrawmovestone();
     }
     if (Lizzie.frame.floatBoard != null) {
-      Lizzie.frame.floatBoard.mouseOverCoordinate = Lizzie.frame.outOfBoundCoordinate;
+      Lizzie.frame.floatBoard.mouseOverCoordinate = LizzieFrame.outOfBoundCoordinate;
       // Lizzie.frame.floatBoard.boardRenderer.startNormalBoard();
       // Lizzie.frame.floatBoard.boardRenderer.clearBranch();
       Lizzie.frame.floatBoard.boardRenderer.clearSuggestionImage();
@@ -2148,7 +2143,7 @@ public class Board {
     if (Lizzie.frame.independentSubBoard != null) {
       Lizzie.frame.independentSubBoard.subBoardRenderer.clearAfterMove();
 
-      if (Lizzie.frame.toolbar.chkAutoSub.isSelected()) {
+      if (LizzieFrame.toolbar.chkAutoSub.isSelected()) {
         Lizzie.frame.independentSubBoard.subBoardRenderer.setDisplayedBranchLength(1);
         Lizzie.frame.independentSubBoard.subBoardRenderer.wheeled = false;
       } else {
@@ -2156,9 +2151,9 @@ public class Board {
       }
     }
 
-    Lizzie.frame.boardRenderer.clearAfterMove();
-    if (Lizzie.frame.extraMode == 2) {
-      Lizzie.frame.boardRenderer2.clearAfterMove();
+    LizzieFrame.boardRenderer.clearAfterMove();
+    if (LizzieFrame.extraMode == 2) {
+      LizzieFrame.boardRenderer2.clearAfterMove();
     }
     Lizzie.frame.doCommentAfterMove();
   }
@@ -2176,9 +2171,9 @@ public class Board {
         if (lastMoveOpt.isPresent()) {
           int[] lastMove = lastMoveOpt.get();
           String name = convertCoordinatesToName(lastMove[0], lastMove[1]);
-          Lizzie.leelaz.playMove(data.get().lastMoveColor, name, true);
+          Lizzie.leelaz.playMove(data.get().lastMoveColor, name, true, data.get().blackToPlay);
         } else {
-          Lizzie.leelaz.playMove(data.get().lastMoveColor, "pass", true);
+          Lizzie.leelaz.playMove(data.get().lastMoveColor, "pass", true, data.get().blackToPlay);
         }
         history.next();
         updateIsBest();
@@ -2287,10 +2282,10 @@ public class Board {
   }
 
   public boolean goToMoveNumberHelper(int moveNumber, boolean withinBranch) {
-    if (Lizzie.engineManager.isEngineGame) return false;
+    if (EngineManager.isEngineGame) return false;
     if (Lizzie.config.noRefreshOnMouseMove) {
-      Lizzie.frame.boardRenderer.clearBranch();
-      if (Lizzie.frame.extraMode == 2) Lizzie.frame.boardRenderer2.clearBranch();
+      LizzieFrame.boardRenderer.clearBranch();
+      if (LizzieFrame.extraMode == 2) LizzieFrame.boardRenderer2.clearBranch();
     }
     int delta = moveNumber - history.getMoveNumber();
     boolean moved = false;
@@ -2430,7 +2425,7 @@ public class Board {
    * @return void
    */
   public void moveToAnyPosition(BoardHistoryNode targetNode) {
-    if (Lizzie.engineManager.isEngineGame) return;
+    if (EngineManager.isEngineGame) return;
     List<Integer> targetParents = new ArrayList<Integer>();
     List<Integer> sourceParents = new ArrayList<Integer>();
 
@@ -2760,7 +2755,7 @@ public class Board {
                 && !history.getLastMove().isPresent()
                 && history.getCurrentHistoryNode().previous().isPresent()) nopass = true;
           }
-          if (!nopass) Lizzie.leelaz.undo(true);
+          if (!nopass) Lizzie.leelaz.undo(true, history.getPrevious().get().blackToPlay);
           else modifyEnd();
         }
         history.previous();
@@ -3376,14 +3371,13 @@ public class Board {
 
   public void updateWinrate() {
     updateMovelist(history.getCurrentHistoryNode());
-    if ((Lizzie.leelaz.isPondering() && !isLoadingFile) || Lizzie.engineManager.isEngineGame) {
+    if ((Lizzie.leelaz.isPondering() && !isLoadingFile) || EngineManager.isEngineGame) {
       updateComment();
     }
   }
 
   public void updateComment() {
-    if ((Lizzie.config.appendWinrateToComment && !Lizzie.frame.urlSgf)
-        || Lizzie.engineManager.isEngineGame)
+    if ((Lizzie.config.appendWinrateToComment && !LizzieFrame.urlSgf) || EngineManager.isEngineGame)
       // Append the winrate to the comment
       SGFParser.appendComment();
   }
@@ -3439,7 +3433,7 @@ public class Board {
   }
 
   public void SpinAndMirror(int type) {
-    if (Lizzie.board.boardWidth != Lizzie.board.boardHeight && type != 3 && type != 4) {
+    if (Board.boardWidth != Board.boardHeight && type != 3 && type != 4) {
       Message msg = new Message();
       msg.setMessage(
           Lizzie.resourceBundle.getString("SpinAndMirror.noneSquareError")); // "非正方形棋盘不能旋转");
