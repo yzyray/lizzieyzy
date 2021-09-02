@@ -791,8 +791,7 @@ public class Leelaz {
           genmoveResign(false);
           return;
         }
-        if (LizzieFrame.toolbar.checkGameMaxMove
-            && Lizzie.board.getHistory().getMoveNumber() > LizzieFrame.toolbar.maxGanmeMove) {
+        if (Lizzie.board.getHistory().getMoveNumber() > EngineManager.engineGameInfo.maxGameMoves) {
           genmoveNode++;
           pkMoveTime = System.currentTimeMillis() - pkMoveStartTime;
           pkMoveTimeGame = pkMoveTimeGame + pkMoveTime;
@@ -1817,8 +1816,7 @@ public class Leelaz {
       resignWinrate = EngineManager.engineGameInfo.whiteResignWinrate;
     }
 
-    if (LizzieFrame.toolbar.checkGameMaxMove
-        && Lizzie.board.getHistory().getMoveNumber() > LizzieFrame.toolbar.maxGanmeMove) {
+    if (Lizzie.board.getHistory().getMoveNumber() > EngineManager.engineGameInfo.maxGameMoves) {
       outOfMoveNum = true;
       resigned = true;
     }

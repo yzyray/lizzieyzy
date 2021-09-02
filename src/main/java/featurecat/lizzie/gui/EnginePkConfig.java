@@ -469,7 +469,7 @@ public class EnginePkConfig extends JDialog {
     if (LizzieFrame.toolbar.checkGameMaxMove) {
       chkGameMAX.setSelected(true);
     }
-    txtGameMAX.setText(LizzieFrame.toolbar.maxGanmeMove + "");
+    txtGameMAX.setText(LizzieFrame.toolbar.maxGameMoves + "");
 
     //    if (Lizzie.frame.toolbar.checkGameMinMove) {
     //      chkGameMIN.setSelected(true);
@@ -611,7 +611,7 @@ public class EnginePkConfig extends JDialog {
 
     LizzieFrame.toolbar.checkGameMaxMove = chkGameMAX.isSelected();
     try {
-      LizzieFrame.toolbar.maxGanmeMove = Integer.parseInt(txtGameMAX.getText().trim());
+      LizzieFrame.toolbar.maxGameMoves = Integer.parseInt(txtGameMAX.getText().trim());
     } catch (NumberFormatException err) {
     }
     //    Lizzie.frame.toolbar.checkGameMinMove = chkGameMIN.isSelected();

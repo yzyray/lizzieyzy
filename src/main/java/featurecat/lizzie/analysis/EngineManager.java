@@ -193,7 +193,9 @@ public class EngineManager {
       String batchGameName,
       boolean isContinueGame,
       boolean isGenmove,
-      boolean isExchange) {
+      boolean isExchange,
+      boolean checkGameMaxMove,
+      int maxGameMoves) {
     if (Lizzie.frame.isTrying) Lizzie.frame.tryPlay(false);
     engineGameInfo = new EngineGameInfo();
     if (!isEmpty && Lizzie.leelaz != null) {
@@ -245,7 +247,8 @@ public class EngineManager {
     engineGameInfo.whiteMinMove = Lizzie.config.secondEngineMinMove;
     engineGameInfo.whiteResignMoveCounts = Lizzie.config.secondEngineResignMoveCounts;
     engineGameInfo.whiteResignWinrate = Lizzie.config.secondEngineResignWinrate;
-
+    if (checkGameMaxMove) engineGameInfo.maxGameMoves = maxGameMoves;
+    else engineGameInfo.maxGameMoves = Board.boardHeight * Board.boardWidth * 2;
     engineGameInfo.SF = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
     if (Lizzie.frame.enginePkSgfWinLoss != null)
       engineGameInfo.engineGameSgfWinLoss = Lizzie.frame.enginePkSgfWinLoss;
@@ -465,8 +468,7 @@ public class EngineManager {
     // 添加结果
     if (engineList.get(resignIndex).doublePass) {
       df += resourceBundle.getString("EngineManager.doublePassFileName"); // "_双pass对局";
-    } else if (LizzieFrame.toolbar.checkGameMaxMove
-        && Lizzie.board.getHistory().getMoveNumber() > LizzieFrame.toolbar.maxGanmeMove) {
+    } else if (Lizzie.board.getHistory().getMoveNumber() > engineGameInfo.maxGameMoves) {
       df += resourceBundle.getString("EngineManager.outOfMoveFileName"); // "_超手数对局";
     } else {
       if (resignIndex == engineGameInfo.whiteEngineIndex) {
@@ -1035,11 +1037,8 @@ public class EngineManager {
                   + resourceBundle.getString("EngineGameInfo.no"); // " 交换黑白: 否";
         }
 
-        if (LizzieFrame.toolbar.checkGameMaxMove) {
-          engineGameInfo.settingAll +=
-              resourceBundle.getString("EngineGameInfo.maxMoves")
-                  + LizzieFrame.toolbar.maxGanmeMove;
-        }
+        engineGameInfo.settingAll +=
+            resourceBundle.getString("EngineGameInfo.maxMoves") + engineGameInfo.maxGameMoves;
       } else {
         engineGameInfo.settingAll =
             resourceBundle.getString("EngineGameInfo.otherSettings")
@@ -1076,14 +1075,8 @@ public class EngineManager {
                   + resourceBundle.getString("EngineGameInfo.no"); // " 交换黑白: 否";
         }
 
-        if (LizzieFrame.toolbar.checkGameMaxMove) {
-          engineGameInfo.settingAll +=
-              resourceBundle.getString("EngineGameInfo.maxMoves")
-                  + LizzieFrame.toolbar.maxGanmeMove;
-        }
-        //      if (Lizzie.frame.toolbar.checkGameMinMove) {
-        //        engineGameInfo.settingAll += " 最小手数: " + Lizzie.frame.toolbar.minGanmeMove;
-        //      }
+        engineGameInfo.settingAll +=
+            resourceBundle.getString("EngineGameInfo.maxMoves") + engineGameInfo.maxGameMoves;
 
         if (LizzieFrame.toolbar.isRandomMove) {
           engineGameInfo.settingAll +=

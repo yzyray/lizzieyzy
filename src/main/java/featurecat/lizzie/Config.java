@@ -2238,7 +2238,7 @@ public class Config {
     toolbarParameter.put(LizzieFrame.toolbar.enginePkOrder);
     toolbarParameter.put(LizzieFrame.toolbar.autoPlayOrder);
     toolbarParameter.put(LizzieFrame.toolbar.exChangeToolbar);
-    toolbarParameter.put(LizzieFrame.toolbar.maxGanmeMove);
+    toolbarParameter.put(LizzieFrame.toolbar.maxGameMoves);
     toolbarParameter.put(LizzieFrame.toolbar.checkGameMaxMove);
     try {
       toolbarParameter.put(Integer.parseInt(LizzieFrame.toolbar.txtenginePkTimeWhite.getText()));

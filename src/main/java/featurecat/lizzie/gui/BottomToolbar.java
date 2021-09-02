@@ -127,7 +127,7 @@ public class BottomToolbar extends JPanel {
 
   //  public int doublePassGame = 0;
   public int maxMoveGame = 0;
-  public int maxGanmeMove = 360;
+  public int maxGameMoves = 450;
   public boolean checkGameMaxMove = false;
 
   // public int minGanmeMove = 100;
@@ -2122,7 +2122,7 @@ public class BottomToolbar extends JPanel {
       enginePkOrder = pos.getInt(33);
       autoPlayOrder = pos.getInt(34);
       exChangeToolbar = pos.getBoolean(35);
-      maxGanmeMove = pos.getInt(36);
+      maxGameMoves = pos.getInt(36);
       checkGameMaxMove = pos.getBoolean(37);
       if (pos.getInt(38) > 0) {
         txtenginePkTimeWhite.setText(pos.getInt(38) + "");
@@ -3605,7 +3605,9 @@ public class BottomToolbar extends JPanel {
         batchGameName,
         isContinueGame,
         isGenmove,
-        isExchange);
+        isExchange,
+        checkGameMaxMove,
+        maxGameMoves);
   }
 
   //  public void startEnginePk() {

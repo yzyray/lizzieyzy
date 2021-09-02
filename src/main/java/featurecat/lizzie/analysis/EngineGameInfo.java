@@ -59,6 +59,8 @@ public class EngineGameInfo {
   public int whiteResignMoveCounts;
   public Double whiteResignWinrate;
 
+  public int maxGameMoves;
+
   public int getFirstEngineWins() {
     return firstEngineWinAsBlack + firstEngineWinAsWhite;
   }
