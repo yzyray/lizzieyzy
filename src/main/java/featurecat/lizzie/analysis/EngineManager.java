@@ -4,7 +4,9 @@ import featurecat.lizzie.Config;
 import featurecat.lizzie.Lizzie;
 import featurecat.lizzie.gui.EngineData;
 import featurecat.lizzie.gui.LizzieFrame;
+import featurecat.lizzie.gui.Menu;
 import featurecat.lizzie.gui.SgfWinLossList;
+import featurecat.lizzie.rules.Board;
 import featurecat.lizzie.rules.EngineCountDown;
 import featurecat.lizzie.rules.Movelist;
 import featurecat.lizzie.rules.SGFParser;
@@ -78,8 +80,8 @@ public class EngineManager {
       e.initialCommand = engineDt.initialCommand;
       if (i == index) {
         if (e.oriWidth != 19 || e.oriHeight != 19) {
-          Lizzie.board.boardWidth = e.oriWidth;
-          Lizzie.board.boardHeight = e.oriHeight;
+          Board.boardWidth = e.oriWidth;
+          Board.boardHeight = e.oriHeight;
           Zobrist.init();
           Lizzie.board.clear(false);
         }
@@ -104,8 +106,8 @@ public class EngineManager {
                 e1.printStackTrace();
               }
             }
-            if (currentEngineNo > 20) Lizzie.frame.menu.changeEngineIcon(20, 3);
-            else Lizzie.frame.menu.changeEngineIcon(currentEngineNo, 3);
+            if (currentEngineNo > 20) LizzieFrame.menu.changeEngineIcon(20, 3);
+            else LizzieFrame.menu.changeEngineIcon(currentEngineNo, 3);
             Lizzie.board.resendMoveToEngine(engineDt.index, Lizzie.leelaz);
           }
         }.start();
@@ -384,18 +386,18 @@ public class EngineManager {
     }
 
     Lizzie.frame.removeInput(true);
-    Lizzie.frame.winrateGraph.maxcoreMean = 15;
+    LizzieFrame.winrateGraph.maxcoreMean = 15;
     Lizzie.frame.isPlayingAgainstLeelaz = false;
     Lizzie.frame.isAnaPlayingAgainstLeelaz = false;
 
     Lizzie.config.isAutoAna = false;
     Lizzie.board.isPkBoard = true;
-    Lizzie.frame.toolbar.lblenginePkResult.setText("0:0");
+    LizzieFrame.toolbar.lblenginePkResult.setText("0:0");
     featurecat.lizzie.gui.Menu.engineMenu.setText(
         resourceBundle.getString("EngineManager.engineGamePlaying")); // 对战中
-    Lizzie.frame.menu.toggleEngineMenuStatus(true, false);
+    LizzieFrame.menu.toggleEngineMenuStatus(true, false);
     // 禁用某些按钮
-    Lizzie.frame.toolbar.enableDisabelForEngineGame(false);
+    LizzieFrame.toolbar.enableDisabelForEngineGame(false);
     // 开始新的一局
     startNewEngineGame(true);
     return true;
@@ -409,12 +411,12 @@ public class EngineManager {
       int length = Lizzie.frame.enginePKSgfString.size();
       if (Lizzie.config.engineSgfStartRandom) {
         Random random = new Random();
-        Lizzie.frame.toolbar.currentEnginePkSgfNum = random.nextInt(length);
+        LizzieFrame.toolbar.currentEnginePkSgfNum = random.nextInt(length);
       } else {
-        Lizzie.frame.toolbar.currentEnginePkSgfNum = Lizzie.frame.enginePKSgfNum % length;
+        LizzieFrame.toolbar.currentEnginePkSgfNum = Lizzie.frame.enginePKSgfNum % length;
         Lizzie.frame.enginePKSgfNum++;
       }
-      return Lizzie.frame.enginePKSgfString.get(Lizzie.frame.toolbar.currentEnginePkSgfNum);
+      return Lizzie.frame.enginePKSgfString.get(LizzieFrame.toolbar.currentEnginePkSgfNum);
     }
     return null;
   }
@@ -445,7 +447,7 @@ public class EngineManager {
               + "_"
               + (Lizzie.config.chkEngineSgfStart
                   ? resourceBundle.getString("EngineGameInfo.openingSGFindex")
-                      + Lizzie.frame.toolbar.currentEnginePkSgfNum
+                      + LizzieFrame.toolbar.currentEnginePkSgfNum
                       + "_"
                   : "");
     }
@@ -463,8 +465,8 @@ public class EngineManager {
     // 添加结果
     if (engineList.get(resignIndex).doublePass) {
       df += resourceBundle.getString("EngineManager.doublePassFileName"); // "_双pass对局";
-    } else if (Lizzie.frame.toolbar.checkGameMaxMove
-        && Lizzie.board.getHistory().getMoveNumber() > Lizzie.frame.toolbar.maxGanmeMove) {
+    } else if (LizzieFrame.toolbar.checkGameMaxMove
+        && Lizzie.board.getHistory().getMoveNumber() > LizzieFrame.toolbar.maxGanmeMove) {
       df += resourceBundle.getString("EngineManager.outOfMoveFileName"); // "_超手数对局";
     } else {
       if (resignIndex == engineGameInfo.whiteEngineIndex) {
@@ -531,7 +533,7 @@ public class EngineManager {
     }
     try {
       SGFParser.save(Lizzie.board, autoSaveFile.getPath());
-      if (Lizzie.frame.toolbar.enginePkSaveWinrate) {
+      if (LizzieFrame.toolbar.enginePkSaveWinrate) {
         String autoSavePng;
         if (engineGameInfo.isBatchGame) {
           autoSavePng =
@@ -564,7 +566,7 @@ public class EngineManager {
           }
           SGFParser.save(Lizzie.board, autoSaveFile2.getPath());
 
-          if (Lizzie.frame.toolbar.enginePkSaveWinrate) {
+          if (LizzieFrame.toolbar.enginePkSaveWinrate) {
 
             String autoSavePng2 = null;
             if (engineGameInfo.isBatchGame) {
@@ -679,7 +681,7 @@ public class EngineManager {
               + (zxwr2 + zxwrc2 < 1 && zxwr2 + zxwrc2 > 0
                   ? String.format(Locale.ENGLISH, "%.2f", Math.abs(elo2 - elo))
                   : ""));
-      if (Lizzie.engineManager.engineGameInfo.batchNumberCurrent < 50)
+      if (EngineManager.engineGameInfo.batchNumberCurrent < 50)
         writer.write("?(" + resourceBundle.getString("EngineGameInfo.notEnoughGames") + ")");
     }
     writer.write("\r\n");
@@ -839,8 +841,8 @@ public class EngineManager {
     isEngineGame = false;
     isSaveingEngineSGF = true;
     stopCountDown();
-    Lizzie.frame.menu.toggleDoubleMenuGameStatus();
-    Lizzie.frame.toolbar.isPkStop = false;
+    LizzieFrame.menu.toggleDoubleMenuGameStatus();
+    LizzieFrame.toolbar.isPkStop = false;
     // 保存SGF文件
     if (mannul) {
       engineList.get(engineGameInfo.blackEngineIndex).notPondering();
@@ -1369,7 +1371,7 @@ public class EngineManager {
                       setInfoAfterEngineGame();
                       if (firstTime) {
                         Lizzie.frame.resetMovelistFrameandAnalysisFrame();
-                        Lizzie.frame.menu.updateMenuStatusForEngine();
+                        LizzieFrame.menu.updateMenuStatusForEngine();
                       }
                     }
                   };
@@ -1493,7 +1495,7 @@ public class EngineManager {
               setInfoAfterEngineGame();
               if (firstTime) {
                 Lizzie.frame.resetMovelistFrameandAnalysisFrame();
-                Lizzie.frame.menu.updateMenuStatusForEngine();
+                LizzieFrame.menu.updateMenuStatusForEngine();
                 if (engineList.get(engineGameInfo.firstEngineIndex).isKatago) {
                   if (!engineList.get(engineGameInfo.firstEngineIndex).recentRulesLine.equals("")
                       && engineList.get(engineGameInfo.firstEngineIndex).recentRulesLine.length()
@@ -1541,7 +1543,7 @@ public class EngineManager {
     gameInfo.setPlayerWhite(engineList.get(engineGameInfo.whiteEngineIndex).oriEnginename);
     gameInfo.setPlayerBlack(engineList.get(engineGameInfo.blackEngineIndex).oriEnginename);
     Lizzie.frame.updateTitle();
-    Lizzie.frame.menu.toggleDoubleMenuGameStatus();
+    LizzieFrame.menu.toggleDoubleMenuGameStatus();
   }
 
   //  private void checkEngineNotHang() {
@@ -1660,7 +1662,6 @@ public class EngineManager {
 
   public void updateEngines() {
     isUpdating = true;
-    String oriCommands = isEmpty ? "" : Lizzie.leelaz.engineCommand;
     ArrayList<EngineData> engineData = Utils.getEngineData();
     for (int i = 0; i < engineData.size(); i++) {
       EngineData engineDt = engineData.get(i);
@@ -1705,8 +1706,8 @@ public class EngineManager {
             engineList.get(i).noAnalyze = false;
             reStartEngine(i);
           } else {
-            if (Lizzie.leelaz.oriWidth != Lizzie.board.boardWidth
-                || Lizzie.leelaz.oriHeight != Lizzie.board.boardHeight) {
+            if (Lizzie.leelaz.oriWidth != Board.boardWidth
+                || Lizzie.leelaz.oriHeight != Board.boardHeight) {
               Lizzie.board.reopen(Lizzie.leelaz.oriWidth, Lizzie.leelaz.oriHeight);
             }
             if (Lizzie.leelaz.orikomi != Lizzie.board.getHistory().getGameInfo().getKomi()
@@ -1775,25 +1776,27 @@ public class EngineManager {
       }
     }
 
-    int j = Lizzie.frame.toolbar.enginePkBlack.getItemCount();
-    Lizzie.frame.toolbar.removeEngineLis();
+    int j = LizzieFrame.toolbar.enginePkBlack.getItemCount();
+    LizzieFrame.toolbar.removeEngineLis();
     for (int i = 0; i < j; i++) {
-      Lizzie.frame.toolbar.enginePkBlack.removeItemAt(0);
-      Lizzie.frame.toolbar.enginePkWhite.removeItemAt(0);
+      LizzieFrame.toolbar.enginePkBlack.removeItemAt(0);
+      LizzieFrame.toolbar.enginePkWhite.removeItemAt(0);
     }
     for (int i = 0; i < engineData.size(); i++) {
       EngineData engineDt = engineData.get(i);
-      Lizzie.frame.toolbar.enginePkBlack.addItem("[" + (i + 1) + "]" + engineDt.name);
-      Lizzie.frame.toolbar.enginePkWhite.addItem("[" + (i + 1) + "]" + engineDt.name);
+      LizzieFrame.toolbar.enginePkBlack.addItem("[" + (i + 1) + "]" + engineDt.name);
+      LizzieFrame.toolbar.enginePkWhite.addItem("[" + (i + 1) + "]" + engineDt.name);
     }
-    Lizzie.frame.toolbar.engineBlackToolbar = 0;
-    Lizzie.frame.toolbar.engineWhiteToolbar = 0;
-    Lizzie.frame.toolbar.addEngineLis();
-    Lizzie.frame.menu.updateEngineMenu();
+    LizzieFrame.toolbar.engineBlackToolbar = 0;
+    LizzieFrame.toolbar.engineWhiteToolbar = 0;
+    LizzieFrame.toolbar.addEngineLis();
+    LizzieFrame.menu.updateEngineMenu();
     if (!isEmpty) {
-      Lizzie.frame.menu.engineMenu.setText(
+      Menu.engineMenu.setText(
           "["
-              + (this.currentEngineNo > 0 ? this.currentEngineNo + 1 : engineNo + 1)
+              + (EngineManager.currentEngineNo > 0
+                  ? EngineManager.currentEngineNo + 1
+                  : engineNo + 1)
               + "]: "
               + Lizzie.leelaz.oriEnginename);
       //  switchEngine(currentEngineNo);
@@ -1813,10 +1816,10 @@ public class EngineManager {
     }
     currentEngineNo2 = -1;
     currentEngineNo = -1;
-    this.isEmpty = true;
+    EngineManager.isEmpty = true;
     Lizzie.leelaz.notPondering();
     Lizzie.leelaz.isLoaded = true;
-    Lizzie.frame.menu.engineMenu.setText(resourceBundle.getString("Menu.noEngine"));
+    Menu.engineMenu.setText(resourceBundle.getString("Menu.noEngine"));
     Lizzie.frame.refresh();
   }
 
@@ -1885,7 +1888,7 @@ public class EngineManager {
       if (Lizzie.leelaz2.isLeela0110) Lizzie.leelaz2.leela0110StopPonder();
     } catch (Exception e) {
     }
-    switchEngine(this.currentEngineNo2, false);
+    switchEngine(EngineManager.currentEngineNo2, false);
   }
 
   public void killOtherEngines() {
@@ -1947,8 +1950,8 @@ public class EngineManager {
     newEng.genmoveNode = 0;
     newEng.resigned = false;
     newEng.isResigning = false;
-    newEng.width = Lizzie.board.boardWidth;
-    newEng.height = Lizzie.board.boardHeight;
+    newEng.width = Board.boardWidth;
+    newEng.height = Board.boardHeight;
     newEng.pkMoveTimeGame = 0;
     newEng.notPondering();
     newEng.clearBestMoves();
@@ -2004,8 +2007,8 @@ public class EngineManager {
       isPreEngineGame = false;
       if (!isEngineGame) return;
       isEngineGame = false;
-      Lizzie.frame.menu.toggleDoubleMenuGameStatus();
-      Lizzie.frame.toolbar.isPkStop = false;
+      LizzieFrame.menu.toggleDoubleMenuGameStatus();
+      LizzieFrame.toolbar.isPkStop = false;
     }
   }
 
@@ -2015,8 +2018,8 @@ public class EngineManager {
     Leelaz newEng = engineList.get(index);
     newEng.isLoaded = false;
     newEng.played = false;
-    newEng.width = Lizzie.board.boardWidth;
-    newEng.height = Lizzie.board.boardHeight;
+    newEng.width = Board.boardWidth;
+    newEng.height = Board.boardHeight;
     newEng.komi = (float) Lizzie.board.getHistory().getGameInfo().getKomi();
     ArrayList<Movelist> mv = Lizzie.board.getMoveList();
     // if (!newEng.isStarted()) {
@@ -2030,7 +2033,7 @@ public class EngineManager {
     // else {newEng.initializeStreams();}
     // Lizzie.leelaz = newEng;
     // Lizzie.leelaz.clear();
-    this.currentEngineNo = index;
+    EngineManager.currentEngineNo = index;
     // Lizzie.leelaz.notPondering();
     Runnable syncBoard =
         new Runnable() {
@@ -2081,7 +2084,7 @@ public class EngineManager {
 
   public void switchEngine(int index, boolean isMain) {
     engineNo = index;
-    if (Lizzie.frame.extraMode == 2 && index == (isMain ? currentEngineNo2 : currentEngineNo)) {
+    if (LizzieFrame.extraMode == 2 && index == (isMain ? currentEngineNo2 : currentEngineNo)) {
       Utils.showMsg(resourceBundle.getString("EngineManager.sameEngineHint"));
       return;
     }
@@ -2091,10 +2094,9 @@ public class EngineManager {
     if (newEng == null) return;
     // newEng.isReadyForGenmoveGame = false;
     boolean changeBoard = true;
-    if (newEng.width == Lizzie.board.boardWidth && newEng.height == Lizzie.board.boardHeight)
-      changeBoard = false;
+    if (newEng.width == Board.boardWidth && newEng.height == Board.boardHeight) changeBoard = false;
     boolean changeOriBoard = true;
-    if (newEng.oriWidth == Lizzie.board.boardWidth && newEng.oriHeight == Lizzie.board.boardHeight)
+    if (newEng.oriWidth == Board.boardWidth && newEng.oriHeight == Board.boardHeight)
       changeOriBoard = false;
     boolean isEmptyBoard = false;
     if (Lizzie.board.getHistory().getStart() == Lizzie.board.getHistory().getEnd())
@@ -2108,7 +2110,7 @@ public class EngineManager {
         Leelaz curEng = null;
         if (!isMain) {
           if (Lizzie.leelaz2 != null) curEng = Lizzie.leelaz2;
-        } else curEng = engineList.get(this.currentEngineNo);
+        } else curEng = engineList.get(EngineManager.currentEngineNo);
         // curEng.switching = true;
         try {
           if (!Lizzie.config.fastChange) {
@@ -2134,16 +2136,16 @@ public class EngineManager {
           newEng.width = newEng.oriWidth;
           newEng.height = newEng.oriHeight;
         } else {
-          newEng.width = Lizzie.board.boardWidth;
-          newEng.height = Lizzie.board.boardHeight;
+          newEng.width = Board.boardWidth;
+          newEng.height = Board.boardHeight;
         }
         newEng.startEngine(index);
       } else {
         // newEng.getEngineName(index);
         newEng.canRestoreDymPda = false;
         if (!(isEmptyBoard && changeBoard) || !isMain) {
-          newEng.width = Lizzie.board.boardWidth;
-          newEng.height = Lizzie.board.boardHeight;
+          newEng.width = Board.boardWidth;
+          newEng.height = Board.boardHeight;
           newEng.boardSize(newEng.width, newEng.height);
         }
         if (isEmptyBoard && changeOriBoard && isMain) {
@@ -2160,7 +2162,7 @@ public class EngineManager {
         Runnable runnable =
             new Runnable() {
               public void run() {
-                Lizzie.frame.toolbar.reSetButtonLocation();
+                LizzieFrame.toolbar.reSetButtonLocation();
                 if (Lizzie.frame.resetMovelistFrameandAnalysisFrame())
                   Lizzie.frame.setVisible(true);
               }
@@ -2220,9 +2222,9 @@ public class EngineManager {
                     e.printStackTrace();
                   }
                 }
-                Lizzie.engineManager.currentEngineNo2 = Lizzie.leelaz2.currentEngineN();
-                if (currentEngineNo2 > 20) Lizzie.frame.menu.changeEngineIcon2(20, 3);
-                else Lizzie.frame.menu.changeEngineIcon2(currentEngineNo2, 3);
+                EngineManager.currentEngineNo2 = Lizzie.leelaz2.currentEngineN();
+                if (currentEngineNo2 > 20) LizzieFrame.menu.changeEngineIcon2(20, 3);
+                else LizzieFrame.menu.changeEngineIcon2(currentEngineNo2, 3);
 
                 Lizzie.board.clearbestmovesafter2(Lizzie.board.getHistory().getStart());
                 // Lizzie.leelaz.ponder();
@@ -2232,7 +2234,7 @@ public class EngineManager {
                         + "]: "
                         + engineList.get(currentEngineNo2).currentEnginename);
                 changeEngIco(2);
-                Lizzie.frame.boardRenderer2.removecountblock();
+                LizzieFrame.boardRenderer2.removecountblock();
                 Lizzie.leelaz.ponder();
                 Lizzie.leelaz2.setResponseUpToDate();
               }

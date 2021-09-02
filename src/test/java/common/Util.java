@@ -125,7 +125,6 @@ public class Util {
     String regex = "(A[BW]{1})|(?<=\\[)([a-z]{2})(?=\\])";
     Pattern pattern = Pattern.compile(regex);
     Matcher matcher = pattern.matcher(awAb);
-    StringBuilder sb = new StringBuilder();
     Stone stone = Stone.EMPTY;
     while (matcher.find()) {
       String str = matcher.group(0);

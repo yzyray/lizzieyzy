@@ -1,6 +1,8 @@
 package featurecat.lizzie.gui;
 
+import featurecat.lizzie.Config;
 import featurecat.lizzie.Lizzie;
+import featurecat.lizzie.analysis.EngineManager;
 import featurecat.lizzie.analysis.Leelaz;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -71,17 +73,16 @@ public class SetKataPDA extends JDialog {
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             Leelaz engine;
-            if (Lizzie.engineManager.isEngineGame) {
-              if (Lizzie.engineManager.engineList.get(
-                      Lizzie.engineManager.engineGameInfo.firstEngineIndex)
+            if (EngineManager.isEngineGame) {
+              if (Lizzie.engineManager.engineList.get(EngineManager.engineGameInfo.firstEngineIndex)
                   .isKataGoPda)
                 engine =
                     Lizzie.engineManager.engineList.get(
-                        Lizzie.engineManager.engineGameInfo.firstEngineIndex);
+                        EngineManager.engineGameInfo.firstEngineIndex);
               else
                 engine =
                     Lizzie.engineManager.engineList.get(
-                        Lizzie.engineManager.engineGameInfo.secondEngineIndex);
+                        EngineManager.engineGameInfo.secondEngineIndex);
             } else engine = Lizzie.leelaz;
             if (chkDymPda.isSelected()) {
               double dymCap;
@@ -104,7 +105,7 @@ public class SetKataPDA extends JDialog {
               }
               engine.pda = 0;
               engine.sendCommand("pda 0");
-              Lizzie.frame.menu.txtPDA.setText("0.000");
+              LizzieFrame.menu.txtPDA.setText("0.000");
               engine.sendCommand("dympdacap " + dymCap);
               if (chkAutoPDA.isSelected()) Lizzie.config.AutoPDA = "dympdacap " + dymCap;
               engine.pdaCap = dymCap;
@@ -128,14 +129,14 @@ public class SetKataPDA extends JDialog {
               }
               engine.pda = staticCur;
               engine.isStaticPda = true;
-              Lizzie.frame.menu.txtPDA.setText(staticCur + "");
+              LizzieFrame.menu.txtPDA.setText(staticCur + "");
             }
             if (chkNoPDA.isSelected()) {
               engine.sendCommand("pda 0");
               engine.pda = 0;
-              if (Lizzie.frame.extraMode == 2) Lizzie.leelaz2.pda = 0;
+              if (LizzieFrame.extraMode == 2) Lizzie.leelaz2.pda = 0;
               Lizzie.config.AutoPDA = "pda 0";
-              Lizzie.frame.menu.txtPDA.setText("0");
+              LizzieFrame.menu.txtPDA.setText("0");
               engine.isStaticPda = true;
             }
 
@@ -198,12 +199,12 @@ public class SetKataPDA extends JDialog {
     getContentPane().add(lblpda);
 
     JLabel lblCurPDA = new JLabel(resourceBundle.getString("SetKataPDA.lblCurPDA")); // ("当前PDA:");
-    lblCurPDA.setFont(new Font("Song", Font.PLAIN, Math.max(Lizzie.config.frameFontSize, 14)));
+    lblCurPDA.setFont(new Font("Song", Font.PLAIN, Math.max(Config.frameFontSize, 14)));
     lblCurPDA.setBounds(10, 10, 210, 24);
     getContentPane().add(lblCurPDA);
 
     curPDA = new JLabel("0.0");
-    curPDA.setFont(new Font("Song", Font.PLAIN, Math.max(Lizzie.config.frameFontSize, 15)));
+    curPDA.setFont(new Font("Song", Font.PLAIN, Math.max(Config.frameFontSize, 15)));
     curPDA.setBounds(
         Lizzie.config.isFrameFontSmall() ? 132 : (Lizzie.config.isFrameFontMiddle() ? 145 : 175),
         13,

@@ -4,8 +4,6 @@ import featurecat.lizzie.Lizzie;
 import java.awt.BorderLayout;
 import java.io.IOException;
 import java.text.NumberFormat;
-import java.util.Locale;
-import java.util.ResourceBundle;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
@@ -13,19 +11,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class SetMatchAiPara extends JDialog {
-  private final ResourceBundle resourceBundle =
-      Lizzie.config.useLanguage == 0
-          ? ResourceBundle.getBundle("l10n.DisplayStrings")
-          : (Lizzie.config.useLanguage == 1
-              ? ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("zh", "CN"))
-              : ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("en", "US")));
-  // private int moves;
-  // private int firstMove = -1;
-  // private int lastMove = 1000;
-  // private double percentsPlayouts;
-  // public final DecimalFormat FORMAT_PERCENT = new DecimalFormat("#0.0000");
-  //  private JTextField txtMatchAiTemprature;
-
   public SetMatchAiPara() {
     // setType(Type.POPUP);
     setTitle(Lizzie.resourceBundle.getString("SetMatchAiPara.title")); // ("AI评分设置");

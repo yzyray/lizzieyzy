@@ -1,6 +1,8 @@
 package featurecat.lizzie.gui;
 
+import featurecat.lizzie.Config;
 import featurecat.lizzie.Lizzie;
+import featurecat.lizzie.analysis.EngineManager;
 import featurecat.lizzie.rules.BoardHistoryNode;
 import featurecat.lizzie.rules.Movelist;
 import featurecat.lizzie.rules.SGFParser;
@@ -367,7 +369,7 @@ public class BottomToolbar extends JPanel {
     detail.setVisible(this.showDetail);
     add(detail);
     detail.setBounds(0, 0, 20, 26);
-    if (showDetail) leftMove.setBounds(Lizzie.config.isScaled ? 20 : 19, 0, 20, 26);
+    if (showDetail) leftMove.setBounds(Config.isScaled ? 20 : 19, 0, 20, 26);
     else leftMove.setBounds(0, 0, 20, 26);
     buttonPane.add(share);
     buttonPane.add(flashAnalyze);
@@ -476,8 +478,8 @@ public class BottomToolbar extends JPanel {
       extraLength = 20;
     }
 
-    if (Lizzie.config.frameFontSize > 12) {
-      extraLength += (Lizzie.config.frameFontSize - 12) * 5;
+    if (Config.frameFontSize > 12) {
+      extraLength += (Config.frameFontSize - 12) * 5;
     }
     autoPlay.setSize(60 + extraLength, 26);
     flashAnalyze.setSize((Lizzie.config.isChinese ? 60 : 80) + extraLength, 26);
@@ -811,7 +813,7 @@ public class BottomToolbar extends JPanel {
             StartAnaDialog newgame = new StartAnaDialog(false);
             newgame.setVisible(true);
             if (newgame.isCancelled()) {
-              Lizzie.frame.toolbar.resetAutoAna();
+              LizzieFrame.toolbar.resetAutoAna();
               return;
             }
           }
@@ -846,7 +848,7 @@ public class BottomToolbar extends JPanel {
     stopAutoAnalyze.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            Lizzie.frame.toolbar.stopAutoAna(true, true);
+            LizzieFrame.toolbar.stopAutoAna(true, true);
           }
         });
 
@@ -910,7 +912,7 @@ public class BottomToolbar extends JPanel {
     forward10.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            if (Lizzie.engineManager.isEngineGame) return;
+            if (EngineManager.isEngineGame) return;
             for (int i = 0; i < 10; i++) Lizzie.board.nextMove(false);
             if (Lizzie.frame.commentEditPane.isVisible()) Lizzie.frame.setCommentEditable(false);
             Lizzie.board.clearAfterMove();
@@ -921,7 +923,7 @@ public class BottomToolbar extends JPanel {
     backward10.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            if (Lizzie.engineManager.isEngineGame) return;
+            if (EngineManager.isEngineGame) return;
             for (int i = 0; i < 10; i++) Lizzie.board.previousMove(false);
             if (Lizzie.frame.commentEditPane.isVisible()) Lizzie.frame.setCommentEditable(false);
             Lizzie.board.clearAfterMove();
@@ -932,7 +934,7 @@ public class BottomToolbar extends JPanel {
     forward1.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            if (Lizzie.engineManager.isEngineGame) return;
+            if (EngineManager.isEngineGame) return;
             if (Lizzie.frame.commentEditPane.isVisible()) Lizzie.frame.setCommentEditable(false);
             Lizzie.board.nextMove(true);
             setTxtUnfocuse();
@@ -941,7 +943,7 @@ public class BottomToolbar extends JPanel {
     backward1.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            if (Lizzie.engineManager.isEngineGame) return;
+            if (EngineManager.isEngineGame) return;
             if (Lizzie.frame.commentEditPane.isVisible()) Lizzie.frame.setCommentEditable(false);
             if (Lizzie.frame.isPlayingAgainstLeelaz || Lizzie.frame.isAnaPlayingAgainstLeelaz) {
               Lizzie.board.previousMove(false);
@@ -953,7 +955,7 @@ public class BottomToolbar extends JPanel {
     gotomove.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            if (Lizzie.engineManager.isEngineGame) return;
+            if (EngineManager.isEngineGame) return;
             checkMove();
             if (Lizzie.frame.commentEditPane.isVisible()) Lizzie.frame.setCommentEditable(false);
             txtMoveNumber.setBackground(Color.WHITE);
@@ -1350,7 +1352,7 @@ public class BottomToolbar extends JPanel {
             // TBD
             setTxtUnfocuse();
             if (Lizzie.config.showDoubleMenu) {
-              Lizzie.frame.menu.chkShowBlack.setSelected(chkShowBlack.isSelected());
+              LizzieFrame.menu.chkShowBlack.setSelected(chkShowBlack.isSelected());
             }
           }
         });
@@ -1361,7 +1363,7 @@ public class BottomToolbar extends JPanel {
             // TBD
             setTxtUnfocuse();
             if (Lizzie.config.showDoubleMenu) {
-              Lizzie.frame.menu.chkShowWhite.setSelected(chkShowWhite.isSelected());
+              LizzieFrame.menu.chkShowWhite.setSelected(chkShowWhite.isSelected());
             }
           }
         });
@@ -1613,30 +1615,30 @@ public class BottomToolbar extends JPanel {
                 if (isPkStopGenmoveB) {
                   Lizzie.engineManager
                       .engineList
-                      .get(Lizzie.engineManager.engineGameInfo.blackEngineIndex)
+                      .get(EngineManager.engineGameInfo.blackEngineIndex)
                       .nameCmd();
                   Lizzie.engineManager
                       .engineList
-                      .get(Lizzie.engineManager.engineGameInfo.blackEngineIndex)
+                      .get(EngineManager.engineGameInfo.blackEngineIndex)
                       .genmoveForPk("B");
                   if (Lizzie.config.enginePkPonder)
                     Lizzie.engineManager
                         .engineList
-                        .get(Lizzie.engineManager.engineGameInfo.whiteEngineIndex)
+                        .get(EngineManager.engineGameInfo.whiteEngineIndex)
                         .ponder();
                 } else {
                   Lizzie.engineManager
                       .engineList
-                      .get(Lizzie.engineManager.engineGameInfo.whiteEngineIndex)
+                      .get(EngineManager.engineGameInfo.whiteEngineIndex)
                       .nameCmd();
                   Lizzie.engineManager
                       .engineList
-                      .get(Lizzie.engineManager.engineGameInfo.whiteEngineIndex)
+                      .get(EngineManager.engineGameInfo.whiteEngineIndex)
                       .genmoveForPk("W");
                   if (Lizzie.config.enginePkPonder)
                     Lizzie.engineManager
                         .engineList
-                        .get(Lizzie.engineManager.engineGameInfo.blackEngineIndex)
+                        .get(EngineManager.engineGameInfo.blackEngineIndex)
                         .ponder();
                 }
 
@@ -1653,22 +1655,22 @@ public class BottomToolbar extends JPanel {
                 if (Lizzie.config.enginePkPonder) {
                   Lizzie.engineManager
                       .engineList
-                      .get(Lizzie.engineManager.engineGameInfo.blackEngineIndex)
+                      .get(EngineManager.engineGameInfo.blackEngineIndex)
                       .ponder();
                   Lizzie.engineManager
                       .engineList
-                      .get(Lizzie.engineManager.engineGameInfo.whiteEngineIndex)
+                      .get(EngineManager.engineGameInfo.whiteEngineIndex)
                       .ponder();
                 } else {
                   if (Lizzie.board.getData().blackToPlay) {
                     Lizzie.engineManager
                         .engineList
-                        .get(Lizzie.engineManager.engineGameInfo.blackEngineIndex)
+                        .get(EngineManager.engineGameInfo.blackEngineIndex)
                         .ponder();
                   } else {
                     Lizzie.engineManager
                         .engineList
-                        .get(Lizzie.engineManager.engineGameInfo.whiteEngineIndex)
+                        .get(EngineManager.engineGameInfo.whiteEngineIndex)
                         .ponder();
                   }
                 }
@@ -1677,24 +1679,24 @@ public class BottomToolbar extends JPanel {
                 if (Lizzie.config.enginePkPonder) {
                   Lizzie.engineManager
                       .engineList
-                      .get(Lizzie.engineManager.engineGameInfo.blackEngineIndex)
+                      .get(EngineManager.engineGameInfo.blackEngineIndex)
                       .nameCmd();
                   Lizzie.engineManager
                       .engineList
-                      .get(Lizzie.engineManager.engineGameInfo.whiteEngineIndex)
+                      .get(EngineManager.engineGameInfo.whiteEngineIndex)
                       .nameCmd();
                 } else {
                   if (Lizzie.board.getData().blackToPlay) {
 
                     Lizzie.engineManager
                         .engineList
-                        .get(Lizzie.engineManager.engineGameInfo.blackEngineIndex)
+                        .get(EngineManager.engineGameInfo.blackEngineIndex)
                         .nameCmd();
                   } else {
 
                     Lizzie.engineManager
                         .engineList
-                        .get(Lizzie.engineManager.engineGameInfo.whiteEngineIndex)
+                        .get(EngineManager.engineGameInfo.whiteEngineIndex)
                         .nameCmd();
                   }
                 }
@@ -1703,7 +1705,7 @@ public class BottomToolbar extends JPanel {
               //  Lizzie.engineManager.startInfoTime = System.currentTimeMillis();
               //  Lizzie.engineManager.gameTime = System.currentTimeMillis();
             }
-            Lizzie.frame.menu.toggleDoubleMenuGameStatus();
+            LizzieFrame.menu.toggleDoubleMenuGameStatus();
           }
         });
 
@@ -1762,7 +1764,7 @@ public class BottomToolbar extends JPanel {
             //              return;
             //            }
 
-            if (!Lizzie.engineManager.isEngineGame) {
+            if (!EngineManager.isEngineGame) {
               startEngineGame();
             } else {
               Lizzie.engineManager.stopEngineGame(-1, true);
@@ -1852,26 +1854,23 @@ public class BottomToolbar extends JPanel {
     dt.addDocumentListener(
         new DocumentListener() {
           public void insertUpdate(DocumentEvent e) {
-            if (Lizzie.engineManager.isEngineGame || Lizzie.engineManager.isPreEngineGame) {
-              Lizzie.engineManager.engineGameInfo.batchNumber =
-                  Utils.parseTextToInt(
-                      txtenginePkBatch, Lizzie.engineManager.engineGameInfo.batchNumber);
+            if (EngineManager.isEngineGame || EngineManager.isPreEngineGame) {
+              EngineManager.engineGameInfo.batchNumber =
+                  Utils.parseTextToInt(txtenginePkBatch, EngineManager.engineGameInfo.batchNumber);
             }
           }
 
           public void removeUpdate(DocumentEvent e) {
-            if (Lizzie.engineManager.isEngineGame || Lizzie.engineManager.isPreEngineGame) {
-              Lizzie.engineManager.engineGameInfo.batchNumber =
-                  Utils.parseTextToInt(
-                      txtenginePkBatch, Lizzie.engineManager.engineGameInfo.batchNumber);
+            if (EngineManager.isEngineGame || EngineManager.isPreEngineGame) {
+              EngineManager.engineGameInfo.batchNumber =
+                  Utils.parseTextToInt(txtenginePkBatch, EngineManager.engineGameInfo.batchNumber);
             }
           }
 
           public void changedUpdate(DocumentEvent e) {
-            if (Lizzie.engineManager.isEngineGame || Lizzie.engineManager.isPreEngineGame) {
-              Lizzie.engineManager.engineGameInfo.batchNumber =
-                  Utils.parseTextToInt(
-                      txtenginePkBatch, Lizzie.engineManager.engineGameInfo.batchNumber);
+            if (EngineManager.isEngineGame || EngineManager.isPreEngineGame) {
+              EngineManager.engineGameInfo.batchNumber =
+                  Utils.parseTextToInt(txtenginePkBatch, EngineManager.engineGameInfo.batchNumber);
             }
           }
         });
@@ -2168,7 +2167,7 @@ public class BottomToolbar extends JPanel {
     // TODO Auto-generated method stub
     showDetail = Lizzie.config.showDetailedToolbarMenu && Lizzie.config.isChinese;
     detail.setVisible(this.showDetail);
-    if (showDetail) leftMove.setBounds(Lizzie.config.isScaled ? 20 : 19, 0, 20, 26);
+    if (showDetail) leftMove.setBounds(Config.isScaled ? 20 : 19, 0, 20, 26);
     else leftMove.setBounds(0, 0, 20, 26);
     setDetailIcon();
     reSetButtonLocation();
@@ -2354,7 +2353,7 @@ public class BottomToolbar extends JPanel {
     chkAutoAnalyse.setSelected(false);
     start.setText("开始");
     if (Lizzie.leelaz.isPondering()) Lizzie.leelaz.togglePonder();
-    if (Lizzie.frame.isBatchAna || Lizzie.frame.toolbar.chkAnaAutoSave.isSelected()) {
+    if (Lizzie.frame.isBatchAna || LizzieFrame.toolbar.chkAnaAutoSave.isSelected()) {
       autoAnaSaveAndLoad();
     } else {
       if (Lizzie.config.analyzeAllBranch)
@@ -2378,9 +2377,9 @@ public class BottomToolbar extends JPanel {
           if (threadAnalyzeAllNode != null) threadAnalyzeAllNode.interrupt();
         return;
       }
-      if (Lizzie.frame.curFile != null) {
-        String name = Lizzie.frame.curFile.getName();
-        String path = Lizzie.frame.curFile.getParent();
+      if (LizzieFrame.curFile != null) {
+        String name = LizzieFrame.curFile.getName();
+        String path = LizzieFrame.curFile.getParent();
         String df = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
         String prefix = name.substring(name.lastIndexOf("."));
         int num = prefix.length();
@@ -2471,7 +2470,7 @@ public class BottomToolbar extends JPanel {
         startAutoAna();
       } else {
         Lizzie.frame.isBatchAna = false;
-        Lizzie.frame.toolbar.chkAnaAutoSave.setEnabled(true);
+        LizzieFrame.toolbar.chkAnaAutoSave.setEnabled(true);
         //	isSaving = false;
         Lizzie.frame.Batchfiles = new ArrayList<File>();
         Lizzie.frame.BatchAnaNum = 0;
@@ -2500,13 +2499,12 @@ public class BottomToolbar extends JPanel {
     }
     Lizzie.frame.loadFile(Lizzie.frame.Batchfiles.get(Lizzie.frame.BatchAnaNum), false, true);
     try {
-      Lizzie.frame.toolbar.firstMove =
-          Integer.parseInt(Lizzie.frame.toolbar.txtFirstAnaMove.getText());
+      LizzieFrame.toolbar.firstMove =
+          Integer.parseInt(LizzieFrame.toolbar.txtFirstAnaMove.getText());
     } catch (Exception ex) {
     }
     try {
-      Lizzie.frame.toolbar.lastMove =
-          Integer.parseInt(Lizzie.frame.toolbar.txtLastAnaMove.getText());
+      LizzieFrame.toolbar.lastMove = Integer.parseInt(LizzieFrame.toolbar.txtLastAnaMove.getText());
     } catch (Exception ex) {
     }
     // startAutoAna = true;
@@ -3436,7 +3434,7 @@ public class BottomToolbar extends JPanel {
 
   private void checkMove() {
     try {
-      changeMoveNumber = Integer.parseInt(Lizzie.frame.toolbar.txtMoveNumber.getText());
+      changeMoveNumber = Integer.parseInt(LizzieFrame.toolbar.txtMoveNumber.getText());
     } catch (NumberFormatException err) {
       changeMoveNumber = 0;
     }
@@ -4125,8 +4123,8 @@ public class BottomToolbar extends JPanel {
                 return;
               }
               while (chkAutoSub.isSelected()) {
-                if (!Lizzie.frame.subBoardRenderer.wheeled)
-                  Lizzie.frame.subBoardRenderer.setDisplayedBranchLength(
+                if (!LizzieFrame.subBoardRenderer.wheeled)
+                  LizzieFrame.subBoardRenderer.setDisplayedBranchLength(
                       displayedSubBoardBranchLength);
                 if (Lizzie.config.isShowingIndependentSub)
                   if (!Lizzie.frame.independentSubBoard.subBoardRenderer.wheeled)
@@ -4143,7 +4141,7 @@ public class BottomToolbar extends JPanel {
                   e.printStackTrace();
                 }
                 displayedSubBoardBranchLength = displayedSubBoardBranchLength + 1;
-                if (Lizzie.engineManager.isEmpty
+                if (EngineManager.isEmpty
                     || !Lizzie.leelaz.isLoaded()
                     || !Lizzie.leelaz.isPondering()) Lizzie.frame.refresh();
               }
@@ -4154,7 +4152,7 @@ public class BottomToolbar extends JPanel {
       thread.start();
     } else {
       isAutoPlaySub = false;
-      Lizzie.frame.subBoardRenderer.setDisplayedBranchLength(-2);
+      LizzieFrame.subBoardRenderer.setDisplayedBranchLength(-2);
       if (Lizzie.config.isShowingIndependentSub)
         Lizzie.frame.independentSubBoard.subBoardRenderer.setDisplayedBranchLength(-2);
     }
@@ -4163,101 +4161,101 @@ public class BottomToolbar extends JPanel {
   private int calcButtonLength() {
     int length = 0;
     if (liveButton.isVisible()) {
-      length = length + liveButton.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      length = length + liveButton.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (share.isVisible()) {
-      length = length + share.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      length = length + share.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (kataEstimate.isVisible()) {
-      length = length + kataEstimate.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      length = length + kataEstimate.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (flashAnalyze.isVisible()) {
-      length = length + flashAnalyze.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      length = length + flashAnalyze.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (batchOpen.isVisible()) {
-      length = length + batchOpen.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      length = length + batchOpen.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (openfile.isVisible()) {
-      length = length + openfile.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      length = length + openfile.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (savefile.isVisible()) {
-      length = length + savefile.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      length = length + savefile.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (countButton.isVisible()) {
-      length = length + countButton.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      length = length + countButton.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (finalScore.isVisible()) {
-      length = length + finalScore.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      length = length + finalScore.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (heatMap.isVisible()) {
-      length = length + heatMap.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      length = length + heatMap.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (badMoves.isVisible()) {
-      length = length + badMoves.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      length = length + badMoves.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (analyzeList.isVisible()) {
-      length = length + analyzeList.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      length = length + analyzeList.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (refresh.isVisible()) {
-      length = length + refresh.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      length = length + refresh.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (analyse.isVisible()) {
-      length = length + analyse.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      length = length + analyse.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (tryPlay.isVisible()) {
-      length = length + tryPlay.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      length = length + tryPlay.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (setMain.isVisible()) {
-      length = length + setMain.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      length = length + setMain.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (backMain.isVisible()) {
-      length = length + backMain.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      length = length + backMain.getWidth() - (Config.isScaled ? 0 : 1);
     }
 
     if (clearButton.isVisible()) {
-      length = length + clearButton.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      length = length + clearButton.getWidth() - (Config.isScaled ? 0 : 1);
     }
 
     if (deleteMove.isVisible()) {
-      length = length + deleteMove.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      length = length + deleteMove.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (txtMoveNumber.isVisible()) {
-      length = length + txtMoveNumber.getWidth() + (Lizzie.config.isScaled ? 0 : 1);
+      length = length + txtMoveNumber.getWidth() + (Config.isScaled ? 0 : 1);
     }
 
     if (gotomove.isVisible()) {
-      length = length + gotomove.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      length = length + gotomove.getWidth() - (Config.isScaled ? 0 : 1);
     }
 
     if (firstButton.isVisible()) {
-      length = length + firstButton.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      length = length + firstButton.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (backward10.isVisible()) {
-      length = length + backward10.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      length = length + backward10.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (backward1.isVisible()) {
-      length = length + backward1.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      length = length + backward1.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (forward1.isVisible()) {
-      length = length + forward1.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      length = length + forward1.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (forward10.isVisible()) {
-      length = length + forward10.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      length = length + forward10.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (lastButton.isVisible()) {
-      length = length + lastButton.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      length = length + lastButton.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (moveRank.isVisible()) {
-      length = length + moveRank.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      length = length + moveRank.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (move.isVisible()) {
-      length = length + move.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      length = length + move.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (coords.isVisible()) {
-      length = length + coords.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      length = length + coords.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (autoPlay.isVisible()) {
-      length = length + autoPlay.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      length = length + autoPlay.getWidth() - (Config.isScaled ? 0 : 1);
     }
     return length;
   }
@@ -4265,129 +4263,129 @@ public class BottomToolbar extends JPanel {
   public int setLocationRight(int w) {
 
     if (autoPlay.isVisible()) {
-      w = w - (autoPlay.getWidth() - (Lizzie.config.isScaled ? 0 : 1));
+      w = w - (autoPlay.getWidth() - (Config.isScaled ? 0 : 1));
       autoPlay.setLocation(w, 0);
     }
     if (coords.isVisible()) {
-      w = w - (coords.getWidth() - (Lizzie.config.isScaled ? 0 : 1));
+      w = w - (coords.getWidth() - (Config.isScaled ? 0 : 1));
       coords.setLocation(w, 0);
     }
     if (move.isVisible()) {
-      w = w - (move.getWidth() - (Lizzie.config.isScaled ? 0 : 1));
+      w = w - (move.getWidth() - (Config.isScaled ? 0 : 1));
       move.setLocation(w, 0);
     }
     if (moveRank.isVisible()) {
-      w = w - (moveRank.getWidth() - (Lizzie.config.isScaled ? 0 : 1));
+      w = w - (moveRank.getWidth() - (Config.isScaled ? 0 : 1));
       moveRank.setLocation(w, 0);
     }
     if (lastButton.isVisible()) {
-      w = w - (lastButton.getWidth() - (Lizzie.config.isScaled ? 0 : 1));
+      w = w - (lastButton.getWidth() - (Config.isScaled ? 0 : 1));
       lastButton.setLocation(w, 0);
     }
     if (forward10.isVisible()) {
-      w = w - (forward10.getWidth() - (Lizzie.config.isScaled ? 0 : 1));
+      w = w - (forward10.getWidth() - (Config.isScaled ? 0 : 1));
       forward10.setLocation(w, 0);
     }
     if (forward1.isVisible()) {
-      w = w - (forward1.getWidth() - (Lizzie.config.isScaled ? 0 : 1));
+      w = w - (forward1.getWidth() - (Config.isScaled ? 0 : 1));
       forward1.setLocation(w, 0);
     }
     if (backward1.isVisible()) {
-      w = w - (backward1.getWidth() - (Lizzie.config.isScaled ? 0 : 1));
+      w = w - (backward1.getWidth() - (Config.isScaled ? 0 : 1));
       backward1.setLocation(w, 0);
     }
     if (backward10.isVisible()) {
-      w = w - (backward10.getWidth() - (Lizzie.config.isScaled ? 0 : 1));
+      w = w - (backward10.getWidth() - (Config.isScaled ? 0 : 1));
       backward10.setLocation(w, 0);
     }
     if (firstButton.isVisible()) {
-      w = w - (firstButton.getWidth() - (Lizzie.config.isScaled ? 0 : 1));
+      w = w - (firstButton.getWidth() - (Config.isScaled ? 0 : 1));
       firstButton.setLocation(w, 0);
     }
     if (gotomove.isVisible()) {
-      w = w - (gotomove.getWidth() - (Lizzie.config.isScaled ? 0 : 1));
+      w = w - (gotomove.getWidth() - (Config.isScaled ? 0 : 1));
       gotomove.setLocation(w, 0);
     }
     if (txtMoveNumber.isVisible()) {
-      w = w - (txtMoveNumber.getWidth() + (Lizzie.config.isScaled ? 0 : 1));
-      txtMoveNumber.setLocation(w + (Lizzie.config.isScaled ? 0 : 1), 1);
+      w = w - (txtMoveNumber.getWidth() + (Config.isScaled ? 0 : 1));
+      txtMoveNumber.setLocation(w + (Config.isScaled ? 0 : 1), 1);
     }
     if (deleteMove.isVisible()) {
-      w = w - (deleteMove.getWidth() - (Lizzie.config.isScaled ? 0 : 1));
+      w = w - (deleteMove.getWidth() - (Config.isScaled ? 0 : 1));
       deleteMove.setLocation(w, 0);
     }
     if (clearButton.isVisible()) {
-      w = w - (clearButton.getWidth() - (Lizzie.config.isScaled ? 0 : 1));
+      w = w - (clearButton.getWidth() - (Config.isScaled ? 0 : 1));
       clearButton.setLocation(w, 0);
     }
 
     if (backMain.isVisible()) {
-      w = w - (backMain.getWidth() - (Lizzie.config.isScaled ? 0 : 1));
+      w = w - (backMain.getWidth() - (Config.isScaled ? 0 : 1));
       backMain.setLocation(w, 0);
     }
     if (setMain.isVisible()) {
-      w = w - (setMain.getWidth() - (Lizzie.config.isScaled ? 0 : 1));
+      w = w - (setMain.getWidth() - (Config.isScaled ? 0 : 1));
       setMain.setLocation(w, 0);
     }
     if (tryPlay.isVisible()) {
-      w = w - (tryPlay.getWidth() - (Lizzie.config.isScaled ? 0 : 1));
+      w = w - (tryPlay.getWidth() - (Config.isScaled ? 0 : 1));
       tryPlay.setLocation(w, 0);
     }
 
     if (analyse.isVisible()) {
-      w = w - (analyse.getWidth() - (Lizzie.config.isScaled ? 0 : 1));
+      w = w - (analyse.getWidth() - (Config.isScaled ? 0 : 1));
       analyse.setLocation(w, 0);
     }
     if (refresh.isVisible()) {
-      w = w - (refresh.getWidth() - (Lizzie.config.isScaled ? 0 : 1));
+      w = w - (refresh.getWidth() - (Config.isScaled ? 0 : 1));
       refresh.setLocation(w, 0);
     }
     if (analyzeList.isVisible()) {
-      w = w - (analyzeList.getWidth() - (Lizzie.config.isScaled ? 0 : 1));
+      w = w - (analyzeList.getWidth() - (Config.isScaled ? 0 : 1));
       analyzeList.setLocation(w, 0);
     }
     if (badMoves.isVisible()) {
-      w = w - (badMoves.getWidth() - (Lizzie.config.isScaled ? 0 : 1));
+      w = w - (badMoves.getWidth() - (Config.isScaled ? 0 : 1));
       badMoves.setLocation(w, 0);
     }
     if (heatMap.isVisible()) {
-      w = w - (heatMap.getWidth() - (Lizzie.config.isScaled ? 0 : 1));
+      w = w - (heatMap.getWidth() - (Config.isScaled ? 0 : 1));
       heatMap.setLocation(w, 0);
     }
     if (countButton.isVisible()) {
-      w = w - (countButton.getWidth() - (Lizzie.config.isScaled ? 0 : 1));
+      w = w - (countButton.getWidth() - (Config.isScaled ? 0 : 1));
       countButton.setLocation(w, 0);
     }
     if (finalScore.isVisible()) {
-      w = w - (finalScore.getWidth() - (Lizzie.config.isScaled ? 0 : 1));
+      w = w - (finalScore.getWidth() - (Config.isScaled ? 0 : 1));
       finalScore.setLocation(w, 0);
     }
     if (savefile.isVisible()) {
-      w = w - (savefile.getWidth() - (Lizzie.config.isScaled ? 0 : 1));
+      w = w - (savefile.getWidth() - (Config.isScaled ? 0 : 1));
       savefile.setLocation(w, 0);
     }
     if (openfile.isVisible()) {
-      w = w - (openfile.getWidth() - (Lizzie.config.isScaled ? 0 : 1));
+      w = w - (openfile.getWidth() - (Config.isScaled ? 0 : 1));
       openfile.setLocation(w, 0);
     }
     if (batchOpen.isVisible()) {
-      w = w - (batchOpen.getWidth() - (Lizzie.config.isScaled ? 0 : 1));
+      w = w - (batchOpen.getWidth() - (Config.isScaled ? 0 : 1));
       batchOpen.setLocation(w, 0);
     }
     if (flashAnalyze.isVisible()) {
-      w = w - (flashAnalyze.getWidth() - (Lizzie.config.isScaled ? 0 : 1));
+      w = w - (flashAnalyze.getWidth() - (Config.isScaled ? 0 : 1));
       flashAnalyze.setLocation(w, 0);
     }
     if (kataEstimate.isVisible()) {
-      w = w - (kataEstimate.getWidth() - (Lizzie.config.isScaled ? 0 : 1));
+      w = w - (kataEstimate.getWidth() - (Config.isScaled ? 0 : 1));
       kataEstimate.setLocation(w, 0);
     }
     if (share.isVisible()) {
-      w = w - (share.getWidth() - (Lizzie.config.isScaled ? 0 : 1));
+      w = w - (share.getWidth() - (Config.isScaled ? 0 : 1));
       share.setLocation(w, 0);
     }
     if (liveButton.isVisible()) {
-      w = w - (liveButton.getWidth() - (Lizzie.config.isScaled ? 0 : 1));
+      w = w - (liveButton.getWidth() - (Config.isScaled ? 0 : 1));
       liveButton.setLocation(w, 0);
     }
 
@@ -4397,131 +4395,131 @@ public class BottomToolbar extends JPanel {
   public int setLocationLeft(int w) {
     if (liveButton.isVisible()) {
       liveButton.setLocation(w, 0);
-      w = w + liveButton.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      w = w + liveButton.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (share.isVisible()) {
       share.setLocation(w, 0);
-      w = w + share.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      w = w + share.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (kataEstimate.isVisible()) {
       kataEstimate.setLocation(w, 0);
-      w = w + kataEstimate.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      w = w + kataEstimate.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (flashAnalyze.isVisible()) {
       flashAnalyze.setLocation(w, 0);
-      w = w + flashAnalyze.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      w = w + flashAnalyze.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (batchOpen.isVisible()) {
       batchOpen.setLocation(w, 0);
-      w = w + batchOpen.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      w = w + batchOpen.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (openfile.isVisible()) {
       openfile.setLocation(w, 0);
-      w = w + openfile.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      w = w + openfile.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (savefile.isVisible()) {
       savefile.setLocation(w, 0);
-      w = w + savefile.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      w = w + savefile.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (countButton.isVisible()) {
       countButton.setLocation(w, 0);
-      w = w + countButton.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      w = w + countButton.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (finalScore.isVisible()) {
       finalScore.setLocation(w, 0);
-      w = w + finalScore.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      w = w + finalScore.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (heatMap.isVisible()) {
       heatMap.setLocation(w, 0);
-      w = w + heatMap.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      w = w + heatMap.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (badMoves.isVisible()) {
       badMoves.setLocation(w, 0);
-      w = w + badMoves.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      w = w + badMoves.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (analyzeList.isVisible()) {
       analyzeList.setLocation(w, 0);
-      w = w + analyzeList.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      w = w + analyzeList.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (refresh.isVisible()) {
       refresh.setLocation(w, 0);
-      w = w + refresh.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      w = w + refresh.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (analyse.isVisible()) {
       analyse.setLocation(w, 0);
-      w = w + analyse.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      w = w + analyse.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (tryPlay.isVisible()) {
       tryPlay.setLocation(w, 0);
-      w = w + tryPlay.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      w = w + tryPlay.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (setMain.isVisible()) {
       setMain.setLocation(w, 0);
-      w = w + setMain.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      w = w + setMain.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (backMain.isVisible()) {
       backMain.setLocation(w, 0);
-      w = w + backMain.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      w = w + backMain.getWidth() - (Config.isScaled ? 0 : 1);
     }
 
     if (clearButton.isVisible()) {
       clearButton.setLocation(w, 0);
-      w = w + clearButton.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      w = w + clearButton.getWidth() - (Config.isScaled ? 0 : 1);
     }
 
     if (deleteMove.isVisible()) {
       deleteMove.setLocation(w, 0);
-      w = w + deleteMove.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      w = w + deleteMove.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (txtMoveNumber.isVisible()) {
-      txtMoveNumber.setLocation(w + (Lizzie.config.isScaled ? 0 : 1), 1);
-      w = w + txtMoveNumber.getWidth() + (Lizzie.config.isScaled ? 0 : 1);
+      txtMoveNumber.setLocation(w + (Config.isScaled ? 0 : 1), 1);
+      w = w + txtMoveNumber.getWidth() + (Config.isScaled ? 0 : 1);
     }
 
     if (gotomove.isVisible()) {
       gotomove.setLocation(w, 0);
-      w = w + gotomove.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      w = w + gotomove.getWidth() - (Config.isScaled ? 0 : 1);
     }
 
     if (firstButton.isVisible()) {
       firstButton.setLocation(w, 0);
-      w = w + firstButton.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      w = w + firstButton.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (backward10.isVisible()) {
       backward10.setLocation(w, 0);
-      w = w + backward10.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      w = w + backward10.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (backward1.isVisible()) {
       backward1.setLocation(w, 0);
-      w = w + backward1.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      w = w + backward1.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (forward1.isVisible()) {
       forward1.setLocation(w, 0);
-      w = w + forward1.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      w = w + forward1.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (forward10.isVisible()) {
       forward10.setLocation(w, 0);
-      w = w + forward10.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      w = w + forward10.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (lastButton.isVisible()) {
       lastButton.setLocation(w, 0);
-      w = w + lastButton.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      w = w + lastButton.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (moveRank.isVisible()) {
       moveRank.setLocation(w, 0);
-      w = w + moveRank.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      w = w + moveRank.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (move.isVisible()) {
       move.setLocation(w, 0);
-      w = w + move.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      w = w + move.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (coords.isVisible()) {
       coords.setLocation(w, 0);
-      w = w + coords.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      w = w + coords.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (autoPlay.isVisible()) {
       autoPlay.setLocation(w, 0);
-      w = w + autoPlay.getWidth() - (Lizzie.config.isScaled ? 0 : 1);
+      w = w + autoPlay.getWidth() - (Config.isScaled ? 0 : 1);
     }
     return w;
   }
@@ -4535,26 +4533,26 @@ public class BottomToolbar extends JPanel {
       kataEstimate.setVisible(true);
     }
     int length = calcButtonLength();
-    if (length < w - (this.showDetail ? (Lizzie.config.isScaled ? 34 : 33) : 16)) {
+    if (length < w - (this.showDetail ? (Config.isScaled ? 34 : 33) : 16)) {
       rightMove.setVisible(false);
       leftMove.setVisible(false);
       setLocationLeft(0);
       if (showDetail)
         buttonPane.setBounds(
-            (Math.max(0, w - 16 - length - (Lizzie.config.isScaled ? 20 : 19)) / 2)
-                + (Lizzie.config.isScaled ? 20 : 19),
+            (Math.max(0, w - 16 - length - (Config.isScaled ? 20 : 19)) / 2)
+                + (Config.isScaled ? 20 : 19),
             0,
             length,
             26);
       else buttonPane.setBounds(Math.max(0, (w - 16 - length) / 2), 0, length, 26);
     } else if (rightMode) {
       rightMove.setVisible(false);
-      if (showDetail) w = setLocationRight(w - (Lizzie.config.isScaled ? 20 : 19));
+      if (showDetail) w = setLocationRight(w - (Config.isScaled ? 20 : 19));
       else w = setLocationRight(w);
       if (w < 15) {
         if (showDetail)
-          buttonPane.setBounds(Lizzie.config.isScaled ? 40 : 38, 0, Lizzie.frame.getWidth(), 26);
-        else buttonPane.setBounds(Lizzie.config.isScaled ? 20 : 19, 0, Lizzie.frame.getWidth(), 26);
+          buttonPane.setBounds(Config.isScaled ? 40 : 38, 0, Lizzie.frame.getWidth(), 26);
+        else buttonPane.setBounds(Config.isScaled ? 20 : 19, 0, Lizzie.frame.getWidth(), 26);
         leftMove.setVisible(true);
         w = Lizzie.frame.getWidth();
         setLocationRight(w - (showDetail ? 55 : 35));
@@ -4565,20 +4563,17 @@ public class BottomToolbar extends JPanel {
     } else {
       leftMove.setVisible(false);
       int x = setLocationLeft(0);
-      if (w < x + (showDetail ? (Lizzie.config.isScaled ? 34 : 33) : 16)) {
+      if (w < x + (showDetail ? (Config.isScaled ? 34 : 33) : 16)) {
         if (showDetail)
           buttonPane.setBounds(
-              (Lizzie.config.isScaled ? 20 : 19),
-              0,
-              this.getWidth() - (Lizzie.config.isScaled ? 41 : 39),
-              26);
-        else buttonPane.setBounds(0, 0, this.getWidth() - (Lizzie.config.isScaled ? 20 : 19), 26);
+              (Config.isScaled ? 20 : 19), 0, this.getWidth() - (Config.isScaled ? 41 : 39), 26);
+        else buttonPane.setBounds(0, 0, this.getWidth() - (Config.isScaled ? 20 : 19), 26);
         rightMove.setVisible(true);
         if (showDetail)
-          rightMove.setBounds(this.getWidth() - (Lizzie.config.isScaled ? 21 : 20), 0, 20, 26);
-        else rightMove.setBounds(this.getWidth() - (Lizzie.config.isScaled ? 20 : 19), 0, 20, 26);
+          rightMove.setBounds(this.getWidth() - (Config.isScaled ? 21 : 20), 0, 20, 26);
+        else rightMove.setBounds(this.getWidth() - (Config.isScaled ? 20 : 19), 0, 20, 26);
       } else {
-        buttonPane.setBounds(showDetail ? 20 : 0, 0, w - (Lizzie.config.isScaled ? 20 : 19), 26);
+        buttonPane.setBounds(showDetail ? 20 : 0, 0, w - (Config.isScaled ? 20 : 19), 26);
         rightMove.setVisible(false);
       }
     }

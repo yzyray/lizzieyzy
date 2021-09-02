@@ -17,11 +17,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
@@ -132,12 +129,12 @@ public class ChooseMoreEngine extends JPanel {
 
     JTableHeader header = table.getTableHeader();
     table.setFont(winrateFont);
-    table.setRowHeight(Lizzie.config.menuHeight);
+    table.setRowHeight(Config.menuHeight);
     table.getTableHeader().setFont(headFont);
     table
         .getTableHeader()
         .setPreferredSize(
-            new Dimension(table.getColumnModel().getTotalColumnWidth(), Lizzie.config.menuHeight));
+            new Dimension(table.getColumnModel().getTotalColumnWidth(), Config.menuHeight));
     // dropwinratechooser.setValue(Lizzie.config.limitbadmoves);
     // playoutschooser.setValue(Lizzie.config.limitbadplayouts);
     // checkBlack.setSelected(true);
@@ -304,48 +301,6 @@ public class ChooseMoreEngine extends JPanel {
     }
   }
 
-  private String relativizePath(Path path) {
-    Path relatPath;
-    if (path.startsWith(curPath)) {
-      relatPath = curPath.relativize(path);
-    } else {
-      relatPath = path;
-    }
-    return relatPath.toString();
-  }
-
-  private void getCommandHelp() {
-
-    List<String> commands = new ArrayList<String>();
-    commands.add(enginePath);
-    commands.add("-h");
-
-    ProcessBuilder processBuilder = new ProcessBuilder(commands);
-    processBuilder.directory();
-    processBuilder.redirectErrorStream(true);
-    try {
-      Process process = processBuilder.start();
-      inputStream = new BufferedInputStream(process.getInputStream());
-      ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-      executor.execute(this::read);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }
-
-  private void read() {
-    try {
-      int c;
-      StringBuilder line = new StringBuilder();
-      while ((c = inputStream.read()) != -1) {
-        line.append((char) c);
-      }
-      commandHelp = line.toString();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }
-
   private void handleTableClick(int row, int col) {
 
     curIndex = Integer.parseInt(table.getModel().getValueAt(row, 0).toString()) - 1;
@@ -457,7 +412,6 @@ public class ChooseMoreEngine extends JPanel {
         return "";
       }
 
-      @SuppressWarnings("unchecked")
       public Object getValueAt(int row, int col) {
         ArrayList<EngineData> EngineDatas = Utils.getEngineData();
         if (row > (EngineDatas.size() - 1)) {

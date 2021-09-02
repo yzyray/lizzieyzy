@@ -1,6 +1,8 @@
 package featurecat.lizzie.gui;
 
+import featurecat.lizzie.Config;
 import featurecat.lizzie.Lizzie;
+import featurecat.lizzie.analysis.EngineManager;
 import featurecat.lizzie.analysis.Leelaz;
 import featurecat.lizzie.analysis.MoveData;
 import featurecat.lizzie.rules.Board;
@@ -63,7 +65,7 @@ public class AnalysisFrame extends JFrame {
   public AnalysisFrame(int engine) {
     index = engine;
     dataModel = getTableModel();
-    if (Lizzie.frame.extraMode == 2) {
+    if (LizzieFrame.extraMode == 2) {
       if (index == 1) oriTitle = resourceBundle.getString("AnalysisFrame.titleMain");
       else if (index == 2) oriTitle = resourceBundle.getString("AnalysisFrame.titleSub");
     } else oriTitle = resourceBundle.getString("AnalysisFrame.title");
@@ -93,13 +95,13 @@ public class AnalysisFrame extends JFrame {
     }
     table = new JTable(dataModel);
 
-    winrateFont = new Font("Microsoft YaHei", Font.BOLD, Math.max(Lizzie.config.frameFontSize, 14));
-    headFont = new Font("Microsoft YaHei", Font.PLAIN, Math.max(Lizzie.config.frameFontSize, 13));
+    winrateFont = new Font("Microsoft YaHei", Font.BOLD, Math.max(Config.frameFontSize, 14));
+    headFont = new Font("Microsoft YaHei", Font.PLAIN, Math.max(Config.frameFontSize, 13));
 
     table.getTableHeader().setFont(headFont);
     table.getTableHeader().setReorderingAllowed(false);
     table.setFont(winrateFont);
-    table.setRowHeight(Lizzie.config.menuHeight);
+    table.setRowHeight(Config.menuHeight);
     TableCellRenderer tcr = new ColorTableCellRenderer();
     table.setDefaultRenderer(Object.class, tcr);
 
@@ -308,7 +310,7 @@ public class AnalysisFrame extends JFrame {
     }
     setVisible(false);
     setVisible(true);
-    if (Lizzie.frame.extraMode == 2) {
+    if (LizzieFrame.extraMode == 2) {
       if (index == 2) {
         if (Lizzie.frame.analysisFrame != null)
           this.setLocation(
@@ -333,11 +335,11 @@ public class AnalysisFrame extends JFrame {
             Point p = e.getPoint();
             int row = table.rowAtPoint(p);
             if (row < 0) {
-              if (Lizzie.frame.suggestionclick != Lizzie.frame.outOfBoundCoordinate) {
-                Lizzie.frame.boardRenderer.startNormalBoard();
-                Lizzie.frame.boardRenderer.clearBranch();
-                Lizzie.frame.suggestionclick = Lizzie.frame.outOfBoundCoordinate;
-                Lizzie.frame.mouseOverCoordinate = Lizzie.frame.outOfBoundCoordinate;
+              if (Lizzie.frame.suggestionclick != LizzieFrame.outOfBoundCoordinate) {
+                LizzieFrame.boardRenderer.startNormalBoard();
+                LizzieFrame.boardRenderer.clearBranch();
+                Lizzie.frame.suggestionclick = LizzieFrame.outOfBoundCoordinate;
+                Lizzie.frame.mouseOverCoordinate = LizzieFrame.outOfBoundCoordinate;
                 selectedorder = -1;
                 currentRow = -1;
                 clickOrder = -1;
@@ -347,16 +349,15 @@ public class AnalysisFrame extends JFrame {
             }
             if (table.getValueAt(row, 1).toString().startsWith("pass")) return;
             if (selectedorder >= 0
-                && Lizzie.board.convertNameToCoordinates(table.getValueAt(row, 1).toString())[0]
+                && Board.convertNameToCoordinates(table.getValueAt(row, 1).toString())[0]
                     == Lizzie.frame.suggestionclick[0]
-                && Lizzie.board.convertNameToCoordinates(table.getValueAt(row, 1).toString())[1]
+                && Board.convertNameToCoordinates(table.getValueAt(row, 1).toString())[1]
                     == Lizzie.frame.suggestionclick[1]) {
             } else {
-              Lizzie.frame.boardRenderer.startNormalBoard();
+              LizzieFrame.boardRenderer.startNormalBoard();
               selectedorder = row;
               currentRow = row;
-              int[] coords =
-                  Lizzie.board.convertNameToCoordinates(table.getValueAt(row, 1).toString());
+              int[] coords = Board.convertNameToCoordinates(table.getValueAt(row, 1).toString());
               Lizzie.frame.mouseOverCoordinate = coords;
               Lizzie.frame.suggestionclick = coords;
               Lizzie.frame.refresh();
@@ -385,11 +386,11 @@ public class AnalysisFrame extends JFrame {
         new MouseAdapter() {
           public void mouseExited(MouseEvent e) {
             if (!Lizzie.config.anaFrameUseMouseMove || clickOrder != -1) return;
-            if (Lizzie.frame.suggestionclick != Lizzie.frame.outOfBoundCoordinate) {
-              Lizzie.frame.boardRenderer.startNormalBoard();
-              Lizzie.frame.boardRenderer.clearBranch();
-              Lizzie.frame.suggestionclick = Lizzie.frame.outOfBoundCoordinate;
-              Lizzie.frame.mouseOverCoordinate = Lizzie.frame.outOfBoundCoordinate;
+            if (Lizzie.frame.suggestionclick != LizzieFrame.outOfBoundCoordinate) {
+              LizzieFrame.boardRenderer.startNormalBoard();
+              LizzieFrame.boardRenderer.clearBranch();
+              Lizzie.frame.suggestionclick = LizzieFrame.outOfBoundCoordinate;
+              Lizzie.frame.mouseOverCoordinate = LizzieFrame.outOfBoundCoordinate;
               selectedorder = -1;
               currentRow = -1;
               Lizzie.frame.refresh();
@@ -592,7 +593,7 @@ public class AnalysisFrame extends JFrame {
       String coordsName = table.getValueAt(row, 1).toString();
       int[] coords = new int[] {-2, -2};
       if (!coordsName.startsWith("pas") && coordsName.length() > 1) {
-        coords = Lizzie.board.convertNameToCoordinates(coordsName);
+        coords = Board.convertNameToCoordinates(coordsName);
       }
       if (coords[0] == Lizzie.frame.suggestionclick[0]
           && coords[1] == Lizzie.frame.suggestionclick[1]) {
@@ -660,17 +661,17 @@ public class AnalysisFrame extends JFrame {
   }
 
   private void handleTableClick(int row, int col) {
-    Lizzie.frame.boardRenderer.startNormalBoard();
+    LizzieFrame.boardRenderer.startNormalBoard();
     if (table.getValueAt(row, 1).toString().startsWith("pass")) return;
     if (clickOrder != -1
         && selectedorder >= 0
-        && Lizzie.board.convertNameToCoordinates(table.getValueAt(row, 1).toString())[0]
+        && Board.convertNameToCoordinates(table.getValueAt(row, 1).toString())[0]
             == Lizzie.frame.suggestionclick[0]
-        && Lizzie.board.convertNameToCoordinates(table.getValueAt(row, 1).toString())[1]
+        && Board.convertNameToCoordinates(table.getValueAt(row, 1).toString())[1]
             == Lizzie.frame.suggestionclick[1]) {
-      Lizzie.frame.suggestionclick = Lizzie.frame.outOfBoundCoordinate;
-      Lizzie.frame.mouseOverCoordinate = Lizzie.frame.outOfBoundCoordinate;
-      Lizzie.frame.boardRenderer.clearBranch();
+      Lizzie.frame.suggestionclick = LizzieFrame.outOfBoundCoordinate;
+      Lizzie.frame.mouseOverCoordinate = LizzieFrame.outOfBoundCoordinate;
+      LizzieFrame.boardRenderer.clearBranch();
       selectedorder = -1;
       clickOrder = -1;
       currentRow = -1;
@@ -680,7 +681,7 @@ public class AnalysisFrame extends JFrame {
       clickOrder = row;
       selectedorder = row;
       currentRow = row;
-      int[] coords = Lizzie.board.convertNameToCoordinates(table.getValueAt(row, 1).toString());
+      int[] coords = Board.convertNameToCoordinates(table.getValueAt(row, 1).toString());
       Lizzie.frame.mouseOverCoordinate = coords;
       Lizzie.frame.suggestionclick = coords;
       Lizzie.frame.refresh();
@@ -690,21 +691,16 @@ public class AnalysisFrame extends JFrame {
   private void handleTableRightClick(int row, int col) {
     if (table.getValueAt(row, 1).toString().startsWith("pass")) return;
     if (selectedorder != row) {
-      int[] coords = Lizzie.board.convertNameToCoordinates(table.getValueAt(row, 1).toString());
+      int[] coords = Board.convertNameToCoordinates(table.getValueAt(row, 1).toString());
       Lizzie.frame.suggestionclick = coords;
-      Lizzie.frame.mouseOverCoordinate = Lizzie.frame.outOfBoundCoordinate;
+      Lizzie.frame.mouseOverCoordinate = LizzieFrame.outOfBoundCoordinate;
       Lizzie.frame.refresh();
       selectedorder = row;
     } else {
-      Lizzie.frame.suggestionclick = Lizzie.frame.outOfBoundCoordinate;
+      Lizzie.frame.suggestionclick = LizzieFrame.outOfBoundCoordinate;
       Lizzie.frame.refresh();
       selectedorder = -1;
     }
-  }
-
-  private void handleTableDoubleClick(int row, int col) {
-    int[] coords = Board.convertNameToCoordinates(table.getValueAt(row, 1).toString());
-    Lizzie.board.place(coords[0], coords[1]);
   }
 
   public AbstractTableModel getTableModel() {
@@ -729,8 +725,7 @@ public class AnalysisFrame extends JFrame {
       public int getRowCount() {
         data2 = new ArrayList<MoveData>();
         if (index == 1) {
-          if (Lizzie.engineManager.isEngineGame
-              && Lizzie.config.showPreviousBestmovesInEngineGame) {
+          if (EngineManager.isEngineGame && Lizzie.config.showPreviousBestmovesInEngineGame) {
             if (Lizzie.board.getHistory().getCurrentHistoryNode().previous().isPresent())
               if ((bestMoves = Lizzie.leelaz.getBestMoves()).isEmpty())
                 bestMoves =
@@ -778,8 +773,7 @@ public class AnalysisFrame extends JFrame {
                         && next.getData().getPlayouts() > move.playouts) {
                       MoveData curMove = new MoveData();
                       curMove.playouts = next.getData().getPlayouts();
-                      curMove.coordinate =
-                          Lizzie.board.convertCoordinatesToName(coords[0], coords[1]);
+                      curMove.coordinate = Board.convertCoordinatesToName(coords[0], coords[1]);
                       curMove.winrate = 100.0 - next.getData().winrate;
                       curMove.policy = 0;
                       curMove.scoreMean = -next.getData().scoreMean;
@@ -800,8 +794,7 @@ public class AnalysisFrame extends JFrame {
                         && next.getData().getPlayouts2() > move.playouts) {
                       MoveData curMove = new MoveData();
                       curMove.playouts = next.getData().getPlayouts2();
-                      curMove.coordinate =
-                          Lizzie.board.convertCoordinatesToName(coords[0], coords[1]);
+                      curMove.coordinate = Board.convertCoordinatesToName(coords[0], coords[1]);
                       curMove.winrate = 100.0 - next.getData().winrate2;
                       curMove.policy = 0;
                       curMove.scoreMean = -next.getData().scoreMean2;
@@ -839,7 +832,7 @@ public class AnalysisFrame extends JFrame {
               if (data2.size() > 0 && !hasData && !next.getData().bestMoves.isEmpty()) {
                 MoveData curMove = new MoveData();
                 curMove.playouts = 0;
-                curMove.coordinate = Lizzie.board.convertCoordinatesToName(coords[0], coords[1]);
+                curMove.coordinate = Board.convertCoordinatesToName(coords[0], coords[1]);
                 curMove.winrate = 100.0 - next.getData().winrate;
                 curMove.policy = 0;
                 curMove.scoreMean = -next.getData().scoreMean;
@@ -855,7 +848,7 @@ public class AnalysisFrame extends JFrame {
               if (data2.size() > 0 && !hasData && !next.getData().bestMoves2.isEmpty()) {
                 MoveData curMove = new MoveData();
                 curMove.playouts = 0;
-                curMove.coordinate = Lizzie.board.convertCoordinatesToName(coords[0], coords[1]);
+                curMove.coordinate = Board.convertCoordinatesToName(coords[0], coords[1]);
                 curMove.winrate = 100.0 - next.getData().winrate2;
                 curMove.policy = 0;
                 curMove.scoreMean = -next.getData().scoreMean2;
@@ -889,7 +882,6 @@ public class AnalysisFrame extends JFrame {
         return "";
       }
 
-      @SuppressWarnings("unchecked")
       public Object getValueAt(int row, int col) {
 
         // Collections.sort(data2) ;
@@ -982,8 +974,7 @@ public class AnalysisFrame extends JFrame {
             return String.format(Locale.ENGLISH, "%.2f", data.policy);
           case 7:
             double score = data.scoreMean;
-            if (Lizzie.engineManager.isEngineGame
-                && Lizzie.engineManager.engineGameInfo.isGenmove) {
+            if (EngineManager.isEngineGame && EngineManager.engineGameInfo.isGenmove) {
               if (!Lizzie.board.getHistory().isBlacksTurn()) {
                 if (Lizzie.config.showKataGoBoardScoreMean) {
                   score = score + Lizzie.board.getHistory().getGameInfo().getKomi();

@@ -275,8 +275,8 @@ public class SuggestionInfoOrderSettings extends JDialog {
               setVisible(false);
               Lizzie.frame.refresh();
             }
-            if (Lizzie.frame != null && Lizzie.frame.menu != null)
-              Lizzie.frame.menu.refreshDoubleMoveInfoStatus();
+            if (Lizzie.frame != null && LizzieFrame.menu != null)
+              LizzieFrame.menu.refreshDoubleMoveInfoStatus();
             if (Lizzie.frame.configDialog2 != null && Lizzie.frame.configDialog2.isVisible()) {
               Lizzie.frame.configDialog2.setChkSuggestionInfo();
             }
@@ -597,7 +597,7 @@ public class SuggestionInfoOrderSettings extends JDialog {
     }
     {
       fillCircle(g, suggestionX, suggestionY, stoneRadius);
-      g.setColor(color.GRAY);
+      g.setColor(Color.GRAY);
       drawCircle(g, suggestionX, suggestionY, stoneRadius + 1, 26.5f);
 
       g.setColor(color);
@@ -605,10 +605,10 @@ public class SuggestionInfoOrderSettings extends JDialog {
       else fillCircle(g, suggestionX, suggestionY, stoneRadius);
       if (isBestMove) {
         if (Lizzie.config.showBlueRing) {
-          g.setColor(color.BLUE.brighter());
+          g.setColor(Color.BLUE.brighter());
           drawCircleBest(g, suggestionX, suggestionY, stoneRadius + 1, 15f);
         } else {
-          g.setColor(color.GRAY);
+          g.setColor(Color.GRAY);
           drawCircle(g, suggestionX, suggestionY, stoneRadius + 1, 26.5f);
         }
       }

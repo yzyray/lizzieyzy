@@ -8,8 +8,6 @@ import java.text.Format;
 import java.text.NumberFormat;
 import java.util.Date;
 import javax.swing.JFormattedTextField;
-import javax.swing.JFormattedTextField.AbstractFormatter;
-import javax.swing.JFormattedTextField.AbstractFormatterFactory;
 import javax.swing.text.DateFormatter;
 import javax.swing.text.DefaultFormatter;
 import javax.swing.text.DefaultFormatterFactory;

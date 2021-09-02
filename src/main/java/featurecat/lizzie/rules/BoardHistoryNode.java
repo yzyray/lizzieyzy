@@ -62,7 +62,7 @@ public class BoardHistoryNode {
     for (ExtraStones stone : extraStones) {
       Lizzie.leelaz.playMove(
           stone.isBlack ? Stone.BLACK : Stone.WHITE,
-          Lizzie.board.convertCoordinatesToName(stone.x, stone.y));
+          Board.convertCoordinatesToName(stone.x, stone.y));
     }
   }
 

@@ -10,9 +10,6 @@ public class FastLink {
   public void startProgram(String command) {
     List<String> commands = splitCommand(command);
     ProcessBuilder processBuilder = new ProcessBuilder(commands);
-    // Commented for remote ssh
-    // processBuilder.directory(startfolder);
-    // processBuilder.redirectErrorStream(true);
     try {
       Process process = processBuilder.start();
     } catch (Exception e) {

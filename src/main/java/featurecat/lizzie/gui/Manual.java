@@ -39,13 +39,11 @@ public class Manual extends JDialog {
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             if (Lizzie.board.getHistory().isBlacksTurn())
-              Lizzie.engineManager.engineList.get(
-                          Lizzie.engineManager.engineGameInfo.blackEngineIndex)
+              Lizzie.engineManager.engineList.get(EngineManager.engineGameInfo.blackEngineIndex)
                       .playNow =
                   true;
             else
-              Lizzie.engineManager.engineList.get(
-                          Lizzie.engineManager.engineGameInfo.whiteEngineIndex)
+              Lizzie.engineManager.engineList.get(EngineManager.engineGameInfo.whiteEngineIndex)
                       .playNow =
                   true;
           }
@@ -76,14 +74,13 @@ public class Manual extends JDialog {
     blackResign.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            Lizzie.engineManager.engineList.get(
-                        Lizzie.engineManager.engineGameInfo.blackEngineIndex)
+            Lizzie.engineManager.engineList.get(EngineManager.engineGameInfo.blackEngineIndex)
                     .resigned =
                 true;
             if (EngineManager.engineGameInfo.isGenmove)
               Lizzie.engineManager
                   .engineList
-                  .get(Lizzie.engineManager.engineGameInfo.blackEngineIndex)
+                  .get(EngineManager.engineGameInfo.blackEngineIndex)
                   .genmoveResign(false);
           }
         });
@@ -94,14 +91,13 @@ public class Manual extends JDialog {
     whiteResign.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            Lizzie.engineManager.engineList.get(
-                        Lizzie.engineManager.engineGameInfo.whiteEngineIndex)
+            Lizzie.engineManager.engineList.get(EngineManager.engineGameInfo.whiteEngineIndex)
                     .resigned =
                 true;
             if (EngineManager.engineGameInfo.isGenmove)
               Lizzie.engineManager
                   .engineList
-                  .get(Lizzie.engineManager.engineGameInfo.whiteEngineIndex)
+                  .get(EngineManager.engineGameInfo.whiteEngineIndex)
                   .genmoveResign(false);
           }
         });
@@ -112,7 +108,7 @@ public class Manual extends JDialog {
     } catch (IOException e) {
       e.printStackTrace();
     }
-    if (Lizzie.engineManager.engineGameInfo.isGenmove) {
+    if (EngineManager.engineGameInfo.isGenmove) {
       manualOne.setEnabled(false);
       playNow.setEnabled(false);
     }

@@ -2,6 +2,7 @@ package featurecat.lizzie.gui;
 
 import featurecat.lizzie.Config;
 import featurecat.lizzie.Lizzie;
+import featurecat.lizzie.analysis.EngineManager;
 import featurecat.lizzie.gui.LizzieFrame.HtmlKit;
 import java.awt.Color;
 import java.awt.Desktop;
@@ -94,7 +95,7 @@ public class SetKataEngines extends JDialog {
                       "auto-load-txt-kata-engine-pda", Lizzie.config.autoLoadTxtKataEnginePDA);
                 }
               } else Lizzie.leelaz.setPda("0");
-              Lizzie.frame.menu.setUseGfPda(
+              LizzieFrame.menu.setUseGfPda(
                   Lizzie.config.chkKataEnginePDA, Lizzie.config.txtKataEnginePDA);
             }
 
@@ -113,7 +114,7 @@ public class SetKataEngines extends JDialog {
               }
 
             } else Lizzie.leelaz.sendCommand("kata-set-param analysisWideRootNoise 0");
-            Lizzie.frame.menu.setUseWrn(
+            LizzieFrame.menu.setUseWrn(
                 Lizzie.config.chkKataEngineWRN, Lizzie.config.txtKataEngineWRN);
             //  }
 
@@ -156,7 +157,7 @@ public class SetKataEngines extends JDialog {
                 "autoload-kata-engine-wrn", Lizzie.config.autoLoadKataEngineWRN);
             Lizzie.config.uiConfig.put("txt-kata-engine-wrn", Lizzie.config.txtKataEngineWRN);
             setVisible(false);
-            Lizzie.frame.menu.updateMenuStatusForEngine();
+            LizzieFrame.menu.updateMenuStatusForEngine();
             if (Lizzie.leelaz.isPondering()) Lizzie.leelaz.ponder();
           }
         });
@@ -678,7 +679,7 @@ public class SetKataEngines extends JDialog {
     //      chkEditRPT.setSelected(true);
     //    }
     if (Lizzie.frame.isPlayingAgainstLeelaz
-        || (Lizzie.engineManager.isEngineGame && Lizzie.engineManager.engineGameInfo.isGenmove)) {
+        || (EngineManager.isEngineGame && EngineManager.engineGameInfo.isGenmove)) {
       txtWRN.setEnabled(false);
       chkEditWRN.setEnabled(false);
     }
@@ -727,7 +728,7 @@ public class SetKataEngines extends JDialog {
               + "; font-family:"
               + Lizzie.config.fontName
               + ", Consolas, Menlo, Monaco, 'Ubuntu Mono', monospace;"
-              + ("font-size:" + Lizzie.config.frameFontSize)
+              + ("font-size:" + Config.frameFontSize)
               + "}";
       htmlStyle.addRule(style);
       setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));

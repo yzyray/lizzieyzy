@@ -230,7 +230,7 @@ public class Lizzie {
               if (!mainArgs[0].equals("read")) {
                 File file = new File(mainArgs[0]);
                 frame.loadFile(file, true, true);
-                frame.curFile = file;
+                LizzieFrame.curFile = file;
               }
             } else if (config.autoResume) {
               frame.resumeFile();
@@ -332,11 +332,11 @@ public class Lizzie {
       UIManager.put(
           "OptionPane.buttonFont",
           new FontUIResource(
-              new Font(Config.sysDefaultFontName, Font.PLAIN, config.frameFontSize)));
+              new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize)));
       UIManager.put(
           "OptionPane.messageFont",
           new FontUIResource(
-              new Font(Config.sysDefaultFontName, Font.PLAIN, config.frameFontSize)));
+              new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize)));
       if (config.useJavaLooks) {
         String lookAndFeel = UIManager.getCrossPlatformLookAndFeelClassName();
         UIManager.setLookAndFeel(lookAndFeel);
@@ -388,8 +388,8 @@ public class Lizzie {
   public static void initializeAfterVersionCheck(boolean isEngineGame, Leelaz engine) {
     engine.canRestoreDymPda = true;
     if (engineManager.isEngineGame()) {
-      if (engineManager.engineList.get(engineManager.engineGameInfo.firstEngineIndex).isKataGoPda
-          || engineManager.engineList.get(engineManager.engineGameInfo.secondEngineIndex)
+      if (engineManager.engineList.get(EngineManager.engineGameInfo.firstEngineIndex).isKataGoPda
+          || engineManager.engineList.get(EngineManager.engineGameInfo.secondEngineIndex)
               .isKataGoPda) LizzieFrame.menu.showPda(true);
       else LizzieFrame.menu.showPda(false);
     }
@@ -412,7 +412,7 @@ public class Lizzie {
     Runnable runnable =
         new Runnable() {
           public void run() {
-            Lizzie.frame.toolbar.reSetButtonLocation();
+            LizzieFrame.toolbar.reSetButtonLocation();
             if (!isEngineGame)
               if (Lizzie.frame.resetMovelistFrameandAnalysisFrame()) frame.setVisible(true);
           }
@@ -435,7 +435,7 @@ public class Lizzie {
     //    }
     if (config.autoSaveOnExit) frame.saveAutoGame(1);
     if (Lizzie.config.uiConfig.optBoolean("autoload-last", false)) {
-      Lizzie.config.uiConfig.put("default-engine", engineManager.currentEngineNo);
+      Lizzie.config.uiConfig.put("default-engine", EngineManager.currentEngineNo);
     }
     try {
       config.persist();

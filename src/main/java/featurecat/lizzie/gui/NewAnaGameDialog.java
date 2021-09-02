@@ -6,7 +6,9 @@ package featurecat.lizzie.gui;
 
 import featurecat.lizzie.Config;
 import featurecat.lizzie.Lizzie;
+import featurecat.lizzie.analysis.EngineManager;
 import featurecat.lizzie.analysis.GameInfo;
+import featurecat.lizzie.rules.Board;
 import featurecat.lizzie.rules.Stone;
 import featurecat.lizzie.util.Utils;
 import java.awt.*;
@@ -120,7 +122,7 @@ public class NewAnaGameDialog extends JDialog {
     }
     if (engine.getItemCount() > 0)
       engine.setSelectedIndex(
-          Lizzie.engineManager.currentEngineNo >= 0 ? Lizzie.engineManager.currentEngineNo : 0);
+          EngineManager.currentEngineNo >= 0 ? EngineManager.currentEngineNo : 0);
     GridBagLayout gbl_contentPanel = new GridBagLayout();
     gbl_contentPanel.columnWidths = new int[] {225, 280, 0};
     gbl_contentPanel.rowHeights =
@@ -420,8 +422,8 @@ public class NewAnaGameDialog extends JDialog {
             textTime.setEnabled(chkUseTime.isSelected());
           }
         });
-    chkUseTime.setSelected(Lizzie.frame.toolbar.chkAutoPlayTime.isSelected());
-    textTime.setEnabled(Lizzie.frame.toolbar.chkAutoPlayTime.isSelected());
+    chkUseTime.setSelected(LizzieFrame.toolbar.chkAutoPlayTime.isSelected());
+    textTime.setEnabled(LizzieFrame.toolbar.chkAutoPlayTime.isSelected());
     GridBagConstraints gbc_textTime = new GridBagConstraints();
     gbc_textTime.fill = GridBagConstraints.BOTH;
     gbc_textTime.insets = new Insets(0, 0, 5, 0);
@@ -438,15 +440,15 @@ public class NewAnaGameDialog extends JDialog {
     textPlayouts = new JTextField();
     textPlayouts.setDocument(new IntDocument());
     textPlayouts.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
-    textPlayouts.setText(Lizzie.frame.toolbar.txtAutoPlayPlayouts.getText());
+    textPlayouts.setText(LizzieFrame.toolbar.txtAutoPlayPlayouts.getText());
     chkUsePlayouts.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             textPlayouts.setEnabled(chkUsePlayouts.isSelected());
           }
         });
-    chkUsePlayouts.setSelected(Lizzie.frame.toolbar.chkAutoPlayPlayouts.isSelected());
-    textPlayouts.setEnabled(Lizzie.frame.toolbar.chkAutoPlayPlayouts.isSelected());
+    chkUsePlayouts.setSelected(LizzieFrame.toolbar.chkAutoPlayPlayouts.isSelected());
+    textPlayouts.setEnabled(LizzieFrame.toolbar.chkAutoPlayPlayouts.isSelected());
     GridBagConstraints gbc_textPlayouts = new GridBagConstraints();
     gbc_textPlayouts.fill = GridBagConstraints.BOTH;
     gbc_textPlayouts.insets = new Insets(0, 0, 5, 0);
@@ -465,15 +467,15 @@ public class NewAnaGameDialog extends JDialog {
     textFirstPlayouts.setDocument(new IntDocument());
     textFirstPlayouts.setFont(
         new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
-    textFirstPlayouts.setText(Lizzie.frame.toolbar.txtAutoPlayFirstPlayouts.getText());
+    textFirstPlayouts.setText(LizzieFrame.toolbar.txtAutoPlayFirstPlayouts.getText());
     chkUseFirstPlayouts.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             textFirstPlayouts.setEnabled(chkUseFirstPlayouts.isSelected());
           }
         });
-    chkUseFirstPlayouts.setSelected(Lizzie.frame.toolbar.chkAutoPlayFirstPlayouts.isSelected());
-    textFirstPlayouts.setEnabled(Lizzie.frame.toolbar.chkAutoPlayFirstPlayouts.isSelected());
+    chkUseFirstPlayouts.setSelected(LizzieFrame.toolbar.chkAutoPlayFirstPlayouts.isSelected());
+    textFirstPlayouts.setEnabled(LizzieFrame.toolbar.chkAutoPlayFirstPlayouts.isSelected());
     GridBagConstraints gbc_textFirstPlayouts = new GridBagConstraints();
     gbc_textFirstPlayouts.fill = GridBagConstraints.BOTH;
     gbc_textFirstPlayouts.insets = new Insets(0, 0, 5, 0);
@@ -752,26 +754,26 @@ public class NewAnaGameDialog extends JDialog {
 
       Lizzie.config.leelazConfig.put("play-ponder", Lizzie.config.playponder);
 
-      Lizzie.frame.toolbar.chkShowBlack.setSelected(chkShowBlack.isSelected());
-      Lizzie.frame.toolbar.chkShowWhite.setSelected(chkShowWhite.isSelected());
+      LizzieFrame.toolbar.chkShowBlack.setSelected(chkShowBlack.isSelected());
+      LizzieFrame.toolbar.chkShowWhite.setSelected(chkShowWhite.isSelected());
       if (Lizzie.config.showDoubleMenuVar) {
-        Lizzie.frame.menu.chkShowBlack.setSelected(chkShowBlack.isSelected());
-        Lizzie.frame.menu.chkShowWhite.setSelected(chkShowWhite.isSelected());
+        LizzieFrame.menu.chkShowBlack.setSelected(chkShowBlack.isSelected());
+        LizzieFrame.menu.chkShowWhite.setSelected(chkShowWhite.isSelected());
       }
       if (playerIsBlack()) {
         Lizzie.frame.playerIsBlack = true;
-        Lizzie.frame.toolbar.chkAutoPlayBlack.setSelected(false);
-        Lizzie.frame.toolbar.chkAutoPlayWhite.setSelected(true);
+        LizzieFrame.toolbar.chkAutoPlayBlack.setSelected(false);
+        LizzieFrame.toolbar.chkAutoPlayWhite.setSelected(true);
       } else {
         Lizzie.frame.playerIsBlack = false;
-        Lizzie.frame.toolbar.chkAutoPlayBlack.setSelected(true);
-        Lizzie.frame.toolbar.chkAutoPlayWhite.setSelected(false);
+        LizzieFrame.toolbar.chkAutoPlayBlack.setSelected(true);
+        LizzieFrame.toolbar.chkAutoPlayWhite.setSelected(false);
       }
-      Lizzie.frame.toolbar.chkAutoPlay.setSelected(true);
+      LizzieFrame.toolbar.chkAutoPlay.setSelected(true);
       try {
         if (FORMAT_HANDICAP.parse(textTime.getText().trim()).intValue() > 0) {
-          Lizzie.frame.toolbar.chkAutoPlayTime.setSelected(chkUseTime.isSelected());
-          Lizzie.frame.toolbar.txtAutoPlayTime.setText(
+          LizzieFrame.toolbar.chkAutoPlayTime.setSelected(chkUseTime.isSelected());
+          LizzieFrame.toolbar.txtAutoPlayTime.setText(
               FORMAT_HANDICAP.parse(textTime.getText().trim()).intValue() + "");
           Lizzie.config.maxGameThinkingTimeSeconds =
               FORMAT_HANDICAP.parse(textTime.getText().trim()).intValue();
@@ -779,48 +781,48 @@ public class NewAnaGameDialog extends JDialog {
               "max-game-thinking-time-seconds",
               FORMAT_HANDICAP.parse(textTime.getText().trim()).intValue());
         } else {
-          Lizzie.frame.toolbar.chkAutoPlayTime.setSelected(false);
-          Lizzie.frame.toolbar.txtAutoPlayTime.setText("");
+          LizzieFrame.toolbar.chkAutoPlayTime.setSelected(false);
+          LizzieFrame.toolbar.txtAutoPlayTime.setText("");
         }
       } catch (Exception ex) {
-        Lizzie.frame.toolbar.chkAutoPlayTime.setSelected(false);
-        Lizzie.frame.toolbar.txtAutoPlayTime.setText("");
+        LizzieFrame.toolbar.chkAutoPlayTime.setSelected(false);
+        LizzieFrame.toolbar.txtAutoPlayTime.setText("");
       }
       try {
         if (FORMAT_HANDICAP.parse(textPlayouts.getText().trim()).intValue() > 0) {
-          Lizzie.frame.toolbar.chkAutoPlayPlayouts.setSelected(chkUsePlayouts.isSelected());
-          Lizzie.frame.toolbar.txtAutoPlayPlayouts.setText(
+          LizzieFrame.toolbar.chkAutoPlayPlayouts.setSelected(chkUsePlayouts.isSelected());
+          LizzieFrame.toolbar.txtAutoPlayPlayouts.setText(
               FORMAT_HANDICAP.parse(textPlayouts.getText().trim()).intValue() + "");
         } else {
-          Lizzie.frame.toolbar.chkAutoPlayPlayouts.setSelected(false);
-          Lizzie.frame.toolbar.txtAutoPlayPlayouts.setText("");
+          LizzieFrame.toolbar.chkAutoPlayPlayouts.setSelected(false);
+          LizzieFrame.toolbar.txtAutoPlayPlayouts.setText("");
         }
       } catch (Exception ex) {
-        Lizzie.frame.toolbar.chkAutoPlayPlayouts.setSelected(false);
-        Lizzie.frame.toolbar.txtAutoPlayPlayouts.setText("");
+        LizzieFrame.toolbar.chkAutoPlayPlayouts.setSelected(false);
+        LizzieFrame.toolbar.txtAutoPlayPlayouts.setText("");
       }
       try {
         if (FORMAT_HANDICAP.parse(textFirstPlayouts.getText().trim()).intValue() > 0) {
-          Lizzie.frame.toolbar.chkAutoPlayFirstPlayouts.setSelected(
+          LizzieFrame.toolbar.chkAutoPlayFirstPlayouts.setSelected(
               chkUseFirstPlayouts.isSelected());
-          Lizzie.frame.toolbar.txtAutoPlayFirstPlayouts.setText(
+          LizzieFrame.toolbar.txtAutoPlayFirstPlayouts.setText(
               FORMAT_HANDICAP.parse(textFirstPlayouts.getText().trim()).intValue() + "");
         } else {
-          Lizzie.frame.toolbar.chkAutoPlayFirstPlayouts.setSelected(false);
-          Lizzie.frame.toolbar.txtAutoPlayFirstPlayouts.setText("");
+          LizzieFrame.toolbar.chkAutoPlayFirstPlayouts.setSelected(false);
+          LizzieFrame.toolbar.txtAutoPlayFirstPlayouts.setText("");
         }
       } catch (Exception ex) {
-        Lizzie.frame.toolbar.chkAutoPlayFirstPlayouts.setSelected(false);
-        Lizzie.frame.toolbar.txtAutoPlayFirstPlayouts.setText("");
+        LizzieFrame.toolbar.chkAutoPlayFirstPlayouts.setSelected(false);
+        LizzieFrame.toolbar.txtAutoPlayFirstPlayouts.setText("");
       }
-      if (!Lizzie.frame.toolbar.chkAutoPlayFirstPlayouts.isSelected()
-          && !Lizzie.frame.toolbar.chkAutoPlayPlayouts.isSelected()
-          && !Lizzie.frame.toolbar.chkAutoPlayTime.isSelected()
+      if (!LizzieFrame.toolbar.chkAutoPlayFirstPlayouts.isSelected()
+          && !LizzieFrame.toolbar.chkAutoPlayPlayouts.isSelected()
+          && !LizzieFrame.toolbar.chkAutoPlayTime.isSelected()
           && !Lizzie.config.UsePureNetInGame) {
         Utils.showMsg(resourceBundle.getString("NewAnaGameDialog.wrongAiMoveSettings"));
         return;
       }
-      if (Lizzie.engineManager.currentEngineNo != engine.getSelectedIndex())
+      if (EngineManager.currentEngineNo != engine.getSelectedIndex())
         Lizzie.engineManager.switchEngine(engine.getSelectedIndex(), true);
       Lizzie.config.anaGameResignStartMove =
           Utils.parseTextToInt(textResignStartMove, Lizzie.config.anaGameResignStartMove);
@@ -834,7 +836,7 @@ public class NewAnaGameDialog extends JDialog {
       Lizzie.config.myByoyomiSeconds = texByoSeconds.getSelectedIndex();
       Lizzie.config.myByoyomiTimes = texByoTimes.getSelectedIndex();
       Lizzie.leelaz.anaGameResignCount = 0;
-      Lizzie.frame.menu.txtKomi.setText(gameInfo.getKomi() + "");
+      LizzieFrame.menu.txtKomi.setText(gameInfo.getKomi() + "");
 
       Lizzie.config.checkPlayBlack = checkBoxPlayerIsBlack.getSelectedIndex() == 0;
       Lizzie.config.checkContinuePlay = checkContinuePlay.isSelected();
@@ -861,7 +863,7 @@ public class NewAnaGameDialog extends JDialog {
       Runnable syncBoard =
           new Runnable() {
             public void run() {
-              while (!Lizzie.leelaz.isLoaded() || Lizzie.engineManager.isEmpty) {
+              while (!Lizzie.leelaz.isLoaded() || EngineManager.isEmpty) {
                 try {
                   Thread.sleep(100);
                 } catch (InterruptedException e) {
@@ -876,7 +878,7 @@ public class NewAnaGameDialog extends JDialog {
                 e.printStackTrace();
               }
               Lizzie.leelaz.setGameStatus(true);
-              Lizzie.frame.menu.toggleDoubleMenuGameStatus();
+              LizzieFrame.menu.toggleDoubleMenuGameStatus();
               Lizzie.leelaz.clearBestMoves();
               Lizzie.board.isGameBoard = true;
               gameInfo.setPlayerBlack(
@@ -909,9 +911,7 @@ public class NewAnaGameDialog extends JDialog {
                   else Lizzie.leelaz.sendCommand("fixed_handicap " + gameInfo.getHandicap());
                   isHandicap = true;
                 }
-                if (Lizzie.leelaz.isZen
-                    && Lizzie.board.boardWidth == 19
-                    && Lizzie.board.boardHeight == 19) {
+                if (Lizzie.leelaz.isZen && Board.boardWidth == 19 && Board.boardHeight == 19) {
                   placeHandicap(handicap);
                 }
               }

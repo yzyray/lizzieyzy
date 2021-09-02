@@ -610,10 +610,10 @@ public class FirstUseSettings extends JDialog {
                 "show-playouts-in-suggestion", Lizzie.config.showPlayoutsInSuggestion);
             Lizzie.config.uiConfig.put(
                 "show-scoremean-in-suggestion", Lizzie.config.showScoremeanInSuggestion);
-            if (Lizzie.frame != null && Lizzie.frame.menu != null) {
-              Lizzie.frame.menu.chkShowWinrate.setSelected(Lizzie.config.showWinrateInSuggestion);
-              Lizzie.frame.menu.chkShowPlayouts.setSelected(Lizzie.config.showPlayoutsInSuggestion);
-              Lizzie.frame.menu.chkShowScore.setSelected(Lizzie.config.showScoremeanInSuggestion);
+            if (Lizzie.frame != null && LizzieFrame.menu != null) {
+              LizzieFrame.menu.chkShowWinrate.setSelected(Lizzie.config.showWinrateInSuggestion);
+              LizzieFrame.menu.chkShowPlayouts.setSelected(Lizzie.config.showPlayoutsInSuggestion);
+              LizzieFrame.menu.chkShowScore.setSelected(Lizzie.config.showScoremeanInSuggestion);
             }
             int limitVariation = 0;
             int limitSuggestion = 0;
@@ -699,7 +699,7 @@ public class FirstUseSettings extends JDialog {
             Lizzie.config.uiConfig.put("first-time-load", false);
             Lizzie.config.needReopenFirstUseSettings = false;
             setVisible(false);
-            if (Lizzie.frame != null) Lizzie.frame.menu.refreshLimitStatus(true);
+            if (Lizzie.frame != null) LizzieFrame.menu.refreshLimitStatus(true);
             try {
               Lizzie.config.save();
             } catch (IOException e1) {

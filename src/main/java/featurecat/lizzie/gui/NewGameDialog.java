@@ -6,6 +6,7 @@ package featurecat.lizzie.gui;
 
 import featurecat.lizzie.Config;
 import featurecat.lizzie.Lizzie;
+import featurecat.lizzie.analysis.EngineManager;
 import featurecat.lizzie.analysis.GameInfo;
 import featurecat.lizzie.util.Utils;
 import java.awt.*;
@@ -113,7 +114,7 @@ public class NewGameDialog extends JDialog {
     }
     if (engine.getItemCount() > 0)
       engine.setSelectedIndex(
-          Lizzie.engineManager.currentEngineNo >= 0 ? Lizzie.engineManager.currentEngineNo : 0);
+          EngineManager.currentEngineNo >= 0 ? EngineManager.currentEngineNo : 0);
     GridBagLayout gbl_contentPanel = new GridBagLayout();
     gbl_contentPanel.columnWidths = new int[] {176, 92, 0};
     gbl_contentPanel.rowHeights = new int[] {31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31, 31};
@@ -652,7 +653,7 @@ public class NewGameDialog extends JDialog {
         return;
       }
       // if (!checkContinuePlay.isSelected()) Lizzie.board.clear(false);
-      if (Lizzie.engineManager.currentEngineNo != engine.getSelectedIndex())
+      if (EngineManager.currentEngineNo != engine.getSelectedIndex())
         Lizzie.engineManager.switchEngine(engine.getSelectedIndex(), true);
       double komi = 7.5;
       int handicap = 0;
@@ -710,11 +711,11 @@ public class NewGameDialog extends JDialog {
       Lizzie.config.uiConfig.put("my-save-time", Lizzie.config.mySaveTime);
       Lizzie.config.uiConfig.put("my-byoyomo-seconds", Lizzie.config.myByoyomiSeconds);
       Lizzie.config.uiConfig.put("my-byoyomo-times", Lizzie.config.myByoyomiTimes);
-      Lizzie.frame.toolbar.chkShowBlack.setSelected(chkShowBlack.isSelected());
-      Lizzie.frame.toolbar.chkShowWhite.setSelected(chkShowWhite.isSelected());
+      LizzieFrame.toolbar.chkShowBlack.setSelected(chkShowBlack.isSelected());
+      LizzieFrame.toolbar.chkShowWhite.setSelected(chkShowWhite.isSelected());
       if (Lizzie.config.showDoubleMenuVar) {
-        Lizzie.frame.menu.chkShowBlack.setSelected(chkShowBlack.isSelected());
-        Lizzie.frame.menu.chkShowWhite.setSelected(chkShowWhite.isSelected());
+        LizzieFrame.menu.chkShowBlack.setSelected(chkShowBlack.isSelected());
+        LizzieFrame.menu.chkShowWhite.setSelected(chkShowWhite.isSelected());
       }
       // close window
       cancelled = false;

@@ -5081,9 +5081,6 @@ public class MoveListFrame extends JFrame {
       numMoves = trueNumMoves;
     }
 
-    boolean lastNodeAnalyzed =
-        isMainEngine ? node.getData().getPlayouts() > 0 : node.getData().getPlayouts2() > 0;
-    int lastNodeMove = node.getData().moveNumber - 1;
     if (trueNumMoves < 1) return;
     BoardHistoryNode firstNode = Lizzie.board.getHistory().getStart().next().get();
     boolean firstNodeAnalyzed =

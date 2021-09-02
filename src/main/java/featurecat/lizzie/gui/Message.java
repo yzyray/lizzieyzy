@@ -39,14 +39,11 @@ public class Message extends JDialog {
   public void setMessage(String message) {
     String regex = "[\u4e00-\u9fa5]";
     lblmessage.setText(message);
-    setSize(
-        (int) (message.replaceAll(regex, "12").length() * (Lizzie.config.frameFontSize / 1.6)), 80);
+    setSize((int) (message.replaceAll(regex, "12").length() * (Config.frameFontSize / 1.6)), 80);
     setLocationRelativeTo(Lizzie.frame != null ? Lizzie.frame : null);
     setVisible(true);
     Lizzie.setFrameSize(
-        this,
-        (int) (message.replaceAll(regex, "12").length() * (Lizzie.config.frameFontSize / 1.6)),
-        80);
+        this, (int) (message.replaceAll(regex, "12").length() * (Config.frameFontSize / 1.6)), 80);
     this.setModal(true);
     setVisible(false);
     setVisible(true);
@@ -55,14 +52,11 @@ public class Message extends JDialog {
   public void setMessageNoModal(String message) {
     String regex = "[\u4e00-\u9fa5]";
     lblmessage.setText(message);
-    setSize(
-        (int) (message.replaceAll(regex, "12").length() * (Lizzie.config.frameFontSize / 1.6)), 80);
+    setSize((int) (message.replaceAll(regex, "12").length() * (Config.frameFontSize / 1.6)), 80);
     setLocationRelativeTo(Lizzie.frame != null ? Lizzie.frame : null);
     setVisible(true);
     Lizzie.setFrameSize(
-        this,
-        (int) (message.replaceAll(regex, "12").length() * (Lizzie.config.frameFontSize / 1.6)),
-        80);
+        this, (int) (message.replaceAll(regex, "12").length() * (Config.frameFontSize / 1.6)), 80);
     setVisible(false);
     setVisible(true);
   }
@@ -70,14 +64,11 @@ public class Message extends JDialog {
   public void setMessageNoModal(String message, int seconds) {
     String regex = "[\u4e00-\u9fa5]";
     lblmessage.setText(message);
-    setSize(
-        (int) (message.replaceAll(regex, "12").length() * (Lizzie.config.frameFontSize / 1.6)), 80);
+    setSize((int) (message.replaceAll(regex, "12").length() * (Config.frameFontSize / 1.6)), 80);
     setLocationRelativeTo(Lizzie.frame != null ? Lizzie.frame : null);
     setVisible(true);
     Lizzie.setFrameSize(
-        this,
-        (int) (message.replaceAll(regex, "12").length() * (Lizzie.config.frameFontSize / 1.6)),
-        80);
+        this, (int) (message.replaceAll(regex, "12").length() * (Config.frameFontSize / 1.6)), 80);
     setVisible(false);
     setVisible(true);
 

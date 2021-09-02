@@ -12,16 +12,11 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
@@ -30,7 +25,6 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 
-@SuppressWarnings("serial")
 public class LoadEngine extends JPanel {
   public static Config config;
   public TableModel dataModel;
@@ -85,15 +79,12 @@ public class LoadEngine extends JPanel {
           : (Lizzie.config.useLanguage == 1
               ? ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("zh", "CN"))
               : ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("en", "US")));
-  private String osName;
-  private BufferedInputStream inputStream;
-  private Path curPath;
 
   public LoadEngine() {
     // super(new BorderLayout());
 
-    curPath = (new File("")).getAbsoluteFile().toPath();
-    osName = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
+    (new File("")).getAbsoluteFile().toPath();
+    System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
     this.setLayout(null);
     dataModel = getTableModel();
     table = new JTable(dataModel);
@@ -107,7 +98,7 @@ public class LoadEngine extends JPanel {
     table.getTableHeader().setResizingAllowed(false);
     TableCellRenderer tcr = new ColorTableCellRenderer();
     table.setDefaultRenderer(Object.class, tcr);
-    table.setRowHeight(Lizzie.config.menuHeight);
+    table.setRowHeight(Config.menuHeight);
     table.getTableHeader().setFont(headFont);
     table
         .getTableHeader()
@@ -485,48 +476,6 @@ public class LoadEngine extends JPanel {
     }
   }
 
-  private String relativizePath(Path path) {
-    Path relatPath;
-    if (path.startsWith(curPath)) {
-      relatPath = curPath.relativize(path);
-    } else {
-      relatPath = path;
-    }
-    return relatPath.toString();
-  }
-
-  private void getCommandHelp() {
-
-    List<String> commands = new ArrayList<String>();
-    commands.add(enginePath);
-    commands.add("-h");
-
-    ProcessBuilder processBuilder = new ProcessBuilder(commands);
-    processBuilder.directory();
-    processBuilder.redirectErrorStream(true);
-    try {
-      Process process = processBuilder.start();
-      inputStream = new BufferedInputStream(process.getInputStream());
-      ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-      executor.execute(this::read);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }
-
-  private void read() {
-    try {
-      int c;
-      StringBuilder line = new StringBuilder();
-      while ((c = inputStream.read()) != -1) {
-        line.append((char) c);
-      }
-      commandHelp = line.toString();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }
-
   private void handleTableClick(int row, int col) {
     if (row < 0) return;
     curIndex = Integer.parseInt(table.getModel().getValueAt(row, 0).toString()) - 1;
@@ -665,7 +614,6 @@ public class LoadEngine extends JPanel {
         return "";
       }
 
-      @SuppressWarnings("unchecked")
       public Object getValueAt(int row, int col) {
         ArrayList<EngineData> EngineDatas = Utils.getEngineData();
         if (row > (EngineDatas.size() - 1)) {

@@ -2,6 +2,7 @@ package featurecat.lizzie.gui;
 
 import featurecat.lizzie.Config;
 import featurecat.lizzie.Lizzie;
+import featurecat.lizzie.analysis.EngineManager;
 import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
@@ -299,8 +300,8 @@ public class EnginePkConfig extends JDialog {
                 ? 275
                 : (Lizzie.config.isFrameFontMiddle() ? 295 : 318),
         Lizzie.config.isFrameFontSmall() ? 6 : (Lizzie.config.isFrameFontMiddle() ? 3 : 1),
-        Lizzie.config.frameFontSize > 16 ? Lizzie.config.menuHeight - 5 : Lizzie.config.menuHeight,
-        Lizzie.config.frameFontSize > 16 ? Lizzie.config.menuHeight - 5 : Lizzie.config.menuHeight);
+        Config.frameFontSize > 16 ? Config.menuHeight - 5 : Config.menuHeight,
+        Config.frameFontSize > 16 ? Config.menuHeight - 5 : Config.menuHeight);
     getContentPane().add(aboutAnalyzeGame);
 
     chkGameMAX = new JFontCheckBox(resourceBundle.getString("EnginePkConfig.lblGameMAX"));
@@ -450,37 +451,36 @@ public class EnginePkConfig extends JDialog {
         });
     //    txtresignSettingBlack.setText(Lizzie.frame.toolbar.pkResignMoveCounts + "");
     //    txtresignSettingBlack2.setText(String.valueOf(Lizzie.frame.toolbar.pkResginWinrate));
-    if (Lizzie.engineManager.engineGameInfo != null
-        && Lizzie.engineManager.engineGameInfo.batchGameName != null)
-      txtnameSetting.setText(Lizzie.frame.toolbar.batchPkNameToolbar);
-    if (Lizzie.frame.toolbar.AutosavePk) {
+    if (EngineManager.engineGameInfo != null && EngineManager.engineGameInfo.batchGameName != null)
+      txtnameSetting.setText(LizzieFrame.toolbar.batchPkNameToolbar);
+    if (LizzieFrame.toolbar.AutosavePk) {
       chkAutosave.setSelected(true);
     }
-    if (Lizzie.frame.toolbar.isGenmoveToolbar) {
+    if (LizzieFrame.toolbar.isGenmoveToolbar) {
       rdoGenmove.setSelected(true);
       setTextEnable(false);
     } else {
       rdoAna.setSelected(true);
       setTextEnable(true);
     }
-    if (Lizzie.frame.toolbar.exChangeToolbar) {
+    if (LizzieFrame.toolbar.exChangeToolbar) {
       chkExchange.setSelected(true);
     }
-    if (Lizzie.frame.toolbar.checkGameMaxMove) {
+    if (LizzieFrame.toolbar.checkGameMaxMove) {
       chkGameMAX.setSelected(true);
     }
-    txtGameMAX.setText(Lizzie.frame.toolbar.maxGanmeMove + "");
+    txtGameMAX.setText(LizzieFrame.toolbar.maxGanmeMove + "");
 
     //    if (Lizzie.frame.toolbar.checkGameMinMove) {
     //      chkGameMIN.setSelected(true);
     //    }
 
-    if (Lizzie.frame.toolbar.isRandomMove) {
+    if (LizzieFrame.toolbar.isRandomMove) {
       chkRandomMove.setSelected(true);
     }
-    if (Lizzie.frame.toolbar.randomMove > 0)
-      txtRandomMove.setText(Lizzie.frame.toolbar.randomMove + "");
-    txtRandomDiffWinrate.setText(Lizzie.frame.toolbar.randomDiffWinrate + "");
+    if (LizzieFrame.toolbar.randomMove > 0)
+      txtRandomMove.setText(LizzieFrame.toolbar.randomMove + "");
+    txtRandomDiffWinrate.setText(LizzieFrame.toolbar.randomDiffWinrate + "");
 
     JFontLabel label = new JFontLabel("%"); // (第一选点永不排除)
     label.setBounds(
@@ -489,7 +489,7 @@ public class EnginePkConfig extends JDialog {
         25,
         20);
     getContentPane().add(label);
-    if (Lizzie.frame.toolbar.enginePkSaveWinrate) chkSaveWinrate.setSelected(true);
+    if (LizzieFrame.toolbar.enginePkSaveWinrate) chkSaveWinrate.setSelected(true);
 
     chkRandomMoveVists.setSelected(Lizzie.config.checkRandomVisits);
     txtRandomMoveVists.setText(Lizzie.config.percentsRandomVisits + "");
@@ -585,18 +585,18 @@ public class EnginePkConfig extends JDialog {
         "second-engine-resign-winrate", Lizzie.config.secondEngineResignWinrate);
     Lizzie.config.uiConfig.put("second-engine-min-move", Lizzie.config.secondEngineMinMove);
 
-    Lizzie.frame.toolbar.AutosavePk = chkAutosave.isSelected();
-    Lizzie.frame.toolbar.isGenmoveToolbar = rdoGenmove.isSelected();
-    Lizzie.frame.toolbar.batchPkNameToolbar = txtnameSetting.getText();
-    Lizzie.frame.toolbar.exChangeToolbar = chkExchange.isSelected();
-    Lizzie.frame.toolbar.isRandomMove = chkRandomMove.isSelected();
-    Lizzie.frame.toolbar.enginePkSaveWinrate = chkSaveWinrate.isSelected();
+    LizzieFrame.toolbar.AutosavePk = chkAutosave.isSelected();
+    LizzieFrame.toolbar.isGenmoveToolbar = rdoGenmove.isSelected();
+    LizzieFrame.toolbar.batchPkNameToolbar = txtnameSetting.getText();
+    LizzieFrame.toolbar.exChangeToolbar = chkExchange.isSelected();
+    LizzieFrame.toolbar.isRandomMove = chkRandomMove.isSelected();
+    LizzieFrame.toolbar.enginePkSaveWinrate = chkSaveWinrate.isSelected();
     try {
-      Lizzie.frame.toolbar.randomMove = Integer.parseInt(txtRandomMove.getText().trim());
+      LizzieFrame.toolbar.randomMove = Integer.parseInt(txtRandomMove.getText().trim());
     } catch (NumberFormatException err) {
     }
     try {
-      Lizzie.frame.toolbar.randomDiffWinrate =
+      LizzieFrame.toolbar.randomDiffWinrate =
           Double.parseDouble(txtRandomDiffWinrate.getText().trim());
     } catch (NumberFormatException err) {
     }
@@ -607,11 +607,11 @@ public class EnginePkConfig extends JDialog {
     }
     Lizzie.config.uiConfig.put("check-random-visits", Lizzie.config.checkRandomVisits);
     Lizzie.config.uiConfig.put("percents-random-visits", Lizzie.config.percentsRandomVisits);
-    Lizzie.frame.toolbar.setGenmove();
+    LizzieFrame.toolbar.setGenmove();
 
-    Lizzie.frame.toolbar.checkGameMaxMove = chkGameMAX.isSelected();
+    LizzieFrame.toolbar.checkGameMaxMove = chkGameMAX.isSelected();
     try {
-      Lizzie.frame.toolbar.maxGanmeMove = Integer.parseInt(txtGameMAX.getText().trim());
+      LizzieFrame.toolbar.maxGanmeMove = Integer.parseInt(txtGameMAX.getText().trim());
     } catch (NumberFormatException err) {
     }
     //    Lizzie.frame.toolbar.checkGameMinMove = chkGameMIN.isSelected();

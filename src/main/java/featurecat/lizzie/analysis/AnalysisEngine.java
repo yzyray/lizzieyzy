@@ -5,6 +5,7 @@ import featurecat.lizzie.gui.AnalysisSettings;
 import featurecat.lizzie.gui.EngineFailedMessage;
 import featurecat.lizzie.gui.RemoteEngineData;
 import featurecat.lizzie.gui.WaitForAnalysis;
+import featurecat.lizzie.rules.Board;
 import featurecat.lizzie.rules.BoardHistoryNode;
 import featurecat.lizzie.rules.Movelist;
 import featurecat.lizzie.rules.SGFParser;
@@ -310,12 +311,10 @@ public class AnalysisEngine {
       for (Movelist mv : Lizzie.board.startStonelist) {
         if (!mv.ispass) {
           if (mv.isblack) {
-            initialStoneList.add(
-                new String[] {"B", Lizzie.board.convertCoordinatesToName(mv.x, mv.y)});
+            initialStoneList.add(new String[] {"B", Board.convertCoordinatesToName(mv.x, mv.y)});
 
           } else {
-            initialStoneList.add(
-                new String[] {"W", Lizzie.board.convertCoordinatesToName(mv.x, mv.y)});
+            initialStoneList.add(new String[] {"W", Board.convertCoordinatesToName(mv.x, mv.y)});
           }
         }
       }
@@ -335,8 +334,8 @@ public class AnalysisEngine {
       testRequest.put("rules", ruleSettings);
     } else testRequest.put("rules", "tromp-taylor");
     testRequest.put("komi", Lizzie.board.getHistory().getGameInfo().getKomi());
-    testRequest.put("boardXSize", Lizzie.board.boardHeight);
-    testRequest.put("boardYSize", Lizzie.board.boardWidth);
+    testRequest.put("boardXSize", Board.boardHeight);
+    testRequest.put("boardYSize", Board.boardWidth);
     // analyzeTurns
     // moves
     ArrayList<Integer> moveTurns = new ArrayList<Integer>();
@@ -362,14 +361,10 @@ public class AnalysisEngine {
       } else {
         if (node.getData().lastMoveColor.isBlack())
           moveList.add(
-              new String[] {
-                "B", Lizzie.board.convertCoordinatesToName(move.get()[0], move.get()[1])
-              });
+              new String[] {"B", Board.convertCoordinatesToName(move.get()[0], move.get()[1])});
         else
           moveList.add(
-              new String[] {
-                "W", Lizzie.board.convertCoordinatesToName(move.get()[0], move.get()[1])
-              });
+              new String[] {"W", Board.convertCoordinatesToName(move.get()[0], move.get()[1])});
       }
       if (startCountAnalyzeTurns) moveTurns.add(moveNum);
       moveNum++;
@@ -393,14 +388,10 @@ public class AnalysisEngine {
     } else {
       if (node.getData().lastMoveColor.isBlack())
         moveList.add(
-            new String[] {
-              "B", Lizzie.board.convertCoordinatesToName(move.get()[0], move.get()[1])
-            });
+            new String[] {"B", Board.convertCoordinatesToName(move.get()[0], move.get()[1])});
       else
         moveList.add(
-            new String[] {
-              "W", Lizzie.board.convertCoordinatesToName(move.get()[0], move.get()[1])
-            });
+            new String[] {"W", Board.convertCoordinatesToName(move.get()[0], move.get()[1])});
     }
     if (moveList.isEmpty()) isEmptyGame = true;
     // if (endMove > 0 && moveNum-2 > endMove) startCountAnalyzeTurns = false;

@@ -4,6 +4,8 @@ import featurecat.lizzie.Lizzie;
 import featurecat.lizzie.analysis.EngineManager;
 //import featurecat.lizzie.analysis.Leelaz;
 import featurecat.lizzie.analysis.MoveData;
+import featurecat.lizzie.gui.LizzieFrame;
+
 import java.util.*;
 
 public class BoardData {
@@ -234,7 +236,7 @@ public class BoardData {
 				 }
 				 else
 					 pda=0;}
-				 if(!(Lizzie.engineManager.isEngineGame&&Lizzie.engineManager.engineGameInfo.isGenmove))
+				 if(!(EngineManager.isEngineGame&&EngineManager.engineGameInfo.isGenmove))
 				 wrn=Lizzie.leelaz.wrn;				 
 				 //排序
 				 Collections.sort(
@@ -398,7 +400,7 @@ public class BoardData {
 		int i=0;		
 		for (MoveData move : bestMoves) {
 			i++;
-			if(Lizzie.frame.isShareing&&i>10)
+			if(LizzieFrame.isShareing&&i>10)
 				break;
 			// eg: info move R5 visits 38 winrate 5404 pv R5 Q5 R6 S4 Q10 C3 D3 C4 C6 C5 D5
 			sb.append("move ").append(move.coordinate);
@@ -421,7 +423,7 @@ public class BoardData {
 		int i=0;
 		for (MoveData move : bestMoves2) {
 			i++;
-			if(Lizzie.frame.isShareing&&i>10)
+			if(LizzieFrame.isShareing&&i>10)
 				break;
 			// eg: info move R5 visits 38 winrate 5404 pv R5 Q5 R6 S4 Q10 C3 D3 C4 C6 C5 D5
 			sb.append("move ").append(move.coordinate);

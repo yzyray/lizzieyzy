@@ -1,5 +1,6 @@
 package featurecat.lizzie.gui;
 
+import featurecat.lizzie.Config;
 import featurecat.lizzie.Lizzie;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -107,7 +108,7 @@ public class JPaintTextPane extends JTextPane implements MouseListener {
             Font.PLAIN,
             Lizzie.config.commentFontSize > 0
                 ? Lizzie.config.commentFontSize
-                : Lizzie.config.frameFontSize));
+                : Config.frameFontSize));
     this.setEditorKit(new WarpEditorKit());
   }
 

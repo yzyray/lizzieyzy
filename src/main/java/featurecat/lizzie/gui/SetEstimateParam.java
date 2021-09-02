@@ -92,12 +92,10 @@ public class SetEstimateParam extends JDialog {
             RemoteEngineData remoteEngineData = Utils.getEstimateEngineRemoteEngineData();
             remoteEngineData.useJavaSSH = chkRemoteEngine.isSelected();
             Utils.saveEstimateEngineRemoteEngineData(remoteEngineData);
-            boolean oriUseZen = Lizzie.config.useZenEstimate;
             Lizzie.config.useZenEstimate = rdoZen.isSelected();
             Lizzie.config.zenEstimateCommand = textAreaZen.getText();
             Lizzie.config.uiConfig.put("use-zen-estimate", Lizzie.config.useZenEstimate);
             Lizzie.config.uiConfig.put("use-estimate-command", Lizzie.config.zenEstimateCommand);
-            String oriCommand = Lizzie.config.estimateCommand;
             Lizzie.config.estimateThreshold =
                 Utils.parseTextToDouble(txtThreshold, Lizzie.config.estimateThreshold);
             Lizzie.config.estimateCommand = textAreaCommand.getText();

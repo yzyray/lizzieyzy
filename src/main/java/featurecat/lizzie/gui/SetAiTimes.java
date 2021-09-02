@@ -34,7 +34,6 @@ public class SetAiTimes extends JDialog {
   private JFormattedTextField txtSetTime;
   private final ResourceBundle resourceBundle = Lizzie.resourceBundle;
   private int changeMoveNumber;
-  private static JFontTextField defaultText = new JFontTextField();
   JFontRadioButton rdoNoPonder;
   JFontRadioButton rdoPonder;
   private JFontTextField txtAdvanceTime;
@@ -247,15 +246,15 @@ public class SetAiTimes extends JDialog {
     cancel.setBounds(243, 220, 74, 29);
     buttonPane.add(cancel);
 
-    if (Lizzie.frame.toolbar.chkAutoPlayTime.isSelected())
-      txtAnaGameTime.setText(Lizzie.frame.toolbar.txtAutoPlayTime.getText().trim());
+    if (LizzieFrame.toolbar.chkAutoPlayTime.isSelected())
+      txtAnaGameTime.setText(LizzieFrame.toolbar.txtAutoPlayTime.getText().trim());
 
-    if (Lizzie.frame.toolbar.chkAutoPlayPlayouts.isSelected())
-      txtAnaGmaePlayouts.setText(Lizzie.frame.toolbar.txtAutoPlayPlayouts.getText().trim());
+    if (LizzieFrame.toolbar.chkAutoPlayPlayouts.isSelected())
+      txtAnaGmaePlayouts.setText(LizzieFrame.toolbar.txtAutoPlayPlayouts.getText().trim());
 
-    if (Lizzie.frame.toolbar.chkAutoPlayFirstPlayouts.isSelected())
+    if (LizzieFrame.toolbar.chkAutoPlayFirstPlayouts.isSelected())
       txtAnaGmaeFirstPlayouts.setText(
-          Lizzie.frame.toolbar.txtAutoPlayFirstPlayouts.getText().trim());
+          LizzieFrame.toolbar.txtAutoPlayFirstPlayouts.getText().trim());
 
     if (Lizzie.config.advanceTimeSettings) txtSetTime.setEnabled(false);
     else txtAdvanceTime.setEditable(false);
@@ -312,31 +311,31 @@ public class SetAiTimes extends JDialog {
 
       try {
         if (FORMAT_HANDICAP.parse(txtAnaGameTime.getText().trim()).intValue() > 0) {
-          Lizzie.frame.toolbar.chkAutoPlayTime.setSelected(true);
-          Lizzie.frame.toolbar.txtAutoPlayTime.setText(
+          LizzieFrame.toolbar.chkAutoPlayTime.setSelected(true);
+          LizzieFrame.toolbar.txtAutoPlayTime.setText(
               FORMAT_HANDICAP.parse(txtAnaGameTime.getText().trim()).intValue() + "");
-        } else Lizzie.frame.toolbar.chkAutoPlayTime.setSelected(false);
+        } else LizzieFrame.toolbar.chkAutoPlayTime.setSelected(false);
       } catch (Exception ex) {
-        Lizzie.frame.toolbar.chkAutoPlayTime.setSelected(false);
+        LizzieFrame.toolbar.chkAutoPlayTime.setSelected(false);
       }
 
       try {
         if (FORMAT_HANDICAP.parse(txtAnaGmaePlayouts.getText().trim()).intValue() > 0) {
-          Lizzie.frame.toolbar.chkAutoPlayPlayouts.setSelected(true);
-          Lizzie.frame.toolbar.txtAutoPlayPlayouts.setText(
+          LizzieFrame.toolbar.chkAutoPlayPlayouts.setSelected(true);
+          LizzieFrame.toolbar.txtAutoPlayPlayouts.setText(
               FORMAT_HANDICAP.parse(txtAnaGmaePlayouts.getText().trim()).intValue() + "");
-        } else Lizzie.frame.toolbar.chkAutoPlayPlayouts.setSelected(false);
+        } else LizzieFrame.toolbar.chkAutoPlayPlayouts.setSelected(false);
       } catch (Exception ex) {
-        Lizzie.frame.toolbar.chkAutoPlayPlayouts.setSelected(false);
+        LizzieFrame.toolbar.chkAutoPlayPlayouts.setSelected(false);
       }
       if (FORMAT_HANDICAP.parse(txtAnaGmaeFirstPlayouts.getText().trim()).intValue() > 0) {
-        Lizzie.frame.toolbar.chkAutoPlayFirstPlayouts.setSelected(true);
-        Lizzie.frame.toolbar.txtAutoPlayFirstPlayouts.setText(
+        LizzieFrame.toolbar.chkAutoPlayFirstPlayouts.setSelected(true);
+        LizzieFrame.toolbar.txtAutoPlayFirstPlayouts.setText(
             FORMAT_HANDICAP.parse(txtAnaGmaeFirstPlayouts.getText().trim()).intValue() + "");
-      } else Lizzie.frame.toolbar.chkAutoPlayFirstPlayouts.setSelected(false);
+      } else LizzieFrame.toolbar.chkAutoPlayFirstPlayouts.setSelected(false);
 
     } catch (Exception ex) {
-      Lizzie.frame.toolbar.chkAutoPlayFirstPlayouts.setSelected(false);
+      LizzieFrame.toolbar.chkAutoPlayFirstPlayouts.setSelected(false);
     }
     if (Lizzie.frame.isAnaPlayingAgainstLeelaz || Lizzie.leelaz.isPondering())
       Lizzie.leelaz.ponder();
@@ -354,8 +353,6 @@ public class SetAiTimes extends JDialog {
   private boolean checkMove() {
 
     changeMoveNumber = txtFieldValue(txtSetTime);
-    // changePosition = getChangeToType();
-    Color c = defaultText.getBackground();
     if (changeMoveNumber <= 0) {
       txtSetTime.setToolTipText(resourceBundle.getString("LizzieChangeMove.txtMoveNumber.error"));
       Action action = txtSetTime.getActionMap().get("postTip");

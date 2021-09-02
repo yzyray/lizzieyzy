@@ -68,14 +68,14 @@ public class AutoPlay extends JFrame {
     contentPane.add(txtAutoPlaySub);
     txtAutoPlaySub.setColumns(10);
 
-    if (Lizzie.frame.toolbar.chkAutoMain.isSelected()) {
+    if (LizzieFrame.toolbar.chkAutoMain.isSelected()) {
       chkAutoPlayMainboard.setSelected(true);
     }
-    txtAutoPlayMain.setText(Lizzie.frame.toolbar.txtAutoMain.getText());
-    if (Lizzie.frame.toolbar.chkAutoSub.isSelected()) {
+    txtAutoPlayMain.setText(LizzieFrame.toolbar.txtAutoMain.getText());
+    if (LizzieFrame.toolbar.chkAutoSub.isSelected()) {
       chkAutoPlaySubboard.setSelected(true);
     }
-    txtAutoPlaySub.setText(Lizzie.frame.toolbar.txtAutoSub.getText());
+    txtAutoPlaySub.setText(LizzieFrame.toolbar.txtAutoSub.getText());
 
     JCheckBox chkDisplayEntireVariationFirst =
         new JFontCheckBox(resourceBundle.getString("AutpPlay.chbDisplayEntireVariationFirst"));
@@ -123,29 +123,29 @@ public class AutoPlay extends JFrame {
     okButton.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            Lizzie.frame.toolbar.txtAutoMain.setText(txtAutoPlayMain.getText());
-            Lizzie.frame.toolbar.txtAutoSub.setText(txtAutoPlaySub.getText());
+            LizzieFrame.toolbar.txtAutoMain.setText(txtAutoPlayMain.getText());
+            LizzieFrame.toolbar.txtAutoSub.setText(txtAutoPlaySub.getText());
             if (chkAutoPlayMainboard.isSelected() || chkAutoPlaySubboard.isSelected()) {
               if (chkAutoPlayMainboard.isSelected()) {
-                Lizzie.frame.toolbar.chkAutoMain.setSelected(true);
-                Lizzie.frame.toolbar.autoPlayMain();
+                LizzieFrame.toolbar.chkAutoMain.setSelected(true);
+                LizzieFrame.toolbar.autoPlayMain();
                 // }
               } else {
-                Lizzie.frame.toolbar.chkAutoMain.setSelected(false);
+                LizzieFrame.toolbar.chkAutoMain.setSelected(false);
               }
               if (chkAutoPlaySubboard.isSelected()) {
-                Lizzie.frame.toolbar.chkAutoSub.setSelected(true);
-                Lizzie.frame.toolbar.autoPlaySub();
+                LizzieFrame.toolbar.chkAutoSub.setSelected(true);
+                LizzieFrame.toolbar.autoPlaySub();
                 //  }
               } else {
-                Lizzie.frame.toolbar.chkAutoSub.setSelected(false);
-                Lizzie.frame.toolbar.autoPlaySub();
+                LizzieFrame.toolbar.chkAutoSub.setSelected(false);
+                LizzieFrame.toolbar.autoPlaySub();
               }
 
             } else {
-              Lizzie.frame.toolbar.chkAutoMain.setSelected(false);
-              Lizzie.frame.toolbar.chkAutoSub.setSelected(false);
-              Lizzie.frame.toolbar.autoPlaySub();
+              LizzieFrame.toolbar.chkAutoMain.setSelected(false);
+              LizzieFrame.toolbar.chkAutoSub.setSelected(false);
+              LizzieFrame.toolbar.autoPlaySub();
             }
             Lizzie.config.autoReplayDisplayEntireVariationsFirst =
                 chkDisplayEntireVariationFirst.isSelected();

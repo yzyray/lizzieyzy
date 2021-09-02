@@ -107,8 +107,8 @@ public class JIMSendTextPane extends JTextPane implements MouseListener {
               Font.PLAIN,
               Lizzie.config.commentFontSize > 0
                   ? Lizzie.config.commentFontSize
-                  : Lizzie.config.frameFontSize));
-    else this.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Lizzie.config.frameFontSize));
+                  : Config.frameFontSize));
+    else this.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
     this.setEditorKit(new WarpEditorKit());
   }
 

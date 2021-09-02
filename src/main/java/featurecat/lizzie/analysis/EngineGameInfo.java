@@ -1,6 +1,6 @@
 package featurecat.lizzie.analysis;
 
-import featurecat.lizzie.Lizzie;
+import featurecat.lizzie.gui.LizzieFrame;
 import featurecat.lizzie.gui.SgfWinLossList;
 import featurecat.lizzie.rules.Movelist;
 import java.util.ArrayList;
@@ -72,31 +72,30 @@ public class EngineGameInfo {
     int temp = blackEngineIndex;
     blackEngineIndex = whiteEngineIndex;
     whiteEngineIndex = temp;
-    Lizzie.frame.toolbar.enginePkBlack.setEnabled(true);
-    Lizzie.frame.toolbar.enginePkWhite.setEnabled(true);
-    Lizzie.frame.toolbar.enginePkBlack.setSelectedIndex(blackEngineIndex);
-    Lizzie.frame.toolbar.enginePkWhite.setSelectedIndex(whiteEngineIndex);
-    Lizzie.frame.toolbar.enginePkBlack.setEnabled(false);
-    Lizzie.frame.toolbar.enginePkWhite.setEnabled(false);
+    LizzieFrame.toolbar.enginePkBlack.setEnabled(true);
+    LizzieFrame.toolbar.enginePkWhite.setEnabled(true);
+    LizzieFrame.toolbar.enginePkBlack.setSelectedIndex(blackEngineIndex);
+    LizzieFrame.toolbar.enginePkWhite.setSelectedIndex(whiteEngineIndex);
+    LizzieFrame.toolbar.enginePkBlack.setEnabled(false);
+    LizzieFrame.toolbar.enginePkWhite.setEnabled(false);
     if (firstEngineIndex == blackEngineIndex)
-      Lizzie.frame.toolbar.lblenginePkResult.setText(
+      LizzieFrame.toolbar.lblenginePkResult.setText(
           getFirstEngineWins() + ":" + getSecondEngineWins());
     else
-      Lizzie.frame.toolbar.lblenginePkResult.setText(
+      LizzieFrame.toolbar.lblenginePkResult.setText(
           getSecondEngineWins() + ":" + getFirstEngineWins());
 
-    String temp1 = Lizzie.frame.toolbar.txtenginePkFirstPlayputs.getText();
-    Lizzie.frame.toolbar.txtenginePkFirstPlayputs.setText(
-        Lizzie.frame.toolbar.txtenginePkFirstPlayputsWhite.getText());
-    Lizzie.frame.toolbar.txtenginePkFirstPlayputsWhite.setText(temp1);
-    temp1 = Lizzie.frame.toolbar.txtenginePkPlayputs.getText();
-    Lizzie.frame.toolbar.txtenginePkPlayputs.setText(
-        Lizzie.frame.toolbar.txtenginePkPlayputsWhite.getText());
-    Lizzie.frame.toolbar.txtenginePkPlayputsWhite.setText(temp1);
-    temp1 = Lizzie.frame.toolbar.txtenginePkTime.getText();
-    Lizzie.frame.toolbar.txtenginePkTime.setText(
-        Lizzie.frame.toolbar.txtenginePkTimeWhite.getText());
-    Lizzie.frame.toolbar.txtenginePkTimeWhite.setText(temp1);
+    String temp1 = LizzieFrame.toolbar.txtenginePkFirstPlayputs.getText();
+    LizzieFrame.toolbar.txtenginePkFirstPlayputs.setText(
+        LizzieFrame.toolbar.txtenginePkFirstPlayputsWhite.getText());
+    LizzieFrame.toolbar.txtenginePkFirstPlayputsWhite.setText(temp1);
+    temp1 = LizzieFrame.toolbar.txtenginePkPlayputs.getText();
+    LizzieFrame.toolbar.txtenginePkPlayputs.setText(
+        LizzieFrame.toolbar.txtenginePkPlayputsWhite.getText());
+    LizzieFrame.toolbar.txtenginePkPlayputsWhite.setText(temp1);
+    temp1 = LizzieFrame.toolbar.txtenginePkTime.getText();
+    LizzieFrame.toolbar.txtenginePkTime.setText(LizzieFrame.toolbar.txtenginePkTimeWhite.getText());
+    LizzieFrame.toolbar.txtenginePkTimeWhite.setText(temp1);
 
     int temp2 = timeFirstEngine;
     timeFirstEngine = timeSecondEngine;

@@ -1,5 +1,6 @@
 package featurecat.lizzie.gui;
 
+import featurecat.lizzie.Config;
 import featurecat.lizzie.Lizzie;
 import featurecat.lizzie.rules.BoardHistoryNode;
 import java.awt.*;
@@ -8,12 +9,15 @@ import java.util.Optional;
 
 public class VariationTree {
 
-  private int YSPACING;
-  private int XSPACING;
+  private int YSPACING = 20;
+  private int XSPACING = 20;
   private int DOT_DIAM = 11; // Should be odd number
   private int CENTER_DIAM = 5;
   private int RING_DIAM = 15;
   private int diam = DOT_DIAM;
+  private int rectBorder = 2;
+  private int rect_DIAM = 4;
+  private boolean isLargeScaled = Config.isScaled && Lizzie.javaScaleFactor >= 1.5;
 
   private ArrayList<Integer> laneUsageList;
   private BoardHistoryNode curMove;
@@ -24,6 +28,16 @@ public class VariationTree {
     laneUsageList = new ArrayList<Integer>();
     area = new Rectangle(0, 0, 0, 0);
     clickPoint = new Point(0, 0);
+    if (isLargeScaled) {
+      YSPACING = 30;
+      XSPACING = 30;
+      DOT_DIAM = 16; // Should be odd number
+      CENTER_DIAM = 8;
+      RING_DIAM = 23;
+      diam = DOT_DIAM;
+      rectBorder = 3;
+      rect_DIAM = 6;
+    }
   }
 
   public Optional<BoardHistoryNode> drawTree(
@@ -142,7 +156,7 @@ public class VariationTree {
           else g.fillOval(curposx + diff, posy + diff, diam, diam);
         }
         if (Lizzie.config.showVarMove) {
-          g.setFont(new Font(Lizzie.config.uiFontName, Font.PLAIN, 9));
+          g.setFont(new Font(Lizzie.config.uiFontName, Font.PLAIN, isLargeScaled ? 12 : 9));
           g.setColor(Color.WHITE);
           int moveNum = cur.getData().moveMNNumber;
           if (moveNum < 0) {
@@ -185,7 +199,8 @@ public class VariationTree {
         g.drawRect(curposx - 1, posy - 1, DOT_DIAM + 1, DOT_DIAM + 1);
         if (cur == Lizzie.board.getHistory().getCurrentHistoryNode()) {
           g.setColor(Color.RED);
-          g.fillRect(curposx + 2, posy + 2, DOT_DIAM - 4, DOT_DIAM - 4);
+          g.fillRect(
+              curposx + rectBorder, posy + rectBorder, DOT_DIAM - rect_DIAM, DOT_DIAM - rect_DIAM);
         }
       }
       if (curposx + 60 > Lizzie.frame.varTreeMaxX) Lizzie.frame.varTreeMaxX = curposx + 60;
@@ -265,7 +280,7 @@ public class VariationTree {
             curposx + dotoffset,
             posy - YSPACING + dotoffset + (diff > 0 ? dotoffset + 1 : dotoffsety) + 1);
         if (Lizzie.config.showVarMove) {
-          g.setFont(new Font(Lizzie.config.uiFontName, Font.PLAIN, 9));
+          g.setFont(new Font(Lizzie.config.uiFontName, Font.PLAIN, isLargeScaled ? 12 : 9));
           g.setColor(Color.WHITE);
           int moveNum = lane == 0 ? cur.getData().moveNumber : cur.getData().moveMNNumber;
           if (moveNum < 0) {
@@ -333,10 +348,6 @@ public class VariationTree {
     if (width <= 0 || height <= 0) {
       return Optional.empty(); // we don't have enough space
     }
-    // Use dense tree for saving space if large-subboard
-    YSPACING = 20; // (Lizzie.config.showLargeSubBoard() ? 20 : 30);
-    XSPACING = YSPACING;
-
     // int strokeRadius = Lizzie.config.showBorder ? 2 : 0;
     if (!calc) {
       // Draw background

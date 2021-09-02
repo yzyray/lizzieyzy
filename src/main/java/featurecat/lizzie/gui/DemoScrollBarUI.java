@@ -3,7 +3,6 @@ package featurecat.lizzie.gui;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
@@ -59,8 +58,6 @@ public class DemoScrollBarUI extends BasicScrollBarUI {
   public void paintTrack(Graphics g, JComponent c, Rectangle trackBounds) {
 
     Graphics2D g2 = (Graphics2D) g;
-
-    GradientPaint gp = null;
 
     //  判断滚动条是垂直的 还是水平的
     //

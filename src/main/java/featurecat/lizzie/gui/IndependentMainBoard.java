@@ -6,6 +6,7 @@ import static java.lang.Math.min;
 
 import featurecat.lizzie.Config;
 import featurecat.lizzie.Lizzie;
+import featurecat.lizzie.analysis.EngineManager;
 import featurecat.lizzie.analysis.MoveData;
 import featurecat.lizzie.rules.Board;
 import featurecat.lizzie.rules.BoardData;
@@ -59,7 +60,7 @@ public class IndependentMainBoard extends JFrame {
   private boolean isShowingRect = false;
   private JButton lockUnlock;
   private JButton btnClose;
-  public int[] mouseOverCoordinate = Lizzie.frame.outOfBoundCoordinate;
+  public int[] mouseOverCoordinate = LizzieFrame.outOfBoundCoordinate;
   public Optional<List<String>> variationOpt;
   private int curSuggestionMoveOrderByNumber = -1;
   private Stone draggedstone;
@@ -206,7 +207,7 @@ public class IndependentMainBoard extends JFrame {
         new WindowAdapter() {
           public void windowClosing(WindowEvent e) {
             Lizzie.frame.toggleIndependentMainBoard();
-            if (Lizzie.frame.extraMode == 8) Lizzie.frame.defaultMode();
+            if (LizzieFrame.extraMode == 8) Lizzie.frame.defaultMode();
           }
         });
 
@@ -215,7 +216,7 @@ public class IndependentMainBoard extends JFrame {
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             Lizzie.frame.toggleIndependentMainBoard();
-            if (Lizzie.frame.extraMode == 8) Lizzie.frame.defaultMode();
+            if (LizzieFrame.extraMode == 8) Lizzie.frame.defaultMode();
           }
         });
     btnClose.setFocusable(false);
@@ -312,7 +313,7 @@ public class IndependentMainBoard extends JFrame {
             if (e.isAltDown()
                 && !SwingUtilities.isMiddleMouseButton(e)
                 && (LizzieFrame.allowcoords != "" || LizzieFrame.avoidcoords != ""))
-              Lizzie.frame.menu.clearSelect.doClick();
+              LizzieFrame.menu.clearSelect.doClick();
           }
 
           public void mousePressed(MouseEvent e) {
@@ -334,7 +335,7 @@ public class IndependentMainBoard extends JFrame {
                 return;
               }
               if (Lizzie.frame.isShowingRightMenu) return;
-              if (Lizzie.engineManager.isEngineGame) {
+              if (EngineManager.isEngineGame) {
                 if (e.getButton() == MouseEvent.BUTTON1)
                   onClickedForManul(Utils.zoomOut(e.getX()), Utils.zoomOut(e.getY()));
                 return;
@@ -386,7 +387,7 @@ public class IndependentMainBoard extends JFrame {
             }
             if (Draggedmode
                 && !Lizzie.frame.isTrying
-                && !Lizzie.frame.urlSgf
+                && !LizzieFrame.urlSgf
                 && !Lizzie.frame.isPlayingAgainstLeelaz
                 && !Lizzie.frame.isAnaPlayingAgainstLeelaz
                 && Lizzie.config.allowDrag) {
@@ -484,7 +485,7 @@ public class IndependentMainBoard extends JFrame {
             }
             if (Draggedmode
                 && !Lizzie.frame.isTrying
-                && !Lizzie.frame.urlSgf
+                && !LizzieFrame.urlSgf
                 && !Lizzie.frame.isPlayingAgainstLeelaz
                 && !Lizzie.frame.isAnaPlayingAgainstLeelaz
                 && Lizzie.config.allowDrag) {
@@ -516,7 +517,7 @@ public class IndependentMainBoard extends JFrame {
               }
               if (Draggedmode
                   && !Lizzie.frame.isTrying
-                  && !Lizzie.frame.urlSgf
+                  && !LizzieFrame.urlSgf
                   && !Lizzie.frame.isPlayingAgainstLeelaz
                   && !Lizzie.frame.isAnaPlayingAgainstLeelaz
                   && Lizzie.config.allowDrag) {
@@ -796,11 +797,11 @@ public class IndependentMainBoard extends JFrame {
       if (!Lizzie.frame.isPlayingAgainstLeelaz
           || (Lizzie.frame.playerIsBlack == Lizzie.board.getData().blackToPlay)) {
         if (!Lizzie.frame.isAnaPlayingAgainstLeelaz
-            || !Lizzie.frame.toolbar.chkAutoPlayBlack.isSelected()
+            || !LizzieFrame.toolbar.chkAutoPlayBlack.isSelected()
                 == Lizzie.board.getData().blackToPlay) {
           if (Lizzie.frame.isPlayingAgainstLeelaz || Lizzie.frame.isAnaPlayingAgainstLeelaz) {
             if (Lizzie.leelaz.isGamePaused) return;
-            if (Lizzie.leelaz.isLoaded() && !Lizzie.engineManager.isEmpty)
+            if (Lizzie.leelaz.isLoaded() && !EngineManager.isEmpty)
               Lizzie.board.place(coords[0], coords[1]);
             else
               Utils.showMsg(
@@ -826,7 +827,7 @@ public class IndependentMainBoard extends JFrame {
       int[] coords = boardCoordinates.get();
       return coords;
     }
-    return Lizzie.frame.outOfBoundCoordinate;
+    return LizzieFrame.outOfBoundCoordinate;
   }
 
   public void setMouseOverCoords(int index) {
@@ -836,12 +837,12 @@ public class IndependentMainBoard extends JFrame {
     if (curSuggestionMoveOrderByNumber == index) {
       curSuggestionMoveOrderByNumber = -1;
       clearMoved();
-      mouseOverCoordinate = Lizzie.frame.outOfBoundCoordinate;
+      mouseOverCoordinate = LizzieFrame.outOfBoundCoordinate;
       return;
     }
     curSuggestionMoveOrderByNumber = index;
     mouseOverCoordinate =
-        Lizzie.board.convertNameToCoordinates(
+        Board.convertNameToCoordinates(
             Lizzie.board.getHistory().getData().bestMoves.get(index).coordinate);
   }
 
@@ -877,7 +878,7 @@ public class IndependentMainBoard extends JFrame {
   public boolean isMouseOverSuggestions() {
     List<MoveData> bestMoves = Lizzie.board.getHistory().getData().bestMoves;
     for (int i = 0; i < bestMoves.size(); i++) {
-      Optional<int[]> c = Lizzie.board.asCoordinates(bestMoves.get(i).coordinate);
+      Optional<int[]> c = Board.asCoordinates(bestMoves.get(i).coordinate);
       if (c.isPresent()) {
         if (isMouseOver2(c.get()[0], c.get()[1])) {
           List<String> variation = bestMoves.get(i).variation;
@@ -893,10 +894,10 @@ public class IndependentMainBoard extends JFrame {
     if (Lizzie.frame.clickOrder != -1) {
       Lizzie.frame.clickOrder = -1;
       Lizzie.frame.hasMoveOutOfList = false;
-      Lizzie.frame.boardRenderer.startNormalBoard();
-      Lizzie.frame.suggestionclick = Lizzie.frame.outOfBoundCoordinate;
-      Lizzie.frame.mouseOverCoordinate = Lizzie.frame.outOfBoundCoordinate;
-      Lizzie.frame.boardRenderer.clearBranch();
+      LizzieFrame.boardRenderer.startNormalBoard();
+      Lizzie.frame.suggestionclick = LizzieFrame.outOfBoundCoordinate;
+      Lizzie.frame.mouseOverCoordinate = LizzieFrame.outOfBoundCoordinate;
+      LizzieFrame.boardRenderer.clearBranch();
       Lizzie.frame.selectedorder = -1;
       Lizzie.frame.currentRow = -1;
       return true;
@@ -1021,7 +1022,7 @@ public class IndependentMainBoard extends JFrame {
       for (int j = 0; j <= yCounts; j++) {
         int x = minX + i;
         int y = minY + j;
-        String coordsName = Lizzie.board.convertCoordinatesToName(x, y);
+        String coordsName = Board.convertCoordinatesToName(x, y);
         if (Lizzie.frame.selectForceAllow) {
           if (LizzieFrame.allowcoords != "") {
             LizzieFrame.allowcoords = LizzieFrame.allowcoords + "," + coordsName;
@@ -1045,7 +1046,7 @@ public class IndependentMainBoard extends JFrame {
       Lizzie.leelaz.analyzeAvoid("avoid", LizzieFrame.avoidcoords, 50);
     }
     Input.selectMode = false;
-    Lizzie.frame.menu.clearAllowAvoidButtonState();
+    LizzieFrame.menu.clearAllowAvoidButtonState();
   }
 
   private boolean tryToMarkup(int x, int y) {
@@ -1155,7 +1156,7 @@ public class IndependentMainBoard extends JFrame {
     if (boardCoordinates.isPresent()) {
       int[] coords = boardCoordinates.get();
       if (!Lizzie.frame.isPlayingAgainstLeelaz && !Lizzie.frame.isAnaPlayingAgainstLeelaz) {
-        if (Lizzie.board.getHistory().getStones()[Lizzie.board.getIndex(coords[0], coords[1])]
+        if (Lizzie.board.getHistory().getStones()[Board.getIndex(coords[0], coords[1])]
             != Stone.EMPTY) {
           showmenu2(x, y, coords);
         } else {
@@ -1169,8 +1170,8 @@ public class IndependentMainBoard extends JFrame {
   }
 
   public boolean isMouseOver(int x, int y) {
-    if (!Lizzie.frame.toolbar.chkShowBlack.isSelected()
-        && !Lizzie.frame.toolbar.chkShowBlack.isSelected()) {
+    if (!LizzieFrame.toolbar.chkShowBlack.isSelected()
+        && !LizzieFrame.toolbar.chkShowBlack.isSelected()) {
       return false;
     }
     if (Lizzie.config.showSuggestionVariations)

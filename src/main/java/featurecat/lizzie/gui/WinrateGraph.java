@@ -217,7 +217,7 @@ public class WinrateGraph {
     double drawCurSoreMean = 0;
     int mScoreMoveNum = -1;
     double drawmSoreMean = 0;
-    if (Lizzie.engineManager.isEngineGame || Lizzie.board.isPkBoard) {
+    if (EngineManager.isEngineGame || Lizzie.board.isPkBoard) {
       int saveCurMovenum = 0;
       double saveCurWr = 0;
       if (numMoves < 2) return;
@@ -930,15 +930,15 @@ public class WinrateGraph {
       //    if (Lizzie.config.dynamicWinrateGraphWidth && this.numMovesOfPlayed > 0) {
       //      numMoves = this.numMovesOfPlayed;
       //    }
-      if (Lizzie.engineManager.isEngineGame || Lizzie.board.isPkBoard) {
+      if (EngineManager.isEngineGame || Lizzie.board.isPkBoard) {
         maxcoreMean = 15;
         setMaxScoreMean(node);
-        if (Lizzie.engineManager.isEngineGame
+        if (EngineManager.isEngineGame
                 && (Lizzie.engineManager.engineList.get(
-                            Lizzie.engineManager.engineGameInfo.whiteEngineIndex)
+                            EngineManager.engineGameInfo.whiteEngineIndex)
                         .isKatago
                     || Lizzie.engineManager.engineList.get(
-                            Lizzie.engineManager.engineGameInfo.whiteEngineIndex)
+                            EngineManager.engineGameInfo.whiteEngineIndex)
                         .isSai)
             || Lizzie.board.isPkBoardKataW) {
           double lastscoreMean = -500;
@@ -994,7 +994,7 @@ public class WinrateGraph {
               lastscoreMean = curscoreMean;
               lastOkMove = movenum;
             } else {
-              if (Lizzie.engineManager.isEngineGame
+              if (EngineManager.isEngineGame
                   && (!node.next().isPresent() || !node.next().get().next().isPresent())) {
                 curmovenum = movenum;
                 drawcurscoreMean = node.previous().get().previous().get().getData().scoreMean;
@@ -1034,12 +1034,12 @@ public class WinrateGraph {
             g.drawString(scoreString, x, posy + height / 2 - (int) scoreHeight - 3);
             //   + (scoreHeight / (height / 2) < -0.9 ? 0 : 5) * DOT_RADIUS);
           }
-        } else if (Lizzie.engineManager.isEngineGame
+        } else if (EngineManager.isEngineGame
                 && (Lizzie.engineManager.engineList.get(
-                            Lizzie.engineManager.engineGameInfo.blackEngineIndex)
+                            EngineManager.engineGameInfo.blackEngineIndex)
                         .isKatago
                     || Lizzie.engineManager.engineList.get(
-                            Lizzie.engineManager.engineGameInfo.blackEngineIndex)
+                            EngineManager.engineGameInfo.blackEngineIndex)
                         .isSai)
             || Lizzie.board.isPkBoardKataB) {
           double lastscoreMean = -500;
@@ -1052,7 +1052,7 @@ public class WinrateGraph {
               curscoreMean = node.previous().get().getData().scoreMean;
             } catch (Exception ex) {
             }
-            if (Lizzie.engineManager.isEngineGame) {
+            if (EngineManager.isEngineGame) {
               curmovenum = movenum;
               drawcurscoreMean = curscoreMean;
               lastscoreMean = curscoreMean;
@@ -1096,7 +1096,7 @@ public class WinrateGraph {
               lastscoreMean = curscoreMean;
               lastOkMove = movenum;
             } else {
-              if (Lizzie.engineManager.isEngineGame
+              if (EngineManager.isEngineGame
                   && (!node.next().isPresent() || !node.next().get().next().isPresent())) {
                 curmovenum = movenum;
                 drawcurscoreMean = node.previous().get().previous().get().getData().scoreMean;

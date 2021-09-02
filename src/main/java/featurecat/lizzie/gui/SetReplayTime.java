@@ -17,7 +17,6 @@ import javax.swing.SwingConstants;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
-import javax.swing.text.DocumentFilter.FilterBypass;
 import javax.swing.text.InternationalFormatter;
 
 public class SetReplayTime extends JDialog {
@@ -27,7 +26,6 @@ public class SetReplayTime extends JDialog {
   // ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("zh", "CN")):
   // ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("en", "US")));
   private int replaytime;
-  private static JTextField defaultText = new JTextField();
 
   public SetReplayTime() {
     // setType(Type.POPUP);

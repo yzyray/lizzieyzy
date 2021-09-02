@@ -97,9 +97,9 @@ public class SocketUpfile {
       // sendContent("SktINFOEnd",pw);
       pw.println("SktINFOEnd");
       pw.flush();
-      Lizzie.frame.isShareing = true;
+      LizzieFrame.isShareing = true;
       String sgfContent = SGFParser.saveToString(true);
-      Lizzie.frame.isShareing = false;
+      LizzieFrame.isShareing = false;
       sendContent("SktSGFStart", pw);
 
       sendContent(sgfContent, pw);

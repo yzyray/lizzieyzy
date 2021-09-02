@@ -34,7 +34,7 @@ public class Config {
   public boolean showBestMovesTemporarily = false;
   public boolean showCaptured = true;
   // public boolean handicapInsteadOfWinrate = false;
-  public boolean showDynamicKomi = false;
+  //  public boolean showDynamicKomi = false;
   public double replayBranchIntervalSeconds = 0.9;
   public boolean showCoordinates = true;
   public boolean colorByWinrateInsteadOfVisits = false;
@@ -1365,27 +1365,26 @@ public class Config {
     if (!first
         && (!blackStoneImageString.equals(oriBlackStoneImageString)
             || !whiteStoneImageString.equals(oriWhiteStoneImageString))) {
-      Lizzie.frame.boardRenderer.reCreateStoneImageAnyway();
+      LizzieFrame.boardRenderer.reCreateStoneImageAnyway();
       if (Lizzie.frame.independentMainBoard != null)
         Lizzie.frame.independentMainBoard.boardRenderer.reCreateStoneImageAnyway();
-      if (Lizzie.frame.boardRenderer2 != null)
-        Lizzie.frame.boardRenderer2.reCreateStoneImageAnyway();
+      if (LizzieFrame.boardRenderer2 != null) LizzieFrame.boardRenderer2.reCreateStoneImageAnyway();
     } else if (!first
         && (oriShadowSize != shadowSize
             || oriShowStoneShadow != showStoneShadow
             || oriUsePureStone != usePureStone)) {
-      Lizzie.frame.boardRenderer.reDrawStoneAnyway();
+      LizzieFrame.boardRenderer.reDrawStoneAnyway();
       if (Lizzie.frame.independentMainBoard != null)
         Lizzie.frame.independentMainBoard.boardRenderer.reDrawStoneAnyway();
-      if (Lizzie.frame.boardRenderer2 != null) Lizzie.frame.boardRenderer2.reDrawStoneAnyway();
+      if (LizzieFrame.boardRenderer2 != null) LizzieFrame.boardRenderer2.reDrawStoneAnyway();
     }
     if (!first
         && (oriUsePureBoard != usePureBoard
             || oriPureBoardColor != pureBoardColor
             || !oriBoardImageString.equals(boardImageString))) {
-      Lizzie.frame.boardRenderer.reDrawGobanAnyway();
-      Lizzie.frame.subBoardRenderer.reDrawGobanAnyway();
-      if (Lizzie.frame.boardRenderer2 != null) Lizzie.frame.boardRenderer2.reDrawGobanAnyway();
+      LizzieFrame.boardRenderer.reDrawGobanAnyway();
+      LizzieFrame.subBoardRenderer.reDrawGobanAnyway();
+      if (LizzieFrame.boardRenderer2 != null) LizzieFrame.boardRenderer2.reDrawGobanAnyway();
       if (Lizzie.frame.independentMainBoard != null)
         Lizzie.frame.independentMainBoard.boardRenderer.reDrawGobanAnyway();
       if (Lizzie.frame.independentSubBoard != null)
@@ -1396,13 +1395,8 @@ public class Config {
             || oriPureBackgroundColor != pureBoardColor
             || !oriBackgroundImageString.equals(backgroundImageString))) {
       Lizzie.frame.redrawBackgroundAnyway = true;
-      Lizzie.frame.boardRenderer.reDrawBackgroundAnyway();
+      LizzieFrame.boardRenderer.reDrawBackgroundAnyway();
     }
-  }
-
-  private File File(String fileold) {
-    // TODO Auto-generated method stub
-    return null;
   }
 
   // Modifies config by adding in values from default_config that are missing.
@@ -1518,7 +1512,7 @@ public class Config {
       moveRankMarkLastMove = showLimit;
     }
     uiConfig.put("move-rank-mark-last-move", moveRankMarkLastMove);
-    Lizzie.frame.menu.setBtnRankMark();
+    LizzieFrame.menu.setBtnRankMark();
   }
 
   public void toggleDisableMoveRankInOrigin() {
@@ -1536,7 +1530,7 @@ public class Config {
     } else if (moveRankMarkLastMove == 0) moveRankMarkLastMove = -1;
     if (moveRankMarkLastMove > 0) Lizzie.config.hiddenMoveNumber();
     uiConfig.put("move-rank-mark-last-move", moveRankMarkLastMove);
-    Lizzie.frame.menu.setBtnRankMark();
+    LizzieFrame.menu.setBtnRankMark();
   }
 
   public void toggleExtraMode(int mode) {
@@ -1639,7 +1633,7 @@ public class Config {
     } else this.largeSubBoard = !this.largeSubBoard;
     Lizzie.frame.redrawBackgroundAnyway = true;
     uiConfig.put("large-subboard", largeSubBoard);
-    Lizzie.frame.subBoardRenderer.isMouseOver = false;
+    LizzieFrame.subBoardRenderer.isMouseOver = false;
     Lizzie.frame.refreshContainer();
     Lizzie.frame.refresh();
   }
@@ -2131,147 +2125,147 @@ public class Config {
 
     JSONArray toolbarParameter = new JSONArray();
     try {
-      toolbarParameter.put(Integer.parseInt(Lizzie.frame.toolbar.txtFirstAnaMove.getText()));
+      toolbarParameter.put(Integer.parseInt(LizzieFrame.toolbar.txtFirstAnaMove.getText()));
     } catch (NumberFormatException err) {
       toolbarParameter.put(-1);
     }
     try {
-      toolbarParameter.put(Integer.parseInt(Lizzie.frame.toolbar.txtLastAnaMove.getText()));
+      toolbarParameter.put(Integer.parseInt(LizzieFrame.toolbar.txtLastAnaMove.getText()));
     } catch (NumberFormatException err) {
       toolbarParameter.put(-1);
     }
-    if (Lizzie.frame.toolbar.chkAnaTime.isSelected()) toolbarParameter.put(1);
+    if (LizzieFrame.toolbar.chkAnaTime.isSelected()) toolbarParameter.put(1);
     else toolbarParameter.put(-1);
     try {
-      toolbarParameter.put(Integer.parseInt(Lizzie.frame.toolbar.txtAnaTime.getText()));
+      toolbarParameter.put(Integer.parseInt(LizzieFrame.toolbar.txtAnaTime.getText()));
     } catch (NumberFormatException err) {
       toolbarParameter.put(-1);
     }
-    if (Lizzie.frame.toolbar.chkAnaAutoSave.isSelected()) toolbarParameter.put(1);
+    if (LizzieFrame.toolbar.chkAnaAutoSave.isSelected()) toolbarParameter.put(1);
     else toolbarParameter.put(-1);
-    if (Lizzie.frame.toolbar.chkAnaPlayouts.isSelected()) toolbarParameter.put(1);
+    if (LizzieFrame.toolbar.chkAnaPlayouts.isSelected()) toolbarParameter.put(1);
     else toolbarParameter.put(-1);
     try {
-      toolbarParameter.put(Integer.parseInt(Lizzie.frame.toolbar.txtAnaPlayouts.getText()));
+      toolbarParameter.put(Integer.parseInt(LizzieFrame.toolbar.txtAnaPlayouts.getText()));
     } catch (NumberFormatException err) {
       toolbarParameter.put(-1);
     }
-    if (Lizzie.frame.toolbar.chkAnaFirstPlayouts.isSelected()) toolbarParameter.put(1);
+    if (LizzieFrame.toolbar.chkAnaFirstPlayouts.isSelected()) toolbarParameter.put(1);
     else toolbarParameter.put(-1);
     try {
-      toolbarParameter.put(Integer.parseInt(Lizzie.frame.toolbar.txtAnaFirstPlayouts.getText()));
+      toolbarParameter.put(Integer.parseInt(LizzieFrame.toolbar.txtAnaFirstPlayouts.getText()));
     } catch (NumberFormatException err) {
       toolbarParameter.put(-1);
     }
-    if (Lizzie.frame.toolbar.chkAutoPlayBlack.isSelected()) toolbarParameter.put(1);
+    if (LizzieFrame.toolbar.chkAutoPlayBlack.isSelected()) toolbarParameter.put(1);
     else toolbarParameter.put(-1);
-    if (Lizzie.frame.toolbar.chkAutoPlayWhite.isSelected()) toolbarParameter.put(1);
+    if (LizzieFrame.toolbar.chkAutoPlayWhite.isSelected()) toolbarParameter.put(1);
     else toolbarParameter.put(-1);
-    if (Lizzie.frame.toolbar.chkAutoPlayTime.isSelected()) toolbarParameter.put(1);
+    if (LizzieFrame.toolbar.chkAutoPlayTime.isSelected()) toolbarParameter.put(1);
     else toolbarParameter.put(-1);
     try {
-      toolbarParameter.put(Integer.parseInt(Lizzie.frame.toolbar.txtAutoPlayTime.getText()));
+      toolbarParameter.put(Integer.parseInt(LizzieFrame.toolbar.txtAutoPlayTime.getText()));
     } catch (NumberFormatException err) {
       toolbarParameter.put(-1);
     }
-    if (Lizzie.frame.toolbar.chkAutoPlayPlayouts.isSelected()) toolbarParameter.put(1);
+    if (LizzieFrame.toolbar.chkAutoPlayPlayouts.isSelected()) toolbarParameter.put(1);
     else toolbarParameter.put(-1);
     try {
-      toolbarParameter.put(Integer.parseInt(Lizzie.frame.toolbar.txtAutoPlayPlayouts.getText()));
+      toolbarParameter.put(Integer.parseInt(LizzieFrame.toolbar.txtAutoPlayPlayouts.getText()));
     } catch (NumberFormatException err) {
       toolbarParameter.put(-1);
     }
-    if (Lizzie.frame.toolbar.chkAutoPlayFirstPlayouts.isSelected()) toolbarParameter.put(1);
+    if (LizzieFrame.toolbar.chkAutoPlayFirstPlayouts.isSelected()) toolbarParameter.put(1);
     else toolbarParameter.put(-1);
     try {
       toolbarParameter.put(
-          Integer.parseInt(Lizzie.frame.toolbar.txtAutoPlayFirstPlayouts.getText()));
+          Integer.parseInt(LizzieFrame.toolbar.txtAutoPlayFirstPlayouts.getText()));
     } catch (NumberFormatException err) {
       toolbarParameter.put(-1);
     }
 
     try {
       toolbarParameter.put(
-          Integer.parseInt(Lizzie.frame.toolbar.txtenginePkFirstPlayputs.getText()));
+          Integer.parseInt(LizzieFrame.toolbar.txtenginePkFirstPlayputs.getText()));
     } catch (NumberFormatException err) {
       toolbarParameter.put(-1);
     }
 
     try {
       toolbarParameter.put(
-          Integer.parseInt(Lizzie.frame.toolbar.txtenginePkFirstPlayputsWhite.getText()));
+          Integer.parseInt(LizzieFrame.toolbar.txtenginePkFirstPlayputsWhite.getText()));
     } catch (NumberFormatException err) {
       toolbarParameter.put(-1);
     }
 
     try {
-      toolbarParameter.put(Integer.parseInt(Lizzie.frame.toolbar.txtenginePkTime.getText()));
+      toolbarParameter.put(Integer.parseInt(LizzieFrame.toolbar.txtenginePkTime.getText()));
     } catch (NumberFormatException err) {
       toolbarParameter.put(-1);
     }
 
     try {
-      toolbarParameter.put(Integer.parseInt(Lizzie.frame.toolbar.txtenginePkPlayputs.getText()));
+      toolbarParameter.put(Integer.parseInt(LizzieFrame.toolbar.txtenginePkPlayputs.getText()));
     } catch (NumberFormatException err) {
       toolbarParameter.put(-1);
     }
     try {
       toolbarParameter.put(
-          Integer.parseInt(Lizzie.frame.toolbar.txtenginePkPlayputsWhite.getText()));
+          Integer.parseInt(LizzieFrame.toolbar.txtenginePkPlayputsWhite.getText()));
     } catch (NumberFormatException err) {
       toolbarParameter.put(-1);
     }
     try {
-      toolbarParameter.put(Integer.parseInt(Lizzie.frame.toolbar.txtenginePkBatch.getText()));
+      toolbarParameter.put(Integer.parseInt(LizzieFrame.toolbar.txtenginePkBatch.getText()));
     } catch (NumberFormatException err) {
       toolbarParameter.put(-1);
     }
-    if (Lizzie.frame.toolbar.chkenginePkBatch.isSelected()) toolbarParameter.put(1);
+    if (LizzieFrame.toolbar.chkenginePkBatch.isSelected()) toolbarParameter.put(1);
     else toolbarParameter.put(-1);
-    if (Lizzie.frame.toolbar.chkenginePkContinue.isSelected()) toolbarParameter.put(1);
+    if (LizzieFrame.toolbar.chkenginePkContinue.isSelected()) toolbarParameter.put(1);
     else toolbarParameter.put(-1);
-    if (Lizzie.frame.toolbar.chkenginePkFirstPlayputs.isSelected()) toolbarParameter.put(1);
+    if (LizzieFrame.toolbar.chkenginePkFirstPlayputs.isSelected()) toolbarParameter.put(1);
     else toolbarParameter.put(-1);
-    if (Lizzie.frame.toolbar.chkenginePkPlayouts.isSelected()) toolbarParameter.put(1);
+    if (LizzieFrame.toolbar.chkenginePkPlayouts.isSelected()) toolbarParameter.put(1);
     else toolbarParameter.put(-1);
-    if (Lizzie.frame.toolbar.chkenginePkTime.isSelected()) toolbarParameter.put(1);
+    if (LizzieFrame.toolbar.chkenginePkTime.isSelected()) toolbarParameter.put(1);
     else toolbarParameter.put(-1);
     toolbarParameter.put("-100"); // (Lizzie.frame.toolbar.pkResginWinrate);
     toolbarParameter.put("-100"); // (Lizzie.frame.toolbar.pkResignMoveCounts);
-    toolbarParameter.put(Lizzie.frame.toolbar.AutosavePk);
-    toolbarParameter.put(Lizzie.frame.toolbar.isGenmoveToolbar);
-    toolbarParameter.put(Lizzie.frame.toolbar.anaPanelOrder);
-    toolbarParameter.put(Lizzie.frame.toolbar.enginePkOrder);
-    toolbarParameter.put(Lizzie.frame.toolbar.autoPlayOrder);
-    toolbarParameter.put(Lizzie.frame.toolbar.exChangeToolbar);
-    toolbarParameter.put(Lizzie.frame.toolbar.maxGanmeMove);
-    toolbarParameter.put(Lizzie.frame.toolbar.checkGameMaxMove);
+    toolbarParameter.put(LizzieFrame.toolbar.AutosavePk);
+    toolbarParameter.put(LizzieFrame.toolbar.isGenmoveToolbar);
+    toolbarParameter.put(LizzieFrame.toolbar.anaPanelOrder);
+    toolbarParameter.put(LizzieFrame.toolbar.enginePkOrder);
+    toolbarParameter.put(LizzieFrame.toolbar.autoPlayOrder);
+    toolbarParameter.put(LizzieFrame.toolbar.exChangeToolbar);
+    toolbarParameter.put(LizzieFrame.toolbar.maxGanmeMove);
+    toolbarParameter.put(LizzieFrame.toolbar.checkGameMaxMove);
     try {
-      toolbarParameter.put(Integer.parseInt(Lizzie.frame.toolbar.txtenginePkTimeWhite.getText()));
+      toolbarParameter.put(Integer.parseInt(LizzieFrame.toolbar.txtenginePkTimeWhite.getText()));
     } catch (NumberFormatException err) {
       toolbarParameter.put(-1);
     }
-    if (Lizzie.frame.toolbar.chkAutoSub.isSelected()) toolbarParameter.put(1);
+    if (LizzieFrame.toolbar.chkAutoSub.isSelected()) toolbarParameter.put(1);
     else toolbarParameter.put(-1);
     try {
-      toolbarParameter.put(Integer.parseInt(Lizzie.frame.toolbar.txtAutoMain.getText()));
+      toolbarParameter.put(Integer.parseInt(LizzieFrame.toolbar.txtAutoMain.getText()));
     } catch (NumberFormatException err) {
       toolbarParameter.put(-1);
     }
     try {
-      toolbarParameter.put(Integer.parseInt(Lizzie.frame.toolbar.txtAutoSub.getText()));
+      toolbarParameter.put(Integer.parseInt(LizzieFrame.toolbar.txtAutoSub.getText()));
     } catch (NumberFormatException err) {
       toolbarParameter.put(-1);
     }
     toolbarParameter.put("-100"); // (Lizzie.frame.toolbar.minGanmeMove);
     toolbarParameter.put("-100"); // (Lizzie.frame.toolbar.checkGameMinMove);
-    toolbarParameter.put(Lizzie.frame.toolbar.isRandomMove);
-    toolbarParameter.put(Lizzie.frame.toolbar.randomMove);
-    toolbarParameter.put(Lizzie.frame.toolbar.randomDiffWinrate);
-    toolbarParameter.put(Lizzie.frame.toolbar.chkAnaBlack.isSelected());
-    toolbarParameter.put(Lizzie.frame.toolbar.chkAnaWhite.isSelected());
-    toolbarParameter.put(Lizzie.frame.toolbar.enginePkSaveWinrate);
-    toolbarParameter.put(Lizzie.frame.toolbar.rightMode);
+    toolbarParameter.put(LizzieFrame.toolbar.isRandomMove);
+    toolbarParameter.put(LizzieFrame.toolbar.randomMove);
+    toolbarParameter.put(LizzieFrame.toolbar.randomDiffWinrate);
+    toolbarParameter.put(LizzieFrame.toolbar.chkAnaBlack.isSelected());
+    toolbarParameter.put(LizzieFrame.toolbar.chkAnaWhite.isSelected());
+    toolbarParameter.put(LizzieFrame.toolbar.enginePkSaveWinrate);
+    toolbarParameter.put(LizzieFrame.toolbar.rightMode);
     persistedUi.put("toolbar-parameter", toolbarParameter);
 
     //    JSONArray movecountPos = new JSONArray();
@@ -2280,7 +2274,7 @@ public class Config {
     //    persistedUi.put("movecount-position", movecountPos);
 
     JSONArray winrateGraph = new JSONArray();
-    winrateGraph.put(Lizzie.frame.winrateGraph.mode);
+    winrateGraph.put(LizzieFrame.winrateGraph.mode);
     persistedUi.put("winrate-graph", winrateGraph);
 
     if (Lizzie.frame.independentSubBoard != null) {
@@ -2488,7 +2482,7 @@ public class Config {
     boolean showIndependentMain = jsonLayout.optBoolean("independent-main-board");
     boolean showIndependentSub = jsonLayout.optBoolean("independent-sub-board");
     if (showIndependentMain) {
-      Lizzie.frame.extraMode = 8;
+      LizzieFrame.extraMode = 8;
       extraMode = 8;
       if (Lizzie.frame.independentMainBoard == null
           || !Lizzie.frame.independentMainBoard.isVisible())
@@ -2499,7 +2493,7 @@ public class Config {
           jsonLayout.getJSONArray("independent-main-board-position").getInt(2),
           jsonLayout.getJSONArray("independent-main-board-position").getInt(3));
     } else {
-      Lizzie.frame.extraMode = 0;
+      LizzieFrame.extraMode = 0;
       extraMode = 0;
     }
     if (showIndependentSub) {

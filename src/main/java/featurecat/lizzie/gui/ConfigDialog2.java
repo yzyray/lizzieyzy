@@ -37,7 +37,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -50,8 +49,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Vector;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
 import javax.swing.AbstractCellEditor;
@@ -107,9 +104,7 @@ public class ConfigDialog2 extends JDialog {
   private ResourceBundle resourceBundle =
       Lizzie.resourceBundle; // ResourceBundle.getBundle("l10n.DisplayStrings");
 
-  private String enginePath = "";
   private String osName;
-  private BufferedInputStream inputStream;
   private JSONObject leelazConfig = Lizzie.config.leelazConfig;
   private List<String> fontList;
   private Theme theme;
@@ -128,9 +123,6 @@ public class ConfigDialog2 extends JDialog {
   private JRadioButton rdoShowMoveRect;
   private JRadioButton rdoShowMoveRectOnPlay;
   private JRadioButton rdoNoShowMoveRect;
-
-  private JRadioButton rdoLoadZen;
-  private JRadioButton rdoNoLoadZen;
 
   private JLabel lblBoardSign;
   private JTextField txtBoardWidth;
@@ -303,8 +295,8 @@ public class ConfigDialog2 extends JDialog {
             finalizeEditedBlunderColors();
             setVisible(false);
             saveConfig();
-            Lizzie.frame.menu.refreshDoubleMoveInfoStatus();
-            Lizzie.frame.menu.refreshLimitStatus(false);
+            LizzieFrame.menu.refreshDoubleMoveInfoStatus();
+            LizzieFrame.menu.refreshLimitStatus(false);
             Lizzie.frame.resetCommentComponent();
             applyChange();
             Lizzie.frame.refresh();
@@ -1993,7 +1985,7 @@ public class ConfigDialog2 extends JDialog {
       btnDeleteTheme.setBounds(435, 11, 50, 20);
       themeTab.add(btnDeleteTheme);
 
-      cmbThemes = new JComboBox(themeList.toArray(new String[0]));
+      cmbThemes = new JComboBox<String>(themeList.toArray(new String[0]));
       cmbThemes.addItemListener(
           new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
@@ -2073,16 +2065,16 @@ public class ConfigDialog2 extends JDialog {
       JLabel lblFontName = new JLabel(resourceBundle.getString("LizzieConfig.title.fontName"));
       lblFontName.setBounds(10, 134, 163, 16);
       themeTab.add(lblFontName);
-      cmbFontName = new JComboBox(fonts);
+      cmbFontName = new JComboBox<String>(fonts);
       cmbFontName.setMaximumRowCount(16);
       cmbFontName.setBounds(175, 133, 200, 20);
-      cmbFontName.setRenderer(new FontComboBoxRenderer());
+      cmbFontName.setRenderer(new FontComboBoxRenderer<Object>());
       cmbFontName.addItemListener(
           new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
               String fontName = (String) e.getItem();
               if (fontName.equals("Lizzie默认") || fontName.equals("Lizzie Default"))
-                cmbFontName.setFont(Lizzie.frame.uiFont);
+                cmbFontName.setFont(LizzieFrame.uiFont);
               else
                 cmbFontName.setFont(
                     new Font(fontName, Font.PLAIN, cmbUiFontName.getFont().getSize()));
@@ -2093,10 +2085,10 @@ public class ConfigDialog2 extends JDialog {
       JLabel lblUiFontName = new JLabel(resourceBundle.getString("LizzieConfig.title.uiFontName"));
       lblUiFontName.setBounds(10, 164, 163, 16);
       themeTab.add(lblUiFontName);
-      cmbUiFontName = new JComboBox(fonts);
+      cmbUiFontName = new JComboBox<String>(fonts);
       cmbUiFontName.setMaximumRowCount(16);
       cmbUiFontName.setBounds(175, 163, 200, 20);
-      cmbUiFontName.setRenderer(new UiFontComboBoxRenderer());
+      cmbUiFontName.setRenderer(new UiFontComboBoxRenderer<Object>());
       cmbUiFontName.addItemListener(
           new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
@@ -2110,16 +2102,16 @@ public class ConfigDialog2 extends JDialog {
           new JLabel(resourceBundle.getString("LizzieConfig.title.winrateFontName"));
       lblWinrateFontName.setBounds(10, 194, 163, 16);
       themeTab.add(lblWinrateFontName);
-      cmbWinrateFontName = new JComboBox(fonts);
+      cmbWinrateFontName = new JComboBox<String>(fonts);
       cmbWinrateFontName.setMaximumRowCount(16);
       cmbWinrateFontName.setBounds(175, 193, 200, 20);
-      cmbWinrateFontName.setRenderer(new UiFontComboBoxRenderer());
+      cmbWinrateFontName.setRenderer(new UiFontComboBoxRenderer<Object>());
       cmbWinrateFontName.addItemListener(
           new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
               String fontName = (String) e.getItem();
               if (fontName.equals("Lizzie默认") || fontName.equals("Lizzie Default"))
-                cmbWinrateFontName.setFont(Lizzie.frame.uiFont);
+                cmbWinrateFontName.setFont(LizzieFrame.uiFont);
               else
                 cmbWinrateFontName.setFont(
                     new Font(fontName, Font.PLAIN, cmbUiFontName.getFont().getSize()));
@@ -2753,50 +2745,7 @@ public class ConfigDialog2 extends JDialog {
   }
 
   private void drawCircle(Graphics2D g, int centerX, int centerY, int radius) {
-    // g.setStroke(new BasicStroke(radius / 11.5f));
     g.drawOval(centerX - radius, centerY - radius, 2 * radius, 2 * radius);
-  }
-
-  private String getEngineLine() {
-    String engineLine = "";
-    //    File engineFile = null;
-    //    File weightFile = null;
-    //    JFileChooser chooser = new JFileChooser(".");
-    //    if (isWindows()) {
-    //      FileNameExtensionFilter filter =
-    //          new FileNameExtensionFilter(
-    //              resourceBundle.getString("LizzieConfig.title.engine"), "exe", "bat", "sh");
-    //      chooser.setFileFilter(filter);
-    //    } else {
-    //      setVisible(false);
-    //    }
-    //    chooser.setMultiSelectionEnabled(false);
-    //    chooser.setDialogTitle(resourceBundle.getString("LizzieConfig.prompt.selectEngine"));
-    //    int result = chooser.showOpenDialog(this);
-    //    if (result == JFileChooser.APPROVE_OPTION) {
-    //      engineFile = chooser.getSelectedFile();
-    //      if (engineFile != null) {
-    //        enginePath = engineFile.getAbsolutePath();
-    //        enginePath = relativizePath(engineFile.toPath(), this.curPath);
-    //        getCommandHelp();
-    //        JFileChooser chooserw = new JFileChooser(".");
-    //        chooserw.setMultiSelectionEnabled(false);
-    //        chooserw.setDialogTitle(resourceBundle.getString("LizzieConfig.prompt.selectWeight"));
-    //        result = chooserw.showOpenDialog(this);
-    //        if (result == JFileChooser.APPROVE_OPTION) {
-    //          weightFile = chooserw.getSelectedFile();
-    //          if (weightFile != null) {
-    //            weightPath = relativizePath(weightFile.toPath(), this.curPath);
-    //            EngineParameter ep = new EngineParameter(enginePath, weightPath, this);
-    //            ep.setVisible(true);
-    //            if (!ep.commandLine.isEmpty()) {
-    //              engineLine = ep.commandLine;
-    //            }
-    //          }
-    //        }
-    //      }
-    //    }
-    return engineLine;
   }
 
   private String getImagePath() {
@@ -2830,38 +2779,6 @@ public class ConfigDialog2 extends JDialog {
     return relatPath.toString();
   }
 
-  private void getCommandHelp() {
-
-    List<String> commands = new ArrayList<String>();
-    commands.add(enginePath);
-    commands.add("-h");
-
-    ProcessBuilder processBuilder = new ProcessBuilder(commands);
-    processBuilder.directory();
-    processBuilder.redirectErrorStream(true);
-    try {
-      Process process = processBuilder.start();
-      inputStream = new BufferedInputStream(process.getInputStream());
-      ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-      executor.execute(this::read);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }
-
-  private void read() {
-    try {
-      int c;
-      StringBuilder line = new StringBuilder();
-      while ((c = inputStream.read()) != -1) {
-        line.append((char) c);
-      }
-      line.toString();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }
-
   private void applyChange() {
     int[] size = getBoardSize();
     Lizzie.board.reopen(size[0], size[1]);
@@ -2882,7 +2799,7 @@ public class ConfigDialog2 extends JDialog {
       final String fontName = (String) value;
       setText(fontName);
       if (fontName != null && (fontName.equals("Lizzie默认") || fontName.equals("Lizzie Default")))
-        setFont(Lizzie.frame.uiFont);
+        setFont(LizzieFrame.uiFont);
       else setFont(new Font(fontName, Font.PLAIN, 12));
       return this;
     }
@@ -2975,7 +2892,6 @@ public class ConfigDialog2 extends JDialog {
 
   private class ColorEditor extends AbstractCellEditor implements TableCellEditor, ActionListener {
     ColorLabel cl;
-    int row;
 
     public ColorEditor(JDialog owner) {
       cl = new ColorLabel(owner);
@@ -2987,7 +2903,6 @@ public class ConfigDialog2 extends JDialog {
 
     public Component getTableCellEditorComponent(
         JTable table, Object value, boolean isSelected, int row, int column) {
-      this.row = row;
       cl.setColor((Color) value);
       return cl;
     }
@@ -3260,7 +3175,7 @@ public class ConfigDialog2 extends JDialog {
   }
 
   private void setShowWinrateSide() {
-    if (Lizzie.frame.winrateGraph.mode == 0) {
+    if (LizzieFrame.winrateGraph.mode == 0) {
       rdoShowWinrateBlack.setSelected(true);
     } else {
       rdoShowWinrateBoth.setSelected(true);
@@ -3406,15 +3321,15 @@ public class ConfigDialog2 extends JDialog {
         }
 
         if (theme.uiFontName().equals("Lizzie默认") || theme.uiFontName().equals("Lizzie Default")) {
-          Lizzie.frame.uiFont = new Font("Microsoft YaHei", Font.TRUETYPE_FONT, 12);
+          LizzieFrame.uiFont = new Font("Microsoft YaHei", Font.TRUETYPE_FONT, 12);
         } else if (theme.uiFontName() != null) {
-          Lizzie.frame.uiFont = new Font(theme.uiFontName(), Font.PLAIN, 12);
+          LizzieFrame.uiFont = new Font(theme.uiFontName(), Font.PLAIN, 12);
         }
 
         if (theme.winrateFontName().equals("Lizzie默认")
             || theme.winrateFontName().equals("Lizzie Default")) {
           try {
-            Lizzie.frame.winrateFont =
+            LizzieFrame.winrateFont =
                 Font.createFont(
                     Font.TRUETYPE_FONT,
                     Thread.currentThread()
@@ -3424,7 +3339,7 @@ public class ConfigDialog2 extends JDialog {
             e.printStackTrace();
           }
         } else if (theme.winrateFontName() != null) {
-          Lizzie.frame.winrateFont = new Font(theme.winrateFontName(), Font.PLAIN, 12);
+          LizzieFrame.winrateFont = new Font(theme.winrateFontName(), Font.PLAIN, 12);
         }
 
         theme.config.put("background-image", txtBackgroundPath.getText().trim());
@@ -3589,9 +3504,9 @@ public class ConfigDialog2 extends JDialog {
     if (!Lizzie.config.uiConfig.optString("ui-font-name").isEmpty()
         && (Lizzie.config.uiConfig.getString("ui-font-name").equals("Lizzie默认")
             || Lizzie.config.uiConfig.getString("ui-font-name").equals("Lizzie Default"))) {
-      Lizzie.frame.uiFont = new Font("Microsoft YaHei", Font.TRUETYPE_FONT, 12);
+      LizzieFrame.uiFont = new Font("Microsoft YaHei", Font.TRUETYPE_FONT, 12);
     } else if (!Lizzie.config.uiConfig.optString("ui-font-name").isEmpty()) {
-      Lizzie.frame.uiFont =
+      LizzieFrame.uiFont =
           new Font(Lizzie.config.uiConfig.optString("ui-font-name"), Font.PLAIN, 12);
     }
 
@@ -3599,7 +3514,7 @@ public class ConfigDialog2 extends JDialog {
         && (Lizzie.config.uiConfig.getString("winrate-font-name").equals("Lizzie默认")
             || Lizzie.config.uiConfig.getString("winrate-font-name").equals("Lizzie Default"))) {
       try {
-        Lizzie.frame.winrateFont =
+        LizzieFrame.winrateFont =
             Font.createFont(
                 Font.TRUETYPE_FONT,
                 Thread.currentThread()
@@ -3609,7 +3524,7 @@ public class ConfigDialog2 extends JDialog {
         e.printStackTrace();
       }
     } else if (!Lizzie.config.uiConfig.optString("winrate-font-name").isEmpty()) {
-      Lizzie.frame.winrateFont =
+      LizzieFrame.winrateFont =
           new Font(Lizzie.config.uiConfig.optString("winrate-font-name"), Font.PLAIN, 12);
     }
   }
@@ -3800,9 +3715,9 @@ public class ConfigDialog2 extends JDialog {
       Lizzie.config.stopAtEmptyBoard = chkStopAtEmpty.isSelected();
       leelazConfig.putOpt("stop-at-empty-board", Lizzie.config.stopAtEmptyBoard);
       if (Lizzie.frame.shouldShowRect() && !rdoShowMoveRect.isSelected()) {
-        if (Lizzie.frame.boardRenderer != null) Lizzie.frame.boardRenderer.removeblock();
+        if (LizzieFrame.boardRenderer != null) LizzieFrame.boardRenderer.removeblock();
         if (Lizzie.config.extraMode == 2) {
-          if (Lizzie.frame.boardRenderer2 != null) Lizzie.frame.boardRenderer2.removeblock();
+          if (LizzieFrame.boardRenderer2 != null) LizzieFrame.boardRenderer2.removeblock();
         }
       }
       Lizzie.config.showrect =
@@ -3892,8 +3807,8 @@ public class ConfigDialog2 extends JDialog {
       Lizzie.config.uiConfig.put("only-last-move-number", Lizzie.config.onlyLastMoveNumber);
       Lizzie.config.uiConfig.put("allow-move-number", Lizzie.config.onlyLastMoveNumber);
 
-      if (this.rdoShowWinrateBlack.isSelected()) Lizzie.frame.winrateGraph.mode = 0;
-      if (this.rdoShowWinrateBoth.isSelected()) Lizzie.frame.winrateGraph.mode = 1;
+      if (this.rdoShowWinrateBlack.isSelected()) LizzieFrame.winrateGraph.mode = 0;
+      if (this.rdoShowWinrateBoth.isSelected()) LizzieFrame.winrateGraph.mode = 1;
       Lizzie.config.showBlunderBar = chkShowBlunderBar.isSelected();
       Lizzie.config.uiConfig.putOpt("show-blunder-bar", Lizzie.config.showBlunderBar);
 
@@ -3976,7 +3891,7 @@ public class ConfigDialog2 extends JDialog {
     } catch (IOException e) {
       e.printStackTrace();
     }
-    Lizzie.frame.menu.updateFastLinks();
+    LizzieFrame.menu.updateFastLinks();
   }
 
   public void switchTab(int index) {

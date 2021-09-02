@@ -1,6 +1,7 @@
 package featurecat.lizzie.rules;
 
 import featurecat.lizzie.Lizzie;
+import featurecat.lizzie.analysis.EngineManager;
 import featurecat.lizzie.analysis.GameInfo;
 import featurecat.lizzie.util.EncodingDetector;
 import java.io.File;
@@ -15,9 +16,9 @@ public class GIBParser {
 
   public static boolean load(String filename) throws IOException {
     // Clear the board
-    boolean oriEmpty = Lizzie.engineManager.isEmpty;
+    boolean oriEmpty = EngineManager.isEmpty;
     Lizzie.board.clear(false);
-    Lizzie.engineManager.isEmpty = true;
+    EngineManager.isEmpty = true;
     File file = new File(filename);
     if (!file.exists() || !file.canRead()) {
       return false;
@@ -35,12 +36,12 @@ public class GIBParser {
     fp.close();
     String value = builder.toString();
     if (value.isEmpty()) {
-      Lizzie.engineManager.isEmpty = oriEmpty;
+      EngineManager.isEmpty = oriEmpty;
       return false;
     }
 
     boolean returnValue = parse(value);
-    Lizzie.engineManager.isEmpty = oriEmpty;
+    EngineManager.isEmpty = oriEmpty;
     return returnValue;
   }
 

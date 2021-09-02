@@ -16,16 +16,14 @@ import org.junit.Test;
 
 public class SGFParserTest {
 
-  private Lizzie lizzie;
-
   @Test
   public void run() throws IOException {
-    lizzie = new Lizzie();
-    lizzie.config = new Config();
-    lizzie.board = new Board();
-    lizzie.frame = new LizzieFrame();
+    new Lizzie();
+    Lizzie.config = new Config();
+    Lizzie.board = new Board();
+    Lizzie.frame = new LizzieFrame();
     // new Thread( () -> {
-    lizzie.leelaz = new Leelaz("");
+    Lizzie.leelaz = new Leelaz("");
     // }).start();
 
     testVariaionOnly1();
@@ -57,7 +55,7 @@ public class SGFParserTest {
 
     // Variations
     List<String> moveList = new ArrayList<String>();
-    Util.getVariationTree(moveList, 0, lizzie.board.getHistory().getCurrentHistoryNode(), 0, true);
+    Util.getVariationTree(moveList, 0, Lizzie.board.getHistory().getCurrentHistoryNode(), 0, true);
 
     assertEquals(moveList.size(), variationNum);
     assertEquals(moveList.get(0), mainBranch);
@@ -97,7 +95,7 @@ public class SGFParserTest {
 
     // Variations
     List<String> moveList = new ArrayList<String>();
-    Util.getVariationTree(moveList, 0, lizzie.board.getHistory().getCurrentHistoryNode(), 0, true);
+    Util.getVariationTree(moveList, 0, Lizzie.board.getHistory().getCurrentHistoryNode(), 0, true);
 
     assertEquals(moveList.size(), variationNum);
     assertEquals(moveList.get(0), mainBranch);
@@ -148,7 +146,7 @@ public class SGFParserTest {
 
     // Variations
     List<String> moveList = new ArrayList<String>();
-    Util.getVariationTree(moveList, 0, lizzie.board.getHistory().getCurrentHistoryNode(), 0, true);
+    Util.getVariationTree(moveList, 0, Lizzie.board.getHistory().getCurrentHistoryNode(), 0, true);
 
     assertEquals(moveList.size(), variationNum);
     assertEquals(moveList.get(0), mainBranch);

@@ -38,16 +38,16 @@ public class InputSubboard implements KeyListener, MouseListener, MouseWheelList
     if (e.getWhen() - wheelWhen > 0) {
       wheelWhen = e.getWhen();
       if (e.getWheelRotation() > 0) {
-        if (Lizzie.frame.boardRenderer.isShowingBranch()) {
+        if (LizzieFrame.boardRenderer.isShowingBranch()) {
           Lizzie.frame.doBranch(1);
           Lizzie.frame.refresh();
         } else {
-          if (Lizzie.frame.boardRenderer.incrementDisplayedBranchLength(1)) {
+          if (LizzieFrame.boardRenderer.incrementDisplayedBranchLength(1)) {
             Lizzie.frame.refresh();
           }
         }
       } else if (e.getWheelRotation() < 0) {
-        if (Lizzie.frame.boardRenderer.isShowingBranch()) {
+        if (LizzieFrame.boardRenderer.isShowingBranch()) {
           Lizzie.frame.doBranch(-1);
           Lizzie.frame.refresh();
         }
@@ -81,7 +81,7 @@ public class InputSubboard implements KeyListener, MouseListener, MouseWheelList
         if (e.isAltDown()) Lizzie.engineManager.stopEngineGame(-1, true);
         break;
       case VK_T:
-        if (e.isAltDown()) Lizzie.frame.toolbar.btnEnginePkStop.doClick();
+        if (e.isAltDown()) LizzieFrame.toolbar.btnEnginePkStop.doClick();
         break;
     }
   }

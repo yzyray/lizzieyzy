@@ -42,7 +42,7 @@ public class Theme {
   public boolean getTheme(JSONObject uiConfig) {
     this.uiConfig = uiConfig;
     String themeName = uiConfig.optString("theme");
-    this.path = this.pathPrefix + (themeName.isEmpty() ? "" : themeName + separator);
+    this.path = Theme.pathPrefix + (themeName.isEmpty() ? "" : themeName + separator);
     File file = new File(this.path + this.configFile);
     boolean canReadFile = file.canRead();
     if (canReadFile) {
@@ -97,7 +97,7 @@ public class Theme {
 
   public Theme(String themeName) {
     this.uiConfig = Lizzie.config.uiConfig;
-    this.path = this.pathPrefix + (themeName.isEmpty() ? "" : themeName + separator);
+    this.path = Theme.pathPrefix + (themeName.isEmpty() ? "" : themeName + separator);
     File file = new File(this.path + this.configFile);
     if (file.canRead()) {
       FileInputStream fp;
@@ -340,7 +340,7 @@ public class Theme {
       image = ImageIO.read(new File(p));
     } catch (IOException e) {
       try {
-        p = this.pathPrefix + uiConfig.optString(key, defaultValue);
+        p = Theme.pathPrefix + uiConfig.optString(key, defaultValue);
         image = ImageIO.read(new File(p));
       } catch (IOException e1) {
         try {

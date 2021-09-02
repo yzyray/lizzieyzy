@@ -289,7 +289,7 @@ public class AnalysisSettings extends JDialog {
               + "; font-family:"
               + Lizzie.config.fontName
               + ", Consolas, Menlo, Monaco, 'Ubuntu Mono', monospace;"
-              + ("font-size:" + Lizzie.config.frameFontSize)
+              + ("font-size:" + Config.frameFontSize)
               + "}";
       htmlStyle.addRule(style);
       // setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));

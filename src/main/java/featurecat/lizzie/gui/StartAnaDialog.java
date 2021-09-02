@@ -98,18 +98,18 @@ public class StartAnaDialog extends JDialog {
     // contentPanel.add(checkBoxPlayerIsBlack);
     // contentPanel.add(PLACEHOLDER);
     // textFieldDelay = new JFormattedTextField(FORMAT_HANDICAP);
-    Lizzie.frame.toolbar.chkAnaBlack.setText("");
-    Lizzie.frame.toolbar.chkAnaWhite.setText("");
+    LizzieFrame.toolbar.chkAnaBlack.setText("");
+    LizzieFrame.toolbar.chkAnaWhite.setText("");
     contentPanel.add(
         new JFontLabel(
             Lizzie.frame.isBatchAna
                 ? Lizzie.resourceBundle.getString("StartAnaDialog.startMoveBatch")
                 : Lizzie.resourceBundle.getString("StartAnaDialog.startMove"))); // ("开始手数(选填)"));
-    contentPanel.add(Lizzie.frame.toolbar.txtFirstAnaMove);
+    contentPanel.add(LizzieFrame.toolbar.txtFirstAnaMove);
     contentPanel.add(
         new JFontLabel(
             Lizzie.resourceBundle.getString("StartAnaDialog.endMove"))); // ("结束手数(选填)"));
-    contentPanel.add(Lizzie.frame.toolbar.txtLastAnaMove);
+    contentPanel.add(LizzieFrame.toolbar.txtLastAnaMove);
     if (isAnalysisMode) {
       NumberFormat nf = NumberFormat.getIntegerInstance();
       nf.setGroupingUsed(false);
@@ -127,25 +127,25 @@ public class StartAnaDialog extends JDialog {
       contentPanel.add(
           new JFontLabel(
               Lizzie.resourceBundle.getString("StartAnaDialog.timePerMove"))); // ("每手时间(秒)"));
-      contentPanel.add(Lizzie.frame.toolbar.txtAnaTime);
+      contentPanel.add(LizzieFrame.toolbar.txtAnaTime);
       contentPanel.add(
           new JFontLabel(
               Lizzie.resourceBundle.getString(
                   "StartAnaDialog.totalVisitsPerMove"))); // ("每手总计算量"));
-      contentPanel.add(Lizzie.frame.toolbar.txtAnaPlayouts);
+      contentPanel.add(LizzieFrame.toolbar.txtAnaPlayouts);
       contentPanel.add(
           new JFontLabel(
               Lizzie.resourceBundle.getString(
                   "StartAnaDialog.firstVisitsPerMove"))); // ("每手首位计算量"));
-      contentPanel.add(Lizzie.frame.toolbar.txtAnaFirstPlayouts);
+      contentPanel.add(LizzieFrame.toolbar.txtAnaFirstPlayouts);
       contentPanel.add(
           new JFontLabel(
               Lizzie.resourceBundle.getString("StartAnaDialog.analyzeBlack"))); // ("分析黑棋"));
-      contentPanel.add(Lizzie.frame.toolbar.chkAnaBlack);
+      contentPanel.add(LizzieFrame.toolbar.chkAnaBlack);
       contentPanel.add(
           new JFontLabel(
               Lizzie.resourceBundle.getString("StartAnaDialog.analyzeWhite"))); // ("分析白棋"));
-      contentPanel.add(Lizzie.frame.toolbar.chkAnaWhite);
+      contentPanel.add(LizzieFrame.toolbar.chkAnaWhite);
       contentPanel.add(
           new JFontLabel(
               Lizzie.resourceBundle.getString("StartAnaDialog.analyzeAllBranch"))); // ("分析所有分支"));
@@ -195,7 +195,7 @@ public class StartAnaDialog extends JDialog {
       contentPanel.add(
           new JFontLabel(
               Lizzie.resourceBundle.getString("StartAnaDialog.autoSaveKifu"))); // ("自动保存棋谱"));
-      contentPanel.add(Lizzie.frame.toolbar.chkAnaAutoSave);
+      contentPanel.add(LizzieFrame.toolbar.chkAnaAutoSave);
     }
     //    if (Lizzie.config.showHiddenYzy) {
     //      contentPanel.add(new JFontLabel("延时(分)"));
@@ -208,25 +208,25 @@ public class StartAnaDialog extends JDialog {
 
   private void setTxtFontSize(boolean isReset) {
     if (isReset) {
-      Lizzie.frame.toolbar.txtFirstAnaMove.setFont(
+      LizzieFrame.toolbar.txtFirstAnaMove.setFont(
           new Font(Config.sysDefaultFontName, Font.PLAIN, 12));
-      Lizzie.frame.toolbar.txtLastAnaMove.setFont(
+      LizzieFrame.toolbar.txtLastAnaMove.setFont(
           new Font(Config.sysDefaultFontName, Font.PLAIN, 12));
-      Lizzie.frame.toolbar.txtAnaTime.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, 12));
-      Lizzie.frame.toolbar.txtAnaPlayouts.setFont(
+      LizzieFrame.toolbar.txtAnaTime.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, 12));
+      LizzieFrame.toolbar.txtAnaPlayouts.setFont(
           new Font(Config.sysDefaultFontName, Font.PLAIN, 12));
-      Lizzie.frame.toolbar.txtAnaFirstPlayouts.setFont(
+      LizzieFrame.toolbar.txtAnaFirstPlayouts.setFont(
           new Font(Config.sysDefaultFontName, Font.PLAIN, 12));
     } else {
-      Lizzie.frame.toolbar.txtFirstAnaMove.setFont(
+      LizzieFrame.toolbar.txtFirstAnaMove.setFont(
           new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
-      Lizzie.frame.toolbar.txtLastAnaMove.setFont(
+      LizzieFrame.toolbar.txtLastAnaMove.setFont(
           new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
-      Lizzie.frame.toolbar.txtAnaTime.setFont(
+      LizzieFrame.toolbar.txtAnaTime.setFont(
           new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
-      Lizzie.frame.toolbar.txtAnaPlayouts.setFont(
+      LizzieFrame.toolbar.txtAnaPlayouts.setFont(
           new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
-      Lizzie.frame.toolbar.txtAnaFirstPlayouts.setFont(
+      LizzieFrame.toolbar.txtAnaFirstPlayouts.setFont(
           new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
     }
   }
@@ -259,55 +259,55 @@ public class StartAnaDialog extends JDialog {
   public void stop() {
     this.setVisible(false);
     setTxtFontSize(true);
-    Lizzie.frame.toolbar.resetAutoAna();
-    Lizzie.frame.toolbar.stopAutoAna(true, true);
+    LizzieFrame.toolbar.resetAutoAna();
+    LizzieFrame.toolbar.stopAutoAna(true, true);
   }
 
   public void apply() {
     try {
-      Lizzie.frame.toolbar.firstMove =
-          Integer.parseInt(Lizzie.frame.toolbar.txtFirstAnaMove.getText().replace(" ", ""));
+      LizzieFrame.toolbar.firstMove =
+          Integer.parseInt(LizzieFrame.toolbar.txtFirstAnaMove.getText().replace(" ", ""));
     } catch (Exception ex) {
-      Lizzie.frame.toolbar.firstMove = -1;
+      LizzieFrame.toolbar.firstMove = -1;
     }
     try {
-      Lizzie.frame.toolbar.lastMove =
-          Integer.parseInt(Lizzie.frame.toolbar.txtLastAnaMove.getText().replace(" ", ""));
+      LizzieFrame.toolbar.lastMove =
+          Integer.parseInt(LizzieFrame.toolbar.txtLastAnaMove.getText().replace(" ", ""));
     } catch (Exception ex) {
-      Lizzie.frame.toolbar.lastMove = -1;
+      LizzieFrame.toolbar.lastMove = -1;
     }
     if (!isAnalysisMode) {
       try {
-        if (Integer.parseInt(Lizzie.frame.toolbar.txtAnaTime.getText().replace(" ", "")) > 0)
-          Lizzie.frame.toolbar.chkAnaTime.setSelected(true);
-        else Lizzie.frame.toolbar.chkAnaTime.setSelected(false);
+        if (Integer.parseInt(LizzieFrame.toolbar.txtAnaTime.getText().replace(" ", "")) > 0)
+          LizzieFrame.toolbar.chkAnaTime.setSelected(true);
+        else LizzieFrame.toolbar.chkAnaTime.setSelected(false);
       } catch (Exception ex) {
-        Lizzie.frame.toolbar.chkAnaTime.setSelected(false);
+        LizzieFrame.toolbar.chkAnaTime.setSelected(false);
       }
       try {
-        if (Integer.parseInt(Lizzie.frame.toolbar.txtAnaPlayouts.getText().replace(" ", "")) > 0)
-          Lizzie.frame.toolbar.chkAnaPlayouts.setSelected(true);
-        else Lizzie.frame.toolbar.chkAnaPlayouts.setSelected(false);
+        if (Integer.parseInt(LizzieFrame.toolbar.txtAnaPlayouts.getText().replace(" ", "")) > 0)
+          LizzieFrame.toolbar.chkAnaPlayouts.setSelected(true);
+        else LizzieFrame.toolbar.chkAnaPlayouts.setSelected(false);
       } catch (Exception ex) {
-        Lizzie.frame.toolbar.chkAnaPlayouts.setSelected(false);
+        LizzieFrame.toolbar.chkAnaPlayouts.setSelected(false);
       }
       try {
-        if (Integer.parseInt(Lizzie.frame.toolbar.txtAnaFirstPlayouts.getText().replace(" ", ""))
-            > 0) Lizzie.frame.toolbar.chkAnaFirstPlayouts.setSelected(true);
-        else Lizzie.frame.toolbar.chkAnaFirstPlayouts.setSelected(false);
+        if (Integer.parseInt(LizzieFrame.toolbar.txtAnaFirstPlayouts.getText().replace(" ", ""))
+            > 0) LizzieFrame.toolbar.chkAnaFirstPlayouts.setSelected(true);
+        else LizzieFrame.toolbar.chkAnaFirstPlayouts.setSelected(false);
       } catch (Exception ex) {
-        Lizzie.frame.toolbar.chkAnaFirstPlayouts.setSelected(false);
+        LizzieFrame.toolbar.chkAnaFirstPlayouts.setSelected(false);
       }
 
-      if (!Lizzie.frame.toolbar.chkAnaBlack.isSelected()
-          && !Lizzie.frame.toolbar.chkAnaWhite.isSelected()) {
+      if (!LizzieFrame.toolbar.chkAnaBlack.isSelected()
+          && !LizzieFrame.toolbar.chkAnaWhite.isSelected()) {
         Utils.showMsg(Lizzie.resourceBundle.getString("SetDiffAnalyze.noBlackWhite"));
         return;
       }
 
-      if (!Lizzie.frame.toolbar.chkAnaFirstPlayouts.isSelected()
-          && !Lizzie.frame.toolbar.chkAnaPlayouts.isSelected()
-          && !Lizzie.frame.toolbar.chkAnaTime.isSelected()) {
+      if (!LizzieFrame.toolbar.chkAnaFirstPlayouts.isSelected()
+          && !LizzieFrame.toolbar.chkAnaPlayouts.isSelected()
+          && !LizzieFrame.toolbar.chkAnaTime.isSelected()) {
         Utils.showMsg(Lizzie.resourceBundle.getString("SetDiffAnalyze.noCondition"));
         return;
       }
@@ -324,20 +324,20 @@ public class StartAnaDialog extends JDialog {
           Utils.parseTextToInt(txtAnalysisPlayouts, Lizzie.config.batchAnalysisPlayouts);
       Lizzie.config.uiConfig.put("batch-analysis-playouts", Lizzie.config.batchAnalysisPlayouts);
       Lizzie.frame.flashAnalyzeGameBatch(
-          Lizzie.frame.toolbar.firstMove, Lizzie.frame.toolbar.lastMove);
+          LizzieFrame.toolbar.firstMove, LizzieFrame.toolbar.lastMove);
     } else {
       Timer timer = new Timer();
       timer.schedule(
           new TimerTask() {
             public void run() {
-              Lizzie.frame.toolbar.startAutoAna();
+              LizzieFrame.toolbar.startAutoAna();
               this.cancel();
             }
           },
           300);
-      Lizzie.frame.toolbar.chkAutoAnalyse.setSelected(true);
+      LizzieFrame.toolbar.chkAutoAnalyse.setSelected(true);
     }
-    Lizzie.frame.toolbar.resetAutoAna();
+    LizzieFrame.toolbar.resetAutoAna();
   }
 
   public boolean isCancelled() {

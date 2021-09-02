@@ -28,11 +28,7 @@ public class AjaxHttpRequest {
   public static final String DEFAULT_REQUEST_METHOD = "POST";
 
   private int readyState;
-  private int status;
-  private String statusText;
-  private String responseHeaders;
   private byte[] responseBytes;
-  private Map responseHeadersMap;
   private Map<String, String> requestHeadersMap;
   private ReadyStateChangeListener readyStateChangeListener;
 
@@ -216,8 +212,8 @@ public class AjaxHttpRequest {
         err = null;
       }
       synchronized (this) {
-        this.responseHeaders = getConnectionResponseHeaders(c);
-        this.responseHeadersMap = c.getHeaderFields();
+        getConnectionResponseHeaders(c);
+        c.getHeaderFields();
       }
       this.changeState(AjaxHttpRequest.STATE_LOADED, istatus, istatusText, null);
       InputStream in = err == null ? c.getInputStream() : err;
@@ -237,8 +233,6 @@ public class AjaxHttpRequest {
   protected void changeState(int readyState, int status, String statusMessage, byte[] bytes) {
     synchronized (this) {
       this.readyState = readyState;
-      this.status = status;
-      this.statusText = statusMessage;
       this.responseBytes = bytes;
     }
     if (this.readyStateChangeListener != null) {

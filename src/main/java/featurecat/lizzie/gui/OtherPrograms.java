@@ -11,17 +11,12 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -32,7 +27,6 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 import org.json.JSONArray;
 
-@SuppressWarnings("serial")
 public class OtherPrograms extends JPanel {
   public static Config config;
   public TableModel dataModel;
@@ -82,13 +76,11 @@ public class OtherPrograms extends JPanel {
               ? ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("zh", "CN"))
               : ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("en", "US")));
   private String osName;
-  private BufferedInputStream inputStream;
-  private Path curPath;
 
   public OtherPrograms() {
     // super(new BorderLayout());
 
-    curPath = (new File("")).getAbsoluteFile().toPath();
+    (new File("")).getAbsoluteFile().toPath();
     osName = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
     this.setLayout(null);
     dataModel = getTableModel();
@@ -130,12 +122,12 @@ public class OtherPrograms extends JPanel {
     // // table.getColumnModel().getColumn(2).setPreferredWidth(pos.getInt(6));
     // // table.getColumnModel().getColumn(3).setPreferredWidth(pos.getInt(7));
     // }
-    table.setRowHeight(Lizzie.config.menuHeight);
+    table.setRowHeight(Config.menuHeight);
     table.getTableHeader().setFont(headFont);
     table
         .getTableHeader()
         .setPreferredSize(
-            new Dimension(table.getColumnModel().getTotalColumnWidth(), Lizzie.config.menuHeight));
+            new Dimension(table.getColumnModel().getTotalColumnWidth(), Config.menuHeight));
     table.setFont(winrateFont);
     JTableHeader header = table.getTableHeader();
 
@@ -353,7 +345,6 @@ public class OtherPrograms extends JPanel {
             ArrayList<ProgramData> programData = getProgramData();
             if (curIndex < 1 || curIndex > programData.size() - 1) return;
             ProgramData enginedt = programData.get(curIndex);
-            int a = curIndex;
             programData.remove(curIndex);
             programData.add(0, enginedt);
 
@@ -366,7 +357,7 @@ public class OtherPrograms extends JPanel {
             }
             Lizzie.config.leelazConfig.put("program-command-list", commands);
             Lizzie.config.leelazConfig.put("program-name-list", names);
-            Lizzie.frame.menu.updateFastLinks();
+            LizzieFrame.menu.updateFastLinks();
             table.validate();
             table.updateUI();
             curIndex = 0;
@@ -382,7 +373,6 @@ public class OtherPrograms extends JPanel {
             ArrayList<ProgramData> programData = getProgramData();
             if (curIndex < 1 || curIndex > programData.size() - 1) return;
             ProgramData enginedt = programData.get(curIndex);
-            int a = curIndex;
             programData.remove(curIndex);
             programData.add(curIndex - 1, enginedt);
 
@@ -395,7 +385,7 @@ public class OtherPrograms extends JPanel {
             }
             Lizzie.config.leelazConfig.put("program-command-list", commands);
             Lizzie.config.leelazConfig.put("program-name-list", names);
-            Lizzie.frame.menu.updateFastLinks();
+            LizzieFrame.menu.updateFastLinks();
             table.validate();
             table.updateUI();
             curIndex = curIndex - 1;
@@ -411,7 +401,6 @@ public class OtherPrograms extends JPanel {
             ArrayList<ProgramData> programData = getProgramData();
             if (curIndex < 0 || curIndex > programData.size() - 2) return;
             ProgramData enginedt = programData.get(curIndex);
-            int a = curIndex;
             programData.remove(curIndex);
             programData.add(curIndex + 1, enginedt);
 
@@ -425,7 +414,7 @@ public class OtherPrograms extends JPanel {
             }
             Lizzie.config.leelazConfig.put("program-command-list", commands);
             Lizzie.config.leelazConfig.put("program-name-list", names);
-            Lizzie.frame.menu.updateFastLinks();
+            LizzieFrame.menu.updateFastLinks();
             table.validate();
             table.updateUI();
             curIndex = curIndex + 1;
@@ -528,48 +517,6 @@ public class OtherPrograms extends JPanel {
     return engineLine;
   }
 
-  private String relativizePath(Path path) {
-    Path relatPath;
-    if (path.startsWith(curPath)) {
-      relatPath = curPath.relativize(path);
-    } else {
-      relatPath = path;
-    }
-    return relatPath.toString();
-  }
-
-  private void getCommandHelp() {
-
-    List<String> commands = new ArrayList<String>();
-    commands.add(enginePath);
-    commands.add("-h");
-
-    ProcessBuilder processBuilder = new ProcessBuilder(commands);
-    processBuilder.directory();
-    processBuilder.redirectErrorStream(true);
-    try {
-      Process process = processBuilder.start();
-      inputStream = new BufferedInputStream(process.getInputStream());
-      ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-      executor.execute(this::read);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }
-
-  private void read() {
-    try {
-      int c;
-      StringBuilder line = new StringBuilder();
-      while ((c = inputStream.read()) != -1) {
-        line.append((char) c);
-      }
-      commandHelp = line.toString();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }
-
   private void handleTableClick(int row, int col) {
     // if (selectedorder != row) {
     // int[] coords = Lizzie.board.convertNameToCoordinates(table.getValueAt(row,
@@ -605,18 +552,6 @@ public class OtherPrograms extends JPanel {
     table.updateUI();
   }
 
-  private void handleTableDoubleClick(int row, int col) {
-    // int movenumber = Integer.parseInt(table.getValueAt(row, 1).toString());
-    // Lizzie.board.goToMoveNumber(1);
-    // Lizzie.board.goToMoveNumber(movenumber - 1);
-    // int[] coords = Lizzie.board.convertNameToCoordinates(table.getValueAt(row,
-    // 2).toString());
-    // Lizzie.frame.clickbadmove = coords;
-    // Lizzie.frame.boardRenderer.drawbadstone(coords[0], coords[1], Stone.BLACK);
-    // Lizzie.frame.repaint();
-    // selectedorder = row;
-  }
-
   private void saveEngineConfig() {
     ArrayList<ProgramData> programData = getProgramData();
     ProgramData programDt = new ProgramData();
@@ -641,7 +576,7 @@ public class OtherPrograms extends JPanel {
     }
     Lizzie.config.leelazConfig.put("program-command-list", commands);
     Lizzie.config.leelazConfig.put("program-name-list", names);
-    Lizzie.frame.menu.updateFastLinks();
+    LizzieFrame.menu.updateFastLinks();
   }
 
   public ArrayList<ProgramData> getProgramData() {
@@ -689,7 +624,6 @@ public class OtherPrograms extends JPanel {
         return "";
       }
 
-      @SuppressWarnings("unchecked")
       public Object getValueAt(int row, int col) {
         ArrayList<ProgramData> ProgramDatas = getProgramData();
         if (row > (ProgramDatas.size() - 1)) {

@@ -58,16 +58,16 @@ public class ToolbarPositionConfig extends JDialog {
     cancelButton.setBounds(85, 73, 60, 25);
     getContentPane().add(okButton);
     getContentPane().add(cancelButton);
-    anaPanel.setSelectedIndex(Lizzie.frame.toolbar.anaPanelOrder);
-    enginePkPanel.setSelectedIndex(Lizzie.frame.toolbar.enginePkOrder);
-    autoPlayPanel.setSelectedIndex(Lizzie.frame.toolbar.autoPlayOrder);
+    anaPanel.setSelectedIndex(LizzieFrame.toolbar.anaPanelOrder);
+    enginePkPanel.setSelectedIndex(LizzieFrame.toolbar.enginePkOrder);
+    autoPlayPanel.setSelectedIndex(LizzieFrame.toolbar.autoPlayOrder);
     okButton.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            Lizzie.frame.toolbar.anaPanelOrder = anaPanel.getSelectedIndex();
-            Lizzie.frame.toolbar.enginePkOrder = enginePkPanel.getSelectedIndex();
-            Lizzie.frame.toolbar.autoPlayOrder = autoPlayPanel.getSelectedIndex();
-            Lizzie.frame.toolbar.setOrder();
+            LizzieFrame.toolbar.anaPanelOrder = anaPanel.getSelectedIndex();
+            LizzieFrame.toolbar.enginePkOrder = enginePkPanel.getSelectedIndex();
+            LizzieFrame.toolbar.autoPlayOrder = autoPlayPanel.getSelectedIndex();
+            LizzieFrame.toolbar.setOrder();
             setVisible(false);
           }
         });

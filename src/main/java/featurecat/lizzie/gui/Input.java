@@ -3,6 +3,7 @@ package featurecat.lizzie.gui;
 import static java.awt.event.KeyEvent.*;
 
 import featurecat.lizzie.Lizzie;
+import featurecat.lizzie.analysis.EngineManager;
 import featurecat.lizzie.util.Utils;
 import java.awt.event.*;
 import javax.swing.SwingUtilities;
@@ -19,7 +20,7 @@ public class Input implements MouseListener, KeyListener, MouseWheelListener, Mo
     if (e.isAltDown()
         && !SwingUtilities.isMiddleMouseButton(e)
         && (LizzieFrame.allowcoords != "" || LizzieFrame.avoidcoords != ""))
-      Lizzie.frame.menu.clearSelect.doClick();
+      LizzieFrame.menu.clearSelect.doClick();
   }
 
   @Override
@@ -46,13 +47,13 @@ public class Input implements MouseListener, KeyListener, MouseWheelListener, Mo
         Lizzie.frame.refresh();
         return;
       }
-      if (Lizzie.engineManager.isEngineGame) {
+      if (EngineManager.isEngineGame) {
         if (e.getButton() == MouseEvent.BUTTON1)
           Lizzie.frame.onClickedForManul(Utils.zoomOut(e.getX()), Utils.zoomOut(e.getY()));
         return;
       }
       //
-      if (Lizzie.frame.extraMode == 8) {
+      if (LizzieFrame.extraMode == 8) {
         Lizzie.frame.onClickedWinrateOnly(Utils.zoomOut(e.getX()), Utils.zoomOut(e.getY()));
         return;
       }
@@ -106,7 +107,7 @@ public class Input implements MouseListener, KeyListener, MouseWheelListener, Mo
     }
     if (Draggedmode
         && !Lizzie.frame.isTrying
-        && !Lizzie.frame.urlSgf
+        && !LizzieFrame.urlSgf
         && !Lizzie.frame.isPlayingAgainstLeelaz
         && !Lizzie.frame.isAnaPlayingAgainstLeelaz
         && Lizzie.config.allowDrag) {
@@ -139,7 +140,7 @@ public class Input implements MouseListener, KeyListener, MouseWheelListener, Mo
     }
     if (Draggedmode
         && !Lizzie.frame.isTrying
-        && !Lizzie.frame.urlSgf
+        && !LizzieFrame.urlSgf
         && !Lizzie.frame.isPlayingAgainstLeelaz
         && !Lizzie.frame.isAnaPlayingAgainstLeelaz
         && Lizzie.config.allowDrag) {
@@ -158,7 +159,7 @@ public class Input implements MouseListener, KeyListener, MouseWheelListener, Mo
       }
       if (Draggedmode
           && !Lizzie.frame.isTrying
-          && !Lizzie.frame.urlSgf
+          && !LizzieFrame.urlSgf
           && !Lizzie.frame.isPlayingAgainstLeelaz
           && !Lizzie.frame.isAnaPlayingAgainstLeelaz
           && Lizzie.config.allowDrag) {
@@ -263,9 +264,9 @@ public class Input implements MouseListener, KeyListener, MouseWheelListener, Mo
     return e.isControlDown() || (mac && e.isMetaDown());
   }
 
-  private void toggleShowDynamicKomi() {
-    Lizzie.config.showDynamicKomi = !Lizzie.config.showDynamicKomi;
-  }
+  //  private void toggleShowDynamicKomi() {
+  //    Lizzie.config.showDynamicKomi = !Lizzie.config.showDynamicKomi;
+  //  }
 
   @Override
   public void keyPressed(KeyEvent e) {
@@ -328,7 +329,7 @@ public class Input implements MouseListener, KeyListener, MouseWheelListener, Mo
             Lizzie.board.SpinAndMirror(3);
           } else LizzieFrame.undoNoRefresh(10);
         } else {
-          if (Lizzie.frame.boardRenderer.isShowingBranch()) {
+          if (LizzieFrame.boardRenderer.isShowingBranch()) {
             Lizzie.frame.doBranch(-1);
           } else {
             LizzieFrame.undoNoRefresh(1);
@@ -337,7 +338,7 @@ public class Input implements MouseListener, KeyListener, MouseWheelListener, Mo
         break;
 
       case VK_PAGE_DOWN:
-        if (Lizzie.frame.boardRenderer.isShowingBranch()) {
+        if (LizzieFrame.boardRenderer.isShowingBranch()) {
           Lizzie.frame.doBranch(1);
         } else {
           // Lizzie.frame.noautocounting();
@@ -358,7 +359,7 @@ public class Input implements MouseListener, KeyListener, MouseWheelListener, Mo
             Lizzie.board.SpinAndMirror(4);
           } else LizzieFrame.redoNoRefresh(10);
         } else {
-          if (Lizzie.frame.boardRenderer.isShowingBranch()) {
+          if (LizzieFrame.boardRenderer.isShowingBranch()) {
             Lizzie.frame.doBranch(1);
           } else {
             LizzieFrame.redoNoRefresh(1);
@@ -422,21 +423,21 @@ public class Input implements MouseListener, KeyListener, MouseWheelListener, Mo
         } else {
           if (controlIsPressed(e)) Lizzie.config.toggleLargeSubBoard();
           else {
-            if (Lizzie.frame.toolbar.chkShowBlack.isSelected()
-                || Lizzie.frame.toolbar.chkShowBlack.isSelected()) {
-              Lizzie.frame.toolbar.chkShowBlack.setSelected(false);
-              Lizzie.frame.toolbar.chkShowWhite.setSelected(false);
+            if (LizzieFrame.toolbar.chkShowBlack.isSelected()
+                || LizzieFrame.toolbar.chkShowBlack.isSelected()) {
+              LizzieFrame.toolbar.chkShowBlack.setSelected(false);
+              LizzieFrame.toolbar.chkShowWhite.setSelected(false);
               if (Lizzie.config.showDoubleMenu) {
-                Lizzie.frame.menu.chkShowBlack.setSelected(false);
-                Lizzie.frame.menu.chkShowWhite.setSelected(false);
+                LizzieFrame.menu.chkShowBlack.setSelected(false);
+                LizzieFrame.menu.chkShowWhite.setSelected(false);
               }
-              Lizzie.frame.boardRenderer.clearAfterMove();
+              LizzieFrame.boardRenderer.clearAfterMove();
             } else {
-              Lizzie.frame.toolbar.chkShowBlack.setSelected(true);
-              Lizzie.frame.toolbar.chkShowWhite.setSelected(true);
+              LizzieFrame.toolbar.chkShowBlack.setSelected(true);
+              LizzieFrame.toolbar.chkShowWhite.setSelected(true);
               if (Lizzie.config.showDoubleMenu) {
-                Lizzie.frame.menu.chkShowBlack.setSelected(true);
-                Lizzie.frame.menu.chkShowWhite.setSelected(true);
+                LizzieFrame.menu.chkShowBlack.setSelected(true);
+                LizzieFrame.menu.chkShowWhite.setSelected(true);
               }
             }
           }
@@ -456,7 +457,7 @@ public class Input implements MouseListener, KeyListener, MouseWheelListener, Mo
         break;
 
       case VK_PAGE_UP:
-        if (Lizzie.frame.boardRenderer.isShowingBranch()) {
+        if (LizzieFrame.boardRenderer.isShowingBranch()) {
           Lizzie.frame.doBranch(-1);
         } else {
           // Lizzie.frame.noautocounting();
@@ -471,14 +472,14 @@ public class Input implements MouseListener, KeyListener, MouseWheelListener, Mo
         if (e.isControlDown()) {
           SetBoardSize st = new SetBoardSize();
           st.setVisible(true);
-        } else Lizzie.frame.editGameInfo();
+        } else LizzieFrame.editGameInfo();
         break;
 
       case VK_S:
         if (e.isControlDown() && e.isShiftDown()) {
-          Lizzie.frame.saveFile(true);
+          LizzieFrame.saveFile(true);
         } else if (e.isControlDown() && e.isAltDown()) {
-          Lizzie.frame.saveCurrentBranch();
+          LizzieFrame.saveCurrentBranch();
         } else if (e.isShiftDown()) {
           Lizzie.frame.saveImage(
               Lizzie.frame.statx,
@@ -690,7 +691,7 @@ public class Input implements MouseListener, KeyListener, MouseWheelListener, Mo
           StartAnaDialog newgame = new StartAnaDialog(false);
           newgame.setVisible(true);
           if (newgame.isCancelled()) {
-            Lizzie.frame.toolbar.resetAutoAna();
+            LizzieFrame.toolbar.resetAutoAna();
           }
         }
         break;
@@ -842,16 +843,16 @@ public class Input implements MouseListener, KeyListener, MouseWheelListener, Mo
     if (e.getWhen() - wheelWhen > 0) {
       wheelWhen = e.getWhen();
       if (e.getWheelRotation() > 0) {
-        if (Lizzie.frame.boardRenderer.isShowingBranch()
-            || (Lizzie.frame.extraMode == 2 && Lizzie.frame.boardRenderer2.isShowingBranch())) {
+        if (LizzieFrame.boardRenderer.isShowingBranch()
+            || (LizzieFrame.extraMode == 2 && LizzieFrame.boardRenderer2.isShowingBranch())) {
           Lizzie.frame.doBranch(1);
           Lizzie.frame.refresh();
         } else {
           redo();
         }
       } else if (e.getWheelRotation() < 0) {
-        if (Lizzie.frame.boardRenderer.isShowingBranch()
-            || (Lizzie.frame.extraMode == 2 && Lizzie.frame.boardRenderer2.isShowingBranch())) {
+        if (LizzieFrame.boardRenderer.isShowingBranch()
+            || (LizzieFrame.extraMode == 2 && LizzieFrame.boardRenderer2.isShowingBranch())) {
           Lizzie.frame.doBranch(-1);
           Lizzie.frame.refresh();
         } else {

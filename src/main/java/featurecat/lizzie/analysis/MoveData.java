@@ -490,10 +490,6 @@ public class MoveData {
       Pattern.compile(
           "^ *(\\w\\d*) -> *(\\d+) \\(V: ([^%)]+)%\\) \\(LCB: ([^%)]+)%\\) \\([^\\)]+\\) \\(A: ([^)]+)\\) PV: (.+).*$");
 
-  // support 0.16 0.15
-  private static Pattern summaryPatternhandicap =
-      Pattern.compile("^ *(\\w\\d*) ->    *(\\d+) \\(V: ([^%)]+)%\\) \\([^\\)]+\\) PV: (.+).* $");
-
   public static int getPlayouts(List<MoveData> moves) {
     int playouts = 0;
     for (MoveData move : moves) {

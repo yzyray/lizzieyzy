@@ -31,7 +31,6 @@ public class SetFrameFontSize extends JDialog {
   private JFormattedTextField fontSize;
   private final ResourceBundle resourceBundle = Lizzie.resourceBundle;
   private int fontSizeNumber;
-  private static JFontTextField defaultText = new JFontTextField();
 
   public SetFrameFontSize() {
     // setType(Type.POPUP);
@@ -96,7 +95,7 @@ public class SetFrameFontSize extends JDialog {
     buttonPane.add(fontSize);
     fontSize.setColumns(3);
 
-    fontSize.setText(Lizzie.config.frameFontSize + "");
+    fontSize.setText(Config.frameFontSize + "");
     try {
       this.setIconImage(ImageIO.read(MoreEngines.class.getResourceAsStream("/assets/logo.png")));
       Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -122,8 +121,8 @@ public class SetFrameFontSize extends JDialog {
   }
 
   private void applyChange() {
-    Lizzie.config.frameFontSize = fontSizeNumber;
-    Lizzie.config.uiConfig.put("frame-font-size", Lizzie.config.frameFontSize);
+    Config.frameFontSize = fontSizeNumber;
+    Lizzie.config.uiConfig.put("frame-font-size", Config.frameFontSize);
     if (!Lizzie.config.isChinese && Config.frameFontSize > 12)
       Utils.showMsg(resourceBundle.getString("menu.setFrameSizeAlart"));
     Utils.showMsg(resourceBundle.getString("SetFrameFontSize.successHint"));
@@ -141,8 +140,6 @@ public class SetFrameFontSize extends JDialog {
   private boolean checkMove() {
 
     fontSizeNumber = txtFieldValue(fontSize);
-    // changePosition = getChangeToType();
-    Color c = defaultText.getBackground();
     if (fontSizeNumber < 12 || fontSizeNumber > 20) {
       fontSize.setToolTipText(resourceBundle.getString("LizzieChangeMove.txtMoveNumber.error"));
       Action action = fontSize.getActionMap().get("postTip");

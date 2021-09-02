@@ -170,7 +170,7 @@ public class IndependentSubBoard extends JFrame {
           public void windowClosing(WindowEvent e) {
             Lizzie.frame.toggleIndependentSubBoard();
             if (!Lizzie.config.showSubBoard) {
-              if (Lizzie.frame.extraMode == 8) Lizzie.config.toggleShowSubBoard();
+              if (LizzieFrame.extraMode == 8) Lizzie.config.toggleShowSubBoard();
             }
           }
         });
@@ -181,7 +181,7 @@ public class IndependentSubBoard extends JFrame {
           public void actionPerformed(ActionEvent e) {
             Lizzie.frame.toggleIndependentSubBoard();
             if (!Lizzie.config.showSubBoard) {
-              if (Lizzie.frame.extraMode == 8) Lizzie.config.toggleShowSubBoard();
+              if (LizzieFrame.extraMode == 8) Lizzie.config.toggleShowSubBoard();
             }
           }
         });

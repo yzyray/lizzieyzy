@@ -25,7 +25,6 @@ import javax.swing.SwingConstants;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DocumentFilter;
-import javax.swing.text.DocumentFilter.FilterBypass;
 import javax.swing.text.InternationalFormatter;
 
 public class SetBoardSize extends JDialog {

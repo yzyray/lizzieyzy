@@ -107,9 +107,9 @@ public class InputIndependentMainBoard implements KeyListener {
     return e.isControlDown() || (mac && e.isMetaDown());
   }
 
-  private void toggleShowDynamicKomi() {
-    Lizzie.config.showDynamicKomi = !Lizzie.config.showDynamicKomi;
-  }
+  //  private void toggleShowDynamicKomi() {
+  //    Lizzie.config.showDynamicKomi = !Lizzie.config.showDynamicKomi;
+  //  }
 
   @Override
   public void keyPressed(KeyEvent e) {
@@ -181,7 +181,7 @@ public class InputIndependentMainBoard implements KeyListener {
         break;
 
       case VK_PAGE_DOWN:
-        if (Lizzie.frame.boardRenderer.isShowingBranch()) {
+        if (LizzieFrame.boardRenderer.isShowingBranch()) {
           Lizzie.frame.doBranch(1);
         } else {
           // Lizzie.frame.noautocounting();
@@ -264,21 +264,21 @@ public class InputIndependentMainBoard implements KeyListener {
         } else {
           if (controlIsPressed(e)) Lizzie.config.toggleLargeSubBoard();
           else {
-            if (Lizzie.frame.toolbar.chkShowBlack.isSelected()
-                || Lizzie.frame.toolbar.chkShowBlack.isSelected()) {
-              Lizzie.frame.toolbar.chkShowBlack.setSelected(false);
-              Lizzie.frame.toolbar.chkShowWhite.setSelected(false);
+            if (LizzieFrame.toolbar.chkShowBlack.isSelected()
+                || LizzieFrame.toolbar.chkShowBlack.isSelected()) {
+              LizzieFrame.toolbar.chkShowBlack.setSelected(false);
+              LizzieFrame.toolbar.chkShowWhite.setSelected(false);
               if (Lizzie.config.showDoubleMenu) {
-                Lizzie.frame.menu.chkShowBlack.setSelected(false);
-                Lizzie.frame.menu.chkShowWhite.setSelected(false);
+                LizzieFrame.menu.chkShowBlack.setSelected(false);
+                LizzieFrame.menu.chkShowWhite.setSelected(false);
               }
-              Lizzie.frame.boardRenderer.clearAfterMove();
+              LizzieFrame.boardRenderer.clearAfterMove();
             } else {
-              Lizzie.frame.toolbar.chkShowBlack.setSelected(true);
-              Lizzie.frame.toolbar.chkShowWhite.setSelected(true);
+              LizzieFrame.toolbar.chkShowBlack.setSelected(true);
+              LizzieFrame.toolbar.chkShowWhite.setSelected(true);
               if (Lizzie.config.showDoubleMenu) {
-                Lizzie.frame.menu.chkShowBlack.setSelected(true);
-                Lizzie.frame.menu.chkShowWhite.setSelected(true);
+                LizzieFrame.menu.chkShowBlack.setSelected(true);
+                LizzieFrame.menu.chkShowWhite.setSelected(true);
               }
             }
           }
@@ -298,7 +298,7 @@ public class InputIndependentMainBoard implements KeyListener {
         break;
 
       case VK_PAGE_UP:
-        if (Lizzie.frame.boardRenderer.isShowingBranch()) {
+        if (LizzieFrame.boardRenderer.isShowingBranch()) {
           Lizzie.frame.doBranch(-1);
         } else {
           // Lizzie.frame.noautocounting();
@@ -312,14 +312,14 @@ public class InputIndependentMainBoard implements KeyListener {
         if (e.isControlDown()) {
           SetBoardSize st = new SetBoardSize();
           st.setVisible(true);
-        } else Lizzie.frame.editGameInfo();
+        } else LizzieFrame.editGameInfo();
         break;
 
       case VK_S:
         if (e.isControlDown() && e.isShiftDown()) {
-          Lizzie.frame.saveFile(true);
+          LizzieFrame.saveFile(true);
         } else if (e.isControlDown() && e.isAltDown()) {
-          Lizzie.frame.saveCurrentBranch();
+          LizzieFrame.saveCurrentBranch();
         } else if (e.isShiftDown()) {
           Lizzie.frame.saveImage(
               Lizzie.frame.statx,
@@ -530,7 +530,7 @@ public class InputIndependentMainBoard implements KeyListener {
           StartAnaDialog newgame = new StartAnaDialog(false);
           newgame.setVisible(true);
           if (newgame.isCancelled()) {
-            Lizzie.frame.toolbar.resetAutoAna();
+            LizzieFrame.toolbar.resetAutoAna();
           }
         }
         break;
@@ -538,7 +538,7 @@ public class InputIndependentMainBoard implements KeyListener {
       case VK_DECIMAL:
       case VK_SLASH:
         if (Lizzie.frame.isCounting) {
-          Lizzie.frame.boardRenderer.removecountblock();
+          LizzieFrame.boardRenderer.removecountblock();
           // Lizzie.frame.repaint();
           Lizzie.frame.isCounting = false;
           Lizzie.estimateResults.setVisible(false);
@@ -643,8 +643,6 @@ public class InputIndependentMainBoard implements KeyListener {
 
     Lizzie.frame.refresh();
   }
-
-  private boolean wasPonderingWhenControlsShown = false;
 
   @Override
   public void keyReleased(KeyEvent e) {
