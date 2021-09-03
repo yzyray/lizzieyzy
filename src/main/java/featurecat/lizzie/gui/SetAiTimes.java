@@ -301,8 +301,11 @@ public class SetAiTimes extends JDialog {
         Lizzie.config.advanceTimeTxt = txtAdvanceTime.getText();
         Lizzie.config.uiConfig.put("advance-time-txt", txtAdvanceTime.getText());
       }
-      Lizzie.config.leelazConfig.putOpt(
-          "max-game-thinking-time-seconds", txtFieldValue(txtSetTime));
+      int time = txtFieldValue(txtSetTime);
+      if (time > 0) {
+        Lizzie.config.maxGameThinkingTimeSeconds = time;
+        Lizzie.config.leelazConfig.putOpt("max-game-thinking-time-seconds", time);
+      }
       Lizzie.config.playponder = getPonder();
       Lizzie.config.leelazConfig.putOpt("play-ponder", Lizzie.config.playponder);
       LizzieFrame.sendAiTime(true);

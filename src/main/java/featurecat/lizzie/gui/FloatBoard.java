@@ -725,11 +725,10 @@ public class FloatBoard extends JDialog {
         || posWidth != width
         || posHeight != height
         || (cachedBoardType != boardType && boardType > 2)) {
-    	if(posWidth != width || posHeight != height)
-    	{
-    		extraX=0;
-    		extraY=0;
-    	}
+      if (posWidth != width || posHeight != height) {
+        extraX = 0;
+        extraY = 0;
+      }
       cachedBoardType = boardType;
       posX = x;
       posY = y;

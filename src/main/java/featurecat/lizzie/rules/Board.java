@@ -1709,6 +1709,7 @@ public class Board {
             Lizzie.engineManager.secondEngineCountDown.sendTimeLeft(false);
         }
       }
+      boolean needGenmove = false;
       if (forManual && !Lizzie.frame.isPlayingAgainstLeelaz && !Lizzie.leelaz.isInputCommand) {
         LizzieFrame.toolbar.isPkStop = true;
         String move = convertCoordinatesToName(x, y);
@@ -1746,7 +1747,7 @@ public class Board {
         if (Lizzie.engineManager.playingAgainstHumanEngineCountDown != null)
           Lizzie.engineManager.playingAgainstHumanEngineCountDown.sendTimeLeft(false);
         Lizzie.leelaz.playMove(color, convertCoordinatesToName(x, y), true, color.isWhite());
-        Lizzie.leelaz.genmove((Lizzie.board.getData().blackToPlay ? "w" : "b"));
+        needGenmove = true;
       } else if (!Lizzie.frame.isPlayingAgainstLeelaz
           && !Lizzie.leelaz.isInputCommand
           && !EngineManager.isEngineGame) {
@@ -1762,6 +1763,7 @@ public class Board {
       if (LizzieFrame.urlSgf) history.addOrGoto(newState, newBranch, true);
       else history.addOrGoto(newState, newBranch, changeMove);
       updateIsBest();
+      if (needGenmove) Lizzie.leelaz.genmove((color.isWhite() ? "B" : "W"));
       //   modifyEnd(false);
       if (Lizzie.config.playSound) Utils.playVoiceFile();
       if (!forSync) Lizzie.frame.refresh();
