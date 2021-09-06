@@ -53,7 +53,7 @@ public class BoardHistoryNode {
   public void undoExtraStones() {
     if (extraStones == null || Lizzie.board.isLoadingFile) return;
     for (ExtraStones stone : extraStones) {
-      Lizzie.leelaz.undo();
+      Lizzie.leelaz.undo(true, Lizzie.board.getHistory().getPrevious().get().blackToPlay);
     }
   }
 

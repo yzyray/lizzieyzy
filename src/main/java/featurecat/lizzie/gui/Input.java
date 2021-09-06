@@ -395,7 +395,9 @@ public class Input implements MouseListener, KeyListener, MouseWheelListener, Mo
         break;
 
       case VK_COMMA:
-        if (!Lizzie.config.showSuggestionVariations) {
+        if (e.isAltDown()) {
+          Lizzie.frame.genmove();
+        } else if (!Lizzie.config.showSuggestionVariations) {
           if (Lizzie.frame.isMouseOver) Lizzie.frame.playCurrentVariation();
           else Lizzie.frame.playBestMove();
         } else {

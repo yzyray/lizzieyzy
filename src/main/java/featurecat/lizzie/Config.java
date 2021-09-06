@@ -115,7 +115,7 @@ public class Config {
   public JSONObject saveBoardConfig;
 
   private String configFilename = "config.txt";
-  private String persistFilename = "persistnew";
+  private String persistFilename = "persist";
   private String saveBoardFilename = "save" + Utils.pwd + "save";
 
   public Theme theme;

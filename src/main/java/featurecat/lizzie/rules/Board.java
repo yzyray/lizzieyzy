@@ -1058,10 +1058,10 @@ public class Board {
     }
   }
 
-  public synchronized void resendMoveToEngine(int index, Leelaz leelaz) {
+  public synchronized void resendMoveToEngine(Leelaz leelaz) {
     ArrayList<Movelist> mv = getMoveList();
-    Lizzie.leelaz.sendCommand("clear_board");
-    Lizzie.board.restoreMoveNumber(index, mv, false, leelaz);
+    leelaz.sendCommand("clear_board");
+    Lizzie.board.restoreMoveNumber(mv, false, leelaz);
   }
 
   public ArrayList<Movelist> getMoveList() {
@@ -2227,23 +2227,18 @@ public class Board {
         });
   }
 
-  public void restoreMoveNumber(
-      int index, ArrayList<Movelist> mv, boolean isEngineGame, Leelaz engine) {
+  public void restoreMoveNumber(ArrayList<Movelist> mv, boolean isEngineGame, Leelaz engine) {
     int lenth = mv.size();
     for (int i = 0; i < lenth; i++) {
       Movelist move = mv.get(lenth - 1 - i);
       String color = move.isblack ? "B" : "W";
       if (move.ispass) {
-        if (i > 0)
-          Lizzie.engineManager.engineList.get(index).sendCommand("play " + color + " pass");
+        if (i > 0) engine.sendCommand("play " + color + " pass");
         else if (getHistory().getStart().next().isPresent()
             && !getHistory().getStart().next().get().getData().lastMove.isPresent())
-          Lizzie.engineManager.engineList.get(index).sendCommand("play " + color + " pass");
+          engine.sendCommand("play " + color + " pass");
       } else {
-        Lizzie.engineManager
-            .engineList
-            .get(index)
-            .sendCommand("play " + color + " " + convertCoordinatesToName(move.x, move.y));
+        engine.sendCommand("play " + color + " " + convertCoordinatesToName(move.x, move.y));
       }
     }
     Lizzie.initializeAfterVersionCheck(isEngineGame, engine);
@@ -2323,7 +2318,7 @@ public class Board {
         // Update leelaz board position, before updating to next node
         updateIsBest();
         Optional<int[]> lastMoveOpt = history.getData().lastMove;
-        history.getCurrentHistoryNode().placeExtraStones();
+        // history.getCurrentHistoryNode().placeExtraStones();
         if (lastMoveOpt.isPresent()) {
           int[] lastMove = lastMoveOpt.get();
           String name = convertCoordinatesToName(lastMove[0], lastMove[1]);

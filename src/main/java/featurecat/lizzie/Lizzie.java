@@ -439,12 +439,13 @@ public class Lizzie {
     }
     try {
       config.persist();
+      config.save();
     } catch (Exception e) {
+      Utils.showMsg(resourceBundle.getString("Lizzie.save.error") + e.getLocalizedMessage());
       e.printStackTrace();
       config.deletePersist(false);
     }
     try {
-      config.save();
       engineManager.forceKillAllEngines();
     } catch (Exception e) {
       e.printStackTrace();

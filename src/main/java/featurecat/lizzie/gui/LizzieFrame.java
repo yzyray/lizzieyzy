@@ -6549,6 +6549,11 @@ public class LizzieFrame extends JFrame {
     } else boardRenderer.bestMoveCoordinateName().ifPresent(placeVariation);
   }
 
+  public void genmove() {
+    Lizzie.leelaz.isInputCommand = true;
+    Lizzie.leelaz.genmove(Lizzie.board.getHistory().isBlacksTurn() ? "B" : "W");
+  }
+
   public boolean processSubOnMouseMoved(int x, int y) {
     if (LizzieFrame.extraMode == 1) {
       if (x < subBoardLengthmouse && y < subBoardLengthmouse) {

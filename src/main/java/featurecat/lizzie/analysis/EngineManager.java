@@ -108,7 +108,7 @@ public class EngineManager {
             }
             if (currentEngineNo > 20) LizzieFrame.menu.changeEngineIcon(20, 3);
             else LizzieFrame.menu.changeEngineIcon(currentEngineNo, 3);
-            Lizzie.board.resendMoveToEngine(engineDt.index, Lizzie.leelaz);
+            Lizzie.board.resendMoveToEngine(Lizzie.leelaz);
           }
         }.start();
       } else {
@@ -1792,7 +1792,6 @@ public class EngineManager {
                   : engineNo + 1)
               + "]: "
               + Lizzie.leelaz.oriEnginename);
-      //  switchEngine(currentEngineNo);
     }
     isUpdating = false;
   }
@@ -1982,7 +1981,7 @@ public class EngineManager {
                 e.printStackTrace();
               }
             }
-            Lizzie.board.restoreMoveNumber(index, mv, true, newEng);
+            Lizzie.board.restoreMoveNumber(mv, true, newEng);
             if (newEng.isKataGoPda) newEng.sendCommand("dympdacap " + newEng.pdaCap);
           }
         };
@@ -2014,7 +2013,6 @@ public class EngineManager {
     newEng.width = Board.boardWidth;
     newEng.height = Board.boardHeight;
     newEng.komi = (float) Lizzie.board.getHistory().getGameInfo().getKomi();
-    ArrayList<Movelist> mv = Lizzie.board.getMoveList();
     // if (!newEng.isStarted()) {
     try {
       newEng.startEngine(index);
@@ -2039,7 +2037,7 @@ public class EngineManager {
                 e.printStackTrace();
               }
             }
-            Lizzie.board.restoreMoveNumber(index, mv, true, newEng);
+            Lizzie.board.resendMoveToEngine(newEng);
             newEng.nameCmd();
 
             newEng.setResponseUpToDate();
@@ -2177,7 +2175,7 @@ public class EngineManager {
                   }
                 } while (!newEng.isLoaded() || newEng.isCheckingName);
                 newEng.notPondering();
-                Lizzie.board.resendMoveToEngine(index, newEng);
+                Lizzie.board.resendMoveToEngine(newEng);
                 if (newEng == Lizzie.leelaz) {
                   if (Lizzie.frame.isPlayingAgainstLeelaz && !Lizzie.config.genmoveGameNoTime)
                     LizzieFrame.sendAiTime(false);
@@ -2220,7 +2218,7 @@ public class EngineManager {
                 else LizzieFrame.menu.changeEngineIcon2(currentEngineNo2, 3);
 
                 Lizzie.board.clearbestmovesafter2(Lizzie.board.getHistory().getStart());
-                // Lizzie.leelaz.ponder();
+                Lizzie.board.resendMoveToEngine(newEng);
                 featurecat.lizzie.gui.Menu.engineMenu2.setText(
                     "["
                         + (currentEngineNo2 + 1)

@@ -473,7 +473,7 @@ public class Leelaz {
                 e.printStackTrace();
               }
             }
-            if (isPondering) Lizzie.board.resendMoveToEngine(index, thisLeelz);
+            if (isPondering) Lizzie.board.resendMoveToEngine(thisLeelz);
             else {
               Lizzie.board.resetMoves();
             }
@@ -3219,7 +3219,8 @@ public class Leelaz {
   }
 
   public void tryToDignostic(String message, boolean isModal) {
-    Lizzie.engineManager.clearEngineGame();
+    if (!Lizzie.config.autoCheckEngineAlive && Lizzie.engineManager.isEngineGame())
+      Lizzie.engineManager.clearEngineGame();
     if (engineFailedMessage != null && engineFailedMessage.isVisible()) return;
     engineFailedMessage =
         new EngineFailedMessage(commands, engineCommand, message, !useJavaSSH && OS.isWindows());

@@ -269,12 +269,16 @@ public class MoveListFrame extends JFrame {
         && Lizzie.config.persistedUi.optJSONArray("badmoves-list-position") != null
         && Lizzie.config.persistedUi.optJSONArray("badmoves-list-position").length() >= 5) {
       JSONArray pos = Lizzie.config.persistedUi.getJSONArray("badmoves-list-position");
-      if (isMainEngine) setBounds(pos.getInt(1), pos.getInt(2), pos.getInt(3), pos.getInt(4));
-      else setBounds(pos.getInt(1) + pos.getInt(3), pos.getInt(2), pos.getInt(3), pos.getInt(4));
       Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
-      int width = (int) screensize.getWidth();
+      int width = (int) screensize.getWidth() - 50;
       int height = (int) screensize.getHeight();
-      if (pos.getInt(0) >= width || pos.getInt(1) >= height) setLocation(0, 0);
+      if (isMainEngine) {
+        setBounds(pos.getInt(1), pos.getInt(2), pos.getInt(3), pos.getInt(4));
+        if (pos.getInt(1) >= width || pos.getInt(2) >= height) setLocation(0, 0);
+      } else {
+        setBounds(pos.getInt(1) + pos.getInt(3), pos.getInt(2), pos.getInt(3), pos.getInt(4));
+        if (pos.getInt(1) + pos.getInt(3) >= width || pos.getInt(2) >= height) setLocation(0, 0);
+      }
     } else {
       if (isMainEngine) setBounds(-9, 0, Lizzie.config.isChinese ? 846 : 980, 565);
       else setBounds(737, 0, Lizzie.config.isChinese ? 846 : 980, 565);
