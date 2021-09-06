@@ -5591,47 +5591,53 @@ public class LizzieFrame extends JFrame {
       }
       return;
     }
-    if (width < 0 || height < 0) return; // we don't have enough space
     double lastWR = 50; // winrate the previous move
     double lastScore = 0;
     boolean validLastWinrate = false; // whether it was actually calculated
     Optional<BoardHistoryNode> previous =
         Lizzie.board.getHistory().getCurrentHistoryNode().previous();
+    BoardData curData = Lizzie.board.getHistory().getCurrentHistoryNode().getData();
     if (EngineManager.isEngineGame && Lizzie.board.getHistory().getMoveNumber() > 3) {
       previous = Lizzie.board.getHistory().getCurrentHistoryNode().previous().get().previous();
-    }
-
-    if (previous.isPresent() && previous.get().getData().getPlayouts() > 0) {
-      lastWR = previous.get().getData().winrate;
-      lastScore = previous.get().getData().scoreMean;
-      validLastWinrate = true;
+    } else if (isPlayingAgainstLeelaz || isAnaPlayingAgainstLeelaz)
+      if (Lizzie.board.getHistory().isBlacksTurn() == playerIsBlack && previous.isPresent()) {
+        curData = previous.get().getData();
+        previous = Lizzie.board.getHistory().getCurrentHistoryNode().previous().get().previous();
+      }
+    if (previous.isPresent()) {
+      if (previous.get().getData().getPlayouts() > 0) {
+        lastWR = previous.get().getData().winrate;
+        lastScore = previous.get().getData().scoreMean;
+        validLastWinrate = true;
+      } else {
+        if (previous.get().previous().isPresent()) {
+          BoardData prePreData = previous.get().previous().get().getData();
+          if (prePreData.getPlayouts() > 0) {
+            lastWR = 100 - prePreData.winrate;
+            lastScore = -prePreData.scoreMean;
+            validLastWinrate = true;
+          }
+        }
+      }
     }
     if (EngineManager.isEngineGame && Lizzie.board.getHistory().getMoveNumber() > 3) {
       lastWR = 100 - lastWR;
     }
     // Leelaz.WinrateStats stats = Lizzie.leelaz.getWinrateStats();
-    double curWR =
-        Lizzie.board.getHistory().getData().winrate; // stats.maxWinrate; // winrate on this move
-    double curScore = Lizzie.board.getHistory().getData().scoreMean;
-    boolean validWinrate =
-        (Lizzie.board.getHistory().getData().getPlayouts()
-            > 0); // and whether it was actually calculated
-    if (!validWinrate) {
-      curWR = Lizzie.board.getHistory().getData().winrate;
-      curScore = Lizzie.board.getHistory().getData().scoreMean;
-      validWinrate = Lizzie.board.getHistory().getData().getPlayouts() > 0;
-    }
-    if (isPlayingAgainstLeelaz
-        && playerIsBlack == !Lizzie.board.getHistory().getData().blackToPlay) {
-      validWinrate = false;
-    }
+    double curWR = curData.winrate; // stats.maxWinrate; // winrate on this move
+    double curScore = curData.scoreMean;
+    boolean validWinrate = (curData.getPlayouts() > 0);
+    //    if (isPlayingAgainstLeelaz
+    //        && playerIsBlack == !Lizzie.board.getHistory().getData().blackToPlay) {
+    //      validWinrate = false;
+    //    }
 
     if (!validWinrate) {
       curWR = 100 - lastWR; // display last move's winrate for now (with color difference)
       curScore = -lastScore;
     }
     double whiteWR, blackWR;
-    if (Lizzie.board.getData().blackToPlay) {
+    if (curData.blackToPlay) {
       blackWR = curWR;
     } else {
       blackWR = 100 - curWR;
@@ -5669,12 +5675,12 @@ public class LizzieFrame extends JFrame {
     // } else {
 
     // }
-    if (EngineManager.isEngineGame && Lizzie.board.getHistory().getMoveNumber() <= 3) {
-      text = "";
-    }
+    //    if (EngineManager.isEngineGame && Lizzie.board.getHistory().getMoveNumber() <= 3) {
+    //      text = "";
+    //    }
     boolean isKataStyle = false;
-    if (Lizzie.board.getHistory().getData().isKataData
-        || Lizzie.board.getHistory().getData().isSaiData
+    if (curData.isKataData
+        || curData.isSaiData
         || (Lizzie.leelaz.isKatago && !EngineManager.isEmpty)
         || (EngineManager.isEngineGame
             && (Lizzie.engineManager.engineList.get(EngineManager.engineGameInfo.blackEngineIndex)
@@ -5683,15 +5689,15 @@ public class LizzieFrame extends JFrame {
                         EngineManager.engineGameInfo.whiteEngineIndex)
                     .isKatago))) {
       isKataStyle = true;
-      if (!Lizzie.board.getHistory().getData().bestMoves.isEmpty()) {
-        double score = Lizzie.board.getHistory().getData().bestMoves.get(0).scoreMean;
-        if (Lizzie.board.getHistory().isBlacksTurn()) {
+      if (!curData.bestMoves.isEmpty()) {
+        double score = curData.bestMoves.get(0).scoreMean;
+        if (curData.blackToPlay) {
           // if (Lizzie.config.showKataGoBoardScoreMean) {
-          score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
+          score = score + curData.getKomi();
           //  }
         } else {
           //  if (Lizzie.config.showKataGoBoardScoreMean) {
-          score = -score + Lizzie.board.getHistory().getGameInfo().getKomi();
+          score = -score + curData.getKomi();
           //  }
           //  if (Lizzie.config.kataGoScoreMeanAlwaysBlack) {
           //    score = -score;
@@ -5753,8 +5759,8 @@ public class LizzieFrame extends JFrame {
           0,
           false);
     } else {
-      double wr = 100 - lastWR - curWR;
-      double score = (-lastScore) - curScore;
+      double wr = validLastWinrate ? 100 - lastWR - curWR : 0;
+      double score = validLastWinrate ? (-lastScore) - curScore : 0;
       text =
           text
               + " "
@@ -5797,7 +5803,7 @@ public class LizzieFrame extends JFrame {
       // Draw change of winrate bars
       if (validWinrate && validLastWinrate) {
         double gain = 100 - lastWR - curWR;
-        double blackLastWR = Lizzie.board.getData().blackToPlay ? 100 - lastWR : lastWR;
+        double blackLastWR = curData.blackToPlay ? 100 - lastWR : lastWR;
         int lastPosxW = barPosxB + (int) (blackLastWR * maxBarwidth / 100);
         int diffPosX = Math.min(barPosxW, lastPosxW);
         int diffWidth = Math.abs(barPosxW - lastPosxW);
@@ -5808,7 +5814,7 @@ public class LizzieFrame extends JFrame {
           boolean isGain = gain >= 0;
           g.setColor(isGain ? Color.GREEN : Color.RED);
           boolean rightTri;
-          if (Lizzie.board.getData().blackToPlay) {
+          if (curData.blackToPlay) {
             if (isGain) rightTri = false;
             else rightTri = true;
           } else {
@@ -7639,8 +7645,7 @@ public class LizzieFrame extends JFrame {
       //    	setCommentComponet();
       //    }
       String comment = "";
-      if (isInPlayMode()) comment = "";
-      else {
+      if (!isInPlayMode()) {
         if (cachedIsLoading != isLoadingEngine) {
           cachedIsLoading = isLoadingEngine;
           if (isLoadingEngine) {
@@ -7676,7 +7681,9 @@ public class LizzieFrame extends JFrame {
                     .comment;
           else {
             if (Lizzie.board.getHistory().getData().comment.equals("")) {
-              if ((Lizzie.leelaz.isPondering() || EngineManager.isEngineGame)
+              if ((Lizzie.leelaz.isPondering()
+                      || EngineManager.isEngineGame
+                      || Lizzie.frame.isPlayingAgainstLeelaz)
                   && Lizzie.config.appendWinrateToComment
                   && Lizzie.board.getHistory().getCurrentHistoryNode().previous().isPresent())
                 comment =
