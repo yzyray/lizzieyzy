@@ -5794,6 +5794,48 @@ public class LizzieFrame extends JFrame {
       g.fillRect(barPosxW, barPosY, barWidthW, barHeight);
       g.setColor(Color.BLACK);
       g.fillRect(barPosxB, barPosY, barWidthB, barHeight);
+      // Draw change of winrate bars
+      if (validWinrate && validLastWinrate) {
+        double gain = 100 - lastWR - curWR;
+        double blackLastWR = Lizzie.board.getData().blackToPlay ? 100 - lastWR : lastWR;
+        int lastPosxW = barPosxB + (int) (blackLastWR * maxBarwidth / 100);
+        int diffPosX = Math.min(barPosxW, lastPosxW);
+        int diffWidth = Math.abs(barPosxW - lastPosxW);
+        Stroke oldstroke = g.getStroke();
+        boolean isGig = barHeight > 20;
+        g.setStroke(new BasicStroke(isGig ? 2 : 1));
+        boolean isGain = gain >= 0;
+        g.setColor(isGain ? Color.GREEN : Color.RED);
+        boolean rightTri;
+        if (Lizzie.board.getData().blackToPlay) {
+          if (isGain) rightTri = false;
+          else rightTri = true;
+        } else {
+          if (isGain) rightTri = true;
+          else rightTri = false;
+        }
+        if (diffWidth > 0) {
+          if (rightTri) {
+            if (diffWidth > 3) g.drawLine(diffPosX, barPosY, diffPosX + diffWidth - 3, barPosY);
+            int triStart = Math.max(diffPosX, diffPosX + diffWidth - (isGig ? 7 : 5));
+            int[] xPoints = {triStart, triStart, diffPosX + diffWidth};
+            int[] yPoints = {barPosY + 1 - (isGig ? 5 : 3), barPosY + 1 + (isGig ? 5 : 3), barPosY};
+            g.fillPolygon(xPoints, yPoints, 3);
+          } else {
+            int posXEnd = diffPosX + diffWidth - 1;
+            if (diffWidth > 3) {
+              g.drawLine(diffPosX + 2, barPosY, posXEnd, barPosY);
+            }
+            int triStart = Math.min(posXEnd + 1, diffPosX + (isGig ? 7 : 5));
+            int[] xPoints = {triStart, triStart, diffPosX};
+            int[] yPoints = {
+              barPosY + 1 - (isGig ? 5 : 3), barPosY + 1 + (isGig ? 5 : 3), barPosY + 1
+            };
+            g.fillPolygon(xPoints, yPoints, 3);
+          }
+        }
+        g.setStroke(oldstroke);
+      }
 
       // Show percentage above bars
       setPanelFont(g, (int) (min(maxBarwidth * 0.63, height) * 0.24));
