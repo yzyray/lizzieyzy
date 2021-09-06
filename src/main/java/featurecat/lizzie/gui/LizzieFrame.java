@@ -5801,20 +5801,20 @@ public class LizzieFrame extends JFrame {
         int lastPosxW = barPosxB + (int) (blackLastWR * maxBarwidth / 100);
         int diffPosX = Math.min(barPosxW, lastPosxW);
         int diffWidth = Math.abs(barPosxW - lastPosxW);
-        Stroke oldstroke = g.getStroke();
-        boolean isGig = barHeight > 20;
-        g.setStroke(new BasicStroke(isGig ? 2 : 1));
-        boolean isGain = gain >= 0;
-        g.setColor(isGain ? Color.GREEN : Color.RED);
-        boolean rightTri;
-        if (Lizzie.board.getData().blackToPlay) {
-          if (isGain) rightTri = false;
-          else rightTri = true;
-        } else {
-          if (isGain) rightTri = true;
-          else rightTri = false;
-        }
         if (diffWidth > 0) {
+          Stroke oldstroke = g.getStroke();
+          boolean isGig = barHeight > 20;
+          g.setStroke(new BasicStroke(isGig ? 2 : 1));
+          boolean isGain = gain >= 0;
+          g.setColor(isGain ? Color.GREEN : Color.RED);
+          boolean rightTri;
+          if (Lizzie.board.getData().blackToPlay) {
+            if (isGain) rightTri = false;
+            else rightTri = true;
+          } else {
+            if (isGain) rightTri = true;
+            else rightTri = false;
+          }
           if (rightTri) {
             if (diffWidth > 3) g.drawLine(diffPosX, barPosY, diffPosX + diffWidth - 3, barPosY);
             int triStart = Math.max(diffPosX, diffPosX + diffWidth - (isGig ? 7 : 5));
@@ -5833,8 +5833,8 @@ public class LizzieFrame extends JFrame {
             };
             g.fillPolygon(xPoints, yPoints, 3);
           }
+          g.setStroke(oldstroke);
         }
-        g.setStroke(oldstroke);
       }
 
       // Show percentage above bars
