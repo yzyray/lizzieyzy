@@ -356,6 +356,7 @@ public class GtpConsolePane extends JDialog {
       return;
     }
     String command = txtCommand.getText().trim();
+    String commandToLower = command.toLowerCase();
     txtCommand.setText("");
 
     if (EngineManager.isEngineGame) {
@@ -368,18 +369,20 @@ public class GtpConsolePane extends JDialog {
     }
 
     if (Lizzie.leelaz != null) {
-      if (command.toLowerCase().startsWith("genmove")
-          || command.toLowerCase().startsWith("lz-genmove")
-          || command.toLowerCase().startsWith("kata-genmove")
-          || command.toLowerCase().startsWith("play")) {
+      if (commandToLower.startsWith("genmove")
+          || commandToLower.startsWith("lz-genmove")
+          || commandToLower.startsWith("kata-genmove")
+          || commandToLower.startsWith("play")) {
         String cmdParams[] = command.split(" ");
         if (cmdParams.length >= 2) {
           String param1 = cmdParams[1].toLowerCase();
-          boolean needPass = (Lizzie.board.getData().blackToPlay != "b".equals(param1));
-          if (needPass) {
-            Lizzie.board.pass();
+          boolean needChangePla =
+              (Lizzie.board.getData().blackToPlay != "b".equalsIgnoreCase(param1));
+          if (needChangePla) {
+            Lizzie.board.getHistory().getData().blackToPlay =
+                !Lizzie.board.getHistory().getData().blackToPlay;
           }
-          if (command.toLowerCase().startsWith("genmove")) {
+          if (commandToLower.startsWith("genmove")) {
             if (!Lizzie.leelaz.isThinking) {
               // Lizzie.leelaz.time_settings();
               Lizzie.leelaz.isInputCommand = true;
@@ -398,15 +401,15 @@ public class GtpConsolePane extends JDialog {
               false,
               Config.frameFontSize);
         }
-      } else if ("clear_board".equals(command.toLowerCase())) {
+      } else if ("clear_board".equals(commandToLower)) {
         Lizzie.board.clear(false);
         Lizzie.frame.refresh();
-      } else if ("heatmap".equals(command.toLowerCase())) {
+      } else if ("heatmap".equals(commandToLower)) {
         Lizzie.leelaz.toggleHeatmap(false);
-      } else if (command.toLowerCase().startsWith("kata-raw")) {
+      } else if (commandToLower.startsWith("kata-raw")) {
         Lizzie.leelaz.setHeatmap();
         Lizzie.leelaz.sendCommand(command);
-      } else if (command.toLowerCase().startsWith("boardsize")) {
+      } else if (commandToLower.startsWith("boardsize")) {
         String cmdParams[] = command.split(" ");
         if (cmdParams.length >= 2) {
           int width = Integer.parseInt(cmdParams[1]);
@@ -422,7 +425,7 @@ public class GtpConsolePane extends JDialog {
               false,
               Config.frameFontSize);
         }
-      } else if (command.toLowerCase().startsWith("komi")) {
+      } else if (commandToLower.startsWith("komi")) {
         String cmdParams[] = command.split(" ");
         if (cmdParams.length == 2) {
           Lizzie.board.getHistory().getGameInfo().setKomi(Double.parseDouble(cmdParams[1]));
@@ -447,7 +450,7 @@ public class GtpConsolePane extends JDialog {
           || command.startsWith("dympdacap")
           || command.startsWith("getpda")
           || command.startsWith("getdympdacap")) {
-        if (command.toLowerCase().startsWith("pda")) {
+        if (commandToLower.startsWith("pda")) {
           String[] params = command.trim().split(" ");
           if (params.length == 2) {
             try {
@@ -461,7 +464,7 @@ public class GtpConsolePane extends JDialog {
             }
           }
         }
-        if (command.toLowerCase().startsWith("dympdacap")) {
+        if (commandToLower.startsWith("dympdacap")) {
           Lizzie.leelaz.sendCommand("pda 0");
           LizzieFrame.menu.txtPDA.setText("0.000");
           Lizzie.leelaz.isStaticPda = false;

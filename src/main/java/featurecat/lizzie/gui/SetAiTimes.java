@@ -308,7 +308,7 @@ public class SetAiTimes extends JDialog {
       }
       Lizzie.config.playponder = getPonder();
       Lizzie.config.leelazConfig.putOpt("play-ponder", Lizzie.config.playponder);
-      LizzieFrame.sendAiTime(true);
+      LizzieFrame.sendAiTime(true, Lizzie.leelaz);
 
       DecimalFormat FORMAT_HANDICAP = new DecimalFormat("0");
 

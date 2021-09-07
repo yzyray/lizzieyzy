@@ -2962,7 +2962,7 @@ public class LizzieFrame extends JFrame {
     }
   }
 
-  public static void sendAiTime(boolean needCountDown) {
+  public static void sendAiTime(boolean needCountDown, Leelaz engine) {
     if (Lizzie.config.advanceTimeSettings) {
       Lizzie.leelaz.sendCommand(Lizzie.config.advanceTimeTxt);
       if (needCountDown) {
@@ -2979,8 +2979,7 @@ public class LizzieFrame extends JFrame {
         }
       }
     } else {
-      Lizzie.leelaz.sendCommand(
-          "time_settings 0 " + Lizzie.config.maxGameThinkingTimeSeconds + " 1");
+      engine.sendCommand("time_settings 0 " + Lizzie.config.maxGameThinkingTimeSeconds + " 1");
     }
   }
 
@@ -3037,7 +3036,7 @@ public class LizzieFrame extends JFrame {
                   Lizzie.config.getMySaveTime(),
                   Lizzie.config.getMyByoyomiSeconds(),
                   Lizzie.config.getMyByoyomiTimes());
-            if (!Lizzie.config.genmoveGameNoTime) sendAiTime(true);
+            if (!Lizzie.config.genmoveGameNoTime) sendAiTime(true, Lizzie.leelaz);
             clearWRNforGame(true);
             if (isHandicapGame) {
               Lizzie.board.getHistory().getData().blackToPlay = false;
@@ -9441,7 +9440,7 @@ public class LizzieFrame extends JFrame {
     }
     if (isGenmove) {
       if (!Lizzie.leelaz.isThinking) {
-        if (!Lizzie.config.genmoveGameNoTime) sendAiTime(true);
+        if (!Lizzie.config.genmoveGameNoTime) sendAiTime(true, Lizzie.leelaz);
         isPlayingAgainstLeelaz = true;
         if (continueNow) {
           Lizzie.frame.playerIsBlack = !Lizzie.board.getData().blackToPlay;

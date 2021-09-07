@@ -2177,8 +2177,6 @@ public class EngineManager {
                 newEng.notPondering();
                 Lizzie.board.resendMoveToEngine(newEng);
                 if (newEng == Lizzie.leelaz) {
-                  if (Lizzie.frame.isPlayingAgainstLeelaz && !Lizzie.config.genmoveGameNoTime)
-                    LizzieFrame.sendAiTime(false);
                   Lizzie.board.clearbestmovesafter(Lizzie.board.getHistory().getStart());
                   currentEngineNo = Lizzie.leelaz.currentEngineN();
                   featurecat.lizzie.gui.Menu.engineMenu.setText(

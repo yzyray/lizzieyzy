@@ -393,6 +393,7 @@ public class Lizzie {
               .isKataGoPda) LizzieFrame.menu.showPda(true);
       else LizzieFrame.menu.showPda(false);
     }
+    LizzieFrame.sendAiTime(false, engine);
     if (engine != leelaz) return;
     if (!Lizzie.engineManager.isEngineGame()) {
       LizzieFrame.menu.showPda(engine.isKataGoPda);
