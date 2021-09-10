@@ -5283,6 +5283,7 @@ public class Menu extends JMenuBar {
     txtWRN = new JFontTextField();
     txtWRN.setToolTipText(resourceBundle.getString("Menu.chkWRN.toolTopText"));
     txtWRN.setDocument(new DoubleDocument());
+    txtWRN.setEnabled(false);
     // if (!Lizzie.config.autoLoadKataEngineWRN) txtWRN.setEnabled(false);
     // txtWRN.setText(Lizzie.config.txtKataEngineWRN + "");
 
@@ -5419,14 +5420,12 @@ public class Menu extends JMenuBar {
             Lizzie.config.chkKataEnginePDA = chkPDA.isSelected();
           }
         });
-    // chkPDA.setSelected(Lizzie.config.autoLoadKataEnginePDA);
 
-    lblGfPDA = new JFontLabel(resourceBundle.getString("Menu.lblPDA")); // ("官方PDA");
+    lblGfPDA = new JFontLabel(resourceBundle.getString("Menu.lblPDA"));
     txtGfPDA = new JFontTextField();
+    txtGfPDA.setEnabled(false);
     txtGfPDA.setToolTipText(resourceBundle.getString("Menu.chkPDA.toolTopText"));
     txtGfPDA.setDocument(new KomiDocument(false));
-    // if (!Lizzie.config.autoLoadKataEnginePDA) txtGfPDA.setEnabled(false);
-    // txtGfPDA.setText(Lizzie.config.txtKataEnginePDA + "");
 
     Document dt4 = txtGfPDA.getDocument();
     dt4.addDocumentListener(
