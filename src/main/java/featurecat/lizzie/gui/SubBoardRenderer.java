@@ -128,6 +128,10 @@ public class SubBoardRenderer {
     cachedBoardWidth = -1;
   }
 
+  public void reDrawBackgroundAnyway() {
+    cachedWallpaperImage = emptyImage;
+  }
+
   public SubBoardRenderer(boolean isMainBoard) {
     uiPersist = Lizzie.config.persisted.getJSONObject("ui-persist");
     try {

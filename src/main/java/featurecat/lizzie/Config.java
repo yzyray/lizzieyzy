@@ -1430,6 +1430,8 @@ public class Config {
             || !oriBackgroundImageString.equals(backgroundImageString))) {
       Lizzie.frame.redrawBackgroundAnyway = true;
       LizzieFrame.boardRenderer.reDrawBackgroundAnyway();
+      if (LizzieFrame.boardRenderer2 != null) LizzieFrame.boardRenderer2.reDrawBackgroundAnyway();
+      LizzieFrame.subBoardRenderer.reDrawBackgroundAnyway();
     }
   }
 
