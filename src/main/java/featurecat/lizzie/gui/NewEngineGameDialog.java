@@ -280,7 +280,7 @@ public class NewEngineGameDialog extends JDialog {
     txtresignSettingWhiteMinMove.setText(Lizzie.config.secondEngineMinMove + "");
 
     textFieldKomi = new JFontTextField();
-    textFieldKomi.setDocument(new KomiDocument());
+    textFieldKomi.setDocument(new KomiDocument(true));
     NumberFormat nf = NumberFormat.getIntegerInstance();
     nf.setGroupingUsed(false);
     textFieldHandicap = new JTextField();

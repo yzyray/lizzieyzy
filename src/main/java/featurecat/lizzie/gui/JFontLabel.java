@@ -15,4 +15,12 @@ public class JFontLabel extends JLabel {
     this.setText(text);
     this.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
   }
+
+  public JFontLabel(String text, int horizontalAlignment) {
+    // TODO Auto-generated constructor stub
+    super();
+    this.setHorizontalAlignment(horizontalAlignment);
+    this.setText(text);
+    this.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
+  }
 }

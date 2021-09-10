@@ -229,7 +229,7 @@ public class NewGameDialog extends JDialog {
     gbc_label_2.gridy = 4;
     contentPanel.add(label_2, gbc_label_2);
     textFieldKomi = new JFontTextField();
-    textFieldKomi.setDocument(new KomiDocument());
+    textFieldKomi.setDocument(new KomiDocument(true));
     GridBagConstraints gbc_textFieldKomi = new GridBagConstraints();
     gbc_textFieldKomi.fill = GridBagConstraints.BOTH;
     gbc_textFieldKomi.insets = new Insets(0, 0, 5, 0);

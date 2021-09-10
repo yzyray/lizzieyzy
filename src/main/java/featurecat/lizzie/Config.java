@@ -568,9 +568,28 @@ public class Config {
   public boolean useFoxStyleCoords = false;
   public boolean stopAtEmptyBoard = false;
 
+  public boolean useScoreDiffInVariationTree = true;
+  public double scoreDiffInVariationTreeFactor = 0.5;
+
+  public boolean useScoreLossInMoveRank = true;
+  public boolean useWinLossInMoveRank = true;
+
+  public double winLossThreshold1 = -1;
+  public double winLossThreshold2 = -3;
+  public double winLossThreshold3 = -6;
+  public double winLossThreshold4 = -12;
+  public double winLossThreshold5 = -24;
+
+  public double scoreLossThreshold1 = -0.5;
+  public double scoreLossThreshold2 = -1.5;
+  public double scoreLossThreshold3 = -3;
+  public double scoreLossThreshold4 = -6;
+  public double scoreLossThreshold5 = -12;
+
+  public boolean showPonderLimitedTips = true;
+
   private JSONObject loadAndMergeSaveBoardConfig(
       JSONObject defaultCfg, String fileName, boolean needValidation) throws IOException {
-
     File file = new File(fileName);
     File dir = new File("save");
     if (!dir.exists()) {
@@ -1223,6 +1242,19 @@ public class Config {
     logConsoleToFile = uiConfig.optBoolean("log-console-to-file", false);
     logGtpToFile = uiConfig.optBoolean("log-gtp-to-file", false);
     readBoardGetFocus = uiConfig.optBoolean("read-board-get-focus", true);
+    useScoreLossInMoveRank = uiConfig.optBoolean("use-score-loss-in-move-rank", true);
+    useWinLossInMoveRank = uiConfig.optBoolean("use-win-loss-in-move-rank", true);
+    winLossThreshold1 = uiConfig.optDouble("win-loss-threshold-1", -1);
+    winLossThreshold2 = uiConfig.optDouble("win-loss-threshold-2", -3);
+    winLossThreshold3 = uiConfig.optDouble("win-loss-threshold-3", -6);
+    winLossThreshold4 = uiConfig.optDouble("win-loss-threshold-4", -12);
+    winLossThreshold5 = uiConfig.optDouble("win-loss-threshold-5", -24);
+    scoreLossThreshold1 = uiConfig.optDouble("score-loss-threshold-1", -0.5);
+    scoreLossThreshold2 = uiConfig.optDouble("score-loss-threshold-2", -1.5);
+    scoreLossThreshold3 = uiConfig.optDouble("score-loss-threshold-3", -3);
+    scoreLossThreshold4 = uiConfig.optDouble("score-loss-threshold-4", -6);
+    scoreLossThreshold5 = uiConfig.optDouble("score-loss-threshold-5", -12);
+    showPonderLimitedTips = uiConfig.optBoolean("show-ponder-limited-tips", true);
     otherSizeWidth = uiConfig.optInt("other-size-width", 21);
     otherSizeHeight = uiConfig.optInt("other-size-height", 21);
     useFoxStyleCoords = uiConfig.optBoolean("use-fox-style-coords", false);
@@ -1348,6 +1380,8 @@ public class Config {
     commentNodeColor = theme.commentNodeColor();
     blunderWinrateThresholds = theme.blunderWinrateThresholds();
     blunderNodeColors = theme.blunderNodeColors();
+    useScoreDiffInVariationTree = theme.useScoreDiffInVariationTree(true);
+    scoreDiffInVariationTreeFactor = theme.scoreDiffInVariationTreeFactor(true);
     usePureBackground = theme.usePureBackground(true);
     pureBackgroundColor = theme.pureBackgroundColor();
     usePureBoard = theme.usePureBoard(true);

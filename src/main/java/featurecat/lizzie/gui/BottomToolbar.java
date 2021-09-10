@@ -575,6 +575,7 @@ public class BottomToolbar extends JPanel {
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             Lizzie.config.toggleShowMoveRankMark();
+            Lizzie.frame.refresh();
           }
         });
 

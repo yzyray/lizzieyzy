@@ -6,25 +6,15 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.PlainDocument;
 
 public class KomiDocument extends PlainDocument {
+  private boolean limitHalfInteger;
 
-  private static final long serialVersionUID = 1001689415662878505L;
-
-  // int maxLen;  //最长字符长度
-  // int decimalLen; //小数位数
-
-  public KomiDocument() {
+  public KomiDocument(boolean limitHalfInteger) {
     super();
+    this.limitHalfInteger = limitHalfInteger;
   }
-  //
-  //	public DoubleDocument(int newDecimalLen, int newMaxLen) {
-  //		super();
-  //	//	decimalLen = newDecimalLen;
-  //	//	maxLen = newMaxLen;
-  //	}
 
   public void insertString(int offset, String inStr, AttributeSet attrSet)
       throws BadLocationException {
-    // 获得输入框有效值
     String numStr = getText(0, offset) + inStr + getText(offset, getLength() - offset);
     if (!numStr.trim().equals("-")) {
       try {
@@ -33,7 +23,19 @@ public class KomiDocument extends PlainDocument {
         return;
       }
     }
-
+    String oldString = getText(0, getLength());
+    String newString = oldString.substring(0, offset) + inStr + oldString.substring(offset);
+    int decimalPosition = oldString.lastIndexOf(".");
+    if (decimalPosition > -1 && decimalPosition < offset) {
+      if ((newString.length() - (decimalPosition + 1)) > 1) return;
+      else if (limitHalfInteger) {
+        try {
+          if (Integer.parseInt(inStr) != 5) return;
+        } catch (NumberFormatException e) {
+          return;
+        }
+      }
+    }
     super.insertString(offset, inStr, attrSet);
   }
 }

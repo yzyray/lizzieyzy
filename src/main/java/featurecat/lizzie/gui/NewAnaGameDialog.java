@@ -243,7 +243,7 @@ public class NewAnaGameDialog extends JDialog {
     // textFieldWhite = new JFontTextField();
     //   textFieldBlack = new JFontTextField();
     textFieldKomi = new JFontTextField();
-    textFieldKomi.setDocument(new KomiDocument());
+    textFieldKomi.setDocument(new KomiDocument(true));
     GridBagConstraints gbc_textFieldKomi = new GridBagConstraints();
     gbc_textFieldKomi.fill = GridBagConstraints.BOTH;
     gbc_textFieldKomi.insets = new Insets(0, 0, 5, 0);

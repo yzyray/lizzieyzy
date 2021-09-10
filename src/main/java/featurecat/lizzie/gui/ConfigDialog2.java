@@ -272,6 +272,9 @@ public class ConfigDialog2 extends JDialog {
   private JCheckBox chkPonder;
   private JCheckBox chkStopAtEmpty;
 
+  private JCheckBox chkUseScoreDiff;
+  private JTextField txtPercentScoreDiff;
+
   public ConfigDialog2() {
     setAlwaysOnTop(Lizzie.frame.isAlwaysOnTop());
     setTitle(resourceBundle.getString("LizzieConfig.title.config"));
@@ -1336,7 +1339,7 @@ public class ConfigDialog2 extends JDialog {
     }
 
     JButton btnLizzieCache = new JButton(btnLizzieCacheIcon);
-    btnLizzieCache.setBounds(690, 500, 18, 18);
+    btnLizzieCache.setBounds(690, 499, 18, 18);
 
     btnLizzieCache.addActionListener(
         new ActionListener() {
@@ -2377,6 +2380,27 @@ public class ConfigDialog2 extends JDialog {
           });
       themeTab.add(btnReset);
 
+      chkUseScoreDiff = new JCheckBox(resourceBundle.getString("LizzieConfig.chkUseScoreDiff"));
+      chkUseScoreDiff.setBounds(172, 612, 200, 23);
+      themeTab.add(chkUseScoreDiff);
+
+      txtPercentScoreDiff = new JTextField();
+      txtPercentScoreDiff.setDocument(new DoubleDocument());
+      txtPercentScoreDiff.setBounds(380, 612, 45, 24);
+      themeTab.add(txtPercentScoreDiff);
+
+      chkUseScoreDiff.addActionListener(
+          new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              txtPercentScoreDiff.setEnabled(chkUseScoreDiff.isSelected());
+            }
+          });
+
+      JLabel lblPercentScoreDiff =
+          new JLabel(resourceBundle.getString("LizzieConfig.lblUseScoreDiffPercent"));
+      lblPercentScoreDiff.setBounds(430, 612, 250, 24);
+      themeTab.add(lblPercentScoreDiff);
+
       btnBackgroundPath = new JButton("...");
       btnBackgroundPath.addActionListener(
           new ActionListener() {
@@ -3264,6 +3288,10 @@ public class ConfigDialog2 extends JDialog {
         lblScoreMeanLineColor.setColor(theme.scoreMeanLineColor());
         setStoneIndicatorType(theme.stoneIndicatorType());
         chkShowCommentNodeColor.setSelected(theme.showCommentNodeColor(false));
+        chkUseScoreDiff.setSelected(theme.useScoreDiffInVariationTree(false));
+        txtPercentScoreDiff.setText(
+            String.valueOf(theme.scoreDiffInVariationTreeFactor(false) * 100));
+        txtPercentScoreDiff.setEnabled(chkUseScoreDiff.isSelected());
         lblCommentNodeColor.setColor(theme.commentNodeColor());
         lblCommentBackgroundColor.setColor(theme.commentBackgroundColor());
         lblCommentFontColor.setColor(theme.commentFontColor());
@@ -3313,6 +3341,10 @@ public class ConfigDialog2 extends JDialog {
         theme.config.put("font-name", cmbFontName.getSelectedItem());
         theme.config.put("ui-font-name", cmbUiFontName.getSelectedItem());
         theme.config.put("winrate-font-name", cmbWinrateFontName.getSelectedItem());
+        theme.config.put("use-scorediff-in-variation-tree", chkUseScoreDiff.isSelected());
+        theme.config.put(
+            "scorediff-in-variation-tree-factor",
+            Utils.parseTextToDouble(txtPercentScoreDiff, 50.0) / 100.0);
 
         if (theme.fontName().equals("Lizzie默认") || theme.fontName().equals("Lizzie Default")) {
           Lizzie.config.fontName = "SansSerif";
@@ -3439,6 +3471,12 @@ public class ConfigDialog2 extends JDialog {
         String.valueOf(Lizzie.config.uiConfig.optInt("comment-font-size", 0)));
     txtBackgroundFilter.setText(
         String.valueOf(Lizzie.config.uiConfig.optInt("background-filter", 20)));
+    chkUseScoreDiff.setSelected(
+        Lizzie.config.uiConfig.optBoolean("use-scorediff-in-variation-tree", true));
+    txtPercentScoreDiff.setText(
+        String.valueOf(
+            Lizzie.config.uiConfig.optDouble("scorediff-in-variation-tree-factor", 0.5) * 100));
+    txtPercentScoreDiff.setEnabled(chkUseScoreDiff.isSelected());
     Theme defTheme = new Theme("");
     tblBlunderNodes.setModel(
         new BlunderNodeTableModel(
@@ -3509,6 +3547,12 @@ public class ConfigDialog2 extends JDialog {
       LizzieFrame.uiFont =
           new Font(Lizzie.config.uiConfig.optString("ui-font-name"), Font.PLAIN, 12);
     }
+    Lizzie.config.uiConfig.put("use-scorediff-in-variation-tree", chkUseScoreDiff.isSelected());
+    Lizzie.config.uiConfig.put(
+        "scorediff-in-variation-tree-factor",
+        Utils.parseTextToDouble(
+                txtPercentScoreDiff, Lizzie.config.scoreDiffInVariationTreeFactor * 100)
+            / 100.0);
 
     if (!Lizzie.config.uiConfig.optString("winrate-font-name").isEmpty()
         && (Lizzie.config.uiConfig.getString("winrate-font-name").equals("Lizzie默认")

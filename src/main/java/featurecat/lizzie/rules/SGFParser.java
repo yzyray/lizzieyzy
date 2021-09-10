@@ -783,11 +783,6 @@ public class SGFParser {
     BoardHistoryNode node = Lizzie.board.getHistory().getStart();
     long blackPlayouts = 0;
     long whitePlayouts = 0;
-    //    if (Lizzie.frame.toolbar.exChange) {
-    //      if (Lizzie.frame.toolbar.EnginePkBatchNumberNow % 2 == 0) {
-    //        reverse = true;
-    //      }
-    //    }
     while (node.next().isPresent()) {
       if (node.getData().lastMove.isPresent() && node.getData().lastMoveColor.equals(Stone.WHITE)) {
         blackPlayouts += node.getData().getPlayouts();
@@ -797,7 +792,12 @@ public class SGFParser {
       }
       node = node.next().get();
     }
-
+    if (node.getData().lastMove.isPresent() && node.getData().lastMoveColor.equals(Stone.WHITE)) {
+      blackPlayouts += node.getData().getPlayouts();
+    }
+    if (node.getData().lastMove.isPresent() && node.getData().lastMoveColor.equals(Stone.BLACK)) {
+      whitePlayouts += node.getData().getPlayouts();
+    }
     node = Lizzie.board.getHistory().getStart();
     if (Lizzie.config.chkEngineSgfStart)
       node.getData().comment =
@@ -811,7 +811,7 @@ public class SGFParser {
                     .pkMoveTimeGame
                 / (float) 1000
             + Lizzie.resourceBundle.getString("SGFParse.seconds")
-            + " "
+            + "\n"
             + Lizzie.resourceBundle.getString("SGFParse.totalVisits")
             + blackPlayouts;
 
@@ -822,7 +822,7 @@ public class SGFParser {
                     .pkMoveTimeGame
                 / (float) 1000
             + Lizzie.resourceBundle.getString("SGFParse.seconds")
-            + " "
+            + "\n"
             + Lizzie.resourceBundle.getString("SGFParse.totalVisits")
             + +whitePlayouts;
     if (EngineManager.engineGameInfo.firstEngineIndex

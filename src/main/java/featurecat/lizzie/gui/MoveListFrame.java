@@ -55,7 +55,6 @@ import javax.swing.table.TableModel;
 import javax.swing.text.Document;
 import org.json.JSONArray;
 
-@SuppressWarnings("serial")
 public class MoveListFrame extends JFrame {
   public final DecimalFormat FORMAT_PERCENT = new DecimalFormat("#0.00");
   public final DecimalFormat FORMAT_INT = new DecimalFormat("#0");
@@ -90,7 +89,8 @@ public class MoveListFrame extends JFrame {
   public boolean isShowingWinrateGraph = Lizzie.config.isShowingWinrateGraph;
   JButton detail;
   JButton hideMove;
-  JButton btnSetTabelThresold;
+  JButton btnSetTabelThreshold;
+  JButton btnSetStatisticsThreshold;
   JTextField suggestionMoves;
   JTextField percentPlayouts;
   JTextField winrateDiffRange1;
@@ -280,8 +280,8 @@ public class MoveListFrame extends JFrame {
         if (pos.getInt(1) + pos.getInt(3) >= width || pos.getInt(2) >= height) setLocation(0, 0);
       }
     } else {
-      if (isMainEngine) setBounds(-9, 0, Lizzie.config.isChinese ? 846 : 980, 565);
-      else setBounds(737, 0, Lizzie.config.isChinese ? 846 : 980, 565);
+      if (isMainEngine) setBounds(-9, 0, Lizzie.config.isChinese ? 856 : 996, 565);
+      else setBounds(737, 0, Lizzie.config.isChinese ? 856 : 996, 565);
     }
     try {
       setIconImage(ImageIO.read(MoveListFrame.class.getResourceAsStream("/assets/logo.png")));
@@ -1274,10 +1274,12 @@ public class MoveListFrame extends JFrame {
             switch (index) {
               case 0:
                 Lizzie.config.movelistSelectedIndexTop = 0;
-                btnSetTabelThresold.setVisible(false);
+                btnSetTabelThreshold.setVisible(false);
+                btnSetStatisticsThreshold.setVisible(true);
                 break;
               case 1:
-                btnSetTabelThresold.setVisible(true);
+                btnSetTabelThreshold.setVisible(true);
+                btnSetStatisticsThreshold.setVisible(false);
                 if (selectedIndexTop != 1) {
                   sortnum = 2;
                 }
@@ -1285,7 +1287,8 @@ public class MoveListFrame extends JFrame {
                 Lizzie.config.movelistSelectedIndexTop = 1;
                 break;
               case 2:
-                btnSetTabelThresold.setVisible(true);
+                btnSetTabelThreshold.setVisible(true);
+                btnSetStatisticsThreshold.setVisible(false);
                 if (selectedIndexTop != 2) {
                   sortnum = 3;
                 }
@@ -1427,20 +1430,41 @@ public class MoveListFrame extends JFrame {
             statisticsPanel.repaint();
           }
         });
-    btnSetTabelThresold =
+    btnSetTabelThreshold =
         new JButton(Lizzie.resourceBundle.getString("Movelistframe.btnSetTabelThresold"));
-    btnSetTabelThresold.addActionListener(
+    btnSetTabelThreshold.setFocusable(false);
+    btnSetTabelThreshold.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             SetThreshold setThreshold = new SetThreshold(thisDialog, true);
             setThreshold.setVisible(true);
           }
         });
-    btnSetTabelThresold.setMargin(new Insets(0, 2, 0, 2));
-    if (selectedIndexTop == 0) btnSetTabelThresold.setVisible(false);
+    btnSetTabelThreshold.setMargin(new Insets(0, 2, 0, 2));
 
+    btnSetStatisticsThreshold =
+        new JButton(Lizzie.resourceBundle.getString("Movelistframe.btnSetStatisticsThresold"));
+    btnSetStatisticsThreshold.setFocusable(false);
+    btnSetStatisticsThreshold.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            // aaa
+            StatisticsThreshold statisticsThreshold = new StatisticsThreshold(thisDialog);
+            statisticsThreshold.setVisible(true);
+          }
+        });
+    btnSetStatisticsThreshold.setMargin(new Insets(0, 2, 0, 2));
+    if (selectedIndexTop == 0) {
+      btnSetTabelThreshold.setVisible(false);
+      btnSetStatisticsThreshold.setVisible(true);
+    } else {
+      btnSetTabelThreshold.setVisible(true);
+      btnSetStatisticsThreshold.setVisible(false);
+    }
+    filterPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 3, 2));
     filterPanel.add(hideMove);
-    filterPanel.add(btnSetTabelThresold);
+    filterPanel.add(btnSetTabelThreshold);
+    filterPanel.add(btnSetStatisticsThreshold);
     filterPanel.add(checkBlackFilter);
     filterPanel.add(checkBlack);
     filterPanel.add(checkWhiteFilter);
@@ -6105,35 +6129,35 @@ public class MoveListFrame extends JFrame {
           if (nodeInfo.isBlack) {
             totalAnalyzedBlack++;
             if (isWinrate) {
-              if (nodeInfo.getWinrateDiff() > -1) black1++;
-              else if (nodeInfo.getWinrateDiff() > -3) black2++;
-              else if (nodeInfo.getWinrateDiff() > -6) black3++;
-              else if (nodeInfo.getWinrateDiff() > -12) black4++;
-              else if (nodeInfo.getWinrateDiff() > -24) black5++;
+              if (nodeInfo.getWinrateDiff() > Lizzie.config.winLossThreshold1) black1++;
+              else if (nodeInfo.getWinrateDiff() > Lizzie.config.winLossThreshold2) black2++;
+              else if (nodeInfo.getWinrateDiff() > Lizzie.config.winLossThreshold3) black3++;
+              else if (nodeInfo.getWinrateDiff() > Lizzie.config.winLossThreshold4) black4++;
+              else if (nodeInfo.getWinrateDiff() > Lizzie.config.winLossThreshold5) black5++;
               else black6++;
             } else {
-              if (nodeInfo.getScoreMeanDiff() > -0.5) black1++;
-              else if (nodeInfo.getScoreMeanDiff() > -1.5) black2++;
-              else if (nodeInfo.getScoreMeanDiff() > -3) black3++;
-              else if (nodeInfo.getScoreMeanDiff() > -6) black4++;
-              else if (nodeInfo.getScoreMeanDiff() > -12) black5++;
+              if (nodeInfo.getScoreMeanDiff() > Lizzie.config.scoreLossThreshold1) black1++;
+              else if (nodeInfo.getScoreMeanDiff() > Lizzie.config.scoreLossThreshold2) black2++;
+              else if (nodeInfo.getScoreMeanDiff() > Lizzie.config.scoreLossThreshold3) black3++;
+              else if (nodeInfo.getScoreMeanDiff() > Lizzie.config.scoreLossThreshold4) black4++;
+              else if (nodeInfo.getScoreMeanDiff() > Lizzie.config.scoreLossThreshold5) black5++;
               else black6++;
             }
           } else {
             totalAnalyzedWhite++;
             if (isWinrate) {
-              if (nodeInfo.getWinrateDiff() > -1) white1++;
-              else if (nodeInfo.getWinrateDiff() > -3) white2++;
-              else if (nodeInfo.getWinrateDiff() > -5) white3++;
-              else if (nodeInfo.getWinrateDiff() > -10) white4++;
-              else if (nodeInfo.getWinrateDiff() > -20) white5++;
+              if (nodeInfo.getWinrateDiff() > Lizzie.config.winLossThreshold1) white1++;
+              else if (nodeInfo.getWinrateDiff() > Lizzie.config.winLossThreshold2) white2++;
+              else if (nodeInfo.getWinrateDiff() > Lizzie.config.winLossThreshold3) white3++;
+              else if (nodeInfo.getWinrateDiff() > Lizzie.config.winLossThreshold4) white4++;
+              else if (nodeInfo.getWinrateDiff() > Lizzie.config.winLossThreshold5) white5++;
               else white6++;
             } else {
-              if (nodeInfo.getScoreMeanDiff() > -0.5) white1++;
-              else if (nodeInfo.getScoreMeanDiff() > -1.5) white2++;
-              else if (nodeInfo.getScoreMeanDiff() > -3) white3++;
-              else if (nodeInfo.getScoreMeanDiff() > -6) white4++;
-              else if (nodeInfo.getScoreMeanDiff() > -12) white5++;
+              if (nodeInfo.getScoreMeanDiff() > Lizzie.config.scoreLossThreshold1) white1++;
+              else if (nodeInfo.getScoreMeanDiff() > Lizzie.config.scoreLossThreshold2) white2++;
+              else if (nodeInfo.getScoreMeanDiff() > Lizzie.config.scoreLossThreshold3) white3++;
+              else if (nodeInfo.getScoreMeanDiff() > Lizzie.config.scoreLossThreshold4) white4++;
+              else if (nodeInfo.getScoreMeanDiff() > Lizzie.config.scoreLossThreshold5) white5++;
               else white6++;
             }
           }
@@ -6199,7 +6223,9 @@ public class MoveListFrame extends JFrame {
             valueStartY + valueRowHeight / 4,
             LizzieFrame.uiFont,
             Font.PLAIN,
-            isWinrate ? "<1%" : "<0.5",
+            isWinrate
+                ? "<" + Utils.getIfRound(-Lizzie.config.winLossThreshold1) + "%"
+                : "<" + Utils.getIfRound(-Lizzie.config.scoreLossThreshold1),
             availableWidth * 0.14 * 0.94,
             valueRowHeight / 2);
     drawStringMid(
@@ -6208,7 +6234,14 @@ public class MoveListFrame extends JFrame {
         valueStartY + valueRowHeight + valueRowHeight / 4,
         LizzieFrame.uiFont,
         Font.PLAIN,
-        (isWinrate ? "1-3%" : "0.5-1.5"),
+        isWinrate
+            ? Utils.getIfRound(-Lizzie.config.winLossThreshold1)
+                + "-"
+                + Utils.getIfRound(-Lizzie.config.winLossThreshold2)
+                + "%"
+            : Utils.getIfRound(-Lizzie.config.scoreLossThreshold1)
+                + "-"
+                + Utils.getIfRound(-Lizzie.config.scoreLossThreshold2),
         availableWidth * 0.14 * 0.94,
         valueRowHeight / 2);
     drawStringMid(
@@ -6217,7 +6250,14 @@ public class MoveListFrame extends JFrame {
         valueStartY + valueRowHeight * 2 + valueRowHeight / 4,
         LizzieFrame.uiFont,
         Font.PLAIN,
-        isWinrate ? "3-6%" : "1.5-3",
+        isWinrate
+            ? Utils.getIfRound(-Lizzie.config.winLossThreshold2)
+                + "-"
+                + Utils.getIfRound(-Lizzie.config.winLossThreshold3)
+                + "%"
+            : Utils.getIfRound(-Lizzie.config.scoreLossThreshold2)
+                + "-"
+                + Utils.getIfRound(-Lizzie.config.scoreLossThreshold3),
         availableWidth * 0.14 * 0.94,
         valueRowHeight / 2);
     drawStringMid(
@@ -6226,7 +6266,14 @@ public class MoveListFrame extends JFrame {
         valueStartY + valueRowHeight * 3 + valueRowHeight / 4,
         LizzieFrame.uiFont,
         Font.PLAIN,
-        isWinrate ? "6-12%" : "3-6",
+        isWinrate
+            ? Utils.getIfRound(-Lizzie.config.winLossThreshold3)
+                + "-"
+                + Utils.getIfRound(-Lizzie.config.winLossThreshold4)
+                + "%"
+            : Utils.getIfRound(-Lizzie.config.scoreLossThreshold3)
+                + "-"
+                + Utils.getIfRound(-Lizzie.config.scoreLossThreshold4),
         availableWidth * 0.14 * 0.94,
         valueRowHeight / 2);
 
@@ -6236,7 +6283,14 @@ public class MoveListFrame extends JFrame {
         valueStartY + valueRowHeight * 4 + valueRowHeight / 4,
         LizzieFrame.uiFont,
         Font.PLAIN,
-        isWinrate ? "12-24%" : "6-12",
+        isWinrate
+            ? Utils.getIfRound(-Lizzie.config.winLossThreshold4)
+                + "-"
+                + Utils.getIfRound(-Lizzie.config.winLossThreshold5)
+                + "%"
+            : Utils.getIfRound(-Lizzie.config.scoreLossThreshold4)
+                + "-"
+                + Utils.getIfRound(-Lizzie.config.scoreLossThreshold5),
         availableWidth * 0.14 * 0.94,
         valueRowHeight / 2);
     drawStringMid(
@@ -6245,7 +6299,9 @@ public class MoveListFrame extends JFrame {
         valueStartY + valueRowHeight * 5 + valueRowHeight / 4,
         LizzieFrame.uiFont,
         Font.PLAIN,
-        isWinrate ? "≥24%" : "≥12",
+        isWinrate
+            ? "≥" + Utils.getIfRound(-Lizzie.config.winLossThreshold5) + "%"
+            : "≥" + Utils.getIfRound(-Lizzie.config.scoreLossThreshold5),
         availableWidth * 0.14 * 0.94,
         valueRowHeight / 2);
 
@@ -6256,7 +6312,7 @@ public class MoveListFrame extends JFrame {
         valueWidth,
         valueRowHeight,
         black1 / (double) totalAnalyzedBlack,
-        black1 + "",
+        String.valueOf(black1),
         new Color(22, 222, 0),
         Color.BLACK,
         new Color(150, 100, 0),
@@ -6269,7 +6325,7 @@ public class MoveListFrame extends JFrame {
         valueWidth,
         valueRowHeight,
         black2 / (double) totalAnalyzedBlack,
-        black2 + "",
+        String.valueOf(black2),
         new Color(158, 232, 34),
         Color.BLACK,
         Color.PINK,
@@ -6282,7 +6338,7 @@ public class MoveListFrame extends JFrame {
         valueWidth,
         valueRowHeight,
         black3 / (double) totalAnalyzedBlack,
-        black3 + "",
+        String.valueOf(black3),
         new Color(222, 222, 0),
         Color.BLACK,
         Color.PINK,
@@ -6295,7 +6351,7 @@ public class MoveListFrame extends JFrame {
         valueWidth,
         valueRowHeight,
         black4 / (double) totalAnalyzedBlack,
-        black4 + "",
+        String.valueOf(black4),
         new Color(200, 140, 50),
         Color.BLACK,
         Color.PINK,
@@ -6308,7 +6364,7 @@ public class MoveListFrame extends JFrame {
         valueWidth,
         valueRowHeight,
         black5 / (double) totalAnalyzedBlack,
-        black5 + "",
+        String.valueOf(black5),
         new Color(172, 16, 19),
         Color.BLACK,
         Color.PINK,
@@ -6321,7 +6377,7 @@ public class MoveListFrame extends JFrame {
         valueWidth,
         valueRowHeight,
         black6 / (double) totalAnalyzedBlack,
-        black6 + "",
+        String.valueOf(black6),
         new Color(85, 25, 80),
         Color.BLACK,
         Color.PINK,
@@ -6335,7 +6391,7 @@ public class MoveListFrame extends JFrame {
         valueWidth,
         valueRowHeight,
         white1 / (double) totalAnalyzedWhite,
-        white1 + "",
+        String.valueOf(white1),
         new Color(22, 222, 0),
         Color.WHITE,
         Color.BLUE,
@@ -6348,7 +6404,7 @@ public class MoveListFrame extends JFrame {
         valueWidth,
         valueRowHeight,
         white2 / (double) totalAnalyzedWhite,
-        white2 + "",
+        String.valueOf(white2),
         new Color(158, 232, 34),
         Color.WHITE,
         Color.BLUE,
@@ -6361,7 +6417,7 @@ public class MoveListFrame extends JFrame {
         valueWidth,
         valueRowHeight,
         white3 / (double) totalAnalyzedWhite,
-        white3 + "",
+        String.valueOf(white3),
         new Color(222, 222, 0),
         Color.WHITE,
         Color.BLUE,
@@ -6374,7 +6430,7 @@ public class MoveListFrame extends JFrame {
         valueWidth,
         valueRowHeight,
         white4 / (double) totalAnalyzedWhite,
-        white4 + "",
+        String.valueOf(white4),
         new Color(200, 140, 50),
         Color.WHITE,
         Color.BLUE,
@@ -6387,7 +6443,7 @@ public class MoveListFrame extends JFrame {
         valueWidth,
         valueRowHeight,
         white5 / (double) totalAnalyzedWhite,
-        white5 + "",
+        String.valueOf(white5),
         new Color(172, 16, 19),
         Color.WHITE,
         Color.BLUE,
@@ -6400,7 +6456,7 @@ public class MoveListFrame extends JFrame {
         valueWidth,
         valueRowHeight,
         white6 / (double) totalAnalyzedWhite,
-        white6 + "",
+        String.valueOf(white6),
         new Color(85, 25, 80),
         Color.WHITE,
         Color.BLUE,
@@ -6868,44 +6924,59 @@ public class MoveListFrame extends JFrame {
         setBackground(new Color(238, 221, 130));
       } else setBackground(Color.WHITE);
       double diffWinrate =
-          -Float.parseFloat(
+          Float.parseFloat(
               table
                   .getValueAt(row, 3)
                   .toString()
                   .substring(0, table.getValueAt(row, 3).toString().length() - 1));
       if (isKatago) {
         double scoreDiff =
-            -Float.parseFloat(
+            Float.parseFloat(
                 table
                     .getValueAt(row, 4)
                     .toString()
                     .substring(0, table.getValueAt(row, 4).toString().length() - 1));
         if (column == 4) {
-          if (scoreDiff <= -1.5) setForeground(new Color(0, 170, 170));
-          else if (scoreDiff <= 0.5) setForeground(new Color(0, 150, 0));
-          else if (scoreDiff <= 1.5) setForeground(new Color(105, 162, 34));
-          else if (scoreDiff <= 3) setForeground(new Color(150, 150, 0));
-          else if (scoreDiff <= 6) setForeground(new Color(180, 120, 45));
-          else if (scoreDiff <= 12) setForeground(new Color(175, 16, 19));
-          else setForeground(new Color(165, 25, 160));
+          if (scoreDiff >= 1.5) setForeground(new Color(0, 170, 170));
+          else if (scoreDiff <= Lizzie.config.scoreLossThreshold5)
+            setForeground(new Color(165, 25, 160));
+          else if (scoreDiff <= Lizzie.config.scoreLossThreshold4)
+            setForeground(new Color(175, 16, 19));
+          else if (scoreDiff <= Lizzie.config.scoreLossThreshold3)
+            setForeground(new Color(105, 162, 34));
+          else if (scoreDiff <= Lizzie.config.scoreLossThreshold2)
+            setForeground(new Color(150, 150, 0));
+          else if (scoreDiff <= Lizzie.config.scoreLossThreshold1)
+            setForeground(new Color(180, 120, 45));
+          else setForeground(new Color(0, 150, 0));
         } else if (column == 3) {
-          if (diffWinrate <= -3) setForeground(new Color(0, 170, 170));
-          else if (diffWinrate <= 1) setForeground(new Color(0, 150, 0));
-          else if (diffWinrate <= 3) setForeground(new Color(105, 162, 34));
-          else if (diffWinrate <= 6) setForeground(new Color(150, 150, 0));
-          else if (diffWinrate <= 12) setForeground(new Color(180, 120, 45));
-          else if (diffWinrate <= 24) setForeground(new Color(175, 16, 19));
-          else setForeground(new Color(165, 25, 160));
+          if (diffWinrate >= 3) setForeground(new Color(0, 170, 170));
+          else if (diffWinrate <= Lizzie.config.winLossThreshold5)
+            setForeground(new Color(165, 25, 160));
+          else if (diffWinrate <= Lizzie.config.winLossThreshold4)
+            setForeground(new Color(175, 16, 19));
+          else if (diffWinrate <= Lizzie.config.winLossThreshold3)
+            setForeground(new Color(105, 162, 34));
+          else if (diffWinrate <= Lizzie.config.winLossThreshold2)
+            setForeground(new Color(150, 150, 0));
+          else if (diffWinrate <= Lizzie.config.winLossThreshold1)
+            setForeground(new Color(180, 120, 45));
+          else setForeground(new Color(0, 150, 0));
         } else setForeground(Color.BLACK);
       } else {
         if (column == 3) {
-          if (diffWinrate <= -3) setForeground(new Color(0, 170, 170));
-          else if (diffWinrate <= 1) setForeground(new Color(0, 150, 0));
-          else if (diffWinrate <= 3) setForeground(new Color(105, 162, 34));
-          else if (diffWinrate <= 6) setForeground(new Color(150, 150, 0));
-          else if (diffWinrate <= 12) setForeground(new Color(180, 120, 45));
-          else if (diffWinrate <= 24) setForeground(new Color(175, 16, 19));
-          else setForeground(new Color(165, 25, 160));
+          if (diffWinrate >= 3) setForeground(new Color(0, 170, 170));
+          else if (diffWinrate <= Lizzie.config.winLossThreshold5)
+            setForeground(new Color(165, 25, 160));
+          else if (diffWinrate <= Lizzie.config.winLossThreshold4)
+            setForeground(new Color(175, 16, 19));
+          else if (diffWinrate <= Lizzie.config.winLossThreshold3)
+            setForeground(new Color(105, 162, 34));
+          else if (diffWinrate <= Lizzie.config.winLossThreshold2)
+            setForeground(new Color(150, 150, 0));
+          else if (diffWinrate <= Lizzie.config.winLossThreshold1)
+            setForeground(new Color(180, 120, 45));
+          else setForeground(new Color(0, 150, 0));
         } else setForeground(Color.BLACK);
       }
       return super.getTableCellRendererComponent(table, value, false, false, row, column);
@@ -6923,44 +6994,59 @@ public class MoveListFrame extends JFrame {
         setBackground(new Color(238, 221, 130));
       } else setBackground(Color.WHITE);
       double diffWinrate =
-          -Float.parseFloat(
+          Float.parseFloat(
               table
                   .getValueAt(row, 2)
                   .toString()
                   .substring(0, table.getValueAt(row, 2).toString().length() - 1));
       if (isKatago) {
         double scoreDiff =
-            -Float.parseFloat(
+            Float.parseFloat(
                 table
                     .getValueAt(row, 3)
                     .toString()
                     .substring(0, table.getValueAt(row, 3).toString().length() - 1));
         if (column == 3) {
-          if (scoreDiff <= -1.5) setForeground(new Color(0, 170, 170));
-          else if (scoreDiff <= 0.5) setForeground(new Color(0, 150, 0));
-          else if (scoreDiff <= 1.5) setForeground(new Color(105, 162, 34));
-          else if (scoreDiff <= 3) setForeground(new Color(150, 150, 0));
-          else if (scoreDiff <= 6) setForeground(new Color(180, 120, 45));
-          else if (scoreDiff <= 12) setForeground(new Color(175, 16, 19));
-          else setForeground(new Color(165, 25, 160));
+          if (scoreDiff >= 1.5) setForeground(new Color(0, 170, 170));
+          else if (scoreDiff <= Lizzie.config.scoreLossThreshold5)
+            setForeground(new Color(165, 25, 160));
+          else if (scoreDiff <= Lizzie.config.scoreLossThreshold4)
+            setForeground(new Color(175, 16, 19));
+          else if (scoreDiff <= Lizzie.config.scoreLossThreshold3)
+            setForeground(new Color(105, 162, 34));
+          else if (scoreDiff <= Lizzie.config.scoreLossThreshold2)
+            setForeground(new Color(150, 150, 0));
+          else if (scoreDiff <= Lizzie.config.scoreLossThreshold1)
+            setForeground(new Color(180, 120, 45));
+          else setForeground(new Color(0, 150, 0));
         } else if (column == 2) {
-          if (diffWinrate <= -3) setForeground(new Color(0, 170, 170));
-          else if (diffWinrate <= 1) setForeground(new Color(0, 150, 0));
-          else if (diffWinrate <= 3) setForeground(new Color(105, 162, 34));
-          else if (diffWinrate <= 6) setForeground(new Color(150, 150, 0));
-          else if (diffWinrate <= 12) setForeground(new Color(180, 120, 45));
-          else if (diffWinrate <= 24) setForeground(new Color(175, 16, 19));
-          else setForeground(new Color(165, 25, 160));
+          if (diffWinrate >= 3) setForeground(new Color(0, 170, 170));
+          else if (diffWinrate <= Lizzie.config.winLossThreshold5)
+            setForeground(new Color(165, 25, 160));
+          else if (diffWinrate <= Lizzie.config.winLossThreshold4)
+            setForeground(new Color(175, 16, 19));
+          else if (diffWinrate <= Lizzie.config.winLossThreshold3)
+            setForeground(new Color(105, 162, 34));
+          else if (diffWinrate <= Lizzie.config.winLossThreshold2)
+            setForeground(new Color(150, 150, 0));
+          else if (diffWinrate <= Lizzie.config.winLossThreshold1)
+            setForeground(new Color(180, 120, 45));
+          else setForeground(new Color(0, 150, 0));
         } else setForeground(Color.BLACK);
       } else {
         if (column == 2) {
-          if (diffWinrate <= -3) setForeground(new Color(0, 170, 170));
-          else if (diffWinrate <= 1) setForeground(new Color(0, 150, 0));
-          else if (diffWinrate <= 3) setForeground(new Color(105, 162, 34));
-          else if (diffWinrate <= 6) setForeground(new Color(150, 150, 0));
-          else if (diffWinrate <= 12) setForeground(new Color(180, 120, 45));
-          else if (diffWinrate <= 24) setForeground(new Color(175, 16, 19));
-          else setForeground(new Color(165, 25, 160));
+          if (diffWinrate >= 3) setForeground(new Color(0, 170, 170));
+          else if (diffWinrate <= Lizzie.config.winLossThreshold5)
+            setForeground(new Color(165, 25, 160));
+          else if (diffWinrate <= Lizzie.config.winLossThreshold4)
+            setForeground(new Color(175, 16, 19));
+          else if (diffWinrate <= Lizzie.config.winLossThreshold3)
+            setForeground(new Color(105, 162, 34));
+          else if (diffWinrate <= Lizzie.config.winLossThreshold2)
+            setForeground(new Color(150, 150, 0));
+          else if (diffWinrate <= Lizzie.config.winLossThreshold1)
+            setForeground(new Color(180, 120, 45));
+          else setForeground(new Color(0, 150, 0));
         } else setForeground(Color.BLACK);
       }
       return super.getTableCellRendererComponent(table, value, false, false, row, column);

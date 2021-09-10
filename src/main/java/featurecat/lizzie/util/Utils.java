@@ -51,6 +51,11 @@ public class Utils {
   private static int msemaphoretryroom = 1;
   private static boolean alertedNoByoyomiSoundFile = false;
 
+  public static String getIfRound(double num) {
+    if (num % 1.0 == 0) return String.valueOf((int) num);
+    return String.valueOf(num);
+  }
+
   public static void showHtmlMessage(String title, String content) {
     HtmlMessage htmlMessage = new HtmlMessage(title, content);
     htmlMessage.setVisible(true);

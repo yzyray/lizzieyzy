@@ -18,7 +18,6 @@ import javax.swing.border.*;
 /** @author unknown */
 public class GameInfoDialog extends JDialog {
   // create formatters
-  public static final DecimalFormat FORMAT_KOMI = new DecimalFormat("#0.0");
   public static final DecimalFormat FORMAT_HANDICAP = new DecimalFormat("0");
   private final ResourceBundle resourceBundle =
       Lizzie.config.useLanguage == 0
@@ -38,7 +37,7 @@ public class GameInfoDialog extends JDialog {
 
   private JFontTextField textFieldBlack;
   private JFontTextField textFieldWhite;
-  private JFontFormattedTextField textFieldKomi;
+  private JFontTextField textFieldKomi;
   private JFontFormattedTextField textFieldHandicap;
 
   private GameInfo gameInfo;
@@ -85,7 +84,8 @@ public class GameInfoDialog extends JDialog {
     textFieldBlack = new JFontTextField();
 
     // read-only
-    textFieldKomi = new JFontFormattedTextField(FORMAT_KOMI);
+    textFieldKomi = new JFontTextField();
+    textFieldKomi.setDocument(new KomiDocument(true));
     textFieldHandicap = new JFontFormattedTextField(FORMAT_HANDICAP);
     textFieldKomi.setEditable(true);
     textFieldHandicap.setEditable(false);

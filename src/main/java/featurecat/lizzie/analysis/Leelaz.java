@@ -3,12 +3,15 @@ package featurecat.lizzie.analysis;
 import featurecat.lizzie.Lizzie;
 import featurecat.lizzie.gui.EngineData;
 import featurecat.lizzie.gui.EngineFailedMessage;
+import featurecat.lizzie.gui.JFontCheckBox;
+import featurecat.lizzie.gui.JFontLabel;
 import featurecat.lizzie.gui.LizzieFrame;
 import featurecat.lizzie.gui.Message;
 import featurecat.lizzie.rules.Board;
 import featurecat.lizzie.rules.BoardData;
 import featurecat.lizzie.rules.Stone;
 import featurecat.lizzie.util.Utils;
+import java.awt.Component;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
@@ -27,6 +30,9 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.swing.Box;
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import org.jdesktop.swingx.util.OS;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -1110,12 +1116,16 @@ public class Leelaz {
               stopByPlayouts = true;
               isPondering = !isPondering;
               nameCmd();
+              if (!Lizzie.config.stopAtEmptyBoard && Lizzie.board.getHistory().noStoneBoard()) {
+                showStopPonderTips();
+              }
             } else if ((Lizzie.config.limitTime
                 && (System.currentTimeMillis() - startPonderTime)
                     > Lizzie.config.maxAnalyzeTimeMillis)) {
               stopByLimit = true;
               isPondering = !isPondering;
               nameCmd();
+              showStopPonderTips();
             }
           }
           this.canCheckAlive = true;
@@ -1508,6 +1518,35 @@ public class Leelaz {
       }
       parseHeatMap(line);
     }
+  }
+
+  private void showStopPonderTips() {
+    // TODO Auto-generated method stub
+    if (!Lizzie.config.showPonderLimitedTips) return;
+    Box box = Box.createVerticalBox();
+    JFontLabel label = new JFontLabel(Lizzie.resourceBundle.getString("leelaz.stopByLimit"));
+    label.setAlignmentX(Component.LEFT_ALIGNMENT);
+    box.add(label);
+    Utils.addFiller(box, 5, 5);
+    Utils.addFiller(box, 5, 5);
+    JFontLabel label2 = new JFontLabel(Lizzie.resourceBundle.getString("leelaz.stopByLimit2"));
+    label2.setAlignmentX(Component.LEFT_ALIGNMENT);
+    box.add(label2);
+    Utils.addFiller(box, 5, 5);
+    JFontCheckBox disableCheckBox =
+        new JFontCheckBox(Lizzie.resourceBundle.getString("LizzieFrame.noNoticeAgain"));
+    disableCheckBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+    box.add(disableCheckBox);
+    JOptionPane optionPane = new JOptionPane(box, JOptionPane.INFORMATION_MESSAGE);
+    JDialog dialog =
+        optionPane.createDialog(
+            Lizzie.frame, Lizzie.resourceBundle.getString("leelaz.stopByLimitTitle"));
+    dialog.setVisible(true);
+    if (disableCheckBox.isSelected()) {
+      Lizzie.config.showPonderLimitedTips = false;
+      Lizzie.config.uiConfig.put("show-ponder-limited-tips", Lizzie.config.showPonderLimitedTips);
+    }
+    dialog.dispose();
   }
 
   private void notifyAutoPlay(boolean playImmediately) {

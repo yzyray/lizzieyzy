@@ -637,18 +637,38 @@ public class AnalysisFrame extends JFrame {
         }
         if (isNextMove) {
           if (isSelect) {
-            if (diff <= -24 || scoreDiff <= -12) setBackground(new Color(85, 25, 80, 120));
-            else if (diff < -12 || scoreDiff <= -6) setBackground(new Color(208, 16, 19, 100));
-            else if (diff <= -6 || scoreDiff <= -3) setBackground(new Color(200, 140, 50, 100));
-            else if (diff <= -3 || scoreDiff <= -1.5) setBackground(new Color(180, 180, 0, 100));
-            else if (diff <= -1 || scoreDiff <= -0.5) setBackground(new Color(140, 202, 34, 100));
+            if (diff <= Lizzie.config.winLossThreshold5
+                || scoreDiff <= Lizzie.config.scoreLossThreshold5)
+              setBackground(new Color(85, 25, 80, 120));
+            else if (diff <= Lizzie.config.winLossThreshold4
+                || scoreDiff <= Lizzie.config.scoreLossThreshold4)
+              setBackground(new Color(208, 16, 19, 100));
+            else if (diff <= Lizzie.config.winLossThreshold3
+                || scoreDiff <= Lizzie.config.scoreLossThreshold3)
+              setBackground(new Color(200, 140, 50, 100));
+            else if (diff <= Lizzie.config.winLossThreshold2
+                || scoreDiff <= Lizzie.config.scoreLossThreshold2)
+              setBackground(new Color(180, 180, 0, 100));
+            else if (diff <= Lizzie.config.winLossThreshold1
+                || scoreDiff <= Lizzie.config.scoreLossThreshold1)
+              setBackground(new Color(140, 202, 34, 100));
             else setBackground(new Color(0, 180, 0, 100));
           } else {
-            if (diff <= -24 || scoreDiff < -12) setBackground(new Color(85, 25, 80, 70));
-            else if (diff <= -12 || scoreDiff <= -6) setBackground(new Color(208, 16, 19, 50));
-            else if (diff <= -6 || scoreDiff <= -3) setBackground(new Color(200, 140, 50, 50));
-            else if (diff <= -3 || scoreDiff <= -1.5) setBackground(new Color(180, 180, 0, 50));
-            else if (diff <= -1 || scoreDiff <= -0.5) setBackground(new Color(140, 202, 34, 50));
+            if (diff <= Lizzie.config.winLossThreshold5
+                || scoreDiff <= Lizzie.config.scoreLossThreshold5)
+              setBackground(new Color(85, 25, 80, 70));
+            else if (diff <= Lizzie.config.winLossThreshold4
+                || scoreDiff <= Lizzie.config.scoreLossThreshold4)
+              setBackground(new Color(208, 16, 19, 50));
+            else if (diff <= Lizzie.config.winLossThreshold3
+                || scoreDiff <= Lizzie.config.scoreLossThreshold3)
+              setBackground(new Color(200, 140, 50, 50));
+            else if (diff <= Lizzie.config.winLossThreshold2
+                || scoreDiff <= Lizzie.config.scoreLossThreshold2)
+              setBackground(new Color(180, 180, 0, 50));
+            else if (diff <= Lizzie.config.winLossThreshold1
+                || scoreDiff <= Lizzie.config.scoreLossThreshold1)
+              setBackground(new Color(140, 202, 34, 50));
             else setBackground(new Color(0, 180, 0, 60));
           }
         } else if (!isSelect && !isChanged) {

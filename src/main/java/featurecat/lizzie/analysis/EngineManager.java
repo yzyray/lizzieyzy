@@ -460,7 +460,7 @@ public class EngineManager {
             + "("
             + Lizzie.engineManager.engineList.get(engineGameInfo.blackEngineIndex).currentEnginename
             + ")"
-            + "_"
+            + "_vs_"
             + resourceBundle.getString("Leelaz.white")
             + "("
             + engineList.get(engineGameInfo.whiteEngineIndex).currentEnginename
@@ -895,8 +895,8 @@ public class EngineManager {
       isSaveingEngineSGF = false;
       return;
     }
+    SGFParser.appendGameTimeAndPlayouts();
     if (engineGameInfo.isBatchGame || LizzieFrame.toolbar.AutosavePk) {
-      SGFParser.appendGameTimeAndPlayouts();
       saveEngineGameFile(resgnEngineIndex);
     }
     if (engineGameInfo.isBatchGame) {

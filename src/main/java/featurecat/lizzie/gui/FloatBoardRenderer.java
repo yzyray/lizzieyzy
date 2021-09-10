@@ -996,8 +996,8 @@ public class FloatBoardRenderer {
                     markX,
                     markY,
                     stoneRadius,
-                    Lizzie.board.lastWinrateDiff(node),
-                    Lizzie.board.lastScoreMeanDiff(node),
+                    Lizzie.config.useWinLossInMoveRank ? Lizzie.board.lastWinrateDiff(node) : 0,
+                    Lizzie.config.useScoreLossInMoveRank ? Lizzie.board.lastScoreMeanDiff(node) : 0,
                     true);
               drawList[index] = 1;
             }
@@ -1008,8 +1008,10 @@ public class FloatBoardRenderer {
             int[] coords = node.getData().lastMove.get();
             int index = Board.getIndex(coords[0], coords[1]);
             if (moveNumberList[index] > 0 && drawList[index] != 1) {
-              double winrateDiff = nodeInfo.getWinrateDiff();
-              double scoreDiff = nodeInfo.getScoreMeanDiff();
+              double winrateDiff =
+                  Lizzie.config.useWinLossInMoveRank ? nodeInfo.getWinrateDiff() : 0;
+              double scoreDiff =
+                  Lizzie.config.useScoreLossInMoveRank ? nodeInfo.getScoreMeanDiff() : 0;
               int markX = x + scaledMarginWidth + squareWidth * coords[0];
               int markY = y + scaledMarginHeight + squareHeight * coords[1];
               drawMoveRankMarkCircle(g, markX, markY, stoneRadius, winrateDiff, scoreDiff, false);
@@ -1043,19 +1045,24 @@ public class FloatBoardRenderer {
       double scoreDiff,
       boolean isLastMove) {
     float radiusF = 0.1f;
-    if (winrateDiff <= -24 || scoreDiff <= -12) {
+    if (winrateDiff <= Lizzie.config.winLossThreshold5
+        || scoreDiff <= Lizzie.config.scoreLossThreshold5) {
       g.setColor(new Color(155, 25, 150));
       radiusF = 0.19f;
-    } else if (winrateDiff <= -12 || scoreDiff <= -6) {
+    } else if (winrateDiff <= Lizzie.config.winLossThreshold4
+        || scoreDiff <= Lizzie.config.scoreLossThreshold4) {
       g.setColor(new Color(208, 16, 19));
       radiusF = 0.1675f;
-    } else if (winrateDiff <= -6 || scoreDiff <= -3) {
+    } else if (winrateDiff <= Lizzie.config.winLossThreshold3
+        || scoreDiff <= Lizzie.config.scoreLossThreshold3) {
       g.setColor(new Color(200, 140, 50));
       radiusF = 0.145f;
-    } else if (winrateDiff <= -3 || scoreDiff <= -1.5) {
+    } else if (winrateDiff <= Lizzie.config.winLossThreshold2
+        || scoreDiff <= Lizzie.config.scoreLossThreshold2) {
       g.setColor(new Color(180, 180, 0));
       radiusF = 0.1225f;
-    } else if (winrateDiff <= -1 || scoreDiff <= -0.5) g.setColor(new Color(140, 202, 34));
+    } else if (winrateDiff <= Lizzie.config.winLossThreshold1
+        || scoreDiff <= Lizzie.config.scoreLossThreshold1) g.setColor(new Color(140, 202, 34));
     else g.setColor(new Color(0, 180, 0));
     int radius = (int) Math.round(squareWidth * (isLastMove ? 0.22f : radiusF));
     fillCircle(g, markX, markY, radius);

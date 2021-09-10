@@ -202,6 +202,18 @@ public class Theme {
     else return config.optBoolean(key, false);
   }
 
+  public boolean useScoreDiffInVariationTree(boolean onLoad) {
+    String key = "use-scorediff-in-variation-tree";
+    if (onLoad) return config.optBoolean(key, uiConfig.optBoolean(key, true));
+    else return config.optBoolean(key, true);
+  }
+
+  public double scoreDiffInVariationTreeFactor(boolean onLoad) {
+    String key = "scorediff-in-variation-tree-factor";
+    if (onLoad) return config.optDouble(key, uiConfig.optDouble(key, 0.5));
+    else return config.optDouble(key, 0.5);
+  }
+
   public boolean showStoneShadow(boolean onLoad) {
     String key = "show-stone-shadow";
     if (onLoad) return config.optBoolean(key, uiConfig.optBoolean(key, true));
