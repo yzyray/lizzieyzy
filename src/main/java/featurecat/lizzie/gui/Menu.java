@@ -7903,7 +7903,9 @@ public class Menu extends JMenuBar {
     chkUseWinScore.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
     chkUseWinScore.add(new JFontLabel(resourceBundle.getString("Menu.rankMenu.base"))); // 依据:
     JFontCheckBox chkWin = new JFontCheckBox(resourceBundle.getString("Menu.rankMenu.win"));
+    chkWin.setOpaque(false);
     JFontCheckBox chkScore = new JFontCheckBox(resourceBundle.getString("Menu.rankMenu.score"));
+    chkScore.setOpaque(false);
     chkWin.setToolTipText(resourceBundle.getString("Menu.rankMenu.base.tooltips"));
     chkScore.setToolTipText(resourceBundle.getString("Menu.rankMenu.base.tooltips"));
     chkUseWinScore.setToolTipText(resourceBundle.getString("Menu.rankMenu.base.tooltips"));
