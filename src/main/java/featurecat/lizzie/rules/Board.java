@@ -20,6 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Stack;
 import java.util.function.BiConsumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -338,14 +339,15 @@ public class Board {
   }
 
   public void clearAnalyzeStatusAfter(BoardHistoryNode node) {
-    node.analyzed = false;
-    if (node.numberOfChildren() > 1) {
-      // Variation
-      for (BoardHistoryNode sub : node.getVariations()) {
-        clearAnalyzeStatusAfter(sub);
+    Stack<BoardHistoryNode> stack = new Stack<>();
+    stack.push(node);
+    while (!stack.isEmpty()) {
+      BoardHistoryNode cur = stack.pop();
+      cur.analyzed = false;
+      if (cur.numberOfChildren() >= 1) {
+        for (int i = cur.numberOfChildren() - 1; i >= 0; i--)
+          stack.push(cur.getVariations().get(i));
       }
-    } else if (node.numberOfChildren() == 1) {
-      clearAnalyzeStatusAfter(node.next().orElse(null));
     }
   }
 
@@ -354,59 +356,55 @@ public class Board {
   }
 
   public void clearbestmovesafter(BoardHistoryNode node) {
-    // if (node.getData().moveNumber <= movenumber) {
-    if (node == null) return;
-    if (node.getData().getPlayouts() > 0) {
-      node.getData().isChanged = true;
-      node.nodeInfo.changed = true;
-      node.nodeInfoMain.changed = true;
-    }
-    // }
-    if (node.numberOfChildren() > 1) {
-      // Variation
-      for (BoardHistoryNode sub : node.getVariations()) {
-        clearbestmovesafter(sub);
+    Stack<BoardHistoryNode> stack = new Stack<>();
+    stack.push(node);
+    while (!stack.isEmpty()) {
+      BoardHistoryNode cur = stack.pop();
+      if (cur.getData().getPlayouts() > 0) {
+        cur.getData().isChanged = true;
+        cur.nodeInfo.changed = true;
+        cur.nodeInfoMain.changed = true;
       }
-    } else if (node.numberOfChildren() == 1) {
-      clearbestmovesafter(node.next().orElse(null));
+      if (cur.numberOfChildren() >= 1) {
+        for (int i = cur.numberOfChildren() - 1; i >= 0; i--)
+          stack.push(cur.getVariations().get(i));
+      }
     }
   }
 
   public void clearbestmovesInfomationAfter(BoardHistoryNode node) {
-    // if (node.getData().moveNumber <= movenumber) {
-    if (node.getData().getPlayouts() > 0) {
-      node.getData().bestMoves = new ArrayList<>();
-      node.getData().winrate = 50;
-      node.getData().setPlayouts(0);
-      node.getData().scoreMean = 0;
-    }
-    // }
-    if (node.numberOfChildren() > 1) {
-      // Variation
-      for (BoardHistoryNode sub : node.getVariations()) {
-        clearbestmovesInfomationAfter(sub);
+    Stack<BoardHistoryNode> stack = new Stack<>();
+    stack.push(node);
+    while (!stack.isEmpty()) {
+      BoardHistoryNode cur = stack.pop();
+      if (cur.getData().getPlayouts() > 0) {
+        cur.getData().bestMoves = new ArrayList<>();
+        cur.getData().winrate = 50;
+        cur.getData().setPlayouts(0);
+        cur.getData().scoreMean = 0;
       }
-    } else if (node.numberOfChildren() == 1) {
-      clearbestmovesInfomationAfter(node.next().orElse(null));
+      if (cur.numberOfChildren() >= 1) {
+        for (int i = cur.numberOfChildren() - 1; i >= 0; i--)
+          stack.push(cur.getVariations().get(i));
+      }
     }
   }
 
   public void clearbestmovesInfomationAfter2(BoardHistoryNode node) {
-    // if (node.getData().moveNumber <= movenumber) {
-    if (node.getData().getPlayouts2() > 0) {
-      node.getData().bestMoves2 = new ArrayList<>();
-      node.getData().winrate2 = 50;
-      node.getData().setPlayouts2(0);
-      node.getData().scoreMean2 = 0;
-    }
-    // }
-    if (node.numberOfChildren() > 1) {
-      // Variation
-      for (BoardHistoryNode sub : node.getVariations()) {
-        clearbestmovesInfomationAfter(sub);
+    Stack<BoardHistoryNode> stack = new Stack<>();
+    stack.push(node);
+    while (!stack.isEmpty()) {
+      BoardHistoryNode cur = stack.pop();
+      if (cur.getData().getPlayouts2() > 0) {
+        cur.getData().bestMoves2 = new ArrayList<>();
+        cur.getData().winrate2 = 50;
+        cur.getData().setPlayouts2(0);
+        cur.getData().scoreMean2 = 0;
       }
-    } else if (node.numberOfChildren() == 1) {
-      clearbestmovesInfomationAfter(node.next().orElse(null));
+      if (cur.numberOfChildren() >= 1) {
+        for (int i = cur.numberOfChildren() - 1; i >= 0; i--)
+          stack.push(cur.getVariations().get(i));
+      }
     }
   }
 
@@ -425,27 +423,24 @@ public class Board {
   }
 
   public void clearNodeInfo(BoardHistoryNode node) {
-    // if (node.getData().moveNumber <= movenumber) {
-    if (node == null) return;
-    if (node.getData().getPlayouts() > 0) {
-      node.nodeInfo.changed = true;
-      node.nodeInfoMain.changed = true;
-    }
-
-    if (LizzieFrame.extraMode == 2) {
-      if (node.getData().getPlayouts2() > 0) {
-        node.nodeInfo2.changed = true;
-        node.nodeInfoMain2.changed = true;
+    Stack<BoardHistoryNode> stack = new Stack<>();
+    stack.push(node);
+    while (!stack.isEmpty()) {
+      BoardHistoryNode cur = stack.pop();
+      if (cur.getData().getPlayouts() > 0) {
+        cur.nodeInfo.changed = true;
+        cur.nodeInfoMain.changed = true;
       }
-    }
-    // }
-    if (node.numberOfChildren() > 1) {
-      // Variation
-      for (BoardHistoryNode sub : node.getVariations()) {
-        clearNodeInfo(sub);
+      if (LizzieFrame.extraMode == 2) {
+        if (cur.getData().getPlayouts2() > 0) {
+          cur.nodeInfo2.changed = true;
+          cur.nodeInfoMain2.changed = true;
+        }
       }
-    } else if (node.numberOfChildren() == 1) {
-      clearNodeInfo(node.next().orElse(null));
+      if (cur.numberOfChildren() >= 1) {
+        for (int i = cur.numberOfChildren() - 1; i >= 0; i--)
+          stack.push(cur.getVariations().get(i));
+      }
     }
   }
 
@@ -464,23 +459,19 @@ public class Board {
   }
 
   public void clearbestmovesafter2(BoardHistoryNode node) {
-    // if (node.getData().moveNumber <= movenumber) {
-    // if (node.getData().getPlayouts() > 0) node.getData().isChanged = true;
-    // }
-    // node.getData().winrate = 50;
-    // node.getData().bestMoves.clear();
-    if (node.getData().getPlayouts2() > 0) {
-      node.getData().isChanged2 = true;
-      node.nodeInfo2.changed = true;
-      node.nodeInfoMain2.changed = true;
-    }
-    if (node.numberOfChildren() > 1) {
-      // Variation
-      for (BoardHistoryNode sub : node.getVariations()) {
-        clearbestmovesafter2(sub);
+    Stack<BoardHistoryNode> stack = new Stack<>();
+    stack.push(node);
+    while (!stack.isEmpty()) {
+      BoardHistoryNode cur = stack.pop();
+      if (cur.getData().getPlayouts2() > 0) {
+        cur.getData().isChanged2 = true;
+        cur.nodeInfo2.changed = true;
+        cur.nodeInfoMain2.changed = true;
       }
-    } else if (node.numberOfChildren() == 1) {
-      clearbestmovesafter2(node.next().orElse(null));
+      if (cur.numberOfChildren() >= 1) {
+        for (int i = cur.numberOfChildren() - 1; i >= 0; i--)
+          stack.push(cur.getVariations().get(i));
+      }
     }
   }
 
@@ -1306,34 +1297,31 @@ public class Board {
 
   public void addtoAllMovelistAfter(
       BoardHistoryNode node, AllMovelist listHead, ArrayList<AllMovelist> tempListNode, int type) {
-    if (node == null) return;
-    AllMovelist listNode = addToList(node, listHead, type);
-    if (hasStartStone) {
-      hasStartStone = false;
-      for (int i = 0; i < startStonelist.size(); i++) {
-        Movelist mv = startStonelist.get(i);
-        if (!mv.ispass) {
-          int[] lastCoords = {mv.x, mv.y};
-          Optional<int[]> lastMove = Optional.of(lastCoords);
-          listNode = addMoveToList(lastMove, listNode, type, mv.isblack, "", false);
+    Stack<BoardHistoryNode> stack = new Stack<>();
+    stack.push(node);
+    while (!stack.isEmpty()) {
+      BoardHistoryNode cur = stack.pop();
+      AllMovelist listNode = addToList(cur, listHead, type);
+      if (hasStartStone) {
+        hasStartStone = false;
+        for (int i = 0; i < startStonelist.size(); i++) {
+          Movelist mv = startStonelist.get(i);
+          if (!mv.ispass) {
+            int[] lastCoords = {mv.x, mv.y};
+            Optional<int[]> lastMove = Optional.of(lastCoords);
+            listNode = addMoveToList(lastMove, listNode, type, mv.isblack, "", false);
+          }
         }
       }
-    }
-
-    if (!node.next().isPresent() && !tempListNode.isEmpty()) {
-      listHead = tempListNode.get(tempListNode.size() - 1);
-      tempListNode.remove(tempListNode.size() - 1);
-    } else listHead = listNode;
-
-    if (node.numberOfChildren() > 1) {
-      // Variation
-      tempListNode.add(listHead);
-
-      for (BoardHistoryNode sub : node.getVariations()) {
-        addtoAllMovelistAfter(sub, listHead, tempListNode, type);
+      if (!cur.next().isPresent() && !tempListNode.isEmpty()) {
+        listHead = tempListNode.get(tempListNode.size() - 1);
+        tempListNode.remove(tempListNode.size() - 1);
+      } else listHead = listNode;
+      if (cur.numberOfChildren() >= 1) {
+        if (cur.numberOfChildren() > 1) tempListNode.add(listHead);
+        for (int i = cur.numberOfChildren() - 1; i >= 0; i--)
+          stack.push(cur.getVariations().get(i));
       }
-    } else if (node.numberOfChildren() == 1) {
-      addtoAllMovelistAfter(node.next().orElse(null), listHead, tempListNode, type);
     }
   }
 
@@ -3490,26 +3478,27 @@ public class Board {
   }
 
   public void getMoveLinkedListAfterHelper(BoardHistoryNode node, MoveLinkedList head) {
-    if (node.extraStones != null) {
-      for (int i = node.extraStones.size() - 1; i >= 0; i--) {
-        ExtraStones stone = node.extraStones.get(i);
-        int[] lastCoords = {stone.x, stone.y};
-        Optional<int[]> lastMove = Optional.of(lastCoords);
-        head = addMoveToLinedList(head, lastMove, stone.isBlack, false);
+    Stack<BoardHistoryNode> stack = new Stack<>();
+    stack.push(node);
+    while (!stack.isEmpty()) {
+      BoardHistoryNode cur = stack.pop();
+      if (cur.extraStones != null) {
+        for (int i = cur.extraStones.size() - 1; i >= 0; i--) {
+          ExtraStones stone = cur.extraStones.get(i);
+          int[] lastCoords = {stone.x, stone.y};
+          Optional<int[]> lastMove = Optional.of(lastCoords);
+          head = addMoveToLinedList(head, lastMove, stone.isBlack, false);
+        }
       }
-    }
-    Optional<int[]> lastMove = node.getData().lastMove;
-    if (lastMove.isPresent() || !node.getData().dummy)
-      head =
-          addMoveToLinedList(
-              head, lastMove, node.getData().lastMoveColor.isBlack(), !node.previous().isPresent());
-    if (node.numberOfChildren() > 1) {
-      // Variation
-      for (BoardHistoryNode sub : node.getVariations()) {
-        getMoveLinkedListAfterHelper(sub, head);
+      Optional<int[]> lastMove = cur.getData().lastMove;
+      if (lastMove.isPresent() || !cur.getData().dummy)
+        head =
+            addMoveToLinedList(
+                head, lastMove, cur.getData().lastMoveColor.isBlack(), !cur.previous().isPresent());
+      if (cur.numberOfChildren() >= 1) {
+        for (int i = cur.numberOfChildren() - 1; i >= 0; i--)
+          stack.push(cur.getVariations().get(i));
       }
-    } else if (node.numberOfChildren() == 1) {
-      getMoveLinkedListAfterHelper(node.next().orElse(null), head);
     }
   }
 
@@ -3837,38 +3826,22 @@ public class Board {
   }
 
   public void findMoveInAnyBranch(int[] coords, BoardHistoryNode node) {
-    // TODO Auto-generated method stub
-    if (node.getData().lastMove.isPresent()
-        && node.getData().lastMove.get()[0] == coords[0]
-        && node.getData().lastMove.get()[1] == coords[1]) moveToAnyPosition(node);
-    else {
-      if (node.numberOfChildren() > 1) {
-        // Variation
-        for (BoardHistoryNode sub : node.getVariations()) {
-          findMoveInAnyBranch(coords, sub);
-        }
-      } else if (node.numberOfChildren() == 1) {
-        findMoveInAnyBranch(coords, node.next().orElse(null));
+    Stack<BoardHistoryNode> stack = new Stack<>();
+    stack.push(node);
+    while (!stack.isEmpty()) {
+      BoardHistoryNode cur = stack.pop();
+      if (cur.getData().lastMove.isPresent()
+          && cur.getData().lastMove.get()[0] == coords[0]
+          && cur.getData().lastMove.get()[1] == coords[1]) {
+        moveToAnyPosition(cur);
+        return;
+      }
+      if (cur.numberOfChildren() >= 1) {
+        for (int i = cur.numberOfChildren() - 1; i >= 0; i--)
+          stack.push(cur.getVariations().get(i));
       }
     }
   }
-
-  //  public void testGroup() {
-  //    Lizzie.frame.isInScoreMode = true;
-  //    getGroupInfo();
-  //    printGroup();
-  //  }
-  //
-  //  private void printGroup() {
-  //    System.out.println("------------------");
-  //    for (int j = 0; j < boardHeight; j++) {
-  //      for (int i = 0; i < boardWidth; i++) {
-  //        if (boardGroupInfo.groupStatus[i][j].isMarkedEmpty) System.out.print("x");
-  //        else System.out.print(boardGroupInfo.groupStatus[i][j].value);
-  //      }
-  //      System.out.println("");
-  //    }
-  //  }
 
   public void showGroupResult() {
     Lizzie.frame.drawScore(boardGroupInfo);

@@ -1762,40 +1762,41 @@ public class LizzieFrame extends JFrame {
                 return 0;
               }
             });
+        if (data2.size() > row) {
+          NodeInfo data = data2.get(row);
+          if (Lizzie.board.isPkBoard) {
+            switch (col) {
+              case 0:
+                return data.moveNum;
+              case 1:
+                return Board.convertCoordinatesToName(data.coords[0], data.coords[1]);
+              case 2:
+                return (data.diffWinrate < 0 ? "+" : "-")
+                    + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.diffWinrate));
+              case 3:
+                return (data.scoreMeanDiff < 0 ? "+" : "-")
+                    + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.scoreMeanDiff));
+              default:
+                return "";
+            }
+          } else {
+            switch (col) {
+              case 0:
+                return data.moveNum;
+              case 1:
+                return Board.convertCoordinatesToName(data.coords[0], data.coords[1]);
+              case 2:
+                return (data.diffWinrate > 0 ? "+" : "-")
+                    + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.diffWinrate));
 
-        NodeInfo data = data2.get(row);
-        if (Lizzie.board.isPkBoard) {
-          switch (col) {
-            case 0:
-              return data.moveNum;
-            case 1:
-              return Board.convertCoordinatesToName(data.coords[0], data.coords[1]);
-            case 2:
-              return (data.diffWinrate < 0 ? "+" : "-")
-                  + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.diffWinrate));
-            case 3:
-              return (data.scoreMeanDiff < 0 ? "+" : "-")
-                  + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.scoreMeanDiff));
-            default:
-              return "";
+              case 3:
+                return (data.scoreMeanDiff > 0 ? "+" : "-")
+                    + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.scoreMeanDiff));
+              default:
+                return "";
+            }
           }
-        } else {
-          switch (col) {
-            case 0:
-              return data.moveNum;
-            case 1:
-              return Board.convertCoordinatesToName(data.coords[0], data.coords[1]);
-            case 2:
-              return (data.diffWinrate > 0 ? "+" : "-")
-                  + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.diffWinrate));
-
-            case 3:
-              return (data.scoreMeanDiff > 0 ? "+" : "-")
-                  + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.scoreMeanDiff));
-            default:
-              return "";
-          }
-        }
+        } else return "";
       }
     };
   }
@@ -5661,7 +5662,6 @@ public class LizzieFrame extends JFrame {
 
     // Title
     strokeRadius = 2;
-    g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     g.setColor(Color.WHITE);
     // Last move
     // validLastWinrate && validWinrate
@@ -5691,16 +5691,9 @@ public class LizzieFrame extends JFrame {
       if (!curData.bestMoves.isEmpty()) {
         double score = curData.bestMoves.get(0).scoreMean;
         if (curData.blackToPlay) {
-          // if (Lizzie.config.showKataGoBoardScoreMean) {
           score = score + curData.getKomi();
-          //  }
         } else {
-          //  if (Lizzie.config.showKataGoBoardScoreMean) {
           score = -score + curData.getKomi();
-          //  }
-          //  if (Lizzie.config.kataGoScoreMeanAlwaysBlack) {
-          //    score = -score;
-          //   }
         }
         scoreOnStatic = score;
         scoreStdev = Lizzie.leelaz.scoreStdev;
@@ -5727,24 +5720,7 @@ public class LizzieFrame extends JFrame {
               + " "
               + Lizzie.resourceBundle.getString("LizzieFrame.komi")
               + Lizzie.leelaz.komi;
-    } // else {
-    //  if (!komi.equals("7.5")) text = text + "贴目:" + komi;
-    //  }
-    //      if (Lizzie.engineManager.isSaveingEngineSGF) {
-    //          text =
-    //              // "黑:""白:"
-    //              text
-    //                  + " "
-    //                  +Lizzie.resourceBundle.getString("LizzieFrame.black")
-    //                  + Lizzie.engineManager.engineList.get(
-    //                          Lizzie.engineManager.engineGameInfo.blackEngineIndex)
-    //                      .oriEnginename
-    //                  + " "
-    //                  +Lizzie.resourceBundle.getString("LizzieFrame.white")
-    //                  + Lizzie.engineManager.engineList.get(
-    //                          Lizzie.engineManager.engineGameInfo.whiteEngineIndex)
-    //                      .oriEnginename;
-    //      }
+    }
     if (EngineManager.isEngineGame) {
       drawString(
           g,
@@ -5784,7 +5760,6 @@ public class LizzieFrame extends JFrame {
           0,
           false);
     }
-    //    }
 
     if (validWinrate || validLastWinrate) {
       int maxBarwidth = (int) (width);
@@ -5838,6 +5813,12 @@ public class LizzieFrame extends JFrame {
             };
             g.fillPolygon(xPoints, yPoints, 3);
           }
+          if (diffWidth > (isGig ? 7 : 5)) {
+            g.setColor(Color.GRAY);
+            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+            g.drawLine(lastPosxW, barPosY, lastPosxW, barPosY + barHeight - 1);
+            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+          }
           g.setStroke(oldstroke);
         }
       }
@@ -5859,7 +5840,7 @@ public class LizzieFrame extends JFrame {
       if (shouldDrawMoveNumberDown()) {
         int swB = g.getFontMetrics().stringWidth(winStringB);
         String moveNumber =
-            Lizzie.board.getHistory().getCurrentHistoryNode().getData().moveNumber + "";
+            String.valueOf(Lizzie.board.getHistory().getCurrentHistoryNode().getData().moveNumber);
         int swM = g.getFontMetrics().stringWidth(moveNumber);
         if (maxBarwidth > 2 * (swM) + swB + swW) {
           g.drawString(
@@ -12286,10 +12267,9 @@ public class LizzieFrame extends JFrame {
   class BlunderTableCellRenderer extends DefaultTableCellRenderer {
     public Component getTableCellRendererComponent(
         JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-      if (Board.convertNameToCoordinates(table.getValueAt(row, 1).toString())[0]
-              == Lizzie.frame.clickbadmove[0]
-          && Board.convertNameToCoordinates(table.getValueAt(row, 1).toString())[1]
-              == Lizzie.frame.clickbadmove[1]) {
+      String coordStr = table.getValueAt(row, 1).toString();
+      int[] coords = Board.convertNameToCoordinates(coordStr);
+      if (coords[0] == Lizzie.frame.clickbadmove[0] && coords[1] == Lizzie.frame.clickbadmove[1]) {
         setBackground(new Color(238, 221, 130));
       } else setBackground(blunderBackground);
       try {

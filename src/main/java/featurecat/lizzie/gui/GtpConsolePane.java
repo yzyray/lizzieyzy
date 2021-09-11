@@ -191,7 +191,7 @@ public class GtpConsolePane extends JDialog {
     executor.execute(this::read);
     if (Lizzie.config.logGtpToFile) {
       try {
-        bos = new FileOutputStream("LastGtpLogs.txt");
+        bos = new FileOutputStream("LastGtpLogs_" + Lizzie.lizzieVersion + ".txt");
       } catch (FileNotFoundException e1) {
         // TODO Auto-generated catch block
         e1.printStackTrace();

@@ -1677,30 +1677,14 @@ public class BottomToolbar extends JPanel {
                 }
               } else {
                 btnEnginePkStop.setText("继续");
-                if (Lizzie.config.enginePkPonder) {
-                  Lizzie.engineManager
-                      .engineList
-                      .get(EngineManager.engineGameInfo.blackEngineIndex)
-                      .nameCmd();
-                  Lizzie.engineManager
-                      .engineList
-                      .get(EngineManager.engineGameInfo.whiteEngineIndex)
-                      .nameCmd();
-                } else {
-                  if (Lizzie.board.getData().blackToPlay) {
-
-                    Lizzie.engineManager
-                        .engineList
-                        .get(EngineManager.engineGameInfo.blackEngineIndex)
-                        .nameCmd();
-                  } else {
-
-                    Lizzie.engineManager
-                        .engineList
-                        .get(EngineManager.engineGameInfo.whiteEngineIndex)
-                        .nameCmd();
-                  }
-                }
+                Lizzie.engineManager
+                    .engineList
+                    .get(EngineManager.engineGameInfo.blackEngineIndex)
+                    .nameCmd();
+                Lizzie.engineManager
+                    .engineList
+                    .get(EngineManager.engineGameInfo.whiteEngineIndex)
+                    .nameCmd();
                 isPkStop = true;
               }
               //  Lizzie.engineManager.startInfoTime = System.currentTimeMillis();

@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
@@ -1226,7 +1227,16 @@ public class SGFParser {
     // * with 'xy' = coordinates ; or 'tt' for pass.
 
     // Write variation tree
-    builder.append(generateNode(board, curNode, forUpload));
+    Stack<BoardHistoryNode> stack = new Stack<>();
+    stack.push(curNode);
+    while (!stack.isEmpty()) {
+      BoardHistoryNode cur = stack.pop();
+      builder = generateNode(board, cur, forUpload, builder, writer);
+      if (cur.numberOfChildren() >= 1) {
+        for (int i = cur.numberOfChildren() - 1; i >= 0; i--)
+          stack.push(cur.getVariations().get(i));
+      }
+    }
 
     // close file
     builder.append(')');
@@ -1304,12 +1314,10 @@ public class SGFParser {
     return matchValue * 100 / analyzed;
   }
 
-  private static String generateNode(Board board, BoardHistoryNode node, boolean forUpload)
+  private static StringBuilder generateNode(
+      Board board, BoardHistoryNode node, boolean forUpload, StringBuilder builder, Writer writer)
       throws IOException {
-    StringBuilder builder = new StringBuilder("");
-
     if (node != null) {
-
       BoardData data = node.getData();
       String stone = "";
       if (Stone.BLACK.equals(data.lastMoveColor) || Stone.WHITE.equals(data.lastMoveColor)) {
@@ -1400,24 +1408,17 @@ public class SGFParser {
           }
         }
       }
-      if (node.numberOfChildren() > 1) {
-        // Variation
-        for (BoardHistoryNode sub : node.getVariations()) {
-          builder.append("(");
-          builder.append(generateNode(board, sub, forUpload));
-          builder.append(")");
-        }
-      } else if (node.numberOfChildren() == 1) {
-        builder.append(generateNode(board, node.next().orElse(null), forUpload));
-      } else {
+      if (node.numberOfChildren() < 1)
         if (node.isEndDummay()) {
           builder.append(";DD[true]");
         }
-        return builder.toString();
+      String str = builder.toString();
+      if (str.length() > 20000) {
+        writer.append(str);
+        builder = new StringBuilder("");
       }
     }
-
-    return builder.toString();
+    return builder;
   }
 
   /**

@@ -60,11 +60,6 @@ public class Lizzie {
     config = new Config();
     try {
       LizzieFrame.uiFont = new Font("SansSerif", Font.TRUETYPE_FONT, 12);
-      //          Font.createFont(
-      //              Font.TRUETYPE_FONT,
-      //              Thread.currentThread()
-      //                  .getContextClassLoader()
-      //                  .getResourceAsStream("fonts/OpenSans-Regular.ttf"));
       LizzieFrame.winrateFont =
           Font.createFont(
               Font.TRUETYPE_FONT,
@@ -87,12 +82,12 @@ public class Lizzie {
     }
     if (config.logConsoleToFile) {
       PrintStream oldPrintStream = System.out;
-      FileOutputStream bos = new FileOutputStream("LastConsoleLogs.txt");
+      FileOutputStream bos = new FileOutputStream("LastConsoleLogs_" + lizzieVersion + ".txt");
       MultiOutputStream multi = new MultiOutputStream(new PrintStream(bos), oldPrintStream);
       System.setOut(new PrintStream(multi));
 
       PrintStream oldErrorPrintStream = System.err;
-      FileOutputStream bosError = new FileOutputStream("LastErrorLogs.txt");
+      FileOutputStream bosError = new FileOutputStream("LastErrorLogs_" + lizzieVersion + ".txt");
       MultiOutputStream multiError =
           new MultiOutputStream(new PrintStream(bosError), oldErrorPrintStream);
       System.setErr(new PrintStream(multiError));
