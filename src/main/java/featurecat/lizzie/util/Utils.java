@@ -458,7 +458,7 @@ public class Utils {
    *     45k, 133523 -> 134k, 1234567 -> 1.2m
    */
   public static String getPlayoutsString(int playouts) {
-    if (playouts >= 1_000_000) {
+    if (playouts >= 10_000_000) {
       double playoutsDouble = (double) playouts / 100_000; // 1234567 -> 12.34567
       return round(playoutsDouble) / 10.0 + "m";
     } else if (playouts >= 10_000) {
