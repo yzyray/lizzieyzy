@@ -132,11 +132,11 @@ public class Board {
     Pattern p = Pattern.compile(reg);
     Matcher m = p.matcher(namedCoordinate);
     if (m.find() && m.groupCount() == 2) {
-      String Xcoords = m.group(1);
+      String xCoords = m.group(1);
       int x =
-          Xcoords.length() == 2
-              ? (asDigit(Xcoords.substring(0, 1)) + 1) * 25 + asDigit(Xcoords.substring(1, 2))
-              : asDigit(Xcoords);
+          xCoords.length() == 2
+              ? (asDigit(xCoords.substring(0, 1)) + 1) * 25 + asDigit(xCoords.substring(1, 2))
+              : asDigit(xCoords);
       int y = boardHeight - Integer.parseInt(m.group(2));
       if (y < 0)
         for (int i = 1; i < m.group(2).length(); i++) {
@@ -2716,7 +2716,7 @@ public class Board {
     Lizzie.leelaz.komi = Lizzie.leelaz.orikomi;
     Lizzie.leelaz.clear();
     Lizzie.leelaz.sendCommand("komi " + Lizzie.leelaz.orikomi);
-    LizzieFrame.menu.txtKomi.setText(Lizzie.leelaz.orikomi + "");
+    LizzieFrame.menu.txtKomi.setText(String.valueOf(Lizzie.leelaz.orikomi));
     Lizzie.board.getHistory().getGameInfo().resetAllNoKomi();
     Lizzie.board.getHistory().getGameInfo().setKomi(Lizzie.leelaz.orikomi);
     Lizzie.frame.clearKataEstimate();

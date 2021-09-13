@@ -32,35 +32,6 @@ public class SetMatchAiPara extends JDialog {
     lblAi.setBounds(10, 10, 762, 29);
     buttonPane.add(lblAi);
 
-    //    JButton btnConfirm =
-    //        new JButton(Lizzie.resourceBundle.getString("SetMatchAiPara.btnConfirm")); // ("确定");
-    //    btnConfirm.addActionListener(
-    //        new ActionListener() {
-    //          public void actionPerformed(ActionEvent e) {
-    //
-    //            if (applyChange()) {
-    //              setVisible(false);
-    //              Lizzie.board.clearNodeInfo(Lizzie.board.getHistory().getStart());
-    //              Lizzie.board.setMovelistAll();
-    //              Lizzie.frame.refresh();
-    //            }
-    //          }
-    //        });
-    //    btnConfirm.setBounds(329, 177, 93, 29);
-    //    buttonPane.add(btnConfirm);
-
-    //    txtMatchAiTemprature = new JTextField();
-    //    txtMatchAiTemprature.setBounds(Lizzie.config.isChinese ? 75 : 118, 151, 41, 18);
-    //    buttonPane.add(txtMatchAiTemprature);
-    //    txtMatchAiTemprature.setText(Lizzie.config.matchAiTemperature + "");
-
-    //    JLabel lblMatchTemprature =
-    //        new JLabel(
-    //            Lizzie.resourceBundle.getString("SetMatchAiPara.lblMatchTemprature")); //
-    // ("设置吻合温度:");
-    //    lblMatchTemprature.setBounds(10, 153, 125, 15);
-    //    buttonPane.add(lblMatchTemprature);
-
     JLabel lblCalculation =
         new JLabel(Lizzie.resourceBundle.getString("SetMatchAiPara.lblCalculation")); // ("计算方式:");
     lblCalculation.setBounds(10, 50, 93, 15);

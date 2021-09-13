@@ -74,7 +74,7 @@ public class SetReplayTime extends JDialog {
     buttonPane.add(time);
     time.setColumns(3);
 
-    time.setText((int) (Lizzie.config.replayBranchIntervalSeconds * 1000) + "");
+    time.setText(String.valueOf((int) (Lizzie.config.replayBranchIntervalSeconds * 1000)));
     try {
       this.setIconImage(ImageIO.read(MoreEngines.class.getResourceAsStream("/assets/logo.png")));
     } catch (IOException e) {

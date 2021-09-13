@@ -765,7 +765,7 @@ public class Leelaz {
             isStaticPda = true;
           }
           if (LizzieFrame.menu.setPda != null)
-            LizzieFrame.menu.setPda.txtDymCap.setText(pdaCap + "");
+            LizzieFrame.menu.setPda.txtDymCap.setText(String.valueOf(pdaCap));
         }
       }
     }
@@ -1202,7 +1202,7 @@ public class Leelaz {
               isStaticPda = true;
             }
             if (LizzieFrame.menu.setPda != null)
-              LizzieFrame.menu.setPda.txtDymCap.setText(pdaCap + "");
+              LizzieFrame.menu.setPda.txtDymCap.setText(String.valueOf(pdaCap));
           }
         }
       }
@@ -1952,7 +1952,6 @@ public class Leelaz {
       Lizzie.board.getHistory().getGameInfo().setKomi(komi);
       Lizzie.board.getHistory().getGameInfo();
       GameInfo.DEFAULT_KOMI = (double) komi;
-      //	Lizzie.frame.komi = komi + "";
       firstLoad = false;
     }
   }

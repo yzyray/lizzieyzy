@@ -189,9 +189,8 @@ public class AnalysisSettings extends JDialog {
 
     txtMaxVisits.setText(
         (Lizzie.frame.isBatchAnalysisMode
-                ? Lizzie.config.batchAnalysisPlayouts
-                : Lizzie.config.analysisMaxVisits)
-            + "");
+            ? String.valueOf(Lizzie.config.batchAnalysisPlayouts)
+            : String.valueOf(Lizzie.config.analysisMaxVisits)));
     engineCmd.setText(Lizzie.config.analysisEngineCommand);
 
     if (Lizzie.config.analysisUseCurrentRules) rdoUseCurrentRules.setSelected(true);

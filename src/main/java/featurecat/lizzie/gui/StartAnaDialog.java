@@ -115,7 +115,7 @@ public class StartAnaDialog extends JDialog {
       nf.setGroupingUsed(false);
       txtAnalysisPlayouts = new JTextField();
       txtAnalysisPlayouts.setDocument(new IntDocument());
-      txtAnalysisPlayouts.setText(Lizzie.config.batchAnalysisPlayouts + "");
+      txtAnalysisPlayouts.setText(String.valueOf(Lizzie.config.batchAnalysisPlayouts));
       txtAnalysisPlayouts.setFont(
           new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
       contentPanel.add(

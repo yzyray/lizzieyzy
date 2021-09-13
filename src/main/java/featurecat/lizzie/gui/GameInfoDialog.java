@@ -137,7 +137,7 @@ public class GameInfoDialog extends JDialog {
     textFieldBlack.setText(gameInfo.getPlayerBlack());
     textFieldWhite.setText(gameInfo.getPlayerWhite());
     textFieldHandicap.setText(FORMAT_HANDICAP.format(gameInfo.getHandicap()));
-    textFieldKomi.setText(gameInfo.getKomi() + "");
+    textFieldKomi.setText(String.valueOf(gameInfo.getKomi()));
     // textFieldKomi.setText(FORMAT_KOMI.format(gameInfo.getKomi()));
   }
 

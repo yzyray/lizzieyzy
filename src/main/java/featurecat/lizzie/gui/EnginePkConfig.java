@@ -126,13 +126,13 @@ public class EnginePkConfig extends JDialog {
       getContentPane().add(lblresignSettingWhite4);
     }
 
-    txtresignSettingBlack.setText(Lizzie.config.firstEngineResignMoveCounts + "");
-    txtresignSettingBlack2.setText(Lizzie.config.firstEngineResignWinrate + "");
-    txtresignSettingBlackMinMove.setText(Lizzie.config.firstEngineMinMove + "");
+    txtresignSettingBlack.setText(String.valueOf(Lizzie.config.firstEngineResignMoveCounts));
+    txtresignSettingBlack2.setText(String.valueOf(Lizzie.config.firstEngineResignWinrate));
+    txtresignSettingBlackMinMove.setText(String.valueOf(Lizzie.config.firstEngineMinMove));
 
-    txtresignSettingWhite.setText(Lizzie.config.secondEngineResignMoveCounts + "");
-    txtresignSettingWhite2.setText(Lizzie.config.secondEngineResignWinrate + "");
-    txtresignSettingWhiteMinMove.setText(Lizzie.config.secondEngineMinMove + "");
+    txtresignSettingWhite.setText(String.valueOf(Lizzie.config.secondEngineResignMoveCounts));
+    txtresignSettingWhite2.setText(String.valueOf(Lizzie.config.secondEngineResignWinrate));
+    txtresignSettingWhiteMinMove.setText(String.valueOf(Lizzie.config.secondEngineMinMove));
 
     chkExchange =
         new JFontCheckBox(resourceBundle.getString("EnginePkConfig.chkExchange")); // ("交换黑白");
@@ -241,7 +241,7 @@ public class EnginePkConfig extends JDialog {
     // txtStartNum.setColumns(10);
 
     chkSatartNum.setSelected(Lizzie.config.chkPkStartNum);
-    txtStartNum.setText(Lizzie.config.pkStartNum + "");
+    txtStartNum.setText(String.valueOf(Lizzie.config.pkStartNum));
 
     rdoGenmove =
         new JFontRadioButton(
@@ -449,8 +449,6 @@ public class EnginePkConfig extends JDialog {
             setVisible(false);
           }
         });
-    //    txtresignSettingBlack.setText(Lizzie.frame.toolbar.pkResignMoveCounts + "");
-    //    txtresignSettingBlack2.setText(String.valueOf(Lizzie.frame.toolbar.pkResginWinrate));
     if (EngineManager.engineGameInfo != null && EngineManager.engineGameInfo.batchGameName != null)
       txtnameSetting.setText(LizzieFrame.toolbar.batchPkNameToolbar);
     if (LizzieFrame.toolbar.AutosavePk) {
@@ -469,7 +467,7 @@ public class EnginePkConfig extends JDialog {
     if (LizzieFrame.toolbar.checkGameMaxMove) {
       chkGameMAX.setSelected(true);
     }
-    txtGameMAX.setText(LizzieFrame.toolbar.maxGameMoves + "");
+    txtGameMAX.setText(String.valueOf(LizzieFrame.toolbar.maxGameMoves));
 
     //    if (Lizzie.frame.toolbar.checkGameMinMove) {
     //      chkGameMIN.setSelected(true);
@@ -479,8 +477,8 @@ public class EnginePkConfig extends JDialog {
       chkRandomMove.setSelected(true);
     }
     if (LizzieFrame.toolbar.randomMove > 0)
-      txtRandomMove.setText(LizzieFrame.toolbar.randomMove + "");
-    txtRandomDiffWinrate.setText(LizzieFrame.toolbar.randomDiffWinrate + "");
+      txtRandomMove.setText(String.valueOf(LizzieFrame.toolbar.randomMove));
+    txtRandomDiffWinrate.setText(String.valueOf(LizzieFrame.toolbar.randomDiffWinrate));
 
     JFontLabel label = new JFontLabel("%"); // (第一选点永不排除)
     label.setBounds(
@@ -492,7 +490,7 @@ public class EnginePkConfig extends JDialog {
     if (LizzieFrame.toolbar.enginePkSaveWinrate) chkSaveWinrate.setSelected(true);
 
     chkRandomMoveVists.setSelected(Lizzie.config.checkRandomVisits);
-    txtRandomMoveVists.setText(Lizzie.config.percentsRandomVisits + "");
+    txtRandomMoveVists.setText(String.valueOf(Lizzie.config.percentsRandomVisits));
 
     chkPkPonder = new JFontCheckBox("后台计算");
     chkPkPonder.setBounds(428, 6, 77, 23);

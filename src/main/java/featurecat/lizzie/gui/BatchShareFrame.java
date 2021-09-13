@@ -274,9 +274,8 @@ public class BatchShareFrame extends JDialog {
         wScore = "-1";
       }
     }
-    // analyzedMove = (analyzedBlack + analyzedWhite) + "";
-    allMove = move + "";
-    String analyzedMoveStr = analyzedMove + "";
+    allMove = String.valueOf(move);
+    String analyzedMoveStr = String.valueOf(analyzedMove);
     SocketUpfile socket = new SocketUpfile();
     socket.SocketUpfile(
         b.replaceAll(">", ""),

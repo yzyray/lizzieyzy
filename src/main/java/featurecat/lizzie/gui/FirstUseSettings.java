@@ -736,10 +736,10 @@ public class FirstUseSettings extends JDialog {
       else rdoSysLooks.setSelected(true);
       if (Lizzie.config.enableLizzieCache) rdoLizzieCacheEnable.setSelected(true);
       else rdoLizzieCacheDisable.setSelected(true);
-      txtLimitVariation.setText(Lizzie.config.limitBranchLength + "");
-      txtLimitSuggestion.setText(Lizzie.config.limitMaxSuggestion + "");
+      txtLimitVariation.setText(String.valueOf(Lizzie.config.limitBranchLength));
+      txtLimitSuggestion.setText(String.valueOf(Lizzie.config.limitMaxSuggestion));
       txtMaxAnalyzeTime.setText(String.valueOf(Lizzie.config.maxAnalyzeTimeMillis / 1000));
-      txtMaxAnalyzePlayouts.setText(Lizzie.config.limitPlayouts + "");
+      txtMaxAnalyzePlayouts.setText(String.valueOf(Lizzie.config.limitPlayouts));
       chkLimitPlayouts.setSelected(Lizzie.config.limitPlayout);
       chkLimitTime.setSelected(Lizzie.config.limitTime);
       txtMaxAnalyzeTime.setEnabled(Lizzie.config.limitTime);

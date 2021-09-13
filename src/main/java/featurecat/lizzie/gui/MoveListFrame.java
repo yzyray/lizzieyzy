@@ -522,7 +522,7 @@ public class MoveListFrame extends JFrame {
     customStart = new JTextField();
     customStart.setColumns(3);
     customStart.setDocument(new IntDocument());
-    customStart.setText(Lizzie.config.gameStatisticsCustomStart + "");
+    customStart.setText(String.valueOf(Lizzie.config.gameStatisticsCustomStart));
 
     Document dtCustomStart = customStart.getDocument();
     dtCustomStart.addDocumentListener(
@@ -543,7 +543,7 @@ public class MoveListFrame extends JFrame {
     customEnd = new JTextField();
     customEnd.setColumns(3);
     customEnd.setDocument(new IntDocument());
-    customEnd.setText(Lizzie.config.gameStatisticsCustomEnd + "");
+    customEnd.setText(String.valueOf(Lizzie.config.gameStatisticsCustomEnd));
 
     Document dtCustomEnd = customEnd.getDocument();
     dtCustomEnd.addDocumentListener(
@@ -567,7 +567,7 @@ public class MoveListFrame extends JFrame {
     openingEndMove.setDocument(new IntDocument());
     openingEndMove.setColumns(3);
 
-    openingEndMove.setText(Lizzie.config.openingEndMove + "");
+    openingEndMove.setText(String.valueOf(Lizzie.config.openingEndMove));
 
     Document dtOpeningEndMove = openingEndMove.getDocument();
     dtOpeningEndMove.addDocumentListener(
@@ -589,7 +589,7 @@ public class MoveListFrame extends JFrame {
     middleEndMove.setDocument(new IntDocument());
     middleEndMove.setColumns(3);
 
-    middleEndMove.setText(Lizzie.config.middleEndMove + "");
+    middleEndMove.setText(String.valueOf(Lizzie.config.middleEndMove));
 
     Document dtMiddleEndMove = middleEndMove.getDocument();
     dtMiddleEndMove.addDocumentListener(
@@ -902,7 +902,7 @@ public class MoveListFrame extends JFrame {
             Lizzie.resourceBundle.getString("Movelistframe.lblMatchConfig1")); // ("吻合率条件: 前");
 
     suggestionMoves = new JTextField();
-    suggestionMoves.setText(Lizzie.config.matchAiMoves + "");
+    suggestionMoves.setText(String.valueOf(Lizzie.config.matchAiMoves));
 
     suggestionMoves.addFocusListener(
         new FocusListener() {
@@ -921,7 +921,7 @@ public class MoveListFrame extends JFrame {
             Lizzie.resourceBundle.getString("Movelistframe.lblMatchConfig2")); // ("选点,且计算量不低于最高值");
 
     percentPlayouts = new JTextField();
-    percentPlayouts.setText(Lizzie.config.matchAiPercentsPlayouts + "");
+    percentPlayouts.setText(String.valueOf(Lizzie.config.matchAiPercentsPlayouts));
 
     percentPlayouts.addFocusListener(
         new FocusListener() {
@@ -3440,7 +3440,7 @@ public class MoveListFrame extends JFrame {
           g.setColor(Color.LIGHT_GRAY);
           g.drawLine(posx + 17, y, posx + width - 25, y);
           g.setColor(Color.WHITE);
-          g.drawString(100 * (i - 1) / 4 + "", 3, y + 3);
+          g.drawString(String.valueOf(100 * (i - 1) / 4), 3, y + 3);
         }
       } else if (selectedIndex > 4 && selectedIndex < 7) {
         if (i == 1) {
@@ -3461,7 +3461,7 @@ public class MoveListFrame extends JFrame {
           g.setColor(Color.GRAY);
           g.drawLine(posx, y, posx + width, y);
         } else g.drawLine(posx, y, posx + width - 25, y);
-        if (selectedIndex < 5) g.drawString(100 * i / 4 + "", 3, y + 3);
+        if (selectedIndex < 5) g.drawString(String.valueOf(100 * i / 4), 3, y + 3);
       }
     }
     if (selectedIndex == 5) {
@@ -3713,11 +3713,11 @@ public class MoveListFrame extends JFrame {
           (int) (height * 4 / 7 * ((double) allBlackWinrateMiss1 / allMaxHeight)));
 
       g.drawString(
-          allBlackWinrateMiss1 + "",
+          String.valueOf(allBlackWinrateMiss1),
           (int)
               (posx
                   + 3 * width / 72
-                  - g.getFontMetrics().stringWidth(allBlackWinrateMiss1 + "") / 2),
+                  - g.getFontMetrics().stringWidth(String.valueOf(allBlackWinrateMiss1)) / 2),
           y
               - (int) (height * 4 / 7 * ((double) allBlackWinrateMiss1 / allMaxHeight))
               - g.getFontMetrics().getHeight() / 4);
@@ -3729,11 +3729,11 @@ public class MoveListFrame extends JFrame {
           (int) (height * 4 / 7 * ((double) allBlackWinrateMiss2 / allMaxHeight)));
 
       g.drawString(
-          allBlackWinrateMiss2 + "",
+          String.valueOf(allBlackWinrateMiss2),
           (int)
               (posx
                   + 8 * width / 72
-                  - g.getFontMetrics().stringWidth(allBlackWinrateMiss2 + "") / 2),
+                  - g.getFontMetrics().stringWidth(String.valueOf(allBlackWinrateMiss2)) / 2),
           y
               - (int) (height * 4 / 7 * ((double) allBlackWinrateMiss2 / allMaxHeight))
               - g.getFontMetrics().getHeight() / 4);
@@ -3745,11 +3745,11 @@ public class MoveListFrame extends JFrame {
           (int) (height * 4 / 7 * ((double) allBlackWinrateMiss3 / allMaxHeight)));
 
       g.drawString(
-          allBlackWinrateMiss3 + "",
+          String.valueOf(allBlackWinrateMiss3),
           (int)
               (posx
                   + 13 * width / 72
-                  - g.getFontMetrics().stringWidth(allBlackWinrateMiss3 + "") / 2),
+                  - g.getFontMetrics().stringWidth(String.valueOf(allBlackWinrateMiss3)) / 2),
           y
               - (int) (height * 4 / 7 * ((double) allBlackWinrateMiss3 / allMaxHeight))
               - g.getFontMetrics().getHeight() / 4);
@@ -3761,11 +3761,11 @@ public class MoveListFrame extends JFrame {
           (int) (height * 4 / 7 * ((double) parse1BlackWinrateMiss1 / parse1maxHeight)));
 
       g.drawString(
-          parse1BlackWinrateMiss1 + "",
+          String.valueOf(parse1BlackWinrateMiss1),
           (int)
               (posx
                   + 21 * width / 72
-                  - g.getFontMetrics().stringWidth(parse1BlackWinrateMiss1 + "") / 2),
+                  - g.getFontMetrics().stringWidth(String.valueOf(parse1BlackWinrateMiss1)) / 2),
           y
               - (int) (height * 4 / 7 * ((double) parse1BlackWinrateMiss1 / parse1maxHeight))
               - g.getFontMetrics().getHeight() / 4);
@@ -3777,11 +3777,11 @@ public class MoveListFrame extends JFrame {
           (int) (height * 4 / 7 * ((double) parse1BlackWinrateMiss2 / parse1maxHeight)));
 
       g.drawString(
-          parse1BlackWinrateMiss2 + "",
+          String.valueOf(parse1BlackWinrateMiss2),
           (int)
               (posx
                   + 26 * width / 72
-                  - g.getFontMetrics().stringWidth(parse1BlackWinrateMiss2 + "") / 2),
+                  - g.getFontMetrics().stringWidth(String.valueOf(parse1BlackWinrateMiss2)) / 2),
           y
               - (int) (height * 4 / 7 * ((double) parse1BlackWinrateMiss2 / parse1maxHeight))
               - g.getFontMetrics().getHeight() / 4);
@@ -3793,11 +3793,11 @@ public class MoveListFrame extends JFrame {
           (int) (height * 4 / 7 * ((double) parse1BlackWinrateMiss3 / parse1maxHeight)));
 
       g.drawString(
-          parse1BlackWinrateMiss3 + "",
+          String.valueOf(parse1BlackWinrateMiss3),
           (int)
               (posx
                   + 31 * width / 72
-                  - g.getFontMetrics().stringWidth(parse1BlackWinrateMiss3 + "") / 2),
+                  - g.getFontMetrics().stringWidth(String.valueOf(parse1BlackWinrateMiss3)) / 2),
           y
               - (int) (height * 4 / 7 * ((double) parse1BlackWinrateMiss3 / parse1maxHeight))
               - g.getFontMetrics().getHeight() / 4);
@@ -3809,11 +3809,11 @@ public class MoveListFrame extends JFrame {
           (int) (height * 4 / 7 * ((double) parse2BlackWinrateMiss1 / parse2maxHeight)));
 
       g.drawString(
-          parse2BlackWinrateMiss1 + "",
+          String.valueOf(parse2BlackWinrateMiss1),
           (int)
               (posx
                   + 39 * width / 72
-                  - g.getFontMetrics().stringWidth(parse2BlackWinrateMiss1 + "") / 2),
+                  - g.getFontMetrics().stringWidth(String.valueOf(parse2BlackWinrateMiss1)) / 2),
           y
               - (int) (height * 4 / 7 * ((double) parse2BlackWinrateMiss1 / parse2maxHeight))
               - g.getFontMetrics().getHeight() / 4);
@@ -3825,11 +3825,11 @@ public class MoveListFrame extends JFrame {
           (int) (height * 4 / 7 * ((double) parse2BlackWinrateMiss2 / parse2maxHeight)));
 
       g.drawString(
-          parse2BlackWinrateMiss2 + "",
+          String.valueOf(parse2BlackWinrateMiss2),
           (int)
               (posx
                   + 44 * width / 72
-                  - g.getFontMetrics().stringWidth(parse2BlackWinrateMiss2 + "") / 2),
+                  - g.getFontMetrics().stringWidth(String.valueOf(parse2BlackWinrateMiss2)) / 2),
           y
               - (int) (height * 4 / 7 * ((double) parse2BlackWinrateMiss2 / parse2maxHeight))
               - g.getFontMetrics().getHeight() / 4);
@@ -3841,11 +3841,11 @@ public class MoveListFrame extends JFrame {
           (int) (height * 4 / 7 * ((double) parse2BlackWinrateMiss3 / parse2maxHeight)));
 
       g.drawString(
-          parse2BlackWinrateMiss3 + "",
+          String.valueOf(parse2BlackWinrateMiss3),
           (int)
               (posx
                   + 49 * width / 72
-                  - g.getFontMetrics().stringWidth(parse2BlackWinrateMiss3 + "") / 2),
+                  - g.getFontMetrics().stringWidth(String.valueOf(parse2BlackWinrateMiss3)) / 2),
           y
               - (int) (height * 4 / 7 * ((double) parse2BlackWinrateMiss3 / parse2maxHeight))
               - g.getFontMetrics().getHeight() / 4);
@@ -3857,11 +3857,11 @@ public class MoveListFrame extends JFrame {
           (int) (height * 4 / 7 * ((double) parse3BlackWinrateMiss1 / parse3maxHeight)));
 
       g.drawString(
-          parse3BlackWinrateMiss1 + "",
+          String.valueOf(parse3BlackWinrateMiss1),
           (int)
               (posx
                   + 57 * width / 72
-                  - g.getFontMetrics().stringWidth(parse3BlackWinrateMiss1 + "") / 2),
+                  - g.getFontMetrics().stringWidth(String.valueOf(parse3BlackWinrateMiss1)) / 2),
           y
               - (int) (height * 4 / 7 * ((double) parse3BlackWinrateMiss1 / parse3maxHeight))
               - g.getFontMetrics().getHeight() / 4);
@@ -3873,11 +3873,11 @@ public class MoveListFrame extends JFrame {
           (int) (height * 4 / 7 * ((double) parse3BlackWinrateMiss2 / parse3maxHeight)));
 
       g.drawString(
-          parse3BlackWinrateMiss2 + "",
+          String.valueOf(parse3BlackWinrateMiss2),
           (int)
               (posx
                   + 62 * width / 72
-                  - g.getFontMetrics().stringWidth(parse3BlackWinrateMiss2 + "") / 2),
+                  - g.getFontMetrics().stringWidth(String.valueOf(parse3BlackWinrateMiss2)) / 2),
           y
               - (int) (height * 4 / 7 * ((double) parse3BlackWinrateMiss2 / parse3maxHeight))
               - g.getFontMetrics().getHeight() / 4);
@@ -3889,11 +3889,11 @@ public class MoveListFrame extends JFrame {
           (int) (height * 4 / 7 * ((double) parse3BlackWinrateMiss3 / parse3maxHeight)));
 
       g.drawString(
-          parse3BlackWinrateMiss3 + "",
+          String.valueOf(parse3BlackWinrateMiss3),
           (int)
               (posx
                   + 67 * width / 72
-                  - g.getFontMetrics().stringWidth(parse3BlackWinrateMiss3 + "") / 2),
+                  - g.getFontMetrics().stringWidth(String.valueOf(parse3BlackWinrateMiss3)) / 2),
           y
               - (int) (height * 4 / 7 * ((double) parse3BlackWinrateMiss3 / parse3maxHeight))
               - g.getFontMetrics().getHeight() / 4);
@@ -3907,11 +3907,11 @@ public class MoveListFrame extends JFrame {
           (int) (height * 4 / 7 * ((double) allWhiteWinrateMiss1 / allMaxHeight)));
 
       g.drawString(
-          allWhiteWinrateMiss1 + "",
+          String.valueOf(allWhiteWinrateMiss1),
           (int)
               (posx
                   + 5 * width / 72
-                  - g.getFontMetrics().stringWidth(allWhiteWinrateMiss1 + "") / 2),
+                  - g.getFontMetrics().stringWidth(String.valueOf(allWhiteWinrateMiss1)) / 2),
           y
               - (int) (height * 4 / 7 * ((double) allWhiteWinrateMiss1 / allMaxHeight))
               - g.getFontMetrics().getHeight() / 4);
@@ -3923,11 +3923,11 @@ public class MoveListFrame extends JFrame {
           (int) (height * 4 / 7 * ((double) allWhiteWinrateMiss2 / allMaxHeight)));
 
       g.drawString(
-          allWhiteWinrateMiss2 + "",
+          String.valueOf(allWhiteWinrateMiss2),
           (int)
               (posx
                   + 10 * width / 72
-                  - g.getFontMetrics().stringWidth(allWhiteWinrateMiss2 + "") / 2),
+                  - g.getFontMetrics().stringWidth(String.valueOf(allWhiteWinrateMiss2)) / 2),
           y
               - (int) (height * 4 / 7 * ((double) allWhiteWinrateMiss2 / allMaxHeight))
               - g.getFontMetrics().getHeight() / 4);
@@ -3939,11 +3939,11 @@ public class MoveListFrame extends JFrame {
           (int) (height * 4 / 7 * ((double) allWhiteWinrateMiss3 / allMaxHeight)));
 
       g.drawString(
-          allWhiteWinrateMiss3 + "",
+          String.valueOf(allWhiteWinrateMiss3),
           (int)
               (posx
                   + 15 * width / 72
-                  - g.getFontMetrics().stringWidth(allWhiteWinrateMiss3 + "") / 2),
+                  - g.getFontMetrics().stringWidth(String.valueOf(allWhiteWinrateMiss3)) / 2),
           y
               - (int) (height * 4 / 7 * ((double) allWhiteWinrateMiss3 / allMaxHeight))
               - g.getFontMetrics().getHeight() / 4);
@@ -3955,11 +3955,11 @@ public class MoveListFrame extends JFrame {
           (int) (height * 4 / 7 * ((double) parse1WhiteWinrateMiss1 / parse1maxHeight)));
 
       g.drawString(
-          parse1WhiteWinrateMiss1 + "",
+          String.valueOf(parse1WhiteWinrateMiss1),
           (int)
               (posx
                   + 23 * width / 72
-                  - g.getFontMetrics().stringWidth(parse1WhiteWinrateMiss1 + "") / 2),
+                  - g.getFontMetrics().stringWidth(String.valueOf(parse1WhiteWinrateMiss1)) / 2),
           y
               - (int) (height * 4 / 7 * ((double) parse1WhiteWinrateMiss1 / parse1maxHeight))
               - g.getFontMetrics().getHeight() / 4);
@@ -3971,11 +3971,11 @@ public class MoveListFrame extends JFrame {
           (int) (height * 4 / 7 * ((double) parse1WhiteWinrateMiss2 / parse1maxHeight)));
 
       g.drawString(
-          parse1WhiteWinrateMiss2 + "",
+          String.valueOf(parse1WhiteWinrateMiss2),
           (int)
               (posx
                   + 28 * width / 72
-                  - g.getFontMetrics().stringWidth(parse1WhiteWinrateMiss2 + "") / 2),
+                  - g.getFontMetrics().stringWidth(String.valueOf(parse1WhiteWinrateMiss2)) / 2),
           y
               - (int) (height * 4 / 7 * ((double) parse1WhiteWinrateMiss2 / parse1maxHeight))
               - g.getFontMetrics().getHeight() / 4);
@@ -3987,11 +3987,11 @@ public class MoveListFrame extends JFrame {
           (int) (height * 4 / 7 * ((double) parse1WhiteWinrateMiss3 / parse1maxHeight)));
 
       g.drawString(
-          parse1WhiteWinrateMiss3 + "",
+          String.valueOf(parse1WhiteWinrateMiss3),
           (int)
               (posx
                   + 33 * width / 72
-                  - g.getFontMetrics().stringWidth(parse1WhiteWinrateMiss3 + "") / 2),
+                  - g.getFontMetrics().stringWidth(String.valueOf(parse1WhiteWinrateMiss3)) / 2),
           y
               - (int) (height * 4 / 7 * ((double) parse1WhiteWinrateMiss3 / parse1maxHeight))
               - g.getFontMetrics().getHeight() / 4);
@@ -4003,11 +4003,11 @@ public class MoveListFrame extends JFrame {
           (int) (height * 4 / 7 * ((double) parse2WhiteWinrateMiss1 / parse2maxHeight)));
 
       g.drawString(
-          parse2WhiteWinrateMiss1 + "",
+          String.valueOf(parse2WhiteWinrateMiss1),
           (int)
               (posx
                   + 41 * width / 72
-                  - g.getFontMetrics().stringWidth(parse2WhiteWinrateMiss1 + "") / 2),
+                  - g.getFontMetrics().stringWidth(String.valueOf(parse2WhiteWinrateMiss1)) / 2),
           y
               - (int) (height * 4 / 7 * ((double) parse2WhiteWinrateMiss1 / parse2maxHeight))
               - g.getFontMetrics().getHeight() / 4);
@@ -4019,11 +4019,11 @@ public class MoveListFrame extends JFrame {
           (int) (height * 4 / 7 * ((double) parse2WhiteWinrateMiss2 / parse2maxHeight)));
 
       g.drawString(
-          parse2WhiteWinrateMiss2 + "",
+          String.valueOf(parse2WhiteWinrateMiss2),
           (int)
               (posx
                   + 46 * width / 72
-                  - g.getFontMetrics().stringWidth(parse2WhiteWinrateMiss2 + "") / 2),
+                  - g.getFontMetrics().stringWidth(String.valueOf(parse2WhiteWinrateMiss2)) / 2),
           y
               - (int) (height * 4 / 7 * ((double) parse2WhiteWinrateMiss2 / parse2maxHeight))
               - g.getFontMetrics().getHeight() / 4);
@@ -4035,11 +4035,11 @@ public class MoveListFrame extends JFrame {
           (int) (height * 4 / 7 * ((double) parse2WhiteWinrateMiss3 / parse2maxHeight)));
 
       g.drawString(
-          parse2WhiteWinrateMiss3 + "",
+          String.valueOf(parse2WhiteWinrateMiss3),
           (int)
               (posx
                   + 51 * width / 72
-                  - g.getFontMetrics().stringWidth(parse2WhiteWinrateMiss3 + "") / 2),
+                  - g.getFontMetrics().stringWidth(String.valueOf(parse2WhiteWinrateMiss3)) / 2),
           y
               - (int) (height * 4 / 7 * ((double) parse2WhiteWinrateMiss3 / parse2maxHeight))
               - g.getFontMetrics().getHeight() / 4);
@@ -4051,11 +4051,11 @@ public class MoveListFrame extends JFrame {
           (int) (height * 4 / 7 * ((double) parse3WhiteWinrateMiss1 / parse3maxHeight)));
 
       g.drawString(
-          parse3WhiteWinrateMiss1 + "",
+          String.valueOf(parse3WhiteWinrateMiss1),
           (int)
               (posx
                   + 59 * width / 72
-                  - g.getFontMetrics().stringWidth(parse3WhiteWinrateMiss1 + "") / 2),
+                  - g.getFontMetrics().stringWidth(String.valueOf(parse3WhiteWinrateMiss1)) / 2),
           y
               - (int) (height * 4 / 7 * ((double) parse3WhiteWinrateMiss1 / parse3maxHeight))
               - g.getFontMetrics().getHeight() / 4);
@@ -4067,11 +4067,11 @@ public class MoveListFrame extends JFrame {
           (int) (height * 4 / 7 * ((double) parse3WhiteWinrateMiss2 / parse3maxHeight)));
 
       g.drawString(
-          parse3WhiteWinrateMiss2 + "",
+          String.valueOf(parse3WhiteWinrateMiss2),
           (int)
               (posx
                   + 64 * width / 72
-                  - g.getFontMetrics().stringWidth(parse3WhiteWinrateMiss2 + "") / 2),
+                  - g.getFontMetrics().stringWidth(String.valueOf(parse3WhiteWinrateMiss2)) / 2),
           y
               - (int) (height * 4 / 7 * ((double) parse3WhiteWinrateMiss2 / parse3maxHeight))
               - g.getFontMetrics().getHeight() / 4);
@@ -4083,11 +4083,11 @@ public class MoveListFrame extends JFrame {
           (int) (height * 4 / 7 * ((double) parse3WhiteWinrateMiss3 / parse3maxHeight)));
 
       g.drawString(
-          parse3WhiteWinrateMiss3 + "",
+          String.valueOf(parse3WhiteWinrateMiss3),
           (int)
               (posx
                   + 69 * width / 72
-                  - g.getFontMetrics().stringWidth(parse3WhiteWinrateMiss3 + "") / 2),
+                  - g.getFontMetrics().stringWidth(String.valueOf(parse3WhiteWinrateMiss3)) / 2),
           y
               - (int) (height * 4 / 7 * ((double) parse3WhiteWinrateMiss3 / parse3maxHeight))
               - g.getFontMetrics().getHeight() / 4);
@@ -4330,9 +4330,11 @@ public class MoveListFrame extends JFrame {
           (int) (height * 4 / 7 * ((double) allBlackScoreMiss1 / allMaxHeight)));
 
       g.drawString(
-          allBlackScoreMiss1 + "",
+          String.valueOf(allBlackScoreMiss1),
           (int)
-              (posx + 3 * width / 72 - g.getFontMetrics().stringWidth(allBlackScoreMiss1 + "") / 2),
+              (posx
+                  + 3 * width / 72
+                  - g.getFontMetrics().stringWidth(String.valueOf(allBlackScoreMiss1)) / 2),
           y
               - (int) (height * 4 / 7 * ((double) allBlackScoreMiss1 / allMaxHeight))
               - g.getFontMetrics().getHeight() / 4);
@@ -4344,9 +4346,11 @@ public class MoveListFrame extends JFrame {
           (int) (height * 4 / 7 * ((double) allBlackScoreMiss2 / allMaxHeight)));
 
       g.drawString(
-          allBlackScoreMiss2 + "",
+          String.valueOf(allBlackScoreMiss2),
           (int)
-              (posx + 8 * width / 72 - g.getFontMetrics().stringWidth(allBlackScoreMiss2 + "") / 2),
+              (posx
+                  + 8 * width / 72
+                  - g.getFontMetrics().stringWidth(String.valueOf(allBlackScoreMiss2)) / 2),
           y
               - (int) (height * 4 / 7 * ((double) allBlackScoreMiss2 / allMaxHeight))
               - g.getFontMetrics().getHeight() / 4);
@@ -4358,11 +4362,11 @@ public class MoveListFrame extends JFrame {
           (int) (height * 4 / 7 * ((double) allBlackScoreMiss3 / allMaxHeight)));
 
       g.drawString(
-          allBlackScoreMiss3 + "",
+          String.valueOf(allBlackScoreMiss3),
           (int)
               (posx
                   + 13 * width / 72
-                  - g.getFontMetrics().stringWidth(allBlackScoreMiss3 + "") / 2),
+                  - g.getFontMetrics().stringWidth(String.valueOf(allBlackScoreMiss3)) / 2),
           y
               - (int) (height * 4 / 7 * ((double) allBlackScoreMiss3 / allMaxHeight))
               - g.getFontMetrics().getHeight() / 4);
@@ -4374,11 +4378,11 @@ public class MoveListFrame extends JFrame {
           (int) (height * 4 / 7 * ((double) parse1BlackScoreMiss1 / parse1maxHeight)));
 
       g.drawString(
-          parse1BlackScoreMiss1 + "",
+          String.valueOf(parse1BlackScoreMiss1),
           (int)
               (posx
                   + 21 * width / 72
-                  - g.getFontMetrics().stringWidth(parse1BlackScoreMiss1 + "") / 2),
+                  - g.getFontMetrics().stringWidth(String.valueOf(parse1BlackScoreMiss1)) / 2),
           y
               - (int) (height * 4 / 7 * ((double) parse1BlackScoreMiss1 / parse1maxHeight))
               - g.getFontMetrics().getHeight() / 4);
@@ -4390,11 +4394,11 @@ public class MoveListFrame extends JFrame {
           (int) (height * 4 / 7 * ((double) parse1BlackScoreMiss2 / parse1maxHeight)));
 
       g.drawString(
-          parse1BlackScoreMiss2 + "",
+          String.valueOf(parse1BlackScoreMiss2),
           (int)
               (posx
                   + 26 * width / 72
-                  - g.getFontMetrics().stringWidth(parse1BlackScoreMiss2 + "") / 2),
+                  - g.getFontMetrics().stringWidth(String.valueOf(parse1BlackScoreMiss2)) / 2),
           y
               - (int) (height * 4 / 7 * ((double) parse1BlackScoreMiss2 / parse1maxHeight))
               - g.getFontMetrics().getHeight() / 4);
@@ -4406,11 +4410,11 @@ public class MoveListFrame extends JFrame {
           (int) (height * 4 / 7 * ((double) parse1BlackScoreMiss3 / parse1maxHeight)));
 
       g.drawString(
-          parse1BlackScoreMiss3 + "",
+          String.valueOf(parse1BlackScoreMiss3),
           (int)
               (posx
                   + 31 * width / 72
-                  - g.getFontMetrics().stringWidth(parse1BlackScoreMiss3 + "") / 2),
+                  - g.getFontMetrics().stringWidth(String.valueOf(parse1BlackScoreMiss3)) / 2),
           y
               - (int) (height * 4 / 7 * ((double) parse1BlackScoreMiss3 / parse1maxHeight))
               - g.getFontMetrics().getHeight() / 4);
@@ -4422,11 +4426,11 @@ public class MoveListFrame extends JFrame {
           (int) (height * 4 / 7 * ((double) parse2BlackScoreMiss1 / parse2maxHeight)));
 
       g.drawString(
-          parse2BlackScoreMiss1 + "",
+          String.valueOf(parse2BlackScoreMiss1),
           (int)
               (posx
                   + 39 * width / 72
-                  - g.getFontMetrics().stringWidth(parse2BlackScoreMiss1 + "") / 2),
+                  - g.getFontMetrics().stringWidth(String.valueOf(parse2BlackScoreMiss1)) / 2),
           y
               - (int) (height * 4 / 7 * ((double) parse2BlackScoreMiss1 / parse2maxHeight))
               - g.getFontMetrics().getHeight() / 4);
@@ -4438,11 +4442,11 @@ public class MoveListFrame extends JFrame {
           (int) (height * 4 / 7 * ((double) parse2BlackScoreMiss2 / parse2maxHeight)));
 
       g.drawString(
-          parse2BlackScoreMiss2 + "",
+          String.valueOf(parse2BlackScoreMiss2),
           (int)
               (posx
                   + 44 * width / 72
-                  - g.getFontMetrics().stringWidth(parse2BlackScoreMiss2 + "") / 2),
+                  - g.getFontMetrics().stringWidth(String.valueOf(parse2BlackScoreMiss2)) / 2),
           y
               - (int) (height * 4 / 7 * ((double) parse2BlackScoreMiss2 / parse2maxHeight))
               - g.getFontMetrics().getHeight() / 4);
@@ -4454,11 +4458,11 @@ public class MoveListFrame extends JFrame {
           (int) (height * 4 / 7 * ((double) parse2BlackScoreMiss3 / parse2maxHeight)));
 
       g.drawString(
-          parse2BlackScoreMiss3 + "",
+          String.valueOf(parse2BlackScoreMiss3),
           (int)
               (posx
                   + 49 * width / 72
-                  - g.getFontMetrics().stringWidth(parse2BlackScoreMiss3 + "") / 2),
+                  - g.getFontMetrics().stringWidth(String.valueOf(parse2BlackScoreMiss3)) / 2),
           y
               - (int) (height * 4 / 7 * ((double) parse2BlackScoreMiss3 / parse2maxHeight))
               - g.getFontMetrics().getHeight() / 4);
@@ -4470,11 +4474,11 @@ public class MoveListFrame extends JFrame {
           (int) (height * 4 / 7 * ((double) parse3BlackScoreMiss1 / parse3maxHeight)));
 
       g.drawString(
-          parse3BlackScoreMiss1 + "",
+          String.valueOf(parse3BlackScoreMiss1),
           (int)
               (posx
                   + 57 * width / 72
-                  - g.getFontMetrics().stringWidth(parse3BlackScoreMiss1 + "") / 2),
+                  - g.getFontMetrics().stringWidth(String.valueOf(parse3BlackScoreMiss1)) / 2),
           y
               - (int) (height * 4 / 7 * ((double) parse3BlackScoreMiss1 / parse3maxHeight))
               - g.getFontMetrics().getHeight() / 4);
@@ -4486,11 +4490,11 @@ public class MoveListFrame extends JFrame {
           (int) (height * 4 / 7 * ((double) parse3BlackScoreMiss2 / parse3maxHeight)));
 
       g.drawString(
-          parse3BlackScoreMiss2 + "",
+          String.valueOf(parse3BlackScoreMiss2),
           (int)
               (posx
                   + 62 * width / 72
-                  - g.getFontMetrics().stringWidth(parse3BlackScoreMiss2 + "") / 2),
+                  - g.getFontMetrics().stringWidth(String.valueOf(parse3BlackScoreMiss2)) / 2),
           y
               - (int) (height * 4 / 7 * ((double) parse3BlackScoreMiss2 / parse3maxHeight))
               - g.getFontMetrics().getHeight() / 4);
@@ -4502,11 +4506,11 @@ public class MoveListFrame extends JFrame {
           (int) (height * 4 / 7 * ((double) parse3BlackScoreMiss3 / parse3maxHeight)));
 
       g.drawString(
-          parse3BlackScoreMiss3 + "",
+          String.valueOf(parse3BlackScoreMiss3),
           (int)
               (posx
                   + 67 * width / 72
-                  - g.getFontMetrics().stringWidth(parse3BlackScoreMiss3 + "") / 2),
+                  - g.getFontMetrics().stringWidth(String.valueOf(parse3BlackScoreMiss3)) / 2),
           y
               - (int) (height * 4 / 7 * ((double) parse3BlackScoreMiss3 / parse3maxHeight))
               - g.getFontMetrics().getHeight() / 4);
@@ -4520,9 +4524,11 @@ public class MoveListFrame extends JFrame {
           (int) (height * 4 / 7 * ((double) allWhiteScoreMiss1 / allMaxHeight)));
 
       g.drawString(
-          allWhiteScoreMiss1 + "",
+          String.valueOf(allWhiteScoreMiss1),
           (int)
-              (posx + 5 * width / 72 - g.getFontMetrics().stringWidth(allWhiteScoreMiss1 + "") / 2),
+              (posx
+                  + 5 * width / 72
+                  - g.getFontMetrics().stringWidth(String.valueOf(allWhiteScoreMiss1)) / 2),
           y
               - (int) (height * 4 / 7 * ((double) allWhiteScoreMiss1 / allMaxHeight))
               - g.getFontMetrics().getHeight() / 4);
@@ -4534,11 +4540,11 @@ public class MoveListFrame extends JFrame {
           (int) (height * 4 / 7 * ((double) allWhiteScoreMiss2 / allMaxHeight)));
 
       g.drawString(
-          allWhiteScoreMiss2 + "",
+          String.valueOf(allWhiteScoreMiss2),
           (int)
               (posx
                   + 10 * width / 72
-                  - g.getFontMetrics().stringWidth(allWhiteScoreMiss2 + "") / 2),
+                  - g.getFontMetrics().stringWidth(String.valueOf(allWhiteScoreMiss2)) / 2),
           y
               - (int) (height * 4 / 7 * ((double) allWhiteScoreMiss2 / allMaxHeight))
               - g.getFontMetrics().getHeight() / 4);
@@ -4550,11 +4556,11 @@ public class MoveListFrame extends JFrame {
           (int) (height * 4 / 7 * ((double) allWhiteScoreMiss3 / allMaxHeight)));
 
       g.drawString(
-          allWhiteScoreMiss3 + "",
+          String.valueOf(allWhiteScoreMiss3),
           (int)
               (posx
                   + 15 * width / 72
-                  - g.getFontMetrics().stringWidth(allWhiteScoreMiss3 + "") / 2),
+                  - g.getFontMetrics().stringWidth(String.valueOf(allWhiteScoreMiss3)) / 2),
           y
               - (int) (height * 4 / 7 * ((double) allWhiteScoreMiss3 / allMaxHeight))
               - g.getFontMetrics().getHeight() / 4);
@@ -4566,11 +4572,11 @@ public class MoveListFrame extends JFrame {
           (int) (height * 4 / 7 * ((double) parse1WhiteScoreMiss1 / parse1maxHeight)));
 
       g.drawString(
-          parse1WhiteScoreMiss1 + "",
+          String.valueOf(parse1WhiteScoreMiss1),
           (int)
               (posx
                   + 23 * width / 72
-                  - g.getFontMetrics().stringWidth(parse1WhiteScoreMiss1 + "") / 2),
+                  - g.getFontMetrics().stringWidth(String.valueOf(parse1WhiteScoreMiss1)) / 2),
           y
               - (int) (height * 4 / 7 * ((double) parse1WhiteScoreMiss1 / parse1maxHeight))
               - g.getFontMetrics().getHeight() / 4);
@@ -4582,11 +4588,11 @@ public class MoveListFrame extends JFrame {
           (int) (height * 4 / 7 * ((double) parse1WhiteScoreMiss2 / parse1maxHeight)));
 
       g.drawString(
-          parse1WhiteScoreMiss2 + "",
+          String.valueOf(parse1WhiteScoreMiss2),
           (int)
               (posx
                   + 28 * width / 72
-                  - g.getFontMetrics().stringWidth(parse1WhiteScoreMiss2 + "") / 2),
+                  - g.getFontMetrics().stringWidth(String.valueOf(parse1WhiteScoreMiss2)) / 2),
           y
               - (int) (height * 4 / 7 * ((double) parse1WhiteScoreMiss2 / parse1maxHeight))
               - g.getFontMetrics().getHeight() / 4);
@@ -4598,11 +4604,11 @@ public class MoveListFrame extends JFrame {
           (int) (height * 4 / 7 * ((double) parse1WhiteScoreMiss3 / parse1maxHeight)));
 
       g.drawString(
-          parse1WhiteScoreMiss3 + "",
+          String.valueOf(parse1WhiteScoreMiss3),
           (int)
               (posx
                   + 33 * width / 72
-                  - g.getFontMetrics().stringWidth(parse1WhiteScoreMiss3 + "") / 2),
+                  - g.getFontMetrics().stringWidth(String.valueOf(parse1WhiteScoreMiss3)) / 2),
           y
               - (int) (height * 4 / 7 * ((double) parse1WhiteScoreMiss3 / parse1maxHeight))
               - g.getFontMetrics().getHeight() / 4);
@@ -4614,11 +4620,11 @@ public class MoveListFrame extends JFrame {
           (int) (height * 4 / 7 * ((double) parse2WhiteScoreMiss1 / parse2maxHeight)));
 
       g.drawString(
-          parse2WhiteScoreMiss1 + "",
+          String.valueOf(parse2WhiteScoreMiss1),
           (int)
               (posx
                   + 41 * width / 72
-                  - g.getFontMetrics().stringWidth(parse2WhiteScoreMiss1 + "") / 2),
+                  - g.getFontMetrics().stringWidth(String.valueOf(parse2WhiteScoreMiss1)) / 2),
           y
               - (int) (height * 4 / 7 * ((double) parse2WhiteScoreMiss1 / parse2maxHeight))
               - g.getFontMetrics().getHeight() / 4);
@@ -4630,11 +4636,11 @@ public class MoveListFrame extends JFrame {
           (int) (height * 4 / 7 * ((double) parse2WhiteScoreMiss2 / parse2maxHeight)));
 
       g.drawString(
-          parse2WhiteScoreMiss2 + "",
+          String.valueOf(parse2WhiteScoreMiss2),
           (int)
               (posx
                   + 46 * width / 72
-                  - g.getFontMetrics().stringWidth(parse2WhiteScoreMiss2 + "") / 2),
+                  - g.getFontMetrics().stringWidth(String.valueOf(parse2WhiteScoreMiss2)) / 2),
           y
               - (int) (height * 4 / 7 * ((double) parse2WhiteScoreMiss2 / parse2maxHeight))
               - g.getFontMetrics().getHeight() / 4);
@@ -4646,11 +4652,11 @@ public class MoveListFrame extends JFrame {
           (int) (height * 4 / 7 * ((double) parse2WhiteScoreMiss3 / parse2maxHeight)));
 
       g.drawString(
-          parse2WhiteScoreMiss3 + "",
+          String.valueOf(parse2WhiteScoreMiss3),
           (int)
               (posx
                   + 51 * width / 72
-                  - g.getFontMetrics().stringWidth(parse2WhiteScoreMiss3 + "") / 2),
+                  - g.getFontMetrics().stringWidth(String.valueOf(parse2WhiteScoreMiss3)) / 2),
           y
               - (int) (height * 4 / 7 * ((double) parse2WhiteScoreMiss3 / parse2maxHeight))
               - g.getFontMetrics().getHeight() / 4);
@@ -4662,11 +4668,11 @@ public class MoveListFrame extends JFrame {
           (int) (height * 4 / 7 * ((double) parse3WhiteScoreMiss1 / parse3maxHeight)));
 
       g.drawString(
-          parse3WhiteScoreMiss1 + "",
+          String.valueOf(parse3WhiteScoreMiss1),
           (int)
               (posx
                   + 59 * width / 72
-                  - g.getFontMetrics().stringWidth(parse3WhiteScoreMiss1 + "") / 2),
+                  - g.getFontMetrics().stringWidth(String.valueOf(parse3WhiteScoreMiss1)) / 2),
           y
               - (int) (height * 4 / 7 * ((double) parse3WhiteScoreMiss1 / parse3maxHeight))
               - g.getFontMetrics().getHeight() / 4);
@@ -4678,11 +4684,11 @@ public class MoveListFrame extends JFrame {
           (int) (height * 4 / 7 * ((double) parse3WhiteScoreMiss2 / parse3maxHeight)));
 
       g.drawString(
-          parse3WhiteScoreMiss2 + "",
+          String.valueOf(parse3WhiteScoreMiss2),
           (int)
               (posx
                   + 64 * width / 72
-                  - g.getFontMetrics().stringWidth(parse3WhiteScoreMiss2 + "") / 2),
+                  - g.getFontMetrics().stringWidth(String.valueOf(parse3WhiteScoreMiss2)) / 2),
           y
               - (int) (height * 4 / 7 * ((double) parse3WhiteScoreMiss2 / parse3maxHeight))
               - g.getFontMetrics().getHeight() / 4);
@@ -4694,11 +4700,11 @@ public class MoveListFrame extends JFrame {
           (int) (height * 4 / 7 * ((double) parse3WhiteScoreMiss3 / parse3maxHeight)));
 
       g.drawString(
-          parse3WhiteScoreMiss3 + "",
+          String.valueOf(parse3WhiteScoreMiss3),
           (int)
               (posx
                   + 69 * width / 72
-                  - g.getFontMetrics().stringWidth(parse3WhiteScoreMiss3 + "") / 2),
+                  - g.getFontMetrics().stringWidth(String.valueOf(parse3WhiteScoreMiss3)) / 2),
           y
               - (int) (height * 4 / 7 * ((double) parse3WhiteScoreMiss3 / parse3maxHeight))
               - g.getFontMetrics().getHeight() / 4);
@@ -5772,17 +5778,17 @@ public class MoveListFrame extends JFrame {
         if (numMoves <= 100) {
           for (int i = 1; i <= (numMoves / 10); i++)
             g.drawString(
-                (Lizzie.config.matchAiFirstMove > 0 ? Lizzie.config.matchAiFirstMove : 0)
-                    + i * 10
-                    + "",
+                (String.valueOf(
+                        Lizzie.config.matchAiFirstMove > 0 ? Lizzie.config.matchAiFirstMove : 0)
+                    + i * 10),
                 posx + (i * 10 - 1) * width / numMoves + 3,
                 posy + this.origParams[3] - 5);
         } else {
           for (int i = 1; i <= (numMoves / 20); i++)
             g.drawString(
-                (Lizzie.config.matchAiFirstMove > 0 ? Lizzie.config.matchAiFirstMove : 0)
-                    + i * 20
-                    + "",
+                (String.valueOf(
+                        Lizzie.config.matchAiFirstMove > 0 ? Lizzie.config.matchAiFirstMove : 0)
+                    + i * 20),
                 posx + (i * 20 - 1) * width / numMoves + 3,
                 posy + this.origParams[3] - 5);
         }
@@ -5833,13 +5839,13 @@ public class MoveListFrame extends JFrame {
         if (numMoves <= 100) {
           for (int i = 1; i <= (numMoves / 10); i++)
             g.drawString(
-                i * 10 + "",
+                String.valueOf(i * 10),
                 posx + (i * 10 - 1) * width / numMoves + 3,
                 posy + this.origParams[3] - 10);
         } else {
           for (int i = 1; i <= (numMoves / 20); i++)
             g.drawString(
-                i * 20 + "",
+                String.valueOf(i * 20),
                 posx + (i * 20 - 1) * width / numMoves + 3,
                 posy + this.origParams[3] - 10);
         }
@@ -6077,9 +6083,9 @@ public class MoveListFrame extends JFrame {
     g.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize - 2));
     FontMetrics fm =
         g.getFontMetrics(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize - 2));
-    int widthFont = fm.stringWidth(bigMistakeInfo.moveNumber + "");
+    int widthFont = fm.stringWidth(String.valueOf(bigMistakeInfo.moveNumber));
     g.drawString(
-        bigMistakeInfo.moveNumber + "",
+        String.valueOf(bigMistakeInfo.moveNumber),
         width / 20 + index * width / 10 - widthFont / 2,
         height - 5);
     //
@@ -6182,7 +6188,7 @@ public class MoveListFrame extends JFrame {
         startY + (int) (titleHeight * 0.1),
         LizzieFrame.uiFont,
         Font.PLAIN,
-        totalAnalyzedBlack + "",
+        String.valueOf(totalAnalyzedBlack),
         (int) (availableWidth / 2),
         (int) (titleHeight * 0.8));
     g.fillRect(
@@ -6197,7 +6203,7 @@ public class MoveListFrame extends JFrame {
         startY + (int) (titleHeight * 0.1),
         LizzieFrame.uiFont,
         Font.PLAIN,
-        totalAnalyzedWhite + "",
+        String.valueOf(totalAnalyzedWhite),
         (int) (availableWidth / 2),
         (int) (titleHeight * 0.8));
 
@@ -7082,13 +7088,13 @@ public class MoveListFrame extends JFrame {
         if (selectedIndex == 3 || selectedIndex == 6) {
           lblDiffConfig1.setText(
               Lizzie.resourceBundle.getString("Movelistframe.lblDiffConfigScore"));
-          winrateDiffRange1.setText(Lizzie.config.scoreDiffRange1 + "");
-          winrateDiffRange2.setText(Lizzie.config.scoreDiffRange2 + "");
+          winrateDiffRange1.setText(String.valueOf(Lizzie.config.scoreDiffRange1));
+          winrateDiffRange2.setText(String.valueOf(Lizzie.config.scoreDiffRange2));
         }
         if (selectedIndex == 2 || selectedIndex == 5) {
           lblDiffConfig1.setText(Lizzie.resourceBundle.getString("Movelistframe.lblDiffConfig1"));
-          winrateDiffRange1.setText(Lizzie.config.winrateDiffRange1 + "");
-          winrateDiffRange2.setText(Lizzie.config.winrateDiffRange2 + "");
+          winrateDiffRange1.setText(String.valueOf(Lizzie.config.winrateDiffRange1));
+          winrateDiffRange2.setText(String.valueOf(Lizzie.config.winrateDiffRange2));
         }
         matchPanelmin.add(lblDiffConfig2);
         matchPanelmin.add(winrateDiffRange1);

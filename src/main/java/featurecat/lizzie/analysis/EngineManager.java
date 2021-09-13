@@ -481,8 +481,7 @@ public class EngineManager {
                 + "("
                 + engineList.get(engineGameInfo.blackEngineIndex).currentEnginename
                 + ")"
-                + resourceBundle.getString("Leelaz.win")
-                + "";
+                + resourceBundle.getString("Leelaz.win");
       } else {
         GameInfo gameInfo = Lizzie.board.getHistory().getGameInfo();
         gameInfo.setResult(resourceBundle.getString("Leelaz.whiteWin"));
@@ -493,8 +492,7 @@ public class EngineManager {
                 + "("
                 + engineList.get(engineGameInfo.whiteEngineIndex).currentEnginename
                 + ")"
-                + resourceBundle.getString("Leelaz.win")
-                + "";
+                + resourceBundle.getString("Leelaz.win");
       }
     }
     df = df + "_" + sf;

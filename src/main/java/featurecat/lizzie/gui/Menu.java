@@ -996,7 +996,7 @@ public class Menu extends JMenuBar {
                     JFontTextField input = new JFontTextField();
                     input.setAlignmentX(Component.LEFT_ALIGNMENT);
                     input.setDocument(new IntDocument());
-                    input.setText(Lizzie.config.maxTreeWidth + "");
+                    input.setText(String.valueOf(Lizzie.config.maxTreeWidth));
                     box.add(input);
                     Object[] options = new Object[2];
                     options[0] = resourceBundle.getString("LizzieFrame.confirm");
@@ -2701,7 +2701,7 @@ public class Menu extends JMenuBar {
                         return;
                       }
                     LizzieFrame.toolbar.txtenginePkBatch.setText(
-                        EngineManager.engineGameInfo.batchNumber + "");
+                        String.valueOf(EngineManager.engineGameInfo.batchNumber));
                   }
                 });
           }
@@ -4950,7 +4950,7 @@ public class Menu extends JMenuBar {
     lblKomiSpinner = new JFontLabel(resourceBundle.getString("Menu.komi")); // ("贴目:");
     txtKomi = new JFontTextField();
     txtKomi.setDocument(new KomiDocument(true));
-    txtKomi.setText(Lizzie.board.getHistory().getGameInfo().getKomi() + "");
+    txtKomi.setText(String.valueOf(Lizzie.board.getHistory().getGameInfo().getKomi()));
     txtKomi.setHorizontalAlignment(JFontTextField.RIGHT);
     // txtKomi.setFocusable(false);
     txtKomi.addKeyListener(
@@ -4979,7 +4979,7 @@ public class Menu extends JMenuBar {
               Lizzie.board.getHistory().getGameInfo().changeKomi();
               Lizzie.frame.refresh();
             } catch (Exception es) {
-              txtKomi.setText(Lizzie.board.getHistory().getGameInfo().getKomi() + "");
+              txtKomi.setText(String.valueOf(Lizzie.board.getHistory().getGameInfo().getKomi()));
             }
             //  }
           }
@@ -4996,7 +4996,7 @@ public class Menu extends JMenuBar {
           @Override
           public void focusLost(FocusEvent e) {
             // TODO Auto-generated method stub
-            txtKomi.setText(Lizzie.board.getHistory().getGameInfo().getKomi() + "");
+            txtKomi.setText(String.valueOf(Lizzie.board.getHistory().getGameInfo().getKomi()));
           }
         });
 
@@ -5024,7 +5024,8 @@ public class Menu extends JMenuBar {
               Lizzie.board.getHistory().getGameInfo().changeKomi();
               Lizzie.frame.refresh();
             } catch (Exception es) {
-              txtKomi.setText(Lizzie.board.getHistory().getGameInfo().getKomi() + "");
+              txtKomi.setText(String.valueOf(Lizzie.board.getHistory().getGameInfo().getKomi()));
+              es.printStackTrace();
             }
           }
         });
@@ -5249,7 +5250,7 @@ public class Menu extends JMenuBar {
               } catch (NumberFormatException s) {
                 // TODO Auto-generated catch block
               }
-              Lizzie.config.txtKataEngineWRN = wrn + "";
+              Lizzie.config.txtKataEngineWRN = String.valueOf(wrn);
               if (EngineManager.isEngineGame) {
                 Lizzie.engineManager
                     .engineList
@@ -5285,7 +5286,7 @@ public class Menu extends JMenuBar {
     txtWRN.setDocument(new DoubleDocument());
     txtWRN.setEnabled(false);
     // if (!Lizzie.config.autoLoadKataEngineWRN) txtWRN.setEnabled(false);
-    // txtWRN.setText(Lizzie.config.txtKataEngineWRN + "");
+    // txtWRN.setText(Lizzie.config.txtKataEngineWRN ));
 
     Document dt3 = txtWRN.getDocument();
     dt3.addDocumentListener(
@@ -5302,7 +5303,7 @@ public class Menu extends JMenuBar {
             }
             if (error || wrn < 0 || wrn > 2) txtWRN.setBackground(Color.RED);
             else txtWRN.setBackground(Color.WHITE);
-            Lizzie.config.txtKataEngineWRN = wrn + "";
+            Lizzie.config.txtKataEngineWRN = String.valueOf(wrn);
             if (EngineManager.isEngineGame || EngineManager.isPreEngineGame) {
               Lizzie.engineManager
                   .engineList
@@ -5330,7 +5331,7 @@ public class Menu extends JMenuBar {
             }
             if (error || wrn < 0 || wrn > 2) txtWRN.setBackground(Color.RED);
             else txtWRN.setBackground(Color.WHITE);
-            Lizzie.config.txtKataEngineWRN = wrn + "";
+            Lizzie.config.txtKataEngineWRN = String.valueOf(wrn);
             if (EngineManager.isEngineGame || EngineManager.isPreEngineGame) {
               Lizzie.engineManager
                   .engineList
@@ -5358,7 +5359,7 @@ public class Menu extends JMenuBar {
             }
             if (error || wrn < 0 || wrn > 2) txtWRN.setBackground(Color.RED);
             else txtWRN.setBackground(Color.WHITE);
-            Lizzie.config.txtKataEngineWRN = wrn + "";
+            Lizzie.config.txtKataEngineWRN = String.valueOf(wrn);
             if (EngineManager.isEngineGame || EngineManager.isPreEngineGame) {
               Lizzie.engineManager
                   .engineList
@@ -5389,17 +5390,17 @@ public class Menu extends JMenuBar {
               } catch (NumberFormatException s) {
                 // TODO Auto-generated catch block
               }
-              Lizzie.config.txtKataEnginePDA = pda + "";
+              Lizzie.config.txtKataEnginePDA = String.valueOf(pda);
               if (EngineManager.isEngineGame) {
                 Lizzie.engineManager
                     .engineList
                     .get(EngineManager.engineGameInfo.firstEngineIndex)
-                    .setPda(pda + "");
+                    .setPda(String.valueOf(pda));
                 Lizzie.engineManager
                     .engineList
                     .get(EngineManager.engineGameInfo.secondEngineIndex)
-                    .setPda(pda + "");
-              } else Lizzie.leelaz.setPda(pda + "");
+                    .setPda(String.valueOf(pda));
+              } else Lizzie.leelaz.setPda(String.valueOf(pda));
               if (Lizzie.leelaz.isPondering()) Lizzie.leelaz.ponder();
               Lizzie.config.uiConfig.put("txt-kata-engine-pda", Lizzie.config.txtKataEnginePDA);
 
@@ -5443,17 +5444,17 @@ public class Menu extends JMenuBar {
             if (error || pda > 3 || pda < -3) {
               txtGfPDA.setBackground(Color.RED);
             } else txtGfPDA.setBackground(Color.WHITE);
-            Lizzie.config.txtKataEnginePDA = pda + "";
+            Lizzie.config.txtKataEnginePDA = String.valueOf(pda);
             if (EngineManager.isEngineGame || EngineManager.isPreEngineGame) {
               Lizzie.engineManager
                   .engineList
                   .get(EngineManager.engineGameInfo.firstEngineIndex)
-                  .setPda(pda + "");
+                  .setPda(String.valueOf(pda));
               Lizzie.engineManager
                   .engineList
                   .get(EngineManager.engineGameInfo.secondEngineIndex)
-                  .setPda(pda + "");
-            } else Lizzie.leelaz.setPda(pda + "");
+                  .setPda(String.valueOf(pda));
+            } else Lizzie.leelaz.setPda(String.valueOf(pda));
             //  Lizzie.board.clearbestmovesafter(Lizzie.board.getHistory().getStart());
             if (Lizzie.leelaz.isPondering()) Lizzie.leelaz.ponder();
             Lizzie.config.uiConfig.put("txt-kata-engine-pda", Lizzie.config.txtKataEnginePDA);
@@ -5472,17 +5473,17 @@ public class Menu extends JMenuBar {
             if (error || pda > 3 || pda < -3) {
               txtGfPDA.setBackground(Color.RED);
             } else txtGfPDA.setBackground(Color.WHITE);
-            Lizzie.config.txtKataEnginePDA = pda + "";
+            Lizzie.config.txtKataEnginePDA = String.valueOf(pda);
             if (EngineManager.isEngineGame || EngineManager.isPreEngineGame) {
               Lizzie.engineManager
                   .engineList
                   .get(EngineManager.engineGameInfo.firstEngineIndex)
-                  .setPda(pda + "");
+                  .setPda(String.valueOf(pda));
               Lizzie.engineManager
                   .engineList
                   .get(EngineManager.engineGameInfo.secondEngineIndex)
-                  .setPda(pda + "");
-            } else Lizzie.leelaz.setPda(pda + "");
+                  .setPda(String.valueOf(pda));
+            } else Lizzie.leelaz.setPda(String.valueOf(pda));
             //   Lizzie.board.clearbestmovesafter(Lizzie.board.getHistory().getStart());
             if (Lizzie.leelaz.isPondering()) Lizzie.leelaz.ponder();
             Lizzie.config.uiConfig.put("txt-kata-engine-pda", Lizzie.config.txtKataEnginePDA);
@@ -5501,17 +5502,17 @@ public class Menu extends JMenuBar {
             if (error || pda > 3 || pda < -3) {
               txtGfPDA.setBackground(Color.RED);
             } else txtGfPDA.setBackground(Color.WHITE);
-            Lizzie.config.txtKataEnginePDA = pda + "";
+            Lizzie.config.txtKataEnginePDA = String.valueOf(pda);
             if (EngineManager.isEngineGame || EngineManager.isPreEngineGame) {
               Lizzie.engineManager
                   .engineList
                   .get(EngineManager.engineGameInfo.firstEngineIndex)
-                  .setPda(pda + "");
+                  .setPda(String.valueOf(pda));
               Lizzie.engineManager
                   .engineList
                   .get(EngineManager.engineGameInfo.secondEngineIndex)
-                  .setPda(pda + "");
-            } else Lizzie.leelaz.setPda(pda + "");
+                  .setPda(String.valueOf(pda));
+            } else Lizzie.leelaz.setPda(String.valueOf(pda));
             //  Lizzie.board.clearbestmovesafter(Lizzie.board.getHistory().getStart());
             if (Lizzie.leelaz.isPondering()) Lizzie.leelaz.ponder();
             Lizzie.config.uiConfig.put("txt-kata-engine-pda", Lizzie.config.txtKataEnginePDA);
@@ -5596,7 +5597,7 @@ public class Menu extends JMenuBar {
     txtTimeLimit.setEnabled(Lizzie.config.limitTime);
     txtTimeLimit.setMaximumSize(new Dimension(50, Config.menuHeight));
     txtTimeLimit.setPreferredSize(new Dimension(50, Config.menuHeight - 2));
-    txtTimeLimit.setText(Lizzie.config.maxAnalyzeTimeMillis / 1000 + "");
+    txtTimeLimit.setText(String.valueOf(Lizzie.config.maxAnalyzeTimeMillis / 1000));
     txtTimeLimit.setColumns(3);
     txtTimeLimit.addFocusListener(
         new FocusListener() {
@@ -5641,7 +5642,7 @@ public class Menu extends JMenuBar {
     txtPlayOutsLimit.setEnabled(Lizzie.config.limitPlayout);
     txtPlayOutsLimit.setMaximumSize(new Dimension(80, Config.menuHeight));
     txtPlayOutsLimit.setPreferredSize(new Dimension(80, Config.menuHeight - 2));
-    txtPlayOutsLimit.setText(Lizzie.config.limitPlayouts + "");
+    txtPlayOutsLimit.setText(String.valueOf(Lizzie.config.limitPlayouts));
     txtPlayOutsLimit.setColumns(4);
     txtPlayOutsLimit.addFocusListener(
         new FocusListener() {
@@ -6307,7 +6308,7 @@ public class Menu extends JMenuBar {
               selectAllowOneMove.setSelected(false);
               selectAllowCustomMove.setSelected(true);
             }
-            txtLimitLengthAllow.setText(Lizzie.config.selectAllowCustomMoves + "");
+            txtLimitLengthAllow.setText(String.valueOf(Lizzie.config.selectAllowCustomMoves));
           }
         });
 
@@ -6470,7 +6471,7 @@ public class Menu extends JMenuBar {
               selectAvoidOneMove.setSelected(false);
               selectAvoidCustomMove.setSelected(true);
             }
-            txtLimitLengthAvoid.setText(Lizzie.config.selectAvoidCustomMoves + "");
+            txtLimitLengthAvoid.setText(String.valueOf(Lizzie.config.selectAvoidCustomMoves));
           }
         });
 
@@ -7362,7 +7363,7 @@ public class Menu extends JMenuBar {
                 selectAllowOneMove.setSelected(false);
                 selectAllowCustomMove.setSelected(true);
               }
-              txtLimitLengthAllow.setText(Lizzie.config.selectAllowCustomMoves + "");
+              txtLimitLengthAllow.setText(String.valueOf(Lizzie.config.selectAllowCustomMoves));
             }
           });
 
@@ -7527,7 +7528,7 @@ public class Menu extends JMenuBar {
                 selectAvoidOneMove.setSelected(false);
                 selectAvoidCustomMove.setSelected(true);
               }
-              txtLimitLengthAvoid.setText(Lizzie.config.selectAvoidCustomMoves + "");
+              txtLimitLengthAvoid.setText(String.valueOf(Lizzie.config.selectAvoidCustomMoves));
             }
           });
 
@@ -8090,7 +8091,7 @@ public class Menu extends JMenuBar {
               rankLastMove.setState(false);
               chkWin.setSelected(Lizzie.config.useWinLossInMoveRank);
               chkScore.setSelected(Lizzie.config.useScoreLossInMoveRank);
-              txtCustomMove.setText(Lizzie.config.txtMoveRankMarkLastMove + "");
+              txtCustomMove.setText(String.valueOf(Lizzie.config.txtMoveRankMarkLastMove));
               if (Lizzie.config.allowMoveNumber != 0) {
                 rankNoneMove.setState(true);
               } else {
@@ -8123,7 +8124,7 @@ public class Menu extends JMenuBar {
               rankLastMove.setState(false);
               chkWin.setSelected(Lizzie.config.useWinLossInMoveRank);
               chkScore.setSelected(Lizzie.config.useScoreLossInMoveRank);
-              txtCustomMove.setText(Lizzie.config.txtMoveRankMarkLastMove + "");
+              txtCustomMove.setText(String.valueOf(Lizzie.config.txtMoveRankMarkLastMove));
               if (Lizzie.config.allowMoveNumber != 0) {
                 rankNoneMove.setState(true);
               } else {
@@ -8481,7 +8482,7 @@ public class Menu extends JMenuBar {
       txtGfPDA.setEnabled(false);
     } else {
       chkPDA.setSelected(true);
-      txtGfPDA.setText(pda + "");
+      txtGfPDA.setText(String.valueOf(pda));
       txtGfPDA.setEnabled(true);
     }
     if (wrn == 0) {
@@ -8490,7 +8491,7 @@ public class Menu extends JMenuBar {
       txtWRN.setEnabled(false);
     } else {
       chkWRN.setSelected(true);
-      txtWRN.setText(wrn + "");
+      txtWRN.setText(String.valueOf(wrn));
       txtWRN.setEnabled(true);
     }
     ShouldIgnoreDtChange = false;
@@ -8972,10 +8973,10 @@ public class Menu extends JMenuBar {
   public void refreshLimitStatus(boolean needReCalculatePondering) {
     chkPlayOut.setSelected(Lizzie.config.limitPlayout);
     txtPlayOutsLimit.setEnabled(Lizzie.config.limitPlayout);
-    txtPlayOutsLimit.setText(Lizzie.config.limitPlayouts + "");
+    txtPlayOutsLimit.setText(String.valueOf(Lizzie.config.limitPlayouts));
     chkTime.setSelected(Lizzie.config.limitTime);
     txtTimeLimit.setEnabled(Lizzie.config.limitTime);
-    txtTimeLimit.setText(Lizzie.config.maxAnalyzeTimeMillis / 1000 + "");
+    txtTimeLimit.setText(String.valueOf(Lizzie.config.maxAnalyzeTimeMillis / 1000));
     if (needReCalculatePondering) reCalculateLeelazPonderingIfOutOfLimit();
   }
 
@@ -9361,14 +9362,14 @@ public class Menu extends JMenuBar {
   public void setWrnText(double wrn) {
     // TODO Auto-generated method stub
     ShouldIgnoreDtChange = true;
-    txtWRN.setText(wrn + "");
+    txtWRN.setText(String.valueOf(wrn));
     ShouldIgnoreDtChange = false;
   }
 
   public void setUseWrn(boolean use, String wrn) {
     // TODO Auto-generated method stub
     ShouldIgnoreDtChange = true;
-    txtWRN.setText(wrn + "");
+    txtWRN.setText(String.valueOf(wrn));
     ShouldIgnoreDtChange = false;
     chkWRN.setSelected(use);
     txtWRN.setEnabled(use);
@@ -9377,7 +9378,7 @@ public class Menu extends JMenuBar {
   public void setUseGfPda(boolean use, String pda) {
     // TODO Auto-generated method stub
     ShouldIgnoreDtChange = true;
-    txtGfPDA.setText(pda + "");
+    txtGfPDA.setText(String.valueOf(pda));
     ShouldIgnoreDtChange = false;
     chkPDA.setSelected(use);
     txtGfPDA.setEnabled(use);

@@ -129,7 +129,7 @@ public class SetKataPDA extends JDialog {
               }
               engine.pda = staticCur;
               engine.isStaticPda = true;
-              LizzieFrame.menu.txtPDA.setText(staticCur + "");
+              LizzieFrame.menu.txtPDA.setText(String.valueOf(staticCur));
             }
             if (chkNoPDA.isSelected()) {
               engine.sendCommand("pda 0");
@@ -306,8 +306,8 @@ public class SetKataPDA extends JDialog {
     // if(!Lizzie.config.dymPDACap.equals(""))
     // txtDymCap.setText(Lizzie.config.dymPDACap);
     // else
-    txtDymCap.setText(Lizzie.leelaz.pdaCap + "");
-    txtStaticCur.setText(Lizzie.leelaz.pda + "");
+    txtDymCap.setText(String.valueOf(Lizzie.leelaz.pdaCap));
+    txtStaticCur.setText(String.valueOf(Lizzie.leelaz.pda));
 
     JFontLabel label = new JFontLabel("一般默认为白方视角,也可修改配置文件改为黑方视角,或无视角(轮谁下是谁的视角)");
     label.setForeground(Color.RED);

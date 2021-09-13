@@ -78,8 +78,9 @@ public class AnalysisPartGame extends JDialog {
         23);
     getContentPane().add(txtEndMove);
     txtStartMove.setText(
-        Lizzie.config.analysisStartMove > 0 ? Lizzie.config.analysisStartMove + "" : "");
-    txtEndMove.setText(Lizzie.config.analysisEndMove > 0 ? Lizzie.config.analysisEndMove + "" : "");
+        Lizzie.config.analysisStartMove > 0 ? String.valueOf(Lizzie.config.analysisStartMove) : "");
+    txtEndMove.setText(
+        Lizzie.config.analysisEndMove > 0 ? String.valueOf(Lizzie.config.analysisEndMove) : "");
 
     JFontLabel lblNotice =
         new JFontLabel(

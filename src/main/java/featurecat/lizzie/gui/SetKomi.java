@@ -121,7 +121,6 @@ public class SetKomi extends JDialog {
     Lizzie.board.clearbestmovesafter(Lizzie.board.getHistory().getStart());
     Lizzie.board.getHistory().getGameInfo().setKomi(komi);
     Lizzie.board.getHistory().getGameInfo().changeKomi();
-    // Lizzie.frame.komi = komi + "";
     Lizzie.leelaz.sendCommand("komi " + komi);
     if (Lizzie.leelaz.isPondering()) Lizzie.leelaz.ponder();
   }

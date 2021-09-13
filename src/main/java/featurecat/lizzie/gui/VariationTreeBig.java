@@ -168,9 +168,10 @@ public class VariationTreeBig {
               }
               moveNum = moveNum + num;
             }
-            if (moveNum < 10) g.drawString(moveNum + "", curposx + 3, posy + diff - 5);
+            if (moveNum < 10) g.drawString(String.valueOf(moveNum), curposx + 3, posy + diff - 5);
             else
-              g.drawString(moveNum + "", moveNum >= 100 ? curposx - 3 : curposx, posy + diff - 5);
+              g.drawString(
+                  String.valueOf(moveNum), moveNum >= 100 ? curposx - 3 : curposx, posy + diff - 5);
           }
           if (startNode == Lizzie.board.getHistory().getCurrentHistoryNode()) {
             if (blunderColor != Color.WHITE) g.setColor(reverseColor(blunderColor));
@@ -269,10 +270,12 @@ public class VariationTreeBig {
             }
             moveNum = moveNum + num;
           }
-          if (moveNum < 10) g.drawString(moveNum + "", curposx - 7, posy + diff - 1);
+          if (moveNum < 10) g.drawString(String.valueOf(moveNum), curposx - 7, posy + diff - 1);
           else
             g.drawString(
-                moveNum + "", moveNum >= 100 ? curposx - 13 : curposx - 10, posy + diff - 1);
+                String.valueOf(moveNum),
+                moveNum >= 100 ? curposx - 13 : curposx - 10,
+                posy + diff - 1);
         }
       }
     }
@@ -324,12 +327,12 @@ public class VariationTreeBig {
     int lane = curMoveLane;
     // Use dense tree for saving space if large-subboard
 
-    if (!calc) {
-      g.setColor(new Color(0, 0, 0, 130));
-      g.fillRect(posx, posy, width, height);
-      g.setStroke(new BasicStroke(1));
-    }
-
+    //    if (!calc) {
+    //      g.setColor(new Color(0, 0, 0, 130));
+    //      g.fillRect(posx, posy, width, height);
+    //      g.setStroke(new BasicStroke(1));
+    //    }
+    if (!calc) g.setStroke(new BasicStroke(1));
     int middleY = posy + height / 2;
     int xoffset = 20;
     laneUsageList.clear();

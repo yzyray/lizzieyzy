@@ -316,7 +316,7 @@ public class SetAiTimes extends JDialog {
         if (FORMAT_HANDICAP.parse(txtAnaGameTime.getText().trim()).intValue() > 0) {
           LizzieFrame.toolbar.chkAutoPlayTime.setSelected(true);
           LizzieFrame.toolbar.txtAutoPlayTime.setText(
-              FORMAT_HANDICAP.parse(txtAnaGameTime.getText().trim()).intValue() + "");
+              String.valueOf(FORMAT_HANDICAP.parse(txtAnaGameTime.getText().trim()).intValue()));
         } else LizzieFrame.toolbar.chkAutoPlayTime.setSelected(false);
       } catch (Exception ex) {
         LizzieFrame.toolbar.chkAutoPlayTime.setSelected(false);
@@ -326,7 +326,8 @@ public class SetAiTimes extends JDialog {
         if (FORMAT_HANDICAP.parse(txtAnaGmaePlayouts.getText().trim()).intValue() > 0) {
           LizzieFrame.toolbar.chkAutoPlayPlayouts.setSelected(true);
           LizzieFrame.toolbar.txtAutoPlayPlayouts.setText(
-              FORMAT_HANDICAP.parse(txtAnaGmaePlayouts.getText().trim()).intValue() + "");
+              String.valueOf(
+                  FORMAT_HANDICAP.parse(txtAnaGmaePlayouts.getText().trim()).intValue()));
         } else LizzieFrame.toolbar.chkAutoPlayPlayouts.setSelected(false);
       } catch (Exception ex) {
         LizzieFrame.toolbar.chkAutoPlayPlayouts.setSelected(false);
@@ -334,7 +335,8 @@ public class SetAiTimes extends JDialog {
       if (FORMAT_HANDICAP.parse(txtAnaGmaeFirstPlayouts.getText().trim()).intValue() > 0) {
         LizzieFrame.toolbar.chkAutoPlayFirstPlayouts.setSelected(true);
         LizzieFrame.toolbar.txtAutoPlayFirstPlayouts.setText(
-            FORMAT_HANDICAP.parse(txtAnaGmaeFirstPlayouts.getText().trim()).intValue() + "");
+            String.valueOf(
+                FORMAT_HANDICAP.parse(txtAnaGmaeFirstPlayouts.getText().trim()).intValue()));
       } else LizzieFrame.toolbar.chkAutoPlayFirstPlayouts.setSelected(false);
 
     } catch (Exception ex) {

@@ -95,7 +95,7 @@ public class SetFrameFontSize extends JDialog {
     buttonPane.add(fontSize);
     fontSize.setColumns(3);
 
-    fontSize.setText(Config.frameFontSize + "");
+    fontSize.setText(String.valueOf(Config.frameFontSize));
     try {
       this.setIconImage(ImageIO.read(MoreEngines.class.getResourceAsStream("/assets/logo.png")));
       Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();

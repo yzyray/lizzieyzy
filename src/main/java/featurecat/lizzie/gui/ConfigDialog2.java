@@ -1177,8 +1177,9 @@ public class ConfigDialog2 extends JDialog {
     tabbedPane.addTab(resourceBundle.getString("LizzieConfig.title.theme"), null, themeTab, null);
     tabbedPane.addTab(resourceBundle.getString("LizzieConfig.title.about"), null, aboutTab, null);
     // txtMaxAnalyzeTime.setText(String.valueOf(leelazConfig.getInt("max-analyze-time-minutes")));
-    txtAnalyzeUpdateInterval.setText(Lizzie.config.analyzeUpdateIntervalCentisec + "");
-    txtAnalyzeUpdateIntervalSSH.setText(Lizzie.config.analyzeUpdateIntervalCentisecSSH + "");
+    txtAnalyzeUpdateInterval.setText(String.valueOf(Lizzie.config.analyzeUpdateIntervalCentisec));
+    txtAnalyzeUpdateIntervalSSH.setText(
+        String.valueOf(Lizzie.config.analyzeUpdateIntervalCentisecSSH));
     // txtAvoidKeepVariations.setText(String.valueOf(leelazConfig.getInt("avoid-keep-variations")));
     txtMaxGameThinkingTime.setText(
         String.valueOf(leelazConfig.getInt("max-game-thinking-time-seconds")));
@@ -1550,7 +1551,7 @@ public class ConfigDialog2 extends JDialog {
     txtPvVisitsLimit.setBounds(800, 395, 66, 21);
     uiTab.add(txtPvVisitsLimit);
     txtPvVisitsLimit.setColumns(10);
-    txtPvVisitsLimit.setText(Lizzie.config.pvVisitsLimit + "");
+    txtPvVisitsLimit.setText(String.valueOf(Lizzie.config.pvVisitsLimit));
 
     JLabel lblVariationRemoveDeadChain =
         new JLabel(
@@ -1565,7 +1566,8 @@ public class ConfigDialog2 extends JDialog {
     txtVariationReplayInterval = new JTextField();
     txtVariationReplayInterval.setBounds(803, 700, 52, 18);
     uiTab.add(txtVariationReplayInterval);
-    txtVariationReplayInterval.setText(Lizzie.config.replayBranchIntervalSeconds * 1000 + "");
+    txtVariationReplayInterval.setText(
+        String.valueOf(Lizzie.config.replayBranchIntervalSeconds * 1000));
 
     JLabel lblVariationReplayInterval =
         new JLabel(
@@ -1677,7 +1679,7 @@ public class ConfigDialog2 extends JDialog {
         });
     chkLimitTime.setSelected(Lizzie.config.limitTime);
     chkLimitPlayouts.setSelected(Lizzie.config.limitPlayout);
-    txtLimitPlayouts.setText(Lizzie.config.limitPlayouts + "");
+    txtLimitPlayouts.setText(String.valueOf(Lizzie.config.limitPlayouts));
     txtLimitPlayouts.setEnabled(Lizzie.config.limitPlayout);
     txtMaxAnalyzeTime.setEnabled(Lizzie.config.limitTime);
 
@@ -1760,12 +1762,12 @@ public class ConfigDialog2 extends JDialog {
     txtLastMark.setColumns(10);
     txtLastMark.setBounds(275, 155, 28, 20);
     uiTab.add(txtLastMark);
-    txtLastMark.setText(Lizzie.config.txtMoveRankMarkLastMove + "");
+    txtLastMark.setText(String.valueOf(Lizzie.config.txtMoveRankMarkLastMove));
     if (Lizzie.config.moveRankMarkLastMove < 0) rdoNoMark.setSelected(true);
     else if (Lizzie.config.moveRankMarkLastMove == 0) rdoAllMark.setSelected(true);
     else {
       rdoLastMark.setSelected(true);
-      txtLastMark.setText(Lizzie.config.moveRankMarkLastMove + "");
+      txtLastMark.setText(String.valueOf(Lizzie.config.moveRankMarkLastMove));
       txtLastMark.setEnabled(true);
     }
 
@@ -3150,8 +3152,8 @@ public class ConfigDialog2 extends JDialog {
         Lizzie.config.otherSizeHeight = height;
         break;
     }
-    txtBoardWidth.setText(Lizzie.config.otherSizeWidth + "");
-    txtBoardHeight.setText(Lizzie.config.otherSizeHeight + "");
+    txtBoardWidth.setText(String.valueOf(Lizzie.config.otherSizeWidth));
+    txtBoardHeight.setText(String.valueOf(Lizzie.config.otherSizeHeight));
   }
 
   private int[] getBoardSize() {

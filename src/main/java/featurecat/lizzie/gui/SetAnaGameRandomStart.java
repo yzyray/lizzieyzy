@@ -133,9 +133,9 @@ public class SetAnaGameRandomStart extends JDialog {
     }
 
     chkEnable.setSelected(Lizzie.config.enableAnaGameRamdonStart);
-    txtFirstMove.setText(Lizzie.config.anaGameRandomMove + "");
-    txtWinrate.setText(Lizzie.config.anaGameRandomWinrateDiff + "");
-    txtPlayouts.setText(Lizzie.config.anaGameRandomPlayoutsDiff + "");
+    txtFirstMove.setText(String.valueOf(Lizzie.config.anaGameRandomMove));
+    txtWinrate.setText(String.valueOf(Lizzie.config.anaGameRandomWinrateDiff));
+    txtPlayouts.setText(String.valueOf(Lizzie.config.anaGameRandomPlayoutsDiff));
     if (chkEnable.isSelected()) {
       txtFirstMove.setEnabled(true);
       txtWinrate.setEnabled(true);

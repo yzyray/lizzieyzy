@@ -1002,7 +1002,7 @@ public class SubBoardRenderer {
               }
             }
           }
-          String moveNumberString = moveNumberList[Board.getIndex(i, j)] + "";
+          String moveNumberString = String.valueOf(moveNumberList[Board.getIndex(i, j)]);
 
           drawString(
               g,

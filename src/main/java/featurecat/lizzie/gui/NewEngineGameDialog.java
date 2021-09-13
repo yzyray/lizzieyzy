@@ -271,13 +271,13 @@ public class NewEngineGameDialog extends JDialog {
     contentPanel.add(txtresignSettingWhite);
     contentPanel.add(txtresignSettingWhite2);
 
-    txtresignSettingBlack.setText(Lizzie.config.firstEngineResignMoveCounts + "");
-    txtresignSettingBlack2.setText(Lizzie.config.firstEngineResignWinrate + "");
-    txtresignSettingBlackMinMove.setText(Lizzie.config.firstEngineMinMove + "");
+    txtresignSettingBlack.setText(String.valueOf(Lizzie.config.firstEngineResignMoveCounts));
+    txtresignSettingBlack2.setText(String.valueOf(Lizzie.config.firstEngineResignWinrate));
+    txtresignSettingBlackMinMove.setText(String.valueOf(Lizzie.config.firstEngineMinMove));
 
-    txtresignSettingWhite.setText(Lizzie.config.secondEngineResignMoveCounts + "");
-    txtresignSettingWhite2.setText(Lizzie.config.secondEngineResignWinrate + "");
-    txtresignSettingWhiteMinMove.setText(Lizzie.config.secondEngineMinMove + "");
+    txtresignSettingWhite.setText(String.valueOf(Lizzie.config.secondEngineResignMoveCounts));
+    txtresignSettingWhite2.setText(String.valueOf(Lizzie.config.secondEngineResignWinrate));
+    txtresignSettingWhiteMinMove.setText(String.valueOf(Lizzie.config.secondEngineMinMove));
 
     textFieldKomi = new JFontTextField();
     textFieldKomi.setDocument(new KomiDocument(true));
@@ -1040,7 +1040,7 @@ public class NewEngineGameDialog extends JDialog {
 
       Lizzie.board.getHistory().setGameInfo(gameInfo);
       Lizzie.leelaz.komi(gameInfo.getKomi());
-      // Lizzie.frame.komi = gameInfo.getKomi() + "";
+      // Lizzie.frame.komi = gameInfo.getKomi() );
 
       LizzieFrame.toolbar.chkenginePk.setSelected(true);
       if (LizzieFrame.toolbar.startEngineGame()) setVisible(false);
@@ -1137,8 +1137,8 @@ public class NewEngineGameDialog extends JDialog {
   public void setGameInfo(GameInfo gameInfo) {
     this.gameInfo = gameInfo;
 
-    textFieldHandicap.setText(Lizzie.config.newEngineGameHandicap + "");
-    textFieldKomi.setText(Lizzie.config.newEngineGameKomi + "");
+    textFieldHandicap.setText(String.valueOf(Lizzie.config.newEngineGameHandicap));
+    textFieldKomi.setText(String.valueOf(Lizzie.config.newEngineGameKomi));
 
     // update player names
     // togglePlayerIsBlack();

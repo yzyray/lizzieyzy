@@ -1995,16 +1995,16 @@ public class BottomToolbar extends JPanel {
         && Lizzie.config.persistedUi.optJSONArray("toolbar-parameter").length() == 51) {
       JSONArray pos = Lizzie.config.persistedUi.getJSONArray("toolbar-parameter");
       if (pos.getInt(0) >= 0) {
-        this.txtFirstAnaMove.setText(pos.getInt(0) + "");
+        this.txtFirstAnaMove.setText(String.valueOf(pos.getInt(0)));
       }
       if (pos.getInt(1) > 0) {
-        this.txtLastAnaMove.setText(pos.getInt(1) + "");
+        this.txtLastAnaMove.setText(String.valueOf(pos.getInt(1)));
       }
       if (pos.getInt(2) > 0) {
         this.chkAnaTime.setSelected(true);
       }
       if (pos.getInt(3) > 0) {
-        this.txtAnaTime.setText(pos.getInt(3) + "");
+        this.txtAnaTime.setText(String.valueOf(pos.getInt(3)));
       }
       if (pos.getInt(4) > 0) {
         this.chkAnaAutoSave.setSelected(true);
@@ -2013,13 +2013,13 @@ public class BottomToolbar extends JPanel {
         this.chkAnaPlayouts.setSelected(true);
       }
       if (pos.getInt(6) > 0) {
-        this.txtAnaPlayouts.setText(pos.getInt(6) + "");
+        this.txtAnaPlayouts.setText(String.valueOf(pos.getInt(6)));
       }
       if (pos.getInt(7) > 0) {
         this.chkAnaFirstPlayouts.setSelected(true);
       }
       if (pos.getInt(8) > 0) {
-        this.txtAnaFirstPlayouts.setText(pos.getInt(8) + "");
+        this.txtAnaFirstPlayouts.setText(String.valueOf(pos.getInt(8)));
       }
       if (pos.getInt(9) > 0) {
         this.chkAutoPlayBlack.setSelected(true);
@@ -2031,43 +2031,43 @@ public class BottomToolbar extends JPanel {
         this.chkAutoPlayTime.setSelected(true);
       }
       if (pos.getInt(12) > 0) {
-        this.txtAutoPlayTime.setText(pos.getInt(12) + "");
+        this.txtAutoPlayTime.setText(String.valueOf(pos.getInt(12)));
       }
       if (pos.getInt(13) > 0) {
         this.chkAutoPlayPlayouts.setSelected(true);
       }
       if (pos.getInt(14) > 0) {
-        this.txtAutoPlayPlayouts.setText(pos.getInt(14) + "");
+        this.txtAutoPlayPlayouts.setText(String.valueOf(pos.getInt(14)));
       }
       if (pos.getInt(15) > 0) {
         this.chkAutoPlayFirstPlayouts.setSelected(true);
       }
       if (pos.getInt(16) > 0) {
-        this.txtAutoPlayFirstPlayouts.setText(pos.getInt(16) + "");
+        this.txtAutoPlayFirstPlayouts.setText(String.valueOf(pos.getInt(16)));
       }
 
       if (pos.getInt(17) > 0) {
-        this.txtenginePkFirstPlayputs.setText(pos.getInt(17) + "");
+        this.txtenginePkFirstPlayputs.setText(String.valueOf(pos.getInt(17)));
       }
 
       if (pos.getInt(18) > 0) {
-        this.txtenginePkFirstPlayputsWhite.setText(pos.getInt(18) + "");
+        this.txtenginePkFirstPlayputsWhite.setText(String.valueOf(pos.getInt(18)));
       }
 
       if (pos.getInt(19) > 0) {
-        this.txtenginePkTime.setText(pos.getInt(19) + "");
+        this.txtenginePkTime.setText(String.valueOf(pos.getInt(19)));
       }
 
       if (pos.getInt(20) > 0) {
-        this.txtenginePkPlayputs.setText(pos.getInt(20) + "");
+        this.txtenginePkPlayputs.setText(String.valueOf(pos.getInt(20)));
       }
 
       if (pos.getInt(21) > 0) {
-        this.txtenginePkPlayputsWhite.setText(pos.getInt(21) + "");
+        this.txtenginePkPlayputsWhite.setText(String.valueOf(pos.getInt(21)));
       }
 
       if (pos.getInt(22) > 0) {
-        this.txtenginePkBatch.setText(pos.getInt(22) + "");
+        this.txtenginePkBatch.setText(String.valueOf(pos.getInt(22)));
       }
       if (pos.getInt(23) > 0) {
         this.chkenginePkBatch.setSelected(true);
@@ -2110,17 +2110,17 @@ public class BottomToolbar extends JPanel {
       maxGameMoves = pos.getInt(36);
       checkGameMaxMove = pos.getBoolean(37);
       if (pos.getInt(38) > 0) {
-        txtenginePkTimeWhite.setText(pos.getInt(38) + "");
+        txtenginePkTimeWhite.setText(String.valueOf(pos.getInt(38)));
       }
       if (pos.getInt(39) > 0) {
         this.chkAutoSub.setSelected(true);
       }
       if (pos.getInt(40) > 0) {
-        this.txtAutoMain.setText(pos.getInt(40) + "");
+        this.txtAutoMain.setText(String.valueOf(pos.getInt(40)));
       }
 
       if (pos.getInt(41) > 0) {
-        this.txtAutoSub.setText(pos.getInt(41) + "");
+        this.txtAutoSub.setText(String.valueOf(pos.getInt(41)));
       }
       //     minGanmeMove = pos.getInt(42);
       //    checkGameMinMove = pos.getBoolean(43);

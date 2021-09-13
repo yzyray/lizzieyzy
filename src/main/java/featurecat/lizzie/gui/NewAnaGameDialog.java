@@ -253,7 +253,7 @@ public class NewAnaGameDialog extends JDialog {
 
     // togglePlayerIsBlack();
     textFieldKomi.setEnabled(true);
-    textFieldKomi.setText(Lizzie.config.newGameKomi + "");
+    textFieldKomi.setText(String.valueOf(Lizzie.config.newGameKomi));
     GridBagConstraints gbc_2 = new GridBagConstraints();
     gbc_2.fill = GridBagConstraints.BOTH;
     gbc_2.insets = new Insets(0, 0, 5, 5);
@@ -415,7 +415,7 @@ public class NewAnaGameDialog extends JDialog {
     textTime = new JTextField();
     textTime.setDocument(new IntDocument());
     textTime.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
-    textTime.setText(Lizzie.config.maxGameThinkingTimeSeconds + "");
+    textTime.setText(String.valueOf(Lizzie.config.maxGameThinkingTimeSeconds));
     chkUseTime.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
@@ -553,9 +553,9 @@ public class NewAnaGameDialog extends JDialog {
     textResignPercent.setColumns(3);
     JFontLabel resign3 = new JFontLabel("%");
 
-    textResignStartMove.setText(Lizzie.config.anaGameResignStartMove + "");
-    textResignMove.setText(Lizzie.config.anaGameResignMove + "");
-    textResignPercent.setText(Lizzie.config.anaGameResignPercent + "");
+    textResignStartMove.setText(String.valueOf(Lizzie.config.anaGameResignStartMove));
+    textResignMove.setText(String.valueOf(Lizzie.config.anaGameResignMove));
+    textResignPercent.setText(String.valueOf(Lizzie.config.anaGameResignPercent));
 
     // resign1.setBounds(0, 0, 48, 20);
     //  textResignMove.setBounds(50, 0, 25, 20);
@@ -774,7 +774,7 @@ public class NewAnaGameDialog extends JDialog {
         if (FORMAT_HANDICAP.parse(textTime.getText().trim()).intValue() > 0) {
           LizzieFrame.toolbar.chkAutoPlayTime.setSelected(chkUseTime.isSelected());
           LizzieFrame.toolbar.txtAutoPlayTime.setText(
-              FORMAT_HANDICAP.parse(textTime.getText().trim()).intValue() + "");
+              String.valueOf(FORMAT_HANDICAP.parse(textTime.getText().trim()).intValue()));
           Lizzie.config.maxGameThinkingTimeSeconds =
               FORMAT_HANDICAP.parse(textTime.getText().trim()).intValue();
           Lizzie.config.leelazConfig.putOpt(
@@ -792,7 +792,7 @@ public class NewAnaGameDialog extends JDialog {
         if (FORMAT_HANDICAP.parse(textPlayouts.getText().trim()).intValue() > 0) {
           LizzieFrame.toolbar.chkAutoPlayPlayouts.setSelected(chkUsePlayouts.isSelected());
           LizzieFrame.toolbar.txtAutoPlayPlayouts.setText(
-              FORMAT_HANDICAP.parse(textPlayouts.getText().trim()).intValue() + "");
+              String.valueOf(FORMAT_HANDICAP.parse(textPlayouts.getText().trim()).intValue()));
         } else {
           LizzieFrame.toolbar.chkAutoPlayPlayouts.setSelected(false);
           LizzieFrame.toolbar.txtAutoPlayPlayouts.setText("");
@@ -806,7 +806,7 @@ public class NewAnaGameDialog extends JDialog {
           LizzieFrame.toolbar.chkAutoPlayFirstPlayouts.setSelected(
               chkUseFirstPlayouts.isSelected());
           LizzieFrame.toolbar.txtAutoPlayFirstPlayouts.setText(
-              FORMAT_HANDICAP.parse(textFirstPlayouts.getText().trim()).intValue() + "");
+              String.valueOf(FORMAT_HANDICAP.parse(textFirstPlayouts.getText().trim()).intValue()));
         } else {
           LizzieFrame.toolbar.chkAutoPlayFirstPlayouts.setSelected(false);
           LizzieFrame.toolbar.txtAutoPlayFirstPlayouts.setText("");
@@ -836,7 +836,7 @@ public class NewAnaGameDialog extends JDialog {
       Lizzie.config.myByoyomiSeconds = texByoSeconds.getSelectedIndex();
       Lizzie.config.myByoyomiTimes = texByoTimes.getSelectedIndex();
       Lizzie.leelaz.anaGameResignCount = 0;
-      LizzieFrame.menu.txtKomi.setText(gameInfo.getKomi() + "");
+      LizzieFrame.menu.txtKomi.setText(String.valueOf(gameInfo.getKomi()));
 
       Lizzie.config.checkPlayBlack = checkBoxPlayerIsBlack.getSelectedIndex() == 0;
       Lizzie.config.checkContinuePlay = checkContinuePlay.isSelected();

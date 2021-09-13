@@ -97,7 +97,8 @@ public class AutoPlay extends JFrame {
         24);
     contentPane.add(txtDisplayEntireVariationFirst);
     txtDisplayEntireVariationFirst.setEnabled(Lizzie.config.autoReplayBranch);
-    txtDisplayEntireVariationFirst.setText(Lizzie.config.displayEntireVariationsFirstSeconds + "");
+    txtDisplayEntireVariationFirst.setText(
+        String.valueOf(Lizzie.config.displayEntireVariationsFirstSeconds));
 
     JCheckBox chkAutoPlayBranch =
         new JFontCheckBox(resourceBundle.getString("AutpPlay.chkAutoPlayBranch"));
@@ -116,7 +117,8 @@ public class AutoPlay extends JFrame {
     txtAutoPlayBranch = new JTextField();
     txtAutoPlayBranch.setBounds(180, 60, 66, 24);
     contentPane.add(txtAutoPlayBranch);
-    txtAutoPlayBranch.setText((int) (Lizzie.config.replayBranchIntervalSeconds * 1000) + "");
+    txtAutoPlayBranch.setText(
+        String.valueOf((int) (Lizzie.config.replayBranchIntervalSeconds * 1000)));
 
     JButton okButton = new JFontButton(resourceBundle.getString("AutpPlay.okButton"));
     okButton.setMargin(new Insets(0, 0, 0, 0));

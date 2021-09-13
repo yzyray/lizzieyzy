@@ -183,28 +183,28 @@ public class WinrateGraph {
         for (int i = 1; i <= (numMoves / 10); i++)
           if (numMoves - i * 10 > 3)
             gBackground.drawString(
-                i * 10 + "",
+                String.valueOf(i * 10),
                 posx + (i * 10 - 1) * width / numMoves - 3,
                 posy + height - strokeRadius);
       } else if (numMoves <= 125) {
         for (int i = 1; i <= (numMoves / 20); i++)
           if (numMoves - i * 20 > 3)
             gBackground.drawString(
-                i * 20 + "",
+                String.valueOf(i * 20),
                 posx + (i * 20 - 1) * width / numMoves - 3,
                 posy + height - strokeRadius);
       } else if (numMoves < 205) {
         for (int i = 1; i <= (numMoves / 30); i++)
           if (numMoves - i * 30 > 3)
             gBackground.drawString(
-                i * 30 + "",
+                String.valueOf(i * 30),
                 posx + (i * 30 - 1) * width / numMoves - 3,
                 posy + height - strokeRadius);
       } else {
         for (int i = 1; i <= (numMoves / 40); i++)
           if (numMoves - i * 40 > 3)
             gBackground.drawString(
-                i * 40 + "",
+                String.valueOf(i * 40),
                 posx + (i * 40 - 1) * width / numMoves - 3,
                 posy + height - strokeRadius);
       }
@@ -1366,12 +1366,12 @@ public class WinrateGraph {
 
   public void setMaxScoreMean(BoardHistoryNode lastMove) {
     while (lastMove.previous().isPresent()) {
-      Double scoreMean = lastMove.getData().scoreMean;
-      if (Math.abs(scoreMean) > maxcoreMean) maxcoreMean = Math.abs(scoreMean);
+      Double scoreMean = Math.abs(lastMove.getData().scoreMean);
+      if (scoreMean > maxcoreMean) maxcoreMean = scoreMean;
       lastMove = lastMove.previous().get();
     }
-    Double scoreMean = lastMove.getData().scoreMean;
-    if (Math.abs(scoreMean) > maxcoreMean) maxcoreMean = Math.abs(scoreMean);
+    Double scoreMean = Math.abs(lastMove.getData().scoreMean);
+    if (scoreMean > maxcoreMean) maxcoreMean = scoreMean;
   }
 
   public void setMouseOverNode(BoardHistoryNode node) {

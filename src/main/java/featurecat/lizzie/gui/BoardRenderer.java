@@ -1782,15 +1782,16 @@ public class BoardRenderer {
             }
             g.setColor(stoneHere.isBlackColor() ? Color.WHITE : Color.BLACK);
           }
-          String moveNumberString = mvNum + "";
+          String moveNumberString = String.valueOf(mvNum);
           if (Lizzie.config.showMoveNumberFromOne && Lizzie.config.allowMoveNumber > 0) {
             if (lastMoveNumber > Lizzie.config.allowMoveNumber)
-              moveNumberString = mvNum - (lastMoveNumber - Lizzie.config.allowMoveNumber) + "";
+              moveNumberString =
+                  String.valueOf(mvNum - (lastMoveNumber - Lizzie.config.allowMoveNumber));
           }
           if (isShowingPvVists) {
             if (Lizzie.frame.isTrying) {
               if (mvNum < 0) {
-                moveNumberString = -mvNum + "";
+                moveNumberString = String.valueOf(-mvNum);
                 drawString(
                     g,
                     stoneX,
@@ -1823,7 +1824,7 @@ public class BoardRenderer {
           } else {
             if (Lizzie.frame.isTrying && !branchOpt.isPresent()) {
               if (mvNum < 0) {
-                moveNumberString = -mvNum + "";
+                moveNumberString = String.valueOf(-mvNum);
                 drawString(
                     g,
                     stoneX,
@@ -1935,7 +1936,7 @@ public class BoardRenderer {
           stoneX,
           (int) (stoneY + squareWidth * 0.12),
           LizzieFrame.uiFont,
-          moveNum + "",
+          String.valueOf(moveNum),
           (float) (stoneRadius * 1.3),
           (int) (stoneRadius * 1.4));
   }
@@ -2232,7 +2233,6 @@ public class BoardRenderer {
           alpha =
               minAlpha
                   + (maxAlpha - minAlpha) * max(0, (float) log(percentPlayouts) / alphaFactor + 1);
-
           Color hsbColor = Color.getHSBColor(hue, saturation, brightness);
           Color color =
               new Color(hsbColor.getRed(), hsbColor.getGreen(), hsbColor.getBlue(), (int) alpha);
@@ -2312,7 +2312,7 @@ public class BoardRenderer {
                     drawCircleBest(g, suggestionX, suggestionY, stoneRadius + 1, 15f);
                   } else {
                     float alphaCircle =
-                        32 + (128 - 32) * max(0, (float) log(percentPlayouts) / alphaFactor + 1);
+                        32 + 96 * max(0, (float) log(percentPlayouts) / alphaFactor + 1);
                     g.setColor(new Color(0, 0, 0, (int) alphaCircle));
                     drawCircle(g, suggestionX, suggestionY, stoneRadius + 1, 26.5f);
                   }
@@ -2320,7 +2320,7 @@ public class BoardRenderer {
                   g.setColor(color);
                   fillCircle(g, suggestionX, suggestionY, stoneRadius + 1);
                   float alphaCircle =
-                      32 + (128 - 32) * max(0, (float) log(percentPlayouts) / alphaFactor + 1);
+                      32 + 96 * max(0, (float) log(percentPlayouts) / alphaFactor + 1);
                   g.setColor(new Color(0, 0, 0, (int) alphaCircle));
                   drawCircle(g, suggestionX, suggestionY, stoneRadius + 1, 26.5f);
                 }
@@ -2820,7 +2820,7 @@ public class BoardRenderer {
         (int) round(y - squareWidth * 0.358),
         LizzieFrame.winrateFont,
         Font.PLAIN,
-        order + 1 + "",
+        String.valueOf(order + 1),
         squareWidth * 0.36f,
         squareWidth * 0.39,
         1,
@@ -2959,9 +2959,8 @@ public class BoardRenderer {
             }
             g.setColor(color);
             fillCircle(g, suggestionX, suggestionY, stoneRadius + 1);
-            float alphaCircle =
-                32 + (200 - 32) * max(0, (float) log(percentPlayouts) / alphaFactor + 1);
-            g.setColor(new Color(0, 0, 0, Math.min(128, (int) alphaCircle)));
+            float alphaCircle = 32 + 96 * max(0, (float) log(percentPlayouts) / alphaFactor + 1);
+            g.setColor(new Color(0, 0, 0, (int) alphaCircle));
             drawCircle(g, suggestionX, suggestionY, stoneRadius + 1, 26.5f);
           }
         }
@@ -3030,7 +3029,7 @@ public class BoardRenderer {
                           nextPvVisits = new ArrayList<String>();
                           if (nextMoveData.pvVisits != null && !nextMoveData.pvVisits.isEmpty()) {
                             for (String v : nextMoveData.pvVisits) nextPvVisits.add(v);
-                            nextPvVisits.add(0, nextMoveData.playouts + "");
+                            nextPvVisits.add(0, String.valueOf(nextMoveData.playouts));
                           }
                           if (thisData.isKataData && nextData.isKataData) {
                             double winrateDiff =

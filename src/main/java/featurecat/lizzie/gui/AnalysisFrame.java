@@ -532,7 +532,7 @@ public class AnalysisFrame extends JFrame {
       g.drawLine(0, 20, width, 20);
       int nums = trueHeight / 20;
       for (int i = 0; i < nums; i++) {
-        g.drawString(i + 1 + "", 3, minHeight + i * 20 + 15);
+        g.drawString(String.valueOf(i + 1), 3, minHeight + i * 20 + 15);
         g.setColor(Color.DARK_GRAY);
         if (i < length) {
           double percents = (double) bestMoves.get(i).playouts / maxPlayouts;

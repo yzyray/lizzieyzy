@@ -218,8 +218,8 @@ public class SetBoardSize extends JDialog {
       width.setEnabled(false);
       height.setEnabled(false);
     }
-    width.setText(Lizzie.config.otherSizeWidth + "");
-    height.setText(Lizzie.config.otherSizeHeight + "");
+    width.setText(String.valueOf(Lizzie.config.otherSizeWidth));
+    height.setText(String.valueOf(Lizzie.config.otherSizeHeight));
 
     ButtonGroup group = new ButtonGroup();
     group.add(rdo19);

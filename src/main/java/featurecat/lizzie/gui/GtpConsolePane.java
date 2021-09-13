@@ -48,10 +48,6 @@ public class GtpConsolePane extends JDialog {
               ? ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("zh", "CN"))
               : ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("en", "US")));
 
-  // Display Comment
-  // private HTMLDocument htmlDoc;
-  // private HTMLEditorKit htmlKit;
-  // private StyleSheet htmlStyle;
   private int scrollLength = 0;
   private JScrollPane scrollPane;
   public JIMSendTextPane console;
@@ -104,8 +100,6 @@ public class GtpConsolePane extends JDialog {
     console.setBackground(Color.BLACK);
     console.setForeground(Color.LIGHT_GRAY);
     console.setFont(gtpFont);
-    //   console.setEditorKit(htmlKit);
-    //   console.setDocument(htmlDoc);
     scrollPane = new JScrollPane();
     scrollPane.setBorder(BorderFactory.createEmptyBorder());
     txtCommand.setBackground(Color.DARK_GRAY);
@@ -162,8 +156,6 @@ public class GtpConsolePane extends JDialog {
             openCommands();
           }
         });
-    // pnlCommand.add(clear, BorderLayout.EAST);
-
     send = new JButton(resourceBundle.getString("GtpConsolePane.send"));
     send.addActionListener(e -> postCommand(e));
     buttonPane.setLayout(new GridLayout(1, 3, 0, 0));
@@ -177,9 +169,6 @@ public class GtpConsolePane extends JDialog {
     getContentPane().add(pnlCommand, BorderLayout.SOUTH);
     scrollPane.setViewportView(console);
     getRootPane().setBorder(BorderFactory.createEmptyBorder());
-    // getRootPane().setWindowDecorationStyle(JRootPane.PLAIN_DIALOG);
-    // setVisible(true);
-
     txtCommand.addActionListener(e -> postCommand(e));
     this.addWindowListener(
         new WindowAdapter() {
@@ -212,12 +201,10 @@ public class GtpConsolePane extends JDialog {
   public void addDocs(DocType doc) {
     SimpleAttributeSet attrSet = new SimpleAttributeSet();
     StyleConstants.setForeground(attrSet, doc.contentColor);
-    // 颜色
     if (doc.isCommand) {
       StyleConstants.setFontFamily(attrSet, Lizzie.config.uiFontName);
     }
     StyleConstants.setFontSize(attrSet, doc.fontSize);
-    // 字体大小
     insert(doc.content, attrSet);
   }
 
@@ -232,7 +219,6 @@ public class GtpConsolePane extends JDialog {
 
   public void insert(String str, AttributeSet attrSet) {
     Document doc = console.getDocument();
-    //   str = "\n " + str;
     try {
       doc.insertString(doc.getLength(), str, attrSet);
     } catch (BadLocationException e) {
@@ -275,15 +261,11 @@ public class GtpConsolePane extends JDialog {
         checkCount = 0;
         checkConsole();
       } else {
-        // checkConsole();
-        // format(commandTexts)
-        //   addText(commandTexts);
         int length = console.getDocument().getLength();
         if (length != scrollLength) {
           scrollLength = length;
           console.setCaretPosition(scrollLength);
         }
-        // commandTexts = "";
       }
     }
   }
@@ -458,9 +440,11 @@ public class GtpConsolePane extends JDialog {
               Lizzie.leelaz.pda = pda;
               Lizzie.leelaz.isStaticPda = true;
               if (LizzieFrame.extraMode == 2) Lizzie.leelaz2.pda = 0;
-              if (LizzieFrame.menu.setPda != null) LizzieFrame.menu.setPda.curPDA.setText(pda + "");
-              LizzieFrame.menu.txtPDA.setText(pda + "");
+              if (LizzieFrame.menu.setPda != null)
+                LizzieFrame.menu.setPda.curPDA.setText(String.valueOf(pda));
+              LizzieFrame.menu.txtPDA.setText(String.valueOf(pda));
             } catch (Exception es) {
+              es.printStackTrace();
             }
           }
         }
@@ -474,6 +458,7 @@ public class GtpConsolePane extends JDialog {
               double dymCap = Double.parseDouble(params[1]);
               Lizzie.leelaz.pdaCap = dymCap;
             } catch (Exception es) {
+              es.printStackTrace();
             }
           }
         }
@@ -486,8 +471,9 @@ public class GtpConsolePane extends JDialog {
             Double pdaCap = Double.parseDouble(params[1]);
             Lizzie.leelaz.pdaCap = pdaCap;
             if (LizzieFrame.menu.setPda != null)
-              LizzieFrame.menu.setPda.txtDymCap.setText(pdaCap + "");
+              LizzieFrame.menu.setPda.txtDymCap.setText(String.valueOf(pdaCap));
           } catch (Exception es) {
+            es.printStackTrace();
           }
         }
         Lizzie.leelaz.sendCommand(command);

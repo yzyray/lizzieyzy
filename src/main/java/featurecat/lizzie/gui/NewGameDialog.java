@@ -237,7 +237,7 @@ public class NewGameDialog extends JDialog {
     gbc_textFieldKomi.gridy = 4;
     contentPanel.add(textFieldKomi, gbc_textFieldKomi);
     textFieldKomi.setEnabled(true);
-    textFieldKomi.setText(Lizzie.config.newGameKomi + "");
+    textFieldKomi.setText(String.valueOf(Lizzie.config.newGameKomi));
 
     GridBagConstraints gbc_2 = new GridBagConstraints();
     gbc_2.fill = GridBagConstraints.BOTH;
@@ -366,7 +366,7 @@ public class NewGameDialog extends JDialog {
     textTime = new JTextField();
     textTime.setDocument(new IntDocument());
     textTime.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
-    textTime.setText(Lizzie.config.maxGameThinkingTimeSeconds + "");
+    textTime.setText(String.valueOf(Lizzie.config.maxGameThinkingTimeSeconds));
     GridBagConstraints gbc_textTime = new GridBagConstraints();
     gbc_textTime.fill = GridBagConstraints.BOTH;
     gbc_textTime.insets = new Insets(0, 0, 5, 0);

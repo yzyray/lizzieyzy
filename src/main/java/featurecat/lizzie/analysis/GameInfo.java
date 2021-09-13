@@ -70,7 +70,7 @@ public class GameInfo {
 
   public void setKomi(double komi) {
     this.komi = komi;
-    LizzieFrame.menu.txtKomi.setText(komi + "");
+    LizzieFrame.menu.txtKomi.setText(String.valueOf(komi));
     if (Lizzie.frame.isInScoreMode) Lizzie.board.showGroupResult();
   }
 
@@ -98,16 +98,4 @@ public class GameInfo {
     this.result = "";
     Lizzie.frame.setResult("");
   }
-
-  //  public void resetAll() {
-  //    changedKomi = false;
-  //    this.komi = DEFAULT_KOMI;
-  //    Lizzie.frame.menu.txtKomi.setText(DEFAULT_KOMI + "");
-  //    this.handicap = 0;
-  //    this.playerBlack = "";
-  //    this.playerWhite = "";
-  //    this.date = new Date();
-  //    this.result = "";
-  //    Lizzie.frame.setResult("");
-  //  }
 }

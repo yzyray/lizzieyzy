@@ -467,65 +467,67 @@ public class EstimateResults extends JDialog {
 
     if ((Lizzie.config.estimateArea ? blackPoints : allblackcounts) < 10)
       g2.drawString(
-          (Lizzie.config.estimateArea ? blackPoints : allblackcounts) + "",
+          (String.valueOf(Lizzie.config.estimateArea ? blackPoints : allblackcounts)),
           37,
           topCap + 104); // 黑目数
     else if ((Lizzie.config.estimateArea ? blackPoints : allblackcounts) < 100)
       g2.drawString(
-          (Lizzie.config.estimateArea ? blackPoints : allblackcounts) + "",
+          (String.valueOf(Lizzie.config.estimateArea ? blackPoints : allblackcounts)),
           33,
           topCap + 104); // 黑目数
     else
       g2.drawString(
-          (Lizzie.config.estimateArea ? blackPoints : allblackcounts) + "",
+          (String.valueOf(Lizzie.config.estimateArea ? blackPoints : allblackcounts)),
           29,
           topCap + 104); // 黑目数
 
     if (Lizzie.config.estimateArea) {
-      if (blackAlives < 10) g2.drawString(blackAlives + "", 37, topCap + 130); // 黑活子
-      else if (blackAlives < 100) g2.drawString(blackAlives + "", 33, topCap + 130); // 黑活子
-      else g2.drawString(blackAlives + "", 29, topCap + 130); // 黑活子
+      if (blackAlives < 10) g2.drawString(String.valueOf(blackAlives), 37, topCap + 130); // 黑活子
+      else if (blackAlives < 100)
+        g2.drawString(String.valueOf(blackAlives), 33, topCap + 130); // 黑活子
+      else g2.drawString(String.valueOf(blackAlives), 29, topCap + 130); // 黑活子
     } else {
-      if (blackEat < 10) g2.drawString(blackEat + "", 37, topCap + 130); // 黑提子
-      else if (blackEat < 100) g2.drawString(blackEat + "", 33, topCap + 130); // 黑提子
-      else g2.drawString(blackEat + "", 29, topCap + 130); // 黑提子
+      if (blackEat < 10) g2.drawString(String.valueOf(blackEat), 37, topCap + 130); // 黑提子
+      else if (blackEat < 100) g2.drawString(String.valueOf(blackEat), 33, topCap + 130); // 黑提子
+      else g2.drawString(String.valueOf(blackEat), 29, topCap + 130); // 黑提子
     }
 
-    if (sumB < 10) g2.drawString(sumB + "", 37, topCap + 156);
-    else if (sumB < 100) g2.drawString(sumB + "", 33, topCap + 156);
-    else g2.drawString(sumB + "", 29, topCap + 156);
+    if (sumB < 10) g2.drawString(String.valueOf(sumB), 37, topCap + 156);
+    else if (sumB < 100) g2.drawString(String.valueOf(sumB), 33, topCap + 156);
+    else g2.drawString(String.valueOf(sumB), 29, topCap + 156);
 
     g2.setColor(Color.WHITE);
 
     if ((Lizzie.config.estimateArea ? whitePoints : allwhitecounts) < 10)
       g2.drawString(
-          (Lizzie.config.estimateArea ? whitePoints : allwhitecounts) + "",
+          (String.valueOf(Lizzie.config.estimateArea ? whitePoints : allwhitecounts)),
           206,
           topCap + 104); // 白目数
     else if ((Lizzie.config.estimateArea ? whitePoints : allwhitecounts) < 100)
       g2.drawString(
-          (Lizzie.config.estimateArea ? whitePoints : allwhitecounts) + "",
+          (String.valueOf(Lizzie.config.estimateArea ? whitePoints : allwhitecounts)),
           202,
           topCap + 104); // 白目数
     else
       g2.drawString(
-          (Lizzie.config.estimateArea ? whitePoints : allwhitecounts) + "",
+          (String.valueOf(Lizzie.config.estimateArea ? whitePoints : allwhitecounts)),
           198,
           topCap + 104); // 白目数
 
     if (Lizzie.config.estimateArea) {
-      if (whiteAlives < 10) g2.drawString(whiteAlives + "", 206, topCap + 130); // 白活子
-      else if (whiteAlives < 100) g2.drawString(whiteAlives + "", 202, topCap + 130); // 白活子
-      else g2.drawString(whiteAlives + "", 198, topCap + 130); // 白活子
+      if (whiteAlives < 10) g2.drawString(String.valueOf(whiteAlives), 206, topCap + 130); // 白活子
+      else if (whiteAlives < 100)
+        g2.drawString(String.valueOf(whiteAlives), 202, topCap + 130); // 白活子
+      else g2.drawString(String.valueOf(whiteAlives), 198, topCap + 130); // 白活子
     } else {
-      if (whiteEat < 10) g2.drawString(whiteEat + "", 206, topCap + 130); // 白提子
-      else if (whiteEat < 100) g2.drawString(whiteEat + "", 202, topCap + 130); // 白提子
-      else g2.drawString(whiteEat + "", 198, topCap + 130); // 白提子
+      if (whiteEat < 10) g2.drawString(String.valueOf(whiteEat), 206, topCap + 130); // 白提子
+      else if (whiteEat < 100) g2.drawString(String.valueOf(whiteEat), 202, topCap + 130); // 白提子
+      else g2.drawString(String.valueOf(whiteEat), 198, topCap + 130); // 白提子
     }
 
-    if (sumW < 10) g2.drawString(sumW + "", 206, topCap + 156);
-    else if (sumW < 100) g2.drawString(sumW + "", 202, topCap + 156);
-    else g2.drawString(sumW + "", 198, topCap + 156);
+    if (sumW < 10) g2.drawString(String.valueOf(sumW), 206, topCap + 156);
+    else if (sumW < 100) g2.drawString(String.valueOf(sumW), 202, topCap + 156);
+    else g2.drawString(String.valueOf(sumW), 198, topCap + 156);
 
     btnEstimate.repaint();
     btnAuto.repaint();

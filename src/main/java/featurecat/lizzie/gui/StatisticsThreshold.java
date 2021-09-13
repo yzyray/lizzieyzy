@@ -301,11 +301,11 @@ public class StatisticsThreshold extends JDialog {
     double score3 = -Utils.parseTextToDouble(txtScore3, -Lizzie.config.scoreLossThreshold3);
     double score4 = -Utils.parseTextToDouble(txtScore4, -Lizzie.config.scoreLossThreshold4);
     double score5 = -Utils.parseTextToDouble(txtScore5, -Lizzie.config.scoreLossThreshold5);
-    if (!(win1 > win2 && win2 > win3 && win3 > win4 && win4 > win5)) {
+    if (!(win1 >= win2 && win2 >= win3 && win3 >= win4 && win4 >= win5)) {
       Utils.showMsg(Lizzie.resourceBundle.getString("StatisticsThreshold.wrongTHR"));
       return false;
     }
-    if (!(score1 > score2 && score2 > score3 && score3 > score4 && score4 > score5)) {
+    if (!(score1 >= score2 && score2 >= score3 && score3 >= score4 && score4 >= score5)) {
       Utils.showMsg(Lizzie.resourceBundle.getString("StatisticsThreshold.wrongTHR"));
       return false;
     }

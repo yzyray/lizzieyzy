@@ -111,7 +111,7 @@ public class SetEstimateParam extends JDialog {
     // setSize(507, 379);
     Lizzie.setFrameSize(this, 507, 389);
     textAreaCommand.setText(Lizzie.config.estimateCommand);
-    txtThreshold.setText(Lizzie.config.estimateThreshold + "");
+    txtThreshold.setText(String.valueOf(Lizzie.config.estimateThreshold));
     JTextArea lblHint = new JTextArea();
     lblHint.setBackground(this.getBackground());
     lblHint.setText(resourceBundle.getString("SetEstimateParam.lblHint")); // $NON-NLS-1$

@@ -624,7 +624,7 @@ public class SuggestionInfoOrderSettings extends JDialog {
           (int) round(suggestionY - squareWidth * 0.358),
           LizzieFrame.winrateFont,
           Font.PLAIN,
-          move.order + 1 + "",
+          String.valueOf(move.order + 1),
           squareWidth * 0.36f,
           squareWidth * 0.39,
           1,

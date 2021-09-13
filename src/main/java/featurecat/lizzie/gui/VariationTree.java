@@ -169,8 +169,10 @@ public class VariationTree {
             }
             moveNum = moveNum + num;
           }
-          if (moveNum < 10) g.drawString(moveNum + "", curposx + 3, posy + diff - 5);
-          else g.drawString(moveNum + "", moveNum >= 100 ? curposx - 3 : curposx, posy + diff - 5);
+          if (moveNum < 10) g.drawString(String.valueOf(moveNum), curposx + 3, posy + diff - 5);
+          else
+            g.drawString(
+                String.valueOf(moveNum), moveNum >= 100 ? curposx - 3 : curposx, posy + diff - 5);
         }
         if (startNode == Lizzie.board.getHistory().getCurrentHistoryNode()) {
           //    if (blunderColor != Color.WHITE) g.setColor(reverseColor(blunderColor));
@@ -293,10 +295,12 @@ public class VariationTree {
             }
             moveNum = moveNum + num;
           }
-          if (moveNum < 10) g.drawString(moveNum + "", curposx - 7, posy + diff - 1);
+          if (moveNum < 10) g.drawString(String.valueOf(moveNum), curposx - 7, posy + diff - 1);
           else
             g.drawString(
-                moveNum + "", moveNum >= 100 ? curposx - 13 : curposx - 10, posy + diff - 1);
+                String.valueOf(moveNum),
+                moveNum >= 100 ? curposx - 13 : curposx - 10,
+                posy + diff - 1);
         }
         if (curposx + 60 > Lizzie.frame.varTreeMaxX) Lizzie.frame.varTreeMaxX = curposx + 60;
         if (posy + 60 > Lizzie.frame.varTreeMaxY) Lizzie.frame.varTreeMaxY = posy + 60;
@@ -349,17 +353,18 @@ public class VariationTree {
       return Optional.empty(); // we don't have enough space
     }
     // int strokeRadius = Lizzie.config.showBorder ? 2 : 0;
-    if (!calc) {
-      // Draw background
-      area.setBounds(posx, posy, width, height);
-      if (Lizzie.config.usePureBackground) g.setColor(Lizzie.config.pureBackgroundColor);
-      else g.setPaint(Lizzie.frame.backgroundPaint);
-      g.fillRect(posx, posy, width, height);
-
-      g.setColor(new Color(0, 0, 0, 130));
-      g.fillRect(posx, posy, width, height);
-      g.setStroke(new BasicStroke(1));
-    }
+    if (!calc) area.setBounds(posx, posy, width, height);
+    //   {
+    //      // Draw background
+    area.setBounds(posx, posy, width, height);
+    //      if (Lizzie.config.usePureBackground) g.setColor(Lizzie.config.pureBackgroundColor);
+    //      else g.setPaint(Lizzie.frame.backgroundPaint);
+    //      g.fillRect(posx, posy, width, height);
+    //
+    //      g.setColor(new Color(0, 0, 0, 130));
+    //      g.fillRect(posx, posy, width, height);
+    //      g.setStroke(new BasicStroke(1));
+    //    }
 
     int middleY = 20; // posy + height / 2;
     int xoffset = 20;

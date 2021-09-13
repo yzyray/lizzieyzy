@@ -144,7 +144,7 @@ public class ReadBoard {
     if (Lizzie.config.isChinese) commands.add("0");
     else commands.add("1");
     if (usePipe) commands.add("-1");
-    else commands.add(port + "");
+    else commands.add(String.valueOf(port));
     ProcessBuilder processBuilder = new ProcessBuilder(commands);
     processBuilder.redirectErrorStream(true);
     if (javaReadBoard) {
@@ -410,19 +410,19 @@ public class ReadBoard {
         int firstPlayouts = Integer.parseInt(playParams[2]);
         int time = Integer.parseInt(playParams[0]);
         if (time > 0) {
-          LizzieFrame.toolbar.txtAutoPlayTime.setText(time + "");
+          LizzieFrame.toolbar.txtAutoPlayTime.setText(String.valueOf(time));
           LizzieFrame.toolbar.chkAutoPlayTime.setSelected(true);
         } else {
           LizzieFrame.toolbar.txtAutoPlayTime.setText(
-              Lizzie.config.leelazConfig.getInt("max-game-thinking-time-seconds") + "");
+              String.valueOf(Lizzie.config.leelazConfig.getInt("max-game-thinking-time-seconds")));
           LizzieFrame.toolbar.chkAutoPlayTime.setSelected(true);
         }
         if (playouts > 0) {
-          LizzieFrame.toolbar.txtAutoPlayPlayouts.setText(playouts + "");
+          LizzieFrame.toolbar.txtAutoPlayPlayouts.setText(String.valueOf(playouts));
           LizzieFrame.toolbar.chkAutoPlayPlayouts.setSelected(true);
         } else LizzieFrame.toolbar.chkAutoPlayPlayouts.setSelected(false);
         if (firstPlayouts > 0) {
-          LizzieFrame.toolbar.txtAutoPlayFirstPlayouts.setText(firstPlayouts + "");
+          LizzieFrame.toolbar.txtAutoPlayFirstPlayouts.setText(String.valueOf(firstPlayouts));
           LizzieFrame.toolbar.chkAutoPlayFirstPlayouts.setSelected(true);
         } else LizzieFrame.toolbar.chkAutoPlayFirstPlayouts.setSelected(false);
         if (params[1].equals("black")) {
@@ -457,7 +457,7 @@ public class ReadBoard {
       if (params.length == 2) {
         int firstPlayouts = Integer.parseInt(params[1]);
         if (firstPlayouts > 0) {
-          LizzieFrame.toolbar.txtAutoPlayFirstPlayouts.setText(firstPlayouts + "");
+          LizzieFrame.toolbar.txtAutoPlayFirstPlayouts.setText(String.valueOf(firstPlayouts));
           LizzieFrame.toolbar.chkAutoPlayFirstPlayouts.setSelected(true);
         } else LizzieFrame.toolbar.chkAutoPlayFirstPlayouts.setSelected(false);
       }
@@ -467,7 +467,7 @@ public class ReadBoard {
       if (params.length == 2) {
         int playouts = Integer.parseInt(params[1]);
         if (playouts > 0) {
-          LizzieFrame.toolbar.txtAutoPlayPlayouts.setText(playouts + "");
+          LizzieFrame.toolbar.txtAutoPlayPlayouts.setText(String.valueOf(playouts));
           LizzieFrame.toolbar.chkAutoPlayPlayouts.setSelected(true);
         } else LizzieFrame.toolbar.chkAutoPlayPlayouts.setSelected(false);
       }
@@ -477,11 +477,11 @@ public class ReadBoard {
       if (params.length == 2) {
         int time = Integer.parseInt(params[1]);
         if (time > 0) {
-          LizzieFrame.toolbar.txtAutoPlayTime.setText(time + "");
+          LizzieFrame.toolbar.txtAutoPlayTime.setText(String.valueOf(time));
           LizzieFrame.toolbar.chkAutoPlayTime.setSelected(true);
         } else {
           LizzieFrame.toolbar.txtAutoPlayTime.setText(
-              Lizzie.config.leelazConfig.getInt("max-game-thinking-time-seconds") + "");
+              String.valueOf(Lizzie.config.leelazConfig.getInt("max-game-thinking-time-seconds")));
           LizzieFrame.toolbar.chkAutoPlayTime.setSelected(true);
         }
       }
