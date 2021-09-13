@@ -1231,7 +1231,7 @@ public class SGFParser {
     stack.push(curNode);
     while (!stack.isEmpty()) {
       BoardHistoryNode cur = stack.pop();
-      builder = generateNode(board, cur, forUpload, builder, writer);
+      builder = generateNode(board, cur, forUpload, builder);
       if (cur.numberOfChildren() >= 1) {
         for (int i = cur.numberOfChildren() - 1; i >= 0; i--)
           stack.push(cur.getVariations().get(i));
@@ -1315,7 +1315,7 @@ public class SGFParser {
   }
 
   private static StringBuilder generateNode(
-      Board board, BoardHistoryNode node, boolean forUpload, StringBuilder builder, Writer writer)
+      Board board, BoardHistoryNode node, boolean forUpload, StringBuilder builder)
       throws IOException {
     if (node != null) {
       BoardData data = node.getData();
@@ -1412,11 +1412,6 @@ public class SGFParser {
         if (node.isEndDummay()) {
           builder.append(";DD[true]");
         }
-      String str = builder.toString();
-      if (str.length() > 20000) {
-        writer.append(str);
-        builder = new StringBuilder("");
-      }
     }
     return builder;
   }
