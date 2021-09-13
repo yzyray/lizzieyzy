@@ -25,18 +25,6 @@ public class WinrateGraph {
   private boolean scoreAjustBelow;
   private Color whiteColor = new Color(240, 240, 240);
   private boolean noC = false;
-  // boolean shouldShowScoreShort = false;
-
-  //  public boolean getIsKataGo() {
-  //    if (Lizzie.engineManager.isEngineGame)
-  //      return Lizzie.engineManager.engineList.get(
-  //                  Lizzie.engineManager.engineGameInfo.firstEngineIndex)
-  //              .isKatago
-  //          || Lizzie.engineManager.engineList.get(
-  //                  Lizzie.engineManager.engineGameInfo.secondEngineIndex)
-  //              .isKatago;
-  //    else return Lizzie.leelaz.isKatago;
-  //  }
 
   public void draw(
       Graphics2D g,
@@ -51,67 +39,38 @@ public class WinrateGraph {
     BoardHistoryNode node;
     if (Lizzie.frame.isTrying) node = Lizzie.board.getHistory().getMainEnd();
     else node = curMove;
-    // maxcoreMean = 30.0;
-
     // draw background rectangle
     Paint original = g.getPaint();
-    //    if (Lizzie.frame.extraMode == 1) {
-    //      final Paint gradient =
-    //          new GradientPaint(
-    //              new Point2D.Float(posx, posy),
-    //              new Color(100, 100, 100, 255),
-    //              new Point2D.Float(posx, posy + height),
-    //              new Color(155, 155, 155, 255));
-    //
-    //      g.setPaint(gradient);
-    //
-    //      g.fillRect(posx, posy, width, height);
-    //    } else {
+    int halfHeight = height / 2;
     final Paint gradient =
         new GradientPaint(
             new Point2D.Float(posx, posy),
             new Color(120, 120, 120, 180),
-            new Point2D.Float(posx, posy + height / 2),
+            new Point2D.Float(posx, posy + halfHeight),
             new Color(155, 155, 155, 185));
     final Paint gradient2 =
         new GradientPaint(
-            new Point2D.Float(posx, posy + height / 2),
+            new Point2D.Float(posx, posy + halfHeight),
             new Color(155, 155, 155, 185),
             new Point2D.Float(posx, posy + height),
             new Color(120, 120, 120, 180));
     gBackground.setPaint(gradient);
-    //  g.setPaint( new Color(130, 130, 130, 130));
-
-    gBackground.fillRect(posx, posy, width, height / 2);
+    gBackground.fillRect(posx, posy, width, halfHeight);
     gBackground.setPaint(gradient2);
-    gBackground.fillRect(posx, posy + height / 2, width, height / 2);
-    // }
-    // draw border
+    gBackground.fillRect(posx, posy + halfHeight, width, height - halfHeight);
+
     int strokeRadius = 1;
-    gBackground.setStroke(new BasicStroke(strokeRadius == 1 ? strokeRadius : 2 * strokeRadius));
-    //  g.setPaint(borderGradient);
-    gBackground.drawLine(
-        posx + strokeRadius, posy + strokeRadius, posx - strokeRadius + width, posy + strokeRadius);
-
     g.setPaint(original);
-
     // record parameters (before resizing) for calculating moveNumber
     origParams[0] = posx;
     origParams[1] = posy;
     origParams[2] = width;
     origParams[3] = height;
-    int blunderBottom = posy + height / 2 + height / 2;
+    int blunderBottom = posy + height;
 
     // resize the box now so it's inside the border
-    // posx += 2 * strokeRadius;
     posy += 2 * strokeRadius;
     width -= 6 * strokeRadius;
-    //    if (Lizzie.config.extraMode == 1
-    //        || Lizzie.config.extraMode == 3
-    //        || Lizzie.config.largeSubBoard && Lizzie.config.showSubBoard) {
-    //      shouldShowScoreShort = true;
-    //      width -= 8 * strokeRadius;
-    //    } else shouldShowScoreShort = false;
     height -= 4 * strokeRadius;
 
     // draw lines marking 50% 60% 70% etc.
@@ -121,18 +80,9 @@ public class WinrateGraph {
 
     gBackground.setColor(Color.white);
     int winRateGridLines = Lizzie.frame.winRateGridLines;
-    // int midline = 0;
-    // int midy = 0;
-    // if (Lizzie.config.showBlunderBar) {
-    //   midline = (int) Math.ceil(winRateGridLines / 2.0);
-    //  midy = posy + height / 2;
-    //  }
     for (int i = 1; i <= winRateGridLines; i++) {
       double percent = i * 100.0 / (winRateGridLines + 1);
       int y = posy + height - (int) (height * percent / 100);
-      //      if (Lizzie.config.showBlunderBar && i == midline) {
-      //        midy = y;
-      //      }
       gBackground.drawLine(posx, y, posx + width, y);
     }
     if (Lizzie.frame.isInPlayMode()) return;
