@@ -2265,6 +2265,8 @@ public class Leelaz {
           if (line.startsWith("= {")) {
             recentRulesLine = line;
             Lizzie.config.currentKataGoRules = line;
+            getSuicidalAndRules();
+            getRcentLine = false;
           } else if (line.startsWith("=")) {
             String[] params = line.trim().split(" ");
             if (params.length == 2) {
@@ -3428,21 +3430,6 @@ public class Leelaz {
       sendCommand("kata-get-param analysisWideRootNoise");
       sendCommand("kata-get-rules");
     }
-    Runnable runnable =
-        new Runnable() {
-          public void run() {
-            try {
-              Thread.sleep(3000);
-            } catch (InterruptedException e) {
-              // TODO Auto-generated catch block
-              e.printStackTrace();
-            }
-            getSuicidalAndRules();
-            Lizzie.leelaz.getRcentLine = false;
-          }
-        };
-    Thread thread = new Thread(runnable);
-    thread.start();
   }
 
   public void getSuicidalAndRules() {

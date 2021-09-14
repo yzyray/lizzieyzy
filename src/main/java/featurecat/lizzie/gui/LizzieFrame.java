@@ -40,6 +40,8 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.AdjustmentEvent;
+import java.awt.event.AdjustmentListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyAdapter;
@@ -246,7 +248,7 @@ public class LizzieFrame extends JFrame {
   //  private boolean isMouseOverComment = false;
   //  private boolean isMouseOverBlunderControl = false;
   private JPaintTextPane commentTextPane;
-  private JPaintTextArea commentTextArea;
+  private JTextArea commentTextArea;
   private String cachedComment = "";
   private int commentFontSize;
   private int commentPaneFontSize;
@@ -616,6 +618,16 @@ public class LizzieFrame extends JFrame {
     varTreeScrollPane.getVerticalScrollBar().setUnitIncrement(16);
     varTreeScrollPane.getHorizontalScrollBar().setUnitIncrement(16);
     varTreeScrollPane.setVisible(Lizzie.config.showVariationGraph);
+    varTreeScrollPane
+        .getVerticalScrollBar()
+        .addAdjustmentListener(
+            new AdjustmentListener() {
+              @Override
+              public void adjustmentValueChanged(AdjustmentEvent e) {
+                // TODO Auto-generated method stub
+                varTreeScrollPane.repaint();
+              }
+            });
     // varTreeScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
     // varTreeScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
     commentEditTextPane = new JIMSendTextPane(true);
@@ -625,17 +637,6 @@ public class LizzieFrame extends JFrame {
     commentEditPane = new JScrollPane(commentEditTextPane);
     commentEditPane.setBorder(BorderFactory.createEmptyBorder());
     commentEditPane.getVerticalScrollBar().setUI(new DemoScrollBarUI());
-    //    commentEditTextPane.addMouseListener(
-    //        new MouseAdapter() {
-    //          public void mouseClicked(MouseEvent e) {
-    //            LizzieFrame.this.mainPanel.requestFocus();
-    //            LizzieFrame.this.commentEditPane.setVisible(false);
-    //            if (Config.isScaled) LizzieFrame.this.repaint();
-    //            String text = LizzieFrame.this.commentEditTextPane.getText();
-    //            if (text.endsWith("\n")) text = text.substring(0, text.length() - 1);
-    //            (Lizzie.board.getHistory().getCurrentHistoryNode().getData()).comment = text;
-    //          }
-    //        });
     commentEditPane.setVisible(false);
     varTreePane.addMouseListener(
         new MouseAdapter() {
@@ -652,13 +653,6 @@ public class LizzieFrame extends JFrame {
             }
             setCommentEditable(false);
           }
-          //                    public void mouseEntered(MouseEvent e) {
-          //                      mouseOnVarTree = true;
-          //                    }
-          //
-          //                    public void mouseExited(MouseEvent e) {
-          //                      mouseOnVarTree = false;
-          //                    }
         });
     varTreePane.addMouseWheelListener(
         new MouseWheelListener() {
@@ -827,32 +821,10 @@ public class LizzieFrame extends JFrame {
 
     listTable.addMouseListener(
         new MouseAdapter() {
-          //         public void mouseExited(MouseEvent e) {
-          //            if (clickOrder == -1) return;
-          //            if (Lizzie.frame.suggestionclick != Lizzie.frame.outOfBoundCoordinate) {
-          //              Lizzie.frame.boardRenderer.startNormalBoard();
-          //              Lizzie.frame.boardRenderer.clearBranch();
-          //              Lizzie.frame.suggestionclick = Lizzie.frame.outOfBoundCoordinate;
-          //              Lizzie.frame.mouseOverCoordinate = Lizzie.frame.outOfBoundCoordinate;
-          //              selectedorder = -1;
-          //              currentRow = -1;
-          //              Lizzie.frame.refresh();
-          //            }
-          //          }
-
           public void mouseClicked(MouseEvent e) {
             setCommentEditable(false);
             int row = listTable.rowAtPoint(e.getPoint());
             int col = listTable.columnAtPoint(e.getPoint());
-            //            if (e.getClickCount() == 2) {
-            //              if (row >= 0 && col >= 0) {
-            //                try {
-            //                  handleTableDoubleClick(row, col);
-            //                } catch (Exception ex) {
-            //                  ex.printStackTrace();
-            //                }
-            //              }
-            //            } else {
             if (row >= 0 && col >= 0) {
               if (e.getButton() == MouseEvent.BUTTON3) {
                 try {
@@ -867,7 +839,6 @@ public class LizzieFrame extends JFrame {
                   ex.printStackTrace();
                 }
             }
-            //  }
           }
         });
 
@@ -876,9 +847,6 @@ public class LizzieFrame extends JFrame {
             100,
             new ActionListener() {
               public void actionPerformed(ActionEvent evt) {
-                //  listDataModel.getColumnCount();
-                // listScrollpane.repaint();
-                // table.validate();
                 if (!Lizzie.board.getHistory().getData().bestMoves.isEmpty()) {
                   if (scoreColumnIsHidden && Lizzie.board.getHistory().getData().isKataData)
                     resumColumn(5, listTable, listTableColum5Width);
@@ -915,7 +883,6 @@ public class LizzieFrame extends JFrame {
                       }
                     }
                   }
-                  // blunderContentPane.revalidate();
                   blunderTabelBlack.revalidate();
                   blunderTabelWhite.revalidate();
                 }
@@ -1011,22 +978,6 @@ public class LizzieFrame extends JFrame {
     this.getJMenuBar().setBorder(new EmptyBorder(0, 0, 0, 0));
     if (this.toolbarHeight == 0) toolbar.setVisible(false);
 
-    //    this.addComponentListener(
-    //        new ComponentAdapter() {
-    //          @Override
-    //          public void componentMoved(ComponentEvent e) {
-    //            if (Lizzie.config.isScaled) {
-    //              Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
-    //              int width = (int) screensize.getWidth();
-    //              int height = (int) screensize.getHeight();
-    //              if ((getX() + getWidth()) >= width || (getY() + getHeight()) > height)
-    // repaint();
-    //            }
-    //          }
-    //        });
-
-    // Allow change font in the config
-
     htmlKit = new HtmlKit();
     htmlDoc = (HTMLDocument) htmlKit.createDefaultDocument();
     htmlStyle = htmlKit.getStyleSheet();
@@ -1053,13 +1004,13 @@ public class LizzieFrame extends JFrame {
     htmlStyle.addRule(style);
     commentTextPane = new JPaintTextPane();
     commentTextPane.setBorder(BorderFactory.createEmptyBorder());
+    commentTextPane.setOpaque(false);
     commentTextPane.setEditorKit(htmlKit);
     commentTextPane.setDocument(htmlDoc);
     commentTextPane.setEditable(false);
-    commentTextPane.setBackground(Lizzie.config.commentBackgroundColor);
     commentTextPane.setForeground(Lizzie.config.commentFontColor);
 
-    commentTextArea = new JPaintTextArea();
+    commentTextArea = new JTextArea();
     DefaultCaret caret = (DefaultCaret) commentTextArea.getCaret();
     caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
     DefaultCaret caret2 = (DefaultCaret) commentTextPane.getCaret();
@@ -1073,12 +1024,12 @@ public class LizzieFrame extends JFrame {
                 ? Lizzie.config.commentFontSize
                 : Config.frameFontSize));
     commentTextArea.setBorder(BorderFactory.createEmptyBorder());
-    commentTextArea.setBackground(Lizzie.config.commentBackgroundColor);
+    commentTextArea.setOpaque(false);
     commentTextArea.setForeground(Lizzie.config.commentFontColor);
     commentTextArea.setLineWrap(true);
 
     commentScrollPane = new JScrollPane();
-
+    commentScrollPane.setOpaque(false);
     commentBlunderControlPane = new JPanel();
     commentBlunderControlPane.setBackground(Color.BLACK);
     commentBlunderControlPane.setVisible(false);
@@ -1155,7 +1106,6 @@ public class LizzieFrame extends JFrame {
               try {
                 blunderTabelBlack.repaint();
                 int movenumber = Integer.parseInt(blunderTabelBlack.getValueAt(row, 0).toString());
-                // Lizzie.board.goToMoveNumber(1);
                 int[] coords =
                     Board.convertNameToCoordinates(blunderTabelBlack.getValueAt(row, 1).toString());
                 Lizzie.board.goToMoveNumber(movenumber - 1);
@@ -1210,7 +1160,6 @@ public class LizzieFrame extends JFrame {
               try {
                 blunderTabelWhite.repaint();
                 int movenumber = Integer.parseInt(blunderTabelWhite.getValueAt(row, 0).toString());
-                // Lizzie.board.goToMoveNumber(1);
                 int[] coords =
                     Board.convertNameToCoordinates(blunderTabelWhite.getValueAt(row, 1).toString());
                 Lizzie.board.goToMoveNumber(movenumber - 1);
@@ -1498,13 +1447,12 @@ public class LizzieFrame extends JFrame {
         });
 
     commentScrollPane.setBorder(BorderFactory.createEmptyBorder());
-    commentScrollPane.setBackground(Lizzie.config.commentBackgroundColor);
     commentScrollPane.setViewportView(commentTextArea);
+    commentScrollPane.getViewport().setOpaque(false);
     commentScrollPane.setVerticalScrollBarPolicy(
         javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
     commentScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
     commentScrollPane.getVerticalScrollBar().setUI(new DemoScrollBarUI());
-    //  commentRect = new Rectangle(0, 0, 0, 0);
     commentTextArea.addMouseListener(
         new MouseAdapter() {
           public void mouseClicked(MouseEvent e) {
@@ -3382,12 +3330,9 @@ public class LizzieFrame extends JFrame {
         if (file.getParent() != null) {
           filesystem.put("last-folder", file.getParent());
         }
-        Lizzie.board.cleanedit();
+        Lizzie.board.clearEditStuff();
       } catch (IOException err) {
         Utils.showMsg(Lizzie.resourceBundle.getString("LizzieFrame.saveFileFailed"));
-        //        Message msg = new Message();
-        //        msg.setMessage("保存失败");
-        //        msg.setVisible(true);
       }
     }
   }
@@ -6197,7 +6142,8 @@ public class LizzieFrame extends JFrame {
           g.drawString(
               moveOrRules, posX - strokeRadius + width / 2 - mw / 2, posY + height * 3 / 10);
         }
-    } else if (!shouldDrawMoveNumberDown()) {
+    }
+    if (!shouldDrawMoveNumberDown()) {
       moveOrRules =
           String.valueOf(Lizzie.board.getHistory().getCurrentHistoryNode().getData().moveNumber);
       if (isSmallCap) {
@@ -7529,30 +7475,9 @@ public class LizzieFrame extends JFrame {
    * @param w
    * @param h
    */
-  //  private void addText(String text) {
-  //    try {
-  //      htmlDoc.remove(0, htmlDoc.getLength());
-  //      htmlKit.insertHTML(htmlDoc, htmlDoc.getLength(), text, 0, 0, null);
-  //      commentPane.setCaretPosition(htmlDoc.getLength());
-  //    } catch (BadLocationException | IOException e) {
-  //      e.printStackTrace();
-  //    }
-  //  }
-
-  //  private void drawVariationTree(Graphics2D g, int x, int y, int w, int h) {
-  //
-  //	  variationCommentRect = new Rectangle(x, y,w,h);
-  //	    variationTree.draw(
-  //	    		g,
-  //	        commentRect.x,
-  //	        commentRect.y,
-  //	        commentRect.width,
-  //	        commentRect.height
-  //	        );
-  //	   // variationScrollPane=new JScrollPane(variationCommentRect);
-  //  }
-
   private void drawComment(Graphics2D g, int x, int y, int w, int h) {
+    g.setColor(Lizzie.config.commentBackgroundColor);
+    g.fillRect(x, y, w, h);
     if (w < 10 || h < 10) {
       commentScrollPane.setBounds(0, 0, 0, 0);
       blunderContentPane.setBounds(0, 0, 0, 0);
@@ -7615,14 +7540,6 @@ public class LizzieFrame extends JFrame {
           isTuningEngine = true;
         }
       }
-      //    if (isLoadingEngine && !isCommentArea) {
-      //    	isCommentArea = false;
-      //    	setCommentComponet();
-      //    }
-      //    if (!isLoadingEngine) {
-      //    	isCommentArea = !urlSgf;
-      //    	setCommentComponet();
-      //    }
       String comment = "";
       if (!isInPlayMode()) {
         if (cachedIsLoading != isLoadingEngine) {
@@ -7698,7 +7615,6 @@ public class LizzieFrame extends JFrame {
                   + Lizzie.resourceBundle.getString("SGFParse.seconds");
         }
       }
-      // System.out.println(getWidth());
       if (Lizzie.config.commentFontSize <= 0) {
         int fontSize;
         if (Lizzie.config.showLargeSubBoard() || Lizzie.config.showLargeWinrate()) {
@@ -7802,7 +7718,6 @@ public class LizzieFrame extends JFrame {
   }
 
   public void resetCommentComponent() {
-    commentTextPane.setBackground(Lizzie.config.commentBackgroundColor);
     commentTextPane.setForeground(Lizzie.config.commentFontColor);
     String style =
         "body {background:"
@@ -7832,9 +7747,7 @@ public class LizzieFrame extends JFrame {
             Lizzie.config.commentFontSize > 0
                 ? Lizzie.config.commentFontSize
                 : commentFontSize > 0 ? commentFontSize : Config.frameFontSize));
-    commentTextArea.setBackground(Lizzie.config.commentBackgroundColor);
     commentTextArea.setForeground(Lizzie.config.commentFontColor);
-    commentScrollPane.setBackground(Lizzie.config.commentBackgroundColor);
   }
 
   private void setCommentComponet() {
@@ -7843,6 +7756,7 @@ public class LizzieFrame extends JFrame {
         cachedIsCommentArea = isCommentArea;
         if (isCommentArea) commentScrollPane.setViewportView(commentTextArea);
         else commentScrollPane.setViewportView(commentTextPane);
+        commentScrollPane.getViewport().setOpaque(false);
       }
     } catch (Exception e) {
       e.printStackTrace();
@@ -9879,7 +9793,6 @@ public class LizzieFrame extends JFrame {
       boardRenderer2.changedName = true;
       boardRenderer2.emptyName = true;
     }
-    //   refresh();
   }
 
   public void clearEstimate() {
@@ -10599,7 +10512,6 @@ public class LizzieFrame extends JFrame {
           isChanged = false;
         }
         isSelect = true;
-        // setBackground(new Color(238, 221, 130));
         return super.getTableCellRendererComponent(table, value, false, false, row, column);
 
       } else {

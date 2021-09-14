@@ -1214,9 +1214,6 @@ public class EngineManager {
           }
         }
       }
-      //      if (Lizzie.frame.toolbar.checkGameMinMove) {
-      //        Lizzie.frame.toolbar.minMove = Lizzie.frame.toolbar.minGanmeMove;
-      //      } else Lizzie.frame.toolbar.minMove = -1;
     }
     if (!engineGameInfo.isGenmove) {
       // 分析模式对战
@@ -1230,6 +1227,11 @@ public class EngineManager {
         engineList.get(engineGameInfo.blackEngineIndex).clear();
         engineList.get(engineGameInfo.whiteEngineIndex).notPondering();
         engineList.get(engineGameInfo.whiteEngineIndex).clear();
+      } else if (startList == null) {
+        int width = engineList.get(engineGameInfo.blackEngineIndex).width;
+        int height = engineList.get(engineGameInfo.blackEngineIndex).height;
+        if (width != Board.boardWidth || height != Board.boardHeight)
+          Lizzie.board.reopen(width, height);
       }
       startEngineForPk(engineGameInfo.blackEngineIndex);
       startEngineForPk(engineGameInfo.whiteEngineIndex);
@@ -1306,16 +1308,6 @@ public class EngineManager {
                   }
                 }
               }
-              //              if (!firstTime) {
-              //                try {
-              //                  Thread.sleep(300);
-              //                  engineList.get(engineGameInfo.blackEngineIndex).clearBestMoves();
-              //                  engineList.get(engineGameInfo.whiteEngineIndex).clearBestMoves();
-              //                } catch (InterruptedException e) {
-              //                  // TODO Auto-generated catch block
-              //                  e.printStackTrace();
-              //                }
-              //              }
               if (Lizzie.board.getHistory().isBlacksTurn()) {
                 Lizzie.leelaz = engineList.get(engineGameInfo.blackEngineIndex);
               } else {
@@ -1375,29 +1367,21 @@ public class EngineManager {
     } else {
       // genmove对战
       if (engineList.get(engineGameInfo.blackEngineIndex) != null) {
-        //  engineList.get(engineGameInfo.blackEngineIndex).canGetGenmoveInfo = false;
-        //   engineList.get(engineGameInfo.blackEngineIndex).canGetChatInfo = false;
         engineList.get(engineGameInfo.blackEngineIndex).clearBestMoves();
       }
       if (engineList.get(engineGameInfo.whiteEngineIndex) != null) {
-        //   engineList.get(engineGameInfo.whiteEngineIndex).canGetGenmoveInfo = false;
-        //     engineList.get(engineGameInfo.whiteEngineIndex).canGetChatInfo = false;
         engineList.get(engineGameInfo.whiteEngineIndex).clearBestMoves();
       }
       Lizzie.board.clear(true);
       ArrayList<Movelist> startList = getStartListForEnginePk();
       if (startList != null) {
         Lizzie.board.setlist(startList);
+      } else if (firstTime) {
+        int width = engineList.get(engineGameInfo.blackEngineIndex).width;
+        int height = engineList.get(engineGameInfo.blackEngineIndex).height;
+        if (width != Board.boardWidth || height != Board.boardHeight)
+          Lizzie.board.reopen(width, height);
       }
-      //      if (chkenginePkContinue.isSelected()) {
-      //         isEmpty = true;
-      //        Lizzie.board.setlist(startGame);
-      //         isEmpty = false;
-      //      }
-      //      Lizzie.frame.toolbar.enginePKGenmoveBestMovesSize =
-      //          (Lizzie.config.limitMaxSuggestion > 0 && !Lizzie.config.showNoSuggCircle
-      //              ? Lizzie.config.limitMaxSuggestion
-      //              : 361);
       startEngineForPk(engineGameInfo.blackEngineIndex);
       startEngineForPk(engineGameInfo.whiteEngineIndex);
       Runnable runnable =
@@ -1457,10 +1441,6 @@ public class EngineManager {
                   .engineList
                   .get(engineGameInfo.whiteEngineIndex)
                   .sendCommand("clear_cache");
-              // if (engineList.get(engineGameInfo.blackEngineIndex).isKatago)
-              //   engineList.get(engineGameInfo.blackEngineIndex).canGetChatInfo = true;
-              //  if (engineList.get(engineGameInfo.whiteEngineIndex).isKatago)
-              //    engineList.get(engineGameInfo.whiteEngineIndex).canGetChatInfo = true;
               if (startList != null) {
                 if (Lizzie.config.newEngineGameHandicap > 0) {
                   Lizzie.board.hasStartStone = true;

@@ -521,6 +521,13 @@ public class Board {
     tempmovelist = new ArrayList<Movelist>();
   }
 
+  public void clearEditStuff() {
+    boardstatafteredit = "";
+    boardstatbeforeedit = "";
+    tempmovelist.clear();
+    tempmovelist2.clear();
+  }
+
   public void cleanedit() {
     if (boardstatbeforeedit != "") {
       try {
@@ -893,20 +900,15 @@ public class Board {
     boolean oriPlaySound = Lizzie.config.playSound;
     Lizzie.config.playSound = false;
     while (previousMove(false)) ;
-    //	    if (Lizzie.board.hasStartStone) {
-    //	      Lizzie.board.hasStartStone = false;
-    //	      startStonelist = new ArrayList<Movelist>();
-    //	    }
-
     int lenth = movelist.size();
     for (int i = 0; i < lenth; i++) {
       Movelist move = movelist.get(lenth - 1 - i);
       if (!move.ispass) {
         place(move.x, move.y, move.isblack ? Stone.BLACK : Stone.WHITE);
+      } else if (i + 1 > flattenNumber) {
+        pass(move.isblack ? Stone.BLACK : Stone.WHITE);
       }
       if (i + 1 == flattenNumber) {
-        // addStartList();
-        //    Lizzie.board.hasStartStone=true;
         Lizzie.board.flatten();
         Lizzie.board.getHistory().getData().blackToPlay = flattenBlackToPlay;
       }

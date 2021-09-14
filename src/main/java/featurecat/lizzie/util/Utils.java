@@ -455,7 +455,7 @@ public class Utils {
 
   /**
    * @return a shorter, rounded string version of playouts. e.g. 345 -> 345, 1265 -> 1.3k, 44556 ->
-   *     45k, 133523 -> 134k, 1234567 -> 1.2m
+   *     45k, 133523 -> 134k, 1234567 -> 1235k, 12345678 -> 12.3m
    */
   public static String getPlayoutsString(int playouts) {
     if (playouts >= 10_000_000) {
