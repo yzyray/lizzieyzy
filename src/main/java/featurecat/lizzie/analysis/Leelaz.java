@@ -2820,7 +2820,7 @@ public class Leelaz {
       }
       bestMoves = new ArrayList<>();
       if (isPondering) ponder();
-      currentCmdNum = cmdNumber - 2;
+      currentCmdNum = Math.max(cmdNumber - 2, currentCmdNum);
     }
   }
 
@@ -2830,7 +2830,7 @@ public class Leelaz {
       nameCmdfornoponder();
       sendCommand("clear_board");
       bestMoves = new ArrayList<>();
-      currentCmdNum = cmdNumber - 2;
+      currentCmdNum = Math.max(cmdNumber - 2, currentCmdNum);
     }
   }
 
