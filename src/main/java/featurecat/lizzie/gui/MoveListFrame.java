@@ -6214,7 +6214,7 @@ public class MoveListFrame extends JFrame {
     int valueStartXBlack = startX;
     int valueStartXWhite = startX + (int) (availableWidth * 0.57);
 
-    g.setColor(new Color(180, 180, 180));
+    g.setColor(new Color(170, 170, 170));
     g.fillRect(valueStartXBlack, valueStartY, valueWidth, valueHeight);
     g.fillRect(valueStartXWhite, valueStartY, valueWidth, valueHeight);
 
@@ -6485,7 +6485,7 @@ public class MoveListFrame extends JFrame {
   }
 
   public void drawKeyPanel(Graphics2D g, int width, int height) {
-    g.setColor(new Color(200, 200, 200));
+    g.setColor(new Color(190, 190, 190));
     g.fillRect(0, 0, width, height);
     double borderPercent = 0.05;
 
@@ -6523,7 +6523,7 @@ public class MoveListFrame extends JFrame {
     int valueStartXBlack = startX;
     int valueStartXWhite = startX + (int) (availableWidth * 0.6);
 
-    g.setColor(new Color(180, 180, 180));
+    g.setColor(new Color(170, 170, 170));
     g.fillRect(valueStartXBlack, valueStartY, valueWidth, valueHeight);
     g.fillRect(valueStartXWhite, valueStartY, valueWidth, valueHeight);
 
