@@ -394,12 +394,6 @@ public class Leelaz {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
               }
-              //			        	  if(isScreen)
-              //			  			{
-              //			        		  sendCommand("screen -r yzy1");
-              //			        		  sendCommand("screen -r yzy1");
-              //			  			sendCommand("clear_board");
-              //			  			}
               sendCommand("name");
               sendCommand("name");
               sendCommand("name");
@@ -2820,13 +2814,13 @@ public class Leelaz {
   public void clear() {
     synchronized (this) {
       sendCommand("clear_board");
-      // sendCommand("clear_cache");
       if (isKatago) {
         scoreMean = 0;
         scoreStdev = 0;
       }
       bestMoves = new ArrayList<>();
       if (isPondering) ponder();
+      currentCmdNum = cmdNumber - 2;
     }
   }
 
@@ -2835,9 +2829,8 @@ public class Leelaz {
       this.notPondering();
       nameCmdfornoponder();
       sendCommand("clear_board");
-      // sendCommand("clear_cache");
       bestMoves = new ArrayList<>();
-      // if (isPondering) ponder();
+      currentCmdNum = cmdNumber - 2;
     }
   }
 
@@ -3430,6 +3423,20 @@ public class Leelaz {
       sendCommand("kata-get-param analysisWideRootNoise");
       sendCommand("kata-get-rules");
     }
+    Runnable runnable =
+        new Runnable() {
+          public void run() {
+            try {
+              Thread.sleep(30000);
+            } catch (InterruptedException e) {
+              // TODO Auto-generated catch block
+              e.printStackTrace();
+            }
+            Lizzie.leelaz.getRcentLine = false;
+          }
+        };
+    Thread thread = new Thread(runnable);
+    thread.start();
   }
 
   public void getSuicidalAndRules() {
