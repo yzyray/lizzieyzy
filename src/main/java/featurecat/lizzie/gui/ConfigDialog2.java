@@ -5,6 +5,7 @@ import static java.awt.RenderingHints.VALUE_ANTIALIAS_ON;
 import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
 import static java.lang.Math.max;
 
+import featurecat.lizzie.ExtraMode;
 import featurecat.lizzie.Lizzie;
 import featurecat.lizzie.gui.LizzieFrame.HtmlKit;
 import featurecat.lizzie.rules.Board;
@@ -1858,7 +1859,7 @@ public class ConfigDialog2 extends JDialog {
       comboBoxPvVisits.setSelectedIndex(2);
     }
 
-    if (Lizzie.config.extraMode == 8) chkShowIndependentSubBoard.setSelectedIndex(1);
+    if (Lizzie.config.isFloatBoardMode()) chkShowIndependentSubBoard.setSelectedIndex(1);
     else if (Lizzie.config.isShowingIndependentMain) chkShowIndependentSubBoard.setSelectedIndex(2);
     else chkShowIndependentSubBoard.setSelectedIndex(0);
 
@@ -3671,12 +3672,12 @@ public class ConfigDialog2 extends JDialog {
     }
     int n = chkShowIndependentSubBoard.getSelectedIndex();
     if (n == 0) {
-      if (Lizzie.config.extraMode == 8) Lizzie.config.toggleExtraMode(0);
+      if (Lizzie.config.isFloatBoardMode()) Lizzie.config.toggleExtraMode(0);
       if (Lizzie.config.isShowingIndependentMain) Lizzie.frame.toggleIndependentMainBoard();
     } else if (n == 1) {
-      if (Lizzie.config.extraMode != 8) Lizzie.frame.toggleOnlyIndependMainBoard();
+      if (!Lizzie.config.isFloatBoardMode()) Lizzie.frame.toggleOnlyIndependMainBoard();
     } else {
-      if (Lizzie.config.extraMode == 8) Lizzie.config.toggleExtraMode(0);
+      if (Lizzie.config.isFloatBoardMode()) Lizzie.config.toggleExtraMode(0);
       if (!Lizzie.config.isShowingIndependentMain) Lizzie.frame.toggleIndependentMainBoard();
     }
     //    if (chkShowIndependentSubBoard.isSelected()) {
@@ -3762,7 +3763,7 @@ public class ConfigDialog2 extends JDialog {
       leelazConfig.putOpt("stop-at-empty-board", Lizzie.config.stopAtEmptyBoard);
       if (Lizzie.frame.shouldShowRect() && !rdoShowMoveRect.isSelected()) {
         if (LizzieFrame.boardRenderer != null) LizzieFrame.boardRenderer.removeblock();
-        if (Lizzie.config.extraMode == 2) {
+        if (Lizzie.config.isDoubleEngineMode()) {
           if (LizzieFrame.boardRenderer2 != null) LizzieFrame.boardRenderer2.removeblock();
         }
       }
@@ -3826,14 +3827,14 @@ public class ConfigDialog2 extends JDialog {
       Lizzie.config.showSubBoard = chkShowSubBoard.isSelected();
       Lizzie.config.showStatus = chkShowStatus.isSelected();
       Lizzie.config.showCoordinates = chkShowCoordinates.isSelected();
-      if (Lizzie.config.extraMode == 7
+      if (!Lizzie.config.isMinMode()
           && (Lizzie.config.showListPane()
               || Lizzie.config.showCaptured
               || Lizzie.config.showWinrateGraph
               || Lizzie.config.showVariationGraph
               || Lizzie.config.showComment
               || Lizzie.config.showSubBoard)) {
-        Lizzie.config.extraMode = 0;
+        Lizzie.config.extraMode = ExtraMode.Normal;
         Lizzie.config.uiConfig.put("extra-mode", 0);
       }
       Lizzie.config.uiConfig.putOpt("show-captured", Lizzie.config.showCaptured);

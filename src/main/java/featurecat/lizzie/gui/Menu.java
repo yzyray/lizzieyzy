@@ -1363,7 +1363,7 @@ public class Menu extends JMenuBar {
             Lizzie.config.showHeat = false;
             Lizzie.config.subBoardRaw = false;
             Lizzie.config.showHeatAfterCalc = false;
-            if (Lizzie.config.extraMode == 1) {
+            if (Lizzie.config.isFourSubMode()) {
               Lizzie.frame.subBoardRenderer4.showHeat = Lizzie.config.showHeat;
               Lizzie.frame.subBoardRenderer4.showHeatAfterCalc = Lizzie.config.showHeatAfterCalc;
               Lizzie.frame.subBoardRenderer4.removeHeat();
@@ -1392,7 +1392,7 @@ public class Menu extends JMenuBar {
             Lizzie.config.showHeat = false;
             Lizzie.config.subBoardRaw = true;
             Lizzie.config.showHeatAfterCalc = false;
-            if (Lizzie.config.extraMode == 1) {
+            if (Lizzie.config.isFourSubMode()) {
               Lizzie.frame.subBoardRenderer4.showHeat = Lizzie.config.showHeat;
               Lizzie.frame.subBoardRenderer4.showHeatAfterCalc = Lizzie.config.showHeatAfterCalc;
               Lizzie.frame.subBoardRenderer4.removeHeat();
@@ -1420,7 +1420,7 @@ public class Menu extends JMenuBar {
             if (LizzieFrame.subBoardRenderer == null) return;
             Lizzie.config.showHeat = true;
             Lizzie.config.showHeatAfterCalc = false;
-            if (Lizzie.config.extraMode == 1) {
+            if (Lizzie.config.isFourSubMode()) {
               Lizzie.frame.subBoardRenderer4.showHeat = Lizzie.config.showHeat;
               Lizzie.frame.subBoardRenderer4.showHeatAfterCalc = Lizzie.config.showHeatAfterCalc;
               Lizzie.frame.subBoardRenderer4.clearBranch();
@@ -1450,7 +1450,7 @@ public class Menu extends JMenuBar {
             if (LizzieFrame.subBoardRenderer == null) return;
             Lizzie.config.showHeat = true;
             Lizzie.config.showHeatAfterCalc = true;
-            if (Lizzie.config.extraMode == 1) {
+            if (Lizzie.config.isFourSubMode()) {
               Lizzie.frame.subBoardRenderer4.showHeat = Lizzie.config.showHeat;
               Lizzie.frame.subBoardRenderer4.showHeatAfterCalc = Lizzie.config.showHeatAfterCalc;
               Lizzie.frame.subBoardRenderer4.clearBranch();
@@ -1481,7 +1481,7 @@ public class Menu extends JMenuBar {
             Lizzie.config.showHeat = false;
             Lizzie.config.subBoardRaw = false;
             Lizzie.config.showHeatAfterCalc = false;
-            if (Lizzie.config.extraMode == 1) {
+            if (Lizzie.config.isFourSubMode()) {
               Lizzie.frame.subBoardRenderer4.showHeat = Lizzie.config.showHeat;
               Lizzie.frame.subBoardRenderer4.showHeatAfterCalc = Lizzie.config.showHeatAfterCalc;
               Lizzie.frame.subBoardRenderer4.removeHeat();
@@ -2192,11 +2192,11 @@ public class Menu extends JMenuBar {
             else useKataEstimateShortcut.setState(false);
             if (Lizzie.config.saveKataEstimateStatus) kataEstimateSaveState.setSelected(true);
             else kataEstimateSaveState.setState(false);
-            if (Lizzie.config.extraMode == 1) extraMode1.setState(true);
+            if (Lizzie.config.isFourSubMode()) extraMode1.setState(true);
             else extraMode1.setState(false);
-            if (Lizzie.config.extraMode == 2) extraMode2.setState(true);
+            if (Lizzie.config.isDoubleEngineMode()) extraMode2.setState(true);
             else extraMode2.setState(false);
-            if (Lizzie.config.extraMode == 3) extraMode3.setState(true);
+            if (Lizzie.config.isThinkingMode()) extraMode3.setState(true);
             else extraMode3.setState(false);
             if (Lizzie.config.showWinrateInSuggestion) suggestion1.setState(true);
             else suggestion1.setState(false);
@@ -2319,7 +2319,7 @@ public class Menu extends JMenuBar {
               hawkEye.setState(true);
             else hawkEye.setState(false);
             if (Lizzie.config.isShowingIndependentMain) {
-              if (Lizzie.config.extraMode == 8) {
+              if (Lizzie.config.isFloatBoardMode()) {
                 independentMainBoard.setSelected(true);
                 independentMainBoard2.setSelected(false);
               } else {
@@ -2943,7 +2943,7 @@ public class Menu extends JMenuBar {
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             Lizzie.board.clearbestmovesInfomationAfter(Lizzie.board.getHistory().getStart());
-            if (Lizzie.config.extraMode == 2)
+            if (Lizzie.config.isDoubleEngineMode())
               Lizzie.board.clearbestmovesInfomationAfter2(Lizzie.board.getHistory().getStart());
             Lizzie.frame.refreshCurrentMove();
           }
@@ -2958,7 +2958,7 @@ public class Menu extends JMenuBar {
           public void actionPerformed(ActionEvent e) {
             Lizzie.board.clearbestmovesInfomation(
                 Lizzie.board.getHistory().getCurrentHistoryNode());
-            if (Lizzie.config.extraMode == 2)
+            if (Lizzie.config.isDoubleEngineMode())
               Lizzie.board.clearbestmovesInfomation2(
                   Lizzie.board.getHistory().getCurrentHistoryNode());
             Lizzie.frame.refreshCurrentMove();
@@ -9011,7 +9011,7 @@ public class Menu extends JMenuBar {
     engineMenu.setFont(
         new Font(Config.sysDefaultFontName, Font.BOLD, Math.max(Config.frameFontSize, 15)));
     this.add(engineMenu);
-    //   if (Lizzie.config.extraMode == 2) {
+    //   if (Lizzie.config.Lizzie.config.isDoubleEngineMode()) {
     engineMenu2 = new JFontMenu(resourceBundle.getString("Menu.noEngine"));
     engineMenu2.setText(resourceBundle.getString("Menu.noEngine"));
     engineMenu2.setForeground(Color.BLACK);
@@ -9039,7 +9039,7 @@ public class Menu extends JMenuBar {
       engineMenu.add(engine[i]);
       engine[i].setText("[" + (i + 1) + "]");
       engine[i].setVisible(false);
-      // if (Lizzie.config.extraMode == 2) {
+      // if (Lizzie.config.Lizzie.config.isDoubleEngineMode()) {
       try {
         engineMenu2.remove(engine2[i]);
       } catch (Exception e) {
@@ -9056,7 +9056,7 @@ public class Menu extends JMenuBar {
           && Lizzie.engineManager.engineList.get(i).process != null
           && Lizzie.engineManager.engineList.get(i).process.isAlive()) {
         engine[i].setIcon(ready);
-        //  if (Lizzie.config.extraMode == 2)
+        //  if (Lizzie.config.Lizzie.config.isDoubleEngineMode())
         engine2[i].setIcon(ready);
       }
       if (i == EngineManager.currentEngineNo && i <= 20) {
@@ -9064,7 +9064,7 @@ public class Menu extends JMenuBar {
         engineMenu.setText(
             "[" + (i + 1) + "] " + Lizzie.engineManager.engineList.get(i).currentEnginename);
       }
-      // if (Lizzie.config.extraMode == 2)
+      // if (Lizzie.config.Lizzie.config.isDoubleEngineMode())
       if (i == EngineManager.currentEngineNo2 && i <= 20) {
         engine2[i].setIcon(icon);
         engineMenu2.setText(
@@ -9109,7 +9109,7 @@ public class Menu extends JMenuBar {
           engineMenu2.add(shutdownCurrentEngine2);
         }
         //   }
-        if (Lizzie.config.extraMode != 2) engineMenu2.setVisible(false);
+        if (!Lizzie.config.isDoubleEngineMode()) engineMenu2.setVisible(false);
         return;
       } else {
         engine[i].setText("[" + (i + 1) + "] " + engineDt.name);
@@ -9144,9 +9144,7 @@ public class Menu extends JMenuBar {
     engineMenu2.addSeparator();
     engineMenu2.add(restartCurrentEngine2);
     engineMenu2.add(shutdownCurrentEngine2);
-    if (Lizzie.config.extraMode != 2) engineMenu2.setVisible(false);
-    //  }
-
+    if (!Lizzie.config.isDoubleEngineMode()) engineMenu2.setVisible(false);
   }
 
   public void changeEngineIcon(int index, int mode) {
@@ -9324,11 +9322,11 @@ public class Menu extends JMenuBar {
     if (engineMenu == null || EngineManager.isEngineGame) return;
     if (isThinking) {
       engineMenu.setIcon(icon2);
-      if (Lizzie.config.extraMode == 2) engineMenu2.setIcon(icon2);
+      if (Lizzie.config.isDoubleEngineMode()) engineMenu2.setIcon(icon2);
     } else {
       if (isPondering) {
         engineMenu.setIcon(icon2);
-        if (Lizzie.config.extraMode == 2) engineMenu2.setIcon(icon2);
+        if (Lizzie.config.isDoubleEngineMode()) engineMenu2.setIcon(icon2);
         if (Lizzie.frame.floatBoard != null && Lizzie.frame.floatBoard.isVisible()) {
           Lizzie.frame.floatBoard.setPonderState(true);
         }
@@ -9336,7 +9334,7 @@ public class Menu extends JMenuBar {
             Lizzie.resourceBundle.getString("BottomToolbar.pauseAnalyse"));
       } else {
         engineMenu.setIcon(ready2);
-        if (Lizzie.config.extraMode == 2) engineMenu2.setIcon(ready2);
+        if (Lizzie.config.isDoubleEngineMode()) engineMenu2.setIcon(ready2);
         if (Lizzie.frame.floatBoard != null && Lizzie.frame.floatBoard.isVisible()) {
           Lizzie.frame.floatBoard.setPonderState(false);
         }
@@ -9344,7 +9342,7 @@ public class Menu extends JMenuBar {
             Lizzie.resourceBundle.getString("BottomToolbar.analyse"));
       }
     }
-    if (Lizzie.config.extraMode == 2 && Lizzie.leelaz2 == null) engineMenu2.setIcon(ready2);
+    if (Lizzie.config.isDoubleEngineMode() && Lizzie.leelaz2 == null) engineMenu2.setIcon(ready2);
   }
 
   @Override

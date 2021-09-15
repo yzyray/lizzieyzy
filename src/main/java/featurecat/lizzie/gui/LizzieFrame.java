@@ -12,6 +12,7 @@ import com.teamdev.jxbrowser.chromium.PopupHandler;
 import com.teamdev.jxbrowser.chromium.PopupParams;
 import com.teamdev.jxbrowser.chromium.swing.BrowserView;
 import featurecat.lizzie.Config;
+import featurecat.lizzie.ExtraMode;
 import featurecat.lizzie.Lizzie;
 import featurecat.lizzie.analysis.AnalysisEngine;
 import featurecat.lizzie.analysis.EngineManager;
@@ -372,11 +373,7 @@ public class LizzieFrame extends JFrame {
   public int selectCoordsX2;
   public int selectCoordsY2;
 
-  public double extraModeWinrate1 = 0;
-  public double extraModeWinrate2 = 0;
-
-  // public static int extraMode = 3;
-  public static int extraMode = Lizzie.config.extraMode; // 1=四方图2=双引擎3=思考 8=浮动棋盘模式
+  // public static int extraMode = Lizzie.config.extraMode; // 1=四方图2=双引擎3=思考 8=浮动棋盘模式
 
   public boolean selectForceAllow = true;
 
@@ -502,9 +499,9 @@ public class LizzieFrame extends JFrame {
     // this.setJMenuBar(menu);
     // this.setVisible(true);
     this.setAlwaysOnTop(Lizzie.config.mainsalwaysontop);
-    if (extraMode == 8) setMinimumSize(new Dimension(0, 0));
+    if (Lizzie.config.extraMode == ExtraMode.Float_Board) setMinimumSize(new Dimension(0, 0));
     else setMinimumSize(new Dimension(520, 400));
-    if (extraMode == 1) {
+    if (Lizzie.config.isFourSubMode()) {
       subBoardRenderer2 = new SubBoardRenderer(false);
       subBoardRenderer3 = new SubBoardRenderer(false);
       subBoardRenderer4 = new SubBoardRenderer(false);
@@ -514,7 +511,7 @@ public class LizzieFrame extends JFrame {
       subBoardRenderer.showHeat = false;
       subBoardRenderer.showHeatAfterCalc = false;
     }
-    if (extraMode == 3) {
+    if (Lizzie.config.isThinkingMode()) {
       boardRenderer2 = new BoardRenderer(false);
       boardRenderer2.setOrder(2);
       boardRenderer2.setDisplayedBranchLength(BoardRenderer.SHOW_RAW_BOARD);
@@ -895,7 +892,7 @@ public class LizzieFrame extends JFrame {
 
     setJMenuBar(menu);
 
-    if (extraMode == 2) {
+    if (Lizzie.config.isDoubleEngineMode()) {
       boardRenderer2 = new BoardRenderer(false);
       boardRenderer2.setOrder(1);
     } else {
@@ -2381,7 +2378,7 @@ public class LizzieFrame extends JFrame {
       Lizzie.frame.suggestionclick = LizzieFrame.outOfBoundCoordinate;
       Lizzie.frame.mouseOverCoordinate = LizzieFrame.outOfBoundCoordinate;
       boardRenderer.clearBranch();
-      if (extraMode == 2) {
+      if (Lizzie.config.isDoubleEngineMode()) {
         boardRenderer2.startNormalBoard();
         boardRenderer2.clearBranch();
       }
@@ -2495,7 +2492,7 @@ public class LizzieFrame extends JFrame {
   public void toggleAnalysisFrameAlwaysontop() {
     if (analysisFrame != null && analysisFrame.isVisible()) {
       if (analysisFrame.isAlwaysOnTop()) {
-        if (extraMode == 2)
+        if (Lizzie.config.isDoubleEngineMode())
           if (analysisFrame2 != null && analysisFrame2.isVisible()) {
             analysisFrame2.setAlwaysOnTop(false);
             analysisFrame2.setTopTitle();
@@ -2503,7 +2500,7 @@ public class LizzieFrame extends JFrame {
         analysisFrame.setAlwaysOnTop(false);
         Lizzie.config.uiConfig.put("suggestions-always-ontop", false);
       } else {
-        if (extraMode == 2)
+        if (Lizzie.config.isDoubleEngineMode())
           if (analysisFrame2 != null && analysisFrame2.isVisible()) {
             analysisFrame2.setAlwaysOnTop(true);
             analysisFrame2.setTopTitle();
@@ -2519,7 +2516,7 @@ public class LizzieFrame extends JFrame {
   public void toggleBestMoves() {
     if (analysisFrame == null || !analysisFrame.isVisible()) {
       analysisFrame = new AnalysisFrame(1);
-      if (LizzieFrame.extraMode == 2) {
+      if (Lizzie.config.isDoubleEngineMode()) {
         if (analysisFrame2 == null || !analysisFrame2.isVisible()) {
           analysisFrame2 = new AnalysisFrame(2);
           analysisFrame2.setVisible(true);
@@ -2530,7 +2527,7 @@ public class LizzieFrame extends JFrame {
         analysisFrame.setAlwaysOnTop(true);
     } else {
       analysisFrame.setVisible(false);
-      if (LizzieFrame.extraMode == 2 && analysisFrame2 != null) {
+      if (Lizzie.config.isDoubleEngineMode() && analysisFrame2 != null) {
         analysisFrame2.setVisible(false);
       }
       Lizzie.frame.suggestionclick = LizzieFrame.outOfBoundCoordinate;
@@ -2595,23 +2592,7 @@ public class LizzieFrame extends JFrame {
     }
   }
 
-  //  public void togglePanelMode() {
-  //    switch (mode) {
-  //      case 0:
-  //        classicMode();
-  //        break;
-  //      case 1:
-  //        minMode();
-  //        break;
-  //      case 2:
-  //        defaultMode();
-  //        break;
-  //      default:
-  //        return;
-  //    }
-  //  }
-
-  public void extraMode(int mode) { // 3=思考模式 2=双引擎模式 1=四方图模式 7=精简模式 8=浮动棋盘模式
+  public void extraMode(ExtraMode currentMode, ExtraMode previousMode) {
     setMinimumSize(new Dimension(520, 400));
     boolean windowIsMaximized = Lizzie.frame.getExtendedState() == JFrame.MAXIMIZED_BOTH;
     boardRenderer = new BoardRenderer(false);
@@ -2619,10 +2600,10 @@ public class LizzieFrame extends JFrame {
     subBoardYmouse = 0;
     subBoardLengthmouse = 0;
     subMaxSize = 0;
-    if (extraMode == 2 && mode != 2) {
+    if (previousMode == ExtraMode.Double_Engine && currentMode != ExtraMode.Double_Engine) {
       if (analysisFrame2 != null && analysisFrame2.isVisible()) analysisFrame2.setVisible(false);
     }
-    if (mode == 1) {
+    if (currentMode == ExtraMode.Four_Sub) {
       Lizzie.frame.subBoardRenderer2 = new SubBoardRenderer(false);
       Lizzie.frame.subBoardRenderer3 = new SubBoardRenderer(false);
       Lizzie.frame.subBoardRenderer4 = new SubBoardRenderer(false);
@@ -2651,7 +2632,7 @@ public class LizzieFrame extends JFrame {
       }
       repaint();
     }
-    if (mode == 2) {
+    if (currentMode == ExtraMode.Double_Engine) {
       if (Lizzie.config.showSubBoard) Lizzie.config.toggleShowSubBoard();
       if (Lizzie.config.showComment) Lizzie.config.toggleShowComment();
       if (Lizzie.config.showCaptured) Lizzie.config.toggleShowCaptured();
@@ -2671,11 +2652,15 @@ public class LizzieFrame extends JFrame {
         reSetLoc();
       }
       repaint();
-      if (extraMode != 2) {
+      if (previousMode != ExtraMode.Double_Engine) {
         Lizzie.board.setMovelistAll2();
         if (moveListFrame != null && moveListFrame.isVisible()) {
           toggleBadMoves();
           toggleBadMoves();
+        }
+        if (analysisFrame != null && analysisFrame.isVisible()) {
+          toggleBestMoves();
+          toggleBestMoves();
         }
       }
       if (Lizzie.leelaz2 != null) {
@@ -2687,12 +2672,10 @@ public class LizzieFrame extends JFrame {
         LizzieFrame.menu.changeEngineIcon(EngineManager.currentEngineNo2, 2);
       }
       LizzieFrame.menu.setEngineMenuone2status(false);
-      if (extraMode == 2) {
-        if (moveListFrame2 != null && moveListFrame2.isVisible()) moveListFrame2.setVisible(false);
-      }
+      if (moveListFrame2 != null && moveListFrame2.isVisible()) moveListFrame2.setVisible(false);
     }
 
-    if (mode == 3) {
+    if (currentMode == ExtraMode.Thinking) {
       if (!Lizzie.config.showSubBoard) Lizzie.config.toggleShowSubBoard();
       if (!Lizzie.config.showWinrateGraph) Lizzie.config.toggleShowWinrate();
       if (Lizzie.config.showLargeWinrateOnly()) Lizzie.config.toggleLargeWinrate();
@@ -2700,8 +2683,6 @@ public class LizzieFrame extends JFrame {
       if (Lizzie.config.showComment) Lizzie.config.toggleShowComment();
       if (!Lizzie.config.showCaptured) Lizzie.config.toggleShowCaptured();
       if (!Lizzie.config.showListPane) Lizzie.config.toggleShowListPane();
-      //      if (!Lizzie.config.changedStatus && Lizzie.config.showStatus)
-      //        Lizzie.config.toggleShowStatus(true);
       if (!Lizzie.config.showVariationGraph) Lizzie.config.toggleShowVariationGraph();
       boardRenderer2 = new BoardRenderer(false);
       boardRenderer2.setOrder(2);
@@ -2716,15 +2697,8 @@ public class LizzieFrame extends JFrame {
       }
       repaint();
     }
-
-    extraMode = mode;
-    if (mode == 2) {
-      if (analysisFrame != null && analysisFrame.isVisible()) {
-        toggleBestMoves();
-        toggleBestMoves();
-      }
-    }
-    if (mode > 0 && mode != 3 && mode != 1) setHideListScrollpane(false);
+    if (currentMode != ExtraMode.Thinking && currentMode != ExtraMode.Four_Sub)
+      setHideListScrollpane(false);
     else if (Lizzie.config.showListPane()) setHideListScrollpane(true);
   }
 
@@ -2755,7 +2729,7 @@ public class LizzieFrame extends JFrame {
   }
 
   public void toggleOnlyIndependMainBoard() {
-    if (Lizzie.config.extraMode == 8) {
+    if (Lizzie.config.isFloatBoardMode()) {
       Lizzie.config.toggleExtraMode(0);
       Lizzie.frame.toggleIndependentMainBoard();
       Lizzie.frame.refresh();
@@ -2765,7 +2739,7 @@ public class LizzieFrame extends JFrame {
   public void toggleShowIndependMainBoard() {
     if (!Lizzie.config.isShowingIndependentMain) Lizzie.frame.toggleIndependentMainBoard();
     else {
-      if (Lizzie.config.extraMode == 8) {
+      if (Lizzie.config.isFloatBoardMode()) {
         Lizzie.config.toggleExtraMode(0);
         Lizzie.frame.refresh();
       } else {
@@ -2776,7 +2750,6 @@ public class LizzieFrame extends JFrame {
 
   public void onlyIndependMainBoard() {
     setMinimumSize(new Dimension(0, 0));
-    extraMode = 8;
     Lizzie.config.toggleExtraMode(8);
     if (!Lizzie.config.isShowingIndependentMain) toggleIndependentMainBoard();
     Lizzie.frame.refresh();
@@ -2784,7 +2757,6 @@ public class LizzieFrame extends JFrame {
 
   public void independentBoardMode(boolean showSubBoard) {
     setMinimumSize(new Dimension(0, 0));
-    extraMode = 8;
     Lizzie.config.toggleExtraMode(8);
     if (!Lizzie.config.showListPane) Lizzie.config.toggleShowListPane();
     setHideListScrollpane(true);
@@ -2886,7 +2858,7 @@ public class LizzieFrame extends JFrame {
     if (moveListFrame == null || !moveListFrame.isVisible()) {
       Lizzie.config.uiConfig.put("show-badmoves-frame", true);
       moveListFrame = new MoveListFrame(1);
-      if (Lizzie.config.extraMode == 2) {
+      if (Lizzie.config.isDoubleEngineMode()) {
         if (moveListFrame2 == null || !moveListFrame2.isVisible()) {
           moveListFrame2 = new MoveListFrame(2);
           moveListFrame2.setVisible(true);
@@ -2898,7 +2870,7 @@ public class LizzieFrame extends JFrame {
     } else {
       Lizzie.config.uiConfig.put("show-badmoves-frame", false);
       moveListFrame.setVisible(false);
-      if (LizzieFrame.extraMode == 2 && moveListFrame2 != null) {
+      if (Lizzie.config.isDoubleEngineMode() && moveListFrame2 != null) {
         moveListFrame2.setVisible(false);
       }
       clickbadmove = LizzieFrame.outOfBoundCoordinate;
@@ -3517,7 +3489,8 @@ public class LizzieFrame extends JFrame {
     Lizzie.board.setMovelistAll();
     if (showHint) {
       Lizzie.frame.resetMovelistFrameandAnalysisFrame();
-      if (extraMode != 8 && !(analysisTable != null && analysisTable.frame.isVisible()))
+      if (!Lizzie.config.isFloatBoardMode()
+          && !(analysisTable != null && analysisTable.frame.isVisible()))
         Lizzie.frame.setVisible(true);
     }
     Lizzie.config.playSound = oriSound;
@@ -3582,7 +3555,7 @@ public class LizzieFrame extends JFrame {
         BufferedImage cachedImage = new BufferedImage(width, height, TYPE_INT_ARGB);
         Graphics2D g = (Graphics2D) cachedImage.getGraphics();
         g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        if (extraMode == 1) {
+        if (Lizzie.config.isFourSubMode()) {
           int topInset = mainPanel.getInsets().top;
           int leftInset = mainPanel.getInsets().left;
           int rightInset = mainPanel.getInsets().right;
@@ -3864,7 +3837,7 @@ public class LizzieFrame extends JFrame {
               }
             }
           }
-        } else if (extraMode == 2) {
+        } else if (Lizzie.config.isDoubleEngineMode()) {
           int topInset = mainPanel.getInsets().top;
           int leftInset = mainPanel.getInsets().left;
           int rightInset = mainPanel.getInsets().right;
@@ -3977,7 +3950,7 @@ public class LizzieFrame extends JFrame {
           drawPonderingStateForExtraMode2(
               g, text2comm, maxSize + leftInset + commentX2 + 5, maxSize, 18);
           //  }
-        } else if (extraMode == 3) {
+        } else if (Lizzie.config.isThinkingMode()) {
           int topInset = mainPanel.getInsets().top;
           int leftInset = mainPanel.getInsets().left;
           int rightInset = mainPanel.getInsets().right;
@@ -4247,7 +4220,7 @@ public class LizzieFrame extends JFrame {
           }
         }
         //  extrmode 8
-        else if (extraMode == 8) // 8浮动棋盘模式
+        else if (Lizzie.config.isFloatBoardMode()) // 8浮动棋盘模式
         {
           int topInset = mainPanel.getInsets().top;
           int leftInset = mainPanel.getInsets().left;
@@ -4669,9 +4642,8 @@ public class LizzieFrame extends JFrame {
             //     g.setRenderingHint(RenderingHints.KEY_RENDERING,
             // RenderingHints.VALUE_RENDER_QUALITY);
 
-            if (Lizzie.config.showStatus
-                && Lizzie.config.extraMode != 7
-                && !Lizzie.config.userKnownX) drawCommandString(g);
+            if (Lizzie.config.showStatus && !Lizzie.config.isMinMode() && !Lizzie.config.userKnownX)
+              drawCommandString(g);
             //
             //          if (boardPos != boardX + maxSize / 2) {
             //            boardPos = boardX + maxSize / 2;
@@ -4739,7 +4711,7 @@ public class LizzieFrame extends JFrame {
               }
             }
             // if (Lizzie.leelaz != null && Lizzie.leelaz.isLoaded()) {
-            if (Lizzie.config.showStatus && Lizzie.config.extraMode != 7) {
+            if (Lizzie.config.showStatus && !Lizzie.config.isMinMode()) {
               if (Lizzie.leelaz != null
                   && (Lizzie.leelaz.isLoaded() || Lizzie.leelaz.isNormalEnd)) {
                 String statusKey =
@@ -4942,15 +4914,14 @@ public class LizzieFrame extends JFrame {
             // comment panel
             int cx = capx, cy = vy, cw = spaceW, ch = vh;
             if (Lizzie.config.showVariationGraph || showListPane) cw = spaceW * 4 / 10;
-            if (Lizzie.config.showStatus
-                && Lizzie.config.extraMode != 7
-                && !Lizzie.config.userKnownX) drawCommandString(g);
+            if (Lizzie.config.showStatus && !Lizzie.config.isMinMode() && !Lizzie.config.userKnownX)
+              drawCommandString(g);
 
             if (Lizzie.config.showWinrateGraph) {
               drawMoveStatistics(g, statx, staty, statw, stath);
             }
 
-            if (Lizzie.config.showStatus && Lizzie.config.extraMode != 7) {
+            if (Lizzie.config.showStatus && !Lizzie.config.isMinMode()) {
               if (Lizzie.leelaz != null && Lizzie.leelaz.isLoaded()) {
                 String statusKey =
                     "LizzieFrame.display." + (Lizzie.leelaz.isPondering() ? "on" : "off");
@@ -4982,7 +4953,7 @@ public class LizzieFrame extends JFrame {
               drawContainer(backgroundG.get(), leftInset, vy, spaceW, vh);
             }
             // if (Lizzie.leelaz != null && Lizzie.leelaz.isLoaded()) {
-            if (Lizzie.config.showStatus && Lizzie.config.extraMode != 7) {
+            if (Lizzie.config.showStatus && !Lizzie.config.isMinMode()) {
               if (Lizzie.leelaz == null || !Lizzie.leelaz.isLoaded()) {
                 String loadingText = getLoadingText();
                 drawPonderingState(g, loadingText, loadingX, loadingY, loadingSize);
@@ -5117,7 +5088,7 @@ public class LizzieFrame extends JFrame {
    */
   public void refreshContainer() {
     redrawBackgroundAnyway = true;
-    if (extraMode == 8) this.paintMianPanel(mainPanel.getGraphics());
+    if (Lizzie.config.isFloatBoardMode()) this.paintMianPanel(mainPanel.getGraphics());
   }
 
   public void refresh() {
@@ -5279,7 +5250,7 @@ public class LizzieFrame extends JFrame {
     FontMetrics fm = g.getFontMetrics(font);
     int stringWidth = fm.stringWidth(text);
     // Truncate too long text when display switching prompt
-    if (extraMode != 8) {
+    if (!Lizzie.config.isFloatBoardMode()) {
       if (Lizzie.leelaz != null && Lizzie.leelaz.isLoaded()) {
         int mainBoardX = boardRenderer.getLocation().x;
         if (mainPanel.getWidth() > mainPanel.getHeight()
@@ -5329,7 +5300,7 @@ public class LizzieFrame extends JFrame {
     FontMetrics fm = g.getFontMetrics(font);
     int stringWidth = fm.stringWidth(text);
     // Truncate too long text when display switching prompt
-    if (extraMode != 8) {
+    if (!Lizzie.config.isFloatBoardMode()) {
       if (Lizzie.leelaz != null && Lizzie.leelaz.isLoaded()) {
         int mainBoardX = boardRenderer.getLocation().x;
         if (mainPanel.getWidth() > mainPanel.getHeight()
@@ -6303,7 +6274,7 @@ public class LizzieFrame extends JFrame {
   public boolean onClickedRight(int x, int y) {
     if (blackorwhite == 0) return false;
     Optional<int[]> boardCoordinates;
-    if (extraMode == 3) {
+    if (Lizzie.config.isThinkingMode()) {
       boardCoordinates = boardRenderer2.convertScreenToCoordinates(x, y);
       if (!boardCoordinates.isPresent())
         boardCoordinates = boardRenderer.convertScreenToCoordinates(x, y);
@@ -6340,7 +6311,7 @@ public class LizzieFrame extends JFrame {
   public void onClicked(int x, int y) {
     // Check for board click
     Optional<int[]> boardCoordinates;
-    if (extraMode == 3) {
+    if (Lizzie.config.isThinkingMode()) {
       boardCoordinates = boardRenderer2.convertScreenToCoordinates(x, y);
       if (!boardCoordinates.isPresent())
         boardCoordinates = boardRenderer.convertScreenToCoordinates(x, y);
@@ -6528,7 +6499,7 @@ public class LizzieFrame extends JFrame {
   }
 
   public boolean processSubOnMouseMoved(int x, int y) {
-    if (LizzieFrame.extraMode == 1) {
+    if (Lizzie.config.isFourSubMode()) {
       if (x < subBoardLengthmouse && y < subBoardLengthmouse) {
         // 1
         if (!LizzieFrame.subBoardRenderer.isMouseOver
@@ -6561,7 +6532,7 @@ public class LizzieFrame extends JFrame {
 
   public void onMouseExited() {
     boolean needRepaint = false;
-    if (LizzieFrame.extraMode == 1) {
+    if (Lizzie.config.isFourSubMode()) {
       if (Lizzie.frame.subBoardRenderer2.isMouseOver) {
         Lizzie.frame.subBoardRenderer2.isMouseOver = false;
         needRepaint = true;
@@ -6606,7 +6577,7 @@ public class LizzieFrame extends JFrame {
     if (shouldShowRect()) {
       needRepaint = true;
       boardRenderer.removeblock();
-      if (extraMode == 2) {
+      if (Lizzie.config.isDoubleEngineMode()) {
         boardRenderer2.removeblock();
       }
     }
@@ -6708,7 +6679,7 @@ public class LizzieFrame extends JFrame {
         if (isMouseOnSub) {
           if ((!Lizzie.leelaz.isPondering() || EngineManager.isEmpty)) needRepaint = true;
           isMouseOnSub = false;
-          if (LizzieFrame.extraMode == 1) {
+          if (Lizzie.config.isFourSubMode()) {
             Lizzie.frame.subBoardRenderer2.isMouseOver = false;
             Lizzie.frame.subBoardRenderer3.isMouseOver = false;
             Lizzie.frame.subBoardRenderer4.isMouseOver = false;
@@ -6761,7 +6732,7 @@ public class LizzieFrame extends JFrame {
               }
             }
           }
-        if (extraMode == 2) {
+        if (Lizzie.config.isDoubleEngineMode()) {
           List<MoveData> bestMoves2 =
               Lizzie.board.getHistory().getCurrentHistoryNode().getData().bestMoves2;
           if (!bestMoves2.isEmpty())
@@ -6796,7 +6767,7 @@ public class LizzieFrame extends JFrame {
       if (shouldShowRect()) {
         isShowingRect = true;
         needRepaint = true;
-        if (extraMode == 2) {
+        if (Lizzie.config.isDoubleEngineMode()) {
           Optional<int[]> coords2 = boardRenderer2.convertScreenToCoordinates(x, y);
           if (coords2.isPresent()) {
             boardRenderer2.drawmoveblock(
@@ -6809,7 +6780,7 @@ public class LizzieFrame extends JFrame {
               coords.get()[0], coords.get()[1], Lizzie.board.getHistory().isBlacksTurn());
       } else if (Lizzie.frame.isAnaPlayingAgainstLeelaz || Lizzie.frame.isPlayingAgainstLeelaz)
         boardRenderer.removeblock();
-      if (extraMode == 2) {
+      if (Lizzie.config.isDoubleEngineMode()) {
         boardRenderer2.removeblock();
       }
     } else {
@@ -6825,7 +6796,7 @@ public class LizzieFrame extends JFrame {
 
           needRepaint = true;
           boardRenderer.removeblock();
-          if (extraMode == 2) {
+          if (Lizzie.config.isDoubleEngineMode()) {
             boardRenderer2.removeblock();
           }
           isShowingRect = false;
@@ -6841,7 +6812,7 @@ public class LizzieFrame extends JFrame {
     boardRenderer.startNormalBoard();
     boardRenderer.clearBranch();
     boardRenderer.notShowingBranch();
-    if (extraMode == 2) {
+    if (Lizzie.config.isDoubleEngineMode()) {
       boardRenderer2.startNormalBoard();
       boardRenderer2.clearBranch();
       boardRenderer2.notShowingBranch();
@@ -6950,9 +6921,9 @@ public class LizzieFrame extends JFrame {
 
   public boolean processPressOnSub(MouseEvent e) {
     if (isInPlayMode()) return false;
-    if (extraMode == 3) return false;
+    if (Lizzie.config.isFourSubMode()) return false;
     // if (Lizzie.engineManager.isEngineGame) return false;
-    if (LizzieFrame.extraMode == 1) {
+    if (Lizzie.config.isFourSubMode()) {
       int x = Utils.zoomOut(e.getX());
       int y = Utils.zoomOut(e.getY());
       if (x < subBoardLengthmouse / 2 && y < subBoardLengthmouse / 2) {
@@ -7065,7 +7036,7 @@ public class LizzieFrame extends JFrame {
 
   public boolean processSubboardMouseWheelMoved(MouseWheelEvent e) {
     if (isInPlayMode()) return false;
-    if (LizzieFrame.extraMode == 1) {
+    if (Lizzie.config.isFourSubMode()) {
       int x = Utils.zoomOut(e.getX());
       int y = Utils.zoomOut(e.getY());
       if (x < subBoardLengthmouse / 2 && y < subBoardLengthmouse / 2) {
@@ -7986,7 +7957,7 @@ public class LizzieFrame extends JFrame {
         int[] coords = boardCoordinates.get();
 
         boardRenderer.drawmovestone(coords[0], coords[1], draggedstone);
-        if (LizzieFrame.extraMode == 2)
+        if (Lizzie.config.isDoubleEngineMode())
           boardRenderer2.drawmovestone(coords[0], coords[1], draggedstone);
         repaint();
       }
@@ -8318,15 +8289,15 @@ public class LizzieFrame extends JFrame {
     if (moveTo > 0) {
       if (boardRenderer.isShowingNormalBoard()) {
         setDisplayedBranchLength(2);
-        if (extraMode == 2) setDisplayedBranchLength2(2);
+        if (Lizzie.config.isDoubleEngineMode()) setDisplayedBranchLength2(2);
       } else if (boardRenderer.isShowingUnImportantBoard()) {
         setDisplayedBranchLength(2);
-        if (extraMode == 2) setDisplayedBranchLength2(2);
+        if (Lizzie.config.isDoubleEngineMode()) setDisplayedBranchLength2(2);
       } else {
         if (boardRenderer.getReplayBranch() > boardRenderer.getDisplayedBranchLength()) {
           boardRenderer.incrementDisplayedBranchLength(1);
         }
-        if (extraMode == 2)
+        if (Lizzie.config.isDoubleEngineMode())
           if (boardRenderer2.getReplayBranch() > boardRenderer2.getDisplayedBranchLength()) {
             boardRenderer2.incrementDisplayedBranchLength(1);
           }
@@ -8339,7 +8310,7 @@ public class LizzieFrame extends JFrame {
           boardRenderer.incrementDisplayedBranchLength(-1);
         }
       }
-      if (extraMode == 2) {
+      if (Lizzie.config.isDoubleEngineMode()) {
         if (boardRenderer2.isShowingNormalBoard()) {
           setDisplayedBranchLength2(boardRenderer.getReplayBranch());
         } else {
@@ -8432,7 +8403,7 @@ public class LizzieFrame extends JFrame {
   }
 
   public void saveMainBoardPicture() {
-    if (extraMode != 8)
+    if (Lizzie.config.isFloatBoardMode())
       saveImage(
           Lizzie.frame.boardX, Lizzie.frame.boardY, Lizzie.frame.maxSize, Lizzie.frame.maxSize);
     else {
@@ -8739,12 +8710,10 @@ public class LizzieFrame extends JFrame {
   }
 
   public void saveMainBoardToClipboard() {
-    if (extraMode != 8)
+    if (Lizzie.config.isFloatBoardMode()) saveIndependMainBoardToClipboard();
+    else
       savePicToClipboard(
           Lizzie.frame.boardX, Lizzie.frame.boardY, Lizzie.frame.maxSize, Lizzie.frame.maxSize);
-    else {
-      saveIndependMainBoardToClipboard();
-    }
   }
 
   private void saveIndependMainBoardToClipboard() {
@@ -9803,7 +9772,7 @@ public class LizzieFrame extends JFrame {
   public void clearKataEstimate() {
     boardRenderer.removecountblock();
     if (Lizzie.config.showSubBoard) subBoardRenderer.removecountblock();
-    if (LizzieFrame.extraMode == 2) boardRenderer2.removecountblock();
+    if (Lizzie.config.isDoubleEngineMode()) boardRenderer2.removecountblock();
     if (floatBoard != null) floatBoard.boardRenderer.removecountblock();
     if (Lizzie.estimateResults != null && Lizzie.estimateResults.isVisible())
       Lizzie.estimateResults.repaint();
@@ -9848,7 +9817,7 @@ public class LizzieFrame extends JFrame {
     if ((!Lizzie.leelaz.iskataHeatmapShowOwner && Lizzie.config.showKataGoEstimateBySize)
         || (Lizzie.leelaz.iskataHeatmapShowOwner && Lizzie.config.showPureEstimateBySize)) {
       if (Lizzie.config.showKataGoEstimateOnMainbord || isShowingHeatmap) {
-        if (extraMode == 2) {
+        if (Lizzie.config.isDoubleEngineMode()) {
           if (engine == Lizzie.leelaz) LizzieFrame.boardRenderer.drawKataEstimateBySize(tempcount);
           if (Lizzie.leelaz2 != null && engine == Lizzie.leelaz2)
             LizzieFrame.boardRenderer2.drawKataEstimateBySize(tempcount);
@@ -9858,7 +9827,8 @@ public class LizzieFrame extends JFrame {
             floatBoard.boardRenderer.drawKataEstimateBySize(tempcount);
         }
       }
-      if ((Lizzie.config.showKataGoEstimateOnSubbord || isShowingHeatmap) && extraMode != 2) {
+      if ((Lizzie.config.showKataGoEstimateOnSubbord || isShowingHeatmap)
+          && !Lizzie.config.isDoubleEngineMode()) {
         if (Lizzie.config.showSubBoard)
           LizzieFrame.subBoardRenderer.drawKataEstimateBySize(tempcount);
         if (independentSubBoard != null && independentSubBoard.isVisible())
@@ -9866,7 +9836,7 @@ public class LizzieFrame extends JFrame {
       }
     } else {
       if (Lizzie.config.showKataGoEstimateOnMainbord || isShowingHeatmap) {
-        if (extraMode == 2) {
+        if (Lizzie.config.isDoubleEngineMode()) {
           if (engine == Lizzie.leelaz)
             LizzieFrame.boardRenderer.drawKataEstimateByTransparent(tempcount);
           if (Lizzie.leelaz2 != null && engine == Lizzie.leelaz2)
@@ -9877,7 +9847,8 @@ public class LizzieFrame extends JFrame {
             floatBoard.boardRenderer.drawKataEstimateByTransparent(tempcount);
         }
       }
-      if ((Lizzie.config.showKataGoEstimateOnSubbord || isShowingHeatmap) && extraMode != 2) {
+      if ((Lizzie.config.showKataGoEstimateOnSubbord || isShowingHeatmap)
+          && !Lizzie.config.isDoubleEngineMode()) {
         if (Lizzie.config.showSubBoard)
           LizzieFrame.subBoardRenderer.drawKataEstimateByTransparent(tempcount);
         if (independentSubBoard != null && independentSubBoard.isVisible())
@@ -9950,7 +9921,7 @@ public class LizzieFrame extends JFrame {
       Lizzie.leelaz.isThinking = false;
       Lizzie.leelaz.notPondering();
       boardRenderer.removeblock();
-      if (extraMode == 2) {
+      if (Lizzie.config.isDoubleEngineMode()) {
         boardRenderer2.removeblock();
       }
       LizzieFrame.toolbar.chkShowBlack.setSelected(true);
@@ -9984,7 +9955,7 @@ public class LizzieFrame extends JFrame {
       Lizzie.leelaz.anaGameResignCount = 0;
       Lizzie.leelaz.notPondering();
       boardRenderer.removeblock();
-      if (extraMode == 2) {
+      if (Lizzie.config.isDoubleEngineMode()) {
         boardRenderer2.removeblock();
       }
     }
@@ -10147,7 +10118,7 @@ public class LizzieFrame extends JFrame {
   }
 
   public void setMouseOverCoords(int index) {
-    if (extraMode == 8) {
+    if (Lizzie.config.isFloatBoardMode()) {
       this.independentMainBoard.setMouseOverCoords(index);
       return;
     }
@@ -10675,23 +10646,7 @@ public class LizzieFrame extends JFrame {
 
   public Image saveMainBoardToImageOri() {
     if (Config.isScaled) {
-      if (extraMode != 8) {
-        int x = Lizzie.frame.boardX;
-        int y = Lizzie.frame.boardY;
-        int width = Lizzie.frame.maxSize;
-        int height = Lizzie.frame.maxSize;
-        Rectangle rect = new Rectangle(x, y, width, height);
-        BufferedImage areaImage = cachedImage.getSubimage(rect.x, rect.y, rect.width, rect.height);
-        BufferedImage buffImg = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-        buffImg
-            .getGraphics()
-            .drawImage(
-                areaImage.getScaledInstance(width, height, java.awt.Image.SCALE_SMOOTH),
-                0,
-                0,
-                null);
-        return buffImg;
-      } else {
+      if (Lizzie.config.isFloatBoardMode()) {
         int width = this.independentMainBoard.cachedImage.getWidth();
         int height = this.independentMainBoard.cachedImage.getHeight();
         Rectangle rect = new Rectangle(0, 0, width, height);
@@ -10707,20 +10662,33 @@ public class LizzieFrame extends JFrame {
                 0,
                 null);
         return buffImg;
-      }
-    } else {
-      if (extraMode != 8) {
+      } else {
         int x = Lizzie.frame.boardX;
         int y = Lizzie.frame.boardY;
         int width = Lizzie.frame.maxSize;
         int height = Lizzie.frame.maxSize;
-        BufferedImage bImg =
-            new BufferedImage(
-                this.mainPanel.getWidth(), this.mainPanel.getHeight(), BufferedImage.TYPE_INT_ARGB);
-        Graphics2D cg = bImg.createGraphics();
-        this.mainPanel.paintAll(cg);
-        cg.dispose();
         Rectangle rect = new Rectangle(x, y, width, height);
+        BufferedImage areaImage = cachedImage.getSubimage(rect.x, rect.y, rect.width, rect.height);
+        BufferedImage buffImg = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        buffImg
+            .getGraphics()
+            .drawImage(
+                areaImage.getScaledInstance(width, height, java.awt.Image.SCALE_SMOOTH),
+                0,
+                0,
+                null);
+        return buffImg;
+      }
+    } else {
+      if (Lizzie.config.isFloatBoardMode()) {
+        int width = this.independentMainBoard.getWidth();
+        int height = this.independentMainBoard.getHeight();
+        BufferedImage bImg = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D cg = bImg.createGraphics();
+
+        this.independentMainBoard.paintAll(cg);
+        cg.dispose();
+        Rectangle rect = new Rectangle(0, 0, width, height);
         BufferedImage areaImage = bImg.getSubimage(rect.x, rect.y, rect.width, rect.height);
         BufferedImage buffImg = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         buffImg
@@ -10732,15 +10700,17 @@ public class LizzieFrame extends JFrame {
                 null);
         return buffImg;
       } else {
-
-        int width = this.independentMainBoard.getWidth();
-        int height = this.independentMainBoard.getHeight();
-        BufferedImage bImg = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        int x = Lizzie.frame.boardX;
+        int y = Lizzie.frame.boardY;
+        int width = Lizzie.frame.maxSize;
+        int height = Lizzie.frame.maxSize;
+        BufferedImage bImg =
+            new BufferedImage(
+                this.mainPanel.getWidth(), this.mainPanel.getHeight(), BufferedImage.TYPE_INT_ARGB);
         Graphics2D cg = bImg.createGraphics();
-
-        this.independentMainBoard.paintAll(cg);
+        this.mainPanel.paintAll(cg);
         cg.dispose();
-        Rectangle rect = new Rectangle(0, 0, width, height);
+        Rectangle rect = new Rectangle(x, y, width, height);
         BufferedImage areaImage = bImg.getSubimage(rect.x, rect.y, rect.width, rect.height);
         BufferedImage buffImg = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         buffImg
@@ -11681,7 +11651,7 @@ public class LizzieFrame extends JFrame {
     // TODO Auto-generated method stub
     if (isMarkuping) {
       Optional<int[]> boardCoordinates;
-      if (extraMode == 3) {
+      if (Lizzie.config.isThinkingMode()) {
         boardCoordinates = boardRenderer2.convertScreenToCoordinates(x, y);
         if (!boardCoordinates.isPresent())
           boardCoordinates = boardRenderer.convertScreenToCoordinates(x, y);
@@ -11727,7 +11697,7 @@ public class LizzieFrame extends JFrame {
     // TODO Auto-generated method stub
     if (isMarkuping) {
       Optional<int[]> boardCoordinates;
-      if (extraMode == 3) {
+      if (Lizzie.config.isThinkingMode()) {
         boardCoordinates = boardRenderer2.convertScreenToCoordinates(x, y);
         if (!boardCoordinates.isPresent())
           boardCoordinates = boardRenderer.convertScreenToCoordinates(x, y);
@@ -11892,7 +11862,7 @@ public class LizzieFrame extends JFrame {
       Lizzie.frame.refresh();
       return;
     }
-    if (extraMode == 2
+    if (Lizzie.config.isDoubleEngineMode()
         && LizzieFrame.boardRenderer2.incrementDisplayedBranchLength(movesToAdvance)) {
       Lizzie.frame.refresh();
       return;
@@ -11918,7 +11888,7 @@ public class LizzieFrame extends JFrame {
     if (LizzieFrame.boardRenderer.incrementDisplayedBranchLength(movesToAdvance)) {
       return;
     }
-    if (extraMode == 2
+    if (Lizzie.config.isDoubleEngineMode()
         && LizzieFrame.boardRenderer2.incrementDisplayedBranchLength(movesToAdvance)) {
       return;
     }
@@ -11941,7 +11911,7 @@ public class LizzieFrame extends JFrame {
       Lizzie.frame.refresh();
       return;
     }
-    if (extraMode == 2 && boardRenderer2.isShowingBranch()) {
+    if (Lizzie.config.isDoubleEngineMode() && boardRenderer2.isShowingBranch()) {
       Lizzie.frame.doBranch(-movesToAdvance);
       Lizzie.frame.refresh();
       return;
@@ -11966,7 +11936,7 @@ public class LizzieFrame extends JFrame {
       Lizzie.frame.doBranch(-movesToAdvance);
       return;
     }
-    if (extraMode == 2 && boardRenderer2.isShowingBranch()) {
+    if (Lizzie.config.isDoubleEngineMode() && boardRenderer2.isShowingBranch()) {
       Lizzie.frame.doBranch(-movesToAdvance);
       return;
     }
@@ -12280,7 +12250,7 @@ public class LizzieFrame extends JFrame {
 
   public void drawScore(GroupInfo boardGroupInfo) {
     // TODO Auto-generated method stub
-    if (extraMode == 8 && independentMainBoard != null)
+    if (Lizzie.config.isFloatBoardMode() && independentMainBoard != null)
       this.independentMainBoard.boardRenderer.drawScore(boardGroupInfo);
     else boardRenderer.drawScore(boardGroupInfo);
     this.refresh();
@@ -12288,7 +12258,7 @@ public class LizzieFrame extends JFrame {
 
   public void clearScore() {
     // TODO Auto-generated method stub
-    if (extraMode == 8 && independentMainBoard != null)
+    if (Lizzie.config.isFloatBoardMode() && independentMainBoard != null)
       this.independentMainBoard.boardRenderer.clearScore();
     else boardRenderer.clearScore();
     if (Lizzie.board.boardGroupInfo != null

@@ -134,7 +134,7 @@ public class SetKataPDA extends JDialog {
             if (chkNoPDA.isSelected()) {
               engine.sendCommand("pda 0");
               engine.pda = 0;
-              if (LizzieFrame.extraMode == 2) Lizzie.leelaz2.pda = 0;
+              if (Lizzie.config.isDoubleEngineMode()) Lizzie.leelaz2.pda = 0;
               Lizzie.config.AutoPDA = "pda 0";
               LizzieFrame.menu.txtPDA.setText("0");
               engine.isStaticPda = true;

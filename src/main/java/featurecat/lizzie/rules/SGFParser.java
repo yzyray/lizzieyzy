@@ -85,7 +85,10 @@ public class SGFParser {
         }
       }
     }
-    if (isExtraMode2 && LizzieFrame.extraMode != 2 && !Lizzie.config.isAutoAna && showHint) {
+    if (isExtraMode2
+        && !Lizzie.config.isDoubleEngineMode()
+        && !Lizzie.config.isAutoAna
+        && showHint) {
       SwingUtilities.invokeLater(
           new Runnable() {
             public void run() {
@@ -125,7 +128,7 @@ public class SGFParser {
       }
     }
     Lizzie.board.isLoadingFile = false;
-    if (isExtraMode2 && LizzieFrame.extraMode != 2 && !Lizzie.config.isAutoAna) {
+    if (isExtraMode2 && !Lizzie.config.isDoubleEngineMode() && !Lizzie.config.isAutoAna) {
       int ret =
           JOptionPane.showConfirmDialog(
               Lizzie.frame,
@@ -1209,7 +1212,7 @@ public class SGFParser {
     try {
       if (curNode.getData().getPlayouts() > 0)
         builder.append(String.format("LZOP[%s]", formatNodeData(curNode)));
-      if (LizzieFrame.extraMode == 2 && curNode.getData().getPlayouts2() > 0)
+      if (Lizzie.config.isDoubleEngineMode() && curNode.getData().getPlayouts2() > 0)
         builder.append(String.format("LZOP2[%s]", formatNodeData2(curNode)));
       if (!EngineManager.isEngineGame && !Lizzie.board.isPkBoard) {
         BoardData data = curNode.getData();
@@ -1351,7 +1354,7 @@ public class SGFParser {
                 else if (node.next().isPresent()) node.next().get().getData().comment = "";
               } else {
                 if (data.getPlayouts() > 0) data.comment = formatComment(node);
-                if (LizzieFrame.extraMode == 2 && data.getPlayouts2() > 0) {
+                if (Lizzie.config.isDoubleEngineMode() && data.getPlayouts2() > 0) {
                   data.comment = formatComment2(node);
                   //  if (data.comment != "") data.comment += "\n" + data.comment2;
                   //  else data.comment = data.comment2;
@@ -1384,7 +1387,7 @@ public class SGFParser {
           try {
             if (node.getData().getPlayouts() > 0)
               builder.append(String.format("LZ[%s]", formatNodeData(node)));
-            if (LizzieFrame.extraMode == 2 && node.getData().getPlayouts2() > 0)
+            if (Lizzie.config.isDoubleEngineMode() && node.getData().getPlayouts2() > 0)
               builder.append(String.format("LZ2[%s]", formatNodeData2(node)));
           } catch (Exception e) {
             Lizzie.board.isLoadingFile = false;
@@ -1393,7 +1396,7 @@ public class SGFParser {
           // Append the winrate to the comment of sgf
           if (!EngineManager.isEngineGame && !Lizzie.board.isPkBoard) {
             if (data.getPlayouts() > 0) data.comment = formatComment(node);
-            if (LizzieFrame.extraMode == 2 && data.getPlayouts2() > 0) {
+            if (Lizzie.config.isDoubleEngineMode() && data.getPlayouts2() > 0) {
               data.comment = formatComment2(node);
               //  if (data.comment != "") data.comment += "\n" + data.comment2;
               //  else data.comment = data.comment2;

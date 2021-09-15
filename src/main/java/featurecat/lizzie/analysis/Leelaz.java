@@ -552,18 +552,13 @@ public class Leelaz {
   public List<MoveData> parseInfoSai(String line) {
     List<MoveData> bestMoves = new ArrayList<>();
     String[] variations = line.split(" info ");
-    // int k = (Lizzie.config.limitMaxSuggestion > 0&&!Lizzie.config.showNoSuggCircle ?
-    // Lizzie.config.limitMaxSuggestion : 361);
     for (String var : variations) {
       if (!var.trim().isEmpty()) {
         bestMoves.add(MoveData.fromInfoSai(var));
-        //	k = k - 1;
-        //	if (k < 1)
-        //		break;
       }
     }
 
-    if (LizzieFrame.extraMode == 2 && Lizzie.leelaz2 != null && this == Lizzie.leelaz2)
+    if (Lizzie.config.isDoubleEngineMode() && Lizzie.leelaz2 != null && this == Lizzie.leelaz2)
       Lizzie.board.getData().tryToSetBestMoves2(bestMoves, currentEnginename, true);
     else {
       if (EngineManager.isEngineGame && Lizzie.config.enginePkPonder) {
@@ -575,33 +570,12 @@ public class Leelaz {
                 && this
                     == Lizzie.engineManager.engineList.get(
                         EngineManager.engineGameInfo.whiteEngineIndex)) {
-          //	if(!isModifying)
           Lizzie.board.getData().tryToSetBestMoves(bestMoves, currentEnginename, true);
         }
       } else Lizzie.board.getData().tryToSetBestMoves(bestMoves, currentEnginename, true);
     }
     return bestMoves;
   }
-
-  //	public List<MoveData> parseInfoSpe(String line) {
-  //		List<MoveData> bestMoves = new ArrayList<>();
-  //				bestMoves.add(MoveData.fromInfoSpec(line));
-  //		if(Lizzie.frame.extraMode==2&&Lizzie.leelaz2!=null&&this==Lizzie.leelaz2)
-  //			Lizzie.board.getData().tryToSetBestMoves2(bestMoves,currentEnginename);
-  //		else
-  //		 {
-  //			if(Lizzie.engineManager.isEngineGame&&Lizzie.config.enginePkPonder)
-  //			{
-  //	if((Lizzie.board.getHistory().isBlacksTurn()&&this==Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.blackEngineIndex))||!Lizzie.board.getHistory().isBlacksTurn()&&this==Lizzie.engineManager.engineList.get(Lizzie.engineManager.engineGameInfo.whiteEngineIndex))
-  //			{
-  //				Lizzie.board.getData().tryToSetBestMoves(bestMoves,currentEnginename);
-  //			}
-  //			}
-  //			else
-  //				Lizzie.board.getData().tryToSetBestMoves(bestMoves,currentEnginename);
-  //		}
-  //		return bestMoves;
-  //	}
 
   public List<MoveData> parseInfo(String line) {
     List<MoveData> bestMoves = new ArrayList<>();
@@ -616,7 +590,7 @@ public class Leelaz {
         //		break;
       }
     }
-    if (LizzieFrame.extraMode == 2 && Lizzie.leelaz2 != null && this == Lizzie.leelaz2)
+    if (Lizzie.config.isDoubleEngineMode() && Lizzie.leelaz2 != null && this == Lizzie.leelaz2)
       Lizzie.board.getData().tryToSetBestMoves2(bestMoves, currentEnginename, true);
     else {
       if (EngineManager.isEngineGame && Lizzie.config.enginePkPonder) {
@@ -649,7 +623,7 @@ public class Leelaz {
         //			break;
       }
     }
-    if (LizzieFrame.extraMode == 2 && Lizzie.leelaz2 != null && this == Lizzie.leelaz2)
+    if (Lizzie.config.isDoubleEngineMode() && Lizzie.leelaz2 != null && this == Lizzie.leelaz2)
       Lizzie.board.getData().tryToSetBestMoves2(bestMoves, currentEnginename, true);
     else {
       if (EngineManager.isEngineGame && Lizzie.config.enginePkPonder) {
@@ -1187,7 +1161,7 @@ public class Leelaz {
                       canRestoreDymPda = false;
                       if (Lizzie.config.chkAutoPDA) sendCommand(Lizzie.config.AutoPDA);
                       else sendCommand("dympdacap " + pdaCap);
-                      if (isPondering() || LizzieFrame.extraMode == 2) ponder();
+                      if (isPondering() || Lizzie.config.isDoubleEngineMode()) ponder();
                     }
                   };
               Thread syncDymPdaTh = new Thread(syncDymPda);
@@ -2068,7 +2042,9 @@ public class Leelaz {
         this.canCheckAlive = true;
         if (isLeela0110PonderingValid() && !leela0110BestMoves.isEmpty()) {
           bestMoves = leela0110BestMoves;
-          if (LizzieFrame.extraMode == 2 && Lizzie.leelaz2 != null && this == Lizzie.leelaz2)
+          if (Lizzie.config.isDoubleEngineMode()
+              && Lizzie.leelaz2 != null
+              && this == Lizzie.leelaz2)
             Lizzie.board.getData().tryToSetBestMoves2(bestMoves, currentEnginename, true);
           else Lizzie.board.getData().tryToSetBestMoves(bestMoves, currentEnginename, true);
         }
@@ -2413,7 +2389,7 @@ public class Leelaz {
    * @param command a GTP command containing no newline characters
    */
   public void sendCommand(String command) {
-    if (LizzieFrame.extraMode == 2) {
+    if (Lizzie.config.isDoubleEngineMode()) {
       if ((command.startsWith("heat") || command.startsWith("kata-raw"))
           && !this.isKatago
           && Lizzie.leelaz2 != null
@@ -2469,7 +2445,7 @@ public class Leelaz {
     if (Lizzie.frame.isAutocounting) {
       Lizzie.frame.zen.sendAndEstimate(command, true);
     }
-    if (LizzieFrame.extraMode == 2) {
+    if (Lizzie.config.isDoubleEngineMode()) {
       if (Lizzie.leelaz2 != null && this != Lizzie.leelaz2) {
         Lizzie.leelaz2.sendCommand(command);
         Lizzie.leelaz2.startPonderTime = this.startPonderTime;
@@ -2478,7 +2454,7 @@ public class Leelaz {
   }
 
   public void sendCommandNoLeelaz2(String command) {
-    if (LizzieFrame.extraMode == 2) {
+    if (Lizzie.config.isDoubleEngineMode()) {
       if ((command.startsWith("heat") || command.startsWith("kata-raw"))
           && !this.isKatago
           && Lizzie.leelaz2 != null
@@ -3340,7 +3316,9 @@ public class Leelaz {
     Lizzie.frame.isShowingPolicy = false;
     if (isKatago) Lizzie.frame.clearKataEstimate();
     if ((isKatago && !bySpace)
-        || (Lizzie.config.extraMode == 2 && Lizzie.leelaz2 != null && Lizzie.leelaz2.isKatago)) {
+        || (Lizzie.config.isDoubleEngineMode()
+            && Lizzie.leelaz2 != null
+            && Lizzie.leelaz2.isKatago)) {
       if (isheatmap) {
         if (iskataHeatmapShowOwner) {
           Lizzie.frame.isShowingHeatmap = !Lizzie.frame.isShowingHeatmap;
@@ -3370,7 +3348,7 @@ public class Leelaz {
       }
       Lizzie.frame.handleAfterDrawGobanBottom();
     }
-    if (Lizzie.config.extraMode == 2 && Lizzie.leelaz2 != null)
+    if (Lizzie.config.isDoubleEngineMode() && Lizzie.leelaz2 != null)
       Lizzie.leelaz2.toggleHeatmapSub(bySpace);
   }
 
@@ -3478,7 +3456,7 @@ public class Leelaz {
 
   private void leela0110Ponder(boolean first) {
     if (first)
-      if (LizzieFrame.extraMode == 2) {
+      if (Lizzie.config.isDoubleEngineMode()) {
         if (Lizzie.leelaz2 != null && this != Lizzie.leelaz2) {
           Lizzie.leelaz2.sendCommand("lz-analyze " + getInterval());
         }

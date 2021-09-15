@@ -90,7 +90,7 @@ public class RightClickMenu extends JPopupMenu {
           }
 
           public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
-            if (Lizzie.config.extraMode == 8)
+            if (Lizzie.config.isFloatBoardMode())
               mouseOverCoordinateTemp = Lizzie.frame.independentMainBoard.mouseOverCoordinate;
             else mouseOverCoordinateTemp = Lizzie.frame.mouseOverCoordinate;
             Lizzie.frame.isShowingRightMenu = true;
@@ -307,11 +307,11 @@ public class RightClickMenu extends JPopupMenu {
         new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
-            if (Lizzie.config.extraMode == 8)
+            if (Lizzie.config.isFloatBoardMode())
               Lizzie.frame.independentMainBoard.mouseOverCoordinate = mouseOverCoordinateTemp;
             else Lizzie.frame.mouseOverCoordinate = mouseOverCoordinateTemp;
             Lizzie.frame.addSuggestionAsBranch();
-            if (Lizzie.config.extraMode == 8)
+            if (Lizzie.config.isFloatBoardMode())
               Lizzie.frame.independentMainBoard.mouseOverCoordinate =
                   LizzieFrame.outOfBoundCoordinate;
             else Lizzie.frame.mouseOverCoordinate = LizzieFrame.outOfBoundCoordinate;

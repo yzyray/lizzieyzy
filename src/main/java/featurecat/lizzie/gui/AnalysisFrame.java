@@ -65,7 +65,7 @@ public class AnalysisFrame extends JFrame {
   public AnalysisFrame(int engine) {
     index = engine;
     dataModel = getTableModel();
-    if (LizzieFrame.extraMode == 2) {
+    if (Lizzie.config.isDoubleEngineMode()) {
       if (index == 1) oriTitle = resourceBundle.getString("AnalysisFrame.titleMain");
       else if (index == 2) oriTitle = resourceBundle.getString("AnalysisFrame.titleSub");
     } else oriTitle = resourceBundle.getString("AnalysisFrame.title");
@@ -310,7 +310,7 @@ public class AnalysisFrame extends JFrame {
     }
     setVisible(false);
     setVisible(true);
-    if (LizzieFrame.extraMode == 2) {
+    if (Lizzie.config.isDoubleEngineMode()) {
       if (index == 2) {
         if (Lizzie.frame.analysisFrame != null)
           this.setLocation(

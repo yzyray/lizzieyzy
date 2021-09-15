@@ -249,7 +249,7 @@ public class MoveListFrame extends JFrame {
     setLayout(new BorderLayout());
     oriTitle =
         Lizzie.resourceBundle.getString("Movelistframe.title")
-            + (LizzieFrame.extraMode == 2
+            + (Lizzie.config.isDoubleEngineMode()
                 ? (isMainEngine
                     ? Lizzie.resourceBundle.getString("Movelistframe.titleMain")
                     : Lizzie.resourceBundle.getString("Movelistframe.titleSub"))
@@ -8355,7 +8355,7 @@ class bigMistakeInfo {
 //    jf = new JFrame();
 //    jf.setTitle(
 //        "超级鹰眼"
-//            + (Lizzie.frame.extraMode == 2 ? "(主)" : "")
+//            + (Lizzie.frame.Lizzie.config.isDoubleEngineMode() ? "(主)" : "")
 //            + ","
 //            + "黑["
 //            + Lizzie.board.getHistory().getGameInfo().getPlayerBlack()

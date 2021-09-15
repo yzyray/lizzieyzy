@@ -170,7 +170,7 @@ public class BoardRenderer {
     if (Board.boardWidth <= 3) {
       int oriStoneRadius = stoneRadius;
       stoneRadius = stoneRadius / 2;
-      if (Lizzie.config.extraMode != 3 || (Lizzie.config.extraMode == 3 && boardIndex != 2)) {
+      if (!Lizzie.config.isThinkingMode() || (Lizzie.config.isThinkingMode() && boardIndex != 2)) {
         if (Lizzie.frame.isShowingHeatmap
             && !Lizzie.frame.isAnaPlayingAgainstLeelaz
             && !Lizzie.leelaz.isZen) drawRawWinrate(g);
@@ -182,7 +182,7 @@ public class BoardRenderer {
       }
       stoneRadius = oriStoneRadius;
     } else {
-      if (Lizzie.config.extraMode != 3 || (Lizzie.config.extraMode == 3 && boardIndex != 2)) {
+      if (!Lizzie.config.isThinkingMode() || (Lizzie.config.isThinkingMode() && boardIndex != 2)) {
         if (Lizzie.frame.isShowingHeatmap
             && !Lizzie.frame.isAnaPlayingAgainstLeelaz
             && !Lizzie.leelaz.isZen) drawRawWinrate(g);
@@ -797,7 +797,7 @@ public class BoardRenderer {
                   || (Lizzie.board != null
                       && (Lizzie.board.getHistory().getGameInfo().getPlayerWhite().equals("")
                           && Lizzie.board.getHistory().getGameInfo().getPlayerBlack().equals("")))
-                  || (Lizzie.config.extraMode == 3 && boardIndex == 2))
+                  || (Lizzie.config.isThinkingMode() && boardIndex == 2))
               && (!Lizzie.frame.isShowingHeatmap || Lizzie.leelaz.isZen)
               && (!Lizzie.frame.isShowingPolicy || Lizzie.leelaz.isKatago || Lizzie.leelaz.isZen))
             drawString(
@@ -890,7 +890,7 @@ public class BoardRenderer {
   public void removedrawmovestone() {
     cachedStonesImagedraged = new BufferedImage(boardWidth, boardHeight, TYPE_INT_ARGB);
     cachedStonesShadowImagedraged = new BufferedImage(boardWidth, boardHeight, TYPE_INT_ARGB);
-    if (LizzieFrame.extraMode == 2) {
+    if (Lizzie.config.isDoubleEngineMode()) {
       if (this == LizzieFrame.boardRenderer) LizzieFrame.boardRenderer2.removedrawmovestone();
     }
   }
@@ -1602,7 +1602,7 @@ public class BoardRenderer {
       }
     }
     mouseOverOrder = -1;
-    if (LizzieFrame.extraMode != 2) Lizzie.frame.clearMouseOverCoordinate(isIndependBoard);
+    if (!Lizzie.config.isDoubleEngineMode()) Lizzie.frame.clearMouseOverCoordinate(isIndependBoard);
     return Optional.empty();
   }
 
@@ -4067,7 +4067,7 @@ public class BoardRenderer {
     // return these values if they are valid board coordinates
     if (Board.isValid(x, y)) return Optional.of(new int[] {x, y});
     else {
-      if (LizzieFrame.extraMode == 2 && boardIndex == 0)
+      if (Lizzie.config.isDoubleEngineMode() && boardIndex == 0)
         return LizzieFrame.boardRenderer2.convertScreenToCoordinates(oriX, oriY);
       else return Optional.empty();
     }
@@ -4167,7 +4167,7 @@ public class BoardRenderer {
   }
 
   private int maxBranchMoves(boolean forDrawMove) {
-    if (LizzieFrame.extraMode == 3 && this.boardIndex == 2) return 999;
+    if (Lizzie.config.isThinkingMode() && this.boardIndex == 2) return 999;
     if (forDrawMove && displayedBranchLength == 1) {
       return 999;
     }

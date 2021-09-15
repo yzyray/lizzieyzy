@@ -85,7 +85,7 @@ public class ScoreResult extends JDialog {
             + Config.menuHeight
             + Lizzie.frame.topPanel.getHeight();
     int boardLenght = Lizzie.frame.maxSize;
-    if (LizzieFrame.extraMode == 8 && Lizzie.frame.independentMainBoard != null) {
+    if (Lizzie.config.isFloatBoardMode() && Lizzie.frame.independentMainBoard != null) {
       frameX = Lizzie.frame.independentMainBoard.getX();
       frameY = Lizzie.frame.independentMainBoard.getY();
       boardX = 0;

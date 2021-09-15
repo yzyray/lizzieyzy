@@ -133,8 +133,8 @@ public class EngineManager {
       Lizzie.leelaz.isKatago = true;
       Lizzie.leelaz.isLoaded = true;
       featurecat.lizzie.gui.Menu.engineMenu.setText(resourceBundle.getString("Menu.noEngine"));
-      if (LizzieFrame.extraMode == 2)
-        featurecat.lizzie.gui.Menu.engineMenu2.setText(resourceBundle.getString("Menu.noEngine"));
+      if (Lizzie.config.isDoubleEngineMode())
+        Menu.engineMenu2.setText(resourceBundle.getString("Menu.noEngine"));
       isEmpty = true;
       LizzieFrame.menu.updateMenuStatusForEngine();
       Lizzie.frame.reSetLoc();
@@ -2053,7 +2053,8 @@ public class EngineManager {
 
   public void switchEngine(int index, boolean isMain) {
     engineNo = index;
-    if (LizzieFrame.extraMode == 2 && index == (isMain ? currentEngineNo2 : currentEngineNo)) {
+    if (Lizzie.config.isDoubleEngineMode()
+        && index == (isMain ? currentEngineNo2 : currentEngineNo)) {
       Utils.showMsg(resourceBundle.getString("EngineManager.sameEngineHint"));
       return;
     }

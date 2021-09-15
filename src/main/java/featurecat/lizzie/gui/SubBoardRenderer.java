@@ -145,7 +145,7 @@ public class SubBoardRenderer {
   public void draw(Graphics2D g) {
     drawGoban(g);
     if ((!showHeat && !Lizzie.config.subBoardRaw)
-        || (Lizzie.config.extraMode == 1 && !showHeat && this != Lizzie.frame.subBoardRenderer4)) {
+        || (Lizzie.config.isFourSubMode() && !showHeat && this != Lizzie.frame.subBoardRenderer4)) {
       drawPlay(g);
       if (!isMouseOver || statChanged || wheeled) drawBranch();
       if (wheeled) wheeled = false;
@@ -897,7 +897,7 @@ public class SubBoardRenderer {
       if (!shouldShowCountBlockBelow()) g.drawImage(kataEstimateImage, x, y, null);
     g.drawImage(heatimage, x, y, null);
     if (!Lizzie.frame.isInPlayMode() && !Lizzie.config.subBoardRaw && Lizzie.config.showBranchNow()
-        || (Lizzie.config.extraMode == 1 && !showHeat && this != Lizzie.frame.subBoardRenderer4)) {
+        || (Lizzie.config.isFourSubMode() && !showHeat && this != Lizzie.frame.subBoardRenderer4)) {
       g.drawImage(branchStonesImage, x, y, null);
     }
   }

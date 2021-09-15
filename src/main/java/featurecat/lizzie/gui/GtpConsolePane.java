@@ -439,7 +439,7 @@ public class GtpConsolePane extends JDialog {
               Double pda = Double.parseDouble(params[1]);
               Lizzie.leelaz.pda = pda;
               Lizzie.leelaz.isStaticPda = true;
-              if (LizzieFrame.extraMode == 2) Lizzie.leelaz2.pda = 0;
+              if (Lizzie.config.isDoubleEngineMode()) Lizzie.leelaz2.pda = 0;
               if (LizzieFrame.menu.setPda != null)
                 LizzieFrame.menu.setPda.curPDA.setText(String.valueOf(pda));
               LizzieFrame.menu.txtPDA.setText(String.valueOf(pda));

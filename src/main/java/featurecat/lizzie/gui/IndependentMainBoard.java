@@ -207,7 +207,7 @@ public class IndependentMainBoard extends JFrame {
         new WindowAdapter() {
           public void windowClosing(WindowEvent e) {
             Lizzie.frame.toggleIndependentMainBoard();
-            if (LizzieFrame.extraMode == 8) Lizzie.frame.defaultMode();
+            if (Lizzie.config.isFloatBoardMode()) Lizzie.frame.defaultMode();
           }
         });
 
@@ -216,7 +216,7 @@ public class IndependentMainBoard extends JFrame {
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             Lizzie.frame.toggleIndependentMainBoard();
-            if (LizzieFrame.extraMode == 8) Lizzie.frame.defaultMode();
+            if (Lizzie.config.isFloatBoardMode()) Lizzie.frame.defaultMode();
           }
         });
     btnClose.setFocusable(false);

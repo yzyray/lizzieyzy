@@ -104,7 +104,7 @@ public class Config {
   public String advanceBlackTimeTxt = "time_settings 120 2 1";
   public String advanceWhiteTimeTxt = "time_settings 120 2 1";
 
-  public int extraMode = 0;
+  public ExtraMode extraMode = ExtraMode.Normal;
 
   public JSONObject config;
   public JSONObject leelazConfig;
@@ -863,7 +863,7 @@ public class Config {
     // dynamicWinrateGraphWidth = uiConfig.optBoolean("dynamic-winrate-graph-width", true);
     showVariationGraph = uiConfig.getBoolean("show-variation-graph");
     showComment = uiConfig.optBoolean("show-comment", true);
-    if (extraMode == 2) showComment = false;
+    if (extraMode == ExtraMode.Double_Engine) showComment = false;
     showCaptured = uiConfig.getBoolean("show-captured");
     // showKataGoScoreMean = uiConfig.optBoolean("show-katago-scoremean", true);
     showKataGoBoardScoreMean = uiConfig.optBoolean("show-katago-boardscoremean", false);
@@ -1023,7 +1023,7 @@ public class Config {
     advanceBlackTimeTxt = uiConfig.optString("advance-black-time-txt", "time_settings 10 2 1");
     advanceWhiteTimeTxt = uiConfig.optString("advance-white-time-txt", "time_settings 10 2 1");
 
-    extraMode = uiConfig.optInt("extra-mode", 0);
+    extraMode = getExtraMode(uiConfig.optInt("extra-mode", 0));
     playSound = uiConfig.optBoolean("play-sound", true);
     notPlaySoundInSync = uiConfig.optBoolean("not-play-sound-insync", true);
     noRefreshOnMouseMove = uiConfig.optBoolean("norefresh-onmouse-move", true);
@@ -1570,10 +1570,10 @@ public class Config {
   }
 
   public void toggleExtraMode(int mode) {
-    // 3=思考模式 2=双引擎模式 1=四方图模式 7=精简模式 8=浮动棋盘模式
-    extraMode = mode;
-    if (mode != 8) Lizzie.frame.extraMode(mode);
-    uiConfig.put("extra-mode", extraMode);
+    ExtraMode previousMode = extraMode;
+    extraMode = getExtraMode(mode);
+    if (extraMode != ExtraMode.Float_Board) Lizzie.frame.extraMode(extraMode, previousMode);
+    uiConfig.put("extra-mode", getExtraModeValue(extraMode));
   }
 
   public void toggleappendWinrateToComment() {
@@ -1618,28 +1618,36 @@ public class Config {
   public void toggleShowWinrate() {
     this.showWinrateGraph = !this.showWinrateGraph;
     uiConfig.put("show-winrate-graph", showWinrateGraph);
-    if (extraMode == 7 && showWinrateGraph) toggleExtraMode(0);
+    if (extraMode == ExtraMode.Min && showWinrateGraph) toggleExtraMode(0);
     Lizzie.frame.refreshContainer();
     Lizzie.frame.refresh();
   }
 
   public boolean showListPane() {
-    if (showListPane && (extraMode == 8 || extraMode == 3 || extraMode == 1)) return true;
-    if (showListPane && (extraMode == 0 || extraMode == 7) && !this.largeWinrateGraph) return true;
+    if (showListPane
+        && (extraMode == ExtraMode.Float_Board
+            || extraMode == ExtraMode.Thinking
+            || extraMode == ExtraMode.Four_Sub)) return true;
+    if (showListPane
+        && (extraMode == ExtraMode.Normal || extraMode == ExtraMode.Min)
+        && !this.largeWinrateGraph) return true;
     else return false;
   }
 
   public void toggleShowListPane() {
     if (showListPane()) showListPane = false;
     else showListPane = true;
-    if (showListPane && extraMode != 8 && extraMode != 3 && extraMode != 1) {
-      if (extraMode != 0 && extraMode != 7) Lizzie.frame.defaultMode();
+    if (showListPane
+        && extraMode != ExtraMode.Float_Board
+        && extraMode != ExtraMode.Thinking
+        && extraMode != ExtraMode.Four_Sub) {
+      if (extraMode != ExtraMode.Normal && extraMode != ExtraMode.Min) Lizzie.frame.defaultMode();
       if (largeWinrateGraph) this.largeWinrateGraph = false;
       uiConfig.put("large-winrate-graph", largeWinrateGraph);
     }
     Lizzie.frame.setHideListScrollpane(showListPane);
     uiConfig.put("show-list-pane", showListPane);
-    if (extraMode == 7 && showListPane) toggleExtraMode(0);
+    if (extraMode == ExtraMode.Min && showListPane) toggleExtraMode(0);
     Lizzie.frame.refreshContainer();
     Lizzie.frame.refresh();
   }
@@ -1651,9 +1659,9 @@ public class Config {
     } else {
       this.largeWinrateGraph = !this.largeWinrateGraph;
     }
-    if (showListPane && !largeWinrateGraph && extraMode == 0) {
+    if (showListPane && !largeWinrateGraph && extraMode == ExtraMode.Normal) {
       Lizzie.frame.setHideListScrollpane(showListPane);
-    } else if (extraMode != 8) {
+    } else if (extraMode != ExtraMode.Float_Board) {
       Lizzie.frame.setHideListScrollpane(false);
     }
     uiConfig.put("large-winrate-graph", largeWinrateGraph);
@@ -1684,7 +1692,7 @@ public class Config {
       e.printStackTrace();
     }
     Lizzie.frame.setVarTreeVisible(showVariationGraph);
-    if (extraMode == 7 && showVariationGraph) toggleExtraMode(0);
+    if (extraMode == ExtraMode.Min && showVariationGraph) toggleExtraMode(0);
     Lizzie.frame.refreshContainer();
     Lizzie.frame.refresh();
   }
@@ -1692,7 +1700,7 @@ public class Config {
   public void toggleShowCaptured() {
     this.showCaptured = !this.showCaptured;
     uiConfig.put("show-captured", showCaptured);
-    if (extraMode == 7 && showCaptured) toggleExtraMode(0);
+    if (extraMode == ExtraMode.Min && showCaptured) toggleExtraMode(0);
     Lizzie.frame.refreshContainer();
     Lizzie.frame.refresh();
   }
@@ -1708,7 +1716,7 @@ public class Config {
     Lizzie.frame.commentEditPane.setVisible(false);
     Lizzie.frame.refreshContainer();
     Lizzie.frame.refresh();
-    if (extraMode == 7 && showComment) toggleExtraMode(0);
+    if (extraMode == ExtraMode.Min && showComment) toggleExtraMode(0);
   }
 
   public void toggleShowStatus() {
@@ -1767,7 +1775,7 @@ public class Config {
     Lizzie.frame.refreshContainer();
     Lizzie.frame.refresh();
     uiConfig.put("show-subboard", showSubBoard);
-    if (extraMode == 7 && showSubBoard) toggleExtraMode(0);
+    if (extraMode == ExtraMode.Min && showSubBoard) toggleExtraMode(0);
   }
 
   public void toggleShowSuggestionVariations() {
@@ -2518,8 +2526,7 @@ public class Config {
     boolean showIndependentMain = jsonLayout.optBoolean("independent-main-board");
     boolean showIndependentSub = jsonLayout.optBoolean("independent-sub-board");
     if (showIndependentMain) {
-      LizzieFrame.extraMode = 8;
-      extraMode = 8;
+      extraMode = ExtraMode.Float_Board;
       if (Lizzie.frame.independentMainBoard == null
           || !Lizzie.frame.independentMainBoard.isVisible())
         Lizzie.frame.toggleIndependentMainBoard();
@@ -2529,8 +2536,7 @@ public class Config {
           jsonLayout.getJSONArray("independent-main-board-position").getInt(2),
           jsonLayout.getJSONArray("independent-main-board-position").getInt(3));
     } else {
-      LizzieFrame.extraMode = 0;
-      extraMode = 0;
+      extraMode = ExtraMode.Normal;
     }
     if (showIndependentSub) {
       if (Lizzie.frame.independentSubBoard == null || !Lizzie.frame.independentSubBoard.isVisible())
@@ -2571,5 +2577,68 @@ public class Config {
     otherSizeHeight = height;
     uiConfig.put("other-size-width", otherSizeWidth);
     uiConfig.put("other-size-height", otherSizeHeight);
+  }
+
+  public int getExtraModeValue(ExtraMode mode) {
+    switch (mode) {
+      case Normal:
+        return 0;
+      case Four_Sub:
+        return 1;
+      case Double_Engine:
+        return 2;
+      case Thinking:
+        return 3;
+      case Min:
+        return 7;
+      case Float_Board:
+        return 8;
+      default:
+        return 0;
+    }
+  }
+
+  public ExtraMode getExtraMode(int value) {
+    // 1=四方图2=双引擎3=思考 8=浮动棋盘模式
+    switch (value) {
+      case 0:
+        return ExtraMode.Normal;
+      case 1:
+        return ExtraMode.Four_Sub;
+      case 2:
+        return ExtraMode.Double_Engine;
+      case 3:
+        return ExtraMode.Thinking;
+      case 7:
+        return ExtraMode.Min;
+      case 8:
+        return ExtraMode.Float_Board;
+      default:
+        return ExtraMode.Normal;
+    }
+  }
+
+  public boolean isDoubleEngineMode() {
+    return extraMode == ExtraMode.Double_Engine;
+  }
+
+  public boolean isThinkingMode() {
+    return extraMode == ExtraMode.Thinking;
+  }
+
+  public boolean isFourSubMode() {
+    return extraMode == ExtraMode.Four_Sub;
+  }
+
+  public boolean isFloatBoardMode() {
+    return extraMode == ExtraMode.Float_Board;
+  }
+
+  public boolean isMinMode() {
+    return extraMode == ExtraMode.Min;
+  }
+
+  public boolean isNormalMode() {
+    return extraMode == ExtraMode.Normal;
   }
 }

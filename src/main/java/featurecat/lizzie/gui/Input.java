@@ -52,14 +52,10 @@ public class Input implements MouseListener, KeyListener, MouseWheelListener, Mo
           Lizzie.frame.onClickedForManul(Utils.zoomOut(e.getX()), Utils.zoomOut(e.getY()));
         return;
       }
-      //
-      if (LizzieFrame.extraMode == 8) {
+      if (Lizzie.config.isFloatBoardMode()) {
         Lizzie.frame.onClickedWinrateOnly(Utils.zoomOut(e.getX()), Utils.zoomOut(e.getY()));
         return;
       }
-      //    if (e.getButton() == MouseEvent.BUTTON2) {
-      //      Lizzie.frame.processMiddleClickOnWinrateGraph(e);
-      //    }
       if (e.getButton() == MouseEvent.BUTTON1) // left click
       {
         if (e.getClickCount() == 2
@@ -846,7 +842,8 @@ public class Input implements MouseListener, KeyListener, MouseWheelListener, Mo
       wheelWhen = e.getWhen();
       if (e.getWheelRotation() > 0) {
         if (LizzieFrame.boardRenderer.isShowingBranch()
-            || (LizzieFrame.extraMode == 2 && LizzieFrame.boardRenderer2.isShowingBranch())) {
+            || (Lizzie.config.isDoubleEngineMode()
+                && LizzieFrame.boardRenderer2.isShowingBranch())) {
           Lizzie.frame.doBranch(1);
           Lizzie.frame.refresh();
         } else {
@@ -854,7 +851,8 @@ public class Input implements MouseListener, KeyListener, MouseWheelListener, Mo
         }
       } else if (e.getWheelRotation() < 0) {
         if (LizzieFrame.boardRenderer.isShowingBranch()
-            || (LizzieFrame.extraMode == 2 && LizzieFrame.boardRenderer2.isShowingBranch())) {
+            || (Lizzie.config.isDoubleEngineMode()
+                && LizzieFrame.boardRenderer2.isShowingBranch())) {
           Lizzie.frame.doBranch(-1);
           Lizzie.frame.refresh();
         } else {
