@@ -599,12 +599,14 @@ public class LizzieFrame extends JFrame {
             }
           }
         };
+    varTreePane.setOpaque(true);
     // varTreePane.setBackground(Lizzie.config.varPanelColor);
     // varTreePane.setBackground(new Color(0, 0, 0, 0));
     varTreePane.setFocusable(false);
     toolbar.setFocusable(false);
     menu.setFocusable(false);
     varTreeScrollPane = new JScrollPane(varTreePane);
+    varTreeScrollPane.getViewport().setOpaque(false);
     varTreeScrollPane.setOpaque(false);
     // varTreeScrollPane.setBackground(Color.BLACK);
     varTreeScrollPane.setBorder(BorderFactory.createEmptyBorder());
@@ -2628,9 +2630,7 @@ public class LizzieFrame extends JFrame {
             Lizzie.frame.getY(),
             (Lizzie.frame.getHeight() - toolbarHeight) * 162 / 100,
             Lizzie.frame.getHeight());
-        reSetLoc();
       }
-      repaint();
     }
     if (currentMode == ExtraMode.Double_Engine) {
       if (Lizzie.config.showSubBoard) Lizzie.config.toggleShowSubBoard();
@@ -2649,9 +2649,7 @@ public class LizzieFrame extends JFrame {
             Lizzie.frame.getY(),
             (Lizzie.frame.getHeight() - toolbarHeight - 65) * 2,
             Lizzie.frame.getHeight());
-        reSetLoc();
       }
-      repaint();
       if (previousMode != ExtraMode.Double_Engine) {
         Lizzie.board.setMovelistAll2();
         if (moveListFrame != null && moveListFrame.isVisible()) {
@@ -2693,13 +2691,12 @@ public class LizzieFrame extends JFrame {
             Lizzie.frame.getY(),
             (Lizzie.frame.getHeight() - toolbarHeight) * 166 / 100,
             Lizzie.frame.getHeight());
-        reSetLoc();
       }
-      repaint();
     }
     if (currentMode != ExtraMode.Thinking && currentMode != ExtraMode.Four_Sub)
       setHideListScrollpane(false);
     else if (Lizzie.config.showListPane()) setHideListScrollpane(true);
+    reSetLoc();
   }
 
   public void minMode() {
@@ -3539,7 +3536,6 @@ public class LizzieFrame extends JFrame {
       redrawWinratePaneOnly = false;
     } else {
       isSmallCap = false;
-      appendComment();
       int width = mainPanel.getWidth();
       int height = mainPanel.getHeight();
 
@@ -3552,6 +3548,8 @@ public class LizzieFrame extends JFrame {
         backgroundG = Optional.empty();
       }
       if (!showControls) {
+        // aaa
+        // aaa
         BufferedImage cachedImage = new BufferedImage(width, height, TYPE_INT_ARGB);
         Graphics2D g = (Graphics2D) cachedImage.getGraphics();
         g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
@@ -4301,7 +4299,7 @@ public class LizzieFrame extends JFrame {
             }
           }
           if (backgroundG.isPresent()) {
-            drawContainer(backgroundG.get(), vx, vy, vw, vh);
+            drawContainer(backgroundG.get(), vx, vy, trueWidth, trueHeight);
           }
           if (!noBasic) {
             if (noComment && noWinrate) {
@@ -5100,6 +5098,7 @@ public class LizzieFrame extends JFrame {
     if (independentMainBoard != null && independentMainBoard.isVisible())
       independentMainBoard.refresh();
     if (floatBoard != null && floatBoard.isVisible()) floatBoard.refresh();
+    appendComment();
   }
 
   public void refresh(int mode) {
@@ -5116,6 +5115,7 @@ public class LizzieFrame extends JFrame {
     if (independentMainBoard != null && independentMainBoard.isVisible())
       independentMainBoard.refresh();
     if (floatBoard != null && floatBoard.isVisible()) floatBoard.refresh();
+    appendComment();
   }
 
   private void updateMoveListMaybe() {

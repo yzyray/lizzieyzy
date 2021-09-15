@@ -1572,7 +1572,7 @@ public class Config {
   public void toggleExtraMode(int mode) {
     ExtraMode previousMode = extraMode;
     extraMode = getExtraMode(mode);
-    if (extraMode != ExtraMode.Float_Board) Lizzie.frame.extraMode(extraMode, previousMode);
+    Lizzie.frame.extraMode(extraMode, previousMode);
     uiConfig.put("extra-mode", getExtraModeValue(extraMode));
   }
 
