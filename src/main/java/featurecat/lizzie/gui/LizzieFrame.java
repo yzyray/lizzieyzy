@@ -80,7 +80,6 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
-import javax.swing.text.DefaultCaret;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
@@ -249,7 +248,7 @@ public class LizzieFrame extends JFrame {
   //  private boolean isMouseOverComment = false;
   //  private boolean isMouseOverBlunderControl = false;
   private JPaintTextPane commentTextPane;
-  private JPaintTextArea commentTextArea;
+  private JLabel commentTextArea;
   private String cachedComment = "";
   private int commentFontSize;
   private int commentPaneFontSize;
@@ -1010,12 +1009,14 @@ public class LizzieFrame extends JFrame {
     commentTextPane.setForeground(Lizzie.config.commentFontColor);
     commentTextPane.setBackground(Lizzie.config.commentBackgroundColor);
 
-    commentTextArea = new JPaintTextArea();
-    DefaultCaret caret = (DefaultCaret) commentTextArea.getCaret();
-    caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
-    DefaultCaret caret2 = (DefaultCaret) commentTextPane.getCaret();
-    caret2.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
-    commentTextArea.setEditable(false);
+    commentTextArea = new JLabel();
+    commentTextArea.setHorizontalAlignment(SwingConstants.LEFT);
+    commentTextArea.setVerticalAlignment(SwingConstants.TOP);
+    //    DefaultCaret caret = (DefaultCaret) commentTextArea.getCaret();
+    //    caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
+    //  DefaultCaret caret2 = (DefaultCaret) commentTextPane.getCaret();
+    //  caret2.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
+    // commentTextArea.setEditable(false);
     commentTextArea.setFont(
         new Font(
             Lizzie.config.uiFontName,
@@ -1024,13 +1025,15 @@ public class LizzieFrame extends JFrame {
                 ? Lizzie.config.commentFontSize
                 : Config.frameFontSize));
     commentTextArea.setBorder(BorderFactory.createEmptyBorder());
-    // commentTextArea.setOpaque(false);
+    commentTextArea.setOpaque(false);
     commentTextArea.setForeground(Lizzie.config.commentFontColor);
     commentTextArea.setBackground(Lizzie.config.commentBackgroundColor);
-    commentTextArea.setLineWrap(true);
+    //   commentTextArea.setLineWrap(true);
 
     commentScrollPane = new JScrollPane();
     commentScrollPane.setBackground(Lizzie.config.commentBackgroundColor);
+    commentScrollPane.setOpaque(false);
+    commentScrollPane.getViewport().setOpaque(false);
     commentBlunderControlPane = new JPanel();
     commentBlunderControlPane.setBackground(Color.BLACK);
     commentBlunderControlPane.setVisible(false);
@@ -1452,6 +1455,7 @@ public class LizzieFrame extends JFrame {
     // commentScrollPane.getViewport().setOpaque(false);
     commentScrollPane.setVerticalScrollBarPolicy(
         javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+    commentScrollPane.getVerticalScrollBar().setUnitIncrement(16);
     commentScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
     commentScrollPane.getVerticalScrollBar().setUI(new DemoScrollBarUI());
     commentTextArea.addMouseListener(
@@ -7467,6 +7471,10 @@ public class LizzieFrame extends JFrame {
    * @param h
    */
   private void drawComment(Graphics2D g, int x, int y, int w, int h) {
+    if (isCommentArea) {
+      g.setColor(Lizzie.config.commentBackgroundColor);
+      g.fillRect(x, y, w, h);
+    }
     if (w < 10 || h < 10) {
       commentScrollPane.setBounds(0, 0, 0, 0);
       blunderContentPane.setBounds(0, 0, 0, 0);
@@ -7525,21 +7533,25 @@ public class LizzieFrame extends JFrame {
       }
       String comment = "";
       if (!isInPlayMode()) {
-        if (cachedIsLoading != isLoadingEngine) {
-          cachedIsLoading = isLoadingEngine;
-          if (isLoadingEngine) {
-            DefaultCaret caret = (DefaultCaret) commentTextArea.getCaret();
-            caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
-            DefaultCaret caret2 = (DefaultCaret) commentTextPane.getCaret();
-            caret2.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
-          } else {
-            commentScrollPane.getVerticalScrollBar().setValue(0);
-            DefaultCaret caret = (DefaultCaret) commentTextArea.getCaret();
-            caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
-            DefaultCaret caret2 = (DefaultCaret) commentTextPane.getCaret();
-            caret2.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
-          }
+        // if (cachedIsLoading != isLoadingEngine) {
+        //     cachedIsLoading = isLoadingEngine;
+        if (isLoadingEngine) {
+          //            DefaultCaret caret = (DefaultCaret) commentTextArea.getCaret();
+          //            caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+          commentScrollPane
+              .getVerticalScrollBar()
+              .setValue(commentScrollPane.getVerticalScrollBar().getMaximum());
+          //   DefaultCaret caret2 = (DefaultCaret) commentTextPane.getCaret();
+          // caret2.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
         }
+        // else {
+        // commentScrollPane.getVerticalScrollBar().setValue(0);
+        //            DefaultCaret caret = (DefaultCaret) commentTextArea.getCaret();
+        //            caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
+        // DefaultCaret caret2 = (DefaultCaret) commentTextPane.getCaret();
+        //   caret2.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
+        // }
+        //   }
         if (isLoadingEngine) {
           if (Lizzie.gtpConsole != null) {
             comment = Lizzie.gtpConsole.console.getText();
@@ -7653,6 +7665,7 @@ public class LizzieFrame extends JFrame {
         comment = comment.replaceAll("(\r\n)|(\n)", "<br />").replaceAll(" ", "&nbsp;");
       }
       try {
+
         if (isLoadingEngine) {
           if (!cachedComment.equals(comment)) setCommentText(comment);
           cachedComment = comment;
@@ -7750,8 +7763,48 @@ public class LizzieFrame extends JFrame {
   }
 
   private void setCommentText(String comment) {
-    if (isCommentArea) commentTextArea.setText(comment);
-    else commentTextPane.setText(comment);
+    if (isCommentArea) {
+      int width = (commentScrollPane.getWidth() - 1);
+      try {
+        int height = JlabelSetText(commentTextArea, comment, width);
+        if (height > commentScrollPane.getViewport().getHeight())
+          JlabelSetText(commentTextArea, comment, width - 9);
+      } catch (InterruptedException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+      // commentTextArea.setText(comment);
+    } else commentTextPane.setText(comment);
+  }
+
+  private int JlabelSetText(JLabel jLabel, String longString, int width)
+      throws InterruptedException {
+    int lines = 0;
+    StringBuilder builder = new StringBuilder("<html>");
+    String[] longStrings = longString.split("\n");
+    FontMetrics fontMetrics = jLabel.getFontMetrics(jLabel.getFont());
+    for (String line : longStrings) {
+      char[] chars = line.toCharArray();
+      int start = 0;
+      int len = 0;
+      while (start + len < line.length()) {
+        while (true) {
+          len++;
+          if (start + len > line.length()) break;
+          if (fontMetrics.charsWidth(chars, start, len) > width) {
+            break;
+          }
+        }
+        builder.append(chars, start, len - 1).append("<br/>");
+        lines++;
+        start = start + len - 1;
+        len = 0;
+      }
+      builder.append(chars, start, line.length() - start);
+    }
+    builder.append("</html>");
+    jLabel.setText(builder.toString());
+    return fontMetrics.getHeight() * lines;
   }
 
   private double[] lastWinrateScoreDiff(BoardHistoryNode node) {
