@@ -3,6 +3,8 @@ package featurecat.lizzie.gui;
 import featurecat.lizzie.Config;
 import featurecat.lizzie.Lizzie;
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -109,15 +111,13 @@ public class JPaintTextPane extends JTextPane implements MouseListener {
                 : Config.frameFontSize));
     this.setEditorKit(new WarpEditorKit());
   }
-  //
-  //  protected void paintComponent(Graphics g) {
-  //    Graphics2D g1 = (Graphics2D) g;
-  //   // if (Lizzie.config.usePureBackground)
-  //    g1.setColor(Lizzie.config.commentBackgroundColor);
-  //   // else g1.setPaint(Lizzie.frame.backgroundPaint);
-  //    g1.fillRect(0, 0, getWidth(), getHeight());
-  //    super.paintComponent(g);
-  //  }
+
+  protected void paintComponent(Graphics g) {
+    if (Lizzie.config.usePureBackground) g.setColor(Lizzie.config.pureBackgroundColor);
+    else ((Graphics2D) g).setPaint(Lizzie.frame.backgroundPaint);
+    g.fillRect(0, 0, getWidth(), getHeight());
+    super.paintComponent(g);
+  }
 
   public void resetEditorKid() {
     this.setEditorKit(new WarpEditorKit());
