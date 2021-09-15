@@ -5124,6 +5124,32 @@ public class LizzieFrame extends JFrame {
     Lizzie.board.updateMovelist(Lizzie.board.getHistory().getCurrentHistoryNode());
   }
 
+  public void test() {
+    Runnable runnable =
+        new Runnable() {
+          public void run() {
+            try {
+              Thread.sleep(2000);
+            } catch (InterruptedException e) {
+              // TODO Auto-generated catch block
+              e.printStackTrace();
+            }
+            if (cachedBackground != null) {
+              BufferedImage result =
+                  new BufferedImage(
+                      cachedBackground.getWidth(), cachedBackground.getHeight(), TYPE_INT_ARGB);
+              filter20.filter(cachedBackground, result);
+              backgroundPaint =
+                  new TexturePaint(
+                      result, new Rectangle(0, 0, result.getWidth(), result.getHeight()));
+              commentTextArea.repaint();
+            }
+          }
+        };
+    Thread thread = new Thread(runnable);
+    thread.start();
+  }
+
   private Graphics2D createBackground(int width, int hight) {
     cachedBackground = new BufferedImage(width, hight, TYPE_INT_RGB);
     cachedBackgroundWidth = cachedBackground.getWidth();
@@ -7468,6 +7494,8 @@ public class LizzieFrame extends JFrame {
           || h != commentScrollPane.getHeight()) {
         commentScrollPane.setBounds(
             x, y + (Lizzie.config.showDoubleMenu ? topPanelHeight : 0), w, h);
+        commentTextArea.setSize(w, h);
+        commentTextPane.setSize(w, h);
         commentEditPane.setBounds(x, y + (Lizzie.config.showDoubleMenu ? topPanelHeight : 0), w, h);
       }
 
