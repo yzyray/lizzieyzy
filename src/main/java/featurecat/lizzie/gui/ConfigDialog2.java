@@ -1268,7 +1268,7 @@ public class ConfigDialog2 extends JDialog {
     chkAlwaysGtp.setSelected(Lizzie.config.alwaysGtp);
 
     chkNoCapture = new JCheckBox(); // $NON-NLS-1$
-    chkNoCapture.setBounds(397, 668, 26, 23);
+    chkNoCapture.setBounds(377, 668, 26, 23);
     uiTab.add(chkNoCapture);
 
     chkNoCapture.addActionListener(
