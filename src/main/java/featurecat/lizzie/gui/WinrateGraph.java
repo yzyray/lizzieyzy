@@ -40,27 +40,25 @@ public class WinrateGraph {
     if (Lizzie.frame.isTrying) node = Lizzie.board.getHistory().getMainEnd();
     else node = curMove;
     // draw background rectangle
-  //  Paint original = g.getPaint();
- //   int halfHeight = height / 2;
-//    final Paint gradient =
-//        new GradientPaint(
-//            new Point2D.Float(posx, posy),
-//            new Color(120, 120, 120, 180),
-//            new Point2D.Float(posx, posy + halfHeight),
-//            new Color(155, 155, 155, 185));
-//    final Paint gradient2 =
-//        new GradientPaint(
-//            new Point2D.Float(posx, posy + halfHeight),
-//            new Color(155, 155, 155, 185),
-//            new Point2D.Float(posx, posy + height),
-//            new Color(120, 120, 120, 180));
-//    gBackground.setPaint(gradient);
-//    gBackground.fillRect(posx, posy, width, halfHeight);
-//    gBackground.setPaint(gradient2);
-//    gBackground.fillRect(posx, posy + halfHeight, width, height - halfHeight);
+    int halfHeight = height / 2;
+    final Paint gradient =
+        new GradientPaint(
+            new Point2D.Float(posx, posy),
+            new Color(120, 120, 120, 180),
+            new Point2D.Float(posx, posy + halfHeight),
+            new Color(155, 155, 155, 185));
+    final Paint gradient2 =
+        new GradientPaint(
+            new Point2D.Float(posx, posy + halfHeight),
+            new Color(155, 155, 155, 185),
+            new Point2D.Float(posx, posy + height),
+            new Color(120, 120, 120, 180));
+    gBackground.setPaint(gradient);
+    gBackground.fillRect(posx, posy, width, halfHeight);
+    gBackground.setPaint(gradient2);
+    gBackground.fillRect(posx, posy + halfHeight, width, height - halfHeight);
 
     int strokeRadius = 1;
-    //g.setPaint(original);
     // record parameters (before resizing) for calculating moveNumber
     origParams[0] = posx;
     origParams[1] = posy;

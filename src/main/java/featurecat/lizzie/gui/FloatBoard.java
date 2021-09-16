@@ -444,7 +444,6 @@ public class FloatBoard extends JDialog {
 
       boardRenderer.setLocation(Utils.zoomIn(20), Utils.zoomIn(20));
       boardRenderer.setBoardLength(posWidth - Utils.zoomIn(40), posHeight - Utils.zoomIn(40));
-      boardRenderer.setupSizeParameters();
       boardRenderer.draw(g0);
       g0.dispose();
     }

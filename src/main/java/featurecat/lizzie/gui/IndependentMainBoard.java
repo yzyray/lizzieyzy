@@ -679,7 +679,6 @@ public class IndependentMainBoard extends JFrame {
 
     boardRenderer.setLocation(0, 0);
     boardRenderer.setBoardLength(width, height);
-    boardRenderer.setupSizeParameters();
     boardRenderer.draw(g0);
     g0.dispose();
     this.cachedImage = cachedImage;

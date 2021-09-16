@@ -354,7 +354,6 @@ public class IndependentSubBoard extends JFrame {
     // g0.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
     subBoardRenderer.setLocation(0, 0);
     subBoardRenderer.setBoardLength(width, height);
-    subBoardRenderer.setupSizeParameters();
     subBoardRenderer.draw(g0);
     g0.dispose();
     this.cachedImage = cachedImage;

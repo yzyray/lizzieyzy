@@ -2599,8 +2599,11 @@ public class FloatBoardRenderer {
    * @param boardLength the boardLength of the board
    */
   public void setBoardLength(int boardWidth, int boardHeight) {
-    this.boardWidth = boardWidth;
-    this.boardHeight = boardHeight;
+    if (this.boardWidth != boardWidth || this.boardHeight != boardHeight) {
+      this.boardWidth = boardWidth;
+      this.boardHeight = boardHeight;
+      setupSizeParameters();
+    }
   }
 
   /**
