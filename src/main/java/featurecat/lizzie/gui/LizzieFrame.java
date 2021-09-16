@@ -7013,7 +7013,7 @@ public class LizzieFrame extends JFrame {
   //    }
   //  }
 
-  private void setComment() {
+  private void setComment(boolean needReaddText) {
     boolean isLoadingEngine = false;
     boolean isTuningEngine = false;
     if (((Lizzie.leelaz != null && !Lizzie.leelaz.isLoaded())
@@ -7152,7 +7152,7 @@ public class LizzieFrame extends JFrame {
     }
     try {
       // if (isLoadingEngine) {
-      if (!cachedComment.equals(comment)) setCommentText(comment);
+      if (!cachedComment.equals(comment) || needReaddText && isCommentArea) setCommentText(comment);
       cachedComment = comment;
       //  } else {
       //    setCommentText(comment);
@@ -7188,7 +7188,7 @@ public class LizzieFrame extends JFrame {
           }
         }
       }
-      setComment();
+      setComment(false);
     }
   }
 
@@ -7498,6 +7498,7 @@ public class LizzieFrame extends JFrame {
         commentTextArea.setSize(w, h);
         commentTextPane.setSize(w, h);
         commentEditPane.setBounds(x, y + (Lizzie.config.showDoubleMenu ? topPanelHeight : 0), w, h);
+        setComment(true);
       }
     }
   }
@@ -7593,9 +7594,7 @@ public class LizzieFrame extends JFrame {
       int width = (commentScrollPane.getWidth() - 1);
       if (width < 0) return;
       try {
-        int height = JlabelSetText(commentTextArea, comment, width);
-        if (height > commentScrollPane.getViewport().getHeight())
-          JlabelSetText(commentTextArea, comment, width - 9);
+        JlabelSetText(commentTextArea, comment, width, commentScrollPane.getViewport().getHeight());
       } catch (InterruptedException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();
@@ -7604,20 +7603,22 @@ public class LizzieFrame extends JFrame {
     } else commentTextPane.setText(comment);
   }
 
-  private int JlabelSetText(JLabel jLabel, String longString, int width)
+  private void JlabelSetText(JLabel jLabel, String longString, int width, int maxHeight)
       throws InterruptedException {
     int lines = 0;
     StringBuilder builder = new StringBuilder("<html>");
     String[] longStrings = longString.split("\n");
     FontMetrics fontMetrics = jLabel.getFontMetrics(jLabel.getFont());
-    char[] symbol = {
-      ' ', '。', '：', '“', '‘', '’', '”', '，', '！', '？', ',', ':', '"', '\'', '?', '!'
+    char[] symbolBefore = {
+      ' ', ')', ':', '。', '：', '，', '！', '？', ',', '?', '!', '’', '”', '\'', '"', '[', '<'
     };
+    char[] symbolAfter = {'(', '“', '‘', ']', '>'};
     for (String line : longStrings) {
       char[] chars = line.toCharArray();
       int start = 0;
-      int len = 0;
-      int emptyIndex = -1;
+      int len = 1;
+      int emptyBeforIndex = -1;
+      int emptyAfterIndex = -1;
       boolean outOfLength = false;
       while (start + len < line.length()) {
         while (true) {
@@ -7627,32 +7628,55 @@ public class LizzieFrame extends JFrame {
             outOfLength = true;
             for (int i = start + len; i > start; i--) {
               char ch = line.charAt(i - 1);
-              for (char sym : symbol) {
-                if (ch == sym) emptyIndex = i - start;
-                break;
+              boolean found = false;
+              for (char sym : symbolBefore) {
+                if (ch == sym) {
+                  emptyBeforIndex = i - start;
+                  found = true;
+                  break;
+                }
               }
-              if (emptyIndex > 0) break;
+              if (found) break;
+              for (char sym : symbolAfter) {
+                if (ch == sym) {
+                  emptyAfterIndex = i - start;
+                  found = true;
+                  break;
+                }
+              }
+              if (found) break;
             }
             break;
           }
         }
-        if (outOfLength && emptyIndex > 0 && emptyIndex > len - 10) {
-          builder.append(chars, start, emptyIndex).append("<br/>");
-          start += emptyIndex;
-        } else {
+        boolean truncated = false;
+        if (outOfLength) {
+          if (emptyBeforIndex > 0 && emptyBeforIndex > len - 10) {
+            truncated = true;
+            builder.append(chars, start, emptyBeforIndex).append("<br/>");
+            start += emptyBeforIndex;
+          } else if (emptyAfterIndex > 1 && emptyAfterIndex > len - 9) {
+            truncated = true;
+            builder.append(chars, start, emptyAfterIndex - 1).append("<br/>");
+            start += emptyAfterIndex - 1;
+          }
+        }
+        if (!truncated) {
           builder.append(chars, start, len - 1).append("<br/>");
           start += len - 1;
         }
         lines++;
-        len = 0;
-        emptyIndex = -1;
+        len = 1;
+        emptyBeforIndex = -1;
+        emptyAfterIndex = -1;
       }
       if (line.length() == 0) builder.append("<br/>");
       builder.append(chars, start, line.length() - start);
     }
     builder.append("</html>");
-    jLabel.setText(builder.toString());
-    return fontMetrics.getHeight() * lines;
+    if (maxHeight > 0 && fontMetrics.getHeight() * lines > maxHeight)
+      JlabelSetText(jLabel, longString, width - 9, -1);
+    else jLabel.setText(builder.toString());
   }
 
   private double[] lastWinrateScoreDiff(BoardHistoryNode node) {
