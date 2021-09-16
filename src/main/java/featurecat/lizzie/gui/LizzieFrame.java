@@ -41,8 +41,6 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.AdjustmentEvent;
-import java.awt.event.AdjustmentListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyAdapter;
@@ -594,13 +592,13 @@ public class LizzieFrame extends JFrame {
                 Graphics2D g1 = (Graphics2D) g;
                 g1.scale(1.0 / Lizzie.javaScaleFactor, 1.0 / Lizzie.javaScaleFactor);
                 g1.drawImage(cachedVarImage2, -1, -1, null);
-              } else g.drawImage(cachedVarImage2, 0, 0, null);
+              } else {
+                g.drawImage(cachedVarImage2, 0, 0, null);
+              }
             }
           }
         };
-    varTreePane.setOpaque(true);
-    // varTreePane.setBackground(Lizzie.config.varPanelColor);
-    // varTreePane.setBackground(new Color(0, 0, 0, 0));
+    varTreePane.setOpaque(false);
     varTreePane.setFocusable(false);
     toolbar.setFocusable(false);
     menu.setFocusable(false);
@@ -616,16 +614,16 @@ public class LizzieFrame extends JFrame {
     varTreeScrollPane.getVerticalScrollBar().setUnitIncrement(16);
     varTreeScrollPane.getHorizontalScrollBar().setUnitIncrement(16);
     varTreeScrollPane.setVisible(Lizzie.config.showVariationGraph);
-    varTreeScrollPane
-        .getVerticalScrollBar()
-        .addAdjustmentListener(
-            new AdjustmentListener() {
-              @Override
-              public void adjustmentValueChanged(AdjustmentEvent e) {
-                // TODO Auto-generated method stub
-                varTreeScrollPane.repaint();
-              }
-            });
+    //    varTreeScrollPane
+    //        .getVerticalScrollBar()
+    //        .addAdjustmentListener(
+    //            new AdjustmentListener() {
+    //              @Override
+    //              public void adjustmentValueChanged(AdjustmentEvent e) {
+    //                // TODO Auto-generated method stub
+    //            	  varTreeScrollPane.repaint();
+    //              }
+    //            });
     // varTreeScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
     // varTreeScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
     commentEditTextPane = new JIMSendTextPane(true);
@@ -3554,7 +3552,6 @@ public class LizzieFrame extends JFrame {
         backgroundG = Optional.empty();
       }
       if (!showControls) {
-        // aaa
         // aaa
         BufferedImage cachedImage = new BufferedImage(width, height, TYPE_INT_ARGB);
         Graphics2D g = (Graphics2D) cachedImage.getGraphics();
@@ -7174,29 +7171,179 @@ public class LizzieFrame extends JFrame {
   //    }
   //  }
 
-  private void appendComment() {
-    if (!Lizzie.config.showComment || EngineManager.isEmpty) return;
-    if (Lizzie.config.appendWinrateToComment || EngineManager.isEngineGame) {
-      long currentTime = System.currentTimeMillis();
-      if (autoIntervalCom > 0 && currentTime - lastAutocomTime >= autoIntervalCom) {
-        lastAutocomTime = currentTime;
-        // Append the winrate to the comment
-        if (Lizzie.leelaz != null && !Lizzie.board.isLoadingFile) {
-          // if (MoveData.getPlayouts(Lizzie.board.getHistory().getData().bestMoves) >
-          // Lizzie.board.getHistory().getData().getPlayouts())
-          String comment = Lizzie.board.getHistory().getData().comment;
-          //          if (Lizzie.leelaz.isPondering()
-          //              || Lizzie.frame.isPlayingAgainstLeelaz
-          //              || Lizzie.engineManager.isEngineGame) {
-          if (!Lizzie.board.getHistory().getData().bestMoves.isEmpty()) SGFParser.appendComment();
-          //     }
-          if (!Lizzie.leelaz.isPondering()
-              && !isPlayingAgainstLeelaz
-              && !EngineManager.isEngineGame
-              && !(Lizzie.board.getHistory().getData().comment).equals(comment)) refresh();
+  private void setComment() {
+    boolean isLoadingEngine = false;
+    boolean isTuningEngine = false;
+    if (((Lizzie.leelaz != null && !Lizzie.leelaz.isLoaded())
+        || (EngineManager.isPreEngineGame
+            && (!Lizzie.engineManager
+                    .engineList
+                    .get(EngineManager.engineGameInfo.whiteEngineIndex)
+                    .isLoaded()
+                || !Lizzie.engineManager
+                    .engineList
+                    .get(EngineManager.engineGameInfo.blackEngineIndex)
+                    .isLoaded())))) isLoadingEngine = true;
+    if (isLoadingEngine) {
+      if ((Lizzie.leelaz != null && Lizzie.leelaz.isTuning)
+          || (EngineManager.isPreEngineGame
+              && (!Lizzie.engineManager.engineList.get(
+                          EngineManager.engineGameInfo.whiteEngineIndex)
+                      .isTuning
+                  || !Lizzie.engineManager.engineList.get(
+                          EngineManager.engineGameInfo.blackEngineIndex)
+                      .isTuning))) {
+        isTuningEngine = true;
+      }
+    }
+    String comment = "";
+    if (!isInPlayMode()) {
+      if (isLoadingEngine) {
+        commentScrollPane
+            .getVerticalScrollBar()
+            .setValue(commentScrollPane.getVerticalScrollBar().getMaximum());
+      }
+      if (isLoadingEngine) {
+        if (Lizzie.gtpConsole != null) {
+          comment = Lizzie.gtpConsole.console.getText();
+          if (!Lizzie.config.showStatus && isTuningEngine)
+            comment += Lizzie.resourceBundle.getString("LizzieFrame.display.tuning");
+        }
+      } else {
+        if (EngineManager.isEngineGame
+            && Lizzie.config.showPreviousBestmovesInEngineGame
+            && Lizzie.board.getHistory().getCurrentHistoryNode().previous().isPresent())
+          comment =
+              Lizzie.board.getHistory().getCurrentHistoryNode().previous().get().getData().comment;
+        else {
+          if (Lizzie.board.getHistory().getData().comment.equals("")) {
+            if ((Lizzie.leelaz.isPondering()
+                    || EngineManager.isEngineGame
+                    || Lizzie.frame.isPlayingAgainstLeelaz)
+                && Lizzie.config.appendWinrateToComment
+                && Lizzie.board.getHistory().getCurrentHistoryNode().previous().isPresent())
+              comment =
+                  Lizzie.board
+                      .getHistory()
+                      .getCurrentHistoryNode()
+                      .previous()
+                      .get()
+                      .getData()
+                      .comment;
+          } else comment = Lizzie.board.getHistory().getData().comment;
+          if (EngineManager.isEngineGame) {
+            int index =
+                comment.indexOf("\n" + Lizzie.resourceBundle.getString("SGFParse.moveTime"));
+            if (index > 0) comment = comment.substring(0, index);
+          }
+        }
+      }
+      if (EngineManager.isEngineGame && !Lizzie.config.showPreviousBestmovesInEngineGame) {
+        comment =
+            comment
+                + (comment.equals("") ? "" : "\n")
+                + Lizzie.resourceBundle.getString("SGFParse.moveTime")
+                + (System.currentTimeMillis()
+                        - (EngineManager.engineGameInfo.isGenmove
+                            ? (Lizzie.engineManager.engineList.get(
+                                    Lizzie.board.getHistory().isBlacksTurn()
+                                        ? EngineManager.engineGameInfo.blackEngineIndex
+                                        : EngineManager.engineGameInfo.whiteEngineIndex)
+                                .pkMoveStartTime)
+                            : Lizzie.leelaz.getStartPonderTime()))
+                    / 1000
+                + Lizzie.resourceBundle.getString("SGFParse.seconds");
+      }
+    }
+    if (Lizzie.config.commentFontSize <= 0) {
+      int fontSize;
+      if (Lizzie.config.showLargeSubBoard() || Lizzie.config.showLargeWinrate()) {
+        fontSize =
+            (int)
+                (min(
+                        (getWidth() > 1.75 * getHeight() ? 1.75 * getHeight() : getWidth()) * 0.43,
+                        getHeight())
+                    * 0.0225);
+      } else fontSize = (int) (min(getWidth() * 0.6, getHeight()) * 0.0225);
+      if (fontSize > Config.frameFontSize + 3) {
+        fontSize = Config.frameFontSize + 3;
+      } else if (fontSize < Config.frameFontSize - 2) {
+        fontSize = Config.frameFontSize - 2;
+      }
+      if (isCommentArea) {
+        if (commentFontSize != fontSize) {
+          commentFontSize = fontSize;
+          if (isCommentArea) {
+            commentTextArea.setFont(
+                new Font(Lizzie.config.uiFontName, Font.PLAIN, commentFontSize));
+            commentEditTextPane.setFont(
+                new Font(Lizzie.config.uiFontName, Font.PLAIN, commentFontSize));
+          }
+        }
+      } else {
+        if (commentPaneFontSize != fontSize) {
+          commentPaneFontSize = fontSize;
+          String style =
+              "body {background:"
+                  + String.format(
+                      "%02x%02x%02x",
+                      Lizzie.config.commentBackgroundColor.getRed(),
+                      Lizzie.config.commentBackgroundColor.getGreen(),
+                      Lizzie.config.commentBackgroundColor.getBlue())
+                  + "; color:#"
+                  + String.format(
+                      "%02x%02x%02x",
+                      Lizzie.config.commentFontColor.getRed(),
+                      Lizzie.config.commentFontColor.getGreen(),
+                      Lizzie.config.commentFontColor.getBlue())
+                  + "; font-family:"
+                  + Lizzie.config.uiFontName
+                  + ", Consolas, Menlo, Monaco, 'Ubuntu Mono', monospace;"
+                  + (commentPaneFontSize > 0 ? "font-size:" + commentPaneFontSize : "")
+                  + "}";
+          htmlStyle.addRule(style);
         }
       }
     }
+    if (!isCommentArea) {
+      comment = comment.replaceAll("(\r\n)|(\n)", "<br />").replaceAll(" ", "&nbsp;");
+    }
+    try {
+      // if (isLoadingEngine) {
+      if (!cachedComment.equals(comment)) setCommentText(comment);
+      cachedComment = comment;
+      //  } else {
+      //    setCommentText(comment);
+      //  }
+    } catch (Exception ex) {
+    }
+  }
+
+  private void appendComment() {
+    if (Lizzie.config.showComment && !EngineManager.isEmpty) {
+      if (Lizzie.config.appendWinrateToComment || EngineManager.isEngineGame) {
+        long currentTime = System.currentTimeMillis();
+        if (autoIntervalCom > 0 && currentTime - lastAutocomTime >= autoIntervalCom) {
+          lastAutocomTime = currentTime;
+          // Append the winrate to the comment
+          if (Lizzie.leelaz != null && !Lizzie.board.isLoadingFile) {
+            // if (MoveData.getPlayouts(Lizzie.board.getHistory().getData().bestMoves) >
+            // Lizzie.board.getHistory().getData().getPlayouts())
+            String comment = Lizzie.board.getHistory().getData().comment;
+            //          if (Lizzie.leelaz.isPondering()
+            //              || Lizzie.frame.isPlayingAgainstLeelaz
+            //              || Lizzie.engineManager.isEngineGame) {
+            if (!Lizzie.board.getHistory().getData().bestMoves.isEmpty()) SGFParser.appendComment();
+            //     }
+            if (!Lizzie.leelaz.isPondering()
+                && !isPlayingAgainstLeelaz
+                && !EngineManager.isEngineGame
+                && !(Lizzie.board.getHistory().getData().comment).equals(comment)) refresh();
+          }
+        }
+      }
+    }
+    setComment();
   }
 
   private void autosaveMaybe() {
@@ -7506,174 +7653,6 @@ public class LizzieFrame extends JFrame {
         commentTextPane.setSize(w, h);
         commentEditPane.setBounds(x, y + (Lizzie.config.showDoubleMenu ? topPanelHeight : 0), w, h);
       }
-
-      boolean isLoadingEngine = false;
-      boolean isTuningEngine = false;
-      if (((Lizzie.leelaz != null && !Lizzie.leelaz.isLoaded())
-          || (EngineManager.isPreEngineGame
-              && (!Lizzie.engineManager
-                      .engineList
-                      .get(EngineManager.engineGameInfo.whiteEngineIndex)
-                      .isLoaded()
-                  || !Lizzie.engineManager
-                      .engineList
-                      .get(EngineManager.engineGameInfo.blackEngineIndex)
-                      .isLoaded())))) isLoadingEngine = true;
-      if (isLoadingEngine) {
-        if ((Lizzie.leelaz != null && Lizzie.leelaz.isTuning)
-            || (EngineManager.isPreEngineGame
-                && (!Lizzie.engineManager.engineList.get(
-                            EngineManager.engineGameInfo.whiteEngineIndex)
-                        .isTuning
-                    || !Lizzie.engineManager.engineList.get(
-                            EngineManager.engineGameInfo.blackEngineIndex)
-                        .isTuning))) {
-          isTuningEngine = true;
-        }
-      }
-      String comment = "";
-      if (!isInPlayMode()) {
-        // if (cachedIsLoading != isLoadingEngine) {
-        //     cachedIsLoading = isLoadingEngine;
-        if (isLoadingEngine) {
-          //            DefaultCaret caret = (DefaultCaret) commentTextArea.getCaret();
-          //            caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
-          commentScrollPane
-              .getVerticalScrollBar()
-              .setValue(commentScrollPane.getVerticalScrollBar().getMaximum());
-          //   DefaultCaret caret2 = (DefaultCaret) commentTextPane.getCaret();
-          // caret2.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
-        }
-        // else {
-        // commentScrollPane.getVerticalScrollBar().setValue(0);
-        //            DefaultCaret caret = (DefaultCaret) commentTextArea.getCaret();
-        //            caret.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
-        // DefaultCaret caret2 = (DefaultCaret) commentTextPane.getCaret();
-        //   caret2.setUpdatePolicy(DefaultCaret.NEVER_UPDATE);
-        // }
-        //   }
-        if (isLoadingEngine) {
-          if (Lizzie.gtpConsole != null) {
-            comment = Lizzie.gtpConsole.console.getText();
-            if (!Lizzie.config.showStatus && isTuningEngine)
-              comment += Lizzie.resourceBundle.getString("LizzieFrame.display.tuning");
-          }
-        } else {
-          if (EngineManager.isEngineGame
-              && Lizzie.config.showPreviousBestmovesInEngineGame
-              && Lizzie.board.getHistory().getCurrentHistoryNode().previous().isPresent())
-            comment =
-                Lizzie.board
-                    .getHistory()
-                    .getCurrentHistoryNode()
-                    .previous()
-                    .get()
-                    .getData()
-                    .comment;
-          else {
-            if (Lizzie.board.getHistory().getData().comment.equals("")) {
-              if ((Lizzie.leelaz.isPondering()
-                      || EngineManager.isEngineGame
-                      || Lizzie.frame.isPlayingAgainstLeelaz)
-                  && Lizzie.config.appendWinrateToComment
-                  && Lizzie.board.getHistory().getCurrentHistoryNode().previous().isPresent())
-                comment =
-                    Lizzie.board
-                        .getHistory()
-                        .getCurrentHistoryNode()
-                        .previous()
-                        .get()
-                        .getData()
-                        .comment;
-            } else comment = Lizzie.board.getHistory().getData().comment;
-            if (EngineManager.isEngineGame) {
-              int index =
-                  comment.indexOf("\n" + Lizzie.resourceBundle.getString("SGFParse.moveTime"));
-              if (index > 0) comment = comment.substring(0, index);
-            }
-          }
-        }
-        if (EngineManager.isEngineGame && !Lizzie.config.showPreviousBestmovesInEngineGame) {
-          comment =
-              comment
-                  + (comment.equals("") ? "" : "\n")
-                  + Lizzie.resourceBundle.getString("SGFParse.moveTime")
-                  + (System.currentTimeMillis()
-                          - (EngineManager.engineGameInfo.isGenmove
-                              ? (Lizzie.engineManager.engineList.get(
-                                      Lizzie.board.getHistory().isBlacksTurn()
-                                          ? EngineManager.engineGameInfo.blackEngineIndex
-                                          : EngineManager.engineGameInfo.whiteEngineIndex)
-                                  .pkMoveStartTime)
-                              : Lizzie.leelaz.getStartPonderTime()))
-                      / 1000
-                  + Lizzie.resourceBundle.getString("SGFParse.seconds");
-        }
-      }
-      if (Lizzie.config.commentFontSize <= 0) {
-        int fontSize;
-        if (Lizzie.config.showLargeSubBoard() || Lizzie.config.showLargeWinrate()) {
-          fontSize =
-              (int)
-                  (min(
-                          (getWidth() > 1.75 * getHeight() ? 1.75 * getHeight() : getWidth())
-                              * 0.43,
-                          getHeight())
-                      * 0.0225);
-        } else fontSize = (int) (min(getWidth() * 0.6, getHeight()) * 0.0225);
-        if (fontSize > Config.frameFontSize + 3) {
-          fontSize = Config.frameFontSize + 3;
-        } else if (fontSize < Config.frameFontSize - 2) {
-          fontSize = Config.frameFontSize - 2;
-        }
-        if (isCommentArea) {
-          if (commentFontSize != fontSize) {
-            commentFontSize = fontSize;
-            if (isCommentArea) {
-              commentTextArea.setFont(
-                  new Font(Lizzie.config.uiFontName, Font.PLAIN, commentFontSize));
-              commentEditTextPane.setFont(
-                  new Font(Lizzie.config.uiFontName, Font.PLAIN, commentFontSize));
-            }
-          }
-        } else {
-          if (commentPaneFontSize != fontSize) {
-            commentPaneFontSize = fontSize;
-            String style =
-                "body {background:"
-                    + String.format(
-                        "%02x%02x%02x",
-                        Lizzie.config.commentBackgroundColor.getRed(),
-                        Lizzie.config.commentBackgroundColor.getGreen(),
-                        Lizzie.config.commentBackgroundColor.getBlue())
-                    + "; color:#"
-                    + String.format(
-                        "%02x%02x%02x",
-                        Lizzie.config.commentFontColor.getRed(),
-                        Lizzie.config.commentFontColor.getGreen(),
-                        Lizzie.config.commentFontColor.getBlue())
-                    + "; font-family:"
-                    + Lizzie.config.uiFontName
-                    + ", Consolas, Menlo, Monaco, 'Ubuntu Mono', monospace;"
-                    + (commentPaneFontSize > 0 ? "font-size:" + commentPaneFontSize : "")
-                    + "}";
-            htmlStyle.addRule(style);
-          }
-        }
-      }
-      if (!isCommentArea) {
-        comment = comment.replaceAll("(\r\n)|(\n)", "<br />").replaceAll(" ", "&nbsp;");
-      }
-      try {
-
-        if (isLoadingEngine) {
-          if (!cachedComment.equals(comment)) setCommentText(comment);
-          cachedComment = comment;
-        } else {
-          setCommentText(comment);
-        }
-      } catch (Exception ex) {
-      }
     }
   }
 
@@ -7705,6 +7684,7 @@ public class LizzieFrame extends JFrame {
       String text = commentEditTextPane.getText();
       if (text.endsWith("\n")) text = text.substring(0, text.length() - 1);
       Lizzie.board.getHistory().getCurrentHistoryNode().getData().comment = text;
+      appendComment();
     }
   }
 
@@ -7800,6 +7780,7 @@ public class LizzieFrame extends JFrame {
         start = start + len - 1;
         len = 0;
       }
+      if (line.length() == 0) builder.append("<br/>");
       builder.append(chars, start, line.length() - start);
     }
     builder.append("</html>");
