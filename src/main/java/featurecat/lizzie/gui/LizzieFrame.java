@@ -7158,6 +7158,7 @@ public class LizzieFrame extends JFrame {
       //    setCommentText(comment);
       //  }
     } catch (Exception ex) {
+      ex.printStackTrace();
     }
   }
 
@@ -7609,22 +7610,42 @@ public class LizzieFrame extends JFrame {
     StringBuilder builder = new StringBuilder("<html>");
     String[] longStrings = longString.split("\n");
     FontMetrics fontMetrics = jLabel.getFontMetrics(jLabel.getFont());
+    char[] symbol = {
+      ' ', '。', '：', '“', '‘', '’', '”', '，', '！', '？', ',', ':', '"', '\'', '?', '!'
+    };
     for (String line : longStrings) {
       char[] chars = line.toCharArray();
       int start = 0;
       int len = 0;
+      int emptyIndex = -1;
+      boolean outOfLength = false;
       while (start + len < line.length()) {
         while (true) {
           len++;
           if (start + len > line.length()) break;
           if (fontMetrics.charsWidth(chars, start, len) > width) {
+            outOfLength = true;
+            for (int i = start + len; i > start; i--) {
+              char ch = line.charAt(i - 1);
+              for (char sym : symbol) {
+                if (ch == sym) emptyIndex = i - start;
+                break;
+              }
+              if (emptyIndex > 0) break;
+            }
             break;
           }
         }
-        builder.append(chars, start, len - 1).append("<br/>");
+        if (outOfLength && emptyIndex > 0 && emptyIndex > len - 10) {
+          builder.append(chars, start, emptyIndex).append("<br/>");
+          start += emptyIndex;
+        } else {
+          builder.append(chars, start, len - 1).append("<br/>");
+          start += len - 1;
+        }
         lines++;
-        start = start + len - 1;
         len = 0;
+        emptyIndex = -1;
       }
       if (line.length() == 0) builder.append("<br/>");
       builder.append(chars, start, line.length() - start);
