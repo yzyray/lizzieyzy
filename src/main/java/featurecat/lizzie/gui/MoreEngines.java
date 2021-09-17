@@ -372,7 +372,7 @@ public class MoreEngines extends JPanel {
     this.chkDefault.setBounds(
         Lizzie.config.isFrameFontSmall() ? 85 : (Lizzie.config.isFrameFontMiddle() ? 85 : 100),
         270,
-        Lizzie.config.isFrameFontSmall() ? 60 : (Lizzie.config.isFrameFontMiddle() ? 60 : 80),
+        Lizzie.config.isFrameFontSmall() ? 64 : (Lizzie.config.isFrameFontMiddle() ? 60 : 80),
         24);
     lblWidth.setBounds(
         Lizzie.config.isFrameFontSmall() ? 156 : (Lizzie.config.isFrameFontMiddle() ? 156 : 190),

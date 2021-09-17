@@ -3,7 +3,13 @@
   "shadow-size": 55,
   "stone-indicator-type": 0,
   "solid-stone-indicator": true,
-  "ui-font-name": "Lizzie默认",
+  "ui-font-name": "Lizzie Default",
+  "blunder-bar-color": [
+    255,
+    204,
+    255
+  ],
+  "use-pure-stone": false,
   "winrate-stroke-width": 1.7,
   "comment-node-color": [
     0,
@@ -26,55 +32,67 @@
   ],
   "blunder-node-colors": [
     [
-      255,
-      0,
-      0,
-      200
+      155,
+      25,
+      150
+    ],
+    [
+      208,
+      16,
+      19
+    ],
+    [
+      200,
+      140,
+      50
+    ],
+    [
+      180,
+      180,
+      0
+    ],
+    [
+      140,
+      202,
+      34
     ],
     [
       0,
-      255,
-      0,
-      200
-    ],
-    [
-      0,
-      0,
-      255
-    ],
-    [
-      255,
-      255,
+      220,
       0
     ],
     [
       0,
-      255,
-      255
-    ],
-    [
-      255,
-      0,
-      255
+      210,
+      210
     ]
   ],
   "best-move-color": [
     0,
     255,
-    255
+    255,
+    240
   ],
   "white-stone-image": "white1.png",
   "black-stone-image": "black1.png",
   "blunder-winrate-thresholds": [
-    -30,
-    -20,
-    -10,
-    -5,
-    5,
-    10
+    -24,
+    -12,
+    -6,
+    -3,
+    -1,
+    3,
+    100
   ],
-  "winrate-font-name": "Lizzie默认",
+  "pure-board-color": [
+    217,
+    152,
+    77
+  ],
+  "scorediff-in-variation-tree-factor": 0.5,
+  "winrate-font-name": "Lizzie Default",
   "minimum-blunder-bar-width": 3,
+  "show-stone-shadow": true,
   "winrate-miss-line-color": [
     0,
     0,
@@ -89,6 +107,19 @@
     200
   ],
   "board-image": "board7.jpg",
-  "font-name": "Lizzie默认",
-  "show-comment-node-color": true
+  "pure-background-color": [
+    128,
+    128,
+    128
+  ],
+  "scoremean-line-color": [
+    255,
+    0,
+    255
+  ],
+  "font-name": "Lizzie Default",
+  "use-scorediff-in-variation-tree": true,
+  "use-pure-background": false,
+  "show-comment-node-color": true,
+  "use-pure-board": false
 }

@@ -3341,9 +3341,9 @@ public class ConfigDialog2 extends JDialog {
         theme.config.put("winrate-stroke-width", spnWinrateStrokeWidth.getValue());
         theme.config.put("minimum-blunder-bar-width", spnMinimumBlunderBarWidth.getValue());
         theme.config.put("shadow-size", spnShadowSize.getValue());
-        theme.config.put("font-name", cmbFontName.getSelectedItem());
-        theme.config.put("ui-font-name", cmbUiFontName.getSelectedItem());
-        theme.config.put("winrate-font-name", cmbWinrateFontName.getSelectedItem());
+        theme.config.put("font-name", getFontItemName(cmbFontName));
+        theme.config.put("ui-font-name", getFontItemName(cmbUiFontName));
+        theme.config.put("winrate-font-name", getFontItemName(cmbWinrateFontName));
         theme.config.put("use-scorediff-in-variation-tree", chkUseScoreDiff.isSelected());
         theme.config.put(
             "scorediff-in-variation-tree-factor",
@@ -3491,6 +3491,12 @@ public class ConfigDialog2 extends JDialog {
     colorCol.setCellEditor(new ColorEditor(this));
   }
 
+  private String getFontItemName(JComboBox<String> comboBox) {
+    String value = comboBox.getSelectedItem().toString();
+    if (value.equals("Lizzie默认")) value = "Lizzie Default";
+    return value;
+  }
+
   private void writeDefaultTheme() {
     Lizzie.config.uiConfig.put("use-pure-stone", chkPureStone.isSelected());
     Lizzie.config.uiConfig.put("use-pure-board", chkPureBoard.isSelected());
@@ -3502,9 +3508,9 @@ public class ConfigDialog2 extends JDialog {
     Lizzie.config.uiConfig.put("minimum-blunder-bar-width", spnMinimumBlunderBarWidth.getValue());
     Lizzie.config.uiConfig.put("shadow-size", spnShadowSize.getValue());
     Lizzie.config.uiConfig.put("show-stone-shadow", chkShowStoneShaow.isSelected());
-    Lizzie.config.uiConfig.put("font-name", cmbFontName.getSelectedItem());
-    Lizzie.config.uiConfig.put("ui-font-name", cmbUiFontName.getSelectedItem());
-    Lizzie.config.uiConfig.put("winrate-font-name", cmbWinrateFontName.getSelectedItem());
+    Lizzie.config.uiConfig.put("font-name", getFontItemName(cmbFontName));
+    Lizzie.config.uiConfig.put("ui-font-name", getFontItemName(cmbUiFontName));
+    Lizzie.config.uiConfig.put("winrate-font-name", getFontItemName(cmbWinrateFontName));
     Lizzie.config.uiConfig.put(
         "winrate-line-color", Theme.color2Array(lblWinrateLineColor.getColor()));
     Lizzie.config.uiConfig.put(
