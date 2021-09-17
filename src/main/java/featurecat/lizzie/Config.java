@@ -1432,7 +1432,6 @@ public class Config {
       LizzieFrame.boardRenderer.reDrawBackgroundAnyway();
       if (LizzieFrame.boardRenderer2 != null) LizzieFrame.boardRenderer2.reDrawBackgroundAnyway();
       LizzieFrame.subBoardRenderer.reDrawBackgroundAnyway();
-      Lizzie.frame.test();
     }
   }
 

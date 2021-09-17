@@ -5014,32 +5014,6 @@ public class LizzieFrame extends JFrame {
     Lizzie.board.updateMovelist(Lizzie.board.getHistory().getCurrentHistoryNode());
   }
 
-  public void test() {
-    Runnable runnable =
-        new Runnable() {
-          public void run() {
-            try {
-              Thread.sleep(2000);
-            } catch (InterruptedException e) {
-              // TODO Auto-generated catch block
-              e.printStackTrace();
-            }
-            if (cachedBackground != null) {
-              BufferedImage result =
-                  new BufferedImage(
-                      cachedBackground.getWidth(), cachedBackground.getHeight(), TYPE_INT_ARGB);
-              filter20.filter(cachedBackground, result);
-              backgroundPaint =
-                  new TexturePaint(
-                      result, new Rectangle(0, 0, result.getWidth(), result.getHeight()));
-              commentTextArea.repaint();
-            }
-          }
-        };
-    Thread thread = new Thread(runnable);
-    thread.start();
-  }
-
   private Graphics2D createBackground(int width, int hight) {
     cachedBackground = new BufferedImage(width, hight, TYPE_INT_RGB);
     cachedBackgroundWidth = cachedBackground.getWidth();
@@ -5071,7 +5045,8 @@ public class LizzieFrame extends JFrame {
   }
 
   private void drawContainer(Graphics g, int vx, int vy, int vw, int vh) {
-    if (vw <= 0
+    if (Lizzie.config.usePureBackground
+        || vw <= 0
         || vh <= 0
         || vx < cachedBackground.getMinX()
         || vx + vw > cachedBackground.getMinX() + cachedBackground.getWidth()

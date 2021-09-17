@@ -314,8 +314,6 @@ public class Lizzie {
             thread2.start();
           }
         });
-
-    frame.test();
   }
 
   public static void setLookAndFeel() {
