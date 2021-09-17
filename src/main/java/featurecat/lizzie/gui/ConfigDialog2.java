@@ -1859,9 +1859,10 @@ public class ConfigDialog2 extends JDialog {
       comboBoxPvVisits.setSelectedIndex(2);
     }
 
-    if (Lizzie.config.isFloatBoardMode()) chkShowIndependentSubBoard.setSelectedIndex(1);
-    else if (Lizzie.config.isShowingIndependentMain) chkShowIndependentSubBoard.setSelectedIndex(2);
-    else chkShowIndependentSubBoard.setSelectedIndex(0);
+    if (Lizzie.config.isShowingIndependentSub) {
+      if (Lizzie.config.isFloatBoardMode()) chkShowIndependentSubBoard.setSelectedIndex(1);
+      else chkShowIndependentSubBoard.setSelectedIndex(2);
+    } else chkShowIndependentSubBoard.setSelectedIndex(0);
 
     if (Lizzie.config.showListPane()) chkShowMoveList.setSelected(true);
     else chkShowMoveList.setSelected(false);
@@ -3676,16 +3677,7 @@ public class ConfigDialog2 extends JDialog {
     } else {
       if (Lizzie.config.isShowingIndependentMain) Lizzie.frame.toggleIndependentMainBoard();
     }
-    int n = chkShowIndependentSubBoard.getSelectedIndex();
-    if (n == 0) {
-      if (Lizzie.config.isFloatBoardMode()) Lizzie.config.toggleExtraMode(0);
-      if (Lizzie.config.isShowingIndependentMain) Lizzie.frame.toggleIndependentMainBoard();
-    } else if (n == 1) {
-      if (!Lizzie.config.isFloatBoardMode()) Lizzie.frame.toggleOnlyIndependMainBoard();
-    } else {
-      if (Lizzie.config.isFloatBoardMode()) Lizzie.config.toggleExtraMode(0);
-      if (!Lizzie.config.isShowingIndependentMain) Lizzie.frame.toggleIndependentMainBoard();
-    }
+
     //    if (chkShowIndependentSubBoard.isSelected()) {
     //      if (!Lizzie.config.isShowingIndependentSub) Lizzie.frame.toggleIndependentSubBoard();
     //    } else {
@@ -3834,6 +3826,7 @@ public class ConfigDialog2 extends JDialog {
       Lizzie.config.showStatus = chkShowStatus.isSelected();
       Lizzie.config.showCoordinates = chkShowCoordinates.isSelected();
       if (!Lizzie.config.isMinMode()
+          && !Lizzie.config.isFloatBoardMode()
           && (Lizzie.config.showListPane()
               || Lizzie.config.showCaptured
               || Lizzie.config.showWinrateGraph
@@ -3842,6 +3835,15 @@ public class ConfigDialog2 extends JDialog {
               || Lizzie.config.showSubBoard)) {
         Lizzie.config.extraMode = ExtraMode.Normal;
         Lizzie.config.uiConfig.put("extra-mode", 0);
+      }
+      int n = chkShowIndependentSubBoard.getSelectedIndex();
+      if (n == 0) {
+        if (Lizzie.config.isShowingIndependentSub) Lizzie.frame.toggleIndependentSubBoard();
+      } else if (n == 1) {
+        if (!Lizzie.config.isShowingIndependentSub) Lizzie.frame.toggleIndependentSubBoard();
+        if (Lizzie.config.showSubBoard) Lizzie.config.toggleShowSubBoard();
+      } else {
+        if (!Lizzie.config.isShowingIndependentSub) Lizzie.frame.toggleIndependentSubBoard();
       }
       Lizzie.config.uiConfig.putOpt("show-captured", Lizzie.config.showCaptured);
       Lizzie.config.uiConfig.putOpt("show-winrate-graph", Lizzie.config.showWinrateGraph);
