@@ -16,7 +16,7 @@ import javax.swing.text.html.StyleSheet;
 public class HtmlMessage extends JDialog {
 
   public HtmlMessage(String title, String content) {
-    this.setModal(true);
+    this.setModal(false);
     this.setResizable(false);
     // setType(Type.POPUP);
     setTitle(title);

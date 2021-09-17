@@ -33,6 +33,7 @@ import java.util.regex.Pattern;
 import javax.swing.Box;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import org.jdesktop.swingx.util.OS;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -1397,11 +1398,16 @@ public class Leelaz {
           //							sendCommandToLeelazWithOutLog("lizzie_use");
           if (params[1].startsWith("KataGo") || isKatago) {
             canAddPlayer = true;
-            if (Lizzie.config.firstLoadKataGo) {
-              Utils.showHtmlMessage(
-                  Lizzie.resourceBundle.getString("Message.title"),
-                  Lizzie.resourceBundle.getString("Leelaz.kataGoPerformance"));
+            if (!Lizzie.config.firstLoadKataGo) {
               Lizzie.config.firstLoadKataGo = false;
+              SwingUtilities.invokeLater(
+                  new Runnable() {
+                    public void run() {
+                      Utils.showHtmlMessage(
+                          Lizzie.resourceBundle.getString("Message.title"),
+                          Lizzie.resourceBundle.getString("Leelaz.kataGoPerformance"));
+                    }
+                  });
               Lizzie.config.uiConfig.put("first-load-katago", Lizzie.config.firstLoadKataGo);
             }
             if (params[1].startsWith("KataGoPda")) {
@@ -1997,9 +2003,14 @@ public class Leelaz {
     if (isZen) {
       if (line.startsWith("info") && isLoaded) {
         isLoaded = false;
-        Utils.showHtmlMessage(
-            Lizzie.resourceBundle.getString("Message.title"),
-            Lizzie.resourceBundle.getString("Leelaz.updateZenGtp"));
+        SwingUtilities.invokeLater(
+            new Runnable() {
+              public void run() {
+                Utils.showHtmlMessage(
+                    Lizzie.resourceBundle.getString("Message.title"),
+                    Lizzie.resourceBundle.getString("Leelaz.updateZenGtp"));
+              }
+            });
         shutdown();
       }
     }
