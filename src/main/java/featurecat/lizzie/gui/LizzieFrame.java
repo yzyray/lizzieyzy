@@ -885,9 +885,8 @@ public class LizzieFrame extends JFrame {
             });
     blunderTableTimer.start();
 
-    getContentPane().setLayout(new BorderLayout());
+    // getContentPane().setLayout(new BorderLayout());
     getContentPane().setBackground(Color.GRAY);
-
     setJMenuBar(menu);
 
     if (Lizzie.config.isDoubleEngineMode()) {

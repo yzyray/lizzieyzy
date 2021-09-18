@@ -1759,7 +1759,7 @@ public class Board {
       if (needGenmove) Lizzie.leelaz.genmove((color.isWhite() ? "B" : "W"));
       //   modifyEnd(false);
       if (Lizzie.config.playSound) Utils.playVoiceFile();
-      if (!forSync) Lizzie.frame.refresh();
+      // if (!forSync) Lizzie.frame.refresh();
     }
   }
 
