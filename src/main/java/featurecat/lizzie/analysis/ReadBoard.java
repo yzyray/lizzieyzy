@@ -60,7 +60,7 @@ public class ReadBoard {
   private boolean isSyncing = false;
   // private long startTime;
   private boolean javaReadBoard = false;
-  private String javaReadBoardName = "readboard-1.5-shaded.jar";
+  private String javaReadBoardName = "readboard-1.5.2-shaded.jar";
   private boolean waitSocket = true;
 
   public ReadBoard(boolean usePipe, boolean isJavaReadBoard) throws Exception {
