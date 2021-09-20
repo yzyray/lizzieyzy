@@ -83,7 +83,6 @@ public class Board {
     hasBigBranch = false;
     history = new BoardHistoryList(BoardData.empty(boardWidth, boardHeight));
     if (isEngineGame) {
-      System.gc();
       Lizzie.board
           .getHistory()
           .getGameInfo()

@@ -21,7 +21,7 @@ import javax.swing.event.PopupMenuListener;
 public class RightClickMenu extends JPopupMenu {
   //	public static int mousex;
   //	public static int mousey;
-  public static int[] coords;
+  public static int[] coords = LizzieFrame.outOfBoundCoordinate;
   private final ResourceBundle resourceBundle =
       Lizzie.config.useLanguage == 0
           ? ResourceBundle.getBundle("l10n.DisplayStrings")
@@ -36,6 +36,7 @@ public class RightClickMenu extends JPopupMenu {
   private JFontMenuItem clearPriority;
   private JFontMenuItem allow;
   private JFontMenuItem allow2;
+  private JFontMenuItem allow3;
   private JFontMenuItem avoid;
   private JFontMenuItem previousMove;
   private JFontMenuItem addSuggestionAsBranch;
@@ -55,17 +56,6 @@ public class RightClickMenu extends JPopupMenu {
           public void popupMenuCanceled(PopupMenuEvent e) {}
 
           public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
-            //				if (Lizzie.leelaz.isPondering() && isforcing) {
-            //					if (isallow) {
-            //						Lizzie.leelaz.analyzeAvoid("allow", Lizzie.board.getcurrentturn(), allowcoords,
-            // 1);
-            //					} else {
-            //						Lizzie.leelaz.analyzeAvoid("avoid",  avoidcoords, 60);
-            //					}
-            //				}
-            //				if (Lizzie.leelaz.isPondering() && !isforcing) {
-            //					Lizzie.leelaz.ponder();
-            //				}
             if (Lizzie.frame.isMouseOver) {
               Lizzie.frame.mouseOverCoordinate = LizzieFrame.outOfBoundCoordinate;
               Lizzie.frame.isMouseOver = false;
@@ -135,6 +125,7 @@ public class RightClickMenu extends JPopupMenu {
               allow2.setVisible(false);
               avoid.setVisible(false);
               avoid2.setVisible(false);
+              allow3.setVisible(false);
               cancelavoid.setVisible(false);
               sep.setVisible(false);
               sep1.setVisible(false);
@@ -158,8 +149,23 @@ public class RightClickMenu extends JPopupMenu {
               allow.setVisible(true);
               avoid.setVisible(true);
               avoid2.setVisible(true);
+              allow3.setVisible(false);
               if (LizzieFrame.allowcoords != "") {
-                allow2.setVisible(true);
+                {
+                  allow2.setVisible(true);
+                  String[] params = LizzieFrame.allowcoords.trim().split(",");
+                  if (params.length > 1) {
+                    String coordsHere =
+                        Board.convertCoordinatesToName(
+                            RightClickMenu.coords[0], RightClickMenu.coords[1]);
+                    for (String coords : params) {
+                      if (coordsHere.equals(coords)) {
+                        allow3.setVisible(true);
+                        break;
+                      }
+                    }
+                  }
+                }
                 if (LizzieFrame.avoidcoords != "") {
                   cancelavoid.setVisible(true);
                 }
@@ -181,6 +187,7 @@ public class RightClickMenu extends JPopupMenu {
     ImageIcon iconUppoint = new ImageIcon();
     ImageIcon iconForward = new ImageIcon();
     ImageIcon iconAddPoint = new ImageIcon();
+    ImageIcon iconRemovePoint = new ImageIcon();
     ImageIcon iconSearch = new ImageIcon();
     try {
       iconForward.setImage(
@@ -202,6 +209,8 @@ public class RightClickMenu extends JPopupMenu {
           ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/addpoint.png")));
       iconSearch.setImage(
           ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/search.png")));
+      iconRemovePoint.setImage(
+          ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/clear.png")));
     } catch (IOException e1) {
       // TODO Auto-generated catch block
       e1.printStackTrace();
@@ -221,11 +230,12 @@ public class RightClickMenu extends JPopupMenu {
     addblack.setIcon(iconBlack);
     addwhite = new JFontMenuItem(resourceBundle.getString("RightClickMenu.addwhite")); // ("插入白子");
     addwhite.setIcon(iconWhite);
-    // deleteone = new JFontMenuItem("更改棋子位置");
     allow = new JFontMenuItem(resourceBundle.getString("RightClickMenu.allow")); // ("只分析此点");
     allow.setIcon(iconSetPoint);
     allow2 = new JFontMenuItem(resourceBundle.getString("RightClickMenu.allow2")); // ("增加分析此点");
     allow2.setIcon(iconAddPoint);
+    allow3 = new JFontMenuItem(resourceBundle.getString("RightClickMenu.allow3")); // "去除分析此点");
+    allow3.setIcon(iconRemovePoint);
     avoid = new JFontMenuItem(resourceBundle.getString("RightClickMenu.avoid")); // ("不分析此点");
     avoid.setIcon(iconForbidPoint);
     avoid2 =
@@ -237,8 +247,6 @@ public class RightClickMenu extends JPopupMenu {
     cleanedittemp =
         new JFontMenuItem(resourceBundle.getString("RightClickMenu.cleanedittemp")); // ("清除编辑缓存");
     cleanedittemp.setIcon(iconRecycle);
-    // test=new JFontMenuItem("测试删除棋子");
-    // test2=new JFontMenuItem("测试恢复棋盘状态");
     reedit = new JFontMenuItem(resourceBundle.getString("RightClickMenu.reedit")); // ("恢复到编辑前");
     reedit.setIcon(iconForward);
     cleanupedit =
@@ -247,10 +255,9 @@ public class RightClickMenu extends JPopupMenu {
     previousMove =
         new JFontMenuItem(resourceBundle.getString("RightClickMenu.previousMove")); // ("回退一手");
     previousMove.setIcon(iconBack);
-    // this.add(addblack);
-    // this.add(addwhite);
     this.add(allow);
     this.add(allow2);
+    this.add(allow3);
     this.add(avoid);
     this.add(cancelavoid);
     this.add(avoid2);
@@ -356,6 +363,14 @@ public class RightClickMenu extends JPopupMenu {
           }
         });
 
+    allow3.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            allow3();
+          }
+        });
+
     findMove.addActionListener(
         new ActionListener() {
           @Override
@@ -392,6 +407,7 @@ public class RightClickMenu extends JPopupMenu {
             allow();
           }
         });
+
     avoid.addActionListener(
         new ActionListener() {
           @Override
@@ -399,6 +415,7 @@ public class RightClickMenu extends JPopupMenu {
             avoid();
           }
         });
+
     avoid2.addActionListener(
         new ActionListener() {
           @Override
@@ -406,6 +423,7 @@ public class RightClickMenu extends JPopupMenu {
             avoid2();
           }
         });
+
     cancelavoid.addActionListener(
         new ActionListener() {
           @Override
@@ -473,6 +491,29 @@ public class RightClickMenu extends JPopupMenu {
         LizzieFrame.allowcoords = Board.convertCoordinatesToName(coords[0], coords[1]);
       }
     }
+    LizzieFrame.isforcing = true;
+    LizzieFrame.isallow = true;
+    LizzieFrame.avoidcoords = "";
+    Lizzie.leelaz.Pondering();
+    Lizzie.leelaz.analyzeAvoid("allow", LizzieFrame.allowcoords, 1);
+    Lizzie.board.clearbestmovesafter(Lizzie.board.getHistory().getStart());
+    LizzieFrame.boardRenderer.drawAllSelectedRectByCoords(true, LizzieFrame.allowcoords);
+    Lizzie.frame.refresh();
+  }
+
+  private void allow3() {
+    String newCoords = "";
+    String[] params = LizzieFrame.allowcoords.trim().split(",");
+    String coordsHere =
+        Board.convertCoordinatesToName(RightClickMenu.coords[0], RightClickMenu.coords[1]);
+    boolean first = true;
+    for (String coords : params) {
+      if (!coordsHere.equals(coords)) {
+        if (first) newCoords = coords;
+        else newCoords += "," + coords;
+      }
+    }
+    LizzieFrame.allowcoords = newCoords;
     LizzieFrame.isforcing = true;
     LizzieFrame.isallow = true;
     LizzieFrame.avoidcoords = "";

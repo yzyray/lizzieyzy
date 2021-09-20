@@ -390,9 +390,7 @@ public class Lizzie {
     }
     LizzieFrame.sendAiTime(false, engine);
     if (engine != leelaz) return;
-    if (!Lizzie.engineManager.isEngineGame()) {
-      LizzieFrame.menu.showPda(engine.isKataGoPda);
-    }
+
     if (!isEngineGame && !frame.isPlayingAgainstLeelaz) {
       if (Lizzie.config.notStartPondering) {
         leelaz.notPondering();
@@ -403,18 +401,18 @@ public class Lizzie {
         leelaz.setResponseUpToDate();
       }
     }
-    LizzieFrame.menu.updateMenuStatusForEngine();
-    if (!Lizzie.frame.syncBoard) Lizzie.frame.reSetLoc();
-    Runnable runnable =
-        new Runnable() {
+    SwingUtilities.invokeLater(
+        new Thread() {
           public void run() {
+            LizzieFrame.menu.updateMenuStatusForEngine();
+            if (!Lizzie.frame.syncBoard) Lizzie.frame.reSetLoc();
             LizzieFrame.toolbar.reSetButtonLocation();
-            if (!isEngineGame)
+            if (!isEngineGame) {
+              LizzieFrame.menu.showPda(engine.isKataGoPda);
               if (Lizzie.frame.resetMovelistFrameandAnalysisFrame()) frame.setVisible(true);
+            }
           }
-        };
-    Thread thread = new Thread(runnable);
-    thread.start();
+        });
   }
 
   public static void shutdown() {

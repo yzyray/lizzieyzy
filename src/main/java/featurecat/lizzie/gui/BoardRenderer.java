@@ -2312,7 +2312,7 @@ public class BoardRenderer {
                     drawCircleBest(g, suggestionX, suggestionY, stoneRadius + 1, 15f);
                   } else {
                     float alphaCircle =
-                        32 + 96 * max(0, (float) log(percentPlayouts) / alphaFactor + 1);
+                        48 + 80 * max(0, (float) log(percentPlayouts) / alphaFactor + 1);
                     g.setColor(new Color(0, 0, 0, (int) alphaCircle));
                     drawCircle(g, suggestionX, suggestionY, stoneRadius + 1, 26.5f);
                   }
@@ -2320,7 +2320,7 @@ public class BoardRenderer {
                   g.setColor(color);
                   fillCircle(g, suggestionX, suggestionY, stoneRadius + 1);
                   float alphaCircle =
-                      32 + 96 * max(0, (float) log(percentPlayouts) / alphaFactor + 1);
+                      48 + 80 * max(0, (float) log(percentPlayouts) / alphaFactor + 1);
                   g.setColor(new Color(0, 0, 0, (int) alphaCircle));
                   drawCircle(g, suggestionX, suggestionY, stoneRadius + 1, 26.5f);
                 }
@@ -2959,7 +2959,7 @@ public class BoardRenderer {
             }
             g.setColor(color);
             fillCircle(g, suggestionX, suggestionY, stoneRadius + 1);
-            float alphaCircle = 32 + 96 * max(0, (float) log(percentPlayouts) / alphaFactor + 1);
+            float alphaCircle = 48 + 80 * max(0, (float) log(percentPlayouts) / alphaFactor + 1);
             g.setColor(new Color(0, 0, 0, (int) alphaCircle));
             drawCircle(g, suggestionX, suggestionY, stoneRadius + 1, 26.5f);
           }

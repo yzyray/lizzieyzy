@@ -754,8 +754,10 @@ public class Leelaz {
           return;
         }
         if (this.isZen) {
-          Lizzie.board.getData().tryToSetBestMoves(bestMoves, this.currentEnginename, true);
-          bestMoves = new ArrayList<>();
+          if (bestMoves != null && !bestMoves.isEmpty()) {
+            Lizzie.board.getData().tryToSetBestMoves(bestMoves, this.currentEnginename, true);
+            bestMoves = new ArrayList<>();
+          }
         }
         if (params[1].contains("resign")) {
           genmoveNode++;
@@ -1955,26 +1957,6 @@ public class Leelaz {
     else sendCommand("name");
   }
 
-  /**
-   * Parse a move-data line of Leelaz output
-   *
-   * @param line output line
-   */
-  //	private void parseMoveDataLine(String line) {
-  //		line = line.trim();
-  //		// ignore passes, and only accept lines that start with a coordinate letter
-  //		if (line.length() > 0 && Character.isLetter(line.charAt(0)) && !line.startsWith("pass")) {
-  //			if (!(Lizzie.frame.isPlayingAgainstLeelaz
-  //					&& Lizzie.frame.playerIsBlack != Lizzie.board.getData().blackToPlay)) {
-  //				try {
-  //					bestMovesTemp.add(MoveData.fromInfo(line));
-  //				} catch (ArrayIndexOutOfBoundsException e) {
-  //					// this is very rare but is possible. ignore
-  //				}
-  //			}
-  //		}
-  //	}
-
   private void readError() {
     String line = "";
     try {
@@ -2001,6 +1983,42 @@ public class Leelaz {
       if (Lizzie.gtpConsole.isVisible() || Lizzie.config.alwaysGtp || !this.isLoaded)
         if (!line.startsWith("info")) Lizzie.gtpConsole.addErrorLine(line + "\n");
     if (isZen) {
+      if (EngineManager.isEngineGame) {
+        if ((isResponseUpToDate())) {
+          if (line.contains("I pass")) {
+            played = true;
+            Lizzie.board.pass();
+            boolean isBlackEngine = currentEngineN == EngineManager.engineGameInfo.blackEngineIndex;
+            if (isBlackEngine) {
+              Lizzie.engineManager
+                  .engineList
+                  .get(EngineManager.engineGameInfo.blackEngineIndex)
+                  .playMoveNoPonder("B", "pass");
+              Lizzie.engineManager
+                  .engineList
+                  .get(EngineManager.engineGameInfo.whiteEngineIndex)
+                  .playMovePonder("B", "pass");
+            } else {
+              Lizzie.engineManager
+                  .engineList
+                  .get(EngineManager.engineGameInfo.whiteEngineIndex)
+                  .playMoveNoPonder("W", "pass");
+              Lizzie.engineManager
+                  .engineList
+                  .get(EngineManager.engineGameInfo.blackEngineIndex)
+                  .playMovePonder("W", "pass");
+            }
+          } else if (line.toLowerCase().contains("resign")) {
+            resigned = true;
+            nameCmd();
+            isResigning = true;
+            if (Lizzie.gtpConsole.isVisible() || Lizzie.config.alwaysGtp)
+              Lizzie.gtpConsole.addLine(
+                  oriEnginename + " " + Lizzie.resourceBundle.getString("Leelaz.resign") + "\n");
+            Lizzie.engineManager.stopEngineGame(currentEngineN, false);
+          }
+        }
+      }
       if (line.startsWith("info") && isLoaded) {
         isLoaded = false;
         SwingUtilities.invokeLater(
@@ -2270,7 +2288,6 @@ public class Leelaz {
             parseLineForGenmovePk(line);
           } catch (Exception e) {
             e.printStackTrace();
-            //	Lizzie.gtpConsole.addLine("genmovepkparseline err");
           }
 
         } else {

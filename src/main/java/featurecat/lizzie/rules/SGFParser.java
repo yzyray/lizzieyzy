@@ -169,11 +169,27 @@ public class SGFParser {
   public static int[] convertSgfPosToCoord(String pos) {
     if (pos.length() < 2) return null;
     if (isPassPos(pos)) return null;
-    //  int[]
-    int[] ret = new int[2];
-    ret[0] = alphabet.indexOf(pos.charAt(0));
-    ret[1] = alphabet.indexOf(pos.charAt(1));
-    return ret;
+    if (Board.boardHeight >= 52 || Board.boardWidth >= 52) {
+      String[] params = pos.trim().split("_");
+      if (params.length == 2) {
+        try {
+          int[] ret = new int[2];
+          ret[0] = Integer.parseInt(params[0]);
+          ret[1] = Integer.parseInt(params[1]);
+          return ret;
+        } catch (NumberFormatException e) {
+          e.printStackTrace();
+          return null;
+        }
+      } else {
+        return null;
+      }
+    } else {
+      int[] ret = new int[2];
+      ret[0] = alphabet.indexOf(pos.charAt(0));
+      ret[1] = alphabet.indexOf(pos.charAt(1));
+      return ret;
+    }
   }
 
   private static void saveLz(String[] liness, String[] line1s) {
@@ -3156,10 +3172,14 @@ public class SGFParser {
   }
 
   public static String asCoord(int[] c) {
-    char x = alphabet.charAt(c[0]);
-    char y = alphabet.charAt(c[1]);
+    if (Board.boardHeight >= 52 || Board.boardWidth >= 52) {
+      return c[0] + "_" + c[1];
+    } else {
+      char x = alphabet.charAt(c[0]);
+      char y = alphabet.charAt(c[1]);
 
-    return String.format("%c%c", x, y);
+      return String.format("%c%c", x, y);
+    }
   }
 }
 

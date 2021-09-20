@@ -3546,7 +3546,7 @@ public class LizzieFrame extends JFrame {
       if (!showControls) {
         BufferedImage cachedImage = new BufferedImage(width, height, TYPE_INT_ARGB);
         Graphics2D g = (Graphics2D) cachedImage.getGraphics();
-        g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        // g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         if (Lizzie.config.isFourSubMode()) {
           int topInset = mainPanel.getInsets().top;
           int leftInset = mainPanel.getInsets().left;
@@ -5026,7 +5026,7 @@ public class LizzieFrame extends JFrame {
       g.dispose();
       return g;
     }
-    g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+    // g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 
     BufferedImage wallpaper = boardRenderer.getWallpaper();
     int drawWidth = max(wallpaper.getWidth(), mainPanel.getWidth());
@@ -6237,7 +6237,6 @@ public class LizzieFrame extends JFrame {
         && !EngineManager.isEngineGame) {
       variationTreeBig.onClicked(x, y);
     }
-    repaint();
   }
 
   public int getmovenumber(int x, int y) {
@@ -10840,7 +10839,18 @@ public class LizzieFrame extends JFrame {
           public void actionPerformed(ActionEvent e) {
             // TBD未完成
             isShowingBigBoardPanel = true;
-            if (bigBoardPanel != null && bigBoardPanel.isVisible()) bigBoardPanel.setVisible(false);
+            new Thread() {
+              public void run() {
+                try {
+                  Thread.sleep(500);
+                } catch (InterruptedException e) {
+                  // TODO Auto-generated catch block
+                  e.printStackTrace();
+                }
+                if (bigBoardPanel != null && bigBoardPanel.isVisible())
+                  bigBoardPanel.setVisible(false);
+              }
+            }.start();
             int ret =
                 JOptionPane.showConfirmDialog(
                     Lizzie.frame,
