@@ -166,7 +166,7 @@ public class ReadBoard {
       try {
         if (OS.isWindows()) {
           boolean success = false;
-          String java64Path = "jre\\java15\\bin\\java.exe";
+          String java64Path = "jre\\java11\\bin\\java.exe";
           File java64 = new File(java64Path);
 
           if (java64.exists()) {
