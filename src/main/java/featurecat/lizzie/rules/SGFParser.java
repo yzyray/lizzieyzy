@@ -1246,17 +1246,30 @@ public class SGFParser {
     // * with 'xy' = coordinates ; or 'tt' for pass.
 
     // Write variation tree
+    BoardHistoryNode makerBeg = new BoardHistoryNode(null);
+    BoardHistoryNode makerEnd = new BoardHistoryNode(null);
     Stack<BoardHistoryNode> stack = new Stack<>();
     stack.push(curNode);
     while (!stack.isEmpty()) {
       BoardHistoryNode cur = stack.pop();
+      if (cur == makerBeg) {
+        builder.append("(");
+        continue;
+      }
+      if (cur == makerEnd) {
+        builder.append(")");
+        continue;
+      }
       builder = generateNode(board, cur, forUpload, builder);
+      boolean hasBrothers = (cur.numberOfChildren() > 1);
       if (cur.numberOfChildren() >= 1) {
-        for (int i = cur.numberOfChildren() - 1; i >= 0; i--)
+        for (int i = cur.numberOfChildren() - 1; i >= 0; i--) {
+          if (hasBrothers) stack.push(makerEnd);
           stack.push(cur.getVariations().get(i));
+          if (hasBrothers) stack.push(makerBeg);
+        }
       }
     }
-
     // close file
     builder.append(')');
     writer.append(builder.toString());
