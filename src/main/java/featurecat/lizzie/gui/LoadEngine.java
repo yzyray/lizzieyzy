@@ -111,9 +111,9 @@ public class LoadEngine extends JPanel {
     table.setFont(winrateFont);
 
     tablepanel = new JPanel(new BorderLayout());
-    tablepanel.setBounds(0, 0, 885, 429);
+    tablepanel.setBounds(0, 0, 895, 429);
     this.add(tablepanel);
-    selectpanel.setBounds(0, 432, 900, 530);
+    selectpanel.setBounds(0, 432, 910, 530);
     this.add(selectpanel);
     scrollpane = new JScrollPane(table);
 
@@ -678,8 +678,8 @@ public class LoadEngine extends JPanel {
           }
         });
 
-    engjf.setBounds(50, 50, 890, 510);
-    Lizzie.setFrameSize(engjf, 890, 510);
+    engjf.setBounds(50, 50, 900, 510);
+    Lizzie.setFrameSize(engjf, 900, 510);
     engjf.setResizable(false);
     try {
       engjf.setIconImage(ImageIO.read(LoadEngine.class.getResourceAsStream("/assets/logo.png")));
