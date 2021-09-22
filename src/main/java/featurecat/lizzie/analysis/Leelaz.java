@@ -1560,24 +1560,6 @@ public class Leelaz {
           } catch (NumberFormatException err) {
           }
         }
-        //				if((isZen&&Lizzie.board.getHistory().getCurrentHistoryNode().getData().moveNumber<3))
-        //				{
-        //					int coords[] = Lizzie.board.convertNameToCoordinates(bestMoves.get(0).coordinate);
-        //					if ((Lizzie.board.getData().blackToPlay &&
-        // Lizzie.frame.toolbar.chkAutoPlayBlack.isSelected())
-        //							|| (!Lizzie.board.getData().blackToPlay
-        //									&& Lizzie.frame.toolbar.chkAutoPlayWhite.isSelected())) {
-        //						Lizzie.board.place(coords[0], coords[1]);
-        //
-        //					}
-        //					if (!Lizzie.config.playponder) {
-        //						if (!(Lizzie.frame.toolbar.chkAutoPlayWhite.isSelected()
-        //								&& Lizzie.frame.toolbar.chkAutoPlayBlack.isSelected())) {
-        //							nameCmd();
-        //						}
-        //					}
-        //					return;
-        //				}
         boolean playNow = false;
         if (playImmediately) playNow = true;
         if (firstPlayouts > 0) {
@@ -1597,18 +1579,7 @@ public class Leelaz {
           }
         }
         if (playNow) {
-          if (Lizzie.frame.isAnaPlayingAgainstLeelaz && !Lizzie.frame.bothSync) {
-            if (Lizzie.board.getHistory().getMoveNumber() >= Lizzie.config.anaGameResignStartMove) {
-              if (bestMoves.get(0).winrate < Lizzie.config.anaGameResignPercent) {
-                this.anaGameResignCount++;
-              } else this.anaGameResignCount = 0;
-            }
-            if (this.anaGameResignCount >= Lizzie.config.anaGameResignMove) {
-              Lizzie.frame.togglePonderMannul();
-              Utils.showMsg(oriEnginename + " " + Lizzie.resourceBundle.getString("Leelaz.resign"));
-              return;
-            }
-          }
+          notifyAnaResign(false);
           MoveData playMove = null;
           if (!Lizzie.frame.bothSync
               && Lizzie.config.enableAnaGameRamdonStart
@@ -1630,6 +1601,25 @@ public class Leelaz {
             nameCmd();
           }
         }
+      }
+    }
+  }
+
+  private void notifyAnaResign(boolean isResgined) {
+    // TODO Auto-generated method stub
+    if (isResgined) {
+      Lizzie.frame.togglePonderMannul();
+      Utils.showMsg(oriEnginename + " " + Lizzie.resourceBundle.getString("Leelaz.resign"));
+    } else if (Lizzie.frame.isAnaPlayingAgainstLeelaz && !Lizzie.frame.bothSync) {
+      if (Lizzie.board.getHistory().getMoveNumber() >= Lizzie.config.anaGameResignStartMove) {
+        if (bestMoves.get(0).winrate < Lizzie.config.anaGameResignPercent) {
+          this.anaGameResignCount++;
+        } else this.anaGameResignCount = 0;
+      }
+      if (this.anaGameResignCount >= Lizzie.config.anaGameResignMove) {
+        Lizzie.frame.togglePonderMannul();
+        Utils.showMsg(oriEnginename + " " + Lizzie.resourceBundle.getString("Leelaz.resign"));
+        return;
       }
     }
   }
@@ -1983,25 +1973,30 @@ public class Leelaz {
       if (Lizzie.gtpConsole.isVisible() || Lizzie.config.alwaysGtp || !this.isLoaded)
         if (!line.startsWith("info")) Lizzie.gtpConsole.addErrorLine(line + "\n");
     if (isZen) {
-      if (EngineManager.isEngineGame) {
+      if ((EngineManager.isEngineGame && !EngineManager.engineGameInfo.isGenmove)
+          || LizzieFrame.toolbar.isAutoPlay) {
         if ((isResponseUpToDate())) {
-          if (line.contains("Sequence:")) {
+          if (line.contains("Nodes:")) {
             if (!this.bestMoves.isEmpty()) {
               notifyAutoPK(true);
               notifyAutoPlay(true);
             } else {
-              playPassInEngineGame();
+              if (EngineManager.isEngineGame) playPassInEngineGame();
+              else Lizzie.board.pass();
             }
           } else if (line.contains("I pass")) {
-            playPassInEngineGame();
+            if (EngineManager.isEngineGame) playPassInEngineGame();
+            else Lizzie.board.pass();
           } else if (line.toLowerCase().contains("resign")) {
-            resigned = true;
-            nameCmd();
-            isResigning = true;
-            if (Lizzie.gtpConsole.isVisible() || Lizzie.config.alwaysGtp)
-              Lizzie.gtpConsole.addLine(
-                  oriEnginename + " " + Lizzie.resourceBundle.getString("Leelaz.resign") + "\n");
-            Lizzie.engineManager.stopEngineGame(currentEngineN, false);
+            if (EngineManager.isEngineGame) {
+              resigned = true;
+              nameCmd();
+              isResigning = true;
+              if (Lizzie.gtpConsole.isVisible() || Lizzie.config.alwaysGtp)
+                Lizzie.gtpConsole.addLine(
+                    oriEnginename + " " + Lizzie.resourceBundle.getString("Leelaz.resign") + "\n");
+              Lizzie.engineManager.stopEngineGame(currentEngineN, false);
+            } else notifyAnaResign(true);
           }
         }
       }
