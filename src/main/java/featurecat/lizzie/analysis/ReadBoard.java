@@ -588,8 +588,6 @@ public class ReadBoard {
           Lizzie.board.clear(false);
           needReSync = true;
           needRefresh = true;
-          //  Lizzie.frame.refresh();
-          // syncBoardStones();
           break;
         }
         if (!played) {
@@ -609,8 +607,6 @@ public class ReadBoard {
           Lizzie.board.clear(false);
           needReSync = true;
           needRefresh = true;
-          // Lizzie.frame.refresh();
-          // syncBoardStones();
           break;
         }
 
@@ -632,8 +628,6 @@ public class ReadBoard {
           Lizzie.board.clear(false);
           needReSync = true;
           needRefresh = true;
-          // Lizzie.frame.refresh();
-          // syncBoardStones();
           break;
         }
         holdLastMove = true;
@@ -646,8 +640,6 @@ public class ReadBoard {
           Lizzie.board.clear(false);
           needReSync = true;
           needRefresh = true;
-          // Lizzie.frame.refresh();
-          // syncBoardStones();
           break;
         }
         holdLastMove = true;
@@ -681,85 +673,11 @@ public class ReadBoard {
         int m = tempcount.get(i);
         int y = i / Board.boardWidth;
         int x = i % Board.boardWidth;
-        if (Lizzie.frame.bothSync
-            && Lizzie.board.getHistory().getMainEnd().previous().isPresent()) {
-          Stone[] stonesPrev =
-              Lizzie.board.getHistory().getMainEnd().previous().get().getData().stones;
-          if (m == 0
-              && stones[Board.getIndex(x, y)] != Stone.EMPTY
-              && stonesPrev[Board.getIndex(x, y)] != Stone.EMPTY) {
-            // Lizzie.board.clear(false);
-            //  needRefresh = true;
-            needReSync = true;
-            break;
-          }
-          if (m == 1
-              && !stones[Board.getIndex(x, y)].isBlack()
-              && !stonesPrev[Board.getIndex(x, y)].isBlack()) {
-            //  Lizzie.board.clear(false);
-            //   needRefresh = true;
-            needReSync = true;
-            break;
-          }
-          if (m == 2
-              && !stones[Board.getIndex(x, y)].isWhite()
-              && !stonesPrev[Board.getIndex(x, y)].isWhite()) {
-            // Lizzie.board.clear(false);
-            //  needRefresh = true;
-            needReSync = true;
-            break;
-          }
-          if (m == 3
-              && !stones[Board.getIndex(x, y)].isBlack()
-              && !stonesPrev[Board.getIndex(x, y)].isBlack()) {
-            // Lizzie.board.clear(false);
-            //  needRefresh = true;
-            needReSync = true;
-            break;
-          }
-          if (m == 4
-              && !stones[Board.getIndex(x, y)].isWhite()
-              && !stonesPrev[Board.getIndex(x, y)].isWhite()) {
-            //  Lizzie.board.clear(false);
-            //  needRefresh = true;
-            needReSync = true;
-            break;
-          }
-        } else {
-          if (m == 0 && stones[Board.getIndex(x, y)] != Stone.EMPTY) {
-            // Lizzie.board.clear(false);
-            //  needRefresh = true;
-            needReSync = true;
-            break;
-          }
-
-          if (m == 1 && !stones[Board.getIndex(x, y)].isBlack()) {
-            //  Lizzie.board.clear(false);
-            //   needRefresh = true;
-            needReSync = true;
-            break;
-          }
-          if (m == 2 && !stones[Board.getIndex(x, y)].isWhite()) {
-            // Lizzie.board.clear(false);
-            //  needRefresh = true;
-            needReSync = true;
-            break;
-          }
-          if (m == 3 && !stones[Board.getIndex(x, y)].isBlack()) {
-            // Lizzie.board.clear(false);
-            //  needRefresh = true;
-            needReSync = true;
-            break;
-          }
-          if (m == 4 && !stones[Board.getIndex(x, y)].isWhite()) {
-            //  Lizzie.board.clear(false);
-            //  needRefresh = true;
-            needReSync = true;
-            break;
-          }
+        if (isStoneDiff(m, stones[Board.getIndex(x, y)])) {
+          needReSync = true;
+          break;
         }
       }
-      //
     }
     if (!Lizzie.frame.bothSync && !needReSync) {
       if (played
@@ -806,6 +724,20 @@ public class ReadBoard {
     //	      Lizzie.board.goToMoveNumberBeyondBranch(moveNumber);
     //	      Lizzie.frame.refresh();
     //	    }
+  }
+
+  private boolean isStoneDiff(int m, Stone stone) {
+    // TODO Auto-generated method stub
+    if (m == 0 && stone != Stone.EMPTY) {
+      return true;
+    }
+    if ((m == 1 || m == 3) && !stone.isBlack()) {
+      return true;
+    }
+    if ((m == 2 || m == 4) && !stone.isWhite()) {
+      return true;
+    }
+    return false;
   }
 
   public void shutdown() {
