@@ -4164,7 +4164,6 @@ public class LizzieFrame extends JFrame {
                       (maxBound
                           * (loadingSize
                               - ponderingSize * (Lizzie.config.userKnownX ? 1.15 : 0.75)));
-          g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
           if (Lizzie.config.showStatus && !Lizzie.config.userKnownX) drawCommandString(g);
           if (Lizzie.config.showStatus) {
             if (Lizzie.leelaz != null && (Lizzie.leelaz.isLoaded() || Lizzie.leelaz.isNormalEnd)) {
@@ -5679,7 +5678,6 @@ public class LizzieFrame extends JFrame {
       Graphics2D g, int posX, int posY, int width, int height, boolean isSmallCap) {
     if (width < 5 || height < 5) return;
     // Draw border
-    g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     g.setColor(new Color(0, 0, 0, 130));
     g.fillRect(posX, posY, width, height);
 
