@@ -2012,6 +2012,37 @@ public class Leelaz {
             });
         shutdown();
       }
+      if (EngineManager.isEngineGame && EngineManager.engineGameInfo.isGenmove) {
+        if (line.contains("->")) {
+          try {
+            MoveData mv = MoveData.fromSummaryZen(line);
+            if (mv != null) {
+              mv.order = bestMoves.size();
+              bestMoves.add(mv);
+            }
+          } catch (Exception ex) {
+            Lizzie.gtpConsole.addLine("genmovepk summary err");
+          }
+        }
+      }
+
+      if ((Lizzie.frame.isPlayingAgainstLeelaz || isInputCommand)) {
+        if (line.contains("->")) {
+          int k =
+              (Lizzie.config.limitMaxSuggestion > 0 && !Lizzie.config.showNoSuggCircle
+                  ? Lizzie.config.limitMaxSuggestion
+                  : 361);
+          if (bestMoves.size() < k) {
+            MoveData mv = MoveData.fromSummaryZen(line);
+            if (mv != null) {
+
+              mv.order = bestMoves.size();
+              bestMoves.add(mv);
+              Lizzie.board.getData().tryToSetBestMoves(bestMoves, currentEnginename, true);
+            }
+          }
+        }
+      }
     }
     if ((isLeela || isSai) && Lizzie.frame.isPlayingAgainstLeelaz && canGetSummaryInfo) {
       int k =

@@ -457,6 +457,7 @@ public class MoveData {
       return null;
     }
   }
+
   // C15  ->      718, 47.87%, C15 O17 R14 Q18 R6 O3 M17 R17 P17 P18
   public static MoveData fromSummaryZen(String summary) {
     String[] params = summary.trim().split(",");
