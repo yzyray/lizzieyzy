@@ -25,6 +25,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.Locale;
+import java.util.NoSuchElementException;
 import java.util.ResourceBundle;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -230,41 +231,49 @@ public class GtpConsolePane extends JDialog {
     while (true) {
       try {
         Thread.sleep(100);
+      } catch (InterruptedException e1) {
+        // TODO Auto-generated catch block
+        e1.printStackTrace();
+      }
+      synchronized (docQueue) {
         while (!docQueue.isEmpty()) {
-          DocType doc = docQueue.removeFirst();
-          addDocs(doc);
-          if (Lizzie.config.logGtpToFile && bos != null) {
-            try {
-              bos.write(doc.content.getBytes());
-            } catch (IOException e) {
-              // TODO Auto-generated catch block
-              e.printStackTrace();
+          try {
+            DocType doc = docQueue.removeFirst();
+            addDocs(doc);
+            if (Lizzie.config.logGtpToFile && bos != null) {
+              try {
+                bos.write(doc.content.getBytes());
+              } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+              }
             }
+          } catch (NoSuchElementException e) {
+            e.printStackTrace();
+            break;
           }
         }
-        if ((Lizzie.leelaz != null && !Lizzie.leelaz.isLoaded())
-            || (EngineManager.isPreEngineGame
-                && (!Lizzie.engineManager
-                        .engineList
-                        .get(EngineManager.engineGameInfo.whiteEngineIndex)
-                        .isLoaded()
-                    || !Lizzie.engineManager
-                        .engineList
-                        .get(EngineManager.engineGameInfo.blackEngineIndex)
-                        .isLoaded()))) Lizzie.frame.refresh();
-        checkCount++;
-        if (checkCount > 300) {
-          checkCount = 0;
-          checkConsole();
-        } else {
-          int length = console.getDocument().getLength();
-          if (length != scrollLength) {
-            scrollLength = length;
-            console.setCaretPosition(scrollLength);
-          }
+      }
+      if ((Lizzie.leelaz != null && !Lizzie.leelaz.isLoaded())
+          || (EngineManager.isPreEngineGame
+              && (!Lizzie.engineManager
+                      .engineList
+                      .get(EngineManager.engineGameInfo.whiteEngineIndex)
+                      .isLoaded()
+                  || !Lizzie.engineManager
+                      .engineList
+                      .get(EngineManager.engineGameInfo.blackEngineIndex)
+                      .isLoaded()))) Lizzie.frame.refresh();
+      checkCount++;
+      if (checkCount > 300) {
+        checkCount = 0;
+        checkConsole();
+      } else {
+        int length = console.getDocument().getLength();
+        if (length != scrollLength) {
+          scrollLength = length;
+          console.setCaretPosition(scrollLength);
         }
-      } catch (Exception e) {
-        e.printStackTrace();
       }
     }
   }
