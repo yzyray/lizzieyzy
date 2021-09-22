@@ -1758,7 +1758,7 @@ public class BoardRenderer {
               continue;
 
             } else {
-              g.setColor(Color.RED.brighter());
+              g.setColor(Color.RED);
               drawPolygonSmall(g, stoneX, stoneY, stoneRadius);
             }
             if (shouldShowPreviousBestMoves() && !isShowingBranch) continue;
@@ -1927,7 +1927,7 @@ public class BoardRenderer {
         (float) (squareWidth * 0.33),
         squareWidth * 0.8,
         1);
-    g.setColor(Color.RED.brighter());
+    g.setColor(Color.RED);
     drawPolygonSmallPv(g, stoneX, stoneY, squareWidth);
 
     if (!(shouldShowPreviousBestMoves() && !isShowingBranch))
@@ -2346,7 +2346,7 @@ public class BoardRenderer {
 
             if (isMouseOver && isShowingBranch) {
               // Color oriColor = g.getColor();
-              g.setColor(Color.RED.brighter());
+              g.setColor(Color.RED);
               drawCircle(g, suggestionX, suggestionY, stoneRadius + 1, 11f);
               // g.setColor(oriColor);
             }
@@ -2380,7 +2380,7 @@ public class BoardRenderer {
 
             Color maxColor;
             if (isBestMove) maxColor = Lizzie.config.bestColor;
-            else maxColor = hue2 ? Color.RED.brighter() : Color.CYAN;
+            else maxColor = hue2 ? Color.RED : Color.CYAN;
             //
             boolean showWinrate = Lizzie.config.showWinrateInSuggestion;
             boolean showPlayouts = Lizzie.config.showPlayoutsInSuggestion;

@@ -605,7 +605,7 @@ public class SuggestionInfoOrderSettings extends JDialog {
       else fillCircle(g, suggestionX, suggestionY, stoneRadius);
       if (isBestMove) {
         if (Lizzie.config.showBlueRing) {
-          g.setColor(Color.BLUE.brighter());
+          g.setColor(Color.BLUE);
           drawCircleBest(g, suggestionX, suggestionY, stoneRadius + 1, 15f);
         } else {
           g.setColor(Color.GRAY);
@@ -636,7 +636,7 @@ public class SuggestionInfoOrderSettings extends JDialog {
       // number++;
       if (isMouseOver) {
         // Color oriColor = g.getColor();
-        g.setColor(Color.RED.brighter());
+        g.setColor(Color.RED);
         drawCircle(g, suggestionX, suggestionY, stoneRadius + 1, 11f);
         // g.setColor(oriColor);
       }
@@ -647,7 +647,7 @@ public class SuggestionInfoOrderSettings extends JDialog {
 
       Color maxColor;
       if (isBestMove) maxColor = Lizzie.config.bestColor;
-      else maxColor = Color.RED.brighter();
+      else maxColor = Color.RED;
       //
       boolean showWinrate = currentShowWinrateInSuggestion;
       boolean showPlayouts = currentShowPlayoutsInSuggestion;

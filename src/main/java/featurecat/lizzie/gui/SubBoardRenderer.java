@@ -989,8 +989,7 @@ public class SubBoardRenderer {
                   && lastMoveOpt.get()[0] == i
                   && lastMoveOpt.get()[1] == j)) {
             if (reverse) continue;
-            g.setColor(Color.RED.brighter()); // stoneHere.isBlack() ? Color.RED.brighter() :
-            // Color.BLUE.brighter());
+            g.setColor(Color.RED);
           } else {
             if (reverse) continue;
             g.setColor(stoneHere.isBlack() ^ reverse ? Color.WHITE : Color.BLACK);
@@ -998,7 +997,7 @@ public class SubBoardRenderer {
               Optional<MoveData> suggestedMove = getBestMove();
               if (suggestedMove.isPresent()) {
                 int[] coords = Board.convertNameToCoordinates(suggestedMove.get().coordinate);
-                if (coords[0] == i && coords[1] == j) g.setColor(Color.RED.brighter());
+                if (coords[0] == i && coords[1] == j) g.setColor(Color.RED);
               }
             }
           }

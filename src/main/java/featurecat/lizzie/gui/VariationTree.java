@@ -216,7 +216,6 @@ public class VariationTree {
       posy += YSPACING;
       cur = cur.next(true).get();
       if (cur.isCurTrunk()) curcolor = Color.WHITE;
-      // else curcolor = reverseColor(Lizzie.config.varPanelColor).brighter();
       else curcolor = new Color(103, 103, 103);
       if (cur.isEndDummay()) {
         continue;

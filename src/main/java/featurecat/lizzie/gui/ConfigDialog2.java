@@ -3459,8 +3459,7 @@ public class ConfigDialog2 extends JDialog {
     chkShowCommentNodeColor.setSelected(
         Lizzie.config.uiConfig.optBoolean("show-comment-node-color", true));
     lblCommentNodeColor.setColor(
-        Theme.array2Color(
-            Lizzie.config.uiConfig.optJSONArray("comment-node-color"), Color.BLUE.brighter()));
+        Theme.array2Color(Lizzie.config.uiConfig.optJSONArray("comment-node-color"), Color.BLUE));
     lblCommentBackgroundColor.setColor(
         Theme.array2Color(
             Lizzie.config.uiConfig.optJSONArray("comment-background-color"),

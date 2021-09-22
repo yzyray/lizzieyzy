@@ -264,7 +264,7 @@ public class Theme {
 
   /** The color of the node with the comment */
   public Color commentNodeColor() {
-    return getColorByKey("comment-node-color", Color.BLUE.brighter());
+    return getColorByKey("comment-node-color", Color.BLUE);
   }
 
   /** The color of the winrate line */

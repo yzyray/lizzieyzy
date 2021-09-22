@@ -1171,7 +1171,7 @@ public class FloatBoardRenderer {
                   (float) (squareWidth * 0.33),
                   squareWidth * 0.8,
                   1);
-              g.setColor(Color.RED.brighter());
+              g.setColor(Color.RED);
               drawPolygonSmallPv(g, stoneX, stoneY, squareWidth);
 
               drawString(
@@ -1185,7 +1185,7 @@ public class FloatBoardRenderer {
 
               continue;
             } else {
-              g.setColor(Color.RED.brighter());
+              g.setColor(Color.RED);
               drawPolygonSmall(g, stoneX, stoneY, stoneRadius);
               //              if (Lizzie.engineManager.isEngineGame
               //                  && Lizzie.engineManager.engineGameInfo.isGenmove
@@ -1619,7 +1619,7 @@ public class FloatBoardRenderer {
                   g.setColor(color);
                   fillCircle(g, suggestionX, suggestionY, stoneRadius + 1);
                   if (Lizzie.config.showBlueRing) {
-                    g.setColor(Color.BLUE.brighter());
+                    g.setColor(Color.BLUE);
                     drawCircle(g, suggestionX, suggestionY, stoneRadius + 1, 15f);
                   } else {
                     float alphaCircle = 48 + 196 * alphaRatio;
@@ -1661,7 +1661,7 @@ public class FloatBoardRenderer {
             }
 
             if (isMouseOver && isShowingBranch) {
-              g.setColor(Color.RED.brighter());
+              g.setColor(Color.RED);
               drawCircle(g, suggestionX, suggestionY, stoneRadius + 1, 11f);
             }
 
@@ -1678,7 +1678,7 @@ public class FloatBoardRenderer {
 
             Color maxColor;
             if (isBestMove) maxColor = Lizzie.config.bestColor;
-            else maxColor = hue2 ? Color.RED.brighter() : Color.CYAN;
+            else maxColor = hue2 ? Color.RED : Color.CYAN;
             boolean showWinrate = Lizzie.config.showWinrateInSuggestion;
             boolean showPlayouts = Lizzie.config.showPlayoutsInSuggestion;
             boolean showScoreLead = move.isKataData && Lizzie.config.showScoremeanInSuggestion;
