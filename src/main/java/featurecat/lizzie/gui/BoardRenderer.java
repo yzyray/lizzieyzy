@@ -2230,9 +2230,8 @@ public class BoardRenderer {
           float saturation = 1.0f;
           float brightness = 0.85f;
           float alpha;
-          alpha =
-              minAlpha
-                  + (maxAlpha - minAlpha) * max(0, (float) log(percentPlayouts) / alphaFactor + 1);
+          float alphaRatio = max(0, (float) log(percentPlayouts) / alphaFactor + 1);
+          alpha = minAlpha + (maxAlpha - minAlpha) * alphaRatio;
           Color hsbColor = Color.getHSBColor(hue, saturation, brightness);
           Color color =
               new Color(hsbColor.getRed(), hsbColor.getGreen(), hsbColor.getBlue(), (int) alpha);
@@ -2311,16 +2310,14 @@ public class BoardRenderer {
                     g.setColor(new Color(0, 0, 255, isNextMoveOnBest ? 170 : 255));
                     drawCircleBest(g, suggestionX, suggestionY, stoneRadius + 1, 15f);
                   } else {
-                    float alphaCircle =
-                        48 + 80 * max(0, (float) log(percentPlayouts) / alphaFactor + 1);
-                    g.setColor(new Color(0, 0, 0, (int) alphaCircle));
+                    float alphaCircle = 48 + 196 * alphaRatio;
+                    g.setColor(new Color(0, 185, 185, (int) alphaCircle));
                     drawCircle(g, suggestionX, suggestionY, stoneRadius + 1, 26.5f);
                   }
                 } else {
                   g.setColor(color);
                   fillCircle(g, suggestionX, suggestionY, stoneRadius + 1);
-                  float alphaCircle =
-                      48 + 80 * max(0, (float) log(percentPlayouts) / alphaFactor + 1);
+                  float alphaCircle = 48 + 80 * alphaRatio;
                   g.setColor(new Color(0, 0, 0, (int) alphaCircle));
                   drawCircle(g, suggestionX, suggestionY, stoneRadius + 1, 26.5f);
                 }
@@ -2933,9 +2930,8 @@ public class BoardRenderer {
           float saturation = 1.0f;
           float brightness = 0.85f;
           float alpha;
-          alpha =
-              minAlpha
-                  + (maxAlpha - minAlpha) * max(0, (float) log(percentPlayouts) / alphaFactor + 1);
+          float alphaRatio = max(0, (float) log(percentPlayouts) / alphaFactor + 1);
+          alpha = minAlpha + (maxAlpha - minAlpha) * alphaRatio;
 
           Color hsbColor = Color.getHSBColor(hue, saturation, brightness);
           Color color =
@@ -2959,7 +2955,7 @@ public class BoardRenderer {
             }
             g.setColor(color);
             fillCircle(g, suggestionX, suggestionY, stoneRadius + 1);
-            float alphaCircle = 48 + 80 * max(0, (float) log(percentPlayouts) / alphaFactor + 1);
+            float alphaCircle = 48 + 80 * alphaRatio;
             g.setColor(new Color(0, 0, 0, (int) alphaCircle));
             drawCircle(g, suggestionX, suggestionY, stoneRadius + 1, 26.5f);
           }
