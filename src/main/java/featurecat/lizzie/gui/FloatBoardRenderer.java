@@ -810,8 +810,10 @@ public class FloatBoardRenderer {
           // Display latest stone for ghost dead stone
           int index = Board.getIndex(i, j);
           Stone stone = branch.data.stones[index];
-          if (Lizzie.board.getData().stones[index] != Stone.EMPTY && !branch.isNewStone[index])
-            continue;
+          if (Lizzie.config.removeDeadChainInVariation) {
+
+          } else if (Lizzie.board.getData().stones[index] != Stone.EMPTY
+              && !branch.isNewStone[index]) continue;
           if (branch.data.moveNumberList[index] > maxBranchMoves(false)) continue;
 
           int stoneX = scaledMarginWidth + squareWidth * i;
@@ -831,13 +833,21 @@ public class FloatBoardRenderer {
               // Display latest stone for ghost dead stone
               int index = Board.getIndex(threadI, j);
               Stone stone = branch.data.stones[index];
-              //     boolean isGhost = (stone == Stone.BLACK_GHOST || stone == Stone.WHITE_GHOST);
-              if (Lizzie.board.getData().stones[index] != Stone.EMPTY && !branch.isNewStone[index])
-                continue;
+              boolean isCaptured = (stone == Stone.BLACK_CAPTURED || stone == Stone.WHITE_CAPTURED);
+              // if (!Lizzie.config.removeDeadChainInVariation)
+              if (Lizzie.board.getData().stones[index] != Stone.EMPTY
+                  && !branch.isNewStone[index]
+                  && !isCaptured) continue;
               if (branch.data.moveNumberList[index] > maxBranchMoves(false)) continue;
 
               int stoneX = scaledMarginWidth + squareWidth * threadI;
               int stoneY = scaledMarginHeight + squareHeight * j;
+              if (Lizzie.config.removeDeadChainInVariation) {
+                if (isCaptured) {
+                  g.setPaint(paint);
+                  fillCircle(g, stoneX, stoneY, stoneRadius + 1);
+                }
+              }
               // if(i==11&&j==6)
               // if (stone != Stone.BLACK_CAPTURED && stone != Stone.WHITE_CAPTURED)
               drawStone(g, gShadow, stoneX, stoneY, stone, threadI, j);

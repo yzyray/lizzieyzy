@@ -61,8 +61,9 @@ public class NewEngineGameDialog extends JDialog {
   private JCheckBox chkDisableWRNInGame;
   private JCheckBox chkUseAdvanceTime;
   private JCheckBox chkSGFstart;
+  private JFontCheckBox chkContinuePlay;
   private JFontButton btnSGFstart;
-  private ActionListener chkEnginePkContinueListener;
+  // private ActionListener chkEnginePkContinueListener;
   // private ActionListener chkBatchGameListener;
   private JFontLabel lblsgf =
       new JFontLabel(Lizzie.resourceBundle.getString("NewEngineGameDialog.lblsgf"));
@@ -537,19 +538,19 @@ public class NewEngineGameDialog extends JDialog {
     contentPanel.add(handicap);
     contentPanel.add(textFieldHandicap);
 
-    JFontLabel lblContinue =
-        new JFontLabel(
+    chkContinuePlay =
+        new JFontCheckBox(
             Lizzie.resourceBundle.getString("NewEngineGameDialog.lblContinue")); // ("当前局面续弈");
 
-    lblContinue.setBounds(25, 270, 136, 20);
-    LizzieFrame.toolbar.chkenginePkContinue.setBounds(5, 270, 20, 20);
-    contentPanel.add(lblContinue);
-    contentPanel.add(LizzieFrame.toolbar.chkenginePkContinue);
-
-    chkEnginePkContinueListener =
+    chkContinuePlay.setBounds(5, 270, 156, 20);
+    // LizzieFrame.toolbar.chkenginePkContinue.setBounds(5, 270, 20, 20);
+    contentPanel.add(chkContinuePlay);
+    // contentPanel.add(LizzieFrame.toolbar.chkenginePkContinue);
+    chkContinuePlay.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            if (LizzieFrame.toolbar.chkenginePkContinue.isSelected()) {
+            LizzieFrame.toolbar.chkenginePkContinue.setSelected(chkContinuePlay.isSelected());
+            if (chkContinuePlay.isSelected()) {
               chkSGFstart.setSelected(false);
               Lizzie.config.chkEngineSgfStart = false;
               btnSGFstart.setEnabled(false);
@@ -568,7 +569,7 @@ public class NewEngineGameDialog extends JDialog {
               }
             }
           }
-        };
+        });
 
     //    chkBatchGameListener =
     //        new ActionListener() {
@@ -582,7 +583,7 @@ public class NewEngineGameDialog extends JDialog {
     //            }
     //          }
     //        };
-    LizzieFrame.toolbar.chkenginePkContinue.addActionListener(chkEnginePkContinueListener);
+    // LizzieFrame.toolbar.chkenginePkContinue.addActionListener(chkEnginePkContinueListener);
     // LizzieFrame.toolbar.chkenginePkBatch.addActionListener(chkBatchGameListener);
 
     JFontLabel lblBatchGame =
@@ -779,7 +780,7 @@ public class NewEngineGameDialog extends JDialog {
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             if (chkSGFstart.isSelected()) {
-              LizzieFrame.toolbar.chkenginePkContinue.setSelected(false);
+              chkContinuePlay.setSelected(false);
               Lizzie.config.chkEngineSgfStart = true;
               btnSGFstart.setEnabled(true);
               cbxRandomSgf.setEnabled(true);
@@ -859,11 +860,13 @@ public class NewEngineGameDialog extends JDialog {
     }
     chkSGFstart.setSelected(Lizzie.config.chkEngineSgfStart);
     if (LizzieFrame.toolbar.chkenginePkContinue.isSelected()) {
+      chkContinuePlay.setSelected(true);
       chkSGFstart.setSelected(false);
       btnSGFstart.setEnabled(false);
       cbxRandomSgf.setEnabled(false);
       textFieldHandicap.setEnabled(false);
     } else {
+      chkContinuePlay.setSelected(false);
       textFieldHandicap.setEnabled(true);
       if (chkSGFstart.isSelected()) {
         btnSGFstart.setEnabled(true);
@@ -877,8 +880,8 @@ public class NewEngineGameDialog extends JDialog {
     addWindowListener(
         new WindowAdapter() {
           public void windowClosing(WindowEvent e) {
-            LizzieFrame.toolbar.chkenginePkContinue.removeActionListener(
-                chkEnginePkContinueListener);
+            //  LizzieFrame.toolbar.chkenginePkContinue.removeActionListener(
+            //      chkEnginePkContinueListener);
             //  LizzieFrame.toolbar.chkenginePkBatch.removeActionListener(chkBatchGameListener);
             resetFont();
           }
@@ -950,7 +953,8 @@ public class NewEngineGameDialog extends JDialog {
             && !LizzieFrame.toolbar.chkenginePkBatch.isSelected())
           Utils.showMsg(Lizzie.resourceBundle.getString("NewEngineGameDialog.multiSgfNotBatch"));
       }
-      LizzieFrame.toolbar.chkenginePkContinue.removeActionListener(chkEnginePkContinueListener);
+      //
+      // LizzieFrame.toolbar.chkenginePkContinue.removeActionListener(chkEnginePkContinueListener);
       //  LizzieFrame.toolbar.chkenginePkBatch.removeActionListener(chkBatchGameListener);
       String playerBlack =
           Lizzie.engineManager.engineList.get(LizzieFrame.toolbar.engineBlackToolbar)

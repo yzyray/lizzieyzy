@@ -98,19 +98,18 @@ public class Branch {
       data.stones[Board.getIndex(coord[0], coord[1])] =
           data.blackToPlay ? Stone.BLACK : Stone.WHITE;
       isNewStone[Board.getIndex(coord[0], coord[1])] = true;
-      if (Lizzie.frame.floatBoard == null || !Lizzie.frame.floatBoard.isVisible()) {
-        if (Lizzie.config.removeDeadChainInVariation
-            && !Lizzie.config.noCapture) { // 待完成增加选项 变化图中是否提子?
-          Board.removeDeadChainForBranch(
-              x + 1, y, data.blackToPlay ? Stone.WHITE : Stone.BLACK, data.stones);
-          Board.removeDeadChainForBranch(
-              x, y + 1, data.blackToPlay ? Stone.WHITE : Stone.BLACK, data.stones);
-          Board.removeDeadChainForBranch(
-              x - 1, y, data.blackToPlay ? Stone.WHITE : Stone.BLACK, data.stones);
-          Board.removeDeadChainForBranch(
-              x, y - 1, data.blackToPlay ? Stone.WHITE : Stone.BLACK, data.stones);
-        }
+      // if (Lizzie.frame.floatBoard == null || !Lizzie.frame.floatBoard.isVisible()) {
+      if (Lizzie.config.removeDeadChainInVariation && !Lizzie.config.noCapture) {
+        Board.removeDeadChainForBranch(
+            x + 1, y, data.blackToPlay ? Stone.WHITE : Stone.BLACK, data.stones);
+        Board.removeDeadChainForBranch(
+            x, y + 1, data.blackToPlay ? Stone.WHITE : Stone.BLACK, data.stones);
+        Board.removeDeadChainForBranch(
+            x - 1, y, data.blackToPlay ? Stone.WHITE : Stone.BLACK, data.stones);
+        Board.removeDeadChainForBranch(
+            x, y - 1, data.blackToPlay ? Stone.WHITE : Stone.BLACK, data.stones);
       }
+      // }
       data.moveNumberList[Board.getIndex(coord[0], coord[1])] =
           i + 1; // 待完成,pvVisits也类似保存,选项可选 pvVisits显示全部/最后一手/不显示
 

@@ -1985,29 +1985,15 @@ public class Leelaz {
     if (isZen) {
       if (EngineManager.isEngineGame) {
         if ((isResponseUpToDate())) {
-          if (line.contains("I pass")) {
-            played = true;
-            Lizzie.board.pass();
-            boolean isBlackEngine = currentEngineN == EngineManager.engineGameInfo.blackEngineIndex;
-            if (isBlackEngine) {
-              Lizzie.engineManager
-                  .engineList
-                  .get(EngineManager.engineGameInfo.blackEngineIndex)
-                  .playMoveNoPonder("B", "pass");
-              Lizzie.engineManager
-                  .engineList
-                  .get(EngineManager.engineGameInfo.whiteEngineIndex)
-                  .playMovePonder("B", "pass");
+          if (line.contains("Sequence:")) {
+            if (!this.bestMoves.isEmpty()) {
+              notifyAutoPK(true);
+              notifyAutoPlay(true);
             } else {
-              Lizzie.engineManager
-                  .engineList
-                  .get(EngineManager.engineGameInfo.whiteEngineIndex)
-                  .playMoveNoPonder("W", "pass");
-              Lizzie.engineManager
-                  .engineList
-                  .get(EngineManager.engineGameInfo.blackEngineIndex)
-                  .playMovePonder("W", "pass");
+              playPassInEngineGame();
             }
+          } else if (line.contains("I pass")) {
+            playPassInEngineGame();
           } else if (line.toLowerCase().contains("resign")) {
             resigned = true;
             nameCmd();
@@ -2158,6 +2144,32 @@ public class Leelaz {
       }
     }
     parseHeatMap(line);
+  }
+
+  private void playPassInEngineGame() {
+    // TODO Auto-generated method stub
+    played = true;
+    Lizzie.board.pass();
+    boolean isBlackEngine = currentEngineN == EngineManager.engineGameInfo.blackEngineIndex;
+    if (isBlackEngine) {
+      Lizzie.engineManager
+          .engineList
+          .get(EngineManager.engineGameInfo.blackEngineIndex)
+          .playMoveNoPonder("B", "pass");
+      Lizzie.engineManager
+          .engineList
+          .get(EngineManager.engineGameInfo.whiteEngineIndex)
+          .playMovePonder("B", "pass");
+    } else {
+      Lizzie.engineManager
+          .engineList
+          .get(EngineManager.engineGameInfo.whiteEngineIndex)
+          .playMoveNoPonder("W", "pass");
+      Lizzie.engineManager
+          .engineList
+          .get(EngineManager.engineGameInfo.blackEngineIndex)
+          .playMovePonder("W", "pass");
+    }
   }
 
   private void parseHeatMap(String line) {
