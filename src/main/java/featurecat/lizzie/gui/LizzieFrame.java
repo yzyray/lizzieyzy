@@ -7255,8 +7255,7 @@ public class LizzieFrame extends JFrame {
           sb.append(" " + String.format(Locale.ENGLISH, "%.1f", score));
         }
         sb.append("] ");
-      } else if (Lizzie.leelaz.isPondering()
-          && Lizzie.board.getHistory().getCurrentHistoryNode().previous().isPresent()
+      } else if (Lizzie.board.getHistory().getCurrentHistoryNode().previous().isPresent()
           && Lizzie.board
                   .getHistory()
                   .getCurrentHistoryNode()
@@ -7269,17 +7268,16 @@ public class LizzieFrame extends JFrame {
         BoardData data =
             Lizzie.board.getHistory().getCurrentHistoryNode().previous().get().getData();
         sb.append(
-            String.format(Locale.ENGLISH, "%.1f", winRate)
+            String.format(Locale.ENGLISH, "%.1f", data.winrate)
                 + " "
                 + Utils.getPlayoutsString(data.getPlayouts()));
         if (data.isKataData) {
-          sb.append(" " + String.format(Locale.ENGLISH, "%.1f", score));
+          sb.append(" " + String.format(Locale.ENGLISH, "%.1f", data.scoreMean));
         }
         sb.append("] ");
+      } else if (isPlayingAgainstLeelaz || isAnaPlayingAgainstLeelaz) {
+        sb.append("[ ---   ---   --- ] ");
       }
-      //    	  else {
-      //        sb.append("[ ---   ---   --- ] ");
-      //      }
     }
     if (hasEnginePkTitile && enginePkTitile != null) {
       sb.append(Lizzie.leelaz.oriEnginename);
