@@ -18,8 +18,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
-import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.Executors;
@@ -28,12 +26,6 @@ import org.jdesktop.swingx.util.OS;
 
 public class ReadBoard {
   public Process process;
-  private final ResourceBundle resourceBundle =
-      Lizzie.config.useLanguage == 0
-          ? ResourceBundle.getBundle("l10n.DisplayStrings")
-          : (Lizzie.config.useLanguage == 1
-              ? ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("zh", "CN"))
-              : ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("en", "US")));
   private InputStreamReader inputStream;
   private BufferedOutputStream outputStream;
   private ScheduledExecutorService executor;
@@ -87,11 +79,11 @@ public class ReadBoard {
     } catch (Exception e) {
       if (!noMsg)
         Utils.showMsg(
-            resourceBundle.getString("ReadBoard.port")
+            Lizzie.resourceBundle.getString("ReadBoard.port")
                 + " "
                 + port
                 + " "
-                + resourceBundle.getString("ReadBoard.portUsed")
+                + Lizzie.resourceBundle.getString("ReadBoard.portUsed")
                 + e.getMessage());
       try {
         s.close();
@@ -234,7 +226,7 @@ public class ReadBoard {
         if (!usePipe) {
           Utils.showMsg(e.getLocalizedMessage());
           SMessage msg = new SMessage();
-          msg.setMessage(resourceBundle.getString("ReadBoard.loadFailed"), 2);
+          msg.setMessage(Lizzie.resourceBundle.getString("ReadBoard.loadFailed"), 2);
           s.close();
           return;
         } else {
@@ -295,7 +287,7 @@ public class ReadBoard {
           e.printStackTrace();
         }
         SMessage msg = new SMessage();
-        msg.setMessage(resourceBundle.getString("ReadBoard.loadFailed"), 2);
+        msg.setMessage(Lizzie.resourceBundle.getString("ReadBoard.loadFailed"), 2);
         shutdown();
       } else shutdown();
       // Do no exit for switching weights

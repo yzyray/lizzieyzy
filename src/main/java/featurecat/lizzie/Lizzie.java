@@ -44,7 +44,7 @@ public class Lizzie {
   public static Leelaz leelaz;
   public static Leelaz leelaz2;
   public static String lizzieVersion = "yzy2.4.4";
-  public static String checkVersion = "210920";
+  public static String checkVersion = "210923";
   public static boolean readMode = false;
   private static String[] mainArgs;
   public static EngineManager engineManager;
