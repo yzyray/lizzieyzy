@@ -193,17 +193,12 @@ public class BoardData {
 	}
 
 	public void tryToSetBestMoves(List<MoveData> moves,String engName,boolean isFromLeelaz) {
-		// MoveData.getPlayouts(moves) > playouts
-//		if(moves.isEmpty())
-//			return;
 		int plyouts= MoveData.getPlayouts(moves);
 		if(Lizzie.config.enableLizzieCache&&!Lizzie.config.isAutoAna&&!EngineManager.isEngineGame) {
 			if (!(plyouts > playouts ||isChanged||pda!=Lizzie.leelaz.pda)) {
 				return;
 			}
 		}
-		//commented=false;
-	//	isPDA=isPdaEngine;
 				// added for change bestmoves when playouts is not increased
 				if(plyouts<playouts)
 					isChanged=false;
@@ -216,18 +211,11 @@ public class BoardData {
 					Lizzie.leelaz.scoreMean = moves.get(0).scoreMean;
 					Lizzie.leelaz.scoreStdev = moves.get(0).scoreStdev;}
 					isKataData=true;
-//					if(blackToPlay)
-//					scoreMeanBoard = moves.get(0).scoreMean+Lizzie.board.getHistory().getGameInfo().getKomi();
-//					else
-//						scoreMeanBoard=-moves.get(0).scoreMean+Lizzie.board.getHistory().getGameInfo().getKomi();
 				}				
 				else
-					isKataData=false;
-				if(moves.get(0).isSaiData)				
-					isSaiData=true;				
-				else
-					isSaiData=false;
-				 engineName=engName.replaceAll(" ", "");
+					isKataData=false;			
+					isSaiData=moves.get(0).isSaiData;			
+				 engineName=engName;
 				 komi=Lizzie.board.getHistory().getGameInfo().getKomi();
 				 if(isFromLeelaz)
 				 {if(Lizzie.leelaz.isDymPda||Lizzie.leelaz.pda!=0)
@@ -314,17 +302,12 @@ public class BoardData {
 	}
 
 	public void tryToSetBestMoves2(List<MoveData> moves,String engName,boolean isFromLeelaz) {
-		// MoveData.getPlayouts(moves) > playouts
-//		if(moves.isEmpty())
-//			return;
 		int plyouts= MoveData.getPlayouts(moves);
 		if(Lizzie.config.enableLizzieCache&&!Lizzie.config.isAutoAna) {
 			if(!(plyouts > playouts2 ||isChanged2||pda!=Lizzie.leelaz.pda)) {//||Lizzie.frame.urlSgf
 				return;
 			}
 		}
-		//commented2=false;
-	//	isPDA2=isPdaEngine;
 				if(plyouts<playouts2)
 					isChanged2=false;
 				setPlayouts2(plyouts);
@@ -335,19 +318,12 @@ public class BoardData {
 					if(Lizzie.leelaz2!=null	&&isFromLeelaz) {
 					Lizzie.leelaz2.scoreMean = moves.get(0).scoreMean;
 					Lizzie.leelaz2.scoreStdev = moves.get(0).scoreStdev;}
-//					if(blackToPlay)
-//						scoreMeanBoard2 = moves.get(0).scoreMean+Lizzie.board.getHistory().getGameInfo().getKomi();
-//						else
-//							scoreMeanBoard2=-moves.get(0).scoreMean+Lizzie.board.getHistory().getGameInfo().getKomi();
 					isKataData2=true;
 				}
 				else
-					isKataData2=false;
-				if(moves.get(0).isSaiData)				
-					isSaiData2=true;				
-				else
-					isSaiData2=false;
-				 engineName2=engName.replaceAll(" ", "");
+					isKataData2=false;		
+					isSaiData2=moves.get(0).isSaiData;			
+				 engineName2=engName;
 					if(isFromLeelaz) {
 				 if(Lizzie.leelaz2!=null&&(Lizzie.leelaz2.isDymPda||Lizzie.leelaz2.pda!=0))
 				 {

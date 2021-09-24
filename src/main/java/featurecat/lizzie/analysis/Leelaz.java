@@ -121,6 +121,7 @@ public class Leelaz {
   public int version = -1;
   //	public ArrayList<Integer> heatcount = new ArrayList<Integer>();
   public String currentEnginename = "";
+  public String bestMovesEnginename = "";
   public String oriEnginename = "";
   public boolean autoAnalysed = false;
   //	private boolean isSaving = false;
@@ -296,10 +297,7 @@ public class Leelaz {
     Pattern p = Pattern.compile(regEx);
     Matcher m = p.matcher(currentEnginename);
     currentEnginename = m.replaceAll(aa).trim();
-    //		if (currentEnginename.equals(""))
-    //			currentEnginename = currentWeight;
-    //		if (oriEnginename.equals(""))
-    //			oriEnginename = currentWeight;
+    bestMovesEnginename=currentEnginename.replaceAll(" ", "");
     return currentEnginename;
   }
 
@@ -316,7 +314,7 @@ public class Leelaz {
     // Get weight name
     //	Pattern wPattern = Pattern.compile("(?s).*?(--weights |-w |-model )([^'\" ]+)(?s).*");
     // Matcher wMatcher = wPattern.matcher(engineCommand);
-    currentEnginename = getEngineName(index);
+    currentEnginename = getEngineName(index);  
     isDownWithError = false;
     if (this.useJavaSSH) {
       this.javaSSH = new SSHController(this, this.ip, this.port);
@@ -560,7 +558,7 @@ public class Leelaz {
     }
 
     if (Lizzie.config.isDoubleEngineMode() && Lizzie.leelaz2 != null && this == Lizzie.leelaz2)
-      Lizzie.board.getData().tryToSetBestMoves2(bestMoves, currentEnginename, true);
+      Lizzie.board.getData().tryToSetBestMoves2(bestMoves, bestMovesEnginename, true);
     else {
       if (EngineManager.isEngineGame && Lizzie.config.enginePkPonder) {
         if ((Lizzie.board.getHistory().isBlacksTurn()
@@ -571,9 +569,9 @@ public class Leelaz {
                 && this
                     == Lizzie.engineManager.engineList.get(
                         EngineManager.engineGameInfo.whiteEngineIndex)) {
-          Lizzie.board.getData().tryToSetBestMoves(bestMoves, currentEnginename, true);
+          Lizzie.board.getData().tryToSetBestMoves(bestMoves, bestMovesEnginename, true);
         }
-      } else Lizzie.board.getData().tryToSetBestMoves(bestMoves, currentEnginename, true);
+      } else Lizzie.board.getData().tryToSetBestMoves(bestMoves, bestMovesEnginename, true);
     }
     return bestMoves;
   }
@@ -592,7 +590,7 @@ public class Leelaz {
       }
     }
     if (Lizzie.config.isDoubleEngineMode() && Lizzie.leelaz2 != null && this == Lizzie.leelaz2)
-      Lizzie.board.getData().tryToSetBestMoves2(bestMoves, currentEnginename, true);
+      Lizzie.board.getData().tryToSetBestMoves2(bestMoves, bestMovesEnginename, true);
     else {
       if (EngineManager.isEngineGame && Lizzie.config.enginePkPonder) {
         if ((Lizzie.board.getHistory().isBlacksTurn()
@@ -604,9 +602,9 @@ public class Leelaz {
                     == Lizzie.engineManager.engineList.get(
                         EngineManager.engineGameInfo.whiteEngineIndex)) {
           // if(!isModifying)
-          Lizzie.board.getData().tryToSetBestMoves(bestMoves, currentEnginename, true);
+          Lizzie.board.getData().tryToSetBestMoves(bestMoves, bestMovesEnginename, true);
         }
-      } else Lizzie.board.getData().tryToSetBestMoves(bestMoves, currentEnginename, true);
+      } else Lizzie.board.getData().tryToSetBestMoves(bestMoves, bestMovesEnginename, true);
     }
     return bestMoves;
   }
@@ -625,7 +623,7 @@ public class Leelaz {
       }
     }
     if (Lizzie.config.isDoubleEngineMode() && Lizzie.leelaz2 != null && this == Lizzie.leelaz2)
-      Lizzie.board.getData().tryToSetBestMoves2(bestMoves, currentEnginename, true);
+      Lizzie.board.getData().tryToSetBestMoves2(bestMoves, bestMovesEnginename, true);
     else {
       if (EngineManager.isEngineGame && Lizzie.config.enginePkPonder) {
         if ((Lizzie.board.getHistory().isBlacksTurn()
@@ -637,9 +635,9 @@ public class Leelaz {
                     == Lizzie.engineManager.engineList.get(
                         EngineManager.engineGameInfo.whiteEngineIndex)) {
           //	if(!isModifying)
-          Lizzie.board.getData().tryToSetBestMoves(bestMoves, currentEnginename, true);
+          Lizzie.board.getData().tryToSetBestMoves(bestMoves, bestMovesEnginename, true);
         }
-      } else Lizzie.board.getData().tryToSetBestMoves(bestMoves, currentEnginename, true);
+      } else Lizzie.board.getData().tryToSetBestMoves(bestMoves, bestMovesEnginename, true);
     }
     return bestMoves;
   }
@@ -755,7 +753,7 @@ public class Leelaz {
         }
         if (this.isZen) {
           if (bestMoves != null && !bestMoves.isEmpty()) {
-            Lizzie.board.getData().tryToSetBestMoves(bestMoves, this.currentEnginename, true);
+            Lizzie.board.getData().tryToSetBestMoves(bestMoves, bestMovesEnginename, true);
             bestMoves = new ArrayList<>();
           }
         }
@@ -1752,7 +1750,7 @@ public class Leelaz {
     // if(resigned)
     //	return;
     if (!bestMoves.isEmpty())
-      Lizzie.board.getHistory().getData().tryToSetBestMoves(bestMoves, currentEnginename, true);
+      Lizzie.board.getHistory().getData().tryToSetBestMoves(bestMoves, bestMovesEnginename, true);
     this.resigned = true;
     if (!this.doublePass
         && !this.outOfMoveNum
@@ -2038,7 +2036,7 @@ public class Leelaz {
 
               mv.order = bestMoves.size();
               bestMoves.add(mv);
-              Lizzie.board.getData().tryToSetBestMoves(bestMoves, currentEnginename, true);
+              Lizzie.board.getData().tryToSetBestMoves(bestMoves, bestMovesEnginename, true);
             }
           }
         }
@@ -2086,8 +2084,8 @@ public class Leelaz {
           if (Lizzie.config.isDoubleEngineMode()
               && Lizzie.leelaz2 != null
               && this == Lizzie.leelaz2)
-            Lizzie.board.getData().tryToSetBestMoves2(bestMoves, currentEnginename, true);
-          else Lizzie.board.getData().tryToSetBestMoves(bestMoves, currentEnginename, true);
+            Lizzie.board.getData().tryToSetBestMoves2(bestMoves, bestMovesEnginename, true);
+          else Lizzie.board.getData().tryToSetBestMoves(bestMoves, bestMovesEnginename, true);
         }
         leela0110UpdatePonder();
         Lizzie.frame.refresh(1);
@@ -2358,7 +2356,7 @@ public class Leelaz {
                           .previous()
                           .get()
                           .getData()
-                          .tryToSetBestMoves(bestMovesPrevious, currentEnginename, true);
+                          .tryToSetBestMoves(bestMovesPrevious, bestMovesEnginename, true);
                     bestMovesPrevious = new ArrayList<>();
                     canGetSummaryInfo = false;
                   }
