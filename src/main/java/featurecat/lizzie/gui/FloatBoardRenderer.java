@@ -1622,14 +1622,14 @@ public class FloatBoardRenderer {
                     g.setColor(Color.BLUE);
                     drawCircle(g, suggestionX, suggestionY, stoneRadius + 1, 15f);
                   } else {
-                    float alphaCircle = 48 + 196 * alphaRatio;
-                    g.setColor(new Color(0, 185, 185, (int) alphaCircle));
+                    float alphaCircle = 48 + 48 * alphaRatio;
+                    g.setColor(new Color(0, 0, 0, (int) alphaCircle));
                     drawCircle(g, suggestionX, suggestionY, stoneRadius + 1, 26.5f);
                   }
                 } else {
                   g.setColor(color);
                   fillCircle(g, suggestionX, suggestionY, stoneRadius + 1);
-                  float alphaCircle = 48 + 80 * alphaRatio;
+                  float alphaCircle = 48 + 48 * alphaRatio;
                   g.setColor(new Color(0, 0, 0, (int) alphaCircle));
                   drawCircle(g, suggestionX, suggestionY, stoneRadius + 1, 26.5f);
                 }
@@ -2221,7 +2221,7 @@ public class FloatBoardRenderer {
             }
             g.setColor(color);
             fillCircle(g, suggestionX, suggestionY, stoneRadius + 1);
-            float alphaCircle = 48 + 80 * alphaRatio;
+            float alphaCircle = 48 + 48 * alphaRatio;
             g.setColor(new Color(0, 0, 0, (int) alphaCircle));
             drawCircle(g, suggestionX, suggestionY, stoneRadius + 1, 26.5f);
           }

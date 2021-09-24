@@ -61,7 +61,7 @@ public class BoardRenderer {
   private int scaledMarginHeight, availableHeight, squareHeight;
   public Optional<Branch> branchOpt = Optional.empty();
   private List<MoveData> bestMoves = new ArrayList<MoveData>();
-  private int[] bestCoords = {-1, -1};
+  private List<int[]> nextCoords;
   private MoveData mouseOverTemp = new MoveData();
   private BoardHistoryNode mouseOverTempNode;
 
@@ -146,7 +146,6 @@ public class BoardRenderer {
   private boolean showBlunderScore;
   private String nextBlunderWinrate;
   private String nextBlunderScore;
-  private boolean isNextMoveOnBest = false;
 
   public void setOrder(int index) {
     // TODO Auto-generated method stub
@@ -167,6 +166,7 @@ public class BoardRenderer {
 
     // Stopwatch timer = new Stopwatch();
     drawGoban(g);
+    nextCoords = new ArrayList<int[]>();
     if (Board.boardWidth <= 3) {
       int oriStoneRadius = stoneRadius;
       stoneRadius = stoneRadius / 2;
@@ -207,13 +207,11 @@ public class BoardRenderer {
         && Lizzie.config.moveRankMarkLastMove >= 0
         && !shouldShowPreviousBestMoves()) drawMoveRankMark(g);
     else drawMoveNumbers(g);
-
     if (Lizzie.frame.isInScoreMode) {
     } else {
       if (!Lizzie.config.isShowingMarkupTools) drawStoneMarkup(g);
       this.shouldIgnoreBestMove = false;
       if (!isMouseOverNextBlunder) isShowingNextMoveBlunder = false;
-      isNextMoveOnBest = false;
       if (!isShowingRawBoard()) {
         if (Lizzie.config.showNextMoves && !isShowingBranch) {
           drawNextMoves(g);
@@ -2303,23 +2301,26 @@ public class BoardRenderer {
                   fillCircle(g, suggestionX, suggestionY, stoneRadius + 1);
                   g.setComposite(comp);
                 }
+                boolean isOnNext = isOnNext(coords);
                 if (isBestMove) {
                   g.setColor(color);
                   fillCircle(g, suggestionX, suggestionY, stoneRadius + 1);
                   if (Lizzie.config.showBlueRing) {
-                    g.setColor(new Color(0, 0, 255, isNextMoveOnBest ? 170 : 255));
+                    g.setColor(new Color(0, 0, 255, isOnNext ? 170 : 255));
                     drawCircleBest(g, suggestionX, suggestionY, stoneRadius + 1, 15f);
-                  } else {
-                    float alphaCircle = 48 + 196 * alphaRatio;
-                    g.setColor(new Color(0, 185, 185, (int) alphaCircle));
+                  } else if (!isOnNext) {
+                    float alphaCircle = 48 + 48 * alphaRatio;
+                    g.setColor(new Color(0, 0, 0, (int) alphaCircle));
                     drawCircle(g, suggestionX, suggestionY, stoneRadius + 1, 26.5f);
                   }
                 } else {
                   g.setColor(color);
                   fillCircle(g, suggestionX, suggestionY, stoneRadius + 1);
-                  float alphaCircle = 48 + 80 * alphaRatio;
-                  g.setColor(new Color(0, 0, 0, (int) alphaCircle));
-                  drawCircle(g, suggestionX, suggestionY, stoneRadius + 1, 26.5f);
+                  if (!isOnNext) {
+                    float alphaCircle = 48 + 48 * alphaRatio;
+                    g.setColor(new Color(0, 0, 0, (int) alphaCircle));
+                    drawCircle(g, suggestionX, suggestionY, stoneRadius + 1, 26.5f);
+                  }
                 }
               }
             }
@@ -2808,6 +2809,16 @@ public class BoardRenderer {
     }
   }
 
+  private boolean isOnNext(int[] coord) {
+    if (nextCoords.isEmpty()) return false;
+    else {
+      for (int[] nextCoord : nextCoords) {
+        if (nextCoord[0] == coord[0] && nextCoord[1] == coord[1]) return true;
+      }
+    }
+    return false;
+  }
+
   private void drawOrder(Graphics2D g, int x, int y, int order, boolean blackToPlay) {
     // TODO Auto-generated method stub
     if (shouldShowPreviousBestMoves()) blackToPlay = !blackToPlay;
@@ -2955,7 +2966,7 @@ public class BoardRenderer {
             }
             g.setColor(color);
             fillCircle(g, suggestionX, suggestionY, stoneRadius + 1);
-            float alphaCircle = 48 + 80 * alphaRatio;
+            float alphaCircle = 48 + 48 * alphaRatio;
             g.setColor(new Color(0, 0, 0, (int) alphaCircle));
             drawCircle(g, suggestionX, suggestionY, stoneRadius + 1, 26.5f);
           }
@@ -2973,9 +2984,6 @@ public class BoardRenderer {
     if (nexts.size() > 0) {
       color = nexts.get(0).getData().lastMoveColor == Stone.BLACK ? Color.BLACK : Color.WHITE;
       g.setColor(color);
-      if (!bestMoves.isEmpty()) {
-        bestCoords = Board.convertNameToCoordinates(bestMoves.get(0).coordinate);
-      }
       for (int i = 0; i < nexts.size(); i++) {
         boolean first = (i == 0);
         nexts
@@ -2984,9 +2992,7 @@ public class BoardRenderer {
             .lastMove
             .ifPresent(
                 nextMove -> {
-                  if (first && bestCoords[0] == nextMove[0] && bestCoords[1] == nextMove[1]) {
-                    isNextMoveOnBest = true;
-                  }
+                  nextCoords.add(nextMove);
                   int moveX = x + scaledMarginWidth + squareWidth * nextMove[0];
                   int moveY = y + scaledMarginHeight + squareHeight * nextMove[1];
                   if (first) {
@@ -3087,10 +3093,6 @@ public class BoardRenderer {
                                   g, color, moveX, moveY, 100 - nextMoveData.winrate, true);
                               hasFillCircle = true;
                             }
-                            //                            else {
-                            //                            	isShowingNextMoveBlunder=false;
-                            //                            	this.shouldIgnoreBestMove=false;
-                            //                            }
                           }
                         }
                       }
@@ -3100,10 +3102,10 @@ public class BoardRenderer {
                       drawCircle(g, moveX, moveY, stoneRadius + 2);
                     }
                   } else {
+                    g.setStroke(new BasicStroke(Math.max(stoneRadius / 15f, 1f)));
                     drawCircle(
                         g, moveX, moveY, stoneRadius + 2); // Slightly outside best move circle
                   }
-                  if (first) g.setStroke(new BasicStroke(Math.max(stoneRadius / 15f, 1f)));
                 });
       }
     }
