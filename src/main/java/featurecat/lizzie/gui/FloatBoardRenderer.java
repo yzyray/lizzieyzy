@@ -32,7 +32,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.concurrent.CountDownLatch;
 
 public class FloatBoardRenderer {
   // Percentage of the boardLength to offset before drawing black lines
@@ -804,7 +803,7 @@ public class FloatBoardRenderer {
 
     g.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
     drawShadowCache();
-    final CountDownLatch latch = new CountDownLatch(Board.boardWidth);
+    //   final CountDownLatch latch = new CountDownLatch(Board.boardWidth);
     if (Lizzie.config.usePureStone) {
       for (int i = 0; i < Board.boardWidth; i++) {
         for (int j = 0; j < Board.boardHeight; j++) {
@@ -827,45 +826,39 @@ public class FloatBoardRenderer {
       }
     } else {
       for (int i = 0; i < Board.boardWidth; i++) {
-        final int threadI = i;
-        new Thread() {
-          public void run() {
-            for (int j = 0; j < Board.boardHeight; j++) {
-              // Display latest stone for ghost dead stone
-              int index = Board.getIndex(threadI, j);
-              Stone stone = branch.data.stones[index];
-              boolean isCaptured = (stone == Stone.BLACK_CAPTURED || stone == Stone.WHITE_CAPTURED);
-              // if (!Lizzie.config.removeDeadChainInVariation)
-              if (Lizzie.board.getData().stones[index] != Stone.EMPTY
-                  && !branch.isNewStone[index]
-                  && !isCaptured) continue;
-              if (branch.data.moveNumberList[index] > maxBranchMoves(false)) continue;
-
-              int stoneX = scaledMarginWidth + squareWidth * threadI;
-              int stoneY = scaledMarginHeight + squareHeight * j;
-              if (Lizzie.config.removeDeadChainInVariation) {
-                if (isCaptured) {
-                  g.setPaint(paint);
-                  fillCircle(g, stoneX, stoneY, stoneRadius + 1);
-                }
-              }
-              // if(i==11&&j==6)
-              // if (stone != Stone.BLACK_CAPTURED && stone != Stone.WHITE_CAPTURED)
-              drawStone(g, gShadow, stoneX, stoneY, stone, threadI, j);
-              if (threadI == Lizzie.frame.floatBoard.mouseOverCoordinate[0]
-                  && j == Lizzie.frame.floatBoard.mouseOverCoordinate[1])
-                isMouseOverStoneBlack = stone.isBlack();
+        for (int j = 0; j < Board.boardHeight; j++) {
+          // Display latest stone for ghost dead stone
+          int index = Board.getIndex(i, j);
+          Stone stone = branch.data.stones[index];
+          boolean isCaptured = (stone == Stone.BLACK_CAPTURED || stone == Stone.WHITE_CAPTURED);
+          // if (!Lizzie.config.removeDeadChainInVariation)
+          if (Lizzie.board.getData().stones[index] != Stone.EMPTY
+              && !branch.isNewStone[index]
+              && !isCaptured) continue;
+          if (branch.data.moveNumberList[index] > maxBranchMoves(false)) continue;
+          int stoneX = scaledMarginWidth + squareWidth * i;
+          int stoneY = scaledMarginHeight + squareHeight * j;
+          if (Lizzie.config.removeDeadChainInVariation) {
+            if (isCaptured) {
+              g.setPaint(paint);
+              fillCircle(g, stoneX, stoneY, stoneRadius + 1);
             }
-            latch.countDown();
           }
-        }.start();
+          // if(i==11&&j==6)
+          // if (stone != Stone.BLACK_CAPTURED && stone != Stone.WHITE_CAPTURED)
+          drawStone(g, gShadow, stoneX, stoneY, stone, i, j);
+          if (i == Lizzie.frame.floatBoard.mouseOverCoordinate[0]
+              && j == Lizzie.frame.floatBoard.mouseOverCoordinate[1])
+            isMouseOverStoneBlack = stone.isBlack();
+        }
+        //    latch.countDown();
       }
-      try {
-        latch.await();
-      } catch (InterruptedException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
+      //      try {
+      //        latch.await();
+      //      } catch (InterruptedException e) {
+      //        // TODO Auto-generated catch block
+      //        e.printStackTrace();
+      //      }
     }
     g.dispose();
     gShadow.dispose();
@@ -1603,7 +1596,7 @@ public class FloatBoardRenderer {
                   fillCircle(g, suggestionX, suggestionY, stoneRadius + 1);
                   if (Lizzie.config.showBlueRing) {
                     g.setColor(Color.BLUE);
-                    drawCircle(g, suggestionX, suggestionY, stoneRadius + 1, 15f);
+                    drawCircle(g, suggestionX, suggestionY, stoneRadius + 2, 15f);
                   } else {
                     float alphaCircle = 48 + 48 * alphaRatio;
                     g.setColor(new Color(0, 0, 0, (int) alphaCircle));
@@ -2413,16 +2406,6 @@ public class FloatBoardRenderer {
       cachedWallpaperImage = Lizzie.config.theme.background();
     }
     return cachedWallpaperImage;
-  }
-
-  /** Draw texture image */
-  public void drawTextureImage(
-      Graphics2D g, BufferedImage img, int x, int y, int width, int height, boolean createPaint) {
-    if (createPaint) {
-      paint = new TexturePaint(img, new Rectangle(0, 0, img.getWidth(), img.getHeight()));
-      g.setPaint(paint);
-    } else g.setPaint(new TexturePaint(img, new Rectangle(0, 0, img.getWidth(), img.getHeight())));
-    g.fill(new Rectangle(x, y, width, height));
   }
 
   /** Fills in a circle centered at (centerX, centerY) with radius $radius$ */

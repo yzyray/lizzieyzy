@@ -2315,7 +2315,7 @@ public class BoardRenderer {
                   fillCircle(g, suggestionX, suggestionY, stoneRadius + 1);
                   if (Lizzie.config.showBlueRing) {
                     g.setColor(new Color(0, 0, 255, isOnNext ? 170 : 255));
-                    drawCircleBest(g, suggestionX, suggestionY, stoneRadius + 1, 15f);
+                    drawCircle(g, suggestionX, suggestionY, stoneRadius + 2, 15f);
                   } else if (!isOnNext) {
                     float alphaCircle = 48 + 48 * alphaRatio;
                     g.setColor(new Color(0, 0, 0, (int) alphaCircle));
@@ -3813,11 +3813,6 @@ public class BoardRenderer {
   private void drawCircle(Graphics2D g, int centerX, int centerY, int radius) {
     // g.setStroke(new BasicStroke(radius / 11.5f));
     g.drawOval(centerX - radius, centerY - radius, 2 * radius, 2 * radius);
-  }
-
-  private void drawCircleBest(Graphics2D g, int centerX, int centerY, int radius, float f) {
-    g.setStroke(new BasicStroke(radius / f));
-    g.drawOval(centerX - radius - 1, centerY - radius - 1, 2 * radius + 2, 2 * radius + 2);
   }
 
   private void drawCircle(Graphics2D g, int centerX, int centerY, int radius, float f) {

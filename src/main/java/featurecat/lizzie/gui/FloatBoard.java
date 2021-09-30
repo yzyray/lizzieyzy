@@ -31,7 +31,6 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
 public class FloatBoard extends JDialog {
 
@@ -461,12 +460,7 @@ public class FloatBoard extends JDialog {
   }
 
   private void refreshByLis() {
-    SwingUtilities.invokeLater(
-        new Runnable() {
-          public void run() {
-            mainPanel.repaint();
-          }
-        });
+    mainPanel.repaint();
   }
 
   public void replayBranch() {
