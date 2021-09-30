@@ -117,7 +117,7 @@ public class BoardRenderer {
   public boolean[] hasDrawBackground = new boolean[Board.boardHeight * Board.boardWidth];
   private boolean isFancyBoard = true;
   private Color noFancyColor;
-  // private boolean isMainBoard = false;
+  private boolean changedSize = false;
   private boolean isIndependBoard = false;
   //  public boolean reverseBestmoves = false;
   private int maxAlpha = 240;
@@ -201,12 +201,14 @@ public class BoardRenderer {
 
     renderImages(g);
 
-    if (!isShowingBranch
-        && Lizzie.config.allowMoveNumber == 0
+    if (Lizzie.config.allowMoveNumber == 0
         && !Lizzie.frame.isInPlayMode()
-        && Lizzie.config.moveRankMarkLastMove >= 0
-        && !shouldShowPreviousBestMoves()) drawMoveRankMark(g);
-    else drawMoveNumbers(g);
+        && !EngineManager.isEngineGame
+        && Lizzie.config.moveRankMarkLastMove >= 0) {
+      drawMoveRankMark(g);
+      if (isShowingBranch) drawMoveNumbers(g);
+    } else drawMoveNumbers(g);
+
     if (Lizzie.frame.isInScoreMode) {
     } else {
       if (!Lizzie.config.isShowingMarkupTools) drawStoneMarkup(g);
@@ -281,9 +283,9 @@ public class BoardRenderer {
   }
 
   private void drawMoveRankMark(Graphics2D g) {
-    g.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
     Board board = Lizzie.board;
     Optional<int[]> lastMoveOpt = branchOpt.map(b -> b.data.lastMove).orElse(board.getLastMove());
+    g.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
     drawPass(g, board, lastMoveOpt);
     BoardHistoryNode node = Lizzie.board.getHistory().getCurrentHistoryNode();
     int limit = Lizzie.config.moveRankMarkLastMove;
@@ -297,18 +299,30 @@ public class BoardRenderer {
         if (limit < 0) break;
       }
       if (node.getData().lastMove.isPresent()) {
+        int[] coords = node.getData().lastMove.get();
+        int index = Board.getIndex(coords[0], coords[1]);
+        if (branchOpt.isPresent()) {
+          if (branchOpt.get().isNewStone[index] || branchOpt.get().data.stones[index].isEmpty()) {
+            node = node.previous().get();
+            continue;
+          }
+        }
+        int moveNumber =
+            Lizzie.frame.isTrying
+                ? -node.getData().moveNumber
+                : node.getData().moveMNNumber > -1
+                    ? node.getData().moveMNNumber
+                    : node.getData().moveNumber;
         if (node == Lizzie.board.getHistory().getCurrentHistoryNode()) {
+          int markX = x + scaledMarginWidth + squareWidth * coords[0];
+          int markY = y + scaledMarginHeight + squareHeight * coords[1];
           int playouts = isSub ? node.getData().getPlayouts2() : node.getData().getPlayouts();
           int playoutsPrevious =
               isSub
                   ? node.previous().get().getData().getPlayouts2()
                   : node.previous().get().getData().getPlayouts();
           if (playouts > 0 && playoutsPrevious > 0) {
-            int[] coords = node.getData().lastMove.get();
-            int index = Board.getIndex(coords[0], coords[1]);
-            if (moveNumberList[index] > 0) {
-              int markX = x + scaledMarginWidth + squareWidth * coords[0];
-              int markY = y + scaledMarginHeight + squareHeight * coords[1];
+            if (moveNumberList[index] == moveNumber) {
               if (node.isBest) drawMoveRankMarkCircle(g, markX, markY, stoneRadius, 0, 0, true);
               else
                 drawMoveRankMarkCircle(
@@ -330,13 +344,17 @@ public class BoardRenderer {
               drawList[index] = 1;
             }
           }
+          g.setColor(node.getData().lastMoveColor.isWhite() ? Color.BLACK : Color.WHITE);
+          drawCircle(g, markX, markY, (int) Math.round(squareWidth * 0.22f), 5f);
+          if (Lizzie.config.moveRankMarkLastMove > 1 || Lizzie.config.moveRankMarkLastMove == 0) {
+            g.setColor(Color.RED);
+            drawPolygonSmall(g, markX, markY, stoneRadius);
+          }
         } else {
           NodeInfo nodeInfo =
               isSub ? node.previous().get().nodeInfo2 : node.previous().get().nodeInfo;
           if (nodeInfo.analyzed && nodeInfo.previousPlayouts > 0) {
-            int[] coords = node.getData().lastMove.get();
-            int index = Board.getIndex(coords[0], coords[1]);
-            if (moveNumberList[index] > 0 && drawList[index] != 1) {
+            if (moveNumberList[index] == moveNumber && drawList[index] != 1) {
               double winrateDiff =
                   Lizzie.config.useWinLossInMoveRank ? nodeInfo.getWinrateDiff() : 0;
               double scoreDiff =
@@ -350,18 +368,6 @@ public class BoardRenderer {
         }
       }
       node = node.previous().get();
-    }
-    node = Lizzie.board.getHistory().getCurrentHistoryNode();
-    if (node.getData().lastMove.isPresent()) {
-      int[] coords = node.getData().lastMove.get();
-      int markX = x + scaledMarginWidth + squareWidth * coords[0];
-      int markY = y + scaledMarginHeight + squareHeight * coords[1];
-      g.setColor(node.getData().lastMoveColor.isWhite() ? Color.BLACK : Color.WHITE);
-      drawCircle(g, markX, markY, (int) Math.round(squareWidth * 0.22f), 5f);
-      if (Lizzie.config.moveRankMarkLastMove > 1 || Lizzie.config.moveRankMarkLastMove == 0) {
-        g.setColor(Color.RED);
-        drawPolygonSmall(g, markX, markY, stoneRadius);
-      }
     }
   }
 
@@ -713,7 +719,7 @@ public class BoardRenderer {
             != (showCoordinates() || isShowingPolicyHeat())
         || changedName
         || Lizzie.board.isForceRefresh()) {
-
+      changedSize = true;
       cachedShadow = null;
       cachedGhostShadow2 = null;
 
@@ -1436,13 +1442,15 @@ public class BoardRenderer {
     branchOpt = Optional.of(branch);
     variationOpt = Optional.of(variation);
     isShowingBranch = true;
-    if (Lizzie.config.noRefreshOnMouseMove) {
-      if (variation == cachedVariation
-          && displayedBranchLength == cachedDisplayedBranchLengthFroBranch) return;
-    } else {
-      if (compareVariationListEquals(variation, cachedVariation)
-          && displayedBranchLength == cachedDisplayedBranchLengthFroBranch) return;
-    }
+    if (!changedSize) {
+      if (Lizzie.config.noRefreshOnMouseMove) {
+        if (variation == cachedVariation
+            && displayedBranchLength == cachedDisplayedBranchLengthFroBranch) return;
+      } else {
+        if (compareVariationListEquals(variation, cachedVariation)
+            && displayedBranchLength == cachedDisplayedBranchLengthFroBranch) return;
+      }
+    } else changedSize = false;
     cachedVariation = variation;
     cachedDisplayedBranchLengthFroBranch = displayedBranchLength;
     BufferedImage tempBranchStonesImage = new BufferedImage(boardWidth, boardHeight, TYPE_INT_ARGB);
@@ -2213,15 +2221,15 @@ public class BoardRenderer {
           if (outOfOrder && !isMouseOver && hasBackground) continue;
 
           float hue;
-          boolean hue2;
+          // boolean hue2;
           if (isBestMove) {
             hue = cyanHue;
-            hue2 = true;
+            //    hue2 = true;
           } else {
             fraction = percentPlayouts;
             fraction =
                 Math.pow(fraction, (double) 1 / Lizzie.config.suggestionColorRatio); // 提升好选点温度
-            hue2 = fraction > 0.375 ? true : false;
+            //   hue2 = fraction > 0.375 ? true : false;
             hue = redHue + (greenHue - redHue) * (float) fraction;
           }
 
@@ -2378,16 +2386,15 @@ public class BoardRenderer {
                 isGenmoveBest = true;
               }
             }
-
             Color maxColor;
             if (isBestMove) maxColor = Lizzie.config.bestColor;
-            else maxColor = hue2 ? Color.RED : Color.CYAN;
-            //
+            else maxColor = fraction > 0.375 ? Color.RED : new Color(100, 255, 235);
+
             boolean showWinrate = Lizzie.config.showWinrateInSuggestion;
             boolean showPlayouts = Lizzie.config.showPlayoutsInSuggestion;
             boolean showScoreLead = move.isKataData && Lizzie.config.showScoremeanInSuggestion;
-            boolean canShowMaxColor =
-                Lizzie.config.showSuggestionMaxRed && !isMouseOver && !isGenmoveBest;
+            boolean canShowMaxColor = Lizzie.config.showSuggestionMaxRed && !isGenmoveBest;
+            if (isMouseOver && displayedBranchLength != 1) canShowMaxColor = false;
             Color oriColor = g.getColor();
             if (showScoreLead && showPlayouts && showWinrate) {
               double score = move.scoreMean;
@@ -2409,7 +2416,7 @@ public class BoardRenderer {
                   canShowMaxColor && move.scoreMean == maxScoreMean;
               String winrateText = String.format(Locale.ENGLISH, "%.1f", roundedWinrate);
               String playoutsText = Utils.getPlayoutsString(move.playouts);
-              String scoreLeadText = String.format(Locale.ENGLISH, "%.1f", score);
+              String scoreLeadText = String.valueOf(round(score * 10) / 10.0);
               if (Lizzie.config.useDefaultInfoRowOrder) {
                 if (shouldShowMaxColorWinrate) g.setColor(maxColor);
                 if (roundedWinrate < 10)
@@ -4347,14 +4354,14 @@ public class BoardRenderer {
   }
 
   //  private Color reverseColor(Color color) {
-  //	    // System.out.println("color=="+color);
-  //	    int r = color.getRed();
-  //	    int g = color.getGreen();
-  //	    int b = color.getBlue();
-  //	    int r_ = 255 - r;
-  //	    int g_ = 255 - g;
-  //	    int b_ = 255 - b;
-  //	    Color newColor = new Color(r_, g_, b_);
-  //	    return newColor;
-  //	  }
+  //    // System.out.println("color=="+color);
+  //    int r = color.getRed();
+  //    int g = color.getGreen();
+  //    int b = color.getBlue();
+  //    int r_ = 255 - r;
+  //    int g_ = 255 - g;
+  //    int b_ = 255 - b;
+  //    Color newColor = new Color(r_, g_, b_);
+  //    return newColor;
+  //  }
 }

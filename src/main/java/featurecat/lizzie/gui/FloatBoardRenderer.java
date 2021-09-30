@@ -130,11 +130,12 @@ public class FloatBoardRenderer {
 
     drawBranch();
     renderImages(g);
-    if (!isShowingBranch
-        && Lizzie.config.allowMoveNumber == 0
+    if (Lizzie.config.allowMoveNumber == 0
         && !Lizzie.config.disableMoveRankInOrigin
-        && Lizzie.config.moveRankMarkLastMove >= 0) drawMoveRankMark(g);
-    else drawMoveNumbers(g);
+        && Lizzie.config.moveRankMarkLastMove >= 0) {
+      drawMoveRankMark(g);
+      if (isShowingBranch) drawMoveNumbers(g);
+    } else drawMoveNumbers(g);
     g.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
     if (!isShowingRawBoard()) {
       if (Lizzie.config.showBestMovesNow()) {
@@ -810,10 +811,10 @@ public class FloatBoardRenderer {
           // Display latest stone for ghost dead stone
           int index = Board.getIndex(i, j);
           Stone stone = branch.data.stones[index];
-          if (Lizzie.config.removeDeadChainInVariation) {
-
-          } else if (Lizzie.board.getData().stones[index] != Stone.EMPTY
-              && !branch.isNewStone[index]) continue;
+          boolean isCaptured = (stone == Stone.BLACK_CAPTURED || stone == Stone.WHITE_CAPTURED);
+          if (Lizzie.board.getData().stones[index] != Stone.EMPTY
+              && !branch.isNewStone[index]
+              && !isCaptured) continue;
           if (branch.data.moveNumberList[index] > maxBranchMoves(false)) continue;
 
           int stoneX = scaledMarginWidth + squareWidth * i;
@@ -957,28 +958,6 @@ public class FloatBoardRenderer {
 
   private void drawMoveRankMark(Graphics2D g) {
     g.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
-    Board board = Lizzie.board;
-    Optional<int[]> lastMoveOpt = branchOpt.map(b -> b.data.lastMove).orElse(board.getLastMove());
-
-    if (!lastMoveOpt.isPresent() && board.getData().moveNumber != 0) {
-      g.setColor(
-          board.getData().blackToPlay ? new Color(255, 255, 255, 80) : new Color(0, 0, 0, 80));
-      g.fillOval(
-          x + boardWidth / 2 - stoneRadius * 5 / 2,
-          y + boardHeight / 2 - stoneRadius * 5 / 2,
-          stoneRadius * 5,
-          stoneRadius * 5);
-      g.setColor(
-          board.getData().blackToPlay ? new Color(0, 0, 0, 200) : new Color(255, 255, 255, 200));
-      drawString(
-          g,
-          x + boardWidth / 2,
-          y + boardHeight / 2,
-          LizzieFrame.uiFont,
-          resourceBundle.getString("BoardRenderer.pass"),
-          stoneRadius * 3,
-          stoneRadius * 9 / 2);
-    }
     BoardHistoryNode node = Lizzie.board.getHistory().getCurrentHistoryNode();
     int limit = Lizzie.config.moveRankMarkLastMove;
     boolean shouldLimit = limit > 0;
@@ -990,15 +969,27 @@ public class FloatBoardRenderer {
         if (limit < 0) break;
       }
       if (node.getData().lastMove.isPresent()) {
+        int[] coords = node.getData().lastMove.get();
+        int index = Board.getIndex(coords[0], coords[1]);
+        if (branchOpt.isPresent()) {
+          if (branchOpt.get().isNewStone[index] || branchOpt.get().data.stones[index].isEmpty()) {
+            node = node.previous().get();
+            continue;
+          }
+        }
+        int moveNumber =
+            Lizzie.frame.isTrying
+                ? -node.getData().moveNumber
+                : node.getData().moveMNNumber > -1
+                    ? node.getData().moveMNNumber
+                    : node.getData().moveNumber;
         if (node == Lizzie.board.getHistory().getCurrentHistoryNode()) {
+          int markX = x + scaledMarginWidth + squareWidth * coords[0];
+          int markY = y + scaledMarginHeight + squareHeight * coords[1];
           int playouts = node.getData().getPlayouts();
           int playoutsPrevious = node.previous().get().getData().getPlayouts();
           if (playouts > 0 && playoutsPrevious > 0) {
-            int[] coords = node.getData().lastMove.get();
-            int index = Board.getIndex(coords[0], coords[1]);
-            if (moveNumberList[index] > 0) {
-              int markX = x + scaledMarginWidth + squareWidth * coords[0];
-              int markY = y + scaledMarginHeight + squareHeight * coords[1];
+            if (moveNumberList[index] == moveNumber) {
               if (node.isBest) drawMoveRankMarkCircle(g, markX, markY, stoneRadius, 0, 0, true);
               else
                 drawMoveRankMarkCircle(
@@ -1012,12 +1003,16 @@ public class FloatBoardRenderer {
               drawList[index] = 1;
             }
           }
+          g.setColor(node.getData().lastMoveColor.isWhite() ? Color.BLACK : Color.WHITE);
+          drawCircle(g, markX, markY, (int) Math.round(squareWidth * 0.22f), 5f);
+          if (Lizzie.config.moveRankMarkLastMove > 1 || Lizzie.config.moveRankMarkLastMove == 0) {
+            g.setColor(Color.RED);
+            drawPolygonSmall(g, markX, markY, stoneRadius);
+          }
         } else {
           NodeInfo nodeInfo = node.previous().get().nodeInfo;
           if (nodeInfo.analyzed && nodeInfo.previousPlayouts > 0) {
-            int[] coords = node.getData().lastMove.get();
-            int index = Board.getIndex(coords[0], coords[1]);
-            if (moveNumberList[index] > 0 && drawList[index] != 1) {
+            if (moveNumberList[index] == moveNumber && drawList[index] != 1) {
               double winrateDiff =
                   Lizzie.config.useWinLossInMoveRank ? nodeInfo.getWinrateDiff() : 0;
               double scoreDiff =
@@ -1031,18 +1026,6 @@ public class FloatBoardRenderer {
         }
       }
       node = node.previous().get();
-    }
-    node = Lizzie.board.getHistory().getCurrentHistoryNode();
-    if (node.getData().lastMove.isPresent()) {
-      int[] coords = node.getData().lastMove.get();
-      int markX = x + scaledMarginWidth + squareWidth * coords[0];
-      int markY = y + scaledMarginHeight + squareHeight * coords[1];
-      g.setColor(node.getData().lastMoveColor.isWhite() ? Color.BLACK : Color.WHITE);
-      drawCircle(g, markX, markY, (int) Math.round(squareWidth * 0.22f), 5f);
-      if (Lizzie.config.moveRankMarkLastMove > 1 || Lizzie.config.moveRankMarkLastMove == 0) {
-        g.setColor(Color.RED);
-        drawPolygonSmall(g, markX, markY, stoneRadius);
-      }
     }
   }
 
@@ -1563,14 +1546,14 @@ public class FloatBoardRenderer {
 
           if (outOfOrder && !isMouseOver && hasBackground) continue;
           float hue;
-          boolean hue2;
+          //  boolean hue2;
           if (isBestMove) {
             hue = cyanHue;
-            hue2 = true;
+            //  hue2 = true;
           } else {
             fraction = percentPlayouts;
             fraction = Math.pow(fraction, (double) 1 / Lizzie.config.suggestionColorRatio);
-            hue2 = fraction > 0.375 ? true : false;
+            //    hue2 = fraction > 0.375 ? true : false;
             hue = redHue + (greenHue - redHue) * (float) fraction;
           }
 
@@ -1678,11 +1661,12 @@ public class FloatBoardRenderer {
 
             Color maxColor;
             if (isBestMove) maxColor = Lizzie.config.bestColor;
-            else maxColor = hue2 ? Color.RED : Color.CYAN;
+            else maxColor = fraction > 0.375 ? Color.RED : new Color(100, 255, 235);
             boolean showWinrate = Lizzie.config.showWinrateInSuggestion;
             boolean showPlayouts = Lizzie.config.showPlayoutsInSuggestion;
             boolean showScoreLead = move.isKataData && Lizzie.config.showScoremeanInSuggestion;
-            boolean canShowMaxColor = Lizzie.config.showSuggestionMaxRed && !isMouseOver;
+            boolean canShowMaxColor = Lizzie.config.showSuggestionMaxRed;
+            if (isMouseOver && displayedBranchLength != 1) canShowMaxColor = false;
             Color oriColor = g.getColor();
             if (showScoreLead && showPlayouts && showWinrate) {
               double score = move.scoreMean;
@@ -1704,7 +1688,7 @@ public class FloatBoardRenderer {
                   canShowMaxColor && move.scoreMean == maxScoreMean;
               String winrateText = String.format(Locale.ENGLISH, "%.1f", roundedWinrate);
               String playoutsText = Utils.getPlayoutsString(move.playouts);
-              String scoreLeadText = String.format(Locale.ENGLISH, "%.1f", score);
+              String scoreLeadText = String.valueOf(round(score * 10) / 10.0);
               if (Lizzie.config.useDefaultInfoRowOrder) {
                 if (shouldShowMaxColorWinrate) g.setColor(maxColor);
                 if (roundedWinrate < 10)

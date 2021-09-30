@@ -158,7 +158,7 @@ public class Leelaz {
   Message msg;
   public boolean playNow = false;
   public boolean isZen = false;
-  public boolean canAddPlayer = false;
+  public boolean canAddPlayer = true;
   public boolean requireResponseBeforeSend = false;
   public boolean noLcb = false;
   // private boolean isInfoLine = false;
@@ -297,7 +297,7 @@ public class Leelaz {
     Pattern p = Pattern.compile(regEx);
     Matcher m = p.matcher(currentEnginename);
     currentEnginename = m.replaceAll(aa).trim();
-    bestMovesEnginename=currentEnginename.replaceAll(" ", "");
+    bestMovesEnginename = currentEnginename.replaceAll(" ", "");
     return currentEnginename;
   }
 
@@ -314,7 +314,7 @@ public class Leelaz {
     // Get weight name
     //	Pattern wPattern = Pattern.compile("(?s).*?(--weights |-w |-model )([^'\" ]+)(?s).*");
     // Matcher wMatcher = wPattern.matcher(engineCommand);
-    currentEnginename = getEngineName(index);  
+    currentEnginename = getEngineName(index);
     isDownWithError = false;
     if (this.useJavaSSH) {
       this.javaSSH = new SSHController(this, this.ip, this.port);
@@ -967,6 +967,7 @@ public class Leelaz {
           int minor = Integer.parseInt(ver[1]);
           // Gtp support added in version 15
           version = minor;
+          if (version == 15) canAddPlayer = false;
         } catch (Exception ex) {
           version = 17;
         }
@@ -1073,7 +1074,8 @@ public class Leelaz {
               }
             }
           }
-          if (!played) Lizzie.frame.refresh(1);
+          if (!EngineManager.isEngineGame || (!played && this == Lizzie.leelaz))
+            Lizzie.frame.refresh(1);
           // don't follow the maxAnalyzeTime rule if we are in analysis mode
           if ((!EngineManager.isEngineGame && !Lizzie.config.isAutoAna)) {
             if (!outOfPlayoutsLimit
@@ -1465,6 +1467,7 @@ public class Leelaz {
             int minor = Integer.parseInt(ver[1]);
             // Gtp support added in version 15
             version = minor;
+            if (version == 15) canAddPlayer = false;
           } catch (Exception ex) {
             version = 17;
           }
@@ -3296,7 +3299,8 @@ public class Leelaz {
       Lizzie.engineManager.clearEngineGame();
     if (engineFailedMessage != null && engineFailedMessage.isVisible()) return;
     engineFailedMessage =
-        new EngineFailedMessage(commands, engineCommand, message, !useJavaSSH && OS.isWindows());
+        new EngineFailedMessage(
+            commands, engineCommand, message, !useJavaSSH && OS.isWindows(), true);
     engineFailedMessage.setModal(isModal);
     engineFailedMessage.setVisible(true);
   }

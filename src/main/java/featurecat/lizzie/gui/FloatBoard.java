@@ -21,7 +21,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.List;
@@ -32,6 +31,7 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 public class FloatBoard extends JDialog {
 
@@ -111,8 +111,12 @@ public class FloatBoard extends JDialog {
         new JPanel(true) {
           @Override
           protected void paintComponent(Graphics g) {
-            super.paintComponent(g);
+            // super.paintComponent(g);
             ((Graphics2D) g).setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
+            if (Config.isScaled) {
+              Graphics2D g1 = (Graphics2D) g;
+              g1.scale(1.0 / Lizzie.javaScaleFactor, 1.0 / Lizzie.javaScaleFactor);
+            }
             paintMianPanel(g);
           }
         };
@@ -167,7 +171,7 @@ public class FloatBoard extends JDialog {
             hideSuggestion = !hideSuggestion;
             if (hideSuggestion) btnHideShow.setIcon(plus);
             else btnHideShow.setIcon(minus);
-            refresh();
+            refreshByLis();
           }
         });
     btnHideShow.setFocusable(false);
@@ -287,13 +291,13 @@ public class FloatBoard extends JDialog {
               if (boardRenderer.isShowingBranch()) {
                 doBranch(-1);
               }
-              refresh();
+              refreshByLis();
             }
             if (e.getKeyCode() == KeyEvent.VK_DOWN) {
               if (boardRenderer.isShowingBranch()) {
                 doBranch(1);
               }
-              refresh();
+              refreshByLis();
             }
           }
         });
@@ -316,7 +320,7 @@ public class FloatBoard extends JDialog {
             mouseOverCoordinate = LizzieFrame.outOfBoundCoordinate;
             isMouseOver = false;
             clearMoved();
-            refresh();
+            refreshByLis();
           }
         });
 
@@ -334,7 +338,7 @@ public class FloatBoard extends JDialog {
                 doBranch(-1);
               } else boardRenderer.incrementDisplayedBranchLength(-1);
             }
-            refresh();
+            refreshByLis();
           }
         });
 
@@ -393,7 +397,7 @@ public class FloatBoard extends JDialog {
                 isMouseOver = false;
               }
             }
-            if (needRepaint) refresh();
+            if (needRepaint) refreshByLis();
           }
         });
   }
@@ -440,25 +444,12 @@ public class FloatBoard extends JDialog {
     // TODO Auto-generated method stub
     if (!hideSuggestion) {
       Graphics2D g0 = (Graphics2D) cachedImage.getGraphics();
-      // g0.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-
       boardRenderer.setLocation(Utils.zoomIn(20), Utils.zoomIn(20));
       boardRenderer.setBoardLength(posWidth - Utils.zoomIn(40), posHeight - Utils.zoomIn(40));
       boardRenderer.draw(g0);
       g0.dispose();
     }
-    //   g.drawImage(cachedImage, 0, 0, null);
-    if (Config.isScaled) {
-      Graphics2D g1 = (Graphics2D) g;
-      final AffineTransform t = g1.getTransform();
-      t.setToScale(1, 1);
-      g1.setTransform(t);
-      // g1.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-      // g1.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
-      g1.drawImage(cachedImage, 0, 0, null);
-      //  if (!hideSuggestion) boardRenderer.drawSuggestion(g1);
-    } else g.drawImage(cachedImage, 0, 0, null);
-    // g0.dispose();
+    g.drawImage(cachedImage, 0, 0, null);
   }
 
   private void setDisplayedBranchLength(int n) {
@@ -467,6 +458,15 @@ public class FloatBoard extends JDialog {
 
   public void refresh() {
     mainPanel.repaint();
+  }
+
+  private void refreshByLis() {
+    SwingUtilities.invokeLater(
+        new Runnable() {
+          public void run() {
+            mainPanel.repaint();
+          }
+        });
   }
 
   public void replayBranch() {

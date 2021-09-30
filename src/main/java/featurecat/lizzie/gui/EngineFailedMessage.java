@@ -11,6 +11,7 @@ import java.awt.event.KeyEvent;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
@@ -26,7 +27,11 @@ import javax.swing.KeyStroke;
 
 public class EngineFailedMessage extends JDialog {
   public EngineFailedMessage(
-      List<String> commands, String command, String message, boolean canUseCmdDignostic) {
+      List<String> commands,
+      String command,
+      String message,
+      boolean canUseCmdDignostic,
+      boolean isGtpEngine) {
     // this.setModal(true);
     // setType(Type.POPUP);
     setTitle(Lizzie.resourceBundle.getString("Leelaz.engineFailed")); // "消息提醒");
@@ -84,9 +89,16 @@ public class EngineFailedMessage extends JDialog {
       btnRunInCmd.addActionListener(
           new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-              BufferedWriter bw;
               try {
-                bw = new BufferedWriter(new FileWriter("dignostic.bat"));
+                BufferedWriter bw =
+                    new BufferedWriter(new FileWriter("dignostic.bat", Charset.forName("UTF-8")));
+                if (isGtpEngine) {
+                  bw.write("CHCP 65001");
+                  bw.newLine();
+                  bw.write(
+                      "@echo " + Lizzie.resourceBundle.getString("EngineFailedMessage.batTips"));
+                  bw.newLine();
+                }
                 if (commands != null && commands.size() > 1) {
                   bw.write(
                       "\""
@@ -97,13 +109,28 @@ public class EngineFailedMessage extends JDialog {
                 } else if (commands.size() == 1) {
                   bw.write("\"" + commands.get(0).trim() + "\"");
                 } else bw.write(command.trim());
+                if (isGtpEngine) {
+                  bw.write(" < test_commands.txt");
+                  BufferedWriter bw2 = new BufferedWriter(new FileWriter("test_commands.txt"));
+                  bw2.write("name");
+                  bw2.newLine();
+                  bw2.write("version");
+                  bw2.newLine();
+                  bw2.write("time_settings 0 2 1");
+                  bw2.newLine();
+                  bw2.write("genmove b");
+                  bw2.newLine();
+                  bw2.write("lz-genmove_analyze w 100");
+                  bw2.newLine();
+                  bw2.write("showboard");
+                  bw2.newLine();
+                  bw2.close();
+                }
                 bw.newLine();
                 bw.write("pause");
                 bw.newLine();
                 bw.close();
                 Runtime.getRuntime().exec("powershell /c start dignostic.bat");
-                // Runtime.getRuntime().exec("powershell /c start dignostic.bat
-                // katago\\cuda-1.3.1-pda-4.exe");
               } catch (IOException s) {
                 // TODO Auto-generated catch block
                 s.printStackTrace();

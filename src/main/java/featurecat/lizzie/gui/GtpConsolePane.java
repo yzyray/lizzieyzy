@@ -250,6 +250,8 @@ public class GtpConsolePane extends JDialog {
             }
           } catch (NoSuchElementException e) {
             e.printStackTrace();
+            docQueue = new ArrayDeque<>();
+            docQueue.clear();
             break;
           }
         }

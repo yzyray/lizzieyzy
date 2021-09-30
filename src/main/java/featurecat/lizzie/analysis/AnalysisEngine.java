@@ -132,7 +132,8 @@ public class AnalysisEngine {
 
   public void tryToDignostic(String message) {
     EngineFailedMessage engineFailedMessage =
-        new EngineFailedMessage(commands, engineCommand, message, !useJavaSSH && OS.isWindows());
+        new EngineFailedMessage(
+            commands, engineCommand, message, !useJavaSSH && OS.isWindows(), false);
     engineFailedMessage.setModal(true);
     engineFailedMessage.setVisible(true);
   }

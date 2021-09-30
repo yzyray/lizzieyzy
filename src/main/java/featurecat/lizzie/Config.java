@@ -1384,6 +1384,7 @@ public class Config {
     scoreDiffInVariationTreeFactor = theme.scoreDiffInVariationTreeFactor(true);
     usePureBackground = theme.usePureBackground(true);
     pureBackgroundColor = theme.pureBackgroundColor();
+    if (usePureBackground && !first) Lizzie.frame.setBackgroundColor(pureBackgroundColor);
     usePureBoard = theme.usePureBoard(true);
     pureBoardColor = theme.pureBoardColor();
     usePureStone = theme.usePureStone(true);

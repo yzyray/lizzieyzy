@@ -2219,7 +2219,7 @@ public class EngineManager {
     // Lizzie.frame.subBoardRenderer.reverseBestmoves = false;
     //  Lizzie.frame.boardRenderer.reverseBestmoves = false;
     clearFirstSecondEngineCountDown();
-    featurecat.lizzie.gui.Menu.engineMenu.setEnabled(true);
+    Menu.engineMenu.setEnabled(true);
     if (Lizzie.board.getData().blackToPlay) {
       // switchEngine(Lizzie.frame.toolbar.engineWhite);
       Lizzie.leelaz = engineList.get(engineGameInfo.firstEngineIndex);
@@ -2240,12 +2240,13 @@ public class EngineManager {
     // Lizzie.board.setKomi(komi);
     //  Lizzie.board.clearAfterMove();
     EngineManager.currentEngineNo = Lizzie.leelaz.currentEngineN();
-    featurecat.lizzie.gui.Menu.engineMenu.setText(
+    Menu.engineMenu.setText(
         resourceBundle.getString("EngineManager.engine")
             + (Lizzie.leelaz.currentEngineN() + 1)
             + ": "
             + Lizzie.leelaz.oriEnginename);
     changeEngIco(1);
+    LizzieFrame.menu.setBtnRankMark();
     if (engineList.get(engineGameInfo.whiteEngineIndex).isKatago
         || engineList.get(engineGameInfo.whiteEngineIndex).isSai)
       Lizzie.board.isPkBoardKataW = true;

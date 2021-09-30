@@ -44,7 +44,7 @@ public class Lizzie {
   public static Leelaz leelaz;
   public static Leelaz leelaz2;
   public static String lizzieVersion = "yzy2.4.4";
-  public static String checkVersion = "210923";
+  public static String checkVersion = "210930";
   public static boolean readMode = false;
   private static String[] mainArgs;
   public static EngineManager engineManager;
@@ -122,7 +122,7 @@ public class Lizzie {
     } catch (Exception e) {
     }
     System.out.println("java version:" + javaVersionString);
-    Lizzie.leelaz = new Leelaz("");
+    leelaz = new Leelaz("");
 
     AwareScaled awareScaled = new AwareScaled();
     awareScaled.setVisible(true);
@@ -387,8 +387,7 @@ public class Lizzie {
           || engineManager.engineList.get(EngineManager.engineGameInfo.secondEngineIndex)
               .isKataGoPda) LizzieFrame.menu.showPda(true);
       else LizzieFrame.menu.showPda(false);
-    }
-    LizzieFrame.sendAiTime(false, engine);
+    } else LizzieFrame.sendAiTime(false, engine);
     if (engine != leelaz) return;
 
     if (!isEngineGame && !frame.isPlayingAgainstLeelaz) {

@@ -381,6 +381,7 @@ public class Board {
         cur.getData().winrate = 50;
         cur.getData().setPlayouts(0);
         cur.getData().scoreMean = 0;
+        cur.nodeInfo = new NodeInfo();
       }
       if (cur.numberOfChildren() >= 1) {
         for (int i = cur.numberOfChildren() - 1; i >= 0; i--)
@@ -399,6 +400,7 @@ public class Board {
         cur.getData().winrate2 = 50;
         cur.getData().setPlayouts2(0);
         cur.getData().scoreMean2 = 0;
+        cur.nodeInfo2 = new NodeInfo();
       }
       if (cur.numberOfChildren() >= 1) {
         for (int i = cur.numberOfChildren() - 1; i >= 0; i--)
@@ -412,6 +414,7 @@ public class Board {
     node.getData().winrate = 50;
     node.getData().setPlayouts(0);
     node.getData().scoreMean = 0;
+    node.nodeInfo = new NodeInfo();
   }
 
   public void clearbestmovesInfomation2(BoardHistoryNode node) {
@@ -419,6 +422,7 @@ public class Board {
     node.getData().winrate2 = 50;
     node.getData().setPlayouts2(0);
     node.getData().scoreMean2 = 0;
+    node.nodeInfo2 = new NodeInfo();
   }
 
   public void clearNodeInfo(BoardHistoryNode node) {
@@ -3655,8 +3659,12 @@ public class Board {
       if (i + 1 == flattenNumber) {
         // addStartList();
         //    Lizzie.board.hasStartStone=true;
-        Lizzie.board.flatten();
-        Lizzie.board.getHistory().getData().blackToPlay = flattenBlackToPlay;
+        if (Lizzie.board.hasStartStone) {
+          startStonelist = new ArrayList<Movelist>();
+          addStartListAll();
+        }
+        flatten();
+        getHistory().getData().blackToPlay = flattenBlackToPlay;
         return;
       }
     }
@@ -4069,12 +4077,13 @@ public class Board {
 
   public void changeNextTurn() {
     // TODO Auto-generated method stub
-    if (Lizzie.leelaz.isZen) this.pass();
-    else {
+    if (Lizzie.leelaz.canAddPlayer) {
       getHistory().getCurrentHistoryNode().getData().blackToPlay =
           !getHistory().getCurrentHistoryNode().getData().blackToPlay;
       clearbestmoves();
       if (Lizzie.leelaz.isPondering()) Lizzie.leelaz.ponder();
+    } else {
+      this.pass();
     }
   }
 }

@@ -5862,6 +5862,7 @@ public class Menu extends JMenuBar {
           public void run() {
             if (Lizzie.config.showDoubleMenu && Lizzie.frame != null) {
               setPdaAndWrnByEngineForDouble();
+              setBtnRankMark();
               return;
             }
             updateSingleMenu();
@@ -9388,7 +9389,7 @@ public class Menu extends JMenuBar {
 
   public void setBtnRankMark() {
     if (btnRankMark != null)
-      if (Lizzie.config.allowMoveNumber == 0)
+      if (Lizzie.config.allowMoveNumber == 0 && !EngineManager.isEngineGame)
         btnRankMark.setIcon(Lizzie.config.moveRankMarkLastMove < 0 ? rankMarkOff : rankMarkOn);
       else btnRankMark.setIcon(rankMarkOff);
   }

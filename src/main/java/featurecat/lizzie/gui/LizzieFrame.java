@@ -143,7 +143,7 @@ public class LizzieFrame extends JFrame {
     Lizzie.resourceBundle.getString("LizzieFrame.commands.keyE"),
   };
   private static final String DEFAULT_TITLE = Lizzie.resourceBundle.getString("LizzieFrame.title");
-  private JLayeredPane basePanel = new JLayeredPane();
+  private JPanel basePanel;
   public static BoardRenderer boardRenderer;
   public static BoardRenderer boardRenderer2;
   public static SubBoardRenderer subBoardRenderer;
@@ -264,7 +264,7 @@ public class LizzieFrame extends JFrame {
   public boolean isMouseOnSub = false;
   // Show the playouts in the title
   private ScheduledExecutorService showPlayouts = Executors.newScheduledThreadPool(1);
-  private ScheduledExecutorService updateTitleSchedual = Executors.newScheduledThreadPool(1);
+  // private ScheduledExecutorService updateTitleSchedual = Executors.newScheduledThreadPool(1);
   private String visitsString = "";
   private int visitsCount = 4;
   private VisitsTemp[] visitsTemp = new VisitsTemp[visitsCount];
@@ -282,7 +282,7 @@ public class LizzieFrame extends JFrame {
   private boolean canShowBigBoardImage = true;
   private boolean oriShowListPane;
   private boolean OriShowVariationGraph;
-  private JLayeredPane tempGamePanelAll;
+  private JPanel tempGamePanelAll;
   private JPanel tempGamePanelTop;
   private JScrollPane tempGameScrollPanel;
   private JPanel tempGamePanel;
@@ -453,7 +453,6 @@ public class LizzieFrame extends JFrame {
   private boolean redrawWinratePaneOnly = false;
   public boolean mouseOverChanged = false;
   public boolean isAutoReplying = false;
-  private boolean cachedIsLoading = false;
   public boolean isBatchAnalysisMode = false;
   // int testFontSize = 12;
   private Color blunderBackground = new Color(225, 225, 225);
@@ -554,7 +553,7 @@ public class LizzieFrame extends JFrame {
             }
           }
         });
-    tempGamePanelAll = new JLayeredPane();
+    tempGamePanelAll = new JPanel();
     tempGamePanelAll.setLayout(null);
     tempGamePanelAll.setVisible(false);
     tempGamePanelAll.setFocusable(false);
@@ -579,8 +578,8 @@ public class LizzieFrame extends JFrame {
     tempGameScrollPanel.getVerticalScrollBar().setUnitIncrement(16);
     tempGameScrollPanel.getVerticalScrollBar().setUI(new DemoScrollBarUI());
 
-    tempGamePanelAll.add(tempGamePanelTop, new Integer(200));
-    tempGamePanelAll.add(tempGameScrollPanel, new Integer(100));
+    tempGamePanelAll.add(tempGamePanelTop);
+    tempGamePanelAll.add(tempGameScrollPanel);
 
     varTreePane =
         new JPanel(true) {
@@ -884,11 +883,7 @@ public class LizzieFrame extends JFrame {
               }
             });
     blunderTableTimer.start();
-
-    // getContentPane().setLayout(new BorderLayout());
-    getContentPane().setBackground(Color.GRAY);
     setJMenuBar(menu);
-
     if (Lizzie.config.isDoubleEngineMode()) {
       boardRenderer2 = new BoardRenderer(false);
       boardRenderer2.setOrder(1);
@@ -1500,10 +1495,13 @@ public class LizzieFrame extends JFrame {
               } catch (Exception e) {
                 e.printStackTrace();
               }
+              updateTitle();
               return;
             }
-            if (Lizzie.leelaz == null || EngineManager.isEmpty || !Lizzie.leelaz.isPondering())
+            if (Lizzie.leelaz == null || EngineManager.isEmpty || !Lizzie.leelaz.isPondering()) {
+              updateTitle();
               return;
+            }
             try {
               int totalPlayouts =
                   Lizzie.board.getHistory().getCurrentHistoryNode().getData().getPlayouts();
@@ -1527,37 +1525,42 @@ public class LizzieFrame extends JFrame {
             } catch (Exception e) {
               e.printStackTrace();
             }
+            updateTitle();
           }
         },
         1,
         1,
         TimeUnit.SECONDS);
 
-    updateTitleSchedual.scheduleAtFixedRate(
-        new Runnable() {
-          @Override
-          public void run() {
-            updateTitle();
-          }
-        },
-        1000,
-        300,
-        TimeUnit.MILLISECONDS);
+    //    updateTitleSchedual.scheduleAtFixedRate(
+    //        new Runnable() {
+    //          @Override
+    //          public void run() {
+    //            updateTitle();
+    //          }
+    //        },
+    //        1000,
+    //        300,
+    //        TimeUnit.MILLISECONDS);
     mainPanel.addMouseMotionListener(input);
     toolbar.addMouseWheelListener(input);
     addInput(false);
+    basePanel = new JPanel(false);
+    if (Lizzie.config.usePureBackground) {
+      basePanel.setBackground(Lizzie.config.pureBackgroundColor);
+    } else basePanel.setBackground(Color.GRAY);
     getContentPane().add(basePanel);
-    basePanel.add(commentBlunderControlPane, new Integer(900));
-
-    basePanel.add(tempGamePanelAll, new Integer(800));
-    basePanel.add(varTreeScrollPane, new Integer(700));
-    basePanel.add(listScrollpane, new Integer(600));
-    basePanel.add(blunderContentPane, new Integer(550));
-    basePanel.add(commentEditPane, new Integer(500));
-    basePanel.add(commentScrollPane, new Integer(400));
-    basePanel.add(topPanel, new Integer(300));
-    basePanel.add(toolbar, new Integer(200));
-    basePanel.add(mainPanel, new Integer(100));
+    basePanel.setLayout(null);
+    basePanel.add(commentBlunderControlPane);
+    basePanel.add(tempGamePanelAll);
+    basePanel.add(varTreeScrollPane);
+    basePanel.add(listScrollpane);
+    basePanel.add(blunderContentPane);
+    basePanel.add(commentEditPane);
+    basePanel.add(commentScrollPane);
+    basePanel.add(topPanel);
+    basePanel.add(toolbar);
+    basePanel.add(mainPanel);
     mainPanel.setVisible(false);
     commentScrollPane.setVisible(false);
     blunderContentPane.setVisible(false);
@@ -3534,13 +3537,12 @@ public class LizzieFrame extends JFrame {
       int width = mainPanel.getWidth();
       int height = mainPanel.getHeight();
 
-      Optional<Graphics2D> backgroundG;
-      if (cachedBackgroundWidth != width
-          || cachedBackgroundHeight != height
-          || redrawBackgroundAnyway) {
+      Optional<Graphics2D> backgroundG = Optional.empty();
+      if (!Lizzie.config.usePureBackground
+          && (cachedBackgroundWidth != width
+              || cachedBackgroundHeight != height
+              || redrawBackgroundAnyway)) {
         backgroundG = Optional.of(createBackground(width, height));
-      } else {
-        backgroundG = Optional.empty();
       }
       if (!showControls) {
         BufferedImage cachedImage = new BufferedImage(width, height, TYPE_INT_ARGB);
@@ -4953,7 +4955,7 @@ public class LizzieFrame extends JFrame {
     //            null);
     //    } else
     //   {
-    g0.drawImage(cachedBackground, 0, 0, null);
+    if (!Lizzie.config.usePureBackground) g0.drawImage(cachedBackground, 0, 0, null);
     g0.drawImage(cachedImage, 0, 0, null);
     if (Lizzie.config.showWinrateGraph && cachedWinrateImage != null && !showControls)
       g0.drawImage(cachedWinrateImage, grx, gry, null);
@@ -4982,7 +4984,7 @@ public class LizzieFrame extends JFrame {
   public void refresh() {
     // 分开各部分刷新,1代表来自info move的刷新
     redrawWinratePaneOnly = false;
-    repaint();
+    basePanel.repaint();
     if (independentSubBoard != null && independentSubBoard.isVisible())
       independentSubBoard.refresh();
     if (independentMainBoard != null && independentMainBoard.isVisible())
@@ -4997,7 +4999,7 @@ public class LizzieFrame extends JFrame {
     switch (mode) {
       case 1:
         refreshFromInfo = true;
-        repaint();
+        basePanel.repaint();
       default:
     }
     if (independentSubBoard != null && independentSubBoard.isVisible())
@@ -5018,12 +5020,12 @@ public class LizzieFrame extends JFrame {
     cachedBackgroundHeight = cachedBackground.getHeight();
 
     Graphics2D g = cachedBackground.createGraphics();
-    if (Lizzie.config.usePureBackground) {
-      g.setColor(Lizzie.config.pureBackgroundColor);
-      g.fillRect(0, 0, width, hight);
-      g.dispose();
-      return g;
-    }
+    //    if (Lizzie.config.usePureBackground) {
+    //      g.setColor(Lizzie.config.pureBackgroundColor);
+    //      g.fillRect(0, 0, width, hight);
+    //      g.dispose();
+    //      return g;
+    //    }
     // g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 
     BufferedImage wallpaper = boardRenderer.getWallpaper();
@@ -5032,7 +5034,7 @@ public class LizzieFrame extends JFrame {
     // Support seamless texture
     boardRenderer.drawTextureImage(g, wallpaper, 0, 0, drawWidth, drawHeight, false);
     Lizzie.board.setForceRefresh(true);
-    if (backgroundPaint == null || redrawBackgroundAnyway) {
+    if (backgroundPaint == null) {
       BufferedImage result = new BufferedImage(100, 100, TYPE_INT_ARGB);
       filter20.filter(cachedBackground.getSubimage(0, 0, 100, 100), result);
       backgroundPaint =
@@ -6031,6 +6033,8 @@ public class LizzieFrame extends JFrame {
             gBackground.drawImage(cachedWinrateImage, 0, 0, null);
             Lizzie.frame.cachedWinrateImage = cachedWinrateBackgroundImage;
             g.dispose();
+            gBlunder.dispose();
+            gBackground.dispose();
           } else {
             BufferedImage cachedWinrateImage = new BufferedImage(w, h, TYPE_INT_ARGB);
             BufferedImage cachedWinrateBackgroundImage = new BufferedImage(w, h, TYPE_INT_ARGB);
@@ -6052,6 +6056,9 @@ public class LizzieFrame extends JFrame {
             gBackground.drawImage(cachedWinrateBlunderImage, 0, 0, null);
             gBackground.drawImage(cachedWinrateImage, 0, 0, null);
             Lizzie.frame.cachedWinrateImage = cachedWinrateBackgroundImage;
+            g.dispose();
+            gBlunder.dispose();
+            gBackground.dispose();
           }
           winratePaneTime = System.currentTimeMillis();
         }
@@ -6081,6 +6088,9 @@ public class LizzieFrame extends JFrame {
         gBackground.drawImage(cachedWinrateBlunderImage, 0, 0, null);
         gBackground.drawImage(cachedWinrateImage, 0, 0, null);
         Lizzie.frame.cachedWinrateImage = cachedWinrateBackgroundImage;
+        g.dispose();
+        gBlunder.dispose();
+        gBackground.dispose();
       } else {
         if (refreshFromInfo && (System.currentTimeMillis() - winratePaneTime) < 200) {
           refreshFromInfo = false;
@@ -6106,6 +6116,9 @@ public class LizzieFrame extends JFrame {
         gBackground.drawImage(cachedWinrateBlunderImage, 0, 0, null);
         gBackground.drawImage(cachedWinrateImage, 0, 0, null);
         Lizzie.frame.cachedWinrateImage = cachedWinrateBackgroundImage;
+        g.dispose();
+        gBlunder.dispose();
+        gBackground.dispose();
       }
       winratePaneTime = System.currentTimeMillis();
     }
@@ -7644,7 +7657,7 @@ public class LizzieFrame extends JFrame {
     }
     builder.append("</html>");
     if (maxHeight > 0 && fontMetrics.getHeight() * lines > maxHeight)
-      JlabelSetText(jLabel, longString, width - 9, -1);
+      JlabelSetText(jLabel, longString, width - 12, -1);
     else jLabel.setText(builder.toString());
   }
 
@@ -8280,7 +8293,7 @@ public class LizzieFrame extends JFrame {
                 Graphics2D g1 = bImg.createGraphics();
                 g1.drawImage(cachedBackground, 0, 0, null);
                 g1.drawImage(cachedImage, 0, 0, null);
-                if (Lizzie.config.showWinrateGraph && cachedWinrateImage != null && !showControls)
+                if (Lizzie.config.showWinrateGraph && cachedWinrateImage != null)
                   g1.drawImage(cachedWinrateImage, grx, gry, null);
                 g1.dispose();
                 try {
@@ -8451,7 +8464,7 @@ public class LizzieFrame extends JFrame {
                 Graphics2D g1 = bImg.createGraphics();
                 g1.drawImage(cachedBackground, 0, 0, null);
                 g1.drawImage(cachedImage, 0, 0, null);
-                if (Lizzie.config.showWinrateGraph && cachedWinrateImage != null && !showControls)
+                if (Lizzie.config.showWinrateGraph && cachedWinrateImage != null)
                   g1.drawImage(cachedWinrateImage, grx, gry, null);
                 g1.dispose();
                 Rectangle rect = new Rectangle(x, y, width, height);
@@ -8591,7 +8604,7 @@ public class LizzieFrame extends JFrame {
               Graphics2D g1 = bImg.createGraphics();
               g1.drawImage(cachedBackground, 0, 0, null);
               g1.drawImage(cachedImage, 0, 0, null);
-              if (Lizzie.config.showWinrateGraph && cachedWinrateImage != null && !showControls)
+              if (Lizzie.config.showWinrateGraph && cachedWinrateImage != null)
                 g1.drawImage(cachedWinrateImage, grx, gry, null);
               g1.dispose();
               Rectangle rect = new Rectangle(x, y, width, height);
@@ -11385,8 +11398,7 @@ public class LizzieFrame extends JFrame {
         };
 
     tempGamePanel.addMouseListener(tempGamePanelMoveLis);
-    tempGamePanel.updateUI();
-    tempGamePanel.repaint();
+    tempGamePanelAll.repaint();
   }
 
   private void showBigBoardImage(
@@ -12347,5 +12359,9 @@ public class LizzieFrame extends JFrame {
               ? Lizzie.resourceBundle.getString("SGFParse.black")
               : Lizzie.resourceBundle.getString("SGFParse.white");
     return player;
+  }
+
+  public void setBackgroundColor(Color color) {
+    basePanel.setBackground(color);
   }
 }
