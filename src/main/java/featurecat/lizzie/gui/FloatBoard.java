@@ -359,7 +359,8 @@ public class FloatBoard extends JDialog {
               }
               if (isCoordsChanged) {
                 boolean isCurMouseOver = false;
-                List<MoveData> bestMoves = Lizzie.frame.getBestMoves();
+                List<MoveData> bestMoves =
+                    Lizzie.board.getHistory().getMainEnd().getData().bestMoves;
                 if (!bestMoves.isEmpty())
                   for (int i = 0; i < bestMoves.size(); i++) {
                     Optional<int[]> bestCoords = Board.asCoordinates(bestMoves.get(i).coordinate);

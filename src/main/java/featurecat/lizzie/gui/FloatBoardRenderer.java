@@ -696,7 +696,7 @@ public class FloatBoardRenderer {
     }
     showingBranch = false;
     branchOpt = Optional.empty();
-    bestMoves = Lizzie.board.getHistory().getCurrentHistoryNode().getData().bestMoves;
+    bestMoves = Lizzie.board.getHistory().getMainEnd().getData().bestMoves;
     if ((Lizzie.board.getHistory().isBlacksTurn() && !LizzieFrame.toolbar.chkShowBlack.isSelected())
         || (!Lizzie.board.getHistory().isBlacksTurn()
             && !LizzieFrame.toolbar.chkShowWhite.isSelected())) return;

@@ -461,7 +461,7 @@ public class Utils {
     if (playouts >= 10_000_000) {
       double playoutsDouble = (double) playouts / 100_000; // 1234567 -> 12.34567
       return round(playoutsDouble) / 10.0 + "m";
-    } else if (playouts >= 10_000) {
+    } else if (playouts >= 9950) {
       double playoutsDouble = (double) playouts / 1_000; // 13265 -> 13.265
       return round(playoutsDouble) + "k";
     } else if (playouts >= 1_000) {
