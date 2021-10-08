@@ -3,6 +3,7 @@ package featurecat.lizzie.gui;
 import featurecat.lizzie.Config;
 import featurecat.lizzie.Lizzie;
 import featurecat.lizzie.rules.BoardHistoryNode;
+import featurecat.lizzie.util.Utils;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -184,8 +185,7 @@ public class VariationTree {
               CENTER_DIAM,
               CENTER_DIAM);
           Lizzie.frame.varTreeCurX = curposx;
-          Lizzie.frame.varTreeCurY = posy - (DOT_DIAM + diff);
-
+          Lizzie.frame.varTreeCurY = posy;
           Lizzie.frame.tree_curposx = curposx;
           Lizzie.frame.tree_posy = posy;
           Lizzie.frame.tree_DOT_DIAM = DOT_DIAM;
@@ -205,8 +205,10 @@ public class VariationTree {
               curposx + rectBorder, posy + rectBorder, DOT_DIAM - rect_DIAM, DOT_DIAM - rect_DIAM);
         }
       }
-      if (curposx + 60 > Lizzie.frame.varTreeMaxX) Lizzie.frame.varTreeMaxX = curposx + 60;
-      if (posy + 60 > Lizzie.frame.varTreeMaxY) Lizzie.frame.varTreeMaxY = posy + 60;
+      if (curposx + Utils.zoomOut(60) > Lizzie.frame.varTreeMaxX)
+        Lizzie.frame.varTreeMaxX = curposx + Utils.zoomOut(60);
+      if (posy + Utils.zoomOut(60) > Lizzie.frame.varTreeMaxY)
+        Lizzie.frame.varTreeMaxY = posy + Utils.zoomOut(60);
       //   }
       g.setColor(curcolor);
     }
@@ -301,8 +303,10 @@ public class VariationTree {
                 moveNum >= 100 ? curposx - 13 : curposx - 10,
                 posy + diff - 1);
         }
-        if (curposx + 60 > Lizzie.frame.varTreeMaxX) Lizzie.frame.varTreeMaxX = curposx + 60;
-        if (posy + 60 > Lizzie.frame.varTreeMaxY) Lizzie.frame.varTreeMaxY = posy + 60;
+        if (curposx + Utils.zoomOut(60) > Lizzie.frame.varTreeMaxX)
+          Lizzie.frame.varTreeMaxX = curposx + Utils.zoomOut(60);
+        if (posy + Utils.zoomOut(60) > Lizzie.frame.varTreeMaxY)
+          Lizzie.frame.varTreeMaxY = posy + Utils.zoomOut(60);
         //        if(posy>Lizzie.frame.varTreeMaxY)
         //            Lizzie.frame.varTreeMaxY=posy;
         //        if(curposx<Lizzie.frame.varTreeMinX)

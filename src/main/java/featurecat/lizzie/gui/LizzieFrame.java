@@ -9600,22 +9600,16 @@ public class LizzieFrame extends JFrame {
                 new Dimension(
                     (int) (cachedVarImage2.getWidth() / Lizzie.javaScaleFactor),
                     (int) (cachedVarImage2.getHeight() / Lizzie.javaScaleFactor)));
-            varTreePane.updateUI();
-
+            varTreePane.revalidate();
             canDrawCurColor = true;
-            // varTreeCurY
             JScrollBar jScrollBarW = varTreeScrollPane.getHorizontalScrollBar();
-            varTreeCurX = Utils.zoomOut(varTreeCurX);
-            varTreeCurY = Utils.zoomOut(varTreeCurY);
             if (varTreeCurX <= varTreeW / 2
                 || Lizzie.board.getHistory().getCurrentHistoryNode()
                     == Lizzie.board.getHistory().getStart()) jScrollBarW.setValue(0);
             else {
               jScrollBarW.setValue(
                   (int)
-                      ((float) (varTreeCurX - (varTreeW / 2 > Utils.zoomOut(60) ? varTreeW / 2 : 0))
-                          / Utils.zoomOut(varTreeMaxX)
-                          * jScrollBarW.getMaximum())); // 设置水平滚动条位置
+                      ((((varTreeCurX - varTreeW / 2f) / varTreeMaxX) * jScrollBarW.getMaximum())));
             }
 
             JScrollBar jScrollBarH = varTreeScrollPane.getVerticalScrollBar();
@@ -9631,7 +9625,6 @@ public class LizzieFrame extends JFrame {
                   jScrollBarH.setValue(9999);
                 }
               }.start();
-
             } else {
               if (varTreeCurY <= varTreeH / 2
                   || Lizzie.board.getHistory().getCurrentHistoryNode()
@@ -9640,12 +9633,8 @@ public class LizzieFrame extends JFrame {
               else
                 jScrollBarH.setValue(
                     (int)
-                        ((float)
-                                (Math.min(varTreeCurY, Utils.zoomOut(varTreePane.getHeight()))
-                                    - varTreeH / 2)
-                            / Math.min(
-                                Utils.zoomOut(varTreeMaxY), Utils.zoomOut(varTreePane.getHeight()))
-                            * jScrollBarH.getMaximum())); // 设置垂直滚动条位置
+                        ((((varTreeCurY - varTreeH / 2f) / varTreeMaxY)
+                            * jScrollBarH.getMaximum()))); // 设置垂直滚动条位置
             }
             if (changeSize) {
               if (vh < 100 || varTreeMaxX == vw)
