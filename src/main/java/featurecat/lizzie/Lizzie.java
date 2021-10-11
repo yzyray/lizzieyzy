@@ -387,7 +387,10 @@ public class Lizzie {
           || engineManager.engineList.get(EngineManager.engineGameInfo.secondEngineIndex)
               .isKataGoPda) LizzieFrame.menu.showPda(true);
       else LizzieFrame.menu.showPda(false);
-    } else LizzieFrame.sendAiTime(false, engine);
+    } else {
+      LizzieFrame.sendAiTime(false, engine);
+      LizzieFrame.menu.showPda(Lizzie.leelaz.isKataGoPda);
+    }
     if (engine != leelaz) return;
 
     if (!isEngineGame && !frame.isPlayingAgainstLeelaz) {
@@ -407,7 +410,6 @@ public class Lizzie {
             if (!Lizzie.frame.syncBoard) Lizzie.frame.reSetLoc();
             LizzieFrame.toolbar.reSetButtonLocation();
             if (!isEngineGame) {
-              LizzieFrame.menu.showPda(engine.isKataGoPda);
               if (Lizzie.frame.resetMovelistFrameandAnalysisFrame()) frame.setVisible(true);
             }
           }

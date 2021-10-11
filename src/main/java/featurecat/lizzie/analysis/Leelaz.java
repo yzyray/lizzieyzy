@@ -93,7 +93,7 @@ public class Leelaz {
   public boolean isCheckingVersion;
   public boolean isCheckingName;
   public String initialCommand;
-  public boolean isCheckinPda = false;
+  private boolean isCheckingPda = false;
   public boolean isKataGoPda = false;
   public boolean isDymPda = false;
   public boolean isStaticPda = false;
@@ -675,7 +675,7 @@ public class Leelaz {
       return;
     } else if (Lizzie.gtpConsole.isVisible() || Lizzie.config.alwaysGtp || !this.isLoaded)
       Lizzie.gtpConsole.addLine(line + "\n");
-    if (isCheckinPda) {
+    if (isCheckingPda) {
       if (line.startsWith("pda:")) {
         isDymPda = true;
         String[] params = line.trim().split(" ");
@@ -924,7 +924,7 @@ public class Leelaz {
           canAddPlayer = true;
           if (params[1].startsWith("KataGoPda")) {
             isKatagoCustom = true;
-            isCheckinPda = true;
+            isCheckingPda = true;
             isKataGoPda = true;
             sendCommand("getpda");
             sendCommand("getdympdacap");
@@ -937,7 +937,7 @@ public class Leelaz {
                       // TODO Auto-generated catch block
                       e.printStackTrace();
                     }
-                    isCheckinPda = false;
+                    isCheckingPda = false;
                   }
                 };
             Thread thread = new Thread(runnable);
@@ -1113,7 +1113,7 @@ public class Leelaz {
       //			if (Lizzie.engineManager.isEngineGame && this.isPondering) {
       //				Lizzie.engineManager.startInfoTime = System.currentTimeMillis();
       //			}
-      if (isCheckinPda) {
+      if (isCheckingPda) {
         if (line.startsWith("pda:")) {
           isDymPda = true;
 
@@ -1133,7 +1133,6 @@ public class Leelaz {
               LizzieFrame.menu.txtPDA.setText(Lizzie.config.staticPDAcur);
               isStaticPda = true;
               this.pda = Double.parseDouble(Lizzie.config.staticPDAcur.trim());
-              ;
             } else {
               isStaticPda = false;
             }
@@ -1414,7 +1413,7 @@ public class Leelaz {
             }
             if (params[1].startsWith("KataGoPda")) {
               isKatagoCustom = true;
-              isCheckinPda = true;
+              isCheckingPda = true;
               isKataGoPda = true;
               sendCommand("getpda");
               sendCommand("getdympdacap");
@@ -1427,7 +1426,7 @@ public class Leelaz {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
                       }
-                      isCheckinPda = false;
+                      isCheckingPda = false;
                     }
                   };
               Thread thread = new Thread(runnable);
