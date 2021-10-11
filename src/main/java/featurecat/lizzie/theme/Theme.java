@@ -3,6 +3,7 @@ package featurecat.lizzie.theme;
 import static java.io.File.separator;
 
 import featurecat.lizzie.Lizzie;
+import featurecat.lizzie.util.Utils;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -84,11 +85,11 @@ public class Theme {
   }
 
   public Color pureBoardColor() {
-    return getColorByKey("pure-board-color", new Color(217, 152, 77));
+    return Utils.getNoneAlphaColor(getColorByKey("pure-board-color", new Color(217, 152, 77)));
   }
 
   public Color pureBackgroundColor() {
-    return getColorByKey("pure-background-color", Color.GRAY);
+    return Utils.getNoneAlphaColor(getColorByKey("pure-background-color", Color.GRAY));
   }
 
   public Color scoreMeanLineColor() {
@@ -400,6 +401,16 @@ public class Theme {
       if (c.getAlpha() != 255) {
         a.put(c.getAlpha());
       }
+    }
+    return a;
+  }
+
+  public static JSONArray color2ArrayNoAlpha(Color c) {
+    JSONArray a = new JSONArray("[]");
+    if (c != null) {
+      a.put(c.getRed());
+      a.put(c.getGreen());
+      a.put(c.getBlue());
     }
     return a;
   }

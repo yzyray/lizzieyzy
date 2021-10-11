@@ -10,6 +10,7 @@ import featurecat.lizzie.gui.LizzieFrame;
 import featurecat.lizzie.gui.Message;
 import featurecat.lizzie.gui.RemoteEngineData;
 import featurecat.lizzie.rules.BoardHistoryNode;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
@@ -50,6 +51,10 @@ public class Utils {
   public static String pwd = java.io.File.separator;
   private static int msemaphoretryroom = 1;
   private static boolean alertedNoByoyomiSoundFile = false;
+
+  public static Color getNoneAlphaColor(Color alphaColor) {
+    return new Color(alphaColor.getRed(), alphaColor.getGreen(), alphaColor.getBlue());
+  }
 
   public static String getIfRound(double num) {
     if (num % 1.0 == 0) return String.valueOf((int) num);

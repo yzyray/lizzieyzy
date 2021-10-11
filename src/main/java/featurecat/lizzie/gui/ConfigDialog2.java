@@ -2174,7 +2174,7 @@ public class ConfigDialog2 extends JDialog {
       lblWinrateLineColorTitle.setHorizontalAlignment(SwingConstants.LEFT);
       lblWinrateLineColorTitle.setBounds(10, 345, 163, 16);
       themeTab.add(lblWinrateLineColorTitle);
-      lblWinrateLineColor = new ColorLabel(owner);
+      lblWinrateLineColor = new ColorLabel(owner, true);
       lblWinrateLineColor.setBounds(175, 350, 167, 9);
       themeTab.add(lblWinrateLineColor);
 
@@ -2183,7 +2183,7 @@ public class ConfigDialog2 extends JDialog {
       lblWinrateMissLineColorTitle.setHorizontalAlignment(SwingConstants.LEFT);
       lblWinrateMissLineColorTitle.setBounds(10, 370, 163, 16);
       themeTab.add(lblWinrateMissLineColorTitle);
-      lblWinrateMissLineColor = new ColorLabel(owner);
+      lblWinrateMissLineColor = new ColorLabel(owner, true);
       lblWinrateMissLineColor.setBounds(175, 375, 167, 9);
       themeTab.add(lblWinrateMissLineColor);
 
@@ -2192,7 +2192,7 @@ public class ConfigDialog2 extends JDialog {
       lblBlunderBarColorTitle.setHorizontalAlignment(SwingConstants.LEFT);
       lblBlunderBarColorTitle.setBounds(10, 395, 163, 16);
       themeTab.add(lblBlunderBarColorTitle);
-      lblBlunderBarColor = new ColorLabel(owner);
+      lblBlunderBarColor = new ColorLabel(owner, true);
       lblBlunderBarColor.setBounds(175, 400, 167, 9);
       themeTab.add(lblBlunderBarColor);
 
@@ -2201,7 +2201,7 @@ public class ConfigDialog2 extends JDialog {
       lblScoreMeanLineColorTitle.setHorizontalAlignment(SwingConstants.LEFT);
       lblScoreMeanLineColorTitle.setBounds(10, 420, 163, 16);
       themeTab.add(lblScoreMeanLineColorTitle);
-      lblScoreMeanLineColor = new ColorLabel(owner);
+      lblScoreMeanLineColor = new ColorLabel(owner, true);
       lblScoreMeanLineColor.setBounds(175, 425, 167, 9);
       themeTab.add(lblScoreMeanLineColor);
 
@@ -2210,7 +2210,7 @@ public class ConfigDialog2 extends JDialog {
       lblCommentBackgroundColorTitle.setHorizontalAlignment(SwingConstants.LEFT);
       lblCommentBackgroundColorTitle.setBounds(370, 345, 148, 16);
       themeTab.add(lblCommentBackgroundColorTitle);
-      lblCommentBackgroundColor = new ColorLabel(owner);
+      lblCommentBackgroundColor = new ColorLabel(owner, true);
       lblCommentBackgroundColor.setBounds(529, 342, 22, 22);
       themeTab.add(lblCommentBackgroundColor);
 
@@ -2219,7 +2219,7 @@ public class ConfigDialog2 extends JDialog {
       lblCommentFontColorTitle.setHorizontalAlignment(SwingConstants.LEFT);
       lblCommentFontColorTitle.setBounds(370, 375, 148, 16);
       themeTab.add(lblCommentFontColorTitle);
-      lblCommentFontColor = new ColorLabel(owner);
+      lblCommentFontColor = new ColorLabel(owner, true);
       lblCommentFontColor.setBounds(529, 372, 22, 22);
       themeTab.add(lblCommentFontColor);
 
@@ -2236,7 +2236,7 @@ public class ConfigDialog2 extends JDialog {
       labelBestMoveColor.setHorizontalAlignment(SwingConstants.LEFT);
       labelBestMoveColor.setBounds(370, 435, 148, 16);
       themeTab.add(labelBestMoveColor);
-      lblBestMoveColor = new ColorLabel(owner);
+      lblBestMoveColor = new ColorLabel(owner, true);
       lblBestMoveColor.setBounds(529, 432, 22, 22);
       themeTab.add(lblBestMoveColor);
 
@@ -2326,7 +2326,7 @@ public class ConfigDialog2 extends JDialog {
       lblCommentNodeColorTitle.setHorizontalAlignment(SwingConstants.LEFT);
       lblCommentNodeColorTitle.setBounds(210, 465, 138, 16);
       themeTab.add(lblCommentNodeColorTitle);
-      lblCommentNodeColor = new ColorLabel(owner);
+      lblCommentNodeColor = new ColorLabel(owner, true);
       lblCommentNodeColor.setBounds(Lizzie.config.isChinese ? 311 : 341, 462, 22, 22);
       themeTab.add(lblCommentNodeColor);
 
@@ -2477,7 +2477,7 @@ public class ConfigDialog2 extends JDialog {
             }
           });
 
-      lblPureBackgroundColor = new ColorLabel(owner);
+      lblPureBackgroundColor = new ColorLabel(owner, false);
       lblPureBackgroundColor.setBounds(Lizzie.config.isChinese ? 86 : 126, 223, 22, 22);
       lblPureBackgroundColor.setColor(Color.BLACK);
       themeTab.add(lblPureBackgroundColor);
@@ -2496,7 +2496,7 @@ public class ConfigDialog2 extends JDialog {
             }
           });
 
-      lblPureBoardColor = new ColorLabel(owner);
+      lblPureBoardColor = new ColorLabel(owner, false);
       lblPureBoardColor.setBounds(Lizzie.config.isChinese ? 86 : 126, 253, 22, 22);
       lblPureBoardColor.setColor(Color.BLACK);
       themeTab.add(lblPureBoardColor);
@@ -2848,11 +2848,13 @@ public class ConfigDialog2 extends JDialog {
 
     private Color curColor;
     private JDialog owner;
+    private boolean useAplha;
 
-    public ColorLabel(JDialog owner) {
+    public ColorLabel(JDialog owner, boolean useAplha) {
       super();
       setOpaque(true);
       this.owner = owner;
+      this.useAplha = useAplha;
 
       addMouseListener(
           new MouseAdapter() {
@@ -2876,8 +2878,9 @@ public class ConfigDialog2 extends JDialog {
     }
 
     public void setColor(Color c) {
-      curColor = c;
-      setBackground(c);
+      if (useAplha) curColor = c;
+      else curColor = Utils.getNoneAlphaColor(c);
+      setBackground(curColor);
     }
 
     public Color getColor() {
@@ -2922,7 +2925,7 @@ public class ConfigDialog2 extends JDialog {
     ColorLabel cl;
 
     public ColorEditor(JDialog owner) {
-      cl = new ColorLabel(owner);
+      cl = new ColorLabel(owner, true);
     }
 
     public Object getCellEditorValue() {
@@ -3334,10 +3337,11 @@ public class ConfigDialog2 extends JDialog {
         }
         theme.config.put("use-pure-stone", chkPureStone.isSelected());
         theme.config.put("use-pure-board", chkPureBoard.isSelected());
-        theme.config.put("pure-board-color", Theme.color2Array(lblPureBoardColor.getColor()));
+        theme.config.put(
+            "pure-board-color", Theme.color2ArrayNoAlpha(lblPureBoardColor.getColor()));
         theme.config.put("use-pure-background", chkPureBackground.isSelected());
         theme.config.put(
-            "pure-background-color", Theme.color2Array(lblPureBackgroundColor.getColor()));
+            "pure-background-color", Theme.color2ArrayNoAlpha(lblPureBackgroundColor.getColor()));
         theme.config.put("show-stone-shadow", chkShowStoneShaow.isSelected());
         theme.config.put("winrate-stroke-width", spnWinrateStrokeWidth.getValue());
         theme.config.put("minimum-blunder-bar-width", spnMinimumBlunderBarWidth.getValue());
@@ -3500,10 +3504,11 @@ public class ConfigDialog2 extends JDialog {
   private void writeDefaultTheme() {
     Lizzie.config.uiConfig.put("use-pure-stone", chkPureStone.isSelected());
     Lizzie.config.uiConfig.put("use-pure-board", chkPureBoard.isSelected());
-    Lizzie.config.uiConfig.put("pure-board-color", Theme.color2Array(lblPureBoardColor.getColor()));
+    Lizzie.config.uiConfig.put(
+        "pure-board-color", Theme.color2ArrayNoAlpha(lblPureBoardColor.getColor()));
     Lizzie.config.uiConfig.put("use-pure-background", chkPureBackground.isSelected());
     Lizzie.config.uiConfig.put(
-        "pure-background-color", Theme.color2Array(lblPureBackgroundColor.getColor()));
+        "pure-background-color", Theme.color2ArrayNoAlpha(lblPureBackgroundColor.getColor()));
     Lizzie.config.uiConfig.put("winrate-stroke-width", spnWinrateStrokeWidth.getValue());
     Lizzie.config.uiConfig.put("minimum-blunder-bar-width", spnMinimumBlunderBarWidth.getValue());
     Lizzie.config.uiConfig.put("shadow-size", spnShadowSize.getValue());
