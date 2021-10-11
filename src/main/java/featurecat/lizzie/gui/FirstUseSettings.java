@@ -38,7 +38,7 @@ public class FirstUseSettings extends JDialog {
     setResizable(false);
     setTitle(Lizzie.resourceBundle.getString("FirstUseSettings.title")); // ("初始化设置");
     setAlwaysOnTop(true);
-    // setSize(1076, 538);
+    setSize(1076, 538);
     Lizzie.setFrameSize(
         this,
         Lizzie.config.isFrameFontSmall() ? 656 : (Lizzie.config.isFrameFontMiddle() ? 785 : 955),
@@ -239,7 +239,7 @@ public class FirstUseSettings extends JDialog {
 
     JFontLabel lblScoreOnBoard =
         new JFontLabel(
-            Lizzie.resourceBundle.getString("FirstUseSettings.lblScoreOnBoard")); // ("目差在选点上显示为:");
+            Lizzie.resourceBundle.getString("FirstUseSettings.lblShowScore")); // ("目差在选点上显示为:");
     lblScoreOnBoard.setBounds(10, 86, 337, 22);
     getContentPane().add(lblScoreOnBoard);
 
@@ -269,38 +269,36 @@ public class FirstUseSettings extends JDialog {
     group3.add(rdoScoreOnBoardWithKomi);
     group3.add(rdoScoreOnBoardWithOutKomi);
 
-    JFontLabel lblScoreOnWinratePane =
+    JFontLabel lblWinratePerspective =
         new JFontLabel(
             Lizzie.resourceBundle.getString(
-                "FirstUseSettings.lblScoreOnWinratePane")); // ("目差在胜率图上显示为:");
-    lblScoreOnWinratePane.setBounds(10, 126, 337, 22);
-    getContentPane().add(lblScoreOnWinratePane);
+                "FirstUseSettings.lblWinratePerspective")); // ("目差在胜率图上显示为:");
+    lblWinratePerspective.setBounds(10, 126, 337, 22);
+    getContentPane().add(lblWinratePerspective);
 
-    JFontRadioButton rdoScoreOnWinratePaneWithKomi =
+    JFontRadioButton rdoAlwaysBlack =
         new JFontRadioButton(
-            Lizzie.resourceBundle.getString(
-                "FirstUseSettings.rdoScoreOnWinratePaneWithKomi")); // ("盘面目数差");
-    rdoScoreOnWinratePaneWithKomi.setBounds(
+            Lizzie.resourceBundle.getString("FirstUseSettings.rdoAlwaysBlack")); // ("盘面目数差");
+    rdoAlwaysBlack.setBounds(
         Lizzie.config.isFrameFontSmall() ? 240 : (Lizzie.config.isFrameFontMiddle() ? 310 : 380),
         128,
         Lizzie.config.isFrameFontSmall() ? 114 : (Lizzie.config.isFrameFontMiddle() ? 114 : 140),
         23);
-    getContentPane().add(rdoScoreOnWinratePaneWithKomi);
+    getContentPane().add(rdoAlwaysBlack);
 
-    JFontRadioButton rdoScoreOnWinratePaneWithOutKomi =
+    JFontRadioButton rdoAlternately =
         new JFontRadioButton(
-            Lizzie.resourceBundle.getString(
-                "FirstUseSettings.rdoScoreOnWinratePaneWithOutKomi")); // ("计算贴目后目数差");
-    rdoScoreOnWinratePaneWithOutKomi.setBounds(
+            Lizzie.resourceBundle.getString("FirstUseSettings.rdoAlternately")); // ("计算贴目后目数差");
+    rdoAlternately.setBounds(
         Lizzie.config.isFrameFontSmall() ? 350 : (Lizzie.config.isFrameFontMiddle() ? 420 : 520),
         128,
         422,
         23);
-    getContentPane().add(rdoScoreOnWinratePaneWithOutKomi);
+    getContentPane().add(rdoAlternately);
 
     ButtonGroup group4 = new ButtonGroup();
-    group4.add(rdoScoreOnWinratePaneWithKomi);
-    group4.add(rdoScoreOnWinratePaneWithOutKomi);
+    group4.add(rdoAlwaysBlack);
+    group4.add(rdoAlternately);
 
     JFontLabel lblLizzieCache =
         new JFontLabel(
@@ -528,7 +526,7 @@ public class FirstUseSettings extends JDialog {
             rdoMouseOverSubboardNoRefresh.setSelected(true);
             rdoMouseOverSuggestionNoRefresh.setSelected(true);
             rdoScoreOnBoardWithOutKomi.setSelected(true);
-            rdoScoreOnWinratePaneWithOutKomi.setSelected(true);
+            rdoAlternately.setSelected(true);
             if (OS.isWindows()) rdoSysLooks.setSelected(true);
             else rdoJavaLooks.setSelected(true);
             txtLimitSuggestion.setText("10");
@@ -589,8 +587,7 @@ public class FirstUseSettings extends JDialog {
                   Lizzie.resourceBundle.getString("FirstUseSettings.confirmHint")); // ("有未选择的选项");
               return;
             }
-            if (!rdoScoreOnWinratePaneWithKomi.isSelected()
-                && !rdoScoreOnWinratePaneWithOutKomi.isSelected()) {
+            if (!rdoAlwaysBlack.isSelected() && !rdoAlternately.isSelected()) {
               Utils.showMsg(
                   Lizzie.resourceBundle.getString("FirstUseSettings.confirmHint")); // ("有未选择的选项");
               return;
@@ -684,11 +681,9 @@ public class FirstUseSettings extends JDialog {
             Lizzie.config.uiConfig.put(
                 "show-katago-boardscoremean", Lizzie.config.showKataGoBoardScoreMean);
 
-            if (rdoScoreOnWinratePaneWithKomi.isSelected())
-              Lizzie.config.scoreMeanWinrateGraphBoard = true;
-            else Lizzie.config.scoreMeanWinrateGraphBoard = false;
-            Lizzie.config.uiConfig.put(
-                "scoremean-winrategraph-board", Lizzie.config.scoreMeanWinrateGraphBoard);
+            if (rdoAlwaysBlack.isSelected()) Lizzie.config.winrateAlwaysBlack = true;
+            else Lizzie.config.winrateAlwaysBlack = false;
+            Lizzie.config.uiConfig.put("win-rate-always-black", Lizzie.config.winrateAlwaysBlack);
 
             Lizzie.config.limitMaxSuggestion = limitSuggestion;
             Lizzie.config.leelazConfig.put(
@@ -712,6 +707,7 @@ public class FirstUseSettings extends JDialog {
               Utils.showMsg(Lizzie.resourceBundle.getString("Lizzie.hint.restartForPartChanges"));
             }
             if (firstTime) Lizzie.resetLookAndFeel();
+            else Lizzie.frame.refresh();
           }
         });
     btnApply.setBounds(
@@ -730,8 +726,8 @@ public class FirstUseSettings extends JDialog {
       else rdoMouseOverSubboardRefresh.setSelected(true);
       if (Lizzie.config.showKataGoBoardScoreMean) rdoScoreOnBoardWithKomi.setSelected(true);
       else rdoScoreOnBoardWithOutKomi.setSelected(true);
-      if (Lizzie.config.scoreMeanWinrateGraphBoard) rdoScoreOnWinratePaneWithKomi.setSelected(true);
-      else rdoScoreOnWinratePaneWithOutKomi.setSelected(true);
+      if (Lizzie.config.winrateAlwaysBlack) rdoAlwaysBlack.setSelected(true);
+      else rdoAlternately.setSelected(true);
       if (Lizzie.config.useJavaLooks) rdoJavaLooks.setSelected(true);
       else rdoSysLooks.setSelected(true);
       if (Lizzie.config.enableLizzieCache) rdoLizzieCacheEnable.setSelected(true);

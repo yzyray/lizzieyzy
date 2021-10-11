@@ -1247,6 +1247,7 @@ public class Menu extends JMenuBar {
           public void actionPerformed(ActionEvent e) {
             Lizzie.config.winrateAlwaysBlack = alwaysShowBlackWinrate.isSelected();
             Lizzie.config.uiConfig.put("win-rate-always-black", Lizzie.config.winrateAlwaysBlack);
+            Lizzie.frame.refresh();
           }
         });
     Suggestions.add(alwaysShowBlackWinrate);
