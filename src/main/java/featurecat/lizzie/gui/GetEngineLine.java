@@ -73,15 +73,13 @@ public class GetEngineLine {
     File weightFile = null;
     File configFile = null;
     JFileChooser chooser = new JFileChooser(".");
-    if (Utils.isWindows() && (isKataGo || isLeela || isIkatago)) {
+    if (Utils.isWindows()) {
       FileNameExtensionFilter filter =
           new FileNameExtensionFilter(
               isIkatago ? "ikatago" : resourceBundle.getString("LizzieConfig.title.engine"),
               "exe",
               "bat");
       chooser.setFileFilter(filter);
-    } else {
-      // setVisible(false);
     }
     chooser.setMultiSelectionEnabled(false);
     chooser.setDialogTitle(

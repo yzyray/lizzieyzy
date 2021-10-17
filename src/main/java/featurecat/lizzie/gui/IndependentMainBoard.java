@@ -892,7 +892,6 @@ public class IndependentMainBoard extends JFrame {
   private boolean openRightClickMenu(int x, int y) {
     if (Lizzie.frame.clickOrder != -1) {
       Lizzie.frame.clickOrder = -1;
-      Lizzie.frame.hasMoveOutOfList = false;
       LizzieFrame.boardRenderer.startNormalBoard();
       Lizzie.frame.suggestionclick = LizzieFrame.outOfBoundCoordinate;
       Lizzie.frame.mouseOverCoordinate = LizzieFrame.outOfBoundCoordinate;

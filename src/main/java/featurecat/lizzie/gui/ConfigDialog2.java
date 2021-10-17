@@ -3459,7 +3459,7 @@ public class ConfigDialog2 extends JDialog {
     lblScoreMeanLineColor.setColor(
         Theme.array2Color(
             Lizzie.config.uiConfig.optJSONArray("scoremean-line-color"), new Color(255, 0, 255)));
-    setStoneIndicatorType(Lizzie.config.uiConfig.optInt("stone-indicator-type", 0));
+    setStoneIndicatorType(Lizzie.config.uiConfig.optInt("stone-indicator-type", 1));
     chkShowCommentNodeColor.setSelected(
         Lizzie.config.uiConfig.optBoolean("show-comment-node-color", true));
     lblCommentNodeColor.setColor(

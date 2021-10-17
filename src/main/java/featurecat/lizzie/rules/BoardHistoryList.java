@@ -99,10 +99,6 @@ public class BoardHistoryList {
     head = head.addOrGoto(data, newBranch);
   }
 
-  public void addOrGoto(BoardData data, boolean newBranch, boolean changeMove) {
-    head = head.addOrGoto(data, newBranch, changeMove, true);
-  }
-
   public void addOrGoto(
       BoardData data, boolean newBranch, boolean changeMove, boolean clearAfterMove) {
     head = head.addOrGoto(data, newBranch, changeMove, clearAfterMove);
@@ -428,7 +424,7 @@ public class BoardHistoryList {
       newState.dummy = dummy;
 
       // update history with pass
-      this.addOrGoto(newState, newBranch, changeMove);
+      this.addOrGoto(newState, newBranch);
     }
   }
 

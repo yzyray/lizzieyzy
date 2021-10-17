@@ -2,7 +2,6 @@ package featurecat.lizzie.analysis;
 
 import featurecat.lizzie.Lizzie;
 import featurecat.lizzie.gui.EngineFailedMessage;
-import featurecat.lizzie.gui.EstimateResults;
 import featurecat.lizzie.gui.LizzieFrame;
 import featurecat.lizzie.gui.RemoteEngineData;
 import featurecat.lizzie.gui.SetEstimateParam;
@@ -54,7 +53,6 @@ public class KataEstimate {
   public int whiteEatCount = 0;
   public int blackPrisonerCount = 0;
   public int whitePrisonerCount = 0;
-  EstimateResults results;
   boolean firstcount = true;
   private int numberofcount = 0;
   private int territoryCount = 0;
@@ -447,8 +445,7 @@ public class KataEstimate {
     Lizzie.frame.refresh();
     hasResult = true;
     if (firstcount) {
-      results = Lizzie.estimateResults;
-      results.Counts(
+      Lizzie.frame.estimateResults.Counts(
           blackEatCount,
           whiteEatCount,
           blackPrisonerCount,
@@ -457,13 +454,13 @@ public class KataEstimate {
           whitepoint,
           blackAlive,
           whiteAlive);
-      if (!results.isVisible()) {
-        results.showEstimate();
+      if (!Lizzie.frame.estimateResults.isVisible()) {
+        Lizzie.frame.estimateResults.showEstimate();
         if (Lizzie.frame.isAutocounting) Lizzie.frame.setVisible(true);
-      } else if (!Lizzie.frame.isAutocounting) results.setVisible(true);
+      } else if (!Lizzie.frame.isAutocounting) Lizzie.frame.estimateResults.setVisible(true);
       firstcount = false;
     } else {
-      results.Counts(
+      Lizzie.frame.estimateResults.Counts(
           blackEatCount,
           whiteEatCount,
           blackPrisonerCount,
@@ -472,10 +469,10 @@ public class KataEstimate {
           whitepoint,
           blackAlive,
           whiteAlive);
-      if (!results.isVisible()) {
-        results.showEstimate();
+      if (!Lizzie.frame.estimateResults.isVisible()) {
+        Lizzie.frame.estimateResults.showEstimate();
         if (Lizzie.frame.isAutocounting) Lizzie.frame.setVisible(true);
-      } else if (!Lizzie.frame.isAutocounting) results.setVisible(true);
+      } else if (!Lizzie.frame.isAutocounting) Lizzie.frame.estimateResults.setVisible(true);
     }
     numberofcount = 0;
   }
@@ -623,12 +620,12 @@ public class KataEstimate {
                 e.printStackTrace();
               }
               if (!hasResult) {
-                results = Lizzie.estimateResults;
-                results.Counts(0, 0, 0, 0, 0, 0, 0, 0);
-                if (!results.isVisible()) {
-                  results.showEstimate();
+                Lizzie.frame.estimateResults.Counts(0, 0, 0, 0, 0, 0, 0, 0);
+                if (!Lizzie.frame.estimateResults.isVisible()) {
+                  Lizzie.frame.estimateResults.showEstimate();
                   if (Lizzie.frame.isAutocounting) Lizzie.frame.setVisible(true);
-                } else if (!Lizzie.frame.isAutocounting) results.setVisible(true);
+                } else if (!Lizzie.frame.isAutocounting)
+                  Lizzie.frame.estimateResults.setVisible(true);
                 firstcount = false;
                 //  numberofcount = 0;
               }

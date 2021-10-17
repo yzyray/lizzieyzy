@@ -40,7 +40,7 @@ import java.util.concurrent.CountDownLatch;
 
 public class BoardRenderer {
   // Percentage of the boardLength to offset before drawing black lines
-  private static final double MARGIN = 0.03;
+  // private static final double MARGIN = 0.03;
   private final ResourceBundle resourceBundle =
       Lizzie.config.useLanguage == 0
           ? ResourceBundle.getBundle("l10n.DisplayStrings")
@@ -55,6 +55,7 @@ public class BoardRenderer {
   public int boardWidth = 1, boardHeight = 1;
   public boolean emptyName = true;
   public boolean changedName = false;
+  private boolean cachedShowCoords = false;
 
   // private JSONObject uiConfig, uiPersist;
   private int scaledMarginWidth, availableWidth, squareWidth, stoneRadius;
@@ -73,7 +74,7 @@ public class BoardRenderer {
   private Branch branch;
 
   private BufferedImage cachedBackgroundImage = emptyImage;
-  private boolean cachedBackgroundImageHasCoordinatesEnabled = false;
+  private boolean cachedIsBigMargin = false;
   private int cachedBoardWidth = 0, cachedBoardHeight = 0;
   private BufferedImage cachedStonesImage = emptyImage;
   private BufferedImage cachedStonesImagedraged = emptyImage;
@@ -421,19 +422,20 @@ public class BoardRenderer {
   }
 
   /** Calculate good values for boardLength, scaledMargin, availableLength, and squareLength */
-  public int[] availableLength(int boardWidth, int boardHeight, boolean showCoordinates) {
-    int[] calculatedPixelMargins = calculatePixelMargins(boardWidth, boardHeight, showCoordinates);
-    return (calculatedPixelMargins != null && calculatedPixelMargins.length >= 6)
-        ? calculatedPixelMargins
-        : new int[] {boardWidth, 0, boardWidth, boardHeight, 0, boardHeight};
-  }
+  //  public int[] availableLength(int boardWidth, int boardHeight, boolean showCoordinates) {
+  //    int[] calculatedPixelMargins = calculatePixelMargins(boardWidth, boardHeight,
+  // showCoordinates);
+  //    return (calculatedPixelMargins != null && calculatedPixelMargins.length >= 6)
+  //        ? calculatedPixelMargins
+  //        : new int[] {boardWidth, 0, boardWidth, boardHeight, 0, boardHeight};
+  //  }
 
   /** Calculate good values for boardLength, scaledMargin, availableLength, and squareLength */
-  public void setupSizeParameters() {
+  public void setupSizeParameters(boolean isBigMargin) {
     int boardWidth0 = boardWidth;
     int boardHeight0 = boardHeight;
 
-    int[] calculatedPixelMargins = calculatePixelMargins();
+    int[] calculatedPixelMargins = calculatePixelMargins(isBigMargin);
     boardWidth = calculatedPixelMargins[0];
     scaledMarginWidth = calculatedPixelMargins[1];
     availableWidth = calculatedPixelMargins[2];
@@ -462,14 +464,6 @@ public class BoardRenderer {
 
     // re-center board
     setLocation(x + (boardWidth0 - boardWidth) / 2, y + (boardHeight0 - boardHeight) / 2);
-  }
-
-  private boolean isShowingPolicyHeat() {
-    return Lizzie.frame.isShowingHeatmap
-        || (Lizzie.frame.isShowingPolicy
-            && !(this.boardIndex == 1 && Lizzie.leelaz2 != null
-                ? Lizzie.leelaz2.isKatago
-                : Lizzie.leelaz.isKatago));
   }
 
   private void drawRawWinrate(Graphics2D g0) {
@@ -576,10 +570,11 @@ public class BoardRenderer {
     }
     lengthB = g0.getFontMetrics().stringWidth(black);
     lengthW = g0.getFontMetrics().stringWidth(white);
-    if (black.equals("") && white.contentEquals("")) {
+    if (black.isBlank() && white.isBlank()) {
       if (!emptyName) {
         emptyName = true;
         changedName = true;
+        Lizzie.frame.refresh();
       }
       return;
     }
@@ -694,13 +689,13 @@ public class BoardRenderer {
   }
 
   public void reDrawStoneAnyway() {
-    cachedBackgroundImageHasCoordinatesEnabled = !cachedBackgroundImageHasCoordinatesEnabled;
+    cachedIsBigMargin = !cachedIsBigMargin;
   }
 
   public void reCreateStoneImageAnyway() {
     cachedBlackStoneImage = emptyImage;
     cachedWhiteStoneImage = emptyImage;
-    cachedBackgroundImageHasCoordinatesEnabled = !cachedBackgroundImageHasCoordinatesEnabled;
+    cachedIsBigMargin = !cachedIsBigMargin;
   }
   /**
    * Draw the green background and go board with lines. We cache the image for a performance boost.
@@ -713,16 +708,13 @@ public class BoardRenderer {
         || cachedBackgroundImage.getHeight() != height
         || cachedBoardWidth != boardWidth
         || cachedBoardHeight != boardHeight
-        // || cachedX != x
-        // || cachedY != y
-        || cachedBackgroundImageHasCoordinatesEnabled
-            != (showCoordinates() || isShowingPolicyHeat())
         || changedName
+        || cachedShowCoords != showCoordinates()
         || Lizzie.board.isForceRefresh()) {
       changedSize = true;
       cachedShadow = null;
       cachedGhostShadow2 = null;
-
+      cachedShowCoords = showCoordinates();
       clearAfterMove();
       changedName = false;
       cachedBoardWidth = boardWidth;
@@ -1184,8 +1176,6 @@ public class BoardRenderer {
     if (cachedStonesImage.getWidth() != boardWidth
         || cachedStonesImage.getHeight() != boardHeight
         || cachedDisplayedBranchLength != displayedBranchLength
-        || cachedBackgroundImageHasCoordinatesEnabled
-            != (showCoordinates() || isShowingPolicyHeat())
         || !cachedZhash.equals(Lizzie.board.getData().zobrist)) {
 
       cachedZhash = Lizzie.board.getData().zobrist.clone();
@@ -1239,7 +1229,6 @@ public class BoardRenderer {
         }
       }
       cachedDisplayedBranchLength = displayedBranchLength;
-      cachedBackgroundImageHasCoordinatesEnabled = showCoordinates() || isShowingPolicyHeat();
       g.dispose();
       gShadow.dispose();
       // lastInScoreMode = false;
@@ -1672,7 +1661,6 @@ public class BoardRenderer {
         int[] lastMove = lastMoveOpt.get();
 
         // Mark the last coordinate
-        int lastMoveMarkerRadius = stoneRadius / 2;
         int stoneX = x + scaledMarginWidth + squareWidth * lastMove[0];
         int stoneY = y + scaledMarginHeight + squareHeight * lastMove[1];
 
@@ -1691,13 +1679,12 @@ public class BoardRenderer {
             case 1:
               g.setColor(
                   Lizzie.board.getData().lastMoveColor.isWhite() ? Color.BLACK : Color.WHITE);
-              g.setStroke(new BasicStroke(stoneRadius / 10f));
-              drawCircle(g, stoneX, stoneY, lastMoveMarkerRadius);
+              drawCircle(g, stoneX, stoneY, (int) Math.round(squareWidth * 0.22f), 5f);
               break;
             case 2:
               g.setColor(
                   Lizzie.board.getData().lastMoveColor.isWhite() ? Color.BLACK : Color.WHITE);
-              fillCircle(g, stoneX, stoneY, (int) (lastMoveMarkerRadius * 0.65));
+              fillCircle(g, stoneX, stoneY, (int) (stoneRadius * 0.325));
               break;
           }
       }
@@ -3413,13 +3400,33 @@ public class BoardRenderer {
     }
   }
 
+  private boolean isBigMargin() {
+    if (Lizzie.board.isExtremlySmallBoard) return false;
+    if ((Lizzie.config.showNameInBoard && !isEmptyName()) || Lizzie.config.showCoordinates)
+      return true;
+    if (Lizzie.frame.isShowingHeatmap
+        && !Lizzie.frame.isAnaPlayingAgainstLeelaz
+        && !Lizzie.leelaz.isZen) return true;
+    else if (Lizzie.frame.isShowingPolicy
+        && !Lizzie.leelaz.isKatago
+        && !EngineManager.isEmpty
+        && !Lizzie.leelaz.isZen) return true;
+    return false;
+  }
+
+  private boolean isEmptyName() {
+    return (Lizzie.board.getHistory().getGameInfo().getPlayerBlack().isBlank()
+        && Lizzie.board.getHistory().getGameInfo().getPlayerWhite().isBlank());
+  }
+
   /**
    * Calculates the lengths and pixel margins from a given boardLength.
    *
    * @param boardLength go board's length in pixels; must be boardLength >= BOARD_SIZE - 1
    * @return an array containing the three outputs: new boardLength, scaledMargin, availableLength
    */
-  private int[] calculatePixelMargins(int boardWidth, int boardHeight, boolean showCoordinates) {
+  private int[] calculatePixelMargins(
+      int boardWidth, int boardHeight, boolean showCoordinates, boolean isBigMargin) {
     // boardLength -= boardLength*MARGIN/3; // account for the shadows we will draw
     // around the edge
     // of the board
@@ -3437,14 +3444,7 @@ public class BoardRenderer {
 
     // decrease boardLength until the availableLength will result in square board
     // intersections
-    double marginWidth =
-        (Board.boardWidth <= 3
-                ? 0.03
-                : (Lizzie.config.showNameInBoard && !emptyName
-                    ? 0.055
-                    : showCoordinates || isShowingPolicyHeat() ? 0.055 : 0.03))
-            / Board.boardWidth
-            * 19.0;
+    double marginWidth = (isBigMargin ? 0.055 : 0.03) / Board.boardWidth * 19.0;
     boardWidth++;
     do {
       boardWidth--;
@@ -3456,14 +3456,7 @@ public class BoardRenderer {
     int squareWidth = 0;
     int squareHeight = 0;
     if (Board.boardWidth != Board.boardHeight) {
-      double marginHeight =
-          (Board.boardWidth <= 4
-                  ? 0.03
-                  : (Lizzie.config.showNameInBoard && !emptyName
-                      ? 0.055
-                      : showCoordinates || isShowingPolicyHeat() ? 0.055 : 0.03))
-              / Board.boardHeight
-              * 19.0;
+      double marginHeight = (isBigMargin ? 0.055 : 0.03) / Board.boardHeight * 19.0;
       boardHeight++;
       do {
         boardHeight--;
@@ -3993,8 +3986,8 @@ public class BoardRenderer {
     return font.deriveFont(atts);
   }
 
-  private int[] calculatePixelMargins() {
-    return calculatePixelMargins(boardWidth, boardHeight, showCoordinates());
+  private int[] calculatePixelMargins(boolean isBigMargin) {
+    return calculatePixelMargins(boardWidth, boardHeight, showCoordinates(), isBigMargin);
   }
 
   /**
@@ -4018,20 +4011,15 @@ public class BoardRenderer {
    * @param boardLength the boardLength of the board
    */
   public void setBoardLength(int boardWidth, int boardHeight) {
+    boolean isBigMargin = isBigMargin();
     if (this.boardWidth != boardWidth || this.boardHeight != boardHeight) {
       this.boardWidth = boardWidth;
       this.boardHeight = boardHeight;
-      setupSizeParameters();
+      setupSizeParameters(isBigMargin);
+    } else if (isBigMargin != cachedIsBigMargin) {
+      cachedIsBigMargin = isBigMargin;
+      setupSizeParameters(isBigMargin);
     }
-  }
-
-  /**
-   * @return the actual board length, including the shadows drawn at the edge of the wooden board
-   */
-  public int[] getActualBoardLength() {
-    return new int[] {
-      (int) (boardWidth * (1 + MARGIN / 3)), (int) (boardHeight * (1 + MARGIN / 3))
-    };
   }
 
   /**

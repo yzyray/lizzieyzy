@@ -65,6 +65,7 @@ public class Board {
   private ArrayList<Movelist> tempMovelistForSpin;
   public GroupInfo boardGroupInfo;
   private boolean hasBigBranch = false;
+  public boolean isExtremlySmallBoard = false;
 
   public Board() {
     initialize(false);
@@ -92,6 +93,8 @@ public class Board {
       if (LizzieFrame.boardRenderer2 != null) LizzieFrame.boardRenderer2.clearAfterMove();
       LizzieFrame.forceRecreate = true;
     }
+    if (boardWidth < 4) isExtremlySmallBoard = true;
+    else isExtremlySmallBoard = false;
   }
 
   /**
@@ -1467,7 +1470,7 @@ public class Board {
               0,
               0);
       newState.dummy = dummy;
-      history.addOrGoto(newState, newBranch, changeMove);
+      history.addOrGoto(newState, newBranch);
       // update leelaz with pass
       if (!Lizzie.leelaz.isInputCommand && !EngineManager.isEngineGame)
         Lizzie.leelaz.playMove(color, "pass");
@@ -1499,11 +1502,11 @@ public class Board {
   }
 
   public void place(int x, int y, Stone color, boolean newBranch) {
-    place(x, y, color, newBranch, false, false, false);
+    place(x, y, color, newBranch, false, false);
   }
 
   public void placeForSync(int x, int y, Stone color, boolean newBranch) {
-    place(x, y, color, newBranch, false, true, false);
+    place(x, y, color, newBranch, true, false);
   }
 
   public void placeForManual(int x, int y) {
@@ -1511,7 +1514,7 @@ public class Board {
   }
 
   public void placeForManual(int x, int y, Stone color) {
-    place(x, y, color, false, false, false, true);
+    place(x, y, color, false, false, true);
   }
 
   private void modifyStart() {
@@ -1525,21 +1528,15 @@ public class Board {
   }
 
   public void place(
-      int x,
-      int y,
-      Stone color,
-      boolean newBranch,
-      boolean changeMove,
-      boolean forSync,
-      boolean forManual) {
+      int x, int y, Stone color, boolean newBranch, boolean forSync, boolean forManual) {
     boolean noCheckSuiKo = false;
     LizzieFrame.boardRenderer.removedrawmovestone();
     Lizzie.frame.suggestionclick = LizzieFrame.outOfBoundCoordinate;
     if (Lizzie.frame.isCounting) {
       Lizzie.frame.clearKataEstimate();
-      Lizzie.estimateResults.btnEstimate.setText(
+      Lizzie.frame.estimateResults.btnEstimate.setText(
           Lizzie.resourceBundle.getString("EstimateResults.estimate"));
-      Lizzie.estimateResults.iscounted = false;
+      Lizzie.frame.estimateResults.iscounted = false;
       Lizzie.frame.isCounting = false;
     }
     updateWinrate();
@@ -1595,7 +1592,6 @@ public class Board {
           && nextLast.get()[0] == x
           && nextLast.get()[1] == y
           && !newBranch
-          && !changeMove
           && Lizzie.frame.blackorwhite == 0) {
         // this is the next coordinate in history. Just increment history so that we
         // don't erase the
@@ -1756,8 +1752,7 @@ public class Board {
           && Lizzie.frame.readBoard.process.isAlive()) {
         Lizzie.frame.readBoard.sendCommand("place " + x + " " + y);
       }
-      if (LizzieFrame.urlSgf) history.addOrGoto(newState, newBranch, true);
-      else history.addOrGoto(newState, newBranch, changeMove);
+      history.addOrGoto(newState, newBranch);
       updateIsBest();
       if (needGenmove) Lizzie.leelaz.genmove((color.isWhite() ? "B" : "W"));
       //   modifyEnd(false);
@@ -2076,7 +2071,6 @@ public class Board {
     }
     if (Lizzie.frame.clickOrder != -1) {
       Lizzie.frame.clickOrder = -1;
-      Lizzie.frame.hasMoveOutOfList = false;
       // Lizzie.frame.boardRenderer.startNormalBoard();
       Lizzie.frame.suggestionclick = LizzieFrame.outOfBoundCoordinate;
       Lizzie.frame.mouseOverCoordinate = LizzieFrame.outOfBoundCoordinate;
@@ -2115,9 +2109,9 @@ public class Board {
     }
     if (Lizzie.frame.isCounting) {
       Lizzie.frame.clearKataEstimate();
-      Lizzie.estimateResults.btnEstimate.setText(
+      Lizzie.frame.estimateResults.btnEstimate.setText(
           Lizzie.resourceBundle.getString("EstimateResults.estimate"));
-      Lizzie.estimateResults.iscounted = false;
+      Lizzie.frame.estimateResults.iscounted = false;
       Lizzie.frame.isCounting = false;
     }
     // Lizzie.frame.isShowingHeatmap = false;

@@ -3413,7 +3413,7 @@ public class Leelaz {
       if (isPondering) {
         ponder();
       }
-      Lizzie.frame.handleAfterDrawGobanBottom();
+      // Lizzie.frame.handleAfterDrawGobanBottom();
     }
     if (Lizzie.config.isDoubleEngineMode() && Lizzie.leelaz2 != null)
       Lizzie.leelaz2.toggleHeatmapSub(bySpace);
@@ -3450,7 +3450,7 @@ public class Leelaz {
       if (isPondering) {
         ponder();
       }
-      Lizzie.frame.handleAfterDrawGobanBottomSub();
+      // Lizzie.frame.handleAfterDrawGobanBottomSub();
     }
   }
 

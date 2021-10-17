@@ -69,7 +69,7 @@ public class Theme {
 
   public int stoneIndicatorType() {
     String key = "stone-indicator-type";
-    return config.optInt(key, uiConfig.optInt(key, 0));
+    return config.optInt(key, uiConfig.optInt(key, 1));
   }
 
   public String blackStonePath() {

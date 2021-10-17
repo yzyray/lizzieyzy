@@ -50,25 +50,26 @@ public class SubBoardRenderer {
   private List<MoveData> bestMoves;
   public int bestmovesNum = 0;
 
+  TexturePaint paint;
   private BufferedImage cachedBackgroundImage = emptyImage;
   private boolean cachedBackgroundImageHasCoordinatesEnabled = false;
   private int cachedBoardWidth = 0, cachedBoardHeight = 0;
   private BufferedImage cachedStonesImage = emptyImage;
-  private BufferedImage cachedStonesImagedraged = emptyImage;
+  // private BufferedImage cachedStonesImagedraged = emptyImage;
   private BufferedImage blockimage = emptyImage;
   private BufferedImage kataEstimateImage = emptyImage;
   private BufferedImage heatimage = emptyImage;
 
   private BufferedImage cachedBoardImage = emptyImage;
   private BufferedImage cachedWallpaperImage = emptyImage;
-  private BufferedImage cachedStonesShadowImage = emptyImage;
-  private BufferedImage cachedStonesShadowImagedraged = emptyImage;
+  // private BufferedImage cachedStonesShadowImage = emptyImage;
+  // private BufferedImage cachedStonesShadowImagedraged = emptyImage;
   private Zobrist cachedZhash = new Zobrist(); // defaults to an empty board
 
   private BufferedImage cachedHeatImage = emptyImage;
 
   private BufferedImage branchStonesImage = emptyImage;
-  private BufferedImage branchStonesShadowImage;
+  //  private BufferedImage branchStonesShadowImage;
 
   public Optional<List<String>> variationOpt;
 
@@ -414,32 +415,6 @@ public class SubBoardRenderer {
     }
   }
 
-  public void removedrawmovestone() {
-    cachedStonesImagedraged = new BufferedImage(boardWidth, boardHeight, TYPE_INT_ARGB);
-    // cachedStonesShadowImagedraged = new BufferedImage(boardWidth, boardHeight,
-    // TYPE_INT_ARGB);
-  }
-
-  public void drawmovestone(int x, int y, Stone stone) {
-    cachedStonesImagedraged = new BufferedImage(boardWidth, boardHeight, TYPE_INT_ARGB);
-    cachedStonesShadowImagedraged = new BufferedImage(boardWidth, boardHeight, TYPE_INT_ARGB);
-    Graphics2D g = cachedStonesImagedraged.createGraphics();
-    Graphics2D gShadow = cachedStonesShadowImagedraged.createGraphics();
-    gShadow.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-    // gShadow.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
-    // g.setRenderingHint(RenderingHints.KEY_RENDERING,
-    // RenderingHints.VALUE_RENDER_QUALITY);
-    g.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
-
-    // gShadow.setRenderingHint(RenderingHints.KEY_RENDERING,
-    // RenderingHints.VALUE_RENDER_QUALITY);
-    // gShadow.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
-    int stoneX = scaledMarginWidth + squareWidth * x;
-    int stoneY = scaledMarginHeight + squareHeight * y;
-    drawStone(g, gShadow, stoneX, stoneY, stone, x, y);
-    g.dispose();
-  }
-
   public void removecountblock() {
     try {
       kataEstimateImage = new BufferedImage(boardWidth, boardHeight, TYPE_INT_ARGB);
@@ -620,26 +595,26 @@ public class SubBoardRenderer {
     g.fillRect(stoneX - stoneRadius / 2, stoneY - stoneRadius / 2, stoneRadius, stoneRadius);
   }
 
-  public void drawbadstone(int x, int y, Stone stone) {
-    cachedStonesImagedraged = new BufferedImage(boardWidth, boardHeight, TYPE_INT_ARGB);
-    cachedStonesShadowImagedraged = new BufferedImage(boardWidth, boardHeight, TYPE_INT_ARGB);
-    Graphics2D g = cachedStonesImagedraged.createGraphics();
-    Graphics2D gShadow = cachedStonesShadowImagedraged.createGraphics();
-    gShadow.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-    // gShadow.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
-    // g.setRenderingHint(RenderingHints.KEY_RENDERING,
-    // RenderingHints.VALUE_RENDER_QUALITY);
-    g.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
-
-    // gShadow.setRenderingHint(RenderingHints.KEY_RENDERING,
-    // RenderingHints.VALUE_RENDER_QUALITY);
-    // gShadow.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
-    int stoneX = scaledMarginWidth + squareWidth * x;
-    int stoneY = scaledMarginHeight + squareHeight * y;
-    g.setColor(Color.magenta);
-    drawCircle3(g, stoneX, stoneY, stoneRadius * 7 / 6);
-    g.dispose();
-  }
+  //  public void drawbadstone(int x, int y, Stone stone) {
+  //    cachedStonesImagedraged = new BufferedImage(boardWidth, boardHeight, TYPE_INT_ARGB);
+  //    cachedStonesShadowImagedraged = new BufferedImage(boardWidth, boardHeight, TYPE_INT_ARGB);
+  //    Graphics2D g = cachedStonesImagedraged.createGraphics();
+  //    Graphics2D gShadow = cachedStonesShadowImagedraged.createGraphics();
+  //    gShadow.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+  //    // gShadow.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
+  //    // g.setRenderingHint(RenderingHints.KEY_RENDERING,
+  //    // RenderingHints.VALUE_RENDER_QUALITY);
+  //    g.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
+  //
+  //    // gShadow.setRenderingHint(RenderingHints.KEY_RENDERING,
+  //    // RenderingHints.VALUE_RENDER_QUALITY);
+  //    // gShadow.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
+  //    int stoneX = scaledMarginWidth + squareWidth * x;
+  //    int stoneY = scaledMarginHeight + squareHeight * y;
+  //    g.setColor(Color.magenta);
+  //    drawCircle3(g, stoneX, stoneY, stoneRadius * 7 / 6);
+  //    g.dispose();
+  //  }
 
   /** Draw the stones. We cache the image for a performance boost. */
   public void drawStones() {
@@ -652,24 +627,24 @@ public class SubBoardRenderer {
         || !cachedZhash.equals(Lizzie.board.getData().zobrist)) {
 
       cachedStonesImage = new BufferedImage(boardWidth, boardHeight, TYPE_INT_ARGB);
-      cachedStonesShadowImage = new BufferedImage(boardWidth, boardHeight, TYPE_INT_ARGB);
+      //  cachedStonesShadowImage = new BufferedImage(boardWidth, boardHeight, TYPE_INT_ARGB);
       Graphics2D g = cachedStonesImage.createGraphics();
       g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-      Graphics2D gShadow = cachedStonesShadowImage.createGraphics();
-      gShadow.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+      // Graphics2D gShadow = cachedStonesShadowImage.createGraphics();
+      // gShadow.setRenderingHint(RenderingHints.KEY_RENDERING,
+      // RenderingHints.VALUE_RENDER_QUALITY);
 
       // we need antialiasing to make the stones pretty. Java is a bit slow at
       // antialiasing; that's
       // why we want the cache
       g.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
-      gShadow.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
+      // gShadow.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
 
       for (int i = 0; i < Board.boardWidth; i++) {
         for (int j = 0; j < Board.boardHeight; j++) {
           int stoneX = scaledMarginWidth + squareWidth * i;
           int stoneY = scaledMarginHeight + squareHeight * j;
-          drawStone(
-              g, gShadow, stoneX, stoneY, (Lizzie.board.getStones())[Board.getIndex(i, j)], i, j);
+          drawStone(g, stoneX, stoneY, (Lizzie.board.getStones())[Board.getIndex(i, j)], i, j);
         }
       }
 
@@ -677,7 +652,7 @@ public class SubBoardRenderer {
       cachedDisplayedBranchLength = displayedBranchLength;
       cachedBackgroundImageHasCoordinatesEnabled = showCoordinates();
       g.dispose();
-      gShadow.dispose();
+      // gShadow.dispose();
     }
   }
 
@@ -728,7 +703,7 @@ public class SubBoardRenderer {
     showingBranch = false;
     BufferedImage newImage = new BufferedImage(boardWidth, boardHeight, TYPE_INT_ARGB);
     // branchStonesImage = new BufferedImage(boardWidth, boardHeight, TYPE_INT_ARGB);
-    branchStonesShadowImage = new BufferedImage(boardWidth, boardHeight, TYPE_INT_ARGB);
+    // branchStonesShadowImage = new BufferedImage(boardWidth, boardHeight, TYPE_INT_ARGB);
     branchOpt = Optional.empty();
 
     //    if (Lizzie.frame.isPlayingAgainstLeelaz) {
@@ -757,8 +732,9 @@ public class SubBoardRenderer {
 
     Graphics2D g = (Graphics2D) newImage.getGraphics();
     g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-    Graphics2D gShadow = (Graphics2D) branchStonesShadowImage.getGraphics();
-    gShadow.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+    //  Graphics2D gShadow = (Graphics2D) branchStonesShadowImage.getGraphics();
+    //   gShadow.setRenderingHint(RenderingHints.KEY_RENDERING,
+    // RenderingHints.VALUE_RENDER_QUALITY);
 
     Optional<MoveData> suggestedMove = getBestMove();
 
@@ -830,13 +806,33 @@ public class SubBoardRenderer {
         // Display latest stone for ghost dead stone
         int index = Board.getIndex(i, j);
         Stone stone = branch.data.stones[index];
-        if (stonesTemp != null && stonesTemp[index] != Stone.EMPTY) continue;
+        if (stonesTemp != null && stonesTemp[index] != Stone.EMPTY) {
+          if (stone == Stone.BLACK_CAPTURED || stone == Stone.WHITE_CAPTURED) {
+            int stoneX = scaledMarginWidth + squareWidth * i;
+            int stoneY = scaledMarginHeight + squareHeight * j;
+            g.setPaint(paint);
+            fillCircle(g, stoneX, stoneY, stoneRadius + 1);
+            g.setColor(Color.BLACK);
+            g.setStroke(new BasicStroke(1));
+            g.drawLine(
+                stoneX - (i == 0 ? 0 : (stoneRadius + 1)),
+                stoneY,
+                stoneX + (i == Board.boardWidth - 1 ? 0 : (stoneRadius + 1)),
+                stoneY);
+            g.drawLine(
+                stoneX,
+                stoneY - (j == 0 ? 0 : (stoneRadius + 1)),
+                stoneX,
+                stoneY + (j == Board.boardHeight - 1 ? 0 : (stoneRadius + 1)));
+          }
+          continue;
+        }
         if (branch.data.moveNumberList[index] > maxBranchMoves()) continue;
 
         int stoneX = scaledMarginWidth + squareWidth * i;
         int stoneY = scaledMarginHeight + squareHeight * j;
 
-        drawStone(g, gShadow, stoneX, stoneY, stone.unGhosted(), i, j);
+        drawStone(g, stoneX, stoneY, stone.unGhosted(), i, j);
         // if (i == Lizzie.frame.suggestionclick[0] && j ==
         // Lizzie.frame.suggestionclick[1])
         // {
@@ -862,7 +858,7 @@ public class SubBoardRenderer {
     }
     branchStonesImage = newImage;
     g.dispose();
-    gShadow.dispose();
+    //   gShadow.dispose();
   }
 
   private Optional<MoveData> getBestMove() {
@@ -882,13 +878,14 @@ public class SubBoardRenderer {
             && Lizzie.config.showKataGoEstimateOnSubbord)
         || Lizzie.frame.isShowingHeatmap)
       if (shouldShowCountBlockBelow()) g.drawImage(kataEstimateImage, x, y, null);
-    g.drawImage(cachedStonesShadowImage, x, y, null);
-    g.drawImage(cachedStonesShadowImagedraged, x, y, null);
-    if (Lizzie.config.showBranchNow()) {
-      g.drawImage(branchStonesShadowImage, x, y, null);
-    }
     g.drawImage(cachedStonesImage, x, y, null);
-    g.drawImage(cachedStonesImagedraged, x, y, null);
+    // g.drawImage(cachedStonesShadowImage, x, y, null);
+    // g.drawImage(cachedStonesShadowImagedraged, x, y, null);
+    //    if (Lizzie.config.showBranchNow()) {
+    //      g.drawImage(branchStonesShadowImage, x, y, null);
+    //    }
+
+    // g.drawImage(cachedStonesImagedraged, x, y, null);
     g.drawImage(blockimage, x, y, null);
     if ((Lizzie.config.showKataGoEstimate
             && Lizzie.config.showKataGoEstimateOnSubbord
@@ -1215,8 +1212,7 @@ public class SubBoardRenderer {
   }
 
   /** Draws a stone centered at (centerX, centerY) */
-  private void drawStone(
-      Graphics2D g, Graphics2D gShadow, int centerX, int centerY, Stone color, int x, int y) {
+  private void drawStone(Graphics2D g, int centerX, int centerY, Stone color, int x, int y) {
     // g.setRenderingHint(KEY_ALPHA_INTERPOLATION,
     // VALUE_ALPHA_INTERPOLATION_QUALITY);
     g.setRenderingHint(KEY_INTERPOLATION, VALUE_INTERPOLATION_BILINEAR);
@@ -1274,64 +1270,10 @@ public class SubBoardRenderer {
     return cachedWallpaperImage;
   }
 
-  /**
-   * Draw scale smooth image, enhanced display quality (Not use, for future) This function use the
-   * traditional Image.getScaledInstance() method to provide the nice quality, but the performance
-   * is poor. Recommended for use in a few drawings
-   */
-  // public void drawScaleSmoothImage(Graphics2D g, BufferedImage img, int x, int
-  // y, int width,
-  // int height, ImageObserver observer) {
-  // BufferedImage newstone = new BufferedImage(width, height, TYPE_INT_ARGB);
-  // Graphics2D g2 = newstone.createGraphics();
-  // g2.drawImage(img.getScaledInstance(width, height,
-  // java.awt.Image.SCALE_SMOOTH), 0, 0,
-  // observer);
-  // g2.dispose();
-  // g.drawImage(newstone, x, y, width, height, observer);
-  // }
-
-  /**
-   * Draw scale smooth image, enhanced display quality (Not use, for future) This functions use a
-   * multi-step approach to prevent the information loss and produces a much higher quality that is
-   * close to the Image.getScaledInstance() and faster than Image.getScaledInstance() method.
-   */
-  // public void drawScaleImage(Graphics2D g, BufferedImage img, int x, int y, int
-  // width, int
-  // height, ImageObserver observer) {
-  // BufferedImage newstone = (BufferedImage)img;
-  // int w = img.getWidth();
-  // int h = img.getHeight();
-  // do {
-  // if (w > width) {
-  // w /= 2;
-  // if (w < width) {
-  // w = width;
-  // }
-  // }
-  // if (h > height) {
-  // h /= 2;
-  // if (h < height) {
-  // h = height;
-  // }
-  // }
-  // BufferedImage tmp = new BufferedImage(w, h, TYPE_INT_ARGB);
-  // Graphics2D g2 = tmp.createGraphics();
-  // g2.setRenderingHint(KEY_INTERPOLATION,
-  // VALUE_INTERPOLATION_BICUBIC);
-  // g2.drawImage(newstone, 0, 0, w, h, null);
-  // g2.dispose();
-  // newstone = tmp;
-  // }
-  // while (w != width || h != height);
-  // g.drawImage(newstone, x, y, width, height, observer);
-  // }
-
   /** Draw texture image */
   public void drawTextureImage(
       Graphics2D g, BufferedImage img, int x, int y, int width, int height) {
-    TexturePaint paint =
-        new TexturePaint(img, new Rectangle(0, 0, img.getWidth(), img.getHeight()));
+    paint = new TexturePaint(img, new Rectangle(0, 0, img.getWidth(), img.getHeight()));
     g.setPaint(paint);
     g.fill(new Rectangle(x, y, width, height));
   }
@@ -1345,17 +1287,6 @@ public class SubBoardRenderer {
   /** Draws the outline of a circle centered at (centerX, centerY) with radius $radius$ */
   private void drawCircle(Graphics2D g, int centerX, int centerY, int radius) {
     // g.setStroke(new BasicStroke(radius / 11.5f));
-    g.drawOval(centerX - radius, centerY - radius, 2 * radius, 2 * radius);
-  }
-
-  // private void drawCircle4(Graphics2D g, int centerX, int centerY, int radius)
-  // {
-  // g.setStroke(new BasicStroke(1f));
-  // g.drawOval(centerX - radius, centerY - radius, 2 * radius, 2 * radius);
-  // }
-
-  private void drawCircle3(Graphics2D g, int centerX, int centerY, int radius) {
-    g.setStroke(new BasicStroke(radius / 5f));
     g.drawOval(centerX - radius, centerY - radius, 2 * radius, 2 * radius);
   }
 

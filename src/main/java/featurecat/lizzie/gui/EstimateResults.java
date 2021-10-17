@@ -66,6 +66,7 @@ public class EstimateResults extends JDialog {
 
   public EstimateResults(Window owner) {
     super(owner);
+    if (owner == null) setAlwaysOnTop(true);
     getContentPane().add(buttonpanel, BorderLayout.SOUTH);
     this.setResizable(false);
     this.setTitle(resourceBundle.getString("EstimateResults.title")); // "Zen形式判断");

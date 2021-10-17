@@ -543,7 +543,7 @@ public class InputIndependentMainBoard implements KeyListener {
           LizzieFrame.boardRenderer.removecountblock();
           // Lizzie.frame.repaint();
           Lizzie.frame.isCounting = false;
-          Lizzie.estimateResults.setVisible(false);
+          Lizzie.frame.estimateResults.setVisible(false);
         } else {
           Lizzie.frame.countstones(true);
         }

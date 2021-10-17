@@ -5,7 +5,6 @@ import featurecat.lizzie.analysis.EngineManager;
 import featurecat.lizzie.analysis.KataEstimate;
 import featurecat.lizzie.analysis.Leelaz;
 import featurecat.lizzie.gui.AwareScaled;
-import featurecat.lizzie.gui.EstimateResults;
 import featurecat.lizzie.gui.FirstUseSettings;
 import featurecat.lizzie.gui.GtpConsolePane;
 import featurecat.lizzie.gui.LizzieFrame;
@@ -38,7 +37,6 @@ public class Lizzie {
   public static GtpConsolePane gtpConsole;
   public static LizzieFrame frame;
   public static JDialog loadEngine;
-  public static EstimateResults estimateResults;
   public static FirstUseSettings firstUseSettings;
   public static Board board;
   public static Leelaz leelaz;
@@ -264,7 +262,6 @@ public class Lizzie {
                 e1.printStackTrace();
               }
             }
-            estimateResults = new EstimateResults(frame);
             if (Lizzie.config.saveBoardConfig.optInt("save-auto-game-index2", -1) == -5) {
               Lizzie.config.saveBoardConfig.put("save-auto-game-index1", 1);
               File file = new File("save\\autoGame1.bmp");

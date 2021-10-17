@@ -150,6 +150,7 @@ public class LizzieFrame extends JFrame {
   public SubBoardRenderer subBoardRenderer2;
   public SubBoardRenderer subBoardRenderer3;
   public SubBoardRenderer subBoardRenderer4;
+  public EstimateResults estimateResults;
   public int subBoardXmouse;
   public int subBoardYmouse;
   public int subBoardLengthmouse;
@@ -308,7 +309,6 @@ public class LizzieFrame extends JFrame {
 
   public int selectedorder = -1;
   public int clickOrder = -1;
-  public boolean hasMoveOutOfList = false;
   public int currentRow = -1;
   // public JPanel statusPanel;
   //  public int mainPanleX;
@@ -2380,7 +2380,6 @@ public class LizzieFrame extends JFrame {
   public boolean openRightClickMenu(int x, int y) {
     if (Lizzie.frame.clickOrder != -1) {
       Lizzie.frame.clickOrder = -1;
-      Lizzie.frame.hasMoveOutOfList = false;
       boardRenderer.startNormalBoard();
       Lizzie.frame.suggestionclick = LizzieFrame.outOfBoundCoordinate;
       Lizzie.frame.mouseOverCoordinate = LizzieFrame.outOfBoundCoordinate;
@@ -2550,6 +2549,11 @@ public class LizzieFrame extends JFrame {
   }
 
   public void countstones(boolean shouldRetart) {
+    if (estimateResults == null || !estimateResults.isVisible()) {
+      if (Lizzie.frame.floatBoard != null && Lizzie.frame.floatBoard.isVisible())
+        estimateResults = new EstimateResults(null);
+      else estimateResults = new EstimateResults(this);
+    }
     if (Lizzie.config.showKataGoEstimate
         && !Lizzie.config.isHiddenKataEstimate
         && Lizzie.leelaz.isKatago) {
@@ -5784,8 +5788,8 @@ public class LizzieFrame extends JFrame {
               : (float) (min(width * 0.4, height * 0.85) * 0.2));
     else setPanelFont(g, (float) (height * 0.18));
     if (isCounting || isAutocounting) {
-      bval = String.format("%d", Lizzie.estimateResults.allblackcounts);
-      wval = String.format("%d", Lizzie.estimateResults.allwhitecounts);
+      bval = String.format("%d", estimateResults.allblackcounts);
+      wval = String.format("%d", estimateResults.allwhitecounts);
     } else {
       bval = String.format("%d", Lizzie.board.getData().blackCaptures);
       wval = String.format("%d", Lizzie.board.getData().whiteCaptures);
@@ -6439,6 +6443,7 @@ public class LizzieFrame extends JFrame {
     if (isMouseOver) {
       isMouseOver = false;
       needRepaint = true;
+      suggestionclick = outOfBoundCoordinate;
       clearMoved();
     }
     if (Lizzie.config.showMouseOverWinrateGraph
@@ -6574,7 +6579,6 @@ public class LizzieFrame extends JFrame {
       }
     }
     if (clickOrder != -1) {
-      hasMoveOutOfList = true;
       return;
     }
     // mouseOverCoordinate = outOfBoundCoordinate;
@@ -8137,7 +8141,7 @@ public class LizzieFrame extends JFrame {
         Lizzie.leelaz.ponder();
     } else {
       isShowingPolicy = false;
-      handleAfterDrawGobanBottom();
+      // handleAfterDrawGobanBottom();
       // if (lastponder) Lizzie.leelaz.ponder();
     }
     Lizzie.frame.refresh();
@@ -9658,22 +9662,22 @@ public class LizzieFrame extends JFrame {
     thread.start();
   }
 
-  public void handleAfterDrawGobanBottom() {
-    if (Lizzie.board.getHistory().getGameInfo().getPlayerWhite().equals("")
-        && Lizzie.board.getHistory().getGameInfo().getPlayerBlack().equals("")) {
-      boardRenderer.changedName = true;
-      boardRenderer.emptyName = true;
-    }
-    refresh();
-  }
-
-  public void handleAfterDrawGobanBottomSub() {
-    if (Lizzie.board.getHistory().getGameInfo().getPlayerWhite().equals("")
-        && Lizzie.board.getHistory().getGameInfo().getPlayerBlack().equals("")) {
-      boardRenderer2.changedName = true;
-      boardRenderer2.emptyName = true;
-    }
-  }
+  //  public void handleAfterDrawGobanBottom() {
+  //    if (Lizzie.board.getHistory().getGameInfo().getPlayerWhite().equals("")
+  //        && Lizzie.board.getHistory().getGameInfo().getPlayerBlack().equals("")) {
+  //      boardRenderer.changedName = true;
+  //    //  boardRenderer.emptyName = true;
+  //    }
+  //    refresh();
+  //  }
+  //
+  //  public void handleAfterDrawGobanBottomSub() {
+  //    if (Lizzie.board.getHistory().getGameInfo().getPlayerWhite().equals("")
+  //        && Lizzie.board.getHistory().getGameInfo().getPlayerBlack().equals("")) {
+  //      boardRenderer2.changedName = true;
+  //    //  boardRenderer2.emptyName = true;
+  //    }
+  //  }
 
   public void clearEstimate() {
     boardRenderer.removeEstimateImage();
@@ -9685,8 +9689,7 @@ public class LizzieFrame extends JFrame {
     if (Lizzie.config.showSubBoard) subBoardRenderer.removecountblock();
     if (Lizzie.config.isDoubleEngineMode()) boardRenderer2.removecountblock();
     if (floatBoard != null) floatBoard.boardRenderer.removecountblock();
-    if (Lizzie.estimateResults != null && Lizzie.estimateResults.isVisible())
-      Lizzie.estimateResults.repaint();
+    if (estimateResults != null && estimateResults.isVisible()) estimateResults.repaint();
   }
 
   public void toggleShowKataEstimate() {
@@ -9712,7 +9715,7 @@ public class LizzieFrame extends JFrame {
         clearKataEstimate();
         Lizzie.frame.refresh();
         Lizzie.frame.isCounting = false;
-        Lizzie.estimateResults.setVisible(false);
+        estimateResults.setVisible(false);
       } else {
         Lizzie.frame.countstones(true);
       }
@@ -10042,6 +10045,7 @@ public class LizzieFrame extends JFrame {
       clearMoved();
       return;
     }
+    isMouseOver = true;
     curSuggestionMoveOrderByNumber = index;
     mouseOverCoordinate =
         Board.convertNameToCoordinates(
@@ -10049,18 +10053,6 @@ public class LizzieFrame extends JFrame {
   }
 
   private void handleTableClick(int row, int col) {
-    if (hasMoveOutOfList) {
-      hasMoveOutOfList = false;
-      LizzieFrame.boardRenderer.startNormalBoard();
-      Lizzie.frame.suggestionclick = LizzieFrame.outOfBoundCoordinate;
-      Lizzie.frame.mouseOverCoordinate = LizzieFrame.outOfBoundCoordinate;
-      LizzieFrame.boardRenderer.clearBranch();
-      selectedorder = -1;
-      clickOrder = -1;
-      currentRow = -1;
-      Lizzie.frame.refresh();
-      return;
-    }
     LizzieFrame.boardRenderer.startNormalBoard();
     if (listTable.getValueAt(row, 1).toString().startsWith("pass")) return;
     if (clickOrder != -1
@@ -10075,14 +10067,15 @@ public class LizzieFrame extends JFrame {
       selectedorder = -1;
       clickOrder = -1;
       currentRow = -1;
+      isMouseOver = true;
       Lizzie.frame.refresh();
     } else {
-
       clickOrder = row;
       selectedorder = row;
       currentRow = row;
       int[] coords = Board.convertNameToCoordinates(listTable.getValueAt(row, 1).toString());
       Lizzie.frame.mouseOverCoordinate = coords;
+      isMouseOver = true;
       Lizzie.frame.suggestionclick = coords;
       Lizzie.frame.refresh();
     }
@@ -12157,7 +12150,7 @@ public class LizzieFrame extends JFrame {
     if (Lizzie.frame.isCounting) {
       Lizzie.frame.clearKataEstimate();
       Lizzie.frame.isCounting = false;
-      Lizzie.estimateResults.setVisible(false);
+      estimateResults.setVisible(false);
     }
     refresh();
   }
