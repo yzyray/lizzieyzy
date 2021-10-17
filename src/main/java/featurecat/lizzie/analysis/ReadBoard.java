@@ -570,6 +570,7 @@ public class ReadBoard {
     BoardHistoryNode node = Lizzie.board.getHistory().getCurrentHistoryNode();
     BoardHistoryNode node2 = Lizzie.board.getHistory().getMainEnd();
     Stone[] stones = Lizzie.board.getHistory().getMainEnd().getData().stones;
+
     boolean needRefresh = false;
     for (int i = 0; i < tempcount.size(); i++) {
       int m = tempcount.get(i);
@@ -665,7 +666,7 @@ public class ReadBoard {
         int m = tempcount.get(i);
         int y = i / Board.boardWidth;
         int x = i % Board.boardWidth;
-        if (isStoneDiff(m, stones[Board.getIndex(x, y)])) {
+        if (isStoneDiff(m, stones, x, y)) {
           needReSync = true;
           break;
         }
@@ -718,9 +719,17 @@ public class ReadBoard {
     //	    }
   }
 
-  private boolean isStoneDiff(int m, Stone stone) {
+  private boolean isStoneDiff(int m, Stone[] stones, int x, int y) {
     // TODO Auto-generated method stub
+    Stone stone = stones[Board.getIndex(x, y)];
     if (m == 0 && stone != Stone.EMPTY) {
+      if (Lizzie.frame.bothSync) {
+        BoardHistoryNode curNode = Lizzie.board.getHistory().getMainEnd();
+        if (curNode.previous().isPresent()) {
+          if (curNode.previous().get().getData().stones[Board.getIndex(x, y)] == Stone.EMPTY) ;
+          return false;
+        }
+      }
       return true;
     }
     if ((m == 1 || m == 3) && !stone.isBlack()) {
