@@ -2465,6 +2465,18 @@ public class Menu extends JMenuBar {
         new JFontMenu(resourceBundle.getString("Menu.continueGameAgainstAi")); // ("人机续弈");
     gameMenu.add(continueGameAgainstAi);
 
+    final JFontMenuItem newGenmoveGame =
+        new JFontMenuItem(
+            resourceBundle.getString("Menu.newGenmoveGame")); // ("人机对局(Genmove模式 Alt+N)");
+    newGenmoveGame.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.frame.startNewGame();
+          }
+        });
+    newGame.add(newGenmoveGame);
+
     JFontMenuItem newAnalyzeModeGame = new JFontMenuItem(); // ("人机对局(分析模式 N)");
 
     newAnalyzeModeGame.setLayout(null);
@@ -2537,18 +2549,6 @@ public class Menu extends JMenuBar {
         });
     newGame.add(newAnalyzeModeGame);
 
-    final JFontMenuItem newGenmoveGame =
-        new JFontMenuItem(
-            resourceBundle.getString("Menu.newGenmoveGame")); // ("人机对局(Genmove模式 Alt+N)");
-    newGenmoveGame.addActionListener(
-        new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            Lizzie.frame.startNewGame();
-          }
-        });
-    newGame.add(newGenmoveGame);
-
     final JFontMenuItem newEngineGame =
         new JFontMenuItem(resourceBundle.getString("Menu.newEngineGame")); // ("引擎对局(Alt+E)");
     newEngineGame.addActionListener(
@@ -2560,6 +2560,32 @@ public class Menu extends JMenuBar {
           }
         });
     newGame.add(newEngineGame);
+
+    final JFontMenuItem continueGenmoveGameAsWhite =
+        new JFontMenuItem(
+            resourceBundle.getString(
+                "Menu.continueGenmoveGameAsWhite")); // ("续弈[AI执黑](Genmove模式 Alt+回车)");
+    continueGenmoveGameAsWhite.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.frame.continueAiPlaying(true, false, false, false);
+          }
+        });
+    continueGameAgainstAi.add(continueGenmoveGameAsWhite);
+
+    final JFontMenuItem continueGenmoveGameAsBlack =
+        new JFontMenuItem(
+            resourceBundle.getString(
+                "Menu.continueGenmoveGameAsBlack")); // ("续弈[AI执白](Genmove模式 Alt+回车)");
+    continueGenmoveGameAsBlack.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.frame.continueAiPlaying(true, false, true, false);
+          }
+        });
+    continueGameAgainstAi.add(continueGenmoveGameAsBlack);
 
     final JFontMenuItem continueAnalyzeGameAsWhite =
         new JFontMenuItem(
@@ -2592,32 +2618,6 @@ public class Menu extends JMenuBar {
 
     continueGameAgainstAi.add(continueAnalyzeGameAsBlack);
 
-    final JFontMenuItem continueGenmoveGameAsWhite =
-        new JFontMenuItem(
-            resourceBundle.getString(
-                "Menu.continueGenmoveGameAsWhite")); // ("续弈[AI执黑](Genmove模式 Alt+回车)");
-    continueGenmoveGameAsWhite.addActionListener(
-        new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            Lizzie.frame.continueAiPlaying(true, false, false, false);
-          }
-        });
-    continueGameAgainstAi.add(continueGenmoveGameAsWhite);
-
-    final JFontMenuItem continueGenmoveGameAsBlack =
-        new JFontMenuItem(
-            resourceBundle.getString(
-                "Menu.continueGenmoveGameAsBlack")); // ("续弈[AI执白](Genmove模式 Alt+回车)");
-    continueGenmoveGameAsBlack.addActionListener(
-        new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            Lizzie.frame.continueAiPlaying(true, false, true, false);
-          }
-        });
-    continueGameAgainstAi.add(continueGenmoveGameAsBlack);
-
     final JFontCheckBoxMenuItem scoreGame =
         new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.scoreGame")); // ("终局数子");
     gameMenu.add(scoreGame);
@@ -2636,7 +2636,7 @@ public class Menu extends JMenuBar {
         new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
-            SetAiTimes st = new SetAiTimes();
+            SetAiTimes st = new SetAiTimes(Lizzie.frame);
             st.setVisible(true);
           }
         });
@@ -2800,7 +2800,7 @@ public class Menu extends JMenuBar {
         new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
-            StartAnaDialog newgame = new StartAnaDialog(false);
+            StartAnaDialog newgame = new StartAnaDialog(false, Lizzie.frame);
             newgame.setVisible(true);
             if (newgame.isCancelled()) {
               LizzieFrame.toolbar.resetAutoAna();
@@ -6657,8 +6657,8 @@ public class Menu extends JMenuBar {
             }
           });
 
-      newGamePopup.add(analyzeGame);
       newGamePopup.add(genmoveGame);
+      newGamePopup.add(analyzeGame);
       newGamePopup.add(engineGame);
 
       doubleMenuNewGame.addActionListener(
@@ -6939,7 +6939,7 @@ public class Menu extends JMenuBar {
         btnAnalyze.addActionListener(
             new ActionListener() {
               public void actionPerformed(ActionEvent e) {
-                StartAnaDialog newgame = new StartAnaDialog(false);
+                StartAnaDialog newgame = new StartAnaDialog(false, Lizzie.frame);
                 newgame.setVisible(true);
                 if (newgame.isCancelled()) {
                   LizzieFrame.toolbar.resetAutoAna();
@@ -6955,7 +6955,7 @@ public class Menu extends JMenuBar {
             new ActionListener() {
               @Override
               public void actionPerformed(ActionEvent e) {
-                StartAnaDialog newgame = new StartAnaDialog(false);
+                StartAnaDialog newgame = new StartAnaDialog(false, Lizzie.frame);
                 newgame.setVisible(true);
                 if (newgame.isCancelled()) {
                   LizzieFrame.toolbar.resetAutoAna();
@@ -7709,8 +7709,8 @@ public class Menu extends JMenuBar {
           }
         });
 
-    newGamePopup.add(analyzeGame);
     newGamePopup.add(genmoveGame);
+    newGamePopup.add(analyzeGame);
     newGamePopup.add(engineGame);
 
     doubleMenuNewGame.addActionListener(

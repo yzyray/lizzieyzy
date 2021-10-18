@@ -210,14 +210,10 @@ public class InputIndependentMainBoard implements KeyListener {
         }
         break;
       case VK_N:
-        // stop the ponder
-        // if (isinsertmode) {
-        // return;
-        // }
-        if (e.isAltDown() || Lizzie.leelaz.noAnalyze) {
-          Lizzie.frame.startNewGame();
-        } else {
+        if (e.isAltDown() && !Lizzie.leelaz.noAnalyze) {
           Lizzie.frame.startAnalyzeGameDialog();
+        } else {
+          Lizzie.frame.startNewGame();
         }
         break;
       case VK_SPACE:
@@ -466,13 +462,10 @@ public class InputIndependentMainBoard implements KeyListener {
         break;
 
       case VK_ENTER:
-        // if (isinsertmode) {
-        // return;
-        // }
         if (e.isAltDown()) {
-          Lizzie.frame.continueAiPlaying(true, true, true, true);
-        } else {
           Lizzie.frame.continueAiPlaying(false, true, true, true);
+        } else {
+          Lizzie.frame.continueAiPlaying(true, true, true, true);
         }
         break;
 
@@ -529,7 +522,7 @@ public class InputIndependentMainBoard implements KeyListener {
           //  Lizzie.board.clearbestmovesafter(Lizzie.board.getHistory().getStart());
           Lizzie.board.clearBoardStat();
         } else {
-          StartAnaDialog newgame = new StartAnaDialog(false);
+          StartAnaDialog newgame = new StartAnaDialog(false, Lizzie.frame);
           newgame.setVisible(true);
           if (newgame.isCancelled()) {
             LizzieFrame.toolbar.resetAutoAna();

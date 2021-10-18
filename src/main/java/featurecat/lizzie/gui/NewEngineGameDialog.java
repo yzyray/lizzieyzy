@@ -71,7 +71,8 @@ public class NewEngineGameDialog extends JDialog {
   private boolean cancelled = true;
   private GameInfo gameInfo;
 
-  public NewEngineGameDialog() {
+  public NewEngineGameDialog(Window owner) {
+    super(owner);
     // Lizzie.frame.removeInput();
     initComponents();
   }
@@ -689,7 +690,7 @@ public class NewEngineGameDialog extends JDialog {
     aboutAdvanceTimeSettings.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            Utils.showHtmlMessage(
+            Utils.showHtmlMessageModal(
                 Lizzie.resourceBundle.getString("AdvanceTimeSettings.title"),
                 Lizzie.resourceBundle.getString("AdvanceTimeSettings.describe"));
           }
@@ -1154,17 +1155,5 @@ public class NewEngineGameDialog extends JDialog {
 
   public boolean isCancelled() {
     return cancelled;
-  }
-
-  public static void main(String[] args) {
-    EventQueue.invokeLater(
-        () -> {
-          try {
-            NewEngineGameDialog window = new NewEngineGameDialog();
-            window.setVisible(true);
-          } catch (Exception e) {
-            e.printStackTrace();
-          }
-        });
   }
 }

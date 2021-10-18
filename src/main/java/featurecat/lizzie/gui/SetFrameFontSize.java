@@ -5,16 +5,12 @@ import featurecat.lizzie.Lizzie;
 import featurecat.lizzie.util.Utils;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.ResourceBundle;
-import javax.imageio.ImageIO;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -96,17 +92,7 @@ public class SetFrameFontSize extends JDialog {
     fontSize.setColumns(3);
 
     fontSize.setText(String.valueOf(Config.frameFontSize));
-    try {
-      this.setIconImage(ImageIO.read(MoreEngines.class.getResourceAsStream("/assets/logo.png")));
-      Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
-      int x = (int) screensize.getWidth() / 2 - this.getWidth() / 2;
-      int y = (int) screensize.getHeight() / 2 - this.getHeight() / 2;
-      setLocation(x, y);
-    } catch (IOException e1) {
-      // TODO Auto-generated catch block
-      e1.printStackTrace();
-    }
-    setLocationRelativeTo(getOwner());
+    setLocationRelativeTo(Lizzie.frame);
   }
 
   private class DigitOnlyFilter extends DocumentFilter {

@@ -2,6 +2,7 @@ package featurecat.lizzie.gui;
 
 import featurecat.lizzie.Lizzie;
 import java.awt.BorderLayout;
+import java.awt.Window;
 import java.io.IOException;
 import java.text.NumberFormat;
 import javax.imageio.ImageIO;
@@ -11,7 +12,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class SetMatchAiPara extends JDialog {
-  public SetMatchAiPara() {
+  public SetMatchAiPara(Window owner) {
+    super(owner);
     // setType(Type.POPUP);
     setTitle(Lizzie.resourceBundle.getString("SetMatchAiPara.title")); // ("AI评分设置");
     setAlwaysOnTop(true);

@@ -1208,7 +1208,7 @@ public class ConfigDialog2 extends JDialog {
     btnNewButton.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            Utils.showHtmlMessage(
+            Utils.showHtmlMessageModal(
                 resourceBundle.getString("AdvanceTimeSettings.title"),
                 resourceBundle.getString("AdvanceTimeSettings.describe"));
           }
@@ -1903,7 +1903,7 @@ public class ConfigDialog2 extends JDialog {
     setBoardSize();
     setShowMoveNumber();
     setShowWinrateSide();
-    setLocationRelativeTo(getOwner());
+    setLocationRelativeTo(Lizzie.frame);
   }
 
   public void setChkSuggestionInfo() {

@@ -71,7 +71,8 @@ public class NewAnaGameDialog extends JDialog {
   private int handicap;
   private double komi;
 
-  public NewAnaGameDialog() {
+  public NewAnaGameDialog(Window owner) {
+    super(owner);
     initComponents();
   }
 
@@ -1023,17 +1024,5 @@ public class NewAnaGameDialog extends JDialog {
 
   public boolean isCancelled() {
     return cancelled;
-  }
-
-  public static void main(String[] args) {
-    EventQueue.invokeLater(
-        () -> {
-          try {
-            NewAnaGameDialog window = new NewAnaGameDialog();
-            window.setVisible(true);
-          } catch (Exception e) {
-            e.printStackTrace();
-          }
-        });
   }
 }

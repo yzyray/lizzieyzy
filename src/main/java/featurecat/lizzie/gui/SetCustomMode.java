@@ -9,6 +9,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -48,8 +49,8 @@ public class SetCustomMode extends JDialog {
   private boolean isSetCustom;
   private boolean oriPondering;
 
-  public SetCustomMode(int index, boolean isSetCustom) {
-    //  super(owner);
+  public SetCustomMode(int index, boolean isSetCustom, Window owner) {
+    super(owner);
     this.index = index;
     this.isSetCustom = isSetCustom;
     oriPondering = Lizzie.leelaz.isPondering();
@@ -155,7 +156,7 @@ public class SetCustomMode extends JDialog {
     initDialogPane(contentPane);
 
     pack();
-    setLocationRelativeTo(getOwner());
+    setLocationRelativeTo(Lizzie.frame);
   }
 
   private void initDialogPane(Container contentPane) {

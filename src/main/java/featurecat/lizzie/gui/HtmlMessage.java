@@ -3,6 +3,7 @@ package featurecat.lizzie.gui;
 import featurecat.lizzie.Lizzie;
 import featurecat.lizzie.gui.LizzieFrame.HtmlKit;
 import java.awt.Desktop;
+import java.awt.Window;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JDialog;
@@ -15,7 +16,8 @@ import javax.swing.text.html.StyleSheet;
 
 public class HtmlMessage extends JDialog {
 
-  public HtmlMessage(String title, String content) {
+  public HtmlMessage(String title, String content, Window owner) {
+    super(owner);
     this.setModal(false);
     this.setResizable(false);
     // setType(Type.POPUP);
@@ -78,6 +80,6 @@ public class HtmlMessage extends JDialog {
       e.printStackTrace();
     }
     pack();
-    setLocationRelativeTo(Lizzie.frame != null ? Lizzie.frame : null);
+    setLocationRelativeTo(owner);
   }
 }

@@ -1215,7 +1215,7 @@ public class Leelaz {
             Lizzie.frame.zen.sendAndEstimate(command, false);
           }
         }
-        if (Lizzie.frame.isPlayingAgainstLeelaz) {
+        if (Lizzie.frame.isPlayingAgainstLeelaz && isResponseUpToDate()) {
           if (params.length > 1) {
             if (params[1].startsWith("resign")) {
               if (Lizzie.frame.playerIsBlack) {
@@ -1305,8 +1305,7 @@ public class Leelaz {
           }
           isSettingHandicap = false;
           Lizzie.frame.allowPlaceStone = true;
-          if (Lizzie.frame.isAnaPlayingAgainstLeelaz) {
-
+          if (Lizzie.frame.isAnaPlayingAgainstLeelaz && isResponseUpToDate()) {
             if (Lizzie.config.UsePureNetInGame && !Lizzie.leelaz.isheatmap)
               Lizzie.leelaz.toggleHeatmap(false);
             Lizzie.leelaz.Pondering();

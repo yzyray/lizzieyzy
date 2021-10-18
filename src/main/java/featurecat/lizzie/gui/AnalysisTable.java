@@ -84,7 +84,7 @@ public class AnalysisTable {
             } else {
               verifyCurrentKifu();
               Lizzie.frame.isBatchAna = true;
-              StartAnaDialog newgame = new StartAnaDialog(false);
+              StartAnaDialog newgame = new StartAnaDialog(false, Lizzie.frame);
               newgame.setVisible(true);
             }
           }
@@ -103,7 +103,7 @@ public class AnalysisTable {
             } else {
               verifyCurrentKifu();
               Lizzie.frame.isBatchAna = true;
-              StartAnaDialog newgame = new StartAnaDialog(true);
+              StartAnaDialog newgame = new StartAnaDialog(true, Lizzie.frame);
               newgame.setVisible(true);
             }
           }

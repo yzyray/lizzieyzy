@@ -62,7 +62,15 @@ public class Utils {
   }
 
   public static void showHtmlMessage(String title, String content) {
-    HtmlMessage htmlMessage = new HtmlMessage(title, content);
+    HtmlMessage htmlMessage =
+        new HtmlMessage(title, content, Lizzie.frame != null ? Lizzie.frame : null);
+    htmlMessage.setVisible(true);
+  }
+
+  public static void showHtmlMessageModal(String title, String content) {
+    HtmlMessage htmlMessage =
+        new HtmlMessage(title, content, Lizzie.frame != null ? Lizzie.frame : null);
+    htmlMessage.setModal(true);
     htmlMessage.setVisible(true);
   }
 

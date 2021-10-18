@@ -44,7 +44,8 @@ public class StartAnaDialog extends JDialog {
   private JCheckBox chkUseDiff;
   private boolean isAnalysisMode = false;
 
-  public StartAnaDialog(boolean isAnalysisMode) {
+  public StartAnaDialog(boolean isAnalysisMode, Window owner) {
+    super(owner);
     this.isAnalysisMode = isAnalysisMode;
     initComponents();
 

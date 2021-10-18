@@ -893,7 +893,7 @@ public class MoveListFrame extends JFrame {
         new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
-            if (setMatchAiPara == null) setMatchAiPara = new SetMatchAiPara();
+            if (setMatchAiPara == null) setMatchAiPara = new SetMatchAiPara(thisDialog);
             setMatchAiPara.setVisible(true);
           }
         });

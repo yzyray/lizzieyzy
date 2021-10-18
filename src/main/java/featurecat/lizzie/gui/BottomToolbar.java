@@ -811,7 +811,7 @@ public class BottomToolbar extends JPanel {
         new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
-            StartAnaDialog newgame = new StartAnaDialog(false);
+            StartAnaDialog newgame = new StartAnaDialog(false, Lizzie.frame);
             newgame.setVisible(true);
             if (newgame.isCancelled()) {
               LizzieFrame.toolbar.resetAutoAna();

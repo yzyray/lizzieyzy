@@ -2,8 +2,6 @@ package featurecat.lizzie.gui;
 
 import featurecat.lizzie.Lizzie;
 import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -91,10 +89,6 @@ public class SetKomi extends JDialog {
     buttonPane.add(button);
     try {
       this.setIconImage(ImageIO.read(MoreEngines.class.getResourceAsStream("/assets/logo.png")));
-      Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
-      int x = (int) screensize.getWidth() / 2 - this.getWidth() / 2;
-      int y = (int) screensize.getHeight() / 2 - this.getHeight() / 2;
-      setLocation(x, y);
     } catch (IOException e1) {
       // TODO Auto-generated catch block
       e1.printStackTrace();
@@ -108,7 +102,7 @@ public class SetKomi extends JDialog {
                 FORMAT_KOMI.format(Lizzie.board.getHistory().getGameInfo().getKomi()));
           }
         });
-    setLocationRelativeTo(getOwner());
+    setLocationRelativeTo(Lizzie.frame);
   }
 
   private void applyChange() {

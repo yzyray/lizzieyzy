@@ -15,9 +15,9 @@ import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.Insets;
 import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
@@ -135,7 +135,8 @@ public class OnlineDialog extends JDialog {
     101, 105, 113, 105, 46, 99, 111, 109
   };
 
-  public OnlineDialog() {
+  public OnlineDialog(Window owner) {
+    super(owner);
     setTitle(resourceBundle.getString("OnlineDialog.title.config"));
     setModalityType(ModalityType.APPLICATION_MODAL);
     setAlwaysOnTop(Lizzie.frame.isAlwaysOnTop());
@@ -2596,17 +2597,5 @@ public class OnlineDialog extends JDialog {
     } else {
       // error(true);
     }
-  }
-
-  public static void main(String[] args) {
-    EventQueue.invokeLater(
-        () -> {
-          try {
-            OnlineDialog window = new OnlineDialog();
-            window.setVisible(true);
-          } catch (Exception e) {
-            e.printStackTrace();
-          }
-        });
   }
 }

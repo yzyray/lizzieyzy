@@ -100,6 +100,13 @@ public class Config {
   public boolean advanceTimeSettings = false;
   public String advanceTimeTxt = "time_settings 120 2 1";
 
+  public boolean kataTimeSettings = false;
+  public int kataTimeType = 0; // 0=读秒,1=加秒.2=包干
+  public int kataTimeMainTimeMins = 10;
+  public int kataTimeByoyomiSecs = 5;
+  public int kataTimeByoyomiTimes = 3;
+  public int kataTimeFisherIncrementSecs = 5;
+
   public boolean pkAdvanceTimeSettings = false;
   public String advanceBlackTimeTxt = "time_settings 120 2 1";
   public String advanceWhiteTimeTxt = "time_settings 120 2 1";
@@ -1018,6 +1025,13 @@ public class Config {
     whiteSuggestionOrderWhite = uiConfig.optBoolean("white-suggestion-order-white", false);
     advanceTimeSettings = uiConfig.optBoolean("advance-time-settings", false);
     advanceTimeTxt = uiConfig.optString("advance-time-txt", "time_settings 10 2 1");
+
+    kataTimeSettings = uiConfig.optBoolean("kata-time-settings", false);
+    kataTimeType = uiConfig.optInt("kata-time-type", 0);
+    kataTimeMainTimeMins = uiConfig.optInt("kata-time-main-time-mins", 10);
+    kataTimeByoyomiSecs = uiConfig.optInt("kata-time-byoyomi-secs", 5);
+    kataTimeByoyomiTimes = uiConfig.optInt("kata-time-byoyomi-times", 3);
+    kataTimeFisherIncrementSecs = uiConfig.optInt("kata-time-fisher-increment-secs", 5);
 
     pkAdvanceTimeSettings = uiConfig.optBoolean("pk-advance-time-settings", false);
     advanceBlackTimeTxt = uiConfig.optString("advance-black-time-txt", "time_settings 10 2 1");

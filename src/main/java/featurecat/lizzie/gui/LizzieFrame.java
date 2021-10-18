@@ -933,7 +933,7 @@ public class LizzieFrame extends JFrame {
                 }
                 loadFile(files[0], true, true);
                 // 打开分析界面
-                StartAnaDialog newgame = new StartAnaDialog(false);
+                StartAnaDialog newgame = new StartAnaDialog(false, Lizzie.frame);
                 newgame.setVisible(true);
                 if (newgame.isCancelled()) {
                   isBatchAna = false;
@@ -2231,7 +2231,7 @@ public class LizzieFrame extends JFrame {
 
   public void openOnlineDialog() {
     if (onlineDialog == null) {
-      onlineDialog = new OnlineDialog();
+      onlineDialog = new OnlineDialog(this);
       onlineDialog.setVisible(true);
     } else {
       try {
@@ -2890,7 +2890,7 @@ public class LizzieFrame extends JFrame {
     }
   }
 
-  public static void sendAiTime(boolean needCountDown, Leelaz engine) {
+  public static void sendAiTime(boolean needCountDown, Leelaz engine, boolean showTimeMsg) {
     if (Lizzie.config.advanceTimeSettings) {
       Lizzie.leelaz.sendCommand(Lizzie.config.advanceTimeTxt);
       if (needCountDown) {
@@ -2907,7 +2907,51 @@ public class LizzieFrame extends JFrame {
         }
       }
     } else {
-      engine.sendCommand("time_settings 0 " + Lizzie.config.maxGameThinkingTimeSeconds + " 1");
+      if (Lizzie.config.kataTimeSettings) {
+        // kata-time_settings fischer byoyomi absolute
+        String txtKataTimeSettings = "kata-time_settings ";
+        switch (Lizzie.config.kataTimeType) {
+          case 0:
+            txtKataTimeSettings +=
+                "byoyomi "
+                    + Lizzie.config.kataTimeMainTimeMins * 60
+                    + " "
+                    + Lizzie.config.kataTimeByoyomiSecs
+                    + " "
+                    + Lizzie.config.kataTimeByoyomiTimes;
+            break;
+          case 1:
+            txtKataTimeSettings +=
+                "fischer "
+                    + Lizzie.config.kataTimeMainTimeMins * 60
+                    + " "
+                    + Lizzie.config.kataTimeFisherIncrementSecs;
+            break;
+          case 2:
+            txtKataTimeSettings += "absolute " + Lizzie.config.kataTimeMainTimeMins * 60;
+            break;
+        }
+        engine.sendCommand(txtKataTimeSettings);
+        if (needCountDown) {
+          Lizzie.engineManager.playingAgainstHumanEngineCountDown = new EngineCountDown();
+          if (!Lizzie.engineManager.playingAgainstHumanEngineCountDown.setEngineCountDown(
+              txtKataTimeSettings, Lizzie.leelaz)) {
+            Lizzie.engineManager.playingAgainstHumanEngineCountDown = null;
+            Utils.showMsgNoModal(
+                Lizzie.resourceBundle.getString("EngineManager.parseAdvcanceTimeSettingsFailed"));
+          } else {
+            Lizzie.engineManager.playingAgainstHumanEngineCountDown.initialize(
+                !Lizzie.frame.playerIsBlack);
+            Lizzie.engineManager.StartCountDown();
+          }
+        }
+        if (showTimeMsg && !engine.isKatago) {
+          Utils.showMsg(
+              Lizzie.resourceBundle.getString(
+                  "LizzieFrame.sendTimes.kataGoTimeMismatch")); // "引擎时间设置为KataGo专用,但当前引擎不是KataGo,可能无法正确控制时间!");
+        }
+      } else
+        engine.sendCommand("time_settings 0 " + Lizzie.config.maxGameThinkingTimeSeconds + " 1");
     }
   }
 
@@ -2919,7 +2963,7 @@ public class LizzieFrame extends JFrame {
       Lizzie.leelaz.togglePonder();
       isPondering = true;
     }
-    NewGameDialog newGameDialog = new NewGameDialog();
+    NewGameDialog newGameDialog = new NewGameDialog(this);
     // newGameDialog.setGameInfo(gameInfo);
     newGameDialog.setVisible(true);
     boolean playerIsBlack = newGameDialog.playerIsBlack();
@@ -2964,7 +3008,7 @@ public class LizzieFrame extends JFrame {
                   Lizzie.config.getMySaveTime(),
                   Lizzie.config.getMyByoyomiSeconds(),
                   Lizzie.config.getMyByoyomiTimes());
-            if (!Lizzie.config.genmoveGameNoTime) sendAiTime(true, Lizzie.leelaz);
+            if (!Lizzie.config.genmoveGameNoTime) sendAiTime(true, Lizzie.leelaz, true);
             clearWRNforGame(true);
             if (isHandicapGame) {
               Lizzie.board.getHistory().getData().blackToPlay = false;
@@ -3433,7 +3477,7 @@ public class LizzieFrame extends JFrame {
       }
       // Lizzie.leelaz.komi(komi);
       LizzieFrame.toolbar.chkAnaAutoSave.setSelected(true);
-      StartAnaDialog newgame = new StartAnaDialog(isFlashMode);
+      StartAnaDialog newgame = new StartAnaDialog(isFlashMode, Lizzie.frame);
       newgame.setVisible(true);
       if (newgame.isCancelled()) {
         toolbar.resetAutoAna();
@@ -8756,7 +8800,7 @@ public class LizzieFrame extends JFrame {
   }
 
   private void syncOnline(String url) {
-    if (onlineDialog == null) onlineDialog = new OnlineDialog();
+    if (onlineDialog == null) onlineDialog = new OnlineDialog(this);
     else {
       try {
         onlineDialog.stopSync();
@@ -9200,7 +9244,7 @@ public class LizzieFrame extends JFrame {
     }
     LizzieFrame.toolbar.enginePkBlack.setEnabled(true);
     LizzieFrame.toolbar.enginePkWhite.setEnabled(true);
-    NewEngineGameDialog engineGame = new NewEngineGameDialog();
+    NewEngineGameDialog engineGame = new NewEngineGameDialog(this);
     GameInfo gameInfo = Lizzie.board.getHistory().getGameInfo();
     engineGame.setGameInfo(gameInfo);
     engineGame.setVisible(true);
@@ -9226,7 +9270,7 @@ public class LizzieFrame extends JFrame {
       Lizzie.frame.stopAiPlayingAndPolicy();
       // Lizzie.frame.isPlayingAgainstLeelaz = false;
       // GameInfo gameInfo = Lizzie.board.getHistory().getGameInfo();
-      NewAnaGameDialog newgame = new NewAnaGameDialog();
+      NewAnaGameDialog newgame = new NewAnaGameDialog(this);
       // newgame.setGameInfo(gameInfo);
       newgame.setVisible(true);
       newgame.dispose();
@@ -9248,7 +9292,7 @@ public class LizzieFrame extends JFrame {
     }
     if (isGenmove) {
       if (!Lizzie.leelaz.isThinking) {
-        if (!Lizzie.config.genmoveGameNoTime) sendAiTime(true, Lizzie.leelaz);
+        if (!Lizzie.config.genmoveGameNoTime) sendAiTime(true, Lizzie.leelaz, true);
         isPlayingAgainstLeelaz = true;
         if (continueNow) {
           Lizzie.frame.playerIsBlack = !Lizzie.board.getData().blackToPlay;
@@ -12189,12 +12233,12 @@ public class LizzieFrame extends JFrame {
 
   public void setCustomMode(int index) {
     // System.out.println("set " + index);
-    SetCustomMode setCustomMode = new SetCustomMode(index, true);
+    SetCustomMode setCustomMode = new SetCustomMode(index, true, this);
     setCustomMode.setVisible(true);
   }
 
   public void visualizedPanelSettings() {
-    SetCustomMode setCustomMode = new SetCustomMode(-1, false);
+    SetCustomMode setCustomMode = new SetCustomMode(-1, false, this);
     setCustomMode.setVisible(true);
   }
 
