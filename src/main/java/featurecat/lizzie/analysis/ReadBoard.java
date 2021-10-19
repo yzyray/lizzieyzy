@@ -168,7 +168,7 @@ public class ReadBoard {
                       .exec(
                           java64Path
                               + " -jar -Dsun.java2d.uiScale=1.0 readboard_java"
-                              + Utils.pwd
+                              + File.separator
                               + javaReadBoardName
                               + param);
               success = true;
@@ -187,7 +187,7 @@ public class ReadBoard {
                         .exec(
                             java32
                                 + " -jar -Dsun.java2d.uiScale=1.0 readboard_java"
-                                + Utils.pwd
+                                + File.separator
                                 + javaReadBoardName
                                 + param);
                 success = true;
@@ -202,7 +202,7 @@ public class ReadBoard {
                 Runtime.getRuntime()
                     .exec(
                         "java -Dsun.java2d.uiScale=1.0 -jar readboard_java"
-                            + Utils.pwd
+                            + File.separator
                             + javaReadBoardName
                             + param);
           }
@@ -211,7 +211,7 @@ public class ReadBoard {
               Runtime.getRuntime()
                   .exec(
                       "java -Dsun.java2d.uiScale=1.0 -jar readboard_java"
-                          + Utils.pwd
+                          + File.separator
                           + javaReadBoardName
                           + param);
         }

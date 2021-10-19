@@ -655,7 +655,7 @@ public class BottomToolbar extends JPanel {
     //              // TODO Auto-generated catch block
     //            }
     //            try {
-    //              File linkHistory = new File(courseFile + Utils.pwd + "shareLinks.txt"); //
+    //              File linkHistory = new File(courseFile + File.separator + "shareLinks.txt"); //
     // 创建文件对象
     //              if (!linkHistory.exists()) {
     //                Utils.showMsg(
@@ -2371,7 +2371,7 @@ public class BottomToolbar extends JPanel {
         String fileOtherName = name.substring(0, name.length() - num);
         String filename =
             path
-                + Utils.pwd
+                + File.separator
                 + fileOtherName
                 + "_"
                 + resourceBundle.getString("Leelaz.analyzed")
@@ -2400,7 +2400,7 @@ public class BottomToolbar extends JPanel {
         }
         String df = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
         File autoSaveFile =
-            new File(courseFile + Utils.pwd + "AnalyzedGames" + Utils.pwd + df + ".sgf");
+            new File(courseFile + File.separator + "AnalyzedGames" + File.separator + df + ".sgf");
         File fileParent = autoSaveFile.getParentFile();
         if (!fileParent.exists()) {
           fileParent.mkdirs();
@@ -2416,7 +2416,7 @@ public class BottomToolbar extends JPanel {
           msg.setMessageNoModal(
               resourceBundle.getString("Leelaz.autoAnalyzeComplete")
                   + courseFile
-                  + Utils.pwd
+                  + File.separator
                   + "AnalyzedGames");
         }
       }
@@ -2432,7 +2432,7 @@ public class BottomToolbar extends JPanel {
       String fileOtherName = name.substring(0, name.length() - num);
       String filename =
           path
-              + Utils.pwd
+              + File.separator
               + fileOtherName
               + "_"
               + resourceBundle.getString("Leelaz.analyzed")

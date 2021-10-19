@@ -1429,7 +1429,7 @@ public class ConfigDialog2 extends JDialog {
     lblKifuLoadLast.setBounds(608, 671, 223, 15);
     uiTab.add(lblKifuLoadLast);
 
-    chkSgfLoadLast = new JCheckBox(); // $NON-NLS-1$
+    chkSgfLoadLast = new JCheckBox();
     chkSgfLoadLast.setBounds(837, 668, 26, 23);
     uiTab.add(chkSgfLoadLast);
 
@@ -1972,9 +1972,9 @@ public class ConfigDialog2 extends JDialog {
                         if (Utils.deleteDir(
                             new File(
                                 currentRealPath
-                                    + Utils.pwd
+                                    + File.separator
                                     + "theme"
-                                    + Utils.pwd
+                                    + File.separator
                                     + cmbThemes.getSelectedItem().toString()))) {
                           Utils.showMsg(
                               resourceBundle.getString("ConfigDialog2.deleteThemeSuccess"));

@@ -48,7 +48,6 @@ public class Utils {
   public static String iv = "s6st73f41adc4c5d";
   public static String aesKey2 = "iyekeeay2ueeaesk";
   public static String iv2 = "s6st73f49adc4c5d";
-  public static String pwd = java.io.File.separator;
   private static int msemaphoretryroom = 1;
   private static boolean alertedNoByoyomiSoundFile = false;
 
@@ -578,15 +577,21 @@ public class Utils {
               if (node.previous().isPresent()) {
                 if (node.getData().blackCaptures > node.previous().get().getData().blackCaptures) {
                   if (node.getData().blackCaptures - node.previous().get().getData().blackCaptures
-                      >= 3) playVoice(pwd + "sound" + pwd + "deadStoneMore.wav", false);
-                  else playVoice(pwd + "sound" + pwd + "deadStone.wav", false);
+                      >= 3)
+                    playVoice(
+                        File.separator + "sound" + File.separator + "deadStoneMore.wav", false);
+                  else
+                    playVoice(File.separator + "sound" + File.separator + "deadStone.wav", false);
                 } else {
                   if (node.getData().whiteCaptures
                       > node.previous().get().getData().whiteCaptures) {
                     if (node.getData().whiteCaptures - node.previous().get().getData().whiteCaptures
-                        >= 3) playVoice(pwd + "sound" + pwd + "deadStoneMore.wav", false);
-                    else playVoice(pwd + "sound" + pwd + "deadStone.wav", false);
-                  } else playVoice(pwd + "sound" + pwd + "Stone.wav", false);
+                        >= 3)
+                      playVoice(
+                          File.separator + "sound" + File.separator + "deadStoneMore.wav", false);
+                    else
+                      playVoice(File.separator + "sound" + File.separator + "deadStone.wav", false);
+                  } else playVoice(File.separator + "sound" + File.separator + "Stone.wav", false);
                 }
               } else {
                 playVoice("\\sound\\Stone.wav", false);
@@ -604,7 +609,7 @@ public class Utils {
 
   public static void playByoyomi(int seconds) {
     try {
-      playVoice(pwd + "sound" + pwd + seconds + ".wav", true);
+      playVoice(File.separator + "sound" + File.separator + seconds + ".wav", true);
     } catch (Exception e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -730,6 +735,16 @@ public class Utils {
       copy("/assets/readboard_java/" + javaReadBoardName, "readboard_java");
       copy("/assets/readboard_java/help.docx", "readboard_java");
       copy("/assets/readboard_java/help_en.docx", "readboard_java");
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
+
+  public static void copyFoxReq() {
+    // TODO Auto-generated method stub
+    try {
+      copy("/assets/foxReq/foxRequestQ.jar", "foxReq");
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();

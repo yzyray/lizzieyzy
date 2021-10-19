@@ -2480,18 +2480,34 @@ public class Menu extends JMenuBar {
     JFontMenuItem newAnalyzeModeGame = new JFontMenuItem(); // ("人机对局(分析模式 N)");
 
     newAnalyzeModeGame.setLayout(null);
-    newAnalyzeModeGame.setPreferredSize(
-        new Dimension(
-            Lizzie.config.isFrameFontSmall()
-                ? 170
-                : (Lizzie.config.isFrameFontMiddle() ? 205 : 233),
-            (Lizzie.config.useJavaLooks
-                ? (Lizzie.config.isFrameFontSmall()
-                    ? 20
-                    : (Lizzie.config.isFrameFontMiddle() ? 25 : 30))
-                : (Lizzie.config.isFrameFontSmall()
-                    ? 25
-                    : (Lizzie.config.isFrameFontMiddle() ? 27 : 30)))));
+    if (Lizzie.config.isChinese)
+      newAnalyzeModeGame.setPreferredSize(
+          new Dimension(
+              (Lizzie.config.useJavaLooks ? -31 : 0)
+                  + (Lizzie.config.isFrameFontSmall()
+                      ? 200
+                      : (Lizzie.config.isFrameFontMiddle() ? 250 : 300)),
+              (Lizzie.config.useJavaLooks
+                  ? (Lizzie.config.isFrameFontSmall()
+                      ? 20
+                      : (Lizzie.config.isFrameFontMiddle() ? 25 : 30))
+                  : (Lizzie.config.isFrameFontSmall()
+                      ? 25
+                      : (Lizzie.config.isFrameFontMiddle() ? 27 : 30)))));
+    else
+      newAnalyzeModeGame.setPreferredSize(
+          new Dimension(
+              (Lizzie.config.useJavaLooks ? -31 : 0)
+                  + (Lizzie.config.isFrameFontSmall()
+                      ? 253
+                      : (Lizzie.config.isFrameFontMiddle() ? 310 : 380)),
+              (Lizzie.config.useJavaLooks
+                  ? (Lizzie.config.isFrameFontSmall()
+                      ? 20
+                      : (Lizzie.config.isFrameFontMiddle() ? 25 : 30))
+                  : (Lizzie.config.isFrameFontSmall()
+                      ? 25
+                      : (Lizzie.config.isFrameFontMiddle() ? 27 : 30)))));
     JFontLabel lblAnalyzeGame = new JFontLabel(resourceBundle.getString("Menu.newAnalyzeModeGame"));
     lblAnalyzeGame.setBounds(
         Lizzie.config.useJavaLooks ? 6 : 37,
@@ -2516,8 +2532,8 @@ public class Menu extends JMenuBar {
       aboutAnalyzeGame.setBounds(
           (Lizzie.config.useJavaLooks ? -31 : 0)
               + (Lizzie.config.isFrameFontSmall()
-                  ? 160
-                  : (Lizzie.config.isFrameFontMiddle() ? 200 : 250)),
+                  ? 177
+                  : (Lizzie.config.isFrameFontMiddle() ? 220 : 270)),
           (Lizzie.config.useJavaLooks
               ? 1
               : (Lizzie.config.isFrameFontSmall()
@@ -2529,8 +2545,8 @@ public class Menu extends JMenuBar {
       aboutAnalyzeGame.setBounds(
           (Lizzie.config.useJavaLooks ? -31 : 0)
               + (Lizzie.config.isFrameFontSmall()
-                  ? 210
-                  : (Lizzie.config.isFrameFontMiddle() ? 260 : 320)),
+                  ? 230
+                  : (Lizzie.config.isFrameFontMiddle() ? 280 : 350)),
           (Lizzie.config.useJavaLooks
               ? 1
               : (Lizzie.config.isFrameFontSmall()
@@ -6577,18 +6593,34 @@ public class Menu extends JMenuBar {
       JFontMenuItem analyzeGame = new JFontMenuItem(); // ("人机对局(分析模式 N)");
 
       analyzeGame.setLayout(null);
-      analyzeGame.setPreferredSize(
-          new Dimension(
-              Lizzie.config.isFrameFontSmall()
-                  ? 170
-                  : (Lizzie.config.isFrameFontMiddle() ? 205 : 233),
-              (Lizzie.config.useJavaLooks
-                  ? (Lizzie.config.isFrameFontSmall()
-                      ? 20
-                      : (Lizzie.config.isFrameFontMiddle() ? 25 : 30))
-                  : (Lizzie.config.isFrameFontSmall()
-                      ? 25
-                      : (Lizzie.config.isFrameFontMiddle() ? 27 : 30)))));
+      if (Lizzie.config.isChinese)
+        analyzeGame.setPreferredSize(
+            new Dimension(
+                (Lizzie.config.useJavaLooks ? -31 : 0)
+                    + (Lizzie.config.isFrameFontSmall()
+                        ? 200
+                        : (Lizzie.config.isFrameFontMiddle() ? 250 : 300)),
+                (Lizzie.config.useJavaLooks
+                    ? (Lizzie.config.isFrameFontSmall()
+                        ? 20
+                        : (Lizzie.config.isFrameFontMiddle() ? 25 : 30))
+                    : (Lizzie.config.isFrameFontSmall()
+                        ? 25
+                        : (Lizzie.config.isFrameFontMiddle() ? 27 : 30)))));
+      else
+        analyzeGame.setPreferredSize(
+            new Dimension(
+                (Lizzie.config.useJavaLooks ? -31 : 0)
+                    + (Lizzie.config.isFrameFontSmall()
+                        ? 253
+                        : (Lizzie.config.isFrameFontMiddle() ? 310 : 380)),
+                (Lizzie.config.useJavaLooks
+                    ? (Lizzie.config.isFrameFontSmall()
+                        ? 20
+                        : (Lizzie.config.isFrameFontMiddle() ? 25 : 30))
+                    : (Lizzie.config.isFrameFontSmall()
+                        ? 25
+                        : (Lizzie.config.isFrameFontMiddle() ? 27 : 30)))));
       JFontLabel lblAnalyzeGame =
           new JFontLabel(resourceBundle.getString("Menu.newAnalyzeModeGame"));
 
@@ -6615,8 +6647,8 @@ public class Menu extends JMenuBar {
         aboutAnalyzeGame.setBounds(
             (Lizzie.config.useJavaLooks ? -31 : 0)
                 + (Lizzie.config.isFrameFontSmall()
-                    ? 160
-                    : (Lizzie.config.isFrameFontMiddle() ? 200 : 250)),
+                    ? 177
+                    : (Lizzie.config.isFrameFontMiddle() ? 220 : 270)),
             (Lizzie.config.useJavaLooks
                 ? 1
                 : (Lizzie.config.isFrameFontSmall()
@@ -6628,8 +6660,8 @@ public class Menu extends JMenuBar {
         aboutAnalyzeGame.setBounds(
             (Lizzie.config.useJavaLooks ? -31 : 0)
                 + (Lizzie.config.isFrameFontSmall()
-                    ? 210
-                    : (Lizzie.config.isFrameFontMiddle() ? 260 : 320)),
+                    ? 230
+                    : (Lizzie.config.isFrameFontMiddle() ? 280 : 350)),
             (Lizzie.config.useJavaLooks
                 ? 1
                 : (Lizzie.config.isFrameFontSmall()
@@ -7628,18 +7660,34 @@ public class Menu extends JMenuBar {
     JFontMenuItem analyzeGame = new JFontMenuItem(); // ("人机对局(分析模式 N)");
 
     analyzeGame.setLayout(null);
-    analyzeGame.setPreferredSize(
-        new Dimension(
-            Lizzie.config.isFrameFontSmall()
-                ? 170
-                : (Lizzie.config.isFrameFontMiddle() ? 205 : 233),
-            (Lizzie.config.useJavaLooks
-                ? (Lizzie.config.isFrameFontSmall()
-                    ? 20
-                    : (Lizzie.config.isFrameFontMiddle() ? 25 : 30))
-                : (Lizzie.config.isFrameFontSmall()
-                    ? 25
-                    : (Lizzie.config.isFrameFontMiddle() ? 27 : 30)))));
+    if (Lizzie.config.isChinese)
+      analyzeGame.setPreferredSize(
+          new Dimension(
+              (Lizzie.config.useJavaLooks ? -31 : 0)
+                  + (Lizzie.config.isFrameFontSmall()
+                      ? 200
+                      : (Lizzie.config.isFrameFontMiddle() ? 250 : 300)),
+              (Lizzie.config.useJavaLooks
+                  ? (Lizzie.config.isFrameFontSmall()
+                      ? 20
+                      : (Lizzie.config.isFrameFontMiddle() ? 25 : 30))
+                  : (Lizzie.config.isFrameFontSmall()
+                      ? 25
+                      : (Lizzie.config.isFrameFontMiddle() ? 27 : 30)))));
+    else
+      analyzeGame.setPreferredSize(
+          new Dimension(
+              (Lizzie.config.useJavaLooks ? -31 : 0)
+                  + (Lizzie.config.isFrameFontSmall()
+                      ? 253
+                      : (Lizzie.config.isFrameFontMiddle() ? 310 : 380)),
+              (Lizzie.config.useJavaLooks
+                  ? (Lizzie.config.isFrameFontSmall()
+                      ? 20
+                      : (Lizzie.config.isFrameFontMiddle() ? 25 : 30))
+                  : (Lizzie.config.isFrameFontSmall()
+                      ? 25
+                      : (Lizzie.config.isFrameFontMiddle() ? 27 : 30)))));
     JFontLabel lblAnalyzeGame =
         new JFontLabel(
             resourceBundle.getString(
@@ -7667,8 +7715,8 @@ public class Menu extends JMenuBar {
       aboutAnalyzeGame.setBounds(
           (Lizzie.config.useJavaLooks ? -31 : 0)
               + (Lizzie.config.isFrameFontSmall()
-                  ? 160
-                  : (Lizzie.config.isFrameFontMiddle() ? 200 : 250)),
+                  ? 177
+                  : (Lizzie.config.isFrameFontMiddle() ? 220 : 270)),
           (Lizzie.config.useJavaLooks
               ? 1
               : (Lizzie.config.isFrameFontSmall()
@@ -7680,8 +7728,8 @@ public class Menu extends JMenuBar {
       aboutAnalyzeGame.setBounds(
           (Lizzie.config.useJavaLooks ? -31 : 0)
               + (Lizzie.config.isFrameFontSmall()
-                  ? 210
-                  : (Lizzie.config.isFrameFontMiddle() ? 260 : 320)),
+                  ? 230
+                  : (Lizzie.config.isFrameFontMiddle() ? 280 : 350)),
           (Lizzie.config.useJavaLooks
               ? 1
               : (Lizzie.config.isFrameFontSmall()

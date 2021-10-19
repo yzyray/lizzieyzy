@@ -475,6 +475,7 @@ public class LizzieFrame extends JFrame {
   public static boolean isallow = false;
   public static boolean isKeepForcing = false;
   public static boolean isTempForcing = false;
+  public FoxKifuDownload foxKifuDownload;
 
   /** Creates a window */
   public LizzieFrame() {
@@ -1077,7 +1078,7 @@ public class LizzieFrame extends JFrame {
                 if (fname.indexOf(".xlsx") == -1) {
                   Utils.exportTable(
                       blunderTabelBlack,
-                      chooser.getCurrentDirectory() + Utils.pwd + fname + ".xls");
+                      chooser.getCurrentDirectory() + File.separator + fname + ".xls");
                 }
               }
 
@@ -1131,7 +1132,7 @@ public class LizzieFrame extends JFrame {
                 if (fname.indexOf(".xlsx") == -1) {
                   Utils.exportTable(
                       blunderTabelWhite,
-                      chooser.getCurrentDirectory() + Utils.pwd + fname + ".xls");
+                      chooser.getCurrentDirectory() + File.separator + fname + ".xls");
                 }
               }
 
@@ -3489,10 +3490,10 @@ public class LizzieFrame extends JFrame {
   }
 
   public void resumeFile() {
-    File file = new File("save" + Utils.pwd + "autoGame1.sgf");
+    File file = new File("save" + File.separator + "autoGame1.sgf");
     if (file.exists()) loadFile(file, true, true);
     else {
-      File file2 = new File("save" + Utils.pwd + "autoGame2.sgf");
+      File file2 = new File("save" + File.separator + "autoGame2.sgf");
       if (file2.exists()) loadFile(file2, true, true);
     }
     while (Lizzie.board.nextMove(false)) ;
@@ -8854,7 +8855,7 @@ public class LizzieFrame extends JFrame {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
-    String url = courseFile + Utils.pwd + "readme.pdf";
+    String url = courseFile + File.separator + "readme.pdf";
     bowser(url, Lizzie.resourceBundle.getString("LizzieFrame.introduction"), false);
   }
 
@@ -9840,7 +9841,8 @@ public class LizzieFrame extends JFrame {
           e.printStackTrace();
         }
         File autoSaveFile;
-        autoSaveFile = new File(courseFile + Utils.pwd + "MyGames" + Utils.pwd + fileName + ".sgf");
+        autoSaveFile =
+            new File(courseFile + File.separator + "MyGames" + File.separator + fileName + ".sgf");
         File fileParent = autoSaveFile.getParentFile();
         if (!fileParent.exists()) {
           fileParent.mkdirs();
@@ -10685,20 +10687,20 @@ public class LizzieFrame extends JFrame {
 
   public void deleteTempGame(int index) {
     ArrayList<TempGameData> data = getSaveGameList();
-    File file = new File("save" + Utils.pwd + "game" + index + ".bmp");
+    File file = new File("save" + File.separator + "game" + index + ".bmp");
     if (file.exists() && file.isFile()) file.delete();
-    File file2 = new File("save" + Utils.pwd + "game" + index + ".sgf");
+    File file2 = new File("save" + File.separator + "game" + index + ".sgf");
     if (file2.exists() && file2.isFile()) file2.delete();
     for (int i = index + 1; i <= data.size(); i++) {
-      File oldfile = new File("save" + Utils.pwd + "game" + i + ".bmp");
-      File newfile = new File("save" + Utils.pwd + "game" + (i - 1) + ".bmp");
+      File oldfile = new File("save" + File.separator + "game" + i + ".bmp");
+      File newfile = new File("save" + File.separator + "game" + (i - 1) + ".bmp");
       if (oldfile.exists()) {
         oldfile.renameTo(newfile);
       }
     }
     for (int i = index + 1; i <= data.size(); i++) {
-      File oldfile = new File("save" + Utils.pwd + "game" + i + ".sgf");
-      File newfile = new File("save" + Utils.pwd + "game" + (i - 1) + ".sgf");
+      File oldfile = new File("save" + File.separator + "game" + i + ".sgf");
+      File newfile = new File("save" + File.separator + "game" + (i - 1) + ".sgf");
       if (oldfile.exists()) {
         oldfile.renameTo(newfile);
       }
@@ -10711,9 +10713,9 @@ public class LizzieFrame extends JFrame {
   public void deleteAllTempGame() {
     ArrayList<TempGameData> data = getSaveGameList();
     for (int index = 1; index < data.size() + 1; index++) {
-      File file = new File("save" + Utils.pwd + "game" + index + ".bmp");
+      File file = new File("save" + File.separator + "game" + index + ".bmp");
       if (file.exists() && file.isFile()) file.delete();
-      File file2 = new File("save" + Utils.pwd + "game" + index + ".sgf");
+      File file2 = new File("save" + File.separator + "game" + index + ".sgf");
       if (file2.exists() && file2.isFile()) file2.delete();
     }
     saveTempGame(new ArrayList<TempGameData>());
@@ -10734,9 +10736,9 @@ public class LizzieFrame extends JFrame {
     data.get(index - 1).moves =
         Lizzie.board.moveListToString(Lizzie.board.getmovelistForSaveLoad());
     saveTempGame(data);
-    File file = new File("save" + Utils.pwd + "game" + index + ".bmp");
+    File file = new File("save" + File.separator + "game" + index + ".bmp");
     try {
-      SGFParser.save(Lizzie.board, "save" + Utils.pwd + "game" + index + ".sgf");
+      SGFParser.save(Lizzie.board, "save" + File.separator + "game" + index + ".sgf");
       ImageIO.write((RenderedImage) saveMainBoardToImageOri(), "bmp", file);
     } catch (IOException e1) {
       // TODO Auto-generated catch block
@@ -10760,9 +10762,9 @@ public class LizzieFrame extends JFrame {
     newData.moves = Lizzie.board.moveListToString(Lizzie.board.getMoveList());
     data.add(newData);
     saveTempGame(data);
-    File file = new File("save" + Utils.pwd + "game" + index + ".bmp");
+    File file = new File("save" + File.separator + "game" + index + ".bmp");
     try {
-      SGFParser.save(Lizzie.board, "save" + Utils.pwd + "game" + index + ".sgf");
+      SGFParser.save(Lizzie.board, "save" + File.separator + "game" + index + ".sgf");
       ImageIO.write((RenderedImage) saveMainBoardToImageOri(), "bmp", file);
     } catch (IOException e1) {
       // TODO Auto-generated catch block
@@ -10786,9 +10788,9 @@ public class LizzieFrame extends JFrame {
         "save-auto-game-move-list" + index,
         Lizzie.board.moveListToString(Lizzie.board.getmovelistForSaveLoad()));
     if (index == 1) Lizzie.config.saveBoardConfig.put("save-auto-game-index2", -1);
-    File file = new File("save" + Utils.pwd + "autoGame" + index + ".bmp");
+    File file = new File("save" + File.separator + "autoGame" + index + ".bmp");
     try {
-      SGFParser.save(Lizzie.board, "save" + Utils.pwd + "autoGame" + index + ".sgf", true);
+      SGFParser.save(Lizzie.board, "save" + File.separator + "autoGame" + index + ".sgf", true);
       ImageIO.write((RenderedImage) saveMainBoardToImageOri(), "bmp", file);
     } catch (IOException e1) {
       // TODO Auto-generated catch block
@@ -10816,7 +10818,7 @@ public class LizzieFrame extends JFrame {
     JLabel boardImage = new JLabel();
     File file =
         new File(
-            (isAutoSave ? "save" + Utils.pwd + "autoGame" : "save" + Utils.pwd + "game")
+            (isAutoSave ? "save" + File.separator + "autoGame" : "save" + File.separator + "game")
                 + index
                 + ".bmp");
     try {
@@ -10852,7 +10854,9 @@ public class LizzieFrame extends JFrame {
             canShowBigBoardImage = false;
             loadFile(
                 new File(
-                    (isAutoSave ? "save" + Utils.pwd + "autoGame" : "save" + Utils.pwd + "game")
+                    (isAutoSave
+                            ? "save" + File.separator + "autoGame"
+                            : "save" + File.separator + "game")
                         + index
                         + ".sgf"),
                 true,
@@ -11406,8 +11410,8 @@ public class LizzieFrame extends JFrame {
                   loadFile(
                       new File(
                           (data.isAutoSave
-                                  ? "save" + Utils.pwd + "autoGame"
-                                  : "save" + Utils.pwd + "game")
+                                  ? "save" + File.separator + "autoGame"
+                                  : "save" + File.separator + "game")
                               + data.index
                               + ".sgf"),
                       true,
@@ -11447,7 +11451,7 @@ public class LizzieFrame extends JFrame {
     Image img2 = null;
     File file =
         new File(
-            (isAutoSave ? "save" + Utils.pwd + "autoGame" : "save" + Utils.pwd + "game")
+            (isAutoSave ? "save" + File.separator + "autoGame" : "save" + File.separator + "game")
                 + index
                 + ".bmp");
     try {
@@ -11471,7 +11475,9 @@ public class LizzieFrame extends JFrame {
               canShowBigBoardImage = false;
               loadFile(
                   new File(
-                      (isAutoSave ? "save" + Utils.pwd + "autoGame" : "save" + Utils.pwd + "game")
+                      (isAutoSave
+                              ? "save" + File.separator + "autoGame"
+                              : "save" + File.separator + "game")
                           + index
                           + ".sgf"),
                   true,
@@ -11747,7 +11753,7 @@ public class LizzieFrame extends JFrame {
     String fileOtherName = name.substring(0, name.length() - num);
     String filename =
         path
-            + Utils.pwd
+            + File.separator
             + fileOtherName
             + "_"
             + Lizzie.resourceBundle.getString("Leelaz.analyzed")
@@ -12389,5 +12395,11 @@ public class LizzieFrame extends JFrame {
 
   public void setBackgroundColor(Color color) {
     basePanel.setBackground(color);
+  }
+
+  public void testFoxReq() {
+    // TODO Auto-generated method stub
+    foxKifuDownload = new FoxKifuDownload();
+    foxKifuDownload.setVisible(true);
   }
 }

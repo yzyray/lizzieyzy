@@ -64,11 +64,11 @@ public class Config {
   public boolean loadEstimateEngine = false;
   public String estimateCommand =
       "katago"
-          + Utils.pwd
+          + File.separator
           + "katago.exe gtp -model weights"
-          + Utils.pwd
+          + File.separator
           + "kata20bs530.bin.gz -config katago"
-          + Utils.pwd
+          + File.separator
           + "estimate.cfg";
   public Double estimateThreshold = 0.4;
 
@@ -123,7 +123,7 @@ public class Config {
 
   private String configFilename = "config.txt";
   private String persistFilename = "persist";
-  private String saveBoardFilename = "save" + Utils.pwd + "save";
+  private String saveBoardFilename = "save" + File.separator + "save";
 
   public Theme theme;
   public float winrateStrokeWidth = 1.7f;
@@ -354,7 +354,7 @@ public class Config {
   public boolean userKnownX = false;
 
   public boolean useZenEstimate = false;
-  public String zenEstimateCommand = "ZenEstimate" + Utils.pwd + "ZenGTP.exe";
+  public String zenEstimateCommand = "ZenEstimate" + File.separator + "ZenGTP.exe";
 
   public boolean showDoubleMenu = true;
   public boolean showDoubleMenuVar = true;
@@ -828,8 +828,8 @@ public class Config {
       try {
         File file = new File("");
         String courseFile = file.getCanonicalPath();
-        File fileconfig = new File(courseFile + Utils.pwd + configFilename);
-        File wrongfileconfig = new File(courseFile + Utils.pwd + "config_wrong.txt");
+        File fileconfig = new File(courseFile + File.separator + configFilename);
+        File wrongfileconfig = new File(courseFile + File.separator + "config_wrong.txt");
         copyFile(fileconfig, wrongfileconfig);
       } catch (Exception ex) {
       }
@@ -888,11 +888,11 @@ public class Config {
         uiConfig.optString(
             "estimate-command",
             "katago"
-                + Utils.pwd
+                + File.separator
                 + "katago.exe gtp -model weights"
-                + Utils.pwd
+                + File.separator
                 + "kata20bs530.bin.gz -config katago"
-                + Utils.pwd
+                + File.separator
                 + "estimate.cfg");
     estimateThreshold = uiConfig.optDouble("estimate-threshold", 0.4);
 
@@ -925,7 +925,7 @@ public class Config {
     userKnownX = uiConfig.optBoolean("user-known-x", false);
     useZenEstimate = uiConfig.optBoolean("use-zen-estimate", false);
     zenEstimateCommand =
-        uiConfig.optString("use-estimate-command", "ZenEstimate" + Utils.pwd + "ZenGTP.exe");
+        uiConfig.optString("use-estimate-command", "ZenEstimate" + File.separator + "ZenGTP.exe");
     showDoubleMenu = uiConfig.optBoolean("show-double-menu", true);
     showDoubleMenuGameControl = uiConfig.optBoolean("show-double-menu-game-control", true);
     showDoubleMenuVar = uiConfig.optBoolean("show-double-menu-var", true);

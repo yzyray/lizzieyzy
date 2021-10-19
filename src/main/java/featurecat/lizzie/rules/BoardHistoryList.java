@@ -99,9 +99,8 @@ public class BoardHistoryList {
     head = head.addOrGoto(data, newBranch);
   }
 
-  public void addOrGoto(
-      BoardData data, boolean newBranch, boolean changeMove, boolean clearAfterMove) {
-    head = head.addOrGoto(data, newBranch, changeMove, clearAfterMove);
+  public void addOrGoto(BoardData data, boolean newBranch, boolean changeMove) {
+    head = head.addOrGoto(data, newBranch, changeMove);
   }
 
   /**
@@ -530,7 +529,7 @@ public class BoardHistoryList {
       }
 
       // update history with this coordinate
-      this.addOrGoto(newState, newBranch, changeMove, false);
+      this.addOrGoto(newState, newBranch, changeMove);
       //   Lizzie.board.modifyEnd();
       // Lizzie.frame.renderVarTree(0, 0, false, false);
     }

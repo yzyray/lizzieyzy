@@ -5,7 +5,6 @@ import featurecat.lizzie.util.Utils;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Desktop;
-import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -66,7 +65,6 @@ public class PublicKifuSearch extends JFrame {
   int tabNumber = 1;
   int numbersPerTab = 25;
   int curTabNumber = 1;
-  String[] row;
   ArrayList<String[]> rows;
   private JTextField txtBScore;
   private JTextField txtWScore;
@@ -106,10 +104,7 @@ public class PublicKifuSearch extends JFrame {
     if (!formPersis) {
       // setSize(995, 569);
       Lizzie.setFrameSize(this, 1100, 569);
-      Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
-      int x = (int) screensize.getWidth() / 2 - this.getWidth() / 2;
-      int y = (int) screensize.getHeight() / 2 - this.getHeight() / 2;
-      setLocation(x, y);
+      setLocationRelativeTo(Lizzie.frame);
     }
     try {
       this.setIconImage(ImageIO.read(MoreEngines.class.getResourceAsStream("/assets/logo.png")));
@@ -118,7 +113,6 @@ public class PublicKifuSearch extends JFrame {
       e1.printStackTrace();
     }
     table = new JTable();
-    model = new DefaultTableModel();
     getContentPane().setLayout(new BorderLayout(0, 0));
     getContentPane().add(panel, BorderLayout.NORTH);
     String DefaultFormat = "yyyy-MM-dd";
@@ -382,61 +376,40 @@ public class PublicKifuSearch extends JFrame {
             //    ResultSetMetaData rsmd = rs.getMetaData();
             // 获得列数
             if (sqlResult != null) {
+              model = new DefaultTableModel();
+              table.setModel(model);
               String[] params = sqlResult.get(0).split(">->");
-              if (model.getColumnCount() == 0) {
-                for (int i = 0; i < params.length; i++) {
-                  model.addColumn(params[i]);
-                }
-
-                table.getColumnModel().getColumn(0).setPreferredWidth(30);
-                table.getColumnModel().getColumn(1).setPreferredWidth(80);
-                table.getColumnModel().getColumn(2).setPreferredWidth(80);
-                table.getColumnModel().getColumn(3).setPreferredWidth(50);
-                table.getColumnModel().getColumn(4).setPreferredWidth(50);
-                table.getColumnModel().getColumn(5).setPreferredWidth(40);
-                table.getColumnModel().getColumn(6).setPreferredWidth(40);
-                table.getColumnModel().getColumn(7).setPreferredWidth(60);
-                table.getColumnModel().getColumn(8).setPreferredWidth(60);
-                table.getColumnModel().getColumn(9).setPreferredWidth(160);
-                table.getColumnModel().getColumn(10).setPreferredWidth(70);
-                table.getColumnModel().getColumn(11).setPreferredWidth(60);
-                table.getColumnModel().getColumn(12).setPreferredWidth(48);
-                table.getColumnModel().getColumn(13).setPreferredWidth(48);
-                table.getColumnModel().getColumn(14).setPreferredWidth(48);
-                table.getColumnModel().getColumn(12).setCellEditor(new MyButtonCopyEditor());
-                table.getColumnModel().getColumn(12).setCellRenderer(new MyButtonCopy());
-                table.getColumnModel().getColumn(13).setCellEditor(new MyButtonOpenEditor());
-                table.getColumnModel().getColumn(13).setCellRenderer(new MyButtonOpen());
-                table.getColumnModel().getColumn(14).setCellEditor(new MyButtonOpenHtmlEditor());
-                table.getColumnModel().getColumn(14).setCellRenderer(new MyButtonOpenHtml());
+              for (int i = 0; i < params.length; i++) {
+                model.addColumn(params[i]);
               }
+              table.getColumnModel().getColumn(0).setPreferredWidth(30);
+              table.getColumnModel().getColumn(1).setPreferredWidth(80);
+              table.getColumnModel().getColumn(2).setPreferredWidth(80);
+              table.getColumnModel().getColumn(3).setPreferredWidth(50);
+              table.getColumnModel().getColumn(4).setPreferredWidth(50);
+              table.getColumnModel().getColumn(5).setPreferredWidth(40);
+              table.getColumnModel().getColumn(6).setPreferredWidth(40);
+              table.getColumnModel().getColumn(7).setPreferredWidth(60);
+              table.getColumnModel().getColumn(8).setPreferredWidth(60);
+              table.getColumnModel().getColumn(9).setPreferredWidth(160);
+              table.getColumnModel().getColumn(10).setPreferredWidth(70);
+              table.getColumnModel().getColumn(11).setPreferredWidth(60);
+              table.getColumnModel().getColumn(12).setPreferredWidth(48);
+              table.getColumnModel().getColumn(13).setPreferredWidth(48);
+              table.getColumnModel().getColumn(14).setPreferredWidth(48);
+              table.getColumnModel().getColumn(12).setCellEditor(new MyButtonCopyEditor());
+              table.getColumnModel().getColumn(12).setCellRenderer(new MyButtonCopy());
+              table.getColumnModel().getColumn(13).setCellEditor(new MyButtonOpenEditor());
+              table.getColumnModel().getColumn(13).setCellRenderer(new MyButtonOpen());
+              table.getColumnModel().getColumn(14).setCellEditor(new MyButtonOpenHtmlEditor());
+              table.getColumnModel().getColumn(14).setCellRenderer(new MyButtonOpenHtml());
+
               rows = new ArrayList<String[]>();
               for (int i = 1; i < sqlResult.size(); i++) {
                 String[] rowParams = sqlResult.get(i).split(">->");
-                row = new String[rowParams.length];
-                // 将查询到的每行数据赋入数组内
-                for (int n = 0; n < rowParams.length; n++) row[n] = rowParams[n];
-                // 增加一行
-
-                rows.add(row);
+                rows.add(rowParams);
               }
-
-              //                } catch (Exception es) {
-              //                  // e.printStackTrace();
-              //
-              //                } finally {
-              //                  try {
-              //                    con.close();
-              //                  } catch (SQLException ex) {
-              //                    // TODO Auto-generated catch block
-              //                    // e.printStackTrace();
-              //                  }
-              //                }
-              // model.addRow(row);
-              while (model.getRowCount() > 0) {
-                model.removeRow(model.getRowCount() - 1);
-              }
-              tabNumber = rows.size() / numbersPerTab + 1;
+              tabNumber = (int) Math.ceil(rows.size() / (double) numbersPerTab);
               curTabNumber = 1;
               for (int i = 0; i < numbersPerTab && i < rows.size(); i++) {
                 model.addRow(rows.get(i));
@@ -517,7 +490,6 @@ public class PublicKifuSearch extends JFrame {
     gbc_button.gridx = 10;
     gbc_button.gridy = 1;
     panel.add(button, gbc_button);
-    table.setModel(model);
     JScrollPane scrollPane = new JScrollPane(table);
     getContentPane().add(scrollPane, BorderLayout.CENTER);
     getContentPane().add(panel_1, BorderLayout.SOUTH);

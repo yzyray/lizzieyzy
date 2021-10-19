@@ -1529,7 +1529,7 @@ public class MoveListFrame extends JFrame {
                 String fname = chooser.getName(file);
                 if (fname.indexOf(".xlsx") == -1) {
                   Utils.exportTable(
-                      minTable1, chooser.getCurrentDirectory() + Utils.pwd + fname + ".xls");
+                      minTable1, chooser.getCurrentDirectory() + File.separator + fname + ".xls");
                 }
               }
 
@@ -1557,7 +1557,7 @@ public class MoveListFrame extends JFrame {
                 String fname = chooser.getName(file);
                 if (fname.indexOf(".xlsx") == -1) {
                   Utils.exportTable(
-                      minTable2, chooser.getCurrentDirectory() + Utils.pwd + fname + ".xls");
+                      minTable2, chooser.getCurrentDirectory() + File.separator + fname + ".xls");
                 }
               }
 
@@ -1585,7 +1585,7 @@ public class MoveListFrame extends JFrame {
                 String fname = chooser.getName(file);
                 if (fname.indexOf(".xlsx") == -1) {
                   Utils.exportTable(
-                      table, chooser.getCurrentDirectory() + Utils.pwd + fname + ".xls");
+                      table, chooser.getCurrentDirectory() + File.separator + fname + ".xls");
                 }
               }
 

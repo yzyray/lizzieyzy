@@ -116,6 +116,7 @@ public class SGFParser {
     isExtraMode2 = false;
     Lizzie.board.isLoadingFile = true;
     boolean result = parse(sgfString);
+    if (Lizzie.config.loadSgfLast) while (Lizzie.board.nextMove(false)) ;
     if (Lizzie.board.hasStartStone) {
       int lenth2 = Lizzie.board.startStonelist.size();
       for (int i = 0; i < lenth2; i++) {

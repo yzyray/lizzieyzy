@@ -14,6 +14,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -740,7 +741,7 @@ public class NewGameDialog extends JDialog {
     JCheckBox chkAutoSave =
         new JFontCheckBox(
             resourceBundle.getString("NewAnaGameDialog.chkAutoSaveDirectory")
-                + Utils.pwd
+                + File.separator
                 + resourceBundle.getString(
                     "NewAnaGameDialog.chkAutoSaveFolder")); // directory folder
     chkAutoSave.setSelected(Lizzie.config.autoSavePlayedGame);

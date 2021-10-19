@@ -92,7 +92,7 @@ public class BoardHistoryNode {
   }
 
   public BoardHistoryNode addOrGoto(BoardData data, boolean newBranch) {
-    return addOrGoto(data, newBranch, false, false);
+    return addOrGoto(data, newBranch, false);
   }
 
   /**
@@ -135,12 +135,8 @@ public class BoardHistoryNode {
     }
   }
 
-  public BoardHistoryNode addOrGoto(
-      BoardData data, boolean newBranch, boolean changeMove, boolean clearAfterMove) {
-    if (!Lizzie.board.isLoadingFile
-        && Lizzie.leelaz != null
-        && !EngineManager.isEngineGame
-        && clearAfterMove) {
+  public BoardHistoryNode addOrGoto(BoardData data, boolean newBranch, boolean changeMove) {
+    if (!Lizzie.board.isLoadingFile && Lizzie.leelaz != null && !EngineManager.isEngineGame) {
       Lizzie.leelaz.clearBestMoves();
     }
     Optional<BoardHistoryNode> next = next(true);
@@ -161,7 +157,7 @@ public class BoardHistoryNode {
             break;
           }
           // if (Lizzie.config.playSound) Utils.playVoiceFile();
-          if (clearAfterMove) Lizzie.board.clearAfterMove();
+          Lizzie.board.clearAfterMove();
           return variations.get(i);
         }
       }
@@ -203,7 +199,7 @@ public class BoardHistoryNode {
     }
     node.previous = Optional.of(this);
     // if (Lizzie.config.playSound) Utils.playVoiceFile();
-    if (clearAfterMove) Lizzie.board.clearAfterMove();
+    Lizzie.board.clearAfterMove();
     return node;
   }
 

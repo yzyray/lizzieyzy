@@ -74,6 +74,7 @@ public class Leelaz {
 
   private boolean isPondering;
   private long startPonderTime;
+  private boolean showStopTips = true;
 
   // fixed_handicap
   public boolean isSettingHandicap = false;
@@ -1087,7 +1088,7 @@ public class Leelaz {
               stopByPlayouts = true;
               isPondering = !isPondering;
               nameCmd();
-              if (!Lizzie.config.stopAtEmptyBoard && Lizzie.board.getHistory().noStoneBoard()) {
+              if (!Lizzie.config.stopAtEmptyBoard && !Lizzie.board.getHistory().noStoneBoard()) {
                 showStopPonderTips();
               }
             } else if ((Lizzie.config.limitTime
@@ -1305,7 +1306,7 @@ public class Leelaz {
           }
           isSettingHandicap = false;
           Lizzie.frame.allowPlaceStone = true;
-          if (Lizzie.frame.isAnaPlayingAgainstLeelaz && isResponseUpToDate()) {
+          if (Lizzie.frame.isAnaPlayingAgainstLeelaz) {
             if (Lizzie.config.UsePureNetInGame && !Lizzie.leelaz.isheatmap)
               Lizzie.leelaz.toggleHeatmap(false);
             Lizzie.leelaz.Pondering();
@@ -1326,7 +1327,7 @@ public class Leelaz {
               Lizzie.frame.zen.sendAndEstimate(command, false);
             }
           }
-          if (Lizzie.frame.isPlayingAgainstLeelaz) {
+          if (Lizzie.frame.isPlayingAgainstLeelaz && isResponseUpToDate()) {
             if (params[1].startsWith("resign")) {
               if (Lizzie.frame.playerIsBlack) {
 
@@ -1498,6 +1499,8 @@ public class Leelaz {
   private void showStopPonderTips() {
     // TODO Auto-generated method stub
     if (!Lizzie.config.showPonderLimitedTips) return;
+    if (!showStopTips) return;
+    showStopTips = false;
     Box box = Box.createVerticalBox();
     JFontLabel label = new JFontLabel(Lizzie.resourceBundle.getString("leelaz.stopByLimit"));
     label.setAlignmentX(Component.LEFT_ALIGNMENT);

@@ -505,26 +505,28 @@ public class EngineManager {
       autoSaveFile =
           new File(
               courseFile
-                  + Utils.pwd
+                  + File.separator
                   + "EngineGames"
-                  + Utils.pwd
+                  + File.separator
                   + engineGameInfo.batchGameName
-                  + Utils.pwd
+                  + File.separator
                   + df
                   + ".sgf");
       autoSaveFile2 =
           new File(
               courseFile
-                  + Utils.pwd
+                  + File.separator
                   + "EngineGames"
-                  + Utils.pwd
+                  + File.separator
                   + engineGameInfo.SF
-                  + Utils.pwd
+                  + File.separator
                   + df
                   + ".sgf");
     } else {
-      autoSaveFile = new File(courseFile + Utils.pwd + "EngineGames" + Utils.pwd + df + ".sgf");
-      autoSaveFile2 = new File(courseFile + Utils.pwd + "EngineGames" + Utils.pwd + df + ".sgf");
+      autoSaveFile =
+          new File(courseFile + File.separator + "EngineGames" + File.separator + df + ".sgf");
+      autoSaveFile2 =
+          new File(courseFile + File.separator + "EngineGames" + File.separator + df + ".sgf");
     }
 
     File fileParent = autoSaveFile.getParentFile();
@@ -538,16 +540,16 @@ public class EngineManager {
         if (engineGameInfo.isBatchGame) {
           autoSavePng =
               courseFile
-                  + Utils.pwd
+                  + File.separator
                   + "EngineGames"
-                  + Utils.pwd
+                  + File.separator
                   + engineGameInfo.batchGameName
-                  + Utils.pwd
+                  + File.separator
                   + df
                   + ".png";
 
         } else {
-          autoSavePng = courseFile + Utils.pwd + "EngineGames" + Utils.pwd + df + ".png";
+          autoSavePng = courseFile + File.separator + "EngineGames" + File.separator + df + ".png";
         }
         Lizzie.frame.saveImage(
             Lizzie.frame.statx,
@@ -572,15 +574,16 @@ public class EngineManager {
             if (engineGameInfo.isBatchGame) {
               autoSavePng2 =
                   courseFile
-                      + Utils.pwd
+                      + File.separator
                       + "EngineGames"
-                      + Utils.pwd
+                      + File.separator
                       + engineGameInfo.SF
-                      + Utils.pwd
+                      + File.separator
                       + df
                       + ".png";
             } else {
-              autoSavePng2 = courseFile + Utils.pwd + "EngineGames" + Utils.pwd + df + ".png";
+              autoSavePng2 =
+                  courseFile + File.separator + "EngineGames" + File.separator + df + ".png";
             }
             Lizzie.frame.saveImage(
                 Lizzie.frame.statx,
@@ -790,22 +793,22 @@ public class EngineManager {
     autoSaveFile =
         new File(
             courseFile
-                + Utils.pwd
+                + File.separator
                 + "EngineGames"
-                + Utils.pwd
+                + File.separator
                 + engineGameInfo.batchGameName
-                + Utils.pwd
+                + File.separator
                 + resourceBundle.getString("Leelaz.result")
                 + engineGameInfo.SF
                 + ".txt");
     autoSaveFile2 =
         new File(
             courseFile
-                + Utils.pwd
+                + File.separator
                 + "EngineGames"
-                + Utils.pwd
+                + File.separator
                 + engineGameInfo.SF
-                + Utils.pwd
+                + File.separator
                 + resourceBundle.getString("Leelaz.result")
                 + engineGameInfo.SF
                 + ".txt");
@@ -887,7 +890,7 @@ public class EngineManager {
                 + ","
                 + resourceBundle.getString("EngineGameInfo.engineGameEndHintKifuPos")
                 + courseFile
-                + Utils.pwd
+                + File.separator
                 + "EngineGames"));
       }
       isSaveingEngineSGF = false;
@@ -1144,7 +1147,7 @@ public class EngineManager {
               + ","
               + resourceBundle.getString("EngineGameInfo.engineGameEndHintKifuPos")
               + courseFile
-              + Utils.pwd
+              + File.separator
               + "EngineGames"));
     } else {
       // 单局
@@ -1179,7 +1182,7 @@ public class EngineManager {
                 + ","
                 + resourceBundle.getString("EngineGameInfo.engineGameEndHintKifuPos")
                 + courseFile
-                + Utils.pwd
+                + File.separator
                 + "EngineGames";
       }
       Utils.showMsgNoModal(jg);
