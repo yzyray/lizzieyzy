@@ -1,5 +1,6 @@
 package featurecat.lizzie.gui;
 
+import featurecat.lizzie.Config;
 import featurecat.lizzie.Lizzie;
 import featurecat.lizzie.analysis.GetFoxRequest;
 import featurecat.lizzie.rules.SGFParser;
@@ -8,23 +9,30 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.AbstractCellEditor;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
@@ -43,14 +51,15 @@ public class FoxKifuDownload extends JFrame {
   private int tabNumber = 1;
   private int numbersPerTab = 25;
   private int curTabNumber = 1;
-  private boolean isComplete=false;
+  private boolean isComplete = false;
+  private boolean isSearching = false;
   JLabel lblTab;
   private ArrayList<String[]> rows;
 
   public FoxKifuDownload() {
-    setSize(new Dimension(1000, 550));
-    setTitle("棋谱查询");
-
+    setSize(new Dimension(1000, 650));
+    Lizzie.setFrameSize(this, 950, 628);
+    setTitle(Lizzie.resourceBundle.getString("FoxKifuDownload.title"));
     try {
       this.setIconImage(ImageIO.read(MoreEngines.class.getResourceAsStream("/assets/logo.png")));
     } catch (IOException e1) {
@@ -63,7 +72,8 @@ public class FoxKifuDownload extends JFrame {
     JPanel panel = new JPanel();
     getContentPane().add(panel, BorderLayout.NORTH);
 
-    JLabel lblUserName = new JFontLabel("用户名:");
+    JLabel lblUserName =
+        new JFontLabel(Lizzie.resourceBundle.getString("FoxKifuDownload.lblUserName"));
     panel.add(lblUserName);
 
     txtUserName = new JFontTextField();
@@ -78,7 +88,8 @@ public class FoxKifuDownload extends JFrame {
           }
         });
 
-    JButton btnSearch = new JFontButton("搜索");
+    JButton btnSearch =
+        new JFontButton(Lizzie.resourceBundle.getString("FoxKifuDownload.btnSearch"));
     btnSearch.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
@@ -87,16 +98,59 @@ public class FoxKifuDownload extends JFrame {
         });
     panel.add(btnSearch);
 
+    JLabel lblAfterGet = new JFontLabel();
+    lblAfterGet.setText(Lizzie.resourceBundle.getString("FoxKifuDownload.lblAfterGet"));
+    panel.add(lblAfterGet);
+
+    JComboBox<String> cbxAfterGet = new JFontComboBox();
+    panel.add(cbxAfterGet);
+    cbxAfterGet.addItem(Lizzie.resourceBundle.getString("FoxKifuDownload.cbxAfterGet.min"));
+    cbxAfterGet.addItem(Lizzie.resourceBundle.getString("FoxKifuDownload.cbxAfterGet.close"));
+    cbxAfterGet.addItem(Lizzie.resourceBundle.getString("FoxKifuDownload.cbxAfterGet.none"));
+    cbxAfterGet.addItemListener(
+        new ItemListener() {
+          public void itemStateChanged(final ItemEvent e) {
+            int index = cbxAfterGet.getSelectedIndex();
+            Lizzie.config.foxAfterGet = index;
+            Lizzie.config.uiConfig.put("fox-after-get", index);
+          }
+        });
+    cbxAfterGet.setSelectedIndex(Lizzie.config.foxAfterGet);
+
     JPanel buttonPane = new JPanel();
 
-    table = new JTable();
+    table =
+        new JTable() {
+          public boolean isCellEditable(int row, int column) {
+            if (column == 8) return true;
+            else return false;
+          }
+        };
+    table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    table
+        .getTableHeader()
+        .setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
+    table.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
+    table.setRowHeight(Config.menuHeight);
+    table.addMouseListener(
+        new MouseAdapter() {
+          public void mouseClicked(MouseEvent e) {
+            int row = table.rowAtPoint(e.getPoint());
+            int col = table.columnAtPoint(e.getPoint());
+            if (e.getClickCount() == 2) {
+              if (row >= 0 && col >= 0) {
+                foxReq.sendCommand("chessid " + table.getValueAt(row, 10).toString());
+              }
+            }
+          }
+        });
     TableCellRenderer tcr = new ColorTableCellRenderer();
     table.setDefaultRenderer(Object.class, tcr);
     JScrollPane scrollPane = new JScrollPane(table);
     getContentPane().add(scrollPane, BorderLayout.CENTER);
     getContentPane().add(buttonPane, BorderLayout.SOUTH);
 
-    JButton btnFirst = new JButton("|<");
+    JButton btnFirst = new JFontButton("|<");
     btnFirst.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
@@ -111,12 +165,12 @@ public class FoxKifuDownload extends JFrame {
               model.addRow(rows.get(i));
             }
             setLblTab(1);
-            //lblTab.setText(curTabNumber + "/" + tabNumber);
+            // lblTab.setText(curTabNumber + "/" + tabNumber);
           }
         });
     buttonPane.add(btnFirst);
 
-    JButton btnPrevious = new JButton("<");
+    JButton btnPrevious = new JFontButton("<");
     btnPrevious.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
@@ -132,12 +186,12 @@ public class FoxKifuDownload extends JFrame {
               model.addRow(rows.get(i));
             }
             setLblTab(curTabNumber);
-            //lblTab.setText(curTabNumber + "/" + tabNumber);
+            // lblTab.setText(curTabNumber + "/" + tabNumber);
           }
         });
     buttonPane.add(btnPrevious);
 
-    JButton btnNext = new JButton(">");
+    JButton btnNext = new JFontButton(">");
     btnNext.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
@@ -154,12 +208,12 @@ public class FoxKifuDownload extends JFrame {
             }
             setLblTab(curTabNumber);
             maybeGetNextPage();
-           // lblTab.setText(curTabNumber + "/" + tabNumber);
+            // lblTab.setText(curTabNumber + "/" + tabNumber);
           }
         });
     buttonPane.add(btnNext);
 
-    JButton btnLast = new JButton(">|");
+    JButton btnLast = new JFontButton(">|");
     btnLast.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
@@ -176,24 +230,34 @@ public class FoxKifuDownload extends JFrame {
             }
             setLblTab(curTabNumber);
             maybeGetNextPage();
-            //lblTab.setText(curTabNumber + "/" + tabNumber);
+            // lblTab.setText(curTabNumber + "/" + tabNumber);
           }
         });
     buttonPane.add(btnLast);
 
-    lblTab = new JLabel("1/1");
+    lblTab = new JFontLabel("1/1");
     buttonPane.add(lblTab);
   }
 
   private void maybeGetNextPage() {
-	// TODO Auto-generated method stub
-	if(this.curTabNumber==this.tabNumber) {
-		this.foxReq.sendCommand("uid "+this.myUid+" "+this.foxKifuInfos.get(foxKifuInfos.size()-1).chessid);
-	}
-}
-
-private void getFoxKifus() {
     // TODO Auto-generated method stub
+    if (curTabNumber == tabNumber || tabNumber >= 4 && curTabNumber == tabNumber - 1) {
+      this.foxReq.sendCommand(
+          "uid " + this.myUid + " " + this.foxKifuInfos.get(foxKifuInfos.size() - 1).chessid);
+    }
+  }
+
+  private void getFoxKifus() {
+    // TODO Auto-generated method stub
+    if (txtUserName.getText().isBlank()) {
+      Utils.showMsg(Lizzie.resourceBundle.getString("FoxKifuDownload.noUser"), this);
+      return;
+    }
+    if (isSearching) {
+      Utils.showMsg(Lizzie.resourceBundle.getString("FoxKifuDownload.waitLastSearch"), this);
+      return;
+    }
+    isSearching = true;
     foxReq = new GetFoxRequest(this);
     rows = new ArrayList<String[]>();
     foxReq.sendCommand("user_name " + txtUserName.getText());
@@ -202,17 +266,22 @@ private void getFoxKifus() {
   public void receiveResult(String string) {
     // TODO Auto-generated method stub
     try {
-      //	string="{\"result\":0,\"resultstr\":\"\",\"uin\":0,\"ret\":0,\"srcuid\":0,\"dstuid\":0,\"type\":4,\"lastCode\":0,\"searchkey\":\"\",\"chesslist\":[{\"chessid\":\"1618556331030021043\",\"blackuid\":28336178,\"blacknick\":\"V283361785\",\"blackenname\":\"V283361785\",\"blackdan\":24,\"blackcountry\":86,\"whiteuid\":13041,\"whitenick\":\"0小肥羊0\",\"whiteenname\":\"yzyray\",\"whitedan\":24,\"whitecountry\":86,\"title\":\"\",\"gamestarttime\":1618556331,\"gameendtime\":1618557552,\"winner\":2,\"point\":-1,\"reason\":3,\"movenum\":256,\"boardsize\":19,\"handicap\":0,\"firstcolor\":1,\"komi\":375,\"clienttype\":2,\"commenttype\":0,\"additionalrule\":0,\"rule\":1,\"blackocc\":0,\"whiteocc\":0,\"starttime\":\"2021-04-16 14:58:51\",\"endtime\":\"2021-04-16 15:19:12\",\"introduction\":\"\",\"gametype\":1,\"favorite\":0},{\"chessid\":\"1618555056030001393\",\"blackuid\":13041,\"blacknick\":\"0小肥羊0\",\"blackenname\":\"yzyray\",\"blackdan\":24,\"blackcountry\":86,\"whiteuid\":7559043,\"whitenick\":\"火速王者\",\"whiteenname\":\"火速王者\",\"whitedan\":24,\"whitecountry\":86,\"title\":\"\",\"gamestarttime\":1618555056,\"gameendtime\":1618556244,\"winner\":1,\"point\":-1,\"reason\":3,\"movenum\":211,\"boardsize\":19,\"handicap\":0,\"firstcolor\":1,\"komi\":375,\"clienttype\":2,\"commenttype\":0,\"additionalrule\":0,\"rule\":1,\"blackocc\":0,\"whiteocc\":0,\"starttime\":\"2021-04-16 14:37:36\",\"endtime\":\"2021-04-16 14:57:24\",\"introduction\":\"\",\"gametype\":1,\"favorite\":0},{\"chessid\":\"1618553326030002960\",\"blackuid\":21658341,\"blacknick\":\"金老师6180\",\"blackenname\":\"金老师6180\",\"blackdan\":24,\"blackcountry\":86,\"whiteuid\":13041,\"whitenick\":\"0小肥羊0\",\"whiteenname\":\"yzyray\",\"whitedan\":24,\"whitecountry\":86,\"title\":\"\",\"gamestarttime\":1618553326,\"gameendtime\":1618554986,\"winner\":1,\"point\":-1,\"reason\":3,\"movenum\":221,\"boardsize\":19,\"handicap\":0,\"firstcolor\":1,\"komi\":375,\"clienttype\":2,\"commenttype\":0,\"additionalrule\":0,\"rule\":1,\"blackocc\":0,\"whiteocc\":0,\"starttime\":\"2021-04-16 14:08:46\",\"endtime\":\"2021-04-16 14:36:26\",\"introduction\":\"\",\"gametype\":1,\"favorite\":0},{\"chessid\":\"1618552169030041760\",\"blackuid\":13041,\"blacknick\":\"0小肥羊0\",\"blackenname\":\"yzyray\",\"blackdan\":24,\"blackcountry\":86,\"whiteuid\":308324,\"whitenick\":\"dazhua\",\"whiteenname\":\"dazhua\",\"whitedan\":24,\"whitecountry\":86,\"title\":\"\",\"gamestarttime\":1618552169,\"gameendtime\":1618553092,\"winner\":2,\"point\":-1,\"reason\":3,\"movenum\":123,\"boardsize\":19,\"handicap\":0,\"firstcolor\":1,\"komi\":375,\"clienttype\":2,\"commenttype\":0,\"additionalrule\":0,\"rule\":1,\"blackocc\":0,\"whiteocc\":0,\"starttime\":\"2021-04-16 13:49:29\",\"endtime\":\"2021-04-16 14:04:52\",\"introduction\":\"\",\"gametype\":1,\"favorite\":0},{\"chessid\":\"1618043705030011393\",\"blackuid\":13041,\"blacknick\":\"0小肥羊0\",\"blackenname\":\"yzyray\",\"blackdan\":24,\"blackcountry\":86,\"whiteuid\":24611925,\"whitenick\":\"和路雪63\",\"whiteenname\":\"和路雪63\",\"whitedan\":24,\"whitecountry\":86,\"title\":\"\",\"gamestarttime\":1618043705,\"gameendtime\":1618046331,\"winner\":1,\"point\":-2,\"reason\":2,\"movenum\":221,\"boardsize\":19,\"handicap\":0,\"firstcolor\":1,\"komi\":375,\"clienttype\":2,\"commenttype\":0,\"additionalrule\":0,\"rule\":1,\"blackocc\":0,\"whiteocc\":0,\"starttime\":\"2021-04-10 16:35:05\",\"endtime\":\"2021-04-10 17:18:51\",\"introduction\":\"\",\"gametype\":1,\"favorite\":0},{\"chessid\":\"1618038603030021119\",\"blackuid\":13041,\"blacknick\":\"0小肥羊0\",\"blackenname\":\"yzyray\",\"blackdan\":24,\"blackcountry\":86,\"whiteuid\":7688993,\"whitenick\":\"7225yc\",\"whiteenname\":\"7225yc\",\"whitedan\":24,\"whitecountry\":86,\"title\":\"\",\"gamestarttime\":1618038603,\"gameendtime\":1618040709,\"winner\":1,\"point\":-1,\"reason\":3,\"movenum\":203,\"boardsize\":19,\"handicap\":0,\"firstcolor\":1,\"komi\":375,\"clienttype\":2,\"commenttype\":0,\"additionalrule\":0,\"rule\":1,\"blackocc\":0,\"whiteocc\":0,\"starttime\":\"2021-04-10 15:10:03\",\"endtime\":\"2021-04-10 15:45:09\",\"introduction\":\"\",\"gametype\":1,\"favorite\":0},{\"chessid\":\"1618035399030032304\",\"blackuid\":13041,\"blacknick\":\"0小肥羊0\",\"blackenname\":\"yzyray\",\"blackdan\":24,\"blackcountry\":86,\"whiteuid\":1174686,\"whitenick\":\"静夜思7772\",\"whiteenname\":\"静夜思7772\",\"whitedan\":24,\"whitecountry\":86,\"title\":\"\",\"gamestarttime\":1618035399,\"gameendtime\":1618036085,\"winner\":1,\"point\":-2,\"reason\":2,\"movenum\":83,\"boardsize\":19,\"handicap\":0,\"firstcolor\":1,\"komi\":375,\"clienttype\":2,\"commenttype\":0,\"additionalrule\":0,\"rule\":1,\"blackocc\":0,\"whiteocc\":0,\"starttime\":\"2021-04-10 14:16:39\",\"endtime\":\"2021-04-10 14:28:05\",\"introduction\":\"\",\"gametype\":1,\"favorite\":0},{\"chessid\":\"1618031704030053734\",\"blackuid\":20154746,\"blacknick\":\"似狗非狗\",\"blackenname\":\"似狗非狗\",\"blackdan\":24,\"blackcountry\":86,\"whiteuid\":13041,\"whitenick\":\"0小肥羊0\",\"whiteenname\":\"yzyray\",\"whitedan\":24,\"whitecountry\":86,\"title\":\"\",\"gamestarttime\":1618031704,\"gameendtime\":1618034480,\"winner\":2,\"point\":-2,\"reason\":2,\"movenum\":280,\"boardsize\":19,\"handicap\":0,\"firstcolor\":1,\"komi\":375,\"clienttype\":2,\"commenttype\":0,\"additionalrule\":0,\"rule\":1,\"blackocc\":0,\"whiteocc\":0,\"starttime\":\"2021-04-10 13:15:04\",\"endtime\":\"2021-04-10 14:01:20\",\"introduction\":\"\",\"gametype\":1,\"favorite\":0}]}";
       JSONObject jsonOjbect = new JSONObject(string);
       if (jsonOjbect.has("uid")) {
         myUid = jsonOjbect.getInt("uid");
         foxReq.sendCommand("uid " + myUid);
       }
       if (jsonOjbect.has("chesslist")) {
+        isSearching = false;
         JSONArray jsonArray = jsonOjbect.getJSONArray("chesslist");
-        if(jsonArray.len)
+        int oldRows = rows.size();
+        if (jsonArray.length() == 0) {
+          if (oldRows > 0)
+            Utils.showMsg(Lizzie.resourceBundle.getString("FoxKifuDownload.noMoreKifu"), this);
+          else Utils.showMsg(Lizzie.resourceBundle.getString("FoxKifuDownload.noKifu"), this);
+        }
         foxKifuInfos = new ArrayList<KifuInfo>();
-        isComplete=jsonArray.length()<100;
+        isComplete = jsonArray.length() < 100;
         for (int i = 0; i < jsonArray.length(); i++) {
           JSONObject jsonObject = jsonArray.getJSONObject(i);
           KifuInfo kifuInfo = new KifuInfo();
@@ -221,11 +290,19 @@ private void getFoxKifus() {
           kifuInfo.blackName =
               jsonObject.optString("blacknick", jsonObject.getString("blackenname"));
           int bRank = jsonObject.getInt("blackdan") - 17;
-          kifuInfo.blackRank = bRank > 0 ? bRank + "段" : (Math.abs(bRank) + 1) + "级";
+          kifuInfo.blackRank =
+              bRank > 0
+                  ? bRank + Lizzie.resourceBundle.getString("FoxKifuDownload.rank.dan")
+                  : (Math.abs(bRank) + 1)
+                      + Lizzie.resourceBundle.getString("FoxKifuDownload.rank.kyu");
           kifuInfo.whiteName =
               jsonObject.optString("whitenick", jsonObject.getString("whiteenname"));
           int wRank = jsonObject.getInt("whitedan") - 17;
-          kifuInfo.whiteRank = wRank > 0 ? wRank + "段" : (Math.abs(wRank) + 1) + "级";
+          kifuInfo.whiteRank =
+              wRank > 0
+                  ? wRank + Lizzie.resourceBundle.getString("FoxKifuDownload.rank.dan")
+                  : (Math.abs(wRank) + 1)
+                      + Lizzie.resourceBundle.getString("FoxKifuDownload.rank.kyu");
           kifuInfo.chessid = jsonObject.getString("chessid");
           // kifuInfo.result=
           kifuInfo.totalMoves = jsonObject.getInt("movenum");
@@ -235,59 +312,32 @@ private void getFoxKifus() {
           int rule = jsonObject.getInt("rule");
           if (winner == 1 || winner == 2) {
             if (winner == 1) {
-              result = "黑";
+              result = Lizzie.resourceBundle.getString("FoxKifuDownload.black");
               if (jsonObject.getInt("blackuid") == myUid) kifuInfo.isWin = true;
               else kifuInfo.isWin = false;
             } else {
-              result = "白";
+              result = Lizzie.resourceBundle.getString("FoxKifuDownload.white");
               if (jsonObject.getInt("whiteuid") == myUid) kifuInfo.isWin = true;
               else kifuInfo.isWin = false;
             }
             if (point < 0) {
-              if (point == -1) result += "中盘胜";
-              else if (point == -2) result += "超时胜";
-              else result += "胜";
+              if (point == -1)
+                result += Lizzie.resourceBundle.getString("FoxKifuDownload.winByRes");
+              else if (point == -2)
+                result += Lizzie.resourceBundle.getString("FoxKifuDownload.winByTime");
+              else result += Lizzie.resourceBundle.getString("FoxKifuDownload.win");
             } else {
               String unit = "";
-              if (rule == 1) unit = "子";
-              if (rule == 0) unit = "目";
-              result += "胜" + point / 100f + unit;
+              if (rule == 1) unit = Lizzie.resourceBundle.getString("FoxKifuDownload.points");
+              if (rule == 0) unit = Lizzie.resourceBundle.getString("FoxKifuDownload.stones");
+              result +=
+                  Lizzie.resourceBundle.getString("FoxKifuDownload.win") + point / 100f + unit;
             }
-          } else result = "其他";
+          } else result = Lizzie.resourceBundle.getString("FoxKifuDownload.other");
           kifuInfo.result = result;
           foxKifuInfos.add(kifuInfo);
         }
         if (foxKifuInfos.size() >= 1) {
-          model = new DefaultTableModel();
-          table.setModel(model);
-          model.addColumn("序号");
-          model.addColumn("时间");
-          model.addColumn("黑方");
-          model.addColumn("等级");
-          model.addColumn("白方");
-          model.addColumn("等级");
-          model.addColumn("结果");
-          model.addColumn("手数");
-          model.addColumn("打开");
-          model.addColumn("");
-          model.addColumn("");
-          table.getColumnModel().getColumn(0).setPreferredWidth(35);
-          table.getColumnModel().getColumn(1).setPreferredWidth(130);
-          table.getColumnModel().getColumn(2).setPreferredWidth(70);
-          table.getColumnModel().getColumn(3).setPreferredWidth(40);
-          table.getColumnModel().getColumn(4).setPreferredWidth(70);
-          table.getColumnModel().getColumn(5).setPreferredWidth(40);
-          table.getColumnModel().getColumn(6).setPreferredWidth(70);
-          table.getColumnModel().getColumn(7).setPreferredWidth(50);
-          table.getColumnModel().getColumn(8).setPreferredWidth(40);
-          table.getColumnModel().getColumn(8).setCellEditor(new MyButtonOpenFoxKifuEditor());
-          table.getColumnModel().getColumn(8).setCellRenderer(new MyButtonOpenFoxKifu());
-          table.getColumnModel().getColumn(9).setPreferredWidth(0);
-          table.getColumnModel().getColumn(10).setPreferredWidth(0);
-
-          hideColumn(9);
-          hideColumn(10);
-          
           for (int i = 0; i < foxKifuInfos.size(); i++) {
             KifuInfo info = foxKifuInfos.get(i);
             String[] rowParams = {
@@ -306,12 +356,46 @@ private void getFoxKifus() {
             rows.add(rowParams);
           }
           tabNumber = (int) Math.ceil(rows.size() / (double) numbersPerTab);
-          curTabNumber = 1;
-          for (int i = 0; i < numbersPerTab && i < rows.size(); i++) {
-            model.addRow(rows.get(i));
+          if (oldRows <= 0) {
+            model = new DefaultTableModel();
+            model.addColumn(Lizzie.resourceBundle.getString("FoxKifuDownload.column.index"));
+            model.addColumn(Lizzie.resourceBundle.getString("FoxKifuDownload.column.time"));
+            model.addColumn(Lizzie.resourceBundle.getString("FoxKifuDownload.column.black"));
+            model.addColumn(Lizzie.resourceBundle.getString("FoxKifuDownload.column.rank"));
+            model.addColumn(Lizzie.resourceBundle.getString("FoxKifuDownload.column.white"));
+            model.addColumn(Lizzie.resourceBundle.getString("FoxKifuDownload.column.rank"));
+            model.addColumn(Lizzie.resourceBundle.getString("FoxKifuDownload.column.result"));
+            model.addColumn(Lizzie.resourceBundle.getString("FoxKifuDownload.column.moves"));
+            model.addColumn(Lizzie.resourceBundle.getString("FoxKifuDownload.column.open"));
+            model.addColumn("");
+            model.addColumn("");
+
+            for (int i = 0; i < numbersPerTab && i < rows.size(); i++) {
+              model.addRow(rows.get(i));
+            }
+
+            if (model.getRowCount() > 0) {
+              table.setModel(model);
+              table.getColumnModel().getColumn(0).setPreferredWidth(35);
+              table.getColumnModel().getColumn(1).setPreferredWidth(130);
+              table.getColumnModel().getColumn(2).setPreferredWidth(70);
+              table.getColumnModel().getColumn(3).setPreferredWidth(40);
+              table.getColumnModel().getColumn(4).setPreferredWidth(70);
+              table.getColumnModel().getColumn(5).setPreferredWidth(40);
+              table.getColumnModel().getColumn(6).setPreferredWidth(70);
+              table.getColumnModel().getColumn(7).setPreferredWidth(50);
+              table.getColumnModel().getColumn(8).setPreferredWidth(40);
+              table.getColumnModel().getColumn(8).setCellEditor(new MyButtonOpenFoxKifuEditor());
+              table.getColumnModel().getColumn(8).setCellRenderer(new MyButtonOpenFoxKifu());
+              table.getColumnModel().getColumn(9).setPreferredWidth(0);
+              table.getColumnModel().getColumn(10).setPreferredWidth(0);
+              hideColumn(9);
+              hideColumn(10);
+              table.revalidate();
+            }
+            curTabNumber = 1;
           }
-          setLblTab(1);          
-          table.updateUI();
+          setLblTab(curTabNumber);
         }
       }
       if (jsonOjbect.has("chess")) {
@@ -321,22 +405,25 @@ private void getFoxKifus() {
           Lizzie.board.setMovelistAll();
           if (Lizzie.leelaz.isPondering()) Lizzie.leelaz.ponder();
           Lizzie.frame.refresh();
-          setExtendedState(JFrame.ICONIFIED);
+          if (Lizzie.config.foxAfterGet == 0) setExtendedState(JFrame.ICONIFIED);
+          else if (Lizzie.config.foxAfterGet == 1) setVisible(false);
         }
       }
     } catch (JSONException e1) {
       // TODO Auto-generated catch block
       e1.printStackTrace();
-      Utils.showHtmlMessage("获取棋谱失败", "消息: " + string);
+      Utils.showMsg(
+          Lizzie.resourceBundle.getString("FoxKifuDownload.getKifuFailed") + string, this);
+      isSearching = false;
     }
   }
 
   private void setLblTab(int i) {
-	// TODO Auto-generated method stub
-	  lblTab.setText(i+"/" + tabNumber + (this.isComplete ? "" : "..."));
-}
+    // TODO Auto-generated method stub
+    lblTab.setText(i + "/" + tabNumber + (this.isComplete ? "" : "..."));
+  }
 
-private void hideColumn(int i) {
+  private void hideColumn(int i) {
     // TODO Auto-generated method stub
     table.getColumnModel().getColumn(i).setWidth(0);
     table.getColumnModel().getColumn(i).setMaxWidth(0);
@@ -354,7 +441,7 @@ class ColorTableCellRenderer extends DefaultTableCellRenderer {
     if (table.getValueAt(row, 9).toString().equals("true")) {
       setForeground(Color.RED);
     } else setForeground(Color.GRAY);
-    return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+    return super.getTableCellRendererComponent(table, value, isSelected, false, row, column);
   }
 }
 
@@ -369,7 +456,7 @@ class MyButtonOpenFoxKifu implements TableCellRenderer {
   }
 
   private void initButton() {
-    button = new JButton();
+    button = new JFontButton();
     button.setMargin(new Insets(0, 0, 0, 0));
   }
 
@@ -380,7 +467,7 @@ class MyButtonOpenFoxKifu implements TableCellRenderer {
 
   public Component getTableCellRendererComponent(
       JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-    button.setText(Lizzie.resourceBundle.getString("PrivateKifuSearch.open")); // ("打开");
+    button.setText(Lizzie.resourceBundle.getString("FoxKifuDownload.column.open"));
     return panel;
   }
 }
@@ -397,7 +484,7 @@ class MyButtonOpenFoxKifuEditor extends AbstractCellEditor implements TableCellE
   }
 
   private void initButton() {
-    button = new JButton();
+    button = new JFontButton();
     button.setMargin(new Insets(0, 0, 0, 0));
     button.addActionListener(
         new ActionListener() {

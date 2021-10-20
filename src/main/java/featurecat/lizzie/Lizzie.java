@@ -16,6 +16,7 @@ import featurecat.lizzie.util.MultiOutputStream;
 import featurecat.lizzie.util.Utils;
 import java.awt.Font;
 import java.awt.FontFormatException;
+import java.awt.Window;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -182,18 +183,7 @@ public class Lizzie {
     if (Lizzie.config.autoReplayBranch) frame.autoReplayBranch();
   }
 
-  public static void setFrameSize(JDialog frame, int width, int height) {
-    if (javaVersion > 8)
-      frame.setSize(
-          (int) (width - 20 + (Config.isScaled ? 1.0 : Math.sqrt(Lizzie.sysScaleFactor)) * 30),
-          (int) (height - 20 + (Config.isScaled ? 1.0 : Lizzie.sysScaleFactor) * 30));
-    else
-      frame.setSize(
-          (int) (width - 20 + (Config.isScaled ? 1.0 : Math.sqrt(Lizzie.sysScaleFactor)) * 20),
-          (int) (height - 20 + (Config.isScaled ? 1.0 : Lizzie.sysScaleFactor) * 25));
-  }
-
-  public static void setFrameSize(JFrame frame, int width, int height) {
+  public static void setFrameSize(Window frame, int width, int height) {
     if (javaVersion > 8)
       frame.setSize(
           (int) (width - 20 + (Config.isScaled ? 1.0 : Math.sqrt(Lizzie.sysScaleFactor)) * 30),

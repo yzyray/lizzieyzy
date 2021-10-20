@@ -14,6 +14,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FontMetrics;
+import java.awt.Window;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -451,6 +452,11 @@ public class Utils {
     Message msg = new Message();
     msg.setMessage(message);
     //  msg.setVisible(true);
+  }
+
+  public static void showMsg(String message, Window owner) {
+    Message msg = new Message();
+    msg.setMessage(message, owner);
   }
 
   public static void showMsgNoModal(String message) {

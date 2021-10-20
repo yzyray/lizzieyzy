@@ -733,6 +733,15 @@ public class BottomToolbar extends JPanel {
         });
     yike.add(yikeRoom);
 
+    JMenuItem foxKifu = new JMenuItem(Lizzie.resourceBundle.getString("Menu.foxKifu")); // ("野狐");
+    foxKifu.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.frame.openFoxReq();
+          }
+        });
+    yike.add(foxKifu);
+
     JMenuItem syncBoardJava =
         new JMenuItem(Lizzie.resourceBundle.getString("BottomToolbar.syncBoardJava")); // ("棋盘同步");
     syncBoardJava.addActionListener(

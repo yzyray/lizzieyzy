@@ -594,6 +594,7 @@ public class Config {
   public double scoreLossThreshold5 = -12;
 
   public boolean showPonderLimitedTips = true;
+  public int foxAfterGet = 0; // 0=最小化,1=关闭,2=无动作
 
   private JSONObject loadAndMergeSaveBoardConfig(
       JSONObject defaultCfg, String fileName, boolean needValidation) throws IOException {
@@ -1269,6 +1270,7 @@ public class Config {
     scoreLossThreshold4 = uiConfig.optDouble("score-loss-threshold-4", -6);
     scoreLossThreshold5 = uiConfig.optDouble("score-loss-threshold-5", -12);
     showPonderLimitedTips = uiConfig.optBoolean("show-ponder-limited-tips", true);
+    foxAfterGet = uiConfig.optInt("fox-after-get", 0);
     otherSizeWidth = uiConfig.optInt("other-size-width", 21);
     otherSizeHeight = uiConfig.optInt("other-size-height", 21);
     useFoxStyleCoords = uiConfig.optBoolean("use-fox-style-coords", false);

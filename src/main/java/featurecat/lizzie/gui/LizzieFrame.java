@@ -12397,7 +12397,7 @@ public class LizzieFrame extends JFrame {
     basePanel.setBackground(color);
   }
 
-  public void testFoxReq() {
+  public void openFoxReq() {
     // TODO Auto-generated method stub
     foxKifuDownload = new FoxKifuDownload();
     foxKifuDownload.setVisible(true);

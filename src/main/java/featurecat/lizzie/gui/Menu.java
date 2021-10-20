@@ -3568,6 +3568,17 @@ public class Menu extends JMenuBar {
           }
         });
 
+    final JFontMenuItem foxKifu =
+        new JFontMenuItem(resourceBundle.getString("Menu.foxKifu")); // ("野狐(腾讯)棋谱");
+    live.add(foxKifu);
+
+    foxKifu.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.frame.openFoxReq();
+          }
+        });
+
     final JFontMenuItem readBoardJava =
         new JFontMenuItem(resourceBundle.getString("Menu.readBoardJava")); // ("棋盘同步工具");
     live.add(readBoardJava);
