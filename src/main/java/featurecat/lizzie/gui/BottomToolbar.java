@@ -4083,8 +4083,15 @@ public class BottomToolbar extends JPanel {
               isAutoPlayMain = false;
               return;
             }
-            while (Lizzie.board.nextMove(true) && chkAutoMain.isSelected())
+            while (chkAutoMain.isSelected()) {
               try {
+                if (!Lizzie.board.nextMove(true) && Lizzie.config.continueWithBestMove) {
+                  BoardHistoryNode cur = Lizzie.board.getHistory().getCurrentHistoryNode();
+                  if (!cur.getData().lastMove.isPresent()
+                      && cur.previous().isPresent()
+                      && !cur.previous().get().getData().lastMove.isPresent()) break;
+                  Lizzie.frame.playBestMove();
+                } else break;
                 try {
                   time = 1000 * Integer.parseInt(txtAutoMain.getText().replace(" ", ""));
                 } catch (NumberFormatException err) {
@@ -4093,6 +4100,7 @@ public class BottomToolbar extends JPanel {
               } catch (InterruptedException e) {
                 e.printStackTrace();
               }
+            }
             isAutoPlayMain = false;
             chkAutoMain.setSelected(false);
           }
