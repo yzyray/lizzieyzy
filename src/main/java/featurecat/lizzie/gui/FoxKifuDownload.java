@@ -44,10 +44,12 @@ import org.json.JSONObject;
 public class FoxKifuDownload extends JFrame {
   private DefaultTableModel model;
   private JTable table;
+  private JScrollPane scrollPane;
   private JTextField txtUserName;
   public GetFoxRequest foxReq;
   private List<KifuInfo> foxKifuInfos;
   private int myUid;
+  private String lastCode = "";
   private int tabNumber = 1;
   private int numbersPerTab = 25;
   private int curTabNumber = 1;
@@ -55,10 +57,10 @@ public class FoxKifuDownload extends JFrame {
   private boolean isSearching = false;
   JLabel lblTab;
   private ArrayList<String[]> rows;
+  private boolean isSecondTimeReqEmpty = false;
 
   public FoxKifuDownload() {
-    setSize(new Dimension(1000, 650));
-    Lizzie.setFrameSize(this, 950, 628);
+    Lizzie.setFrameSize(this, 950, 635);
     setTitle(Lizzie.resourceBundle.getString("FoxKifuDownload.title"));
     try {
       this.setIconImage(ImageIO.read(MoreEngines.class.getResourceAsStream("/assets/logo.png")));
@@ -127,6 +129,9 @@ public class FoxKifuDownload extends JFrame {
           }
         };
     table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    table.setFillsViewportHeight(true);
+    ((DefaultTableCellRenderer) table.getTableHeader().getDefaultRenderer())
+        .setHorizontalAlignment(JLabel.CENTER);
     table
         .getTableHeader()
         .setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
@@ -146,7 +151,7 @@ public class FoxKifuDownload extends JFrame {
         });
     TableCellRenderer tcr = new ColorTableCellRenderer();
     table.setDefaultRenderer(Object.class, tcr);
-    JScrollPane scrollPane = new JScrollPane(table);
+    scrollPane = new JScrollPane(table);
     getContentPane().add(scrollPane, BorderLayout.CENTER);
     getContentPane().add(buttonPane, BorderLayout.SOUTH);
 
@@ -160,7 +165,7 @@ public class FoxKifuDownload extends JFrame {
               model.removeRow(model.getRowCount() - 1);
             }
             for (int i = (curTabNumber - 1) * numbersPerTab;
-                i < numbersPerTab && i < rows.size();
+                i < numbersPerTab && i < foxKifuInfos.size();
                 i++) {
               model.addRow(rows.get(i));
             }
@@ -181,7 +186,7 @@ public class FoxKifuDownload extends JFrame {
               model.removeRow(model.getRowCount() - 1);
             }
             for (int i = (curTabNumber - 1) * numbersPerTab;
-                i < curTabNumber * numbersPerTab && i < rows.size();
+                i < curTabNumber * numbersPerTab && i < foxKifuInfos.size();
                 i++) {
               model.addRow(rows.get(i));
             }
@@ -196,13 +201,16 @@ public class FoxKifuDownload extends JFrame {
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             if (rows == null) return;
-            if (curTabNumber == tabNumber) return;
+            if (curTabNumber == tabNumber) {
+              maybeGetNextPage();
+              return;
+            }
             curTabNumber = curTabNumber + 1;
             while (model.getRowCount() > 0) {
               model.removeRow(model.getRowCount() - 1);
             }
             for (int i = (curTabNumber - 1) * numbersPerTab;
-                i < curTabNumber * numbersPerTab && i < rows.size();
+                i < curTabNumber * numbersPerTab && i < foxKifuInfos.size();
                 i++) {
               model.addRow(rows.get(i));
             }
@@ -218,13 +226,16 @@ public class FoxKifuDownload extends JFrame {
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             if (rows == null) return;
-            if (curTabNumber == tabNumber) return;
+            if (curTabNumber == tabNumber) {
+              maybeGetNextPage();
+              return;
+            }
             curTabNumber = tabNumber;
             while (model.getRowCount() > 0) {
               model.removeRow(model.getRowCount() - 1);
             }
             for (int i = (curTabNumber - 1) * numbersPerTab;
-                i < curTabNumber * numbersPerTab && i < rows.size();
+                i < curTabNumber * numbersPerTab && i < foxKifuInfos.size();
                 i++) {
               model.addRow(rows.get(i));
             }
@@ -242,8 +253,15 @@ public class FoxKifuDownload extends JFrame {
   private void maybeGetNextPage() {
     // TODO Auto-generated method stub
     if (curTabNumber == tabNumber || tabNumber >= 4 && curTabNumber == tabNumber - 1) {
-      this.foxReq.sendCommand(
-          "uid " + this.myUid + " " + this.foxKifuInfos.get(foxKifuInfos.size() - 1).chessid);
+      String last = foxKifuInfos.get(foxKifuInfos.size() - 1).chessid;
+      if (!lastCode.equals(last)) {
+        lastCode = last;
+        this.foxReq.sendCommand(
+            "uid " + this.myUid + " " + foxKifuInfos.get(foxKifuInfos.size() - 1).chessid);
+      } else {
+        if (isSecondTimeReqEmpty)
+          Utils.showMsg(Lizzie.resourceBundle.getString("FoxKifuDownload.noMoreKifu"), this);
+      }
     }
   }
 
@@ -258,8 +276,10 @@ public class FoxKifuDownload extends JFrame {
       return;
     }
     isSearching = true;
+    isSecondTimeReqEmpty = false;
     foxReq = new GetFoxRequest(this);
-    rows = new ArrayList<String[]>();
+    foxKifuInfos = new ArrayList<KifuInfo>();
+    lastCode = "";
     foxReq.sendCommand("user_name " + txtUserName.getText());
   }
 
@@ -274,13 +294,13 @@ public class FoxKifuDownload extends JFrame {
       if (jsonOjbect.has("chesslist")) {
         isSearching = false;
         JSONArray jsonArray = jsonOjbect.getJSONArray("chesslist");
-        int oldRows = rows.size();
+        int oldRows = foxKifuInfos.size();
         if (jsonArray.length() == 0) {
-          if (oldRows > 0)
-            Utils.showMsg(Lizzie.resourceBundle.getString("FoxKifuDownload.noMoreKifu"), this);
-          else Utils.showMsg(Lizzie.resourceBundle.getString("FoxKifuDownload.noKifu"), this);
+          if (oldRows > 0) {
+            isComplete = true;
+            isSecondTimeReqEmpty = true;
+          } else Utils.showMsg(Lizzie.resourceBundle.getString("FoxKifuDownload.noKifu"), this);
         }
-        foxKifuInfos = new ArrayList<KifuInfo>();
         isComplete = jsonArray.length() < 100;
         for (int i = 0; i < jsonArray.length(); i++) {
           JSONObject jsonObject = jsonArray.getJSONObject(i);
@@ -337,6 +357,7 @@ public class FoxKifuDownload extends JFrame {
           kifuInfo.result = result;
           foxKifuInfos.add(kifuInfo);
         }
+        rows = new ArrayList<String[]>();
         if (foxKifuInfos.size() >= 1) {
           for (int i = 0; i < foxKifuInfos.size(); i++) {
             KifuInfo info = foxKifuInfos.get(i);
@@ -376,15 +397,15 @@ public class FoxKifuDownload extends JFrame {
 
             if (model.getRowCount() > 0) {
               table.setModel(model);
-              table.getColumnModel().getColumn(0).setPreferredWidth(35);
-              table.getColumnModel().getColumn(1).setPreferredWidth(130);
-              table.getColumnModel().getColumn(2).setPreferredWidth(70);
+              table.getColumnModel().getColumn(0).setPreferredWidth(25);
+              table.getColumnModel().getColumn(1).setPreferredWidth(190);
+              table.getColumnModel().getColumn(2).setPreferredWidth(100);
               table.getColumnModel().getColumn(3).setPreferredWidth(40);
-              table.getColumnModel().getColumn(4).setPreferredWidth(70);
-              table.getColumnModel().getColumn(5).setPreferredWidth(40);
-              table.getColumnModel().getColumn(6).setPreferredWidth(70);
+              table.getColumnModel().getColumn(4).setPreferredWidth(100);
+              table.getColumnModel().getColumn(5).setPreferredWidth(35);
+              table.getColumnModel().getColumn(6).setPreferredWidth(100);
               table.getColumnModel().getColumn(7).setPreferredWidth(50);
-              table.getColumnModel().getColumn(8).setPreferredWidth(40);
+              table.getColumnModel().getColumn(8).setPreferredWidth(35);
               table.getColumnModel().getColumn(8).setCellEditor(new MyButtonOpenFoxKifuEditor());
               table.getColumnModel().getColumn(8).setCellRenderer(new MyButtonOpenFoxKifu());
               table.getColumnModel().getColumn(9).setPreferredWidth(0);
@@ -392,6 +413,13 @@ public class FoxKifuDownload extends JFrame {
               hideColumn(9);
               hideColumn(10);
               table.revalidate();
+              if (Lizzie.config.isFrameFontSmall() && rows.size() >= 25) {
+                scrollPane.setPreferredSize(
+                    new Dimension(
+                        scrollPane.getWidth(),
+                        table.getTableHeader().getHeight() + Config.menuHeight * 25 + 2));
+                pack();
+              }
             }
             curTabNumber = 1;
           }
