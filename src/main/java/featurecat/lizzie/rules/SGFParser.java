@@ -692,7 +692,7 @@ public class SGFParser {
                   Double komi = Double.parseDouble(tagContent);
                   if (komi >= 200) {
                     komi = komi / 100;
-                    if (komi == 3.5) komi = 7.0;
+                    if (komi <= 4 && komi >= -4) komi = komi * 2;
                   }
                   if (komi.toString().endsWith(".75") || komi.toString().endsWith(".25"))
                     komi = komi * 2;
@@ -2793,7 +2793,7 @@ public class SGFParser {
                   Double komi = Double.parseDouble(tagContent);
                   if (komi >= 200) {
                     komi = komi / 100;
-                    if (komi == 3.5) komi = 7.0;
+                    if (komi <= 4 && komi >= -4) komi = komi * 2;
                   }
                   if (komi.toString().endsWith(".75") || komi.toString().endsWith(".25"))
                     komi = komi * 2;
@@ -3068,7 +3068,7 @@ public class SGFParser {
                 Double komi = Double.parseDouble(tagContent);
                 if (komi >= 200) {
                   komi = komi / 100;
-                  if (komi == 3.5) komi = 7.0;
+                  if (komi <= 4 && komi >= -4) komi = komi * 2;
                 }
                 if (komi.toString().endsWith(".75") || komi.toString().endsWith(".25"))
                   komi = komi * 2;

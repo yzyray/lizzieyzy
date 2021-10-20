@@ -348,10 +348,14 @@ public class FoxKifuDownload extends JFrame {
               else result += Lizzie.resourceBundle.getString("FoxKifuDownload.win");
             } else {
               String unit = "";
-              if (rule == 1) unit = Lizzie.resourceBundle.getString("FoxKifuDownload.points");
-              if (rule == 0) unit = Lizzie.resourceBundle.getString("FoxKifuDownload.stones");
+              if (rule == 1) unit = Lizzie.resourceBundle.getString("FoxKifuDownload.stones");
+              if (rule == 0) unit = Lizzie.resourceBundle.getString("FoxKifuDownload.points");
               result +=
-                  Lizzie.resourceBundle.getString("FoxKifuDownload.win") + point / 100f + unit;
+                  (Lizzie.config.isChinese
+                          ? Lizzie.resourceBundle.getString("FoxKifuDownload.win")
+                          : "+")
+                      + point / 100f
+                      + unit;
             }
           } else result = Lizzie.resourceBundle.getString("FoxKifuDownload.other");
           kifuInfo.result = result;
@@ -429,10 +433,13 @@ public class FoxKifuDownload extends JFrame {
       if (jsonOjbect.has("chess")) {
         {
           String kifu = jsonOjbect.getString("chess");
+          boolean oriReadKomi = Lizzie.config.readKomi;
+          Lizzie.config.readKomi = false;
           SGFParser.loadFromString(kifu);
           Lizzie.board.setMovelistAll();
           if (Lizzie.leelaz.isPondering()) Lizzie.leelaz.ponder();
           Lizzie.frame.refresh();
+          Lizzie.config.readKomi = oriReadKomi;
           if (Lizzie.config.foxAfterGet == 0) setExtendedState(JFrame.ICONIFIED);
           else if (Lizzie.config.foxAfterGet == 1) setVisible(false);
         }
