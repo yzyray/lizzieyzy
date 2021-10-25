@@ -168,7 +168,9 @@ public class AnalysisSettings extends JDialog {
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             if (fromError) {
-              Lizzie.frame.analysisEngine.waitFrame.setVisible(false);
+              if (Lizzie.frame.analysisEngine != null
+                  && Lizzie.frame.analysisEngine.waitFrame != null)
+                Lizzie.frame.analysisEngine.waitFrame.setVisible(false);
               saveConfig();
               setVisible(false);
               Lizzie.frame.destroyAnalysisEngine();
