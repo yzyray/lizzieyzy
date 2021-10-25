@@ -586,6 +586,7 @@ public class Input implements MouseListener, KeyListener, MouseWheelListener, Mo
         if (e.isAltDown()) {
           Lizzie.config.toggleShowListPane();
         } else if (e.isShiftDown()) Lizzie.config.toggleShowVariationGraph();
+        else Lizzie.frame.tryToRefreshVariation();
         break;
 
       case VK_T:

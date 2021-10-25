@@ -9,7 +9,6 @@ import static java.lang.Math.round;
 
 import featurecat.lizzie.Lizzie;
 import featurecat.lizzie.analysis.Branch;
-import featurecat.lizzie.analysis.EngineManager;
 import featurecat.lizzie.analysis.Leelaz;
 import featurecat.lizzie.analysis.MoveData;
 import featurecat.lizzie.rules.Board;
@@ -715,10 +714,10 @@ public class FloatBoardRenderer {
     }
     boolean notChangedMouseOverMove =
         mouseOverTemp != null
-            && mouseOverTempNode == Lizzie.board.getHistory().getCurrentHistoryNode()
+            && mouseOverTempNode == Lizzie.board.getHistory().getMainEnd()
             && mouseOverTemp.coordinate.equals(suggestedMove.get().coordinate);
     mouseOverTemp = suggestedMove.get();
-    mouseOverTempNode = Lizzie.board.getHistory().getCurrentHistoryNode();
+    mouseOverTempNode = Lizzie.board.getHistory().getMainEnd();
     int maxPlayouts = 0;
     for (MoveData move : bestMoves) {
       if (move.playouts > maxPlayouts) maxPlayouts = move.playouts;
@@ -869,8 +868,7 @@ public class FloatBoardRenderer {
           }
         }
       }
-    if (mouseOverTemp != null
-        && mouseOverTempNode == Lizzie.board.getHistory().getCurrentHistoryNode()) {
+    if (mouseOverTemp != null && mouseOverTempNode == Lizzie.board.getHistory().getMainEnd()) {
       boolean needAddback = false;
       Optional<int[]> coords = Board.asCoordinates(mouseOverTemp.coordinate);
       if (coords.isPresent()) {
@@ -934,7 +932,7 @@ public class FloatBoardRenderer {
 
   private void drawMoveRankMark(Graphics2D g) {
     g.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
-    BoardHistoryNode node = Lizzie.board.getHistory().getCurrentHistoryNode();
+    BoardHistoryNode node = Lizzie.board.getHistory().getMainEnd();
     int limit = Lizzie.config.moveRankMarkLastMove;
     boolean shouldLimit = limit > 0;
     int[] moveNumberList = node.getData().moveNumberList;
@@ -959,7 +957,7 @@ public class FloatBoardRenderer {
                 : node.getData().moveMNNumber > -1
                     ? node.getData().moveMNNumber
                     : node.getData().moveNumber;
-        if (node == Lizzie.board.getHistory().getCurrentHistoryNode()) {
+        if (node == Lizzie.board.getHistory().getMainEnd()) {
           int markX = x + scaledMarginWidth + squareWidth * coords[0];
           int markY = y + scaledMarginHeight + squareHeight * coords[1];
           int playouts = node.getData().getPlayouts();
@@ -1042,9 +1040,7 @@ public class FloatBoardRenderer {
     g.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
     Board board = Lizzie.board;
     Optional<int[]> lastMoveOpt = branchOpt.map(b -> b.data.lastMove).orElse(board.getLastMove());
-    if (Lizzie.config.showMoveAllInBranch
-        && !Lizzie.board.getHistory().getCurrentHistoryNode().isMainTrunk()) {
-    } else if (!branchOpt.isPresent()) {
+    if (!branchOpt.isPresent()) {
       return;
     }
 
@@ -1068,23 +1064,6 @@ public class FloatBoardRenderer {
         int stoneY = y + scaledMarginHeight + squareHeight * j;
         int here = Board.getIndex(i, j);
         // Allow to display only last move number
-        if (Lizzie.config.showMoveAllInBranch
-            && !Lizzie.board.getHistory().getCurrentHistoryNode().isMainTrunk()) {
-        } else {
-          if (!Lizzie.frame.isTrying && !EngineManager.isEngineGame) {
-            if ((Lizzie.config.allowMoveNumber > -1
-                && lastMoveNumber - moveNumberList[here] >= Lizzie.config.allowMoveNumber)) {
-              continue;
-            }
-          }
-          if (EngineManager.isEngineGame) {
-            if ((Lizzie.config.allowMoveNumber > -1
-                && lastMoveNumber - moveNumberList[here]
-                    >= max(Lizzie.config.allowMoveNumber, 1))) {
-              continue;
-            }
-          }
-        }
         Stone stoneHere = branchOpt.map(b -> b.data.stones[here]).orElse(board.getStones()[here]);
         int mvNum = moveNumberList[Board.getIndex(i, j)];
         // don't write the move number if either: the move number is 0, or there will
@@ -1197,7 +1176,10 @@ public class FloatBoardRenderer {
                   squareWidth * 0.8,
                   1);
             }
-            g.setColor(stoneHere.isBlackColor() ? Color.WHITE : Color.BLACK);
+            g.setColor(
+                stoneHere.isBlack() || stoneHere == Stone.WHITE_CAPTURED
+                    ? Color.WHITE
+                    : Color.BLACK);
           }
           String moveNumberString = String.valueOf(mvNum);
           if (Lizzie.config.showMoveNumberFromOne && Lizzie.config.allowMoveNumber > 0) {
@@ -2851,33 +2833,11 @@ public class FloatBoardRenderer {
     return font;
   }
 
-  public void addSuggestionAsBranch() {
-    mouseOveredMove()
-        .ifPresent(
-            m -> {
-              if (m.variation.size() > 0) {
-                if (Lizzie.board.getHistory().getCurrentHistoryNode().numberOfChildren() == 0) {
-                  Stone color =
-                      Lizzie.board.getHistory().isBlacksTurn() ? Stone.BLACK : Stone.WHITE;
-
-                  Lizzie.board.getHistory().pass(color, false, true);
-                  Lizzie.board.getHistory().previous();
-                }
-                for (int i = 0; i < m.variation.size(); i++) {
-                  Stone color =
-                      Lizzie.board.getHistory().isBlacksTurn() ? Stone.BLACK : Stone.WHITE;
-                  Optional<int[]> coordOpt = Board.asCoordinates(m.variation.get(i));
-                  if (!coordOpt.isPresent()
-                      || !Board.isValid(coordOpt.get()[0], coordOpt.get()[1])) {
-                    break;
-                  }
-                  int[] coord = coordOpt.get();
-                  Lizzie.board.getHistory().place(coord[0], coord[1], color, i == 0);
-                }
-                Lizzie.board.getHistory().toBranchTop();
-                Lizzie.frame.reRenderTree();
-                Lizzie.frame.refresh();
-              }
-            });
+  public void refreshVariation() {
+    if (isShowingBranch) {
+      isShowingBranch = false;
+      displayedBranchLength = SHOW_NORMAL_BOARD;
+      Lizzie.frame.refresh();
+    }
   }
 }

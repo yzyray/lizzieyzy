@@ -192,17 +192,16 @@ public class BoardData {
 		}
 	}
 
-	public void tryToSetBestMoves(List<MoveData> moves,String engName,boolean isFromLeelaz) {
-		int plyouts= MoveData.getPlayouts(moves);
+	public void tryToSetBestMoves(List<MoveData> moves,String engName,boolean isFromLeelaz,int totalplayouts) {
 		if(Lizzie.config.enableLizzieCache&&!Lizzie.config.isAutoAna&&!EngineManager.isEngineGame) {
-			if (!(plyouts > playouts ||isChanged||pda!=Lizzie.leelaz.pda)) {
+			if (!(totalplayouts > playouts ||isChanged||pda!=Lizzie.leelaz.pda)) {
 				return;
 			}
 		}
 				// added for change bestmoves when playouts is not increased
-				if(plyouts<playouts)
+				if(totalplayouts<playouts)
 					isChanged=false;
-				setPlayouts(plyouts);
+				setPlayouts(totalplayouts);
 				winrate = moves.get(0).winrate;	
 				if (moves.get(0).isKataData) {					
 					scoreMean = moves.get(0).scoreMean;
@@ -301,16 +300,15 @@ public class BoardData {
 			    }
 	}
 
-	public void tryToSetBestMoves2(List<MoveData> moves,String engName,boolean isFromLeelaz) {
-		int plyouts= MoveData.getPlayouts(moves);
+	public void tryToSetBestMoves2(List<MoveData> moves,String engName,boolean isFromLeelaz,int totalplayouts) {
 		if(Lizzie.config.enableLizzieCache&&!Lizzie.config.isAutoAna) {
-			if(!(plyouts > playouts2 ||isChanged2||pda!=Lizzie.leelaz.pda)) {//||Lizzie.frame.urlSgf
+			if(!(totalplayouts > playouts2 ||isChanged2||pda!=Lizzie.leelaz.pda)) {//||Lizzie.frame.urlSgf
 				return;
 			}
 		}
-				if(plyouts<playouts2)
+				if(totalplayouts<playouts2)
 					isChanged2=false;
-				setPlayouts2(plyouts);
+				setPlayouts2(totalplayouts);
 				winrate2 = moves.get(0).winrate;							
 				if (moves.get(0).isKataData) {					
 					scoreMean2 = moves.get(0).scoreMean;

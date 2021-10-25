@@ -96,7 +96,8 @@ public class LizzieFrame extends JFrame {
     // ",(逗号)或滚轮单击|落最佳一手,如果鼠标指向变化图则落子到变化图结束",
     Lizzie.resourceBundle.getString("LizzieFrame.commands.rightClick"),
     Lizzie.resourceBundle.getString("LizzieFrame.commands.keyA"),
-    Lizzie.resourceBundle.getString("LizzieFrame.commands.wheelAndR"),
+    Lizzie.resourceBundle.getString("LizzieFrame.commands.keyG"),
+    Lizzie.resourceBundle.getString("LizzieFrame.commands.keyR"),
     // "滚轮单击|落子到当前变化图结束",
     // "滚轮长按或R|快速回放鼠标指向的变化图",
     Lizzie.resourceBundle.getString("LizzieFrame.commands.mousePointSub"),
@@ -131,7 +132,7 @@ public class LizzieFrame extends JFrame {
     // Lizzie.resourceBundle.getString("LizzieFrame.commands.keyV"),
     Lizzie.resourceBundle.getString("LizzieFrame.commands.keyW"),
     Lizzie.resourceBundle.getString("LizzieFrame.commands.keyCtrlW"),
-    Lizzie.resourceBundle.getString("LizzieFrame.commands.keyG"),
+    Lizzie.resourceBundle.getString("LizzieFrame.commands.keyShiftG"),
     Lizzie.resourceBundle.getString("LizzieFrame.commands.keyAltZ"),
     Lizzie.resourceBundle.getString("LizzieFrame.commands.keyBracket"),
     Lizzie.resourceBundle.getString("LizzieFrame.commands.keyCtrlT"),
@@ -139,7 +140,6 @@ public class LizzieFrame extends JFrame {
     Lizzie.resourceBundle.getString("LizzieFrame.commands.keyEnd"),
     Lizzie.resourceBundle.getString("LizzieFrame.commands.keyControl"),
     Lizzie.resourceBundle.getString("LizzieFrame.commands.keyDelete"),
-    Lizzie.resourceBundle.getString("LizzieFrame.commands.keyBackspace"),
     Lizzie.resourceBundle.getString("LizzieFrame.commands.keyE"),
   };
   private static final String DEFAULT_TITLE = Lizzie.resourceBundle.getString("LizzieFrame.title");
@@ -476,6 +476,7 @@ public class LizzieFrame extends JFrame {
   public static boolean isKeepForcing = false;
   public static boolean isTempForcing = false;
   public FoxKifuDownload foxKifuDownload;
+  public int noneMaxX, noneMaxY, noneMaxWidth, noneMaxHeight;
 
   /** Creates a window */
   public LizzieFrame() {
@@ -729,71 +730,61 @@ public class LizzieFrame extends JFrame {
     blunderTableColum2Width = 50;
     blunderTableColum3Width = 50;
     boolean persisted = Lizzie.config.persistedUi != null;
-    if (persisted
-        && Lizzie.config.persistedUi.optJSONArray("winrate-graph") != null
-        && Lizzie.config.persistedUi.optJSONArray("winrate-graph").length() == 1) {
-      JSONArray winrateG = Lizzie.config.persistedUi.getJSONArray("winrate-graph");
-      winrateGraph.mode = winrateG.getInt(0);
-    }
-    if (persisted
-        && Lizzie.config.persistedUi.optJSONArray("main-window-position") != null
-        && Lizzie.config.persistedUi.optJSONArray("main-window-position").length() == 17) {
-      JSONArray pos = Lizzie.config.persistedUi.getJSONArray("main-window-position");
-      this.setBounds(pos.getInt(0), pos.getInt(1), pos.getInt(2), pos.getInt(3));
-      Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
-      int width = (int) screensize.getWidth();
-      int height = (int) screensize.getHeight();
-      if (pos.getInt(0) >= width || pos.getInt(1) >= height) this.setLocation(0, 0);
-      this.toolbarHeight = pos.getInt(4);
-      if (toolbarHeight > 26 && !Lizzie.config.isChinese) toolbarHeight = 26;
-      this.bowserX = pos.getInt(5);
-      this.bowserY = pos.getInt(6);
-      this.bowserWidth = pos.getInt(7);
-      this.bowserHeight = pos.getInt(8);
-      this.BoardPositionProportion =
-          Lizzie.config.persistedUi.optInt("board-postion-propotion", this.BoardPositionProportion);
-
-      listTable.getColumnModel().getColumn(0).setPreferredWidth(pos.getInt(9));
-      listTable.getColumnModel().getColumn(2).setPreferredWidth(pos.getInt(10));
-      listTable.getColumnModel().getColumn(3).setPreferredWidth(pos.getInt(11));
-      listTable.getColumnModel().getColumn(4).setPreferredWidth(pos.getInt(12));
-      listTableColum5Width = pos.getInt(13);
-      listTable.getColumnModel().getColumn(5).setPreferredWidth(listTableColum5Width);
-
-      blunderTableColum0Width = pos.getInt(14);
-      blunderTableColum2Width = pos.getInt(15);
-      blunderTableColum3Width = pos.getInt(16);
-
-    } else {
-      setSize(1065, 700);
-      setLocationRelativeTo(null); // Start centered, needs to be called *after* setSize...
-    }
-    if (Lizzie.config.startMaximized && !persisted) {
-      setExtendedState(Frame.MAXIMIZED_BOTH);
-
-    } else if (persisted && Lizzie.config.persistedUi.getBoolean("window-maximized")) {
-      setExtendedState(Frame.MAXIMIZED_BOTH);
-      if (persisted
-          && Lizzie.config.persistedUi.optJSONArray("main-window-position") != null
-          && Lizzie.config.persistedUi.optJSONArray("main-window-position").length() == 13) {
+    boolean hasSetBounds = false;
+    if (persisted) {
+      if (Lizzie.config.persistedUi.optJSONArray("main-window-position") != null
+          && Lizzie.config.persistedUi.optJSONArray("main-window-position").length() == 4) {
         JSONArray pos = Lizzie.config.persistedUi.getJSONArray("main-window-position");
-        this.toolbarHeight = pos.getInt(0);
-        this.bowserX = pos.getInt(1);
-        this.bowserY = pos.getInt(2);
-        this.bowserWidth = pos.getInt(3);
-        this.bowserHeight = pos.getInt(4);
-        listTable.getColumnModel().getColumn(0).setPreferredWidth(pos.getInt(5));
-        listTable.getColumnModel().getColumn(2).setPreferredWidth(pos.getInt(6));
-        listTable.getColumnModel().getColumn(3).setPreferredWidth(pos.getInt(7));
-        listTable.getColumnModel().getColumn(4).setPreferredWidth(pos.getInt(8));
-        listTableColum5Width = pos.getInt(9);
-        listTable.getColumnModel().getColumn(5).setPreferredWidth(listTableColum5Width);
-        blunderTableColum0Width = pos.getInt(10);
-        blunderTableColum2Width = pos.getInt(11);
-        blunderTableColum3Width = pos.getInt(12);
+        this.setBounds(pos.getInt(0), pos.getInt(1), pos.getInt(2), pos.getInt(3));
+        Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
+        int width = (int) screensize.getWidth();
+        int height = (int) screensize.getHeight();
+        if (pos.getInt(0) >= width || pos.getInt(1) >= height) this.setLocation(0, 0);
+        hasSetBounds = true;
+      }
+      if (Lizzie.config.persistedUi.getBoolean("window-maximized"))
+        setExtendedState(Frame.MAXIMIZED_BOTH);
+      if (Lizzie.config.persistedUi.optJSONArray("winrate-graph") != null
+          && Lizzie.config.persistedUi.optJSONArray("winrate-graph").length() == 1) {
+        JSONArray winrateG = Lizzie.config.persistedUi.getJSONArray("winrate-graph");
+        winrateGraph.mode = winrateG.getInt(0);
       }
       this.BoardPositionProportion =
           Lizzie.config.persistedUi.optInt("board-postion-propotion", this.BoardPositionProportion);
+
+      if (Lizzie.config.persistedUi.optJSONArray("main-window-other") != null
+          && Lizzie.config.persistedUi.optJSONArray("main-window-other").length() == 5) {
+        JSONArray value = Lizzie.config.persistedUi.getJSONArray("main-window-other");
+        this.toolbarHeight = value.getInt(0);
+        if (toolbarHeight > 26 && !Lizzie.config.isChinese) toolbarHeight = 26;
+        this.bowserX = value.getInt(1);
+        this.bowserY = value.getInt(2);
+        this.bowserWidth = value.getInt(3);
+        this.bowserHeight = value.getInt(4);
+      }
+
+      if (Lizzie.config.persistedUi.optJSONArray("main-window-list") != null
+          && Lizzie.config.persistedUi.optJSONArray("main-window-list").length() == 5) {
+        JSONArray value = Lizzie.config.persistedUi.getJSONArray("main-window-list");
+        listTable.getColumnModel().getColumn(0).setPreferredWidth(value.getInt(0));
+        listTable.getColumnModel().getColumn(2).setPreferredWidth(value.getInt(1));
+        listTable.getColumnModel().getColumn(3).setPreferredWidth(value.getInt(2));
+        listTable.getColumnModel().getColumn(4).setPreferredWidth(value.getInt(3));
+        listTableColum5Width = value.getInt(4);
+        listTable.getColumnModel().getColumn(5).setPreferredWidth(listTableColum5Width);
+      }
+
+      if (Lizzie.config.persistedUi.optJSONArray("main-window-blunder") != null
+          && Lizzie.config.persistedUi.optJSONArray("main-window-blunder").length() == 3) {
+        JSONArray value = Lizzie.config.persistedUi.getJSONArray("main-window-blunder");
+        blunderTableColum0Width = value.getInt(0);
+        blunderTableColum2Width = value.getInt(1);
+        blunderTableColum3Width = value.getInt(2);
+      }
+    }
+    if (!hasSetBounds) {
+      setSize(1065, 700);
+      setLocationRelativeTo(null); // Start centered, needs to be called *after* setSize...
     }
 
     listTable.addMouseWheelListener(
@@ -9978,6 +9969,12 @@ public class LizzieFrame extends JFrame {
             if (toolbar.showDetail) toolbar.setDetailIcon();
             toolbar.reSetButtonLocation();
             if (tempGamePanelAll.isVisible()) showTempGamePanel();
+            if (Lizzie.frame.getExtendedState() != Frame.MAXIMIZED_BOTH) {
+              noneMaxX = Lizzie.frame.getX();
+              noneMaxY = Lizzie.frame.getY();
+              noneMaxWidth = Lizzie.frame.getWidth();
+              noneMaxHeight = Lizzie.frame.getHeight();
+            }
           }
         });
   }
@@ -12401,5 +12398,11 @@ public class LizzieFrame extends JFrame {
     // TODO Auto-generated method stub
     foxKifuDownload = new FoxKifuDownload();
     foxKifuDownload.setVisible(true);
+  }
+
+  public void tryToRefreshVariation() {
+    // TODO Auto-generated method stub
+    boardRenderer.refreshVariation();
+    if (Lizzie.config.isDoubleEngineMode()) boardRenderer2.refreshVariation();
   }
 }

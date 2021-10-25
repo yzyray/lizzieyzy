@@ -142,7 +142,7 @@ public class SetEstimateParam extends JDialog {
 
     JLabel lblZenEngineCommand =
         new JLabel(resourceBundle.getString("SetEstimateParam.lblZenEngineCommand")); // $NON-NLS-1$
-    lblZenEngineCommand.setBounds(10, 59, 178, 15);
+    lblZenEngineCommand.setBounds(10, 59, 878, 15);
     getContentPane().add(lblZenEngineCommand);
 
     textAreaZen = new JFontTextArea();

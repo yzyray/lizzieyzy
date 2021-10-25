@@ -38,7 +38,7 @@ public class GameInfoDialog extends JDialog {
   private JFontTextField textFieldBlack;
   private JFontTextField textFieldWhite;
   private JFontTextField textFieldKomi;
-  private JFontFormattedTextField textFieldHandicap;
+  private JFontTextField textFieldHandicap;
 
   private GameInfo gameInfo;
 
@@ -86,7 +86,8 @@ public class GameInfoDialog extends JDialog {
     // read-only
     textFieldKomi = new JFontTextField();
     textFieldKomi.setDocument(new KomiDocument(true));
-    textFieldHandicap = new JFontFormattedTextField(FORMAT_HANDICAP);
+    textFieldHandicap = new JFontTextField();
+    textFieldHandicap.setDocument(new IntDocument());
     textFieldKomi.setEditable(true);
     textFieldHandicap.setEditable(false);
 

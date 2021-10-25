@@ -58,6 +58,7 @@ public class FoxKifuDownload extends JFrame {
   JLabel lblTab;
   private ArrayList<String[]> rows;
   private boolean isSecondTimeReqEmpty = false;
+  private boolean isRequestEmpty = false;
 
   public FoxKifuDownload() {
     Lizzie.setFrameSize(this, 950, 635);
@@ -170,7 +171,7 @@ public class FoxKifuDownload extends JFrame {
               model.addRow(rows.get(i));
             }
             setLblTab(1);
-            // lblTab.setText(curTabNumber + "/" + tabNumber);
+            isSecondTimeReqEmpty = false;
           }
         });
     buttonPane.add(btnFirst);
@@ -191,7 +192,7 @@ public class FoxKifuDownload extends JFrame {
               model.addRow(rows.get(i));
             }
             setLblTab(curTabNumber);
-            // lblTab.setText(curTabNumber + "/" + tabNumber);
+            isSecondTimeReqEmpty = false;
           }
         });
     buttonPane.add(btnPrevious);
@@ -216,7 +217,6 @@ public class FoxKifuDownload extends JFrame {
             }
             setLblTab(curTabNumber);
             maybeGetNextPage();
-            // lblTab.setText(curTabNumber + "/" + tabNumber);
           }
         });
     buttonPane.add(btnNext);
@@ -241,12 +241,12 @@ public class FoxKifuDownload extends JFrame {
             }
             setLblTab(curTabNumber);
             maybeGetNextPage();
-            // lblTab.setText(curTabNumber + "/" + tabNumber);
           }
         });
     buttonPane.add(btnLast);
 
     lblTab = new JFontLabel("1/1");
+    lblTab.setPreferredSize(new Dimension(Config.menuHeight * 3, Config.menuHeight));
     buttonPane.add(lblTab);
   }
 
@@ -259,8 +259,13 @@ public class FoxKifuDownload extends JFrame {
         this.foxReq.sendCommand(
             "uid " + this.myUid + " " + foxKifuInfos.get(foxKifuInfos.size() - 1).chessid);
       } else {
-        if (isSecondTimeReqEmpty)
-          Utils.showMsg(Lizzie.resourceBundle.getString("FoxKifuDownload.noMoreKifu"), this);
+        if (curTabNumber == tabNumber) {
+          if (isSecondTimeReqEmpty)
+            Utils.showMsg(Lizzie.resourceBundle.getString("FoxKifuDownload.noMoreKifu"), this);
+          if (isRequestEmpty) {
+            isSecondTimeReqEmpty = true;
+          }
+        }
       }
     }
   }
@@ -277,6 +282,7 @@ public class FoxKifuDownload extends JFrame {
     }
     isSearching = true;
     isSecondTimeReqEmpty = false;
+    isRequestEmpty = false;
     foxReq = new GetFoxRequest(this);
     foxKifuInfos = new ArrayList<KifuInfo>();
     lastCode = "";
@@ -299,6 +305,7 @@ public class FoxKifuDownload extends JFrame {
           if (oldRows > 0) {
             isComplete = true;
             isSecondTimeReqEmpty = true;
+            isRequestEmpty = true;
           } else Utils.showMsg(Lizzie.resourceBundle.getString("FoxKifuDownload.noKifu"), this);
         }
         isComplete = jsonArray.length() < 100;

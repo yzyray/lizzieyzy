@@ -1464,55 +1464,46 @@ public class BoardRenderer {
           if (branch.data.moveNumberList[index] > maxBranchMoves(false)) continue;
           int stoneX = scaledMarginWidth + squareWidth * i;
           int stoneY = scaledMarginHeight + squareHeight * j;
-          if (stone != Stone.BLACK_CAPTURED && stone != Stone.WHITE_CAPTURED)
-            drawStoneSimple(g, gShadow, stoneX, stoneY, stone);
+          boolean isMouseOver = false;
           if (isIndependBoard) {
             if (i == Lizzie.frame.independentMainBoard.mouseOverCoordinate[0]
                 && j == Lizzie.frame.independentMainBoard.mouseOverCoordinate[1])
-              isMouseOverStoneBlack = stone.isBlack();
+              isMouseOver = true;
           } else {
             if (i == Lizzie.frame.mouseOverCoordinate[0]
-                && j == Lizzie.frame.mouseOverCoordinate[1])
-              isMouseOverStoneBlack = stone.isBlack();
+                && j == Lizzie.frame.mouseOverCoordinate[1]) isMouseOver = true;
           }
+          boolean isCaptured = (stone == Stone.BLACK_CAPTURED || stone == Stone.WHITE_CAPTURED);
+          if (isCaptured) drawCapturedStone(g, stoneX, stoneY, stone, isMouseOver);
+          else drawStoneSimple(g, gShadow, stoneX, stoneY, stone);
+          if (isMouseOver) isMouseOverStoneBlack = stone.isBlackColor();
         }
       }
     } else {
-      final CountDownLatch latch = new CountDownLatch(Board.boardWidth);
       for (int i = 0; i < Board.boardWidth; i++) {
-        final int threadI = i;
-        new Thread() {
-          public void run() {
-            for (int j = 0; j < Board.boardHeight; j++) {
-              // Display latest stone for ghost dead stone
-              int index = Board.getIndex(threadI, j);
-              Stone stone = branch.data.stones[index];
-              if (!Lizzie.config.removeDeadChainInVariation && !shouldShowPreviousBestMoves())
-                if (Lizzie.board.getData().stones[index] != Stone.EMPTY) continue;
-              if (branch.data.moveNumberList[index] > maxBranchMoves(false)) continue;
-              int stoneX = scaledMarginWidth + squareWidth * threadI;
-              int stoneY = scaledMarginHeight + squareHeight * j;
-              if (stone != Stone.BLACK_CAPTURED && stone != Stone.WHITE_CAPTURED)
-                drawStone(g, gShadow, stoneX, stoneY, stone);
-              if (isIndependBoard) {
-                if (threadI == Lizzie.frame.independentMainBoard.mouseOverCoordinate[0]
-                    && j == Lizzie.frame.independentMainBoard.mouseOverCoordinate[1])
-                  isMouseOverStoneBlack = stone.isBlack();
-              } else {
-                if (threadI == Lizzie.frame.mouseOverCoordinate[0]
-                    && j == Lizzie.frame.mouseOverCoordinate[1])
-                  isMouseOverStoneBlack = stone.isBlack();
-              }
-            }
-            latch.countDown();
+        for (int j = 0; j < Board.boardHeight; j++) {
+          // Display latest stone for ghost dead stone
+          int index = Board.getIndex(i, j);
+          Stone stone = branch.data.stones[index];
+          if (!Lizzie.config.removeDeadChainInVariation && !shouldShowPreviousBestMoves())
+            if (Lizzie.board.getData().stones[index] != Stone.EMPTY) continue;
+          if (branch.data.moveNumberList[index] > maxBranchMoves(false)) continue;
+          int stoneX = scaledMarginWidth + squareWidth * i;
+          int stoneY = scaledMarginHeight + squareHeight * j;
+          boolean isCaptured = (stone == Stone.BLACK_CAPTURED || stone == Stone.WHITE_CAPTURED);
+          boolean isMouseOver = false;
+          if (isIndependBoard) {
+            if (i == Lizzie.frame.independentMainBoard.mouseOverCoordinate[0]
+                && j == Lizzie.frame.independentMainBoard.mouseOverCoordinate[1])
+              isMouseOver = true;
+          } else {
+            if (i == Lizzie.frame.mouseOverCoordinate[0]
+                && j == Lizzie.frame.mouseOverCoordinate[1]) isMouseOver = true;
           }
-        }.start();
-      }
-      try {
-        latch.await();
-      } catch (InterruptedException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
+          if (isCaptured) drawCapturedStone(g, stoneX, stoneY, stone, isMouseOver);
+          else drawStone(g, gShadow, stoneX, stoneY, stone);
+          if (isMouseOver) isMouseOverStoneBlack = stone.isBlackColor();
+        }
       }
     }
     g.dispose();
@@ -2838,12 +2829,12 @@ public class BoardRenderer {
     nextMoveY = -2;
     isMouseOverNextBlunder = false;
     drawUnimportantSuggCount = 101;
-    hasDrawBackground = new boolean[Board.boardHeight * Board.boardWidth];
     clearBranch();
   }
 
   private void drawLeelazSuggestionsUnimportant() {
     BufferedImage newUnImportantSugg = new BufferedImage(boardWidth, boardHeight, TYPE_INT_ARGB);
+    hasDrawBackground = new boolean[Board.boardHeight * Board.boardWidth];
     Graphics2D g = newUnImportantSugg.createGraphics();
     g.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
     int minAlpha = 32;
@@ -2882,7 +2873,6 @@ public class BoardRenderer {
                   && move.order + 1 > Lizzie.config.limitMaxSuggestion
                   && !move.lastTimeUnlimited;
           if (!outOfOrder && move.order < 20) {
-            hasDrawBackground[Board.getIndex(coords[0], coords[1])] = false;
             continue;
           }
           if (Lizzie.frame.priorityMoveCoords.size() > 0) {
@@ -2891,7 +2881,6 @@ public class BoardRenderer {
               if (coords2.equals(move.coordinate)) needSkip = true;
             }
             if (needSkip) {
-              hasDrawBackground[Board.getIndex(coords[0], coords[1])] = false;
               continue;
             }
           }
@@ -2914,13 +2903,11 @@ public class BoardRenderer {
                       .lastMove
                       .get();
               if (nextMove[0] == coords[0] && nextMove[1] == coords[1]) {
-                hasDrawBackground[Board.getIndex(coords[0], coords[1])] = false;
                 continue;
               }
             }
-          hasDrawBackground[Board.getIndex(coords[0], coords[1])] = true;
           if (!Lizzie.config.showNoSuggCircle && outOfOrder && !move.lastTimeUnlimited) continue;
-
+          hasDrawBackground[Board.getIndex(coords[0], coords[1])] = true;
           float hue;
           if (isBestMove) {
             hue = cyanHue;
@@ -3610,6 +3597,14 @@ public class BoardRenderer {
           size,
           null);
     }
+  }
+
+  private void drawCapturedStone(
+      Graphics2D g, int centerX, int centerY, Stone stone, boolean isMouseOver) {
+    if (stone == Stone.BLACK_CAPTURED) g.setColor(new Color(0, 0, 0, isMouseOver ? 120 : 70));
+    else g.setColor(new Color(255, 255, 255, isMouseOver ? 150 : 95));
+    g.fillOval(
+        centerX - stoneRadius, centerY - stoneRadius, 2 * stoneRadius + 1, 2 * stoneRadius + 1);
   }
 
   private void drawStoneSimple(
@@ -4334,6 +4329,14 @@ public class BoardRenderer {
 
   public void clearScore() {
     scoreImage = new BufferedImage(boardWidth, boardHeight, TYPE_INT_ARGB);
+  }
+
+  public void refreshVariation() {
+    if (isShowingBranch) {
+      isShowingBranch = false;
+      displayedBranchLength = SHOW_NORMAL_BOARD;
+      Lizzie.frame.refresh();
+    }
   }
 
   //  private Color reverseColor(Color color) {

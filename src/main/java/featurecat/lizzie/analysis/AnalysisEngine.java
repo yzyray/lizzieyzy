@@ -250,24 +250,28 @@ public class AnalysisEngine {
       int moveNumber = startAnalyzeNumber;
       int times = 0;
       while (times < resultMap.size() && startAnalyzeNode.next().isPresent()) {
+        ArrayList<MoveData> moves = resultMap.get(moveNumber);
         startAnalyzeNode
             .getData()
             .tryToSetBestMoves(
-                resultMap.get(moveNumber),
+                moves,
                 resourceBundle.getString("AnalysisEngine.flashAnalyze"),
-                false);
+                false,
+                MoveData.getPlayouts(moves));
         times++;
         startAnalyzeNode.getData().comment = SGFParser.formatComment(startAnalyzeNode);
         moveNumber++;
         startAnalyzeNode = startAnalyzeNode.next().get();
       }
       if (times < resultMap.size()) {
+        ArrayList<MoveData> moves = resultMap.get(moveNumber);
         startAnalyzeNode
             .getData()
             .tryToSetBestMoves(
-                resultMap.get(moveNumber),
+                moves,
                 resourceBundle.getString("AnalysisEngine.flashAnalyze"),
-                false);
+                false,
+                MoveData.getPlayouts(moves));
         startAnalyzeNode.getData().comment = SGFParser.formatComment(startAnalyzeNode);
       }
       Lizzie.board.setMovelistAll();

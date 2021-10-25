@@ -54,6 +54,7 @@ public class ReadBoard {
   private boolean javaReadBoard = false;
   private String javaReadBoardName = "readboard-1.5.4-shaded.jar";
   private boolean waitSocket = true;
+  public boolean lastMovePlayByLizzie = false;
 
   public ReadBoard(boolean usePipe, boolean isJavaReadBoard) throws Exception {
     this.usePipe = usePipe;
@@ -723,11 +724,13 @@ public class ReadBoard {
     // TODO Auto-generated method stub
     Stone stone = stones[Board.getIndex(x, y)];
     if (m == 0 && stone != Stone.EMPTY) {
-      if (Lizzie.frame.bothSync) {
+      if (Lizzie.frame.bothSync && lastMovePlayByLizzie) {
         BoardHistoryNode curNode = Lizzie.board.getHistory().getMainEnd();
-        if (curNode.previous().isPresent()) {
-          if (curNode.previous().get().getData().stones[Board.getIndex(x, y)] == Stone.EMPTY) ;
-          return false;
+        if (curNode.getData().lastMove.isPresent()) {
+          int[] lastCoords = curNode.getData().lastMove.get();
+          if (lastCoords[0] == x && lastCoords[1] == y) {
+            return false;
+          }
         }
       }
       return true;
@@ -767,7 +770,10 @@ public class ReadBoard {
   }
 
   public void sendCommand(String command) {
-    if (command.startsWith("place") && Lizzie.frame.isPlayingAgainstLeelaz) needGenmove = true;
+    if (command.startsWith("place")) {
+      lastMovePlayByLizzie = true;
+      if (Lizzie.frame.isPlayingAgainstLeelaz) needGenmove = true;
+    }
     if (usePipe) {
       sendCommandTo(command);
     } else if (readBoardStream != null) readBoardStream.sendCommand(command);

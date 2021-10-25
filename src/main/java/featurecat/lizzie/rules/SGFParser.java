@@ -3165,7 +3165,10 @@ public class SGFParser {
         if (k < 1) break;
       }
     }
-    Lizzie.board.getData().tryToSetBestMoves(bestMoves, Lizzie.board.getData().engineName, false);
+    Lizzie.board
+        .getData()
+        .tryToSetBestMoves(
+            bestMoves, Lizzie.board.getData().engineName, false, MoveData.getPlayouts(bestMoves));
     return bestMoves;
   }
 
@@ -3181,7 +3184,10 @@ public class SGFParser {
         // if (k < 1) break;
       }
     }
-    Lizzie.board.getData().tryToSetBestMoves2(bestMoves, Lizzie.board.getData().engineName2, false);
+    Lizzie.board
+        .getData()
+        .tryToSetBestMoves2(
+            bestMoves, Lizzie.board.getData().engineName2, false, MoveData.getPlayouts(bestMoves));
     return bestMoves;
   }
 

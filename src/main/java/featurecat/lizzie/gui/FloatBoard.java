@@ -298,6 +298,9 @@ public class FloatBoard extends JDialog {
               }
               refreshByLis();
             }
+            if (e.getKeyCode() == KeyEvent.VK_G) {
+              tryToRefreshVariation();
+            }
           }
         });
     addMouseListener(
@@ -400,6 +403,10 @@ public class FloatBoard extends JDialog {
             if (needRepaint) refreshByLis();
           }
         });
+  }
+
+  private void tryToRefreshVariation() {
+    boardRenderer.refreshVariation();
   }
 
   protected void reSetPos() {

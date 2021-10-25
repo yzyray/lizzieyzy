@@ -19,7 +19,6 @@ import java.awt.Toolkit;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Optional;
@@ -146,9 +145,9 @@ public class Menu extends JMenuBar {
   JFontLabel lblGfPDA;
   public JFontTextField txtGfPDA;
 
-  private JFontFormattedTextField txtPlayOutsLimit;
+  private JFontTextField txtPlayOutsLimit;
   private JFontCheckBox chkPlayOut;
-  private JFontFormattedTextField txtTimeLimit;
+  private JFontTextField txtTimeLimit;
   private JFontCheckBox chkTime;
   private JFontMenu openRecent;
   private boolean ShouldIgnoreDtChange;
@@ -5599,9 +5598,9 @@ public class Menu extends JMenuBar {
     //    komiPanel.add(saveLoad);
     komiPanel.add(lblKomiSpinner);
     komiPanel.add(txtKomi);
-    DecimalFormat format = new DecimalFormat("0");
 
-    txtTimeLimit = new JFontFormattedTextField(format);
+    txtTimeLimit = new JFontTextField();
+    txtTimeLimit.setDocument(new IntDocument());
     chkTime = new JFontCheckBox(resourceBundle.getString("Menu.chkTime"));
     if (!chkTime.isPreferredSizeSet())
       chkTime.setPreferredSize(
@@ -5647,7 +5646,8 @@ public class Menu extends JMenuBar {
           }
         });
 
-    txtPlayOutsLimit = new JFontFormattedTextField(format);
+    txtPlayOutsLimit = new JFontTextField();
+    txtPlayOutsLimit.setDocument(new IntDocument());
     chkPlayOut = new JFontCheckBox(resourceBundle.getString("Menu.chkPlayOut"));
     if (!chkPlayOut.isPreferredSizeSet())
       chkPlayOut.setPreferredSize(

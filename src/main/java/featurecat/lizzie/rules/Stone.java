@@ -75,7 +75,7 @@ public enum Stone {
   }
 
   public boolean isBlackColor() {
-    return this == BLACK || this == BLACK_RECURSED || this == Stone.WHITE_CAPTURED;
+    return this == BLACK || this == BLACK_RECURSED || this == Stone.BLACK_CAPTURED;
   }
 
   public boolean needDrawBlack() {

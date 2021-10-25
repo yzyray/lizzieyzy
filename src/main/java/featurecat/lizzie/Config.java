@@ -1995,65 +1995,65 @@ public class Config {
     boolean windowIsMaximized = Lizzie.frame.getExtendedState() == JFrame.MAXIMIZED_BOTH;
     persistedUi.put("gtp-console-opened", Lizzie.gtpConsole.isVisible());
     JSONArray mainPos = new JSONArray();
+    JSONArray mainOhter = new JSONArray();
+    JSONArray mainList = new JSONArray();
+    JSONArray mainBlunder = new JSONArray();
+    int list1 = Lizzie.frame.listTable.getColumnModel().getColumn(0).getWidth();
+    int list2 = Lizzie.frame.listTable.getColumnModel().getColumn(2).getWidth();
+    int list3 = Lizzie.frame.listTable.getColumnModel().getColumn(3).getWidth();
+    int list4 = Lizzie.frame.listTable.getColumnModel().getColumn(4).getWidth();
+    int length = Lizzie.frame.listTable.getColumnModel().getColumn(5).getWidth();
+    if (length > 0) {
+      mainList.put(list1);
+      mainList.put(list2);
+      mainList.put(list3);
+      mainList.put(list4);
+      mainList.put(length);
+    }
+    int blunder1 = Lizzie.frame.blunderTabelBlack.getColumnModel().getColumn(0).getWidth();
+    int blunder2 = Lizzie.frame.blunderTabelBlack.getColumnModel().getColumn(2).getWidth();
+    int length2 = Lizzie.frame.blunderTabelBlack.getColumnModel().getColumn(3).getWidth();
+    if (length2 > 0) {
+      mainBlunder.put(blunder1);
+      mainBlunder.put(blunder2);
+      mainBlunder.put(length2);
+    }
+
     if (!windowIsMaximized) {
       mainPos.put(Lizzie.frame.getX());
       mainPos.put(Lizzie.frame.getY());
       mainPos.put(Lizzie.frame.getWidth());
       mainPos.put(Lizzie.frame.getHeight());
-      mainPos.put(Lizzie.frame.toolbarHeight);
-      mainPos.put(Lizzie.frame.bowserX);
-      mainPos.put(Lizzie.frame.bowserY);
-      mainPos.put(Lizzie.frame.bowserWidth);
-      mainPos.put(Lizzie.frame.bowserHeight);
-
-      int list1 = Lizzie.frame.listTable.getColumnModel().getColumn(0).getWidth();
-      int list2 = Lizzie.frame.listTable.getColumnModel().getColumn(2).getWidth();
-      int list3 = Lizzie.frame.listTable.getColumnModel().getColumn(3).getWidth();
-      int list4 = Lizzie.frame.listTable.getColumnModel().getColumn(4).getWidth();
-      int length = Lizzie.frame.listTable.getColumnModel().getColumn(5).getWidth();
-      if (length > 0) {
-        mainPos.put(list1);
-        mainPos.put(list2);
-        mainPos.put(list3);
-        mainPos.put(list4);
-        mainPos.put(length);
-      }
-      int blunder1 = Lizzie.frame.blunderTabelBlack.getColumnModel().getColumn(0).getWidth();
-      int blunder2 = Lizzie.frame.blunderTabelBlack.getColumnModel().getColumn(2).getWidth();
-      int length2 = Lizzie.frame.blunderTabelBlack.getColumnModel().getColumn(3).getWidth();
-      if (length2 > 0) {
-        mainPos.put(blunder1);
-        mainPos.put(blunder2);
-        mainPos.put(length2);
-      }
     } else {
-      mainPos.put(Lizzie.frame.toolbarHeight);
-      mainPos.put(Lizzie.frame.bowserX);
-      mainPos.put(Lizzie.frame.bowserY);
-      mainPos.put(Lizzie.frame.bowserWidth);
-      mainPos.put(Lizzie.frame.bowserHeight);
-      int list1 = Lizzie.frame.listTable.getColumnModel().getColumn(0).getWidth();
-      int list2 = Lizzie.frame.listTable.getColumnModel().getColumn(2).getWidth();
-      int list3 = Lizzie.frame.listTable.getColumnModel().getColumn(3).getWidth();
-      int list4 = Lizzie.frame.listTable.getColumnModel().getColumn(4).getWidth();
-      int length = Lizzie.frame.listTable.getColumnModel().getColumn(5).getWidth();
-      if (length > 0) {
-        mainPos.put(list1);
-        mainPos.put(list2);
-        mainPos.put(list3);
-        mainPos.put(list4);
-        mainPos.put(length);
-      }
-      int blunder1 = Lizzie.frame.blunderTabelBlack.getColumnModel().getColumn(0).getWidth();
-      int blunder2 = Lizzie.frame.blunderTabelBlack.getColumnModel().getColumn(2).getWidth();
-      int length2 = Lizzie.frame.blunderTabelBlack.getColumnModel().getColumn(3).getWidth();
-      if (length2 > 0) {
-        mainPos.put(blunder1);
-        mainPos.put(blunder2);
-        mainPos.put(length2);
+      if (Lizzie.frame.noneMaxX > 0
+          && Lizzie.frame.noneMaxY > 0
+          && Lizzie.frame.noneMaxWidth > 0
+          && Lizzie.frame.noneMaxHeight > 0) {
+        mainPos.put(Lizzie.frame.noneMaxX);
+        mainPos.put(Lizzie.frame.noneMaxY);
+        mainPos.put(Lizzie.frame.noneMaxWidth);
+        mainPos.put(Lizzie.frame.noneMaxHeight);
+      } else if (persistedUi.optJSONArray("main-window-position") != null
+          && persistedUi.optJSONArray("main-window-position").length() == 4) {
+        JSONArray pos = persistedUi.getJSONArray("main-window-position");
+        mainPos.put(pos.get(0));
+        mainPos.put(pos.get(1));
+        mainPos.put(pos.get(2));
+        mainPos.put(pos.get(3));
       }
     }
+
+    mainOhter.put(Lizzie.frame.toolbarHeight);
+    mainOhter.put(Lizzie.frame.bowserX);
+    mainOhter.put(Lizzie.frame.bowserY);
+    mainOhter.put(Lizzie.frame.bowserWidth);
+    mainOhter.put(Lizzie.frame.bowserHeight);
+
     persistedUi.put("main-window-position", mainPos);
+    persistedUi.put("main-window-other", mainOhter);
+    persistedUi.put("main-window-list", mainList);
+    persistedUi.put("main-window-blunder", mainBlunder);
+
     JSONArray gtpPos = new JSONArray();
     gtpPos.put(Lizzie.gtpConsole.getX());
     gtpPos.put(Lizzie.gtpConsole.getY());

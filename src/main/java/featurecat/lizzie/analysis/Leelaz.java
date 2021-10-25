@@ -215,6 +215,7 @@ public class Leelaz {
   public List<String> commandLists = new ArrayList<String>();
   private boolean startGetCommandList = false;
   private boolean endGetCommandList = false;
+  private int currentTotalPlayouts;
   // private int refreshNumber=0;
   // private boolean isEstimating=true;
   /**
@@ -225,6 +226,7 @@ public class Leelaz {
   public Leelaz(String engineCommand) throws IOException, JSONException {
     // board = new Board();
     bestMoves = new ArrayList<>();
+    currentTotalPlayouts = 0;
     bestMovesPrevious = new ArrayList<>();
     // bestMovesTemp = new ArrayList<>();
     //	listeners = new CopyOnWriteArrayList<>();
@@ -318,6 +320,7 @@ public class Leelaz {
     currentEnginename = getEngineName(index);
     isDownWithError = false;
     if (this.useJavaSSH) {
+      process = null;
       this.javaSSH = new SSHController(this, this.ip, this.port);
       boolean loginStatus = false;
       if (this.useKeyGen) {
@@ -557,9 +560,11 @@ public class Leelaz {
         bestMoves.add(MoveData.fromInfoSai(var));
       }
     }
-
+    currentTotalPlayouts = MoveData.getPlayouts(bestMoves);
     if (Lizzie.config.isDoubleEngineMode() && Lizzie.leelaz2 != null && this == Lizzie.leelaz2)
-      Lizzie.board.getData().tryToSetBestMoves2(bestMoves, bestMovesEnginename, true);
+      Lizzie.board
+          .getData()
+          .tryToSetBestMoves2(bestMoves, bestMovesEnginename, true, currentTotalPlayouts);
     else {
       if (EngineManager.isEngineGame && Lizzie.config.enginePkPonder) {
         if ((Lizzie.board.getHistory().isBlacksTurn()
@@ -570,9 +575,14 @@ public class Leelaz {
                 && this
                     == Lizzie.engineManager.engineList.get(
                         EngineManager.engineGameInfo.whiteEngineIndex)) {
-          Lizzie.board.getData().tryToSetBestMoves(bestMoves, bestMovesEnginename, true);
+          Lizzie.board
+              .getData()
+              .tryToSetBestMoves(bestMoves, bestMovesEnginename, true, currentTotalPlayouts);
         }
-      } else Lizzie.board.getData().tryToSetBestMoves(bestMoves, bestMovesEnginename, true);
+      } else
+        Lizzie.board
+            .getData()
+            .tryToSetBestMoves(bestMoves, bestMovesEnginename, true, currentTotalPlayouts);
     }
     return bestMoves;
   }
@@ -590,8 +600,11 @@ public class Leelaz {
         //		break;
       }
     }
+    currentTotalPlayouts = MoveData.getPlayouts(bestMoves);
     if (Lizzie.config.isDoubleEngineMode() && Lizzie.leelaz2 != null && this == Lizzie.leelaz2)
-      Lizzie.board.getData().tryToSetBestMoves2(bestMoves, bestMovesEnginename, true);
+      Lizzie.board
+          .getData()
+          .tryToSetBestMoves2(bestMoves, bestMovesEnginename, true, currentTotalPlayouts);
     else {
       if (EngineManager.isEngineGame && Lizzie.config.enginePkPonder) {
         if ((Lizzie.board.getHistory().isBlacksTurn()
@@ -603,9 +616,14 @@ public class Leelaz {
                     == Lizzie.engineManager.engineList.get(
                         EngineManager.engineGameInfo.whiteEngineIndex)) {
           // if(!isModifying)
-          Lizzie.board.getData().tryToSetBestMoves(bestMoves, bestMovesEnginename, true);
+          Lizzie.board
+              .getData()
+              .tryToSetBestMoves(bestMoves, bestMovesEnginename, true, currentTotalPlayouts);
         }
-      } else Lizzie.board.getData().tryToSetBestMoves(bestMoves, bestMovesEnginename, true);
+      } else
+        Lizzie.board
+            .getData()
+            .tryToSetBestMoves(bestMoves, bestMovesEnginename, true, currentTotalPlayouts);
     }
     return bestMoves;
   }
@@ -623,8 +641,11 @@ public class Leelaz {
         //			break;
       }
     }
+    currentTotalPlayouts = MoveData.getPlayouts(bestMoves);
     if (Lizzie.config.isDoubleEngineMode() && Lizzie.leelaz2 != null && this == Lizzie.leelaz2)
-      Lizzie.board.getData().tryToSetBestMoves2(bestMoves, bestMovesEnginename, true);
+      Lizzie.board
+          .getData()
+          .tryToSetBestMoves2(bestMoves, bestMovesEnginename, true, currentTotalPlayouts);
     else {
       if (EngineManager.isEngineGame && Lizzie.config.enginePkPonder) {
         if ((Lizzie.board.getHistory().isBlacksTurn()
@@ -636,9 +657,14 @@ public class Leelaz {
                     == Lizzie.engineManager.engineList.get(
                         EngineManager.engineGameInfo.whiteEngineIndex)) {
           //	if(!isModifying)
-          Lizzie.board.getData().tryToSetBestMoves(bestMoves, bestMovesEnginename, true);
+          Lizzie.board
+              .getData()
+              .tryToSetBestMoves(bestMoves, bestMovesEnginename, true, currentTotalPlayouts);
         }
-      } else Lizzie.board.getData().tryToSetBestMoves(bestMoves, bestMovesEnginename, true);
+      } else
+        Lizzie.board
+            .getData()
+            .tryToSetBestMoves(bestMoves, bestMovesEnginename, true, currentTotalPlayouts);
     }
     return bestMoves;
   }
@@ -754,7 +780,13 @@ public class Leelaz {
         }
         if (this.isZen) {
           if (bestMoves != null && !bestMoves.isEmpty()) {
-            Lizzie.board.getData().tryToSetBestMoves(bestMoves, bestMovesEnginename, true);
+            Lizzie.board
+                .getData()
+                .tryToSetBestMoves(
+                    bestMoves,
+                    bestMovesEnginename,
+                    true,
+                    currentTotalPlayouts = MoveData.getPlayouts(bestMoves));
             bestMoves = new ArrayList<>();
           }
         }
@@ -1102,7 +1134,10 @@ public class Leelaz {
           }
           this.canCheckAlive = true;
         } else {
-          if (Lizzie.config.isAutoAna) bestMoves = new ArrayList<>();
+          if (Lizzie.config.isAutoAna) {
+            bestMoves = new ArrayList<>();
+            currentTotalPlayouts = 0;
+          }
           if (Lizzie.config.isAutoAna)
             Lizzie.board.getHistory().getCurrentHistoryNode().getData().tryToClearBestMoves();
         }
@@ -1294,6 +1329,7 @@ public class Leelaz {
         }
         if (isSettingHandicap) {
           bestMoves = new ArrayList<>();
+          currentTotalPlayouts = 0;
           Lizzie.board.hasStartStone = true;
           for (int i = 1; i < params.length; i++) {
             Optional<int[]> coordsOpt = Board.asCoordinates(params[i]);
@@ -1570,7 +1606,7 @@ public class Leelaz {
           }
         }
         if (playouts > 0) {
-          if (MoveData.getPlayouts(bestMoves) >= playouts) {
+          if (currentTotalPlayouts >= playouts) {
             playNow = true;
           }
         }
@@ -1630,6 +1666,7 @@ public class Leelaz {
     autoAnalysed = true;
     Lizzie.board.getHistory().getCurrentHistoryNode().analyzed = true;
     bestMoves = new ArrayList<>();
+    currentTotalPlayouts = 0;
     if (isLastMove) {
       LizzieFrame.toolbar.stopAutoAna(true, false);
     } else {
@@ -1652,7 +1689,7 @@ public class Leelaz {
       return;
     }
     if (Lizzie.config.autoAnaDiffPlayouts > 0) {
-      if (MoveData.getPlayouts(bestMoves) >= Lizzie.config.autoAnaDiffPlayouts) {
+      if (currentTotalPlayouts >= Lizzie.config.autoAnaDiffPlayouts) {
         Lizzie.board.getHistory().getCurrentHistoryNode().diffAnalyzed = true;
         return;
       }
@@ -1690,7 +1727,7 @@ public class Leelaz {
       return;
     }
     if (Lizzie.config.autoAnaPlayouts > 0) {
-      if (MoveData.getPlayouts(bestMoves) >= Lizzie.config.autoAnaPlayouts) {
+      if (currentTotalPlayouts >= Lizzie.config.autoAnaPlayouts) {
         Lizzie.board.getHistory().getCurrentHistoryNode().analyzed = true;
         autoAnalysed = true;
         return;
@@ -1735,7 +1772,7 @@ public class Leelaz {
       return;
     }
     if (Lizzie.config.autoAnaPlayouts > 0) {
-      if (MoveData.getPlayouts(bestMoves) >= Lizzie.config.autoAnaPlayouts) {
+      if (currentTotalPlayouts >= Lizzie.config.autoAnaPlayouts) {
         analyzeNextMove(isLastMove);
         return;
       }
@@ -1753,8 +1790,13 @@ public class Leelaz {
   public void genmoveResign(boolean needPass) {
     // if(resigned)
     //	return;
-    if (!bestMoves.isEmpty())
-      Lizzie.board.getHistory().getData().tryToSetBestMoves(bestMoves, bestMovesEnginename, true);
+    if (!bestMoves.isEmpty()) {
+      currentTotalPlayouts = MoveData.getPlayouts(bestMoves);
+      Lizzie.board
+          .getHistory()
+          .getData()
+          .tryToSetBestMoves(bestMoves, bestMovesEnginename, true, currentTotalPlayouts);
+    }
     this.resigned = true;
     if (!this.doublePass
         && !this.outOfMoveNum
@@ -1835,7 +1877,7 @@ public class Leelaz {
     if (firstPlayouts > 0 && best.playouts >= firstPlayouts) shouldPlay = true;
     if (firstPlayouts > 0 && best.playouts >= firstPlayouts) shouldPlay = true;
     if (playouts > 0) {
-      if (MoveData.getPlayouts(bestMoves) >= playouts) shouldPlay = true;
+      if (currentTotalPlayouts >= playouts) shouldPlay = true;
     }
     if (time > 0) {
       if (System.currentTimeMillis() - startPonderTime >= time) {
@@ -2040,7 +2082,10 @@ public class Leelaz {
 
               mv.order = bestMoves.size();
               bestMoves.add(mv);
-              Lizzie.board.getData().tryToSetBestMoves(bestMoves, bestMovesEnginename, true);
+              currentTotalPlayouts = MoveData.getPlayouts(bestMoves);
+              Lizzie.board
+                  .getData()
+                  .tryToSetBestMoves(bestMoves, bestMovesEnginename, true, currentTotalPlayouts);
             }
           }
         }
@@ -2085,11 +2130,17 @@ public class Leelaz {
         this.canCheckAlive = true;
         if (isLeela0110PonderingValid() && !leela0110BestMoves.isEmpty()) {
           bestMoves = leela0110BestMoves;
+          currentTotalPlayouts = MoveData.getPlayouts(bestMoves);
           if (Lizzie.config.isDoubleEngineMode()
               && Lizzie.leelaz2 != null
               && this == Lizzie.leelaz2)
-            Lizzie.board.getData().tryToSetBestMoves2(bestMoves, bestMovesEnginename, true);
-          else Lizzie.board.getData().tryToSetBestMoves(bestMoves, bestMovesEnginename, true);
+            Lizzie.board
+                .getData()
+                .tryToSetBestMoves2(bestMoves, bestMovesEnginename, true, currentTotalPlayouts);
+          else
+            Lizzie.board
+                .getData()
+                .tryToSetBestMoves(bestMoves, bestMovesEnginename, true, currentTotalPlayouts);
         }
         leela0110UpdatePonder();
         Lizzie.frame.refresh(1);
@@ -2353,15 +2404,20 @@ public class Leelaz {
                       e.printStackTrace();
                     }
                     if (Lizzie.board.getHistory().getCurrentHistoryNode().previous().isPresent()
-                        && !bestMovesPrevious.isEmpty())
+                        && !bestMovesPrevious.isEmpty()) {
                       Lizzie.board
                           .getHistory()
                           .getCurrentHistoryNode()
                           .previous()
                           .get()
                           .getData()
-                          .tryToSetBestMoves(bestMovesPrevious, bestMovesEnginename, true);
-                    bestMovesPrevious = new ArrayList<>();
+                          .tryToSetBestMoves(
+                              bestMovesPrevious,
+                              bestMovesEnginename,
+                              true,
+                              MoveData.getPlayouts(bestMovesPrevious));
+                      bestMovesPrevious = new ArrayList<>();
+                    }
                     canGetSummaryInfo = false;
                   }
                 };
@@ -2699,6 +2755,7 @@ public class Leelaz {
 
       sendCommand("play " + colorString + " " + move);
       bestMoves = new ArrayList<>();
+      currentTotalPlayouts = 0;
       if (Lizzie.frame.isPlayingAgainstLeelaz) this.canGetSummaryInfo = true;
       //				bestMovesPrevious = new ArrayList<>();
       if ((stopByLimit || isPondering) && !Lizzie.frame.isPlayingAgainstLeelaz)
@@ -2739,6 +2796,7 @@ public class Leelaz {
     if (Lizzie.config.enginePkPonder) {
       synchronized (this) {
         bestMoves = new ArrayList<>();
+        currentTotalPlayouts = 0;
         sendCommand("play " + colorString + " " + move);
         pkponder();
       }
@@ -2761,7 +2819,10 @@ public class Leelaz {
     Lizzie.frame.mouseOverCoordinate = LizzieFrame.outOfBoundCoordinate;
     synchronized (this) {
       canSetNotPlayed = true;
-      if (Lizzie.config.enginePkPonder) bestMoves = new ArrayList<>();
+      if (Lizzie.config.enginePkPonder) {
+        bestMoves = new ArrayList<>();
+        currentTotalPlayouts = 0;
+      }
       sendCommand("play " + colorString + " " + move);
       pkponder();
     }
@@ -2863,6 +2924,7 @@ public class Leelaz {
         scoreStdev = 0;
       }
       bestMoves = new ArrayList<>();
+      currentTotalPlayouts = 0;
       if (isPondering) ponder();
       currentCmdNum = Math.max(cmdNumber - 2, currentCmdNum);
     }
@@ -2874,6 +2936,7 @@ public class Leelaz {
       nameCmdfornoponder();
       sendCommand("clear_board");
       bestMoves = new ArrayList<>();
+      currentTotalPlayouts = 0;
       currentCmdNum = Math.max(cmdNumber - 2, currentCmdNum);
     }
   }
@@ -2886,6 +2949,7 @@ public class Leelaz {
     synchronized (this) {
       sendCommand("undo");
       bestMoves = new ArrayList<>();
+      currentTotalPlayouts = 0;
       if (isPondering)
         if (Lizzie.config.isAutoAna
             || ((Lizzie.config.analyzeBlack && Lizzie.board.getHistory().isBlacksTurn())
@@ -2911,6 +2975,7 @@ public class Leelaz {
   public void analyzeAvoid(
       String type, String coordList, int untilMove, boolean addPlayer, boolean blackToPlay) {
     bestMoves = new ArrayList<>();
+    currentTotalPlayouts = 0;
     if (!isPondering) {
       isPondering = true;
       startPonderTime = System.currentTimeMillis();
@@ -2936,6 +3001,7 @@ public class Leelaz {
 
   public void analyzeAvoid(String parameters) {
     bestMoves = new ArrayList<>();
+    currentTotalPlayouts = 0;
     if (!isPondering) {
       isPondering = true;
       startPonderTime = System.currentTimeMillis();
@@ -3096,6 +3162,7 @@ public class Leelaz {
 
   public void clearBestMoves() {
     bestMoves = new ArrayList<>();
+    currentTotalPlayouts = 0;
   }
 
   // public Optional<String> getDynamicKomi() {
@@ -3158,7 +3225,7 @@ public class Leelaz {
       // final List<MoveData> moves = new ArrayList<MoveData>(Lizzie.board.getData().bestMoves);
 
       // get the total number of playouts in moves
-      stats.totalPlayouts = MoveData.getPlayouts(bestMoves);
+      stats.totalPlayouts = currentTotalPlayouts;
 
       // stats.maxWinrate = bestMoves.get(0).winrate;
       stats.maxWinrate = BoardData.getWinrateFromBestMoves(bestMoves);
@@ -3564,7 +3631,7 @@ public class Leelaz {
   }
 
   public int getBestMovesPlayouts() {
-    return MoveData.getPlayouts(bestMoves);
+    return currentTotalPlayouts;
   }
 
   public boolean isStopPonderingByLimit() {

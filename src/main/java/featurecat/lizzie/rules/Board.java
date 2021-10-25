@@ -1390,7 +1390,7 @@ public class Board {
           case 6: // 交换黑白
             move.x = n[0];
             move.y = n[1];
-            move.isblack = isBlack;
+            move.isblack = !isBlack;
             break;
           default: // 不改变
             move.x = -n[0];
@@ -1507,6 +1507,7 @@ public class Board {
 
   public void placeForSync(int x, int y, Stone color, boolean newBranch) {
     place(x, y, color, newBranch, true, false);
+    Lizzie.frame.readBoard.lastMovePlayByLizzie = false;
   }
 
   public void placeForManual(int x, int y) {
