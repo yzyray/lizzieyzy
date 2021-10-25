@@ -607,12 +607,11 @@ public class Board {
       boardHeight = height;
       Zobrist.init();
       clear(false);
-      Lizzie.frame.refresh();
       Lizzie.leelaz.boardSize(boardWidth, boardHeight);
       Lizzie.leelaz.ponder();
-      //  Lizzie.leelaz.setResponseUpToDate();
       forceRefresh = true;
       forceRefresh2 = true;
+      Lizzie.frame.refresh();
     }
   }
 
