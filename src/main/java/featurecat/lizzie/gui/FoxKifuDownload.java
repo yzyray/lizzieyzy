@@ -272,7 +272,7 @@ public class FoxKifuDownload extends JFrame {
 
   private void getFoxKifus() {
     // TODO Auto-generated method stub
-    if (txtUserName.getText().isBlank()) {
+    if (txtUserName.getText().trim().isEmpty()) {
       Utils.showMsg(Lizzie.resourceBundle.getString("FoxKifuDownload.noUser"), this);
       return;
     }

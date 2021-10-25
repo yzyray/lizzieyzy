@@ -570,7 +570,7 @@ public class BoardRenderer {
     }
     lengthB = g0.getFontMetrics().stringWidth(black);
     lengthW = g0.getFontMetrics().stringWidth(white);
-    if (black.isBlank() && white.isBlank()) {
+    if (black.length() == 0 && white.length() == 0) {
       if (!emptyName) {
         emptyName = true;
         changedName = true;
@@ -3402,8 +3402,8 @@ public class BoardRenderer {
   }
 
   private boolean isEmptyName() {
-    return (Lizzie.board.getHistory().getGameInfo().getPlayerBlack().isBlank()
-        && Lizzie.board.getHistory().getGameInfo().getPlayerWhite().isBlank());
+    return (Lizzie.board.getHistory().getGameInfo().getPlayerBlack().length() == 0
+        && Lizzie.board.getHistory().getGameInfo().getPlayerWhite().length() == 0);
   }
 
   /**

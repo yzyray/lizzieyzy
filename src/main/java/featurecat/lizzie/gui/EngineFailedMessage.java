@@ -9,9 +9,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.BufferedWriter;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.io.OutputStreamWriter;
 import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
@@ -91,7 +92,8 @@ public class EngineFailedMessage extends JDialog {
             public void actionPerformed(ActionEvent e) {
               try {
                 BufferedWriter bw =
-                    new BufferedWriter(new FileWriter("dignostic.bat", Charset.forName("UTF-8")));
+                    new BufferedWriter(
+                        new OutputStreamWriter(new FileOutputStream("dignostic.bat"), "UTF-8"));
                 if (isGtpEngine) {
                   bw.write("CHCP 65001");
                   bw.newLine();
