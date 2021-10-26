@@ -676,7 +676,6 @@ public class ReadBoard {
     if (!Lizzie.frame.bothSync && !needReSync) {
       if (played
           && !Lizzie.config.alwaysGotoLastOnLive
-          && !Lizzie.config.alwaysSyncBoardStat
           && !showInBoard
           && Lizzie.board.getHistory().getCurrentHistoryNode().previous().isPresent()
           && node != node2) {

@@ -664,8 +664,11 @@ public class EngineManager {
     writer.write("\r\n");
     writer.write(resultB);
     writer.write("\r\n");
-    writer.write("\r\n");
     writer.write(resultW);
+    writer.write("\r\n");
+    writer.write("\r\n");
+    writer.write(resourceBundle.getString("EngineGameInfo.timeVisitsTips"));
+    // 注:用时和计算量以界面接收为准,因为有输出间隔存在,实际引擎用时更短,计算量可能更高
     writer.write("\r\n");
     writer.write("\r\n");
     writer.write(resultOther);
