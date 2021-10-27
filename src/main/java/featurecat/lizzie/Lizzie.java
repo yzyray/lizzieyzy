@@ -81,12 +81,14 @@ public class Lizzie {
     }
     if (config.logConsoleToFile) {
       PrintStream oldPrintStream = System.out;
-      FileOutputStream bos = new FileOutputStream("LastConsoleLogs_" + lizzieVersion + ".txt");
+      FileOutputStream bos =
+          new FileOutputStream("LastConsoleLogs_" + lizzieVersion + ".txt", true);
       MultiOutputStream multi = new MultiOutputStream(new PrintStream(bos), oldPrintStream);
       System.setOut(new PrintStream(multi));
 
       PrintStream oldErrorPrintStream = System.err;
-      FileOutputStream bosError = new FileOutputStream("LastErrorLogs_" + lizzieVersion + ".txt");
+      FileOutputStream bosError =
+          new FileOutputStream("LastErrorLogs_" + lizzieVersion + ".txt", true);
       MultiOutputStream multiError =
           new MultiOutputStream(new PrintStream(bosError), oldErrorPrintStream);
       System.setErr(new PrintStream(multiError));
