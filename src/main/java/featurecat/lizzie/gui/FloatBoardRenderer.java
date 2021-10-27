@@ -1500,7 +1500,10 @@ public class FloatBoardRenderer {
               Lizzie.config.limitMaxSuggestion > 0
                   && move.order + 1 > Lizzie.config.limitMaxSuggestion
                   && !move.lastTimeUnlimited;
-          boolean hasBackground = hasDrawBackground[Board.getIndex(coords[0], coords[1])];
+          boolean hasBackground =
+              Board.getIndex(coords[0], coords[1]) < hasDrawBackground.length
+                  ? hasDrawBackground[Board.getIndex(coords[0], coords[1])]
+                  : false;
 
           if (outOfOrder && !isMouseOver && hasBackground) continue;
           float hue;
@@ -2076,12 +2079,12 @@ public class FloatBoardRenderer {
       unImportantCleared = true;
       drawUnimportantSuggCount = 100;
     }
-    hasDrawBackground = new boolean[Board.boardHeight * Board.boardWidth];
     clearBranch();
   }
 
   private void drawLeelazSuggestionsUnimportant() {
     BufferedImage newUnImportantSugg = new BufferedImage(boardWidth, boardHeight, TYPE_INT_ARGB);
+    hasDrawBackground = new boolean[Board.boardHeight * Board.boardWidth];
     Graphics2D g = newUnImportantSugg.createGraphics();
     g.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
     int minAlpha = 32;
@@ -2123,10 +2126,10 @@ public class FloatBoardRenderer {
                   && !move.lastTimeUnlimited;
 
           if (!outOfOrder && move.order < 25) {
-            hasDrawBackground[Board.getIndex(coords[0], coords[1])] = false;
             continue;
           }
-          hasDrawBackground[Board.getIndex(coords[0], coords[1])] = true;
+          if (Board.getIndex(coords[0], coords[1]) < hasDrawBackground.length)
+            hasDrawBackground[Board.getIndex(coords[0], coords[1])] = true;
           if (!Lizzie.config.showNoSuggCircle && outOfOrder && !move.lastTimeUnlimited) continue;
           float hue;
           if (isBestMove) {

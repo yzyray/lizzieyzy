@@ -611,6 +611,7 @@ public class Board {
       Lizzie.leelaz.ponder();
       forceRefresh = true;
       forceRefresh2 = true;
+      Lizzie.frame.redrawBoardrendererBackground();
       Lizzie.frame.refresh();
     }
   }

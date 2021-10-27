@@ -1957,6 +1957,8 @@ public class Leelaz {
   public void boardSize(int width, int height) {
     if (width != height) sendCommand("rectangular_boardsize " + width + " " + height);
     else sendCommand("boardsize " + width);
+    this.width = width;
+    this.height = height;
     if (firstLoad) {
       Lizzie.board.open(width, height);
       Lizzie.board.getHistory().getGameInfo().setKomi(komi);

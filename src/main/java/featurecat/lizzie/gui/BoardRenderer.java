@@ -2195,7 +2195,10 @@ public class BoardRenderer {
               Lizzie.config.limitMaxSuggestion > 0
                   && move.order + 1 > Lizzie.config.limitMaxSuggestion
                   && !move.lastTimeUnlimited;
-          boolean hasBackground = hasDrawBackground[Board.getIndex(coords[0], coords[1])];
+          boolean hasBackground =
+              Board.getIndex(coords[0], coords[1]) < hasDrawBackground.length
+                  ? hasDrawBackground[Board.getIndex(coords[0], coords[1])]
+                  : false;
           if (outOfOrder && !isMouseOver && hasBackground) continue;
 
           float hue;
@@ -2907,7 +2910,8 @@ public class BoardRenderer {
               }
             }
           if (!Lizzie.config.showNoSuggCircle && outOfOrder && !move.lastTimeUnlimited) continue;
-          hasDrawBackground[Board.getIndex(coords[0], coords[1])] = true;
+          if (Board.getIndex(coords[0], coords[1]) < hasDrawBackground.length)
+            hasDrawBackground[Board.getIndex(coords[0], coords[1])] = true;
           float hue;
           if (isBestMove) {
             hue = cyanHue;

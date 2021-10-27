@@ -12405,4 +12405,14 @@ public class LizzieFrame extends JFrame {
     boardRenderer.refreshVariation();
     if (Lizzie.config.isDoubleEngineMode()) boardRenderer2.refreshVariation();
   }
+
+  public void redrawBoardrendererBackground() {
+    boardRenderer.boardWidth = 1;
+    if (boardRenderer2 != null) boardRenderer2.boardWidth = 1;
+    if (independentMainBoard != null) independentMainBoard.boardRenderer.boardWidth = 1;
+    subBoardRenderer.boardWidth = 1;
+    if (subBoardRenderer2 != null) subBoardRenderer2.boardWidth = 1;
+    if (subBoardRenderer3 != null) subBoardRenderer3.boardWidth = 1;
+    if (subBoardRenderer4 != null) subBoardRenderer4.boardWidth = 1;
+  }
 }
