@@ -1959,8 +1959,8 @@ public class Leelaz {
     else sendCommand("boardsize " + width);
     this.width = width;
     this.height = height;
+    Lizzie.board.reopen(width, height);
     if (firstLoad) {
-      Lizzie.board.open(width, height);
       Lizzie.board.getHistory().getGameInfo().setKomi(komi);
       Lizzie.board.getHistory().getGameInfo();
       GameInfo.DEFAULT_KOMI = (double) komi;
