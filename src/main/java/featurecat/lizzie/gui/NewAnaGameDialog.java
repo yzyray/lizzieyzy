@@ -39,19 +39,19 @@ public class NewAnaGameDialog extends JDialog {
   private JPanel contentPanel = new JPanel();
   private JPanel buttonBar = new JPanel();
   private JFontButton okButton = new JFontButton();
-  private JFontComboBox engine;
+  private JFontComboBox<String> engine;
 
-  private JFontComboBox checkBoxPlayerIsBlack;
+  private JFontComboBox<String> checkBoxPlayerIsBlack;
   private JFontCheckBox checkContinuePlay;
   // private JFontTextField textFieldBlack;
   // private JFontTextField textFieldWhite;
   private JFontCheckBox chkLimitMyTime;
-  private JFontComboBox textSaveTime;
-  private JFontComboBox texByoSeconds;
-  private JFontComboBox texByoTimes;
+  private JFontComboBox<String> textSaveTime;
+  private JFontComboBox<String> texByoSeconds;
+  private JFontComboBox<String> texByoTimes;
   private JFontCheckBox chkAiPureNet;
   private JFontTextField textFieldKomi;
-  private JFontComboBox textFieldHandicap;
+  private JFontComboBox<Integer> textFieldHandicap;
   private JTextField textTime;
   private JTextField textPlayouts;
   private JTextField textFirstPlayouts;
@@ -116,7 +116,7 @@ public class NewAnaGameDialog extends JDialog {
   private void initContentPanel() {
     NumberFormat nf = NumberFormat.getIntegerInstance();
     nf.setGroupingUsed(false);
-    engine = new JFontComboBox();
+    engine = new JFontComboBox<String>();
     ArrayList<EngineData> engineData = Utils.getEngineData();
     for (int i = 0; i < engineData.size(); i++) {
       EngineData engineDt = engineData.get(i);
@@ -156,7 +156,7 @@ public class NewAnaGameDialog extends JDialog {
     gbc_label.gridx = 0;
     gbc_label.gridy = 1;
     contentPanel.add(label, gbc_label);
-    textFieldHandicap = new JFontComboBox();
+    textFieldHandicap = new JFontComboBox<Integer>();
     textFieldHandicap.addItem(0);
     textFieldHandicap.addItem(2);
     textFieldHandicap.addItem(3);
@@ -182,7 +182,7 @@ public class NewAnaGameDialog extends JDialog {
         });
     chkUseFreeHandicap.setSelected(Lizzie.config.useFreeHandicap);
     checkBoxPlayerIsBlack =
-        new JFontComboBox(); // resourceBundle.getString("NewGameDialog.PlayBlack"));
+        new JFontComboBox<String>(); // resourceBundle.getString("NewGameDialog.PlayBlack"));
     checkBoxPlayerIsBlack.addItem(resourceBundle.getString("NewGameDialog.playBlack"));
     checkBoxPlayerIsBlack.addItem(resourceBundle.getString("NewGameDialog.playWhite"));
     checkBoxPlayerIsBlack.setFocusable(false);
@@ -265,9 +265,9 @@ public class NewAnaGameDialog extends JDialog {
     chkLimitMyTime = new JFontCheckBox(resourceBundle.getString("Byoyomi.newGame.limitMyTime"));
     contentPanel.add(chkLimitMyTime, gbc_2);
     JPanel myTimePanle = new JPanel();
-    textSaveTime = new JFontComboBox();
-    texByoSeconds = new JFontComboBox();
-    texByoTimes = new JFontComboBox();
+    textSaveTime = new JFontComboBox<String>();
+    texByoSeconds = new JFontComboBox<String>();
+    texByoTimes = new JFontComboBox<String>();
     textSaveTime.addItem(resourceBundle.getString("Byoyomi.none"));
     textSaveTime.addItem("5");
     textSaveTime.addItem("10");

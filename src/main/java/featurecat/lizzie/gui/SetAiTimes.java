@@ -48,7 +48,7 @@ public class SetAiTimes extends JDialog {
   JCheckBox chkUseNormal;
   JCheckBox chkUseAdvTime;
   JCheckBox chkUseKataTime;
-  JComboBox kataTimeComboBox;
+  JComboBox<String> kataTimeComboBox;
   private JTextField txtKataTimeSaveMins;
   private JTextField txtKataTimeByoyomiSecs;
   private JTextField txtKataTimeByoyomiTimes;
@@ -176,7 +176,7 @@ public class SetAiTimes extends JDialog {
         103,
         800,
         38);
-    kataTimeComboBox = new JFontComboBox();
+    kataTimeComboBox = new JFontComboBox<String>();
     kataTimeComboBox.addItem(resourceBundle.getString("NewGameDialog.kataTime.byoyomi")); // "读秒制");
     kataTimeComboBox.addItem(resourceBundle.getString("NewGameDialog.kataTime.fisher")); // "加秒制");
     kataTimeComboBox.addItem(

@@ -21,9 +21,9 @@ public class ToolbarPositionConfig extends JDialog {
     setAlwaysOnTop(Lizzie.frame.isAlwaysOnTop());
     getContentPane().setLayout(null);
     setLocationRelativeTo(getOwner());
-    JComboBox anaPanel = new JComboBox();
-    JComboBox autoPlayPanel = new JComboBox();
-    JComboBox enginePkPanel = new JComboBox();
+    JComboBox<String> anaPanel = new JComboBox<String>();
+    JComboBox<String> autoPlayPanel = new JComboBox<String>();
+    JComboBox<String> enginePkPanel = new JComboBox<String>();
     anaPanel.addItem("1");
     anaPanel.addItem("2");
     anaPanel.addItem("3");

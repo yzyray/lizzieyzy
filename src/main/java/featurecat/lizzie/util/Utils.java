@@ -543,6 +543,7 @@ public class Utils {
     if (map == null) {
       return 0;
     }
+    @SuppressWarnings("unchecked")
     List s = (List<String>) map.get(key);
     if (s == null || s.size() <= 0) {
       return 0;
@@ -558,6 +559,7 @@ public class Utils {
     if (map == null) {
       return "";
     }
+    @SuppressWarnings("unchecked")
     List s = (List<String>) map.get(key);
     if (s == null || s.size() <= 0) {
       return "";
