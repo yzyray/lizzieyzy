@@ -54,7 +54,7 @@ public class ScoreResult extends JDialog {
           }
         });
     try {
-      this.setIconImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/logo.png")));
+      this.setIconImage(ImageIO.read(getClass().getResourceAsStream("/assets/logo.png")));
     } catch (IOException e) {
       e.printStackTrace();
     }

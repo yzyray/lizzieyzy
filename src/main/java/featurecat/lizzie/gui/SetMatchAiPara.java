@@ -43,7 +43,7 @@ public class SetMatchAiPara extends JDialog {
     if (Lizzie.config.isChinese) {
       try {
         iconForm.setImage(
-            ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/matchform.png"))
+            ImageIO.read(getClass().getResourceAsStream("/assets/matchform.png"))
                 .getScaledInstance(708, 96, java.awt.Image.SCALE_SMOOTH));
       } catch (IOException e) {
         // TODO Auto-generated catch block
@@ -52,7 +52,7 @@ public class SetMatchAiPara extends JDialog {
     } else {
       try {
         iconForm.setImage(
-            ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/matchformeng.png"))
+            ImageIO.read(getClass().getResourceAsStream("/assets/matchformeng.png"))
                 .getScaledInstance(708, 96, java.awt.Image.SCALE_SMOOTH));
       } catch (IOException e) {
         // TODO Auto-generated catch block

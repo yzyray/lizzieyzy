@@ -28,9 +28,7 @@ import javax.swing.border.EmptyBorder;
 /** @author unknown */
 public class NewGameDialog extends JDialog {
   // create formatters
-  public static final DecimalFormat FORMAT_KOMI = new DecimalFormat("#0.0");
   public static final DecimalFormat FORMAT_HANDICAP = new DecimalFormat("0");
-  // public static final JFontLabel PLACEHOLDER = new JFontLabel("");
 
   static {
     FORMAT_HANDICAP.setMaximumIntegerDigits(1);
@@ -40,28 +38,26 @@ public class NewGameDialog extends JDialog {
   private JPanel contentPanel = new JPanel();
   private JPanel buttonBar = new JPanel();
   private JFontButton okButton = new JFontButton();
-  private JFontComboBox engine;
+  private JFontComboBox<String> engine;
 
-  private JFontComboBox checkBoxPlayerIsBlack;
+  private JFontComboBox<String> checkBoxPlayerIsBlack;
   private JFontCheckBox checkContinuePlay;
-  // private JFontTextField textFieldBlack;
-  // private JFontTextField textFieldWhite;
   private JFontTextField textFieldKomi;
-  private JFontComboBox textFieldHandicap;
+  private JFontComboBox<Integer> textFieldHandicap;
   private JTextField textTime;
   private JFontCheckBox chkPonder;
   private JFontCheckBox chkUsePlayMode;
   private JFontCheckBox chkNoTime;
   JFontCheckBox chkLimitMyTime;
-  JFontComboBox textSaveTime;
-  JFontComboBox texByoSeconds;
-  JFontComboBox texByoTimes;
+  JFontComboBox<String> textSaveTime;
+  JFontComboBox<String> texByoSeconds;
+  JFontComboBox<String> texByoTimes;
 
-  JCheckBox chkNormalTime;
-  JCheckBox chkKataTime;
-  JCheckBox chkUseAdvTime;
+  JFontCheckBox chkNormalTime;
+  JFontCheckBox chkKataTime;
+  JFontCheckBox chkUseAdvTime;
 
-  JComboBox kataTimeComboBox;
+  JFontComboBox<String> kataTimeComboBox;
 
   private boolean cancelled = true;
   public GameInfo gameInfo = new GameInfo();
@@ -114,7 +110,7 @@ public class NewGameDialog extends JDialog {
     NumberFormat nf = NumberFormat.getIntegerInstance();
     nf.setGroupingUsed(false);
     ArrayList<EngineData> engineData = Utils.getEngineData();
-    engine = new JFontComboBox();
+    engine = new JFontComboBox<String>();
     for (int i = 0; i < engineData.size(); i++) {
       EngineData engineDt = engineData.get(i);
       engine.addItem("[" + (i + 1) + "]" + engineDt.name);
@@ -151,7 +147,7 @@ public class NewGameDialog extends JDialog {
     gbc_label.gridy = 1;
     contentPanel.add(label, gbc_label);
     checkBoxPlayerIsBlack =
-        new JFontComboBox(); // resourceBundle.getString("NewGameDialog.PlayBlack"));
+        new JFontComboBox<String>(); // resourceBundle.getString("NewGameDialog.PlayBlack"));
     checkBoxPlayerIsBlack.addItem(resourceBundle.getString("NewGameDialog.playBlack"));
     checkBoxPlayerIsBlack.addItem(resourceBundle.getString("NewGameDialog.playWhite"));
     checkBoxPlayerIsBlack.setFocusable(false);
@@ -195,7 +191,7 @@ public class NewGameDialog extends JDialog {
     gbc_1.gridy = 3;
     JFontLabel label_3 = new JFontLabel(resourceBundle.getString("NewGameDialog.Handicap"));
     contentPanel.add(label_3, gbc_1);
-    textFieldHandicap = new JFontComboBox();
+    textFieldHandicap = new JFontComboBox<Integer>();
     textFieldHandicap.addItem(0);
     textFieldHandicap.addItem(2);
     textFieldHandicap.addItem(3);
@@ -257,9 +253,9 @@ public class NewGameDialog extends JDialog {
     chkLimitMyTime = new JFontCheckBox(resourceBundle.getString("Byoyomi.newGame.limitMyTime"));
     limitMyPanel.add(chkLimitMyTime);
     contentPanel.add(limitMyPanel, gbc_2);
-    textSaveTime = new JFontComboBox();
-    texByoSeconds = new JFontComboBox();
-    texByoTimes = new JFontComboBox();
+    textSaveTime = new JFontComboBox<String>();
+    texByoSeconds = new JFontComboBox<String>();
+    texByoTimes = new JFontComboBox<String>();
     textSaveTime.addItem(resourceBundle.getString("Byoyomi.none"));
     textSaveTime.addItem("5");
     textSaveTime.addItem("10");
@@ -412,7 +408,7 @@ public class NewGameDialog extends JDialog {
     gbc_panel.gridy = 7;
     contentPanel.add(kataTimeSettingsPanel, gbc_panel);
 
-    kataTimeComboBox = new JFontComboBox();
+    kataTimeComboBox = new JFontComboBox<String>();
     kataTimeComboBox.addItem(resourceBundle.getString("NewGameDialog.kataTime.byoyomi")); // "读秒制");
     kataTimeComboBox.addItem(resourceBundle.getString("NewGameDialog.kataTime.fisher")); // "加秒制");
     kataTimeComboBox.addItem(
@@ -536,8 +532,7 @@ public class NewGameDialog extends JDialog {
 
     ImageIcon iconSettings = new ImageIcon();
     try {
-      iconSettings.setImage(
-          ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/settings.png")));
+      iconSettings.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/settings.png")));
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();

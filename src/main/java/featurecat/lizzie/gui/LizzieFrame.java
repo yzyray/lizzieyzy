@@ -8954,15 +8954,14 @@ public class LizzieFrame extends JFrame {
 
     ImageIcon iconLeft = new ImageIcon();
     try {
-      iconLeft.setImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/left.png")));
+      iconLeft.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/left.png")));
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
     ImageIcon iconRight = new ImageIcon();
     try {
-      iconRight.setImage(
-          ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/right.png")));
+      iconRight.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/right.png")));
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();

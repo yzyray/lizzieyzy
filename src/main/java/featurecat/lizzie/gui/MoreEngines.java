@@ -250,7 +250,7 @@ public class MoreEngines extends JPanel {
     ImageIcon btnRemoteEngineIcon = new ImageIcon();
     try {
       btnRemoteEngineIcon.setImage(
-          ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/settings.png")));
+          ImageIO.read(getClass().getResourceAsStream("/assets/settings.png")));
     } catch (IOException e) {
       e.printStackTrace();
     }

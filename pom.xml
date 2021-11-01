@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-	<groupId>featurecat</groupId>
-	<artifactId>lizzie</artifactId>
-	<version>yzy2.4.5</version>
+    <groupId>featurecat</groupId>
+    <artifactId>lizzie</artifactId>
+    <version>0.7.4</version>
 
-	<properties>
-		<!-- Prevent warning: "[WARNING] Using platform encoding (UTF-8 actually) 
-			to copy filtered resources, i.e. build is platform dependent!" -->
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
-
+    <properties>
+        <!-- Prevent warning: "[WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!"-->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+    
 	<build>
 		<plugins>
 			<plugin>
@@ -142,26 +141,6 @@
   			<version>6.21</version>
 		</dependency>
 
-	<!--
-     	<dependency>
-  			<groupId>com.teamdev.jxbrowser</groupId>
-  			<artifactId>jxbrowser-win32</artifactId>
-  			<version>6.21</version>
-		</dependency>
-
-		<dependency>
-  			<groupId>com.teamdev.jxbrowser</groupId>
-  			<artifactId>jxbrowser-mac</artifactId>
-  			<version>6.21</version>
-		</dependency>
-
-     	<dependency>
-  			<groupId>com.teamdev.jxbrowser</groupId>
-  			<artifactId>jxbrowser-linux64</artifactId>
-  			<version>6.21</version>
-		</dependency>
- -->
-
 		<dependency>
     		<groupId>ch.ethz.ganymed</groupId>
     		<artifactId>ganymed-ssh2</artifactId>
@@ -204,17 +183,6 @@
             <artifactId>slf4j-simple</artifactId>
             <version>1.7.25</version>
         </dependency>     
-        
-        <dependency>
-            <groupId>org.java-websocket</groupId>
-            <artifactId>Java-WebSocket</artifactId>
-            <version>1.5.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>1.7.25</version>
-        </dependency>
         
         <dependency>
             <groupId>io.socket</groupId>

@@ -3009,12 +3009,12 @@ public class Menu extends JMenuBar {
     iconblack2 = new ImageIcon();
     try {
       iconblack2.setImage(
-          ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/smallblack2.png"))
+          ImageIO.read(getClass().getResourceAsStream("/assets/smallblack2.png"))
               .getScaledInstance(
                   Config.menuIconSize / 2 * 3,
                   Config.menuIconSize / 2 * 3,
                   java.awt.Image.SCALE_SMOOTH));
-      // ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/menu.png")));
+      // ImageIO.read(getClass().getResourceAsStream("/assets/menu.png")));
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -3023,10 +3023,10 @@ public class Menu extends JMenuBar {
     iconblack = new ImageIcon();
     try {
       iconblack.setImage(
-          ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/smallblack1.png"))
+          ImageIO.read(getClass().getResourceAsStream("/assets/smallblack1.png"))
               .getScaledInstance(
                   Config.menuIconSize, Config.menuIconSize, java.awt.Image.SCALE_SMOOTH));
-      // ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/menu.png")));
+      // ImageIO.read(getClass().getResourceAsStream("/assets/menu.png")));
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -3035,12 +3035,12 @@ public class Menu extends JMenuBar {
     iconwhite2 = new ImageIcon();
     try {
       iconwhite2.setImage(
-          ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/smallwhite4.png"))
+          ImageIO.read(getClass().getResourceAsStream("/assets/smallwhite4.png"))
               .getScaledInstance(
                   Config.menuIconSize / 2 * 3,
                   Config.menuIconSize / 2 * 3,
                   java.awt.Image.SCALE_SMOOTH));
-      // ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/smallwhite.png"));
+      // ImageIO.read(getClass().getResourceAsStream("/assets/smallwhite.png"));
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -3049,10 +3049,10 @@ public class Menu extends JMenuBar {
     iconwhite = new ImageIcon();
     try {
       iconwhite.setImage(
-          ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/smallwhite.png"))
+          ImageIO.read(getClass().getResourceAsStream("/assets/smallwhite.png"))
               .getScaledInstance(
                   Config.menuIconSize, Config.menuIconSize, java.awt.Image.SCALE_SMOOTH));
-      // ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/smallwhite.png"));
+      // ImageIO.read(getClass().getResourceAsStream("/assets/smallwhite.png"));
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -3060,9 +3060,9 @@ public class Menu extends JMenuBar {
 
     iconbh2 = new ImageIcon();
     try {
-      // iconbh.setImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/menu.png")));
+      // iconbh.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/menu.png")));
       iconbh2.setImage(
-          ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/hb2.png"))
+          ImageIO.read(getClass().getResourceAsStream("/assets/hb2.png"))
               .getScaledInstance(
                   Config.menuIconSize + 8, Config.menuIconSize + 8, java.awt.Image.SCALE_SMOOTH));
     } catch (IOException e) {
@@ -3072,9 +3072,9 @@ public class Menu extends JMenuBar {
 
     iconbh = new ImageIcon();
     try {
-      // iconbh.setImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/menu.png")));
+      // iconbh.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/menu.png")));
       iconbh.setImage(
-          ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/hb.png"))
+          ImageIO.read(getClass().getResourceAsStream("/assets/hb.png"))
               .getScaledInstance(
                   Config.menuIconSize + 8, Config.menuIconSize + 8, java.awt.Image.SCALE_SMOOTH));
     } catch (IOException e) {
@@ -3084,9 +3084,9 @@ public class Menu extends JMenuBar {
 
     iconAllow = new ImageIcon();
     try {
-      // iconbh.setImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/menu.png")));
+      // iconbh.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/menu.png")));
       iconAllow.setImage(
-          ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/blueallow.png"))
+          ImageIO.read(getClass().getResourceAsStream("/assets/blueallow.png"))
               .getScaledInstance(
                   Config.menuIconSize, Config.menuIconSize, java.awt.Image.SCALE_SMOOTH));
     } catch (IOException e) {
@@ -3096,9 +3096,9 @@ public class Menu extends JMenuBar {
 
     iconAvoid = new ImageIcon();
     try {
-      // iconbh.setImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/menu.png")));
+      // iconbh.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/menu.png")));
       iconAvoid.setImage(
-          ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/redavoid.png"))
+          ImageIO.read(getClass().getResourceAsStream("/assets/redavoid.png"))
               .getScaledInstance(
                   Config.menuIconSize, Config.menuIconSize, java.awt.Image.SCALE_SMOOTH));
     } catch (IOException e) {
@@ -3108,9 +3108,9 @@ public class Menu extends JMenuBar {
 
     iconAllow2 = new ImageIcon();
     try {
-      // iconbh.setImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/menu.png")));
+      // iconbh.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/menu.png")));
       iconAllow2.setImage(
-          ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/blueallow2.png"))
+          ImageIO.read(getClass().getResourceAsStream("/assets/blueallow2.png"))
               .getScaledInstance(
                   Config.menuIconSize, Config.menuIconSize, java.awt.Image.SCALE_SMOOTH));
     } catch (IOException e) {
@@ -3120,9 +3120,9 @@ public class Menu extends JMenuBar {
 
     iconAvoid2 = new ImageIcon();
     try {
-      // iconbh.setImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/menu.png")));
+      // iconbh.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/menu.png")));
       iconAvoid2.setImage(
-          ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/redavoid2.png"))
+          ImageIO.read(getClass().getResourceAsStream("/assets/redavoid2.png"))
               .getScaledInstance(
                   Config.menuIconSize, Config.menuIconSize, java.awt.Image.SCALE_SMOOTH));
     } catch (IOException e) {
@@ -3132,9 +3132,9 @@ public class Menu extends JMenuBar {
 
     iconClear = new ImageIcon();
     try {
-      // iconbh.setImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/menu.png")));
+      // iconbh.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/menu.png")));
       iconClear.setImage(
-          ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/clear.png"))
+          ImageIO.read(getClass().getResourceAsStream("/assets/clear.png"))
               .getScaledInstance(
                   Config.menuIconSize, Config.menuIconSize, java.awt.Image.SCALE_SMOOTH));
     } catch (IOException e) {
@@ -3143,9 +3143,9 @@ public class Menu extends JMenuBar {
     }
     iconplayPass = new ImageIcon();
     try {
-      // iconbh.setImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/menu.png")));
+      // iconbh.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/menu.png")));
       iconplayPass.setImage(
-          ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/playpass.png"))
+          ImageIO.read(getClass().getResourceAsStream("/assets/playpass.png"))
               .getScaledInstance(
                   Config.menuIconSize, Config.menuIconSize, java.awt.Image.SCALE_SMOOTH));
     } catch (IOException e) {
@@ -4840,8 +4840,8 @@ public class Menu extends JMenuBar {
 
     icon = new ImageIcon();
     try {
-      icon.setImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/playing.png")));
-      // icon.setImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/run.png")));
+      icon.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/playing.png")));
+      // icon.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/run.png")));
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -4849,7 +4849,7 @@ public class Menu extends JMenuBar {
 
     ready = new ImageIcon();
     try {
-      ready.setImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/ready.png")));
+      ready.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/ready.png")));
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -4857,8 +4857,8 @@ public class Menu extends JMenuBar {
 
     icon2 = new ImageIcon();
     try {
-      icon2.setImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/playing2.png")));
-      // icon.setImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/run.png")));
+      icon2.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/playing2.png")));
+      // icon.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/run.png")));
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -4866,7 +4866,7 @@ public class Menu extends JMenuBar {
 
     ready2 = new ImageIcon();
     try {
-      ready2.setImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/ready2.png")));
+      ready2.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/ready2.png")));
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -4874,7 +4874,7 @@ public class Menu extends JMenuBar {
 
     stop = new ImageIcon();
     try {
-      stop.setImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/stop.png")));
+      stop.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/stop.png")));
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -5065,7 +5065,7 @@ public class Menu extends JMenuBar {
     ImageIcon komiUp;
     komiUp = new ImageIcon();
     try {
-      komiUp.setImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/smallUp.png")));
+      komiUp.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/smallUp.png")));
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -5076,8 +5076,7 @@ public class Menu extends JMenuBar {
     ImageIcon komiDown;
     komiDown = new ImageIcon();
     try {
-      komiDown.setImage(
-          ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/smallDown.png")));
+      komiDown.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/smallDown.png")));
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -6021,7 +6020,7 @@ public class Menu extends JMenuBar {
     iconUp = new ImageIcon();
     try {
       iconUp.setImage(
-          ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/up.png"))
+          ImageIO.read(getClass().getResourceAsStream("/assets/up.png"))
               .getScaledInstance(
                   Config.menuIconSize, Config.menuIconSize, java.awt.Image.SCALE_SMOOTH));
     } catch (IOException e) {
@@ -6031,7 +6030,7 @@ public class Menu extends JMenuBar {
     iconDown = new ImageIcon();
     try {
       iconDown.setImage(
-          ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/down.png"))
+          ImageIO.read(getClass().getResourceAsStream("/assets/down.png"))
               .getScaledInstance(
                   Config.menuIconSize, Config.menuIconSize, java.awt.Image.SCALE_SMOOTH));
     } catch (IOException e) {
@@ -6218,7 +6217,7 @@ public class Menu extends JMenuBar {
     horizonDown = new ImageIcon();
     try {
       horizonDown.setImage(
-          ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/horizonDown.png"))
+          ImageIO.read(getClass().getResourceAsStream("/assets/horizonDown.png"))
               .getScaledInstance(
                   Lizzie.config.isFrameFontSmall()
                       ? 12
@@ -6800,103 +6799,103 @@ public class Menu extends JMenuBar {
       ImageIcon flash = new ImageIcon();
       try {
         flash.setImage(
-            ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/flash.png"))
+            ImageIO.read(getClass().getResourceAsStream("/assets/flash.png"))
                 .getScaledInstance(
                     Config.menuIconSize, Config.menuIconSize, java.awt.Image.SCALE_SMOOTH));
         iconOpen.setImage(
-            ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/open.png"))
+            ImageIO.read(getClass().getResourceAsStream("/assets/open.png"))
                 .getScaledInstance(
                     Config.menuIconSize, Config.menuIconSize, java.awt.Image.SCALE_SMOOTH));
         iconSave.setImage(
-            ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/save.png"))
+            ImageIO.read(getClass().getResourceAsStream("/assets/save.png"))
                 .getScaledInstance(
                     Config.menuIconSize, Config.menuIconSize, java.awt.Image.SCALE_SMOOTH));
         iconAnalyze.setImage(
-            ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/analyze.png"))
+            ImageIO.read(getClass().getResourceAsStream("/assets/analyze.png"))
                 .getScaledInstance(
                     Config.menuIconSize, Config.menuIconSize, java.awt.Image.SCALE_SMOOTH));
         iconHawkeye.setImage(
-            ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/hawkeye2.png"))
+            ImageIO.read(getClass().getResourceAsStream("/assets/hawkeye2.png"))
                 .getScaledInstance(
                     Config.menuIconSize, Config.menuIconSize, java.awt.Image.SCALE_SMOOTH));
         iconSetMain.setImage(
-            ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/setmain.png"))
+            ImageIO.read(getClass().getResourceAsStream("/assets/setmain.png"))
                 .getScaledInstance(
                     Config.menuIconSize, Config.menuIconSize, java.awt.Image.SCALE_SMOOTH));
         iconBackMain.setImage(
-            ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/backmain.png"))
+            ImageIO.read(getClass().getResourceAsStream("/assets/backmain.png"))
                 .getScaledInstance(
                     Config.menuIconSize, Config.menuIconSize, java.awt.Image.SCALE_SMOOTH));
         iconChangeTurn.setImage(
-            ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/pass.png"))
+            ImageIO.read(getClass().getResourceAsStream("/assets/pass.png"))
                 .getScaledInstance(
                     Config.menuIconSize, Config.menuIconSize, java.awt.Image.SCALE_SMOOTH));
         iconMarkup1.setImage(
-            ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/mark1.png"))
+            ImageIO.read(getClass().getResourceAsStream("/assets/mark1.png"))
                 .getScaledInstance(
                     Config.menuIconSize, Config.menuIconSize, java.awt.Image.SCALE_SMOOTH));
         iconMarkup2.setImage(
-            ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/mark2.png"))
+            ImageIO.read(getClass().getResourceAsStream("/assets/mark2.png"))
                 .getScaledInstance(
                     Config.menuIconSize, Config.menuIconSize, java.awt.Image.SCALE_SMOOTH));
         markupLabel1.setImage(
-            ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/label.png"))
+            ImageIO.read(getClass().getResourceAsStream("/assets/label.png"))
                 .getScaledInstance(
                     Config.menuIconSize, Config.menuIconSize, java.awt.Image.SCALE_SMOOTH));
         markupLabel2.setImage(
-            ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/label2.png"))
+            ImageIO.read(getClass().getResourceAsStream("/assets/label2.png"))
                 .getScaledInstance(
                     Config.menuIconSize, Config.menuIconSize, java.awt.Image.SCALE_SMOOTH));
         markupX1.setImage(
-            ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/x.png"))
+            ImageIO.read(getClass().getResourceAsStream("/assets/x.png"))
                 .getScaledInstance(
                     Config.menuIconSize, Config.menuIconSize, java.awt.Image.SCALE_SMOOTH));
         markupX2.setImage(
-            ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/x2.png"))
+            ImageIO.read(getClass().getResourceAsStream("/assets/x2.png"))
                 .getScaledInstance(
                     Config.menuIconSize, Config.menuIconSize, java.awt.Image.SCALE_SMOOTH));
         markupCircle1.setImage(
-            ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/circle.png"))
+            ImageIO.read(getClass().getResourceAsStream("/assets/circle.png"))
                 .getScaledInstance(
                     Config.menuIconSize, Config.menuIconSize, java.awt.Image.SCALE_SMOOTH));
         markupCircle2.setImage(
-            ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/circle2.png"))
+            ImageIO.read(getClass().getResourceAsStream("/assets/circle2.png"))
                 .getScaledInstance(
                     Config.menuIconSize, Config.menuIconSize, java.awt.Image.SCALE_SMOOTH));
         markupSquare1.setImage(
-            ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/square.png"))
+            ImageIO.read(getClass().getResourceAsStream("/assets/square.png"))
                 .getScaledInstance(
                     Config.menuIconSize, Config.menuIconSize, java.awt.Image.SCALE_SMOOTH));
         markupSquare2.setImage(
-            ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/square2.png"))
+            ImageIO.read(getClass().getResourceAsStream("/assets/square2.png"))
                 .getScaledInstance(
                     Config.menuIconSize, Config.menuIconSize, java.awt.Image.SCALE_SMOOTH));
         markupsanjiao1.setImage(
-            ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/sanjiao.png"))
+            ImageIO.read(getClass().getResourceAsStream("/assets/sanjiao.png"))
                 .getScaledInstance(
                     Config.menuIconSize, Config.menuIconSize, java.awt.Image.SCALE_SMOOTH));
         markupsanjiao2.setImage(
-            ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/sanjiao2.png"))
+            ImageIO.read(getClass().getResourceAsStream("/assets/sanjiao2.png"))
                 .getScaledInstance(
                     Config.menuIconSize, Config.menuIconSize, java.awt.Image.SCALE_SMOOTH));
         eraser1.setImage(
-            ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/eraser.png"))
+            ImageIO.read(getClass().getResourceAsStream("/assets/eraser.png"))
                 .getScaledInstance(
                     Config.menuIconSize, Config.menuIconSize, java.awt.Image.SCALE_SMOOTH));
         eraser2.setImage(
-            ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/eraser2.png"))
+            ImageIO.read(getClass().getResourceAsStream("/assets/eraser2.png"))
                 .getScaledInstance(
                     Config.menuIconSize, Config.menuIconSize, java.awt.Image.SCALE_SMOOTH));
         clear.setImage(
-            ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/clear.png"))
+            ImageIO.read(getClass().getResourceAsStream("/assets/clear.png"))
                 .getScaledInstance(
                     Config.menuIconSize, Config.menuIconSize, java.awt.Image.SCALE_SMOOTH));
         rankMarkOn.setImage(
-            ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/RankMarkOn.png"))
+            ImageIO.read(getClass().getResourceAsStream("/assets/RankMarkOn.png"))
                 .getScaledInstance(
                     Config.menuIconSize, Config.menuIconSize, java.awt.Image.SCALE_SMOOTH));
         rankMarkOff.setImage(
-            ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/RankMarkOff.png"))
+            ImageIO.read(getClass().getResourceAsStream("/assets/RankMarkOff.png"))
                 .getScaledInstance(
                     Config.menuIconSize, Config.menuIconSize, java.awt.Image.SCALE_SMOOTH));
       } catch (IOException e) {
@@ -7282,7 +7281,7 @@ public class Menu extends JMenuBar {
       horizonDown = new ImageIcon();
       try {
         horizonDown.setImage(
-            ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/horizonDown.png"))
+            ImageIO.read(getClass().getResourceAsStream("/assets/horizonDown.png"))
                 .getScaledInstance(
                     Lizzie.config.isFrameFontSmall()
                         ? 12

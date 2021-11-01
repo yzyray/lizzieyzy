@@ -190,27 +190,18 @@ public class RightClickMenu extends JPopupMenu {
     ImageIcon iconRemovePoint = new ImageIcon();
     ImageIcon iconSearch = new ImageIcon();
     try {
-      iconForward.setImage(
-          ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/right.png")));
-      iconBack.setImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/left.png")));
-      iconBlack.setImage(
-          ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/smallblack1.png")));
-      iconWhite.setImage(
-          ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/smallwhite.png")));
-      iconRecycle.setImage(
-          ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/recycle.png")));
+      iconForward.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/right.png")));
+      iconBack.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/left.png")));
+      iconBlack.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/smallblack1.png")));
+      iconWhite.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/smallwhite.png")));
+      iconRecycle.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/recycle.png")));
       iconForbidPoint.setImage(
-          ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/forbidpoint.png")));
-      iconSetPoint.setImage(
-          ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/setpoint.png")));
-      iconUppoint.setImage(
-          ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/uppoint.png")));
-      iconAddPoint.setImage(
-          ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/addpoint.png")));
-      iconSearch.setImage(
-          ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/search.png")));
-      iconRemovePoint.setImage(
-          ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/clear.png")));
+          ImageIO.read(getClass().getResourceAsStream("/assets/forbidpoint.png")));
+      iconSetPoint.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/setpoint.png")));
+      iconUppoint.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/uppoint.png")));
+      iconAddPoint.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/addpoint.png")));
+      iconSearch.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/search.png")));
+      iconRemovePoint.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/clear.png")));
     } catch (IOException e1) {
       // TODO Auto-generated catch block
       e1.printStackTrace();

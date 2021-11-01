@@ -105,7 +105,7 @@ public class FoxKifuDownload extends JFrame {
     lblAfterGet.setText(Lizzie.resourceBundle.getString("FoxKifuDownload.lblAfterGet"));
     panel.add(lblAfterGet);
 
-    JComboBox<String> cbxAfterGet = new JFontComboBox();
+    JComboBox<String> cbxAfterGet = new JFontComboBox<String>();
     panel.add(cbxAfterGet);
     cbxAfterGet.addItem(Lizzie.resourceBundle.getString("FoxKifuDownload.cbxAfterGet.min"));
     cbxAfterGet.addItem(Lizzie.resourceBundle.getString("FoxKifuDownload.cbxAfterGet.close"));

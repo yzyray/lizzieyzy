@@ -50,7 +50,7 @@ public class AnalysisTable {
     Lizzie.setFrameSize(frame, 617, 317);
     frame.setResizable(false);
     try {
-      frame.setIconImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/logo.png")));
+      frame.setIconImage(ImageIO.read(getClass().getResourceAsStream("/assets/logo.png")));
     } catch (IOException e) {
       e.printStackTrace();
     }

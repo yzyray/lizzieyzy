@@ -95,7 +95,7 @@ public class IndependentMainBoard extends JFrame {
     setTitle(Lizzie.resourceBundle.getString("IndependentMainBoard.title"));
     setAlwaysOnTop(Lizzie.config.independentMainBoardTop);
     try {
-      this.setIconImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/logo.png")));
+      this.setIconImage(ImageIO.read(getClass().getResourceAsStream("/assets/logo.png")));
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -137,7 +137,7 @@ public class IndependentMainBoard extends JFrame {
     ImageIcon lock;
     lock = new ImageIcon();
     try {
-      lock.setImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/Locked.png")));
+      lock.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/Locked.png")));
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -146,8 +146,7 @@ public class IndependentMainBoard extends JFrame {
     ImageIcon unLock;
     unLock = new ImageIcon();
     try {
-      unLock.setImage(
-          ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/Unlocked.png")));
+      unLock.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/Unlocked.png")));
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -196,8 +195,7 @@ public class IndependentMainBoard extends JFrame {
     ImageIcon closeIcon;
     closeIcon = new ImageIcon();
     try {
-      closeIcon.setImage(
-          ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/close.png")));
+      closeIcon.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/close.png")));
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -239,7 +237,7 @@ public class IndependentMainBoard extends JFrame {
     topIcon = new ImageIcon();
     try {
 
-      topIcon.setImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/top.png")));
+      topIcon.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/top.png")));
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -248,7 +246,7 @@ public class IndependentMainBoard extends JFrame {
     ImageIcon btm;
     btm = new ImageIcon();
     try {
-      btm.setImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/btm.png")));
+      btm.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/btm.png")));
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();

@@ -461,6 +461,7 @@ public class OnlineDialog extends JDialog {
     }
   }
 
+  @SuppressWarnings("deprecation")
   public void parseSgf(String data, String format, int num, boolean decode, boolean first) {
     JSONObject o = null;
     JSONObject live = null;
@@ -644,6 +645,7 @@ public class OnlineDialog extends JDialog {
 
     ajax.setReadyStateChangeListener(
         new AjaxHttpRequest.ReadyStateChangeListener() {
+          @SuppressWarnings("unchecked")
           public void onReadyStateChange() {
             int readyState = ajax.getReadyState();
             if (readyState == AjaxHttpRequest.STATE_COMPLETE) {
@@ -1832,6 +1834,7 @@ public class OnlineDialog extends JDialog {
       return b;
     }
 
+    @SuppressWarnings("unchecked")
     private String readString(ByteBuffer buf) {
       byte[] e = bytes(buf);
       if (e == null || e.length <= 0) return "";

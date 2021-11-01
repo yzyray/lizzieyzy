@@ -89,7 +89,7 @@ public class AnalysisFrame extends JFrame {
     // jfs.setSize(521, 285);
 
     try {
-      setIconImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/logo.png")));
+      setIconImage(ImageIO.read(getClass().getResourceAsStream("/assets/logo.png")));
     } catch (IOException e) {
       e.printStackTrace();
     }

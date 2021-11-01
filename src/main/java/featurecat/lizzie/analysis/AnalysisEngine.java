@@ -202,6 +202,7 @@ public class AnalysisEngine {
     }
   }
 
+  @SuppressWarnings("unchecked")
   public void parseResult(String line) {
     JSONObject result;
     result = new JSONObject(line);

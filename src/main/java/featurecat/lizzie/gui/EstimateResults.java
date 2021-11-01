@@ -91,8 +91,7 @@ public class EstimateResults extends JDialog {
 
     ImageIcon iconSettings = new ImageIcon();
     try {
-      iconSettings.setImage(
-          ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/config.png")));
+      iconSettings.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/config.png")));
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -127,7 +126,7 @@ public class EstimateResults extends JDialog {
     this.setLocNearBoard();
 
     try {
-      this.setIconImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/logo.png")));
+      this.setIconImage(ImageIO.read(getClass().getResourceAsStream("/assets/logo.png")));
     } catch (IOException e) {
       e.printStackTrace();
     }

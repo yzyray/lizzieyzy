@@ -34,7 +34,7 @@ public class EditShareFrame extends JDialog {
   private JCheckBox checkBoxPublic;
   private JDialog shareFrame = this;
   int selectedLabelIndex = 0;
-  JComboBox cboxLabel;
+  JComboBox<String> cboxLabel;
   ItemListener lis;
   JDialog dialog;
 
@@ -126,7 +126,7 @@ public class EditShareFrame extends JDialog {
 
     //    otherLabel.setEnabled(false);
 
-    cboxLabel = new JComboBox();
+    cboxLabel = new JComboBox<String>();
     setShareLabelCombox();
     cboxLabel.setBounds(107, 45, 85, 21);
     getContentPane().add(cboxLabel);
@@ -148,8 +148,7 @@ public class EditShareFrame extends JDialog {
     otherLabel.setEnabled(true);
     ImageIcon iconSettings = new ImageIcon();
     try {
-      iconSettings.setImage(
-          ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/config.png")));
+      iconSettings.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/config.png")));
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();

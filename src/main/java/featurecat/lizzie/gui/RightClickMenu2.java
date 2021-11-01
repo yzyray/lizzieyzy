@@ -87,9 +87,8 @@ public class RightClickMenu2 extends JPopupMenu {
     ImageIcon iconBack = new ImageIcon();
     ImageIcon iconSearch = new ImageIcon();
     try {
-      iconBack.setImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/left.png")));
-      iconSearch.setImage(
-          ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/upSearch.png")));
+      iconBack.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/left.png")));
+      iconSearch.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/upSearch.png")));
     } catch (IOException e1) {
       // TODO Auto-generated catch block
       e1.printStackTrace();

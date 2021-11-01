@@ -159,8 +159,7 @@ public class DemoScrollBarUI extends BasicScrollBarUI {
     if (this.scrollbar.getOrientation() == JScrollBar.VERTICAL) {
       ImageIcon down = new ImageIcon();
       try {
-        down.setImage(
-            ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/smallDown.png")));
+        down.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/smallDown.png")));
       } catch (IOException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();
@@ -174,8 +173,7 @@ public class DemoScrollBarUI extends BasicScrollBarUI {
     } else {
       ImageIcon down = new ImageIcon();
       try {
-        down.setImage(
-            ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/smallRight.png")));
+        down.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/smallRight.png")));
       } catch (IOException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();
@@ -198,7 +196,7 @@ public class DemoScrollBarUI extends BasicScrollBarUI {
     if (this.scrollbar.getOrientation() == JScrollBar.VERTICAL) {
       ImageIcon up = new ImageIcon();
       try {
-        up.setImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/smallUp.png")));
+        up.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/smallUp.png")));
       } catch (IOException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();
@@ -216,7 +214,7 @@ public class DemoScrollBarUI extends BasicScrollBarUI {
     } else {
       ImageIcon up = new ImageIcon();
       try {
-        up.setImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/smallLeft.png")));
+        up.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/smallLeft.png")));
       } catch (IOException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();

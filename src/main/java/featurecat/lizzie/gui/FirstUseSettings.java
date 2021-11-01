@@ -48,8 +48,7 @@ public class FirstUseSettings extends JDialog {
 
     ImageIcon iconSettings = new ImageIcon();
     try {
-      iconSettings.setImage(
-          ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/settings.png")));
+      iconSettings.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/settings.png")));
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();

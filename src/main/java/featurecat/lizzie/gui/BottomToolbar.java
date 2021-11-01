@@ -266,9 +266,9 @@ public class BottomToolbar extends JPanel {
   public JTextField txtenginePkFirstPlayputsWhite;
   public JTextField txtenginePkBatch;
   Message msg;
-  public JComboBox enginePkBlack;
+  public JComboBox<String> enginePkBlack;
   ItemListener enginePkBlackLis;
-  public JComboBox enginePkWhite;
+  public JComboBox<String> enginePkWhite;
   ItemListener enginePkWhiteLis;
 
   private ImageIcon iconUp;
@@ -342,14 +342,14 @@ public class BottomToolbar extends JPanel {
     iconUp = new ImageIcon();
 
     try {
-      iconUp.setImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/up.png")));
+      iconUp.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/up.png")));
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
     iconDown = new ImageIcon();
     try {
-      iconDown.setImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/down.png")));
+      iconDown.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/down.png")));
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -1767,7 +1767,7 @@ public class BottomToolbar extends JPanel {
           }
         });
 
-    enginePkBlack = new JComboBox();
+    enginePkBlack = new JComboBox<String>();
     enginePkPanel.add(enginePkBlack);
     enginePkBlack.setBounds(90, 2, 88, 18);
     lblengineBlack = new JLabel("黑:");
@@ -1782,7 +1782,7 @@ public class BottomToolbar extends JPanel {
     enginePkPanel.add(lblenginePkResult);
     lblenginePkResult.setBounds(186, 0, 45, 20);
 
-    enginePkWhite = new JComboBox();
+    enginePkWhite = new JComboBox<String>();
     addEngineLis();
     enginePkPanel.add(enginePkWhite);
     enginePkWhite.setBounds(255, 2, 88, 18);
@@ -3283,6 +3283,7 @@ public class BottomToolbar extends JPanel {
 
   class UI extends javax.swing.plaf.basic.BasicComboBoxUI {
     protected javax.swing.plaf.basic.ComboPopup createPopup() {
+      @SuppressWarnings("unchecked")
       Popup popup = new Popup(comboBox);
       popup.getAccessibleContext().setAccessibleParent(comboBox);
       return popup;
@@ -3294,7 +3295,7 @@ public class BottomToolbar extends JPanel {
   }
 
   class Popup extends javax.swing.plaf.basic.BasicComboPopup {
-    public Popup(JComboBox combo) {
+    public Popup(JComboBox<String> combo) {
       super(combo);
     }
 

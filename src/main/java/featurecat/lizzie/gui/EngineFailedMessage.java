@@ -38,7 +38,7 @@ public class EngineFailedMessage extends JDialog {
     setTitle(Lizzie.resourceBundle.getString("Leelaz.engineFailed")); // "消息提醒");
     setAlwaysOnTop(true);
     try {
-      this.setIconImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/logo.png")));
+      this.setIconImage(ImageIO.read(getClass().getResourceAsStream("/assets/logo.png")));
     } catch (IOException e) {
       e.printStackTrace();
     }

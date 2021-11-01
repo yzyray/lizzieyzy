@@ -1250,7 +1250,7 @@ public class SubBoardRenderer {
       stoneImage = new BufferedImage(size, size, TYPE_INT_ARGB);
       Image img = null;
       try {
-        img = ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/heatmap.png"));
+        img = ImageIO.read(getClass().getResourceAsStream("/assets/heatmap.png"));
       } catch (IOException e2) {
         e2.printStackTrace();
       }

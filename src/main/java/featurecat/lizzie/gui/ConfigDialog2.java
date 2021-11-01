@@ -284,7 +284,7 @@ public class ConfigDialog2 extends JDialog {
     setBounds(100, 100, 890, 834);
     Lizzie.setFrameSize(this, 890, 825);
     try {
-      setIconImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/logo.png")));
+      setIconImage(ImageIO.read(getClass().getResourceAsStream("/assets/logo.png")));
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -1198,8 +1198,7 @@ public class ConfigDialog2 extends JDialog {
 
     ImageIcon iconSettings = new ImageIcon();
     try {
-      iconSettings.setImage(
-          ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/settings.png")));
+      iconSettings.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/settings.png")));
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -1334,7 +1333,7 @@ public class ConfigDialog2 extends JDialog {
     ImageIcon btnLizzieCacheIcon = new ImageIcon();
     try {
       btnLizzieCacheIcon.setImage(
-          ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/settings.png")));
+          ImageIO.read(getClass().getResourceAsStream("/assets/settings.png")));
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();

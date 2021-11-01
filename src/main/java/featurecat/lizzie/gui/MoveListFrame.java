@@ -776,20 +776,19 @@ public class MoveListFrame extends JFrame {
     hideMove.setPreferredSize(new Dimension(20, 20));
     iconUp = new ImageIcon();
     try {
-      iconUp.setImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/up.png")));
+      iconUp.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/up.png")));
     } catch (IOException e) {
       e.printStackTrace();
     }
     iconDown = new ImageIcon();
     try {
-      iconDown.setImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/down.png")));
+      iconDown.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/down.png")));
     } catch (IOException e) {
       e.printStackTrace();
     }
     iconSettings = new ImageIcon();
     try {
-      iconSettings.setImage(
-          ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/settings.png")));
+      iconSettings.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/settings.png")));
     } catch (IOException e) {
       e.printStackTrace();
     }

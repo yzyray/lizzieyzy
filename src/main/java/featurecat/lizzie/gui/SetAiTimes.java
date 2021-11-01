@@ -286,8 +286,7 @@ public class SetAiTimes extends JDialog {
     ImageIcon iconSettings = new ImageIcon();
     try {
       this.setIconImage(ImageIO.read(MoreEngines.class.getResourceAsStream("/assets/logo.png")));
-      iconSettings.setImage(
-          ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/settings.png")));
+      iconSettings.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/settings.png")));
     } catch (IOException e1) {
       // TODO Auto-generated catch block
       e1.printStackTrace();

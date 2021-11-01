@@ -97,7 +97,7 @@ public class FloatBoard extends JDialog {
     setTitle("FloatBoard");
     setAlwaysOnTop(true);
     try {
-      this.setIconImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/logo.png")));
+      this.setIconImage(ImageIO.read(getClass().getResourceAsStream("/assets/logo.png")));
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -134,16 +134,15 @@ public class FloatBoard extends JDialog {
     right = new ImageIcon();
     position = new ImageIcon();
     try {
-      toStop.setImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/tostop.png")));
-      toPlay.setImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/toplay.png")));
-      plus.setImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/plus.png")));
-      minus.setImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/minus.png")));
-      down.setImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/downFloat.png")));
-      up.setImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/upFloat.png")));
-      left.setImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/leftFloat.png")));
-      right.setImage(
-          ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/rightFloat.png")));
-      position.setImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/pos.png")));
+      toStop.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/tostop.png")));
+      toPlay.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/toplay.png")));
+      plus.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/plus.png")));
+      minus.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/minus.png")));
+      down.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/downFloat.png")));
+      up.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/upFloat.png")));
+      left.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/leftFloat.png")));
+      right.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/rightFloat.png")));
+      position.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/pos.png")));
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();

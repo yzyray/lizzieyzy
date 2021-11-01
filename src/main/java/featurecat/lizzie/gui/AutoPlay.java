@@ -39,7 +39,7 @@ public class AutoPlay extends JFrame {
     setContentPane(contentPane);
     contentPane.setLayout(null);
     try {
-      this.setIconImage(ImageIO.read(AnalysisFrame.class.getResourceAsStream("/assets/logo.png")));
+      this.setIconImage(ImageIO.read(getClass().getResourceAsStream("/assets/logo.png")));
     } catch (IOException e) {
       e.printStackTrace();
     }
