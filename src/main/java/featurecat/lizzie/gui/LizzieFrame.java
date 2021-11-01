@@ -12421,4 +12421,53 @@ public class LizzieFrame extends JFrame {
     super.addNotify();
     createBufferStrategy(2);
   }
+
+  public void hideCandidates() {
+    if (toolbar.chkShowBlack.isSelected() || toolbar.chkShowBlack.isSelected()) {
+      toolbar.chkShowBlack.setSelected(false);
+      toolbar.chkShowWhite.setSelected(false);
+      if (Lizzie.config.showDoubleMenu) {
+        menu.chkShowBlack.setSelected(false);
+        menu.chkShowWhite.setSelected(false);
+      }
+    }
+  }
+
+  public void toggleShowCandidates() {
+    // TODO Auto-generated method stub
+    if (toolbar.chkShowBlack.isSelected() || toolbar.chkShowBlack.isSelected()) {
+      toolbar.chkShowBlack.setSelected(false);
+      toolbar.chkShowWhite.setSelected(false);
+      if (Lizzie.config.showDoubleMenu) {
+        menu.chkShowBlack.setSelected(false);
+        menu.chkShowWhite.setSelected(false);
+      }
+      boardRenderer.clearAfterMove();
+      if (Lizzie.config.isDoubleEngineMode() && boardRenderer2 != null)
+        boardRenderer2.clearAfterMove();
+    } else {
+      toolbar.chkShowBlack.setSelected(true);
+      toolbar.chkShowWhite.setSelected(true);
+      if (Lizzie.config.showDoubleMenu) {
+        menu.chkShowBlack.setSelected(true);
+        menu.chkShowWhite.setSelected(true);
+      }
+    }
+  }
+
+  public void showCandidates() {
+    // TODO Auto-generated method stub
+    toolbar.chkShowBlack.setSelected(true);
+    toolbar.chkShowWhite.setSelected(true);
+    if (Lizzie.config.showDoubleMenu) {
+      menu.chkShowBlack.setSelected(true);
+      menu.chkShowWhite.setSelected(true);
+    }
+  }
+
+  public void openCandidatesDelaySettings(Window owner) {
+    // TODO Auto-generated method stub
+    SetDelayShowCandidates setDelayShowCandidates = new SetDelayShowCandidates(owner);
+    setDelayShowCandidates.setVisible(true);
+  }
 }

@@ -897,7 +897,7 @@ public class Menu extends JMenuBar {
     Suggestions.add(suggestion3);
 
     final JFontMenuItem customInfoOrdr =
-        new JFontMenuItem(resourceBundle.getString("Menu.customInfoOrdr")); // ("目差");
+        new JFontMenuItem(resourceBundle.getString("Menu.customInfoOrdr"));
     customInfoOrdr.addActionListener(
         new ActionListener() {
           @Override
@@ -907,6 +907,16 @@ public class Menu extends JMenuBar {
         });
     Suggestions.add(customInfoOrdr);
 
+    final JFontMenuItem setCandidatesDelay =
+        new JFontMenuItem(resourceBundle.getString("Menu.setCandidatesDelay"));
+    setCandidatesDelay.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.frame.openCandidatesDelaySettings(Lizzie.frame);
+          }
+        });
+    Suggestions.add(setCandidatesDelay);
     Suggestions.addSeparator();
 
     final JFontMenu winrate =

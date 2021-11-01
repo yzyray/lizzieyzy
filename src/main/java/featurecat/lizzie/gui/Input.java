@@ -417,23 +417,7 @@ public class Input implements MouseListener, KeyListener, MouseWheelListener, Mo
         } else {
           if (controlIsPressed(e)) Lizzie.config.toggleLargeSubBoard();
           else {
-            if (LizzieFrame.toolbar.chkShowBlack.isSelected()
-                || LizzieFrame.toolbar.chkShowBlack.isSelected()) {
-              LizzieFrame.toolbar.chkShowBlack.setSelected(false);
-              LizzieFrame.toolbar.chkShowWhite.setSelected(false);
-              if (Lizzie.config.showDoubleMenu) {
-                LizzieFrame.menu.chkShowBlack.setSelected(false);
-                LizzieFrame.menu.chkShowWhite.setSelected(false);
-              }
-              LizzieFrame.boardRenderer.clearAfterMove();
-            } else {
-              LizzieFrame.toolbar.chkShowBlack.setSelected(true);
-              LizzieFrame.toolbar.chkShowWhite.setSelected(true);
-              if (Lizzie.config.showDoubleMenu) {
-                LizzieFrame.menu.chkShowBlack.setSelected(true);
-                LizzieFrame.menu.chkShowWhite.setSelected(true);
-              }
-            }
+            Lizzie.frame.toggleShowCandidates();
           }
         }
         //  Lizzie.frame.refresh();

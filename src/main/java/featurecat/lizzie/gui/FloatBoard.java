@@ -166,15 +166,7 @@ public class FloatBoard extends JDialog {
     btnHideShow.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            hideSuggestion = !hideSuggestion;
-            if (hideSuggestion) btnHideShow.setIcon(plus);
-            else {
-              btnHideShow.setIcon(minus);
-              if (Lizzie.board.getHistory().getCurrentHistoryNode()
-                  != Lizzie.board.getHistory().getMainEnd())
-                Lizzie.board.moveToAnyPosition(Lizzie.board.getHistory().getMainEnd());
-            }
-            refreshByLis();
+            toggleHide();
           }
         });
     btnHideShow.setFocusable(false);
@@ -305,6 +297,9 @@ public class FloatBoard extends JDialog {
             if (e.getKeyCode() == KeyEvent.VK_G) {
               tryToRefreshVariation();
             }
+            if (e.getKeyCode() == KeyEvent.VK_F) {
+              toggleHide();
+            }
           }
         });
     addMouseListener(
@@ -407,6 +402,19 @@ public class FloatBoard extends JDialog {
             if (needRepaint) refreshByLis();
           }
         });
+  }
+
+  private void toggleHide() {
+    // TODO Auto-generated method stub
+    hideSuggestion = !hideSuggestion;
+    if (hideSuggestion) btnHideShow.setIcon(plus);
+    else {
+      btnHideShow.setIcon(minus);
+      if (Lizzie.board.getHistory().getCurrentHistoryNode()
+          != Lizzie.board.getHistory().getMainEnd())
+        Lizzie.board.moveToAnyPosition(Lizzie.board.getHistory().getMainEnd());
+    }
+    refreshByLis();
   }
 
   private void tryToRefreshVariation() {

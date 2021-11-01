@@ -597,6 +597,9 @@ public class Config {
   public int foxAfterGet = 0; // 0=最小化,1=关闭,2=无动作
   public boolean continueWithBestMove = false;
 
+  public boolean delayShowCandidates = false;
+  public double delayCandidatesSeconds = 10;
+
   private JSONObject loadAndMergeSaveBoardConfig(
       JSONObject defaultCfg, String fileName, boolean needValidation) throws IOException {
     File file = new File(fileName);
@@ -1273,6 +1276,8 @@ public class Config {
     showPonderLimitedTips = uiConfig.optBoolean("show-ponder-limited-tips", true);
     foxAfterGet = uiConfig.optInt("fox-after-get", 0);
     continueWithBestMove = uiConfig.optBoolean("continue-with-best-move", false);
+    delayShowCandidates = uiConfig.optBoolean("delay-show-candidates", false);
+    delayCandidatesSeconds = uiConfig.optDouble("delay-candidates-seconds", 10.0);
     otherSizeWidth = uiConfig.optInt("other-size-width", 21);
     otherSizeHeight = uiConfig.optInt("other-size-height", 21);
     useFoxStyleCoords = uiConfig.optBoolean("use-fox-style-coords", false);

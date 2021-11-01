@@ -2058,6 +2058,8 @@ public class Board {
     return history.getMoveNumberList();
   }
 
+  private Thread ShowCandidateSchedule;
+
   public void clearAfterMove() {
     Lizzie.leelaz.outOfPlayoutsLimit = false;
     Lizzie.leelaz.stopByPlayouts = false;
@@ -2145,8 +2147,35 @@ public class Board {
     if (Lizzie.config.isDoubleEngineMode()) {
       LizzieFrame.boardRenderer2.clearAfterMove();
     }
+    handleCandidatesDelay();
     Lizzie.frame.doCommentAfterMove();
   }
+
+  public void handleCandidatesDelay() {
+    // TODO Auto-generated method stub
+    if (ShowCandidateSchedule != null) ShowCandidateSchedule.interrupt();
+    if (Lizzie.config.delayShowCandidates) {
+      Lizzie.frame.hideCandidates();
+      if (Lizzie.config.delayCandidatesSeconds > 0) {
+        Runnable runnable =
+            new Runnable() {
+              public void run() {
+                BoardHistoryNode node = Lizzie.board.getHistory().getCurrentHistoryNode();
+                try {
+                  Thread.sleep((int) (Lizzie.config.delayCandidatesSeconds * 1000));
+                  if (node == Lizzie.board.getHistory().getCurrentHistoryNode())
+                    Lizzie.frame.showCandidates();
+                } catch (InterruptedException e) {
+                  return;
+                }
+              }
+            };
+        ShowCandidateSchedule = new Thread(runnable);
+        ShowCandidateSchedule.start();
+      }
+    }
+  }
+
   /** Goes to the next coordinate, thread safe */
   public boolean nextMove(boolean needRefresh) {
     // canGetBestMoves = false;
