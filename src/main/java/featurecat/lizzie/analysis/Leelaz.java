@@ -2220,7 +2220,9 @@ public class Leelaz {
       }
     }
     if (!isLoaded) {
-      if (line.startsWith("Started OpenCL SGEMM") || line.startsWith("Tuning xGemmDirect")) {
+      if (line.startsWith("Started OpenCL SGEMM")
+          || line.startsWith("Tuning xGemmDirect")
+          || line.contains("long time")) {
         isTuning = true;
       }
     }
