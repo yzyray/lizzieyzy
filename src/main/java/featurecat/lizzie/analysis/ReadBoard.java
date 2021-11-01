@@ -676,7 +676,9 @@ public class ReadBoard {
     if (!Lizzie.frame.bothSync && !needReSync) {
       if (played
           && !Lizzie.config.alwaysGotoLastOnLive
-          && !showInBoard
+          && !(showInBoard
+              && Lizzie.frame.floatBoard != null
+              && !Lizzie.frame.floatBoard.hideSuggestion)
           && Lizzie.board.getHistory().getCurrentHistoryNode().previous().isPresent()
           && node != node2) {
         Lizzie.board.moveToAnyPosition(node);

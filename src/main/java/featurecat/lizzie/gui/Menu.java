@@ -9111,10 +9111,7 @@ public class Menu extends JMenuBar {
     }
     // }
     for (int i = 0; i < Lizzie.engineManager.engineList.size(); i++) {
-      if (i <= 20
-          && Lizzie.engineManager.engineList.get(i).isLoaded()
-          && Lizzie.engineManager.engineList.get(i).process != null
-          && Lizzie.engineManager.engineList.get(i).process.isAlive()) {
+      if (i <= 20 && Lizzie.engineManager.engineList.get(i).isLoaded()) {
         engine[i].setIcon(ready);
         //  if (Lizzie.config.Lizzie.config.isDoubleEngineMode())
         engine2[i].setIcon(ready);

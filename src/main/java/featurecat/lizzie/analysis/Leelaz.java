@@ -54,7 +54,7 @@ public class Leelaz {
   // private boolean isResponse=false;
   private ArrayDeque<String> cmdQueue;
 
-  public Process process;
+  private Process process;
 
   private BufferedReader inputStream;
   private BufferedOutputStream outputStream;
@@ -3673,5 +3673,9 @@ public class Leelaz {
     sendCommand(
         "time_left " + color + " " + String.format(Locale.ENGLISH, "%.2f", seconds) + " " + moves);
     if (isDuringMove) currentCmdNum++;
+  }
+
+  public boolean isProcessDead() {
+    return Lizzie.leelaz.process != null && !Lizzie.leelaz.process.isAlive();
   }
 }

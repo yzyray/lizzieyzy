@@ -3283,7 +3283,6 @@ public class BottomToolbar extends JPanel {
 
   class UI extends javax.swing.plaf.basic.BasicComboBoxUI {
     protected javax.swing.plaf.basic.ComboPopup createPopup() {
-      @SuppressWarnings("unchecked")
       Popup popup = new Popup(comboBox);
       popup.getAccessibleContext().setAccessibleParent(comboBox);
       return popup;
@@ -3295,7 +3294,7 @@ public class BottomToolbar extends JPanel {
   }
 
   class Popup extends javax.swing.plaf.basic.BasicComboPopup {
-    public Popup(JComboBox<String> combo) {
+    public Popup(JComboBox combo) {
       super(combo);
     }
 

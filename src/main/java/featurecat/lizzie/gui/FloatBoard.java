@@ -168,7 +168,12 @@ public class FloatBoard extends JDialog {
           public void actionPerformed(ActionEvent e) {
             hideSuggestion = !hideSuggestion;
             if (hideSuggestion) btnHideShow.setIcon(plus);
-            else btnHideShow.setIcon(minus);
+            else {
+              btnHideShow.setIcon(minus);
+              if (Lizzie.board.getHistory().getCurrentHistoryNode()
+                  != Lizzie.board.getHistory().getMainEnd())
+                Lizzie.board.moveToAnyPosition(Lizzie.board.getHistory().getMainEnd());
+            }
             refreshByLis();
           }
         });
