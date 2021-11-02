@@ -24,9 +24,9 @@ public class FirstUseSettings extends JDialog {
   private JFontTextField txtLimitVariation;
   private JFontTextField txtMaxAnalyzeTime;
   private JFontTextField txtMaxAnalyzePlayouts;
-  private JFontCheckBox chkPlayouts;
-  private JFontCheckBox chkScoreLead;
-  private JFontCheckBox chkWinrate;
+  private JCheckBox chkPlayouts;
+  private JCheckBox chkScoreLead;
+  private JCheckBox chkWinrate;
   private JCheckBox chkLimitTime;
   private JCheckBox chkLimitPlayouts;
   private JDialog thisDialog = this;
@@ -44,7 +44,10 @@ public class FirstUseSettings extends JDialog {
         Lizzie.config.isFrameFontSmall() ? 656 : (Lizzie.config.isFrameFontMiddle() ? 785 : 955),
         524);
     setLocationRelativeTo(Lizzie.frame != null ? Lizzie.frame : null);
-    getContentPane().setLayout(null);
+
+    PanelWithToolTips panel = new PanelWithToolTips();
+    panel.setLayout(null);
+    getContentPane().add(panel);
 
     ImageIcon iconSettings = new ImageIcon();
     try {
@@ -58,7 +61,7 @@ public class FirstUseSettings extends JDialog {
             Lizzie.resourceBundle.getString(
                 "FirstUseSettings.lblMouseOverSuggestion")); // ("鼠标悬停在选点上时,变化图:");
     lblMouseOverSuggestion.setBounds(10, 6, 334, 22);
-    getContentPane().add(lblMouseOverSuggestion);
+    panel.add(lblMouseOverSuggestion);
 
     JFontRadioButton rdoMouseOverSuggestionRefresh =
         new JFontRadioButton(
@@ -69,7 +72,7 @@ public class FirstUseSettings extends JDialog {
         6,
         108,
         23);
-    getContentPane().add(rdoMouseOverSuggestionRefresh);
+    panel.add(rdoMouseOverSuggestionRefresh);
 
     JFontRadioButton rdoMouseOverSuggestionNoRefresh =
         new JFontRadioButton(
@@ -80,7 +83,7 @@ public class FirstUseSettings extends JDialog {
         6,
         457,
         23);
-    getContentPane().add(rdoMouseOverSuggestionNoRefresh);
+    panel.add(rdoMouseOverSuggestionNoRefresh);
 
     ButtonGroup group1 = new ButtonGroup();
     group1.add(rdoMouseOverSuggestionRefresh);
@@ -91,7 +94,7 @@ public class FirstUseSettings extends JDialog {
             Lizzie.resourceBundle.getString(
                 "FirstUseSettings.lblMouseOverSubboard")); // ("鼠标悬停在小棋盘上时,小棋盘:");
     lblMouseOverSubboard.setBounds(10, 46, 344, 22);
-    getContentPane().add(lblMouseOverSubboard);
+    panel.add(lblMouseOverSubboard);
 
     JFontRadioButton rdoMouseOverSubboardRefresh =
         new JFontRadioButton(
@@ -102,7 +105,7 @@ public class FirstUseSettings extends JDialog {
         48,
         107,
         23);
-    getContentPane().add(rdoMouseOverSubboardRefresh);
+    panel.add(rdoMouseOverSubboardRefresh);
 
     JFontRadioButton rdoMouseOverSubboardNoRefresh =
         new JFontRadioButton(
@@ -113,7 +116,7 @@ public class FirstUseSettings extends JDialog {
         48,
         457,
         23);
-    getContentPane().add(rdoMouseOverSubboardNoRefresh);
+    panel.add(rdoMouseOverSubboardNoRefresh);
 
     ButtonGroup group2 = new ButtonGroup();
     group2.add(rdoMouseOverSubboardRefresh);
@@ -122,7 +125,7 @@ public class FirstUseSettings extends JDialog {
     JFontLabel lblLanguage =
         new JFontLabel(Lizzie.resourceBundle.getString("FirstUseSettings.lblLanguage"));
     lblLanguage.setBounds(10, 326, 249, 22);
-    getContentPane().add(lblLanguage);
+    panel.add(lblLanguage);
 
     JFontRadioButton rdoLanguageChinese =
         new JFontRadioButton(
@@ -132,7 +135,7 @@ public class FirstUseSettings extends JDialog {
         328,
         110,
         23);
-    getContentPane().add(rdoLanguageChinese);
+    panel.add(rdoLanguageChinese);
 
     JFontRadioButton rdoLanguageEnglish =
         new JFontRadioButton(
@@ -142,7 +145,7 @@ public class FirstUseSettings extends JDialog {
         328,
         140,
         23);
-    getContentPane().add(rdoLanguageEnglish);
+    panel.add(rdoLanguageEnglish);
 
     ButtonGroup languageGroup = new ButtonGroup();
     languageGroup.add(rdoLanguageChinese);
@@ -151,7 +154,7 @@ public class FirstUseSettings extends JDialog {
     JFontLabel lblLooks =
         new JFontLabel(Lizzie.resourceBundle.getString("FirstUseSettings.lblLooks")); // "界面样式");
     lblLooks.setBounds(10, 366, 249, 22);
-    getContentPane().add(lblLooks);
+    panel.add(lblLooks);
 
     JFontRadioButton rdoJavaLooks =
         new JFontRadioButton(
@@ -161,7 +164,7 @@ public class FirstUseSettings extends JDialog {
         368,
         140,
         23);
-    getContentPane().add(rdoJavaLooks);
+    panel.add(rdoJavaLooks);
 
     JFontRadioButton rdoSysLooks =
         new JFontRadioButton(
@@ -171,7 +174,7 @@ public class FirstUseSettings extends JDialog {
         368,
         114,
         23);
-    getContentPane().add(rdoSysLooks);
+    panel.add(rdoSysLooks);
 
     ButtonGroup looksGroup = new ButtonGroup();
     looksGroup.add(rdoJavaLooks);
@@ -200,13 +203,13 @@ public class FirstUseSettings extends JDialog {
                     "FirstUseSettings.looksHelperTitle")); // ("如果系统默认样式部分按钮、选择框显示不全,则可尝试选择Java默认界面","界面样式说明");
           }
         });
-    getContentPane().add(btnLooksHelper);
+    panel.add(btnLooksHelper);
 
     JFontLabel lblLimitSuggestion =
         new JFontLabel(
             Lizzie.resourceBundle.getString("FirstUseSettings.lblLimitSuggestion")); // ("限制选点个数:");
     lblLimitSuggestion.setBounds(10, 246, 337, 22);
-    getContentPane().add(lblLimitSuggestion);
+    panel.add(lblLimitSuggestion);
 
     txtLimitSuggestion = new JFontTextField();
     txtLimitSuggestion.setBounds(
@@ -214,7 +217,7 @@ public class FirstUseSettings extends JDialog {
         246,
         66,
         24);
-    getContentPane().add(txtLimitSuggestion);
+    panel.add(txtLimitSuggestion);
     txtLimitSuggestion.setColumns(10);
 
     JFontLabel lblLimitVariation =
@@ -225,7 +228,7 @@ public class FirstUseSettings extends JDialog {
         246,
         236,
         22);
-    getContentPane().add(lblLimitVariation);
+    panel.add(lblLimitVariation);
 
     txtLimitVariation = new JFontTextField();
     txtLimitVariation.setBounds(
@@ -233,14 +236,14 @@ public class FirstUseSettings extends JDialog {
         246,
         66,
         24);
-    getContentPane().add(txtLimitVariation);
+    panel.add(txtLimitVariation);
     txtLimitVariation.setColumns(10);
 
     JFontLabel lblScoreOnBoard =
         new JFontLabel(
             Lizzie.resourceBundle.getString("FirstUseSettings.lblShowScore")); // ("目差在选点上显示为:");
     lblScoreOnBoard.setBounds(10, 86, 337, 22);
-    getContentPane().add(lblScoreOnBoard);
+    panel.add(lblScoreOnBoard);
 
     JFontRadioButton rdoScoreOnBoardWithKomi =
         new JFontRadioButton(
@@ -251,7 +254,7 @@ public class FirstUseSettings extends JDialog {
         88,
         Lizzie.config.isFrameFontSmall() ? 114 : (Lizzie.config.isFrameFontMiddle() ? 114 : 140),
         23);
-    getContentPane().add(rdoScoreOnBoardWithKomi);
+    panel.add(rdoScoreOnBoardWithKomi);
 
     JFontRadioButton rdoScoreOnBoardWithOutKomi =
         new JFontRadioButton(
@@ -262,7 +265,7 @@ public class FirstUseSettings extends JDialog {
         88,
         422,
         23);
-    getContentPane().add(rdoScoreOnBoardWithOutKomi);
+    panel.add(rdoScoreOnBoardWithOutKomi);
 
     ButtonGroup group3 = new ButtonGroup();
     group3.add(rdoScoreOnBoardWithKomi);
@@ -273,7 +276,7 @@ public class FirstUseSettings extends JDialog {
             Lizzie.resourceBundle.getString(
                 "FirstUseSettings.lblWinratePerspective")); // ("目差在胜率图上显示为:");
     lblWinratePerspective.setBounds(10, 126, 337, 22);
-    getContentPane().add(lblWinratePerspective);
+    panel.add(lblWinratePerspective);
 
     JFontRadioButton rdoAlwaysBlack =
         new JFontRadioButton(
@@ -283,7 +286,7 @@ public class FirstUseSettings extends JDialog {
         128,
         Lizzie.config.isFrameFontSmall() ? 114 : (Lizzie.config.isFrameFontMiddle() ? 114 : 140),
         23);
-    getContentPane().add(rdoAlwaysBlack);
+    panel.add(rdoAlwaysBlack);
 
     JFontRadioButton rdoAlternately =
         new JFontRadioButton(
@@ -293,7 +296,7 @@ public class FirstUseSettings extends JDialog {
         128,
         422,
         23);
-    getContentPane().add(rdoAlternately);
+    panel.add(rdoAlternately);
 
     ButtonGroup group4 = new ButtonGroup();
     group4.add(rdoAlwaysBlack);
@@ -304,7 +307,7 @@ public class FirstUseSettings extends JDialog {
             Lizzie.resourceBundle.getString(
                 "FirstUseSettings.lblLizzieCache")); // ("是否启用Lizzie缓存");
     lblLizzieCache.setBounds(10, 166, 285, 22);
-    getContentPane().add(lblLizzieCache);
+    panel.add(lblLizzieCache);
 
     JFontRadioButton rdoLizzieCacheEnable =
         new JFontRadioButton(
@@ -314,7 +317,7 @@ public class FirstUseSettings extends JDialog {
         168,
         107,
         23);
-    getContentPane().add(rdoLizzieCacheEnable);
+    panel.add(rdoLizzieCacheEnable);
 
     JFontRadioButton rdoLizzieCacheDisable =
         new JFontRadioButton(
@@ -324,7 +327,7 @@ public class FirstUseSettings extends JDialog {
         168,
         121,
         23);
-    getContentPane().add(rdoLizzieCacheDisable);
+    panel.add(rdoLizzieCacheDisable);
 
     ButtonGroup group5 = new ButtonGroup();
     group5.add(rdoLizzieCacheEnable);
@@ -348,14 +351,14 @@ public class FirstUseSettings extends JDialog {
                     "FirstUseSettings.lizzieCacheDiscribeTitle")); // "Lizzie缓存说明");
           }
         });
-    getContentPane().add(btnLizzieCacheHelper);
+    panel.add(btnLizzieCacheHelper);
 
     JFontLabel lblMaxAnalyzeTime =
         new JFontLabel(
             Lizzie.resourceBundle.getString(
                 "FirstUseSettings.lblMaxAnalyzeTime")); // "单步最大分析时间(秒)");
     lblMaxAnalyzeTime.setBounds(10, 286, 236, 22);
-    getContentPane().add(lblMaxAnalyzeTime);
+    panel.add(lblMaxAnalyzeTime);
 
     JFontButton btnlMaxAnalyzeTimeHelper = new JFontButton(iconSettings);
     btnlMaxAnalyzeTimeHelper.setBounds(
@@ -372,11 +375,11 @@ public class FirstUseSettings extends JDialog {
                 Lizzie.resourceBundle.getString("FirstUseSettings.maxAnalyzeTimeDiscribeTitile"));
           }
         });
-    getContentPane().add(btnlMaxAnalyzeTimeHelper);
+    panel.add(btnlMaxAnalyzeTimeHelper);
 
     chkLimitTime =
         new JFontCheckBox(Lizzie.resourceBundle.getString("FirstUseSettings.chkLimitTime"));
-    getContentPane().add(chkLimitTime);
+    panel.add(chkLimitTime);
     chkLimitTime.setBounds(
         Lizzie.config.isFrameFontSmall() ? 160 : (Lizzie.config.isFrameFontMiddle() ? 217 : 277),
         287,
@@ -389,11 +392,11 @@ public class FirstUseSettings extends JDialog {
         286,
         66,
         24);
-    getContentPane().add(txtMaxAnalyzeTime);
+    panel.add(txtMaxAnalyzeTime);
 
     chkLimitPlayouts =
         new JFontCheckBox(Lizzie.resourceBundle.getString("FirstUseSettings.chkLimitVisits"));
-    getContentPane().add(chkLimitPlayouts);
+    panel.add(chkLimitPlayouts);
     if (Lizzie.config.isChinese)
       chkLimitPlayouts.setBounds(
           Lizzie.config.isFrameFontSmall() ? 335 : (Lizzie.config.isFrameFontMiddle() ? 405 : 505),
@@ -419,7 +422,7 @@ public class FirstUseSettings extends JDialog {
           286,
           66,
           24);
-    getContentPane().add(txtMaxAnalyzePlayouts);
+    panel.add(txtMaxAnalyzePlayouts);
 
     chkLimitTime.addActionListener(
         new ActionListener() {
@@ -441,7 +444,7 @@ public class FirstUseSettings extends JDialog {
             Lizzie.resourceBundle.getString(
                 "FirstUseSettings.lblNotice")); // ("注:0代表不限制,本次设置完成后,可在[菜单-设置-初始化设置]中修改这些选项");
     lblNotice.setBounds(10, 406, 867, 22);
-    getContentPane().add(lblNotice);
+    panel.add(lblNotice);
 
     JFontLabel lblHint =
         new JFontLabel(
@@ -449,12 +452,12 @@ public class FirstUseSettings extends JDialog {
                 "FirstUseSettings.lblHint")); // "提示:可多使用鼠标滚轮控制棋局和变化图的进退");
     lblHint.setForeground(Color.RED);
     lblHint.setBounds(10, 431, 867, 22);
-    getContentPane().add(lblHint);
+    panel.add(lblHint);
 
     JFontLabel lblSuggestionInfo =
         new JFontLabel(Lizzie.resourceBundle.getString("FirstUseSettings.lblSuggestionInfo"));
     lblSuggestionInfo.setBounds(10, 206, 285, 22);
-    getContentPane().add(lblSuggestionInfo);
+    panel.add(lblSuggestionInfo);
 
     chkWinrate = new JFontCheckBox(Lizzie.resourceBundle.getString("FirstUseSettings.chkWinrate"));
     chkWinrate.setBounds(
@@ -462,7 +465,7 @@ public class FirstUseSettings extends JDialog {
         208,
         95,
         23);
-    getContentPane().add(chkWinrate);
+    panel.add(chkWinrate);
 
     chkPlayouts = new JFontCheckBox(Lizzie.resourceBundle.getString("FirstUseSettings.chkVisits"));
     chkPlayouts.setBounds(
@@ -470,7 +473,7 @@ public class FirstUseSettings extends JDialog {
         208,
         95,
         23);
-    getContentPane().add(chkPlayouts);
+    panel.add(chkPlayouts);
 
     chkScoreLead =
         new JFontCheckBox(Lizzie.resourceBundle.getString("FirstUseSettings.chkScoreLead"));
@@ -479,7 +482,7 @@ public class FirstUseSettings extends JDialog {
         208,
         125,
         23);
-    getContentPane().add(chkScoreLead);
+    panel.add(chkScoreLead);
 
     JFontButton btnCustomOrder =
         new JFontButton(Lizzie.resourceBundle.getString("FirstUseSettings.btnCustomOrder"));
@@ -502,7 +505,7 @@ public class FirstUseSettings extends JDialog {
             LizzieFrame.openSuggestionInfoCustom(thisDialog);
           }
         });
-    getContentPane().add(btnCustomOrder);
+    panel.add(btnCustomOrder);
 
     setChkSuggestionInfo();
 
@@ -543,7 +546,7 @@ public class FirstUseSettings extends JDialog {
         461,
         Lizzie.config.isFrameFontSmall() ? 116 : (Lizzie.config.isFrameFontMiddle() ? 130 : 165),
         25);
-    getContentPane().add(defaultSettings);
+    panel.add(defaultSettings);
 
     JFontButton btnApply =
         new JFontButton(Lizzie.resourceBundle.getString("FirstUseSettings.btnApply")); // ("确定");
@@ -714,7 +717,7 @@ public class FirstUseSettings extends JDialog {
         461,
         Lizzie.config.isFrameFontSmall() ? 116 : (Lizzie.config.isFrameFontMiddle() ? 130 : 165),
         25);
-    getContentPane().add(btnApply);
+    panel.add(btnApply);
 
     if (!firstTime) {
       if (Lizzie.config.enableLizzieCache) rdoLizzieCacheEnable.setSelected(true);

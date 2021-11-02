@@ -15,6 +15,7 @@ import featurecat.lizzie.Config;
 import featurecat.lizzie.ExtraMode;
 import featurecat.lizzie.Lizzie;
 import featurecat.lizzie.analysis.AnalysisEngine;
+import featurecat.lizzie.analysis.ContributeEngine;
 import featurecat.lizzie.analysis.EngineManager;
 import featurecat.lizzie.analysis.GameInfo;
 import featurecat.lizzie.analysis.KataEstimate;
@@ -12469,5 +12470,10 @@ public class LizzieFrame extends JFrame {
     // TODO Auto-generated method stub
     SetDelayShowCandidates setDelayShowCandidates = new SetDelayShowCandidates(owner);
     setDelayShowCandidates.setVisible(true);
+  }
+
+  public void testContibute() {
+    // TODO Auto-generated method stub
+    ContributeEngine contributeEngine = new ContributeEngine();
   }
 }

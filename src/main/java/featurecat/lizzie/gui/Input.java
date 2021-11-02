@@ -619,6 +619,7 @@ public class Input implements MouseListener, KeyListener, MouseWheelListener, Mo
             Lizzie.frame.flashAnalyzeGame(true);
           } else {
             Lizzie.frame.moveToMainTrunk();
+            Lizzie.frame.testContibute();
           }
         }
         break;

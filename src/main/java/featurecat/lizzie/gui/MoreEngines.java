@@ -44,8 +44,8 @@ import javax.swing.table.TableModel;
 public class MoreEngines extends JPanel {
   public static Config config;
   public TableModel dataModel;
-  JPanel tablepanel;
-  JPanel selectpanel = new JPanel();
+  PanelWithToolTips tablepanel;
+  PanelWithToolTips selectpanel;
   JScrollPane scrollpane;
   public static JTable table;
   Font headFont;
@@ -98,7 +98,6 @@ public class MoreEngines extends JPanel {
     setLayout((LayoutManager) null);
     this.dataModel = getTableModel();
     table = new JTable(this.dataModel);
-    this.selectpanel.setLayout((LayoutManager) null);
     this.winrateFont = new Font("Microsoft YaHei", 0, Math.max(Config.frameFontSize, 14));
     this.headFont = new Font("Microsoft YaHei", 0, Math.max(Config.frameFontSize, 13));
     table.getTableHeader().setFont(this.headFont);
@@ -107,8 +106,11 @@ public class MoreEngines extends JPanel {
     table.getTableHeader().setResizingAllowed(false);
     TableCellRenderer tcr = new ColorTableCellRenderer();
     table.setDefaultRenderer(Object.class, tcr);
-    this.tablepanel = new JPanel(new BorderLayout());
-    this.tablepanel.setBounds(0, 385, 885, 380);
+    tablepanel = new PanelWithToolTips();
+    tablepanel.setLayout(new BorderLayout());
+    tablepanel.setBounds(0, 385, 885, 380);
+    selectpanel = new PanelWithToolTips();
+    selectpanel.setLayout((LayoutManager) null);
     add(this.tablepanel, "South");
     this.selectpanel.setBounds(0, 0, 900, 385);
     add(this.selectpanel, "North");

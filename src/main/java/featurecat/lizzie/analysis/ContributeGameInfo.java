@@ -11,6 +11,7 @@ public class ContributeGameInfo {
   public int sizeY;
   public double komi;
   public JSONObject rules;
+  public ArrayList<ContributeMoveInfo> initMoveList;
   public ArrayList<ContributeMoveInfo> moveList;
   public boolean isWatching;
 }

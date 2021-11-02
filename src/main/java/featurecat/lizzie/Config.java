@@ -1804,6 +1804,7 @@ public class Config {
 
   public void toggleShowSuggestionVariations() {
     showSuggestionVariations = !showSuggestionVariations;
+    uiConfig.put("show-suggestion-variations", showSuggestionVariations);
   }
 
   public void toggleEvaluationColoring() {

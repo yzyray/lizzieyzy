@@ -74,7 +74,7 @@ public class MoveListFrame extends JFrame {
   int selectedIndexTop = Lizzie.config.movelistSelectedIndexTop;
 
   JPanel matchPanel;
-  JPanel matchPanelmin;
+  PanelWithToolTips matchPanelmin;
   JPanel matchPanelAll;
 
   JPanel mistakePanelAll;
@@ -636,7 +636,7 @@ public class MoveListFrame extends JFrame {
     matchPanel.setPreferredSize(new Dimension(getWidth(), getHeight() / 4));
 
     matchPanelmin =
-        new JPanel(true) {
+        new PanelWithToolTips() {
           @Override
           protected void paintComponent(Graphics g) {
             Graphics2D g0 = (Graphics2D) g;
