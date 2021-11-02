@@ -62,15 +62,13 @@ public class Utils {
     return String.valueOf(num);
   }
 
-  public static void showHtmlMessage(String title, String content,Window owner) {
-    HtmlMessage htmlMessage =
-        new HtmlMessage(title, content, owner);
+  public static void showHtmlMessage(String title, String content, Window owner) {
+    HtmlMessage htmlMessage = new HtmlMessage(title, content, owner);
     htmlMessage.setVisible(true);
   }
 
-  public static void showHtmlMessageModal(String title, String content,Window owner) {
-    HtmlMessage htmlMessage =
-        new HtmlMessage(title, content, owner);
+  public static void showHtmlMessageModal(String title, String content, Window owner) {
+    HtmlMessage htmlMessage = new HtmlMessage(title, content, owner);
     htmlMessage.setModal(true);
     htmlMessage.setVisible(true);
   }

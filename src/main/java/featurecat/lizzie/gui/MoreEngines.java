@@ -263,7 +263,8 @@ public class MoreEngines extends JPanel {
             Discribe lizzieCacheDiscribe = new Discribe();
             lizzieCacheDiscribe.setInfo(
                 resourceBundle.getString("MoreEngines.aboutRemoteEngine"),
-                resourceBundle.getString("MoreEngines.aboutRemoteEngineTitle"),engjf);
+                resourceBundle.getString("MoreEngines.aboutRemoteEngineTitle"),
+                engjf);
           }
         });
     this.txtIP = new JFontTextField();

@@ -33,23 +33,23 @@ public class Discribe extends JDialog {
     }
   }
 
-  public void setInfo(String message, String title,Window owner) {
+  public void setInfo(String message, String title, Window owner) {
     textAreaDiscribe.setText(message);
     setTitle(title);
-    // setSize(441, 272);    
+    // setSize(441, 272);
     setVisible(true);
     // setSize(441, 273);
     if (Lizzie.config.isFrameFontSmall()) Lizzie.setFrameSize(this, 441, 273);
     else if (Lizzie.config.isFrameFontMiddle()) Lizzie.setFrameSize(this, 541, 313);
     else Lizzie.setFrameSize(this, 741, 373);
     this.setModal(true);
-   
+
     setLocationRelativeTo(owner);
     setVisible(false);
     setVisible(true);
   }
 
-  public void setInfoWide(String message, String title,Window owner) {
+  public void setInfoWide(String message, String title, Window owner) {
     textAreaDiscribe.setText(message);
     setTitle(title);
     // setSize(441, 272);
@@ -63,7 +63,7 @@ public class Discribe extends JDialog {
     setVisible(true);
   }
 
-  public void setInfo(String message, String title, int width, int height,Window owner) {
+  public void setInfo(String message, String title, int width, int height, Window owner) {
     textAreaDiscribe.setText(message);
     setTitle(title);
     setSize(width, height);

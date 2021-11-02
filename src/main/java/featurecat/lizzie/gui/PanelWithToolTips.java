@@ -1,13 +1,12 @@
 package featurecat.lizzie.gui;
 
+import featurecat.lizzie.Lizzie;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.SwingUtilities;
-
-import featurecat.lizzie.Lizzie;
 
 public class PanelWithToolTips extends JPanel {
   public void add(JLabel label) {
@@ -34,8 +33,7 @@ public class PanelWithToolTips extends JPanel {
   }
 
   public void add(JRadioButton radioButton) {
-    if (!Lizzie.config.isChinese)     	
-    {
+    if (!Lizzie.config.isChinese) {
       String texts = radioButton.getText();
       if (texts.length() > 0) radioButton.setToolTipText(texts);
     }

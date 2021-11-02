@@ -12170,7 +12170,8 @@ public class LizzieFrame extends JFrame {
     Discribe lizzieCacheDiscribe = new Discribe();
     lizzieCacheDiscribe.setInfoWide(
         Lizzie.resourceBundle.getString("LizzieFrame.aboutAnalyzeGenmoveInfo"),
-        Lizzie.resourceBundle.getString("LizzieFrame.aboutAnalyzeGenmoveInfoTitle"),this);
+        Lizzie.resourceBundle.getString("LizzieFrame.aboutAnalyzeGenmoveInfoTitle"),
+        this);
   }
 
   public void leftClickInScoreMode(int x, int y) {

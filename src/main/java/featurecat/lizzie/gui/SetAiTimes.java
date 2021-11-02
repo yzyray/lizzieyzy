@@ -53,7 +53,7 @@ public class SetAiTimes extends JDialog {
   private JTextField txtKataTimeByoyomiSecs;
   private JTextField txtKataTimeByoyomiTimes;
   private JTextField txtKataTimeFisherIncrementSecs;
-  private Window thisDialog=this;
+  private Window thisDialog = this;
 
   public SetAiTimes(Window owner) {
     super(owner);
@@ -298,7 +298,8 @@ public class SetAiTimes extends JDialog {
           public void actionPerformed(ActionEvent e) {
             Utils.showHtmlMessageModal(
                 resourceBundle.getString("AdvanceTimeSettings.title"),
-                resourceBundle.getString("AdvanceTimeSettings.describe"),thisDialog);
+                resourceBundle.getString("AdvanceTimeSettings.describe"),
+                thisDialog);
           }
         });
     btnNewButton.setBounds(144, 77, 18, 18);
