@@ -9721,10 +9721,10 @@ public class LizzieFrame extends JFrame {
   }
 
   public void clearKataEstimate() {
-    boardRenderer.removecountblock();
-    if (Lizzie.config.showSubBoard) subBoardRenderer.removecountblock();
-    if (Lizzie.config.isDoubleEngineMode()) boardRenderer2.removecountblock();
-    if (floatBoard != null) floatBoard.boardRenderer.removecountblock();
+    boardRenderer.removeKataEstimateImage();
+    if (Lizzie.config.showSubBoard) subBoardRenderer.removeKataEstimateImage();
+    if (Lizzie.config.isDoubleEngineMode()) boardRenderer2.removeKataEstimateImage();
+    if (floatBoard != null) floatBoard.boardRenderer.removeKataEstimateImage();
     if (estimateResults != null && estimateResults.isVisible()) estimateResults.repaint();
   }
 
@@ -9763,46 +9763,41 @@ public class LizzieFrame extends JFrame {
   }
 
   public void drawKataEstimate(Leelaz engine, ArrayList<Double> tempcount) {
-    if (isInScoreMode) return;
-    if ((!Lizzie.leelaz.iskataHeatmapShowOwner && Lizzie.config.showKataGoEstimateBySize)
-        || (Lizzie.leelaz.iskataHeatmapShowOwner && Lizzie.config.showPureEstimateBySize)) {
-      if (Lizzie.config.showKataGoEstimateOnMainbord || isShowingHeatmap) {
-        if (Lizzie.config.isDoubleEngineMode()) {
-          if (engine == Lizzie.leelaz) LizzieFrame.boardRenderer.drawKataEstimateBySize(tempcount);
-          if (Lizzie.leelaz2 != null && engine == Lizzie.leelaz2)
-            LizzieFrame.boardRenderer2.drawKataEstimateBySize(tempcount);
-        } else {
-          LizzieFrame.boardRenderer.drawKataEstimateBySize(tempcount);
-          if (floatBoard != null && floatBoard.isVisible())
-            floatBoard.boardRenderer.drawKataEstimateBySize(tempcount);
-        }
+    if (isInScoreMode || !isShowingHeatmap) return;
+    if ((Lizzie.leelaz.iskataHeatmapShowOwner && Lizzie.config.showPureEstimateBySize)) {
+      if (Lizzie.config.isDoubleEngineMode()) {
+        if (engine == Lizzie.leelaz)
+          LizzieFrame.boardRenderer.drawKataEstimateBySize(tempcount, false);
+        if (Lizzie.leelaz2 != null && engine == Lizzie.leelaz2)
+          LizzieFrame.boardRenderer2.drawKataEstimateBySize(tempcount, false);
+      } else {
+        LizzieFrame.boardRenderer.drawKataEstimateBySize(tempcount, false);
+        if (floatBoard != null && floatBoard.isVisible())
+          floatBoard.boardRenderer.drawKataEstimateBySize(tempcount, false);
       }
-      if ((Lizzie.config.showKataGoEstimateOnSubbord || isShowingHeatmap)
-          && !Lizzie.config.isDoubleEngineMode()) {
+
+      if (!Lizzie.config.isDoubleEngineMode()) {
         if (Lizzie.config.showSubBoard)
-          LizzieFrame.subBoardRenderer.drawKataEstimateBySize(tempcount);
+          LizzieFrame.subBoardRenderer.drawKataEstimateBySize(tempcount, false);
         if (independentSubBoard != null && independentSubBoard.isVisible())
-          independentSubBoard.subBoardRenderer.drawKataEstimateBySize(tempcount);
+          independentSubBoard.subBoardRenderer.drawKataEstimateBySize(tempcount, false);
       }
     } else {
-      if (Lizzie.config.showKataGoEstimateOnMainbord || isShowingHeatmap) {
-        if (Lizzie.config.isDoubleEngineMode()) {
-          if (engine == Lizzie.leelaz)
-            LizzieFrame.boardRenderer.drawKataEstimateByTransparent(tempcount);
-          if (Lizzie.leelaz2 != null && engine == Lizzie.leelaz2)
-            LizzieFrame.boardRenderer2.drawKataEstimateByTransparent(tempcount);
-        } else {
-          LizzieFrame.boardRenderer.drawKataEstimateByTransparent(tempcount);
-          if (floatBoard != null && floatBoard.isVisible())
-            floatBoard.boardRenderer.drawKataEstimateByTransparent(tempcount);
-        }
+      if (Lizzie.config.isDoubleEngineMode()) {
+        if (engine == Lizzie.leelaz)
+          LizzieFrame.boardRenderer.drawKataEstimateByTransparent(tempcount, false);
+        if (Lizzie.leelaz2 != null && engine == Lizzie.leelaz2)
+          LizzieFrame.boardRenderer2.drawKataEstimateByTransparent(tempcount, false);
+      } else {
+        LizzieFrame.boardRenderer.drawKataEstimateByTransparent(tempcount, false);
+        if (floatBoard != null && floatBoard.isVisible())
+          floatBoard.boardRenderer.drawKataEstimateByTransparent(tempcount, false);
       }
-      if ((Lizzie.config.showKataGoEstimateOnSubbord || isShowingHeatmap)
-          && !Lizzie.config.isDoubleEngineMode()) {
+      if (!Lizzie.config.isDoubleEngineMode()) {
         if (Lizzie.config.showSubBoard)
-          LizzieFrame.subBoardRenderer.drawKataEstimateByTransparent(tempcount);
+          LizzieFrame.subBoardRenderer.drawKataEstimateByTransparent(tempcount, false);
         if (independentSubBoard != null && independentSubBoard.isVisible())
-          independentSubBoard.subBoardRenderer.drawKataEstimateByTransparent(tempcount);
+          independentSubBoard.subBoardRenderer.drawKataEstimateByTransparent(tempcount, false);
       }
     }
   }

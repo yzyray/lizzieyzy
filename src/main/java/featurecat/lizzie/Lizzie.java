@@ -102,13 +102,13 @@ public class Lizzie {
       //            	bosError.write("===========\n".getBytes());
       //            	bosError.write(sw.toString().getBytes());
       //			} catch (IOException e) {
-      //				// TODO Auto-generated catch block
+      //				// T	ODO Auto-generated catch block
       //				e.printStackTrace();
       //			}
       //        }
       //    });
     }
-    // -Dsun.java2d.uiScale=1.0
+    // d
     // -Dsun.java2d.uiScale.enabled=false
     // -Dsun.java2d.win.uiScaleX=1.25 -Dsun.java2d.win.uiScaleY=1.25
     // -Dsun.java2d.win.uiScaleX=125% -Dsun.java2d.win.uiScaleY=125%

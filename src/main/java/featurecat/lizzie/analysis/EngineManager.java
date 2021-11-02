@@ -198,6 +198,7 @@ public class EngineManager {
       int maxGameMoves) {
     if (Lizzie.frame.isTrying) Lizzie.frame.tryPlay(false);
     engineGameInfo = new EngineGameInfo();
+    if (Lizzie.frame.isShowingHeatmap) Lizzie.leelaz.toggleHeatmap(true);
     if (!isEmpty && Lizzie.leelaz != null) {
       Lizzie.leelaz.clearBestMoves();
     }
@@ -2161,10 +2162,11 @@ public class EngineManager {
 
                   changeEngIco(1);
                   LizzieFrame.toolbar.reSetButtonLocation();
-                  LizzieFrame.boardRenderer.removecountblock();
+                  LizzieFrame.boardRenderer.removeKataEstimateImage();
                   if (Lizzie.frame.floatBoard != null)
-                    Lizzie.frame.floatBoard.boardRenderer.removecountblock();
-                  if (Lizzie.config.showSubBoard) LizzieFrame.subBoardRenderer.removecountblock();
+                    Lizzie.frame.floatBoard.boardRenderer.removeKataEstimateImage();
+                  if (Lizzie.config.showSubBoard)
+                    LizzieFrame.subBoardRenderer.removeKataEstimateImage();
                   if (currentEngineNo > 20) LizzieFrame.menu.changeEngineIcon(20, 3);
                   else LizzieFrame.menu.changeEngineIcon(currentEngineNo, 3);
                   newEng.setResponseUpToDate();
@@ -2197,7 +2199,7 @@ public class EngineManager {
                         + "]: "
                         + engineList.get(currentEngineNo2).currentEnginename);
                 changeEngIco(2);
-                LizzieFrame.boardRenderer2.removecountblock();
+                LizzieFrame.boardRenderer2.removeKataEstimateImage();
                 Lizzie.leelaz.ponder();
                 Lizzie.leelaz2.setResponseUpToDate();
               }

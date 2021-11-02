@@ -642,10 +642,19 @@ public class Leelaz {
       }
     }
     currentTotalPlayouts = MoveData.getPlayouts(bestMoves);
+    ArrayList<Double> estimateArray = new ArrayList<Double>();
+    if (Lizzie.config.showKataGoEstimate) {
+      if (line.contains("ownership")) {
+        String[] params = line.trim().split("ownership");
+        String[] params2 = params[1].trim().split(" ");
+        for (int i = 0; i < params2.length; i++) estimateArray.add(Double.parseDouble(params2[i]));
+      }
+    } else estimateArray = null;
     if (Lizzie.config.isDoubleEngineMode() && Lizzie.leelaz2 != null && this == Lizzie.leelaz2)
       Lizzie.board
           .getData()
-          .tryToSetBestMoves2(bestMoves, bestMovesEnginename, true, currentTotalPlayouts);
+          .tryToSetBestMoves2(
+              bestMoves, bestMovesEnginename, true, currentTotalPlayouts, estimateArray);
     else {
       if (EngineManager.isEngineGame && Lizzie.config.enginePkPonder) {
         if ((Lizzie.board.getHistory().isBlacksTurn()
@@ -659,12 +668,14 @@ public class Leelaz {
           //	if(!isModifying)
           Lizzie.board
               .getData()
-              .tryToSetBestMoves(bestMoves, bestMovesEnginename, true, currentTotalPlayouts);
+              .tryToSetBestMoves(
+                  bestMoves, bestMovesEnginename, true, currentTotalPlayouts, estimateArray);
         }
       } else
         Lizzie.board
             .getData()
-            .tryToSetBestMoves(bestMoves, bestMovesEnginename, true, currentTotalPlayouts);
+            .tryToSetBestMoves(
+                bestMoves, bestMovesEnginename, true, currentTotalPlayouts, estimateArray);
     }
     return bestMoves;
   }
@@ -682,16 +693,6 @@ public class Leelaz {
       if (this != Lizzie.leelaz && isResponseUpToDate()) {
         if (isKatago) {
           this.bestMoves = parseInfoKatago(line.substring(5));
-          if (Lizzie.config.showKataGoEstimate) {
-            if (line.contains("ownership")) {
-              tempcount = new ArrayList<Double>();
-              String[] params = line.trim().split("ownership");
-              String[] params2 = params[1].trim().split(" ");
-              for (int i = 0; i < params2.length; i++)
-                tempcount.add(Double.parseDouble(params2[i]));
-              Lizzie.frame.drawKataEstimate(this, tempcount);
-            }
-          }
         } else if (isSai) {
           this.bestMoves = parseInfoSai(line.substring(5));
         } else {
@@ -1079,16 +1080,6 @@ public class Leelaz {
           // This should not be stale data when the command number match
           if (isKatago) {
             this.bestMoves = parseInfoKatago(line.substring(5));
-            if (Lizzie.config.showKataGoEstimate) {
-              if (line.contains("ownership")) {
-                tempcount = new ArrayList<Double>();
-                String[] params = line.trim().split("ownership");
-                String[] params2 = params[1].trim().split(" ");
-                for (int i = 0; i < params2.length; i++)
-                  tempcount.add(Double.parseDouble(params2[i]));
-                Lizzie.frame.drawKataEstimate(this, tempcount);
-              }
-            }
           } else if (isSai) {
             this.bestMoves = parseInfoSai(line.substring(5));
           } else {
@@ -2851,7 +2842,12 @@ public class Leelaz {
   public void genmove(String color) {
     String command =
         (this.isKatago
-            ? ("kata-genmove_analyze " + color + " " + getInterval())
+            ? ("kata-genmove_analyze "
+                + color
+                + " "
+                + getInterval()
+                + (Lizzie.config.showKataGoEstimate ? " ownership true" : "")
+                + (Lizzie.config.showPvVisits ? " pvVisits true" : ""))
             : (this.isSai || this.isLeela
                 ? ("lz-genmove_analyze " + color + " " + getInterval())
                 : ("genmove " + color)));
@@ -2890,7 +2886,12 @@ public class Leelaz {
     }
     String command =
         (this.isKatago
-            ? ("kata-genmove_analyze " + color + " " + getIntervalForGenmovePk())
+            ? ("kata-genmove_analyze "
+                + color
+                + " "
+                + getIntervalForGenmovePk()
+                + (Lizzie.config.showKataGoEstimate ? " ownership true" : "")
+                + (Lizzie.config.showPvVisits ? " pvVisits true" : ""))
             : (this.isSai || this.isLeela
                 ? ("lz-genmove_analyze " + color + " " + getInterval())
                 : ("genmove " + color)));

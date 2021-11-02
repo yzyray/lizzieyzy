@@ -1950,7 +1950,7 @@ public class Menu extends JMenuBar {
             Lizzie.config.showKataGoEstimate = true;
             Lizzie.config.showKataGoEstimateOnMainbord = true;
             Lizzie.config.showKataGoEstimateOnSubbord = false;
-            if (Lizzie.config.showSubBoard) LizzieFrame.subBoardRenderer.removecountblock();
+            if (Lizzie.config.showSubBoard) LizzieFrame.subBoardRenderer.removeKataEstimateImage();
             Lizzie.leelaz.ponder();
             if (Lizzie.config.saveKataEstimateStatus) {
               Lizzie.config.uiConfig.put("show-katago-estimate", Lizzie.config.showKataGoEstimate);
@@ -1974,9 +1974,9 @@ public class Menu extends JMenuBar {
             Lizzie.config.showKataGoEstimate = true;
             Lizzie.config.showKataGoEstimateOnMainbord = false;
             Lizzie.config.showKataGoEstimateOnSubbord = true;
-            LizzieFrame.boardRenderer.removecountblock();
+            LizzieFrame.boardRenderer.removeKataEstimateImage();
             if (Lizzie.frame.floatBoard != null)
-              Lizzie.frame.floatBoard.boardRenderer.removecountblock();
+              Lizzie.frame.floatBoard.boardRenderer.removeKataEstimateImage();
             Lizzie.leelaz.ponder();
             if (Lizzie.config.saveKataEstimateStatus) {
               Lizzie.config.uiConfig.put("show-katago-estimate", Lizzie.config.showKataGoEstimate);

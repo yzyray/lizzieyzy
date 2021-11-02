@@ -518,7 +518,7 @@ public class InputIndependentMainBoard implements KeyListener {
       case VK_DECIMAL:
       case VK_SLASH:
         if (Lizzie.frame.isCounting) {
-          LizzieFrame.boardRenderer.removecountblock();
+          LizzieFrame.boardRenderer.removeKataEstimateImage();
           // Lizzie.frame.repaint();
           Lizzie.frame.isCounting = false;
           Lizzie.frame.estimateResults.setVisible(false);
