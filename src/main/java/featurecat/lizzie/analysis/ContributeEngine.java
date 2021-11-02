@@ -1,6 +1,7 @@
 package featurecat.lizzie.analysis;
 
 import featurecat.lizzie.rules.Board;
+import featurecat.lizzie.util.Utils;
 import java.util.ArrayList;
 import java.util.List;
 import org.json.JSONArray;
@@ -10,6 +11,7 @@ import org.json.JSONObject;
 public class ContributeEngine {
   public ArrayList<ContributeGameInfo> contributeGames;
   public ArrayList<ContributeUnParseGameInfo> unParseGameInfos;
+  public int watchingGameIndex = -1;
 
   public ContributeEngine() {
     String jsonTestMove1 =
@@ -23,8 +25,7 @@ public class ContributeEngine {
     testGetJsonGameInfo(tryToGetJsonString(jsonTestMove1), contributeGames, unParseGameInfos);
     testGetJsonGameInfo(tryToGetJsonString(jsonTestMove2), contributeGames, unParseGameInfos);
     testGetJsonGameInfo(tryToGetJsonString(jsonTestMove3), contributeGames, unParseGameInfos);
-    int a = 0;
-    a++;
+    watchGame(0, true);
   }
 
   private JSONObject tryToGetJsonString(String input) {
@@ -64,6 +65,7 @@ public class ContributeEngine {
         if (tryToParseJsonGame(currentGame, true, jsonInfo, unParseInfos))
           tryToUseUnParseGameInfos(currentGame, unParseInfos);
       }
+      games.add(currentGame);
     } catch (Exception e) {
       e.printStackTrace();
       return false;
@@ -133,16 +135,23 @@ public class ContributeEngine {
       }
       if (newGame) {
         currentGame.moveList = historyMoveList;
+      }
+      if (newGame || (compareMoveList(historyMoveList, currentGame.moveList))) {
+        // 成功,获取最后一手和bestmoves
+        ContributeMoveInfo move = new ContributeMoveInfo();
+        List<Object> lastMove = jsonInfo.getJSONArray("move").toList();
+        move.isBlack = lastMove.get(0).toString().equals("B");
+        move.pos = Board.convertNameToCoordinates(lastMove.get(1).toString());
+        move.isPass = move.pos[0] < 0;
+        JSONArray moveInfos = jsonInfo.getJSONArray("moveInfos");
+        move.candidates = Utils.getBestMovesFromJsonArray(moveInfos);
+        currentGame.moveList.add(move);
       } else {
-        if (compareMoveList(historyMoveList, currentGame.moveList)) {
-          // 成功,获取最后一手和bestmoves
-        } else {
-          ContributeUnParseGameInfo unParseInfo = new ContributeUnParseGameInfo();
-          unParseInfo.gameId = jsonInfo.getString("gameId");
-          unParseInfo.gameInfo = jsonInfo;
-          unParseInfos.add(unParseInfo);
-          success = false;
-        }
+        ContributeUnParseGameInfo unParseInfo = new ContributeUnParseGameInfo();
+        unParseInfo.gameId = jsonInfo.getString("gameId");
+        unParseInfo.gameInfo = jsonInfo;
+        unParseInfos.add(unParseInfo);
+        success = false;
       }
     }
     return success;
@@ -151,6 +160,8 @@ public class ContributeEngine {
   private boolean compareMoveList(
       ArrayList<ContributeMoveInfo> list1, ArrayList<ContributeMoveInfo> list2) {
     // TODO Auto-generated method stub
+    if (list1 == null && list2 == null) return true;
+    if (list1 == null && list2 != null || list1 != null && list2 == null) return false;
     if (list1.size() != list2.size()) return false;
     for (int i = 0; i < list1.size(); i++) {
       ContributeMoveInfo move1 = list1.get(i);
@@ -161,5 +172,11 @@ public class ContributeEngine {
           || move1.pos[1] != move2.pos[1]) return false;
     }
     return true;
+  }
+
+  public void watchGame(int index, boolean loadToLast) {
+    // 切换到不同局,同步ContributeGameInfo到界面上(如是同一局直接返回),或直接跳倒数第二手
+    // 还是显示前一手模式+跳到最后一手?
+    // watchingGameIndex
   }
 }
