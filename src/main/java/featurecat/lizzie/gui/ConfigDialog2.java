@@ -1209,7 +1209,7 @@ public class ConfigDialog2 extends JDialog {
           public void actionPerformed(ActionEvent e) {
             Utils.showHtmlMessageModal(
                 resourceBundle.getString("AdvanceTimeSettings.title"),
-                resourceBundle.getString("AdvanceTimeSettings.describe"));
+                resourceBundle.getString("AdvanceTimeSettings.describe"),Lizzie.frame.configDialog2);
           }
         });
     btnNewButton.setBounds(435, 473, 18, 18);
@@ -1349,7 +1349,7 @@ public class ConfigDialog2 extends JDialog {
             lizzieCacheDiscribe.setInfo(
                 resourceBundle.getString("LizzieConfig.aboutLizzieCache"),
                 // "回退局面时,有时候引擎已经遗忘了之前的计算结果会从0计算。如启用Lizzie缓存,则界面上依然显示之前的计算结果,直到新的计算结果总计算量超过以前的结算结果为止。",
-                resourceBundle.getString("LizzieConfig.aboutLizzieCacheTitle")); //  "Lizzie缓存说明");
+                resourceBundle.getString("LizzieConfig.aboutLizzieCacheTitle"),Lizzie.frame.configDialog2); //  "Lizzie缓存说明");
           }
         });
     uiTab.add(btnLizzieCache);

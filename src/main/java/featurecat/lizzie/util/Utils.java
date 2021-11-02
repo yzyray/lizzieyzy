@@ -70,7 +70,7 @@ public class Utils {
 
   public static void showHtmlMessageModal(String title, String content,Window owner) {
     HtmlMessage htmlMessage =
-        new HtmlMessage(title, content,owner);
+        new HtmlMessage(title, content, owner);
     htmlMessage.setModal(true);
     htmlMessage.setVisible(true);
   }

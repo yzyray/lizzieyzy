@@ -1442,7 +1442,7 @@ public class Leelaz {
                     public void run() {
                       Utils.showHtmlMessage(
                           Lizzie.resourceBundle.getString("Message.title"),
-                          Lizzie.resourceBundle.getString("Leelaz.kataGoPerformance"));
+                          Lizzie.resourceBundle.getString("Leelaz.kataGoPerformance"),Lizzie.frame);
                     }
                   });
               Lizzie.config.uiConfig.put("first-load-katago", Lizzie.config.firstLoadKataGo);
@@ -2053,7 +2053,7 @@ public class Leelaz {
               public void run() {
                 Utils.showHtmlMessage(
                     Lizzie.resourceBundle.getString("Message.title"),
-                    Lizzie.resourceBundle.getString("Leelaz.updateZenGtp"));
+                    Lizzie.resourceBundle.getString("Leelaz.updateZenGtp"),Lizzie.frame);
               }
             });
         shutdown();

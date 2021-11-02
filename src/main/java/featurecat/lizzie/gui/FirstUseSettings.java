@@ -200,7 +200,7 @@ public class FirstUseSettings extends JDialog {
             lizzieCacheDiscribe.setInfo(
                 Lizzie.resourceBundle.getString("FirstUseSettings.looksHelperContent"),
                 Lizzie.resourceBundle.getString(
-                    "FirstUseSettings.looksHelperTitle")); // ("如果系统默认样式部分按钮、选择框显示不全,则可尝试选择Java默认界面","界面样式说明");
+                    "FirstUseSettings.looksHelperTitle"),thisDialog); // ("如果系统默认样式部分按钮、选择框显示不全,则可尝试选择Java默认界面","界面样式说明");
           }
         });
     panel.add(btnLooksHelper);
@@ -348,7 +348,7 @@ public class FirstUseSettings extends JDialog {
                     "FirstUseSettings.lizzieCacheDiscribe") // "回退局面时,有时候引擎已经遗忘了之前的计算结果,会从0开始重新计算。\r\n如启用Lizzie缓存,则界面上依然显示之前的计算结果,直到新的计算结果总计算量超过以前的结算结果为止。"
                 ,
                 Lizzie.resourceBundle.getString(
-                    "FirstUseSettings.lizzieCacheDiscribeTitle")); // "Lizzie缓存说明");
+                    "FirstUseSettings.lizzieCacheDiscribeTitle"),thisDialog); // "Lizzie缓存说明");
           }
         });
     panel.add(btnLizzieCacheHelper);
@@ -372,7 +372,7 @@ public class FirstUseSettings extends JDialog {
             Discribe MaxAnalyzeTimeHelp = new Discribe();
             MaxAnalyzeTimeHelp.setInfo(
                 Lizzie.resourceBundle.getString("FirstUseSettings.maxAnalyzeTimeDiscribe"),
-                Lizzie.resourceBundle.getString("FirstUseSettings.maxAnalyzeTimeDiscribeTitile"));
+                Lizzie.resourceBundle.getString("FirstUseSettings.maxAnalyzeTimeDiscribeTitile"),thisDialog);
           }
         });
     panel.add(btnlMaxAnalyzeTimeHelper);

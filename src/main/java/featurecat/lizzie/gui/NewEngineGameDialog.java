@@ -80,6 +80,7 @@ public class NewEngineGameDialog extends JDialog {
   // private final ResourceBundle resourceBundle = Lizzie.resourceBundle;
   private JFontTextField txtBlackAdvanceTime;
   private JFontTextField txtWhiteAdvanceTime;
+private Window thisDialog=this;
 
   private void initComponents() {
     // if (Lizzie.config.showHiddenYzy) setMinimumSize(new Dimension(380, 330));
@@ -691,7 +692,7 @@ public class NewEngineGameDialog extends JDialog {
           public void actionPerformed(ActionEvent e) {
             Utils.showHtmlMessageModal(
                 Lizzie.resourceBundle.getString("AdvanceTimeSettings.title"),
-                Lizzie.resourceBundle.getString("AdvanceTimeSettings.describe"));
+                Lizzie.resourceBundle.getString("AdvanceTimeSettings.describe"),thisDialog);
           }
         });
     aboutAdvanceTimeSettings.setBounds(125, 91, 18, 18);

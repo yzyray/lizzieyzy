@@ -76,6 +76,7 @@ public class NewGameDialog extends JDialog {
   private JTextField txtKataTimeByoyomiSecs;
   private JTextField txtKataTimeByoyomiTimes;
   private JTextField txtKataTimeFisherIncrementSecs;
+private Window thisDialog=this;
 
   private void initComponents() {
     setMinimumSize(new Dimension(100, 150));
@@ -537,14 +538,14 @@ public class NewGameDialog extends JDialog {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
-
+    
     btnAboutAdvTime = new JFontButton(iconSettings); // $NON-NLS-1$
     btnAboutAdvTime.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             Utils.showHtmlMessageModal(
                 resourceBundle.getString("AdvanceTimeSettings.title"),
-                resourceBundle.getString("AdvanceTimeSettings.describe"));
+                resourceBundle.getString("AdvanceTimeSettings.describe"),thisDialog);
           }
         });
     btnAboutAdvTime.setPreferredSize(new Dimension(Config.menuHeight, Config.menuHeight));

@@ -40,6 +40,7 @@ public class StatisticsThreshold extends JDialog {
   private JFontTextField txtScore3;
   private JFontTextField txtScore4;
   private JFontTextField txtScore5;
+private Window thisDialog=this;
 
   public StatisticsThreshold(Window owner) {
     super(owner);
@@ -88,7 +89,7 @@ public class StatisticsThreshold extends JDialog {
           public void actionPerformed(ActionEvent e) {
             Utils.showHtmlMessage(
                 Lizzie.resourceBundle.getString("StatisticsThreshold.calcMethod.title"),
-                Lizzie.resourceBundle.getString("StatisticsThreshold.calcMethod.content"));
+                Lizzie.resourceBundle.getString("StatisticsThreshold.calcMethod.content"),thisDialog);
           }
         });
     JFontButton btnReset =
