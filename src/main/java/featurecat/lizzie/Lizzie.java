@@ -440,6 +440,11 @@ public class Lizzie {
       } catch (Exception e) {
         e.printStackTrace();
       }
+    try {
+      frame.shutdownClockHelper();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
     Lizzie.frame.destroyEstimateEngine();
     Lizzie.frame.destroyAnalysisEngine();
     System.exit(0);

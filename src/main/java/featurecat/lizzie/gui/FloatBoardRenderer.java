@@ -501,7 +501,7 @@ public class FloatBoardRenderer {
         int alpha =
             shouldShowCountBlockBig()
                 ? (int) (tempcount.get(i) * 105)
-                : (int) (tempcount.get(i) * 200);
+                : (int) (tempcount.get(i) * 255);
         Color cl = new Color(0, 0, 0, Math.abs(alpha));
         if (!shouldShowCountBlockBig()
             && Lizzie.board.getHistory().getStones()[Board.getIndex(x, y)].isBlack()) {
@@ -521,10 +521,7 @@ public class FloatBoardRenderer {
               squareWidth);
         else
           g.fillRect(
-              stoneX - squareWidth * 3 / 10,
-              stoneY - squareWidth * 3 / 10,
-              squareWidth * 6 / 10,
-              squareWidth * 6 / 10);
+              stoneX - squareWidth / 4, stoneY - squareWidth / 4, squareWidth / 2, squareWidth / 2);
       }
       if ((tempcount.get(i) < 0 && blackToPlay) || (tempcount.get(i) > 0 && !blackToPlay)) {
         int y = i / Board.boardWidth;
@@ -537,7 +534,7 @@ public class FloatBoardRenderer {
                         && leelaz.iskataHeatmapShowOwner
                         && Lizzie.config.showPureEstimateBigBelow))
                 ? (int) (tempcount.get(i) * 165)
-                : (int) (tempcount.get(i) * 200);
+                : (int) (tempcount.get(i) * 255);
         Color cl = new Color(255, 255, 255, Math.abs(alpha));
         g.setColor(cl);
         if (shouldShowCountBlockBig())
@@ -548,10 +545,7 @@ public class FloatBoardRenderer {
               squareWidth);
         else
           g.fillRect(
-              stoneX - squareWidth * 3 / 10,
-              stoneY - squareWidth * 3 / 10,
-              squareWidth * 6 / 10,
-              squareWidth * 6 / 10);
+              stoneX - squareWidth / 4, stoneY - squareWidth / 4, squareWidth / 2, squareWidth / 2);
       }
     }
     kataEstimateImage = newEstimateImage;

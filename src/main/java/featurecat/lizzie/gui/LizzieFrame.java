@@ -82,6 +82,7 @@ import javax.swing.table.TableModel;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
+import org.jdesktop.swingx.util.OS;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -492,6 +493,7 @@ public class LizzieFrame extends JFrame {
     menu = new Menu();
     RightClickMenu = new RightClickMenu();
     RightClickMenu2 = new RightClickMenu2();
+    openInVisibleFrame();
     // MenuTest menu = new MenuTest();
     // add(menu);
     // this.setJMenuBar(menu);
@@ -5498,7 +5500,7 @@ public class LizzieFrame extends JFrame {
     // if (Lizzie.config.handicapInsteadOfWinrate) {
     // double currHandicapedWR = Lizzie.leelaz.winrateToHandicap(100 - curWR);
     // double lastHandicapedWR = Lizzie.leelaz.winrateToHandicap(lastWR);
-    // text = String.format(": %.2f", currHandicapedWR - lastHandicapedWR);
+    // text = String.format(Locale.ENGLISH,": %.2f", currHandicapedWR - lastHandicapedWR);
     // } else {
 
     // }
@@ -5825,11 +5827,11 @@ public class LizzieFrame extends JFrame {
               : (float) (min(width * 0.4, height * 0.85) * 0.2));
     else setPanelFont(g, (float) (height * 0.18));
     if (isCounting || isAutocounting) {
-      bval = String.format("%d", estimateResults.allblackcounts);
-      wval = String.format("%d", estimateResults.allwhitecounts);
+      bval = String.format(Locale.ENGLISH, "%d", estimateResults.allblackcounts);
+      wval = String.format(Locale.ENGLISH, "%d", estimateResults.allwhitecounts);
     } else {
-      bval = String.format("%d", Lizzie.board.getData().blackCaptures);
-      wval = String.format("%d", Lizzie.board.getData().whiteCaptures);
+      bval = String.format(Locale.ENGLISH, "%d", Lizzie.board.getData().blackCaptures);
+      wval = String.format(Locale.ENGLISH, "%d", Lizzie.board.getData().whiteCaptures);
     }
 
     g.setColor(Color.WHITE);
@@ -8128,7 +8130,7 @@ public class LizzieFrame extends JFrame {
         if (selectForceAllow)
           boardRenderer.drawAllSelectedRectByCoords(selectForceAllow, LizzieFrame.allowcoords);
         else boardRenderer.drawAllSelectedRectByCoords(selectForceAllow, LizzieFrame.avoidcoords);
-        Lizzie.board.clearbestmovesafter(Lizzie.board.getHistory().getStart());
+        Lizzie.board.clearBestMovesAfter(Lizzie.board.getHistory().getStart());
         repaint();
       } else {
         selectCoordsX2 = -1;
@@ -12053,6 +12055,7 @@ public class LizzieFrame extends JFrame {
   public boolean isInTemporaryBoard;
 
   public boolean allowPlaceStone = true;
+  private Process processClockHelper;
 
   public void startTemporaryBoard() {
     if (isInTemporaryBoard) return;
@@ -12471,5 +12474,59 @@ public class LizzieFrame extends JFrame {
   public void testContibute() {
     // TODO Auto-generated method stub
     ContributeEngine contributeEngine = new ContributeEngine();
+  }
+
+  private void openInVisibleFrame() {
+    String javaReadBoardName = "InVisibleFrame.jar";
+    File javaReadBoard = new File("clockHelper" + File.separator + "InVisibleFrame.jar");
+    if (!javaReadBoard.exists()) Utils.copyClockHelper();
+    try {
+      if (OS.isWindows()) {
+        boolean success = false;
+        String java64Path = "jre\\java11\\bin\\java.exe";
+        File java64 = new File(java64Path);
+
+        if (java64.exists()) {
+          try {
+            processClockHelper =
+                Runtime.getRuntime()
+                    .exec(java64Path + " -jar clockHelper" + File.separator + javaReadBoardName);
+            success = true;
+          } catch (Exception e) {
+            success = false;
+            e.printStackTrace();
+          }
+        }
+        if (!success) {
+          String java32Path = "jre\\java8_32\\bin\\java.exe";
+          File java32 = new File(java32Path);
+          if (java32.exists()) {
+            try {
+              processClockHelper =
+                  Runtime.getRuntime()
+                      .exec(java32 + " -jar clockHelper" + File.separator + javaReadBoardName);
+              success = true;
+            } catch (Exception e) {
+              success = false;
+              e.printStackTrace();
+            }
+          }
+        }
+        if (!success) {
+          processClockHelper =
+              Runtime.getRuntime()
+                  .exec("java -jar clockHelper" + File.separator + javaReadBoardName);
+        }
+      } else {
+        processClockHelper =
+            Runtime.getRuntime().exec("java -jar clockHelper" + File.separator + javaReadBoardName);
+      }
+    } catch (Exception e) {
+      Utils.showMsg(e.getLocalizedMessage());
+    }
+  }
+
+  public void shutdownClockHelper() {
+    processClockHelper.destroy();
   }
 }

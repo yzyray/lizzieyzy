@@ -1031,14 +1031,16 @@ public class BoardRenderer {
   }
 
   public void drawKataEstimateByTransparent(ArrayList<Double> estimateList, boolean reverse) {
+    // 不显示在活子上,取history.currentnode.data中的stones进行比较
     BufferedImage newEstimateImage = new BufferedImage(boardWidth, boardHeight, TYPE_INT_ARGB);
     Graphics2D g = newEstimateImage.createGraphics();
     boolean blackToPlay = Lizzie.board.getHistory().isBlacksTurn();
     if (reverse) blackToPlay = !blackToPlay;
     for (int i = 0; i < estimateList.size(); i++) {
+      int[] c = Lizzie.board.getCoordKataGo(i);
+      int x = c[0];
+      int y = c[1];
       if ((estimateList.get(i) > 0 && blackToPlay) || (estimateList.get(i) < 0 && !blackToPlay)) {
-        int y = i / Board.boardWidth;
-        int x = i % Board.boardWidth;
         int stoneX = scaledMarginWidth + squareWidth * x;
         int stoneY = scaledMarginHeight + squareHeight * y;
         // g.setColor(Color.BLACK);
@@ -1046,7 +1048,7 @@ public class BoardRenderer {
         int alpha =
             shouldShowCountBlockBig()
                 ? (int) (estimateList.get(i) * 105)
-                : (int) (estimateList.get(i) * 200);
+                : (int) (estimateList.get(i) * 255);
         Color cl = new Color(0, 0, 0, Math.abs(alpha));
         if (!shouldShowCountBlockBig()
             && Lizzie.board.getHistory().getStones()[Board.getIndex(x, y)].isBlack()) {
@@ -1066,20 +1068,15 @@ public class BoardRenderer {
               squareWidth);
         else
           g.fillRect(
-              stoneX - squareWidth * 3 / 10,
-              stoneY - squareWidth * 3 / 10,
-              squareWidth * 6 / 10,
-              squareWidth * 6 / 10);
+              stoneX - squareWidth / 4, stoneY - squareWidth / 4, squareWidth / 2, squareWidth / 2);
       }
       if ((estimateList.get(i) < 0 && blackToPlay) || (estimateList.get(i) > 0 && !blackToPlay)) {
-        int y = i / Board.boardWidth;
-        int x = i % Board.boardWidth;
         int stoneX = scaledMarginWidth + squareWidth * x;
         int stoneY = scaledMarginHeight + squareHeight * y;
         int alpha =
             shouldShowCountBlockBig()
                 ? (int) (estimateList.get(i) * 165)
-                : (int) (estimateList.get(i) * 200);
+                : (int) (estimateList.get(i) * 255);
         Color cl = new Color(255, 255, 255, Math.abs(alpha));
         g.setColor(cl);
         if (shouldShowCountBlockBig())
@@ -1090,10 +1087,7 @@ public class BoardRenderer {
               squareWidth);
         else
           g.fillRect(
-              stoneX - squareWidth * 3 / 10,
-              stoneY - squareWidth * 3 / 10,
-              squareWidth * 6 / 10,
-              squareWidth * 6 / 10);
+              stoneX - squareWidth / 4, stoneY - squareWidth / 4, squareWidth / 2, squareWidth / 2);
       }
     }
     kataEstimateImage = newEstimateImage;
@@ -1116,9 +1110,10 @@ public class BoardRenderer {
     boolean blackToPlay = Lizzie.board.getHistory().isBlacksTurn();
     if (reverse) blackToPlay = !blackToPlay;
     for (int i = 0; i < estimateList.size(); i++) {
+      int[] c = Lizzie.board.getCoordKataGo(i);
+      int x = c[0];
+      int y = c[1];
       if ((estimateList.get(i) > 0 && blackToPlay) || (estimateList.get(i) < 0 && !blackToPlay)) {
-        int y = i / Board.boardWidth;
-        int x = i % Board.boardWidth;
         int stoneX = scaledMarginWidth + squareWidth * x;
         int stoneY = scaledMarginHeight + squareHeight * y;
         Color cl = new Color(0, 0, 0, 180);
@@ -1127,8 +1122,6 @@ public class BoardRenderer {
         if (length > 0) g.fillRect(stoneX - length / 2, stoneY - length / 2, length, length);
       }
       if ((estimateList.get(i) < 0 && blackToPlay) || (estimateList.get(i) > 0 && !blackToPlay)) {
-        int y = i / Board.boardWidth;
-        int x = i % Board.boardWidth;
         int stoneX = scaledMarginWidth + squareWidth * x;
         int stoneY = scaledMarginHeight + squareHeight * y;
         int length = (int) (convertLength(estimateList.get(i)) * squareWidth);

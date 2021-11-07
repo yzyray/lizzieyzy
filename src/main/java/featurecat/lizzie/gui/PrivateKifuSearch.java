@@ -332,7 +332,7 @@ public class PrivateKifuSearch extends JFrame {
                     + resourceBundle.getString("PrivateKifuSearch.sql.view")
                     + ",'' as "
                     + resourceBundle.getString("PrivateKifuSearch.sql.open")
-                    + " from public_search where  createtime between to_date('"
+                    + " from PRIVATE_SEARCH where  createtime between to_date('"
                     + sdf.format(datepick.getDate())
                     + "','yyyy-mm-dd') and to_date('"
                     + sdf.format(getDateBefore(datepick2.getDate(), -1))

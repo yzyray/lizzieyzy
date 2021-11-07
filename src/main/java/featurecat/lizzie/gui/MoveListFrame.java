@@ -423,15 +423,7 @@ public class MoveListFrame extends JFrame {
     chkCurrent.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            if (chkCurrent.isSelected()) {
-              Lizzie.config.moveListFilterCurrent = true;
-              Lizzie.config.uiConfig.put(
-                  "move-list-filter-current", Lizzie.config.moveListFilterCurrent);
-              updateCurrentLastMove();
-              repaint();
-              customStart.setEnabled(false);
-              customEnd.setEnabled(false);
-            }
+            applyChkPeriod();
           }
         });
 
@@ -439,14 +431,7 @@ public class MoveListFrame extends JFrame {
     chkAllGame.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            if (chkAllGame.isSelected()) {
-              Lizzie.config.moveListFilterCurrent = false;
-              Lizzie.config.uiConfig.put(
-                  "move-list-filter-current", Lizzie.config.moveListFilterCurrent);
-              applyMoveChange(-1, 1000);
-              customStart.setEnabled(false);
-              customEnd.setEnabled(false);
-            }
+            applyChkPeriod();
           }
         });
 
@@ -454,14 +439,7 @@ public class MoveListFrame extends JFrame {
     chkOpening.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            if (chkOpening.isSelected()) {
-              Lizzie.config.moveListFilterCurrent = false;
-              Lizzie.config.uiConfig.put(
-                  "move-list-filter-current", Lizzie.config.moveListFilterCurrent);
-              applyMoveChange(-1, Lizzie.config.openingEndMove);
-              customStart.setEnabled(false);
-              customEnd.setEnabled(false);
-            }
+            applyChkPeriod();
           }
         });
 
@@ -469,14 +447,7 @@ public class MoveListFrame extends JFrame {
     chkMiddle.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            if (chkMiddle.isSelected()) {
-              Lizzie.config.moveListFilterCurrent = false;
-              Lizzie.config.uiConfig.put(
-                  "move-list-filter-current", Lizzie.config.moveListFilterCurrent);
-              applyMoveChange(Lizzie.config.openingEndMove, Lizzie.config.middleEndMove);
-              customStart.setEnabled(false);
-              customEnd.setEnabled(false);
-            }
+            applyChkPeriod();
           }
         });
 
@@ -484,14 +455,7 @@ public class MoveListFrame extends JFrame {
     chkEnd.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            if (chkEnd.isSelected()) {
-              Lizzie.config.moveListFilterCurrent = false;
-              Lizzie.config.uiConfig.put(
-                  "move-list-filter-current", Lizzie.config.moveListFilterCurrent);
-              applyMoveChange(Lizzie.config.middleEndMove, 1000);
-              customStart.setEnabled(false);
-              customEnd.setEnabled(false);
-            }
+            applyChkPeriod();
           }
         });
 
@@ -499,15 +463,7 @@ public class MoveListFrame extends JFrame {
     chkCustom.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            if (chkCustom.isSelected()) {
-              Lizzie.config.moveListFilterCurrent = false;
-              Lizzie.config.uiConfig.put(
-                  "move-list-filter-current", Lizzie.config.moveListFilterCurrent);
-              applyMoveChange(
-                  Lizzie.config.gameStatisticsCustomStart, Lizzie.config.gameStatisticsCustomEnd);
-              customStart.setEnabled(true);
-              customEnd.setEnabled(true);
-            }
+            applyChkPeriod();
           }
         });
 
@@ -1903,12 +1859,55 @@ public class MoveListFrame extends JFrame {
         });
   }
 
+  private void applyChkPeriod() {
+    // TODO Auto-generated method stub
+    if (chkCurrent.isSelected()) {
+      Lizzie.config.moveListFilterCurrent = true;
+      Lizzie.config.uiConfig.put("move-list-filter-current", Lizzie.config.moveListFilterCurrent);
+      updateCurrentLastMove();
+      applyMoveChange(-1, Lizzie.config.matchAiLastMove);
+      repaint();
+      customStart.setEnabled(false);
+      customEnd.setEnabled(false);
+    } else if (chkAllGame.isSelected()) {
+      Lizzie.config.moveListFilterCurrent = false;
+      Lizzie.config.uiConfig.put("move-list-filter-current", Lizzie.config.moveListFilterCurrent);
+      applyMoveChange(-1, 1000);
+      customStart.setEnabled(false);
+      customEnd.setEnabled(false);
+    } else if (chkOpening.isSelected()) {
+      Lizzie.config.moveListFilterCurrent = false;
+      Lizzie.config.uiConfig.put("move-list-filter-current", Lizzie.config.moveListFilterCurrent);
+      applyMoveChange(-1, Lizzie.config.openingEndMove);
+      customStart.setEnabled(false);
+      customEnd.setEnabled(false);
+    } else if (chkMiddle.isSelected()) {
+      Lizzie.config.moveListFilterCurrent = false;
+      Lizzie.config.uiConfig.put("move-list-filter-current", Lizzie.config.moveListFilterCurrent);
+      applyMoveChange(Lizzie.config.openingEndMove, Lizzie.config.middleEndMove);
+      customStart.setEnabled(false);
+      customEnd.setEnabled(false);
+    } else if (chkEnd.isSelected()) {
+      Lizzie.config.moveListFilterCurrent = false;
+      Lizzie.config.uiConfig.put("move-list-filter-current", Lizzie.config.moveListFilterCurrent);
+      applyMoveChange(Lizzie.config.middleEndMove, 1000);
+      customStart.setEnabled(false);
+      customEnd.setEnabled(false);
+    } else if (chkCustom.isSelected()) {
+      Lizzie.config.moveListFilterCurrent = false;
+      Lizzie.config.uiConfig.put("move-list-filter-current", Lizzie.config.moveListFilterCurrent);
+      applyMoveChange(
+          Lizzie.config.gameStatisticsCustomStart - 1, Lizzie.config.gameStatisticsCustomEnd);
+      customStart.setEnabled(true);
+      customEnd.setEnabled(true);
+    }
+  }
+
   private void updateCurrentLastMove() {
     // TODO Auto-generated method stub
     if ((showBranch.getSelectedIndex() == 0
             && Lizzie.board.getHistory().getCurrentHistoryNode().isMainTrunk())
-        || (showBranch.getSelectedIndex() == 1
-            && !Lizzie.board.getHistory().getCurrentHistoryNode().isMainTrunk())) {
+        || showBranch.getSelectedIndex() == 1) {
       Lizzie.config.matchAiLastMove =
           Lizzie.board.getHistory().getCurrentHistoryNode().getData().moveNumber;
       Lizzie.config.uiConfig.put("match-ai-lastmove", Lizzie.config.matchAiLastMove);
@@ -1933,7 +1932,7 @@ public class MoveListFrame extends JFrame {
       customStart.setEnabled(true);
       customEnd.setEnabled(true);
       applyMoveChange(
-          Lizzie.config.gameStatisticsCustomStart, Lizzie.config.gameStatisticsCustomEnd);
+          Lizzie.config.gameStatisticsCustomStart - 1, Lizzie.config.gameStatisticsCustomEnd);
     } else {
       customStart.setEnabled(false);
       customEnd.setEnabled(false);
@@ -2019,7 +2018,7 @@ public class MoveListFrame extends JFrame {
       Lizzie.config.gameStatisticsCustomStart = gameCustomStart;
       Lizzie.config.uiConfig.put(
           "game-statistics-custom-start", Lizzie.config.gameStatisticsCustomStart);
-      Lizzie.config.matchAiFirstMove = Lizzie.config.gameStatisticsCustomStart;
+      Lizzie.config.matchAiFirstMove = Lizzie.config.gameStatisticsCustomStart - 1;
       applyMoveChange(Lizzie.config.matchAiFirstMove, Lizzie.config.matchAiLastMove);
     }
   }
@@ -2041,6 +2040,7 @@ public class MoveListFrame extends JFrame {
       middleEndMove.setBackground(Color.WHITE);
       Lizzie.config.middleEndMove = curParse2Move;
       Lizzie.config.uiConfig.put("middle-end-move", Lizzie.config.middleEndMove);
+      applyChkPeriod();
       repaint();
     }
   }
@@ -2062,6 +2062,7 @@ public class MoveListFrame extends JFrame {
       openingEndMove.setBackground(Color.WHITE);
       Lizzie.config.openingEndMove = curParse1Move;
       Lizzie.config.uiConfig.put("opening-end-move", Lizzie.config.openingEndMove);
+      applyChkPeriod();
       repaint();
     }
   }
@@ -2257,8 +2258,8 @@ public class MoveListFrame extends JFrame {
               ? (isMainEngine ? node.nodeInfoMain : node.nodeInfoMain2)
               : (isMainEngine ? node.nodeInfo : node.nodeInfo2);
       if (selectedIndex > 3
-          || (node.getData().moveNumber <= Lizzie.config.matchAiLastMove
-              && (node.getData().moveNumber + 1) > Lizzie.config.matchAiFirstMove)) {
+          || (node.getData().moveNumber + 1 <= Lizzie.config.matchAiLastMove
+              && (node.getData().moveNumber) >= Lizzie.config.matchAiFirstMove)) {
         if (selectedIndex == 2) {
           if (nodeInfo.analyzed) {
             if (nodeInfo.isBlack) {
@@ -3266,22 +3267,13 @@ public class MoveListFrame extends JFrame {
           showBranch.getSelectedIndex() == 0
               ? (isMainEngine ? node.nodeInfoMain : node.nodeInfoMain2)
               : (isMainEngine ? node.nodeInfo : node.nodeInfo2);
-      if (node.getData().moveNumber <= Lizzie.config.matchAiLastMove
-          && (node.getData().moveNumber + 1) > Lizzie.config.matchAiFirstMove) {
-        if (nodeInfo.analyzedMatchValue) {
-          if (node.getData().blackToPlay) {
-            blackValue = blackValue + nodeInfo.percentsMatch;
-            //                    + Math.pow(
-            //                        nodeInfo.percentsMatch, (double) 1 /
-            // Lizzie.config.matchAiTemperature);
-            analyzedBlack = analyzedBlack + 1;
-          } else {
-            whiteValue = whiteValue + nodeInfo.percentsMatch;
-            //                    + Math.pow(
-            //                        nodeInfo.percentsMatch, (double) 1 /
-            // Lizzie.config.matchAiTemperature);
-            analyzedWhite = analyzedWhite + 1;
-          }
+      if (nodeInfo.analyzedMatchValue) {
+        if (node.getData().blackToPlay) {
+          blackValue = blackValue + nodeInfo.percentsMatch;
+          analyzedBlack = analyzedBlack + 1;
+        } else {
+          whiteValue = whiteValue + nodeInfo.percentsMatch;
+          analyzedWhite = analyzedWhite + 1;
         }
       }
     }
@@ -5224,7 +5216,7 @@ public class MoveListFrame extends JFrame {
       List<bigMistakeInfo> whiteBigMistakeList = new ArrayList<bigMistakeInfo>();
       List<bigMistakeInfo> AllBigMistakeList = new ArrayList<bigMistakeInfo>();
       while (node.previous().isPresent()
-          && (node.getData().moveNumber + 2 > Lizzie.config.matchAiFirstMove)) {
+          && (node.getData().moveNumber >= Lizzie.config.matchAiFirstMove)) {
         NodeInfo nodeInfo =
             showBranch.getSelectedIndex() == 0
                 ? (isMainEngine ? node.nodeInfoMain : node.nodeInfoMain2)
@@ -5288,45 +5280,21 @@ public class MoveListFrame extends JFrame {
       for (int i = 0; i < BigMistakeList.size(); i++)
         drawOneBigMistakePoint(g, width, height, BigMistakeList.get(i), i, true);
     } else {
-      boolean lastMatch = false;
-      boolean lastMatchBlack = false;
+      //   boolean lastMatch = false;
+      //     boolean lastMatchBlack = false;
       while (node.previous().isPresent()
           && (selectedIndex != 2 && selectedIndex != 3
               || ((selectedIndex == 2 || selectedIndex == 3)
-                  && ((node.getData().moveNumber + 2) > Lizzie.config.matchAiFirstMove)))) {
+                  && ((node.getData().moveNumber) >= Lizzie.config.matchAiFirstMove)))) {
+        double previousWr =
+            isMainEngine
+                ? node.previous().get().getData().winrate
+                : node.previous().get().getData().winrate2;
         double wr = isMainEngine ? node.getData().winrate : node.getData().winrate2;
         int playouts = isMainEngine ? node.getData().getPlayouts() : node.getData().getPlayouts2();
         switch (selectedIndex) {
           case 0:
-            if (!node.previous().get().previous().isPresent() && checkBlack.isSelected()) {
-              firstNode = node.previous().get();
-              NodeInfo firstNodeInfo =
-                  showBranch.getSelectedIndex() == 0
-                      ? (isMainEngine ? firstNode.nodeInfoMain : firstNode.nodeInfoMain2)
-                      : (isMainEngine ? firstNode.nodeInfo : firstNode.nodeInfo2);
-              if (firstNodeInfo.analyzedMatchValue && firstNodeInfo.isBlack) {
-                g.setColor(new Color(0, 0, 255, 100));
-                int[] xPoints = {
-                  posx + ((movenum + 1) * width / numMoves),
-                  posx + ((movenum + 1) * width / numMoves),
-                  posx + ((movenum) * width / numMoves),
-                  posx + ((movenum) * width / numMoves)
-                };
-                int[] yPoints = {
-                  posy + height - (int) (convertWinrate(lastWr) * height / 100),
-                  origParams[3],
-                  origParams[3],
-                  posy
-                      + height
-                      - (int)
-                          (convertWinrate(firstNodeInfo.analyzed ? firstNode.getData().winrate : 50)
-                              * height
-                              / 100)
-                };
-                g.fillPolygon(xPoints, yPoints, 4);
-              }
-            }
-            if (playouts > 0) {
+            if (playouts >= 0) {
               if (wr < 0) {
                 wr = 100 - lastWr;
               } else if (!node.getData().blackToPlay) {
@@ -5334,117 +5302,83 @@ public class MoveListFrame extends JFrame {
               }
               NodeInfo nodeInfo =
                   showBranch.getSelectedIndex() == 0
-                      ? (isMainEngine ? node.nodeInfoMain : node.nodeInfoMain2)
-                      : (isMainEngine ? node.nodeInfo : node.nodeInfo2);
-              if (lastOkMove > 0) {
-                if (node.getData().moveNumber <= Lizzie.config.matchAiLastMove
-                    && (node.getData().moveNumber + 1) > Lizzie.config.matchAiFirstMove) {
+                      ? (isMainEngine
+                          ? node.previous().get().nodeInfoMain
+                          : node.previous().get().nodeInfoMain2)
+                      : (isMainEngine
+                          ? node.previous().get().nodeInfo
+                          : node.previous().get().nodeInfo2);
+              if (lastOkMove < 0) lastWr = wr;
+              if (node.getData().moveNumber <= Lizzie.config.matchAiLastMove
+                  && (node.getData().moveNumber - 1) >= Lizzie.config.matchAiFirstMove) {
+                if ((nodeInfo.isMatchAi)) {
+                  if (checkBlack.isSelected() && (nodeInfo.isBlack && nodeInfo.isMatchAi)) {
+                    g.setColor(new Color(0, 0, 255, 100));
+                    int[] xPoints = {
+                      posx + ((movenum + 1) * width / numMoves),
+                      posx + ((movenum + 1) * width / numMoves),
+                      posx + ((movenum) * width / numMoves),
+                      posx + ((movenum) * width / numMoves)
+                    };
+                    int[] yPoints = {
+                      posy + height - (int) (convertWinrate(lastWr) * height / 100),
+                      origParams[3],
+                      origParams[3],
+                      posy + height - (int) (convertWinrate(wr) * height / 100)
+                    };
+                    g.fillPolygon(xPoints, yPoints, 4);
 
-                  if (nodeInfo.isMatchAi || lastMatch) {
-                    int lostMoves = lastOkMove - movenum;
+                    int[] xPoints2 = {
+                      posx + ((movenum) * width / numMoves),
+                      posx + ((movenum) * width / numMoves),
+                      posx + ((movenum - 1) * width / numMoves),
+                      posx + ((movenum - 1) * width / numMoves)
+                    };
+                    int[] yPoints2 = {
+                      posy + height - (int) (convertWinrate(wr) * height / 100),
+                      origParams[3],
+                      origParams[3],
+                      posy + height - (int) (convertWinrate(previousWr) * height / 100)
+                    };
+                    g.fillPolygon(xPoints2, yPoints2, 4);
+                  }
+                  if (checkWhite.isSelected() && (!nodeInfo.isBlack && nodeInfo.isMatchAi)) {
+                    g.setColor(new Color(0, 255, 0, 100));
 
-                    if (checkBlack.isSelected()
-                        && ((nodeInfo.isBlack && nodeInfo.isMatchAi)
-                            || (lastMatch && lastMatchBlack))) {
-                      g.setColor(new Color(0, 0, 255, 100));
-                      if (lostMoves == 1) {
-                        int[] xPoints = {
-                          posx + ((movenum + 1) * width / numMoves),
-                          posx + ((movenum + 1) * width / numMoves),
-                          posx + (movenum * width / numMoves),
-                          posx + (movenum * width / numMoves)
-                        };
-                        int[] yPoints = {
-                          posy + height - (int) (convertWinrate(lastWr) * height / 100),
-                          origParams[3],
-                          origParams[3],
-                          posy + height - (int) (convertWinrate(wr) * height / 100)
-                        };
-                        g.fillPolygon(xPoints, yPoints, 4);
-                      } else if (lostMoves == 2 && (nodeInfo.isBlack && nodeInfo.isMatchAi)) {
-                        int[] xPoints = {
-                          posx + ((movenum + 2) * width / numMoves),
-                          posx + ((movenum + 2) * width / numMoves),
-                          posx + (movenum * width / numMoves),
-                          posx + (movenum * width / numMoves)
-                        };
-                        int[] yPoints = {
-                          posy + height - (int) (convertWinrate(lastWr) * height / 100),
-                          origParams[3],
-                          origParams[3],
-                          posy + height - (int) (convertWinrate(wr) * height / 100)
-                        };
-                        g.fillPolygon(xPoints, yPoints, 4);
-                      } else if (lostMoves > 1 && (nodeInfo.isBlack && nodeInfo.isMatchAi)) {
-                        int[] xPoints = {
-                          posx + ((movenum + 1) * width / numMoves),
-                          posx + ((movenum + 1) * width / numMoves),
-                          posx + (movenum * width / numMoves),
-                          posx + (movenum * width / numMoves)
-                        };
-                        int[] yPoints = {
-                          posy + height - (int) (convertWinrate(lastWr) * height / 100),
-                          origParams[3],
-                          origParams[3],
-                          posy + height - (int) (convertWinrate(wr) * height / 100)
-                        };
-                        g.fillPolygon(xPoints, yPoints, 4);
-                      }
-                    }
-                    if (checkWhite.isSelected()
-                        && ((!nodeInfo.isBlack && nodeInfo.isMatchAi)
-                            || (lastMatch && !lastMatchBlack))) {
-                      g.setColor(new Color(0, 255, 0, 100));
-                      if (lostMoves == 1) {
-                        int[] xPoints = {
-                          posx + ((movenum + 1) * width / numMoves),
-                          posx + ((movenum + 1) * width / numMoves),
-                          posx + (movenum * width / numMoves),
-                          posx + (movenum * width / numMoves)
-                        };
-                        int[] yPoints = {
-                          posy + height - (int) (convertWinrate(lastWr) * height / 100),
-                          0,
-                          0,
-                          posy + height - (int) (convertWinrate(wr) * height / 100)
-                        };
-                        g.fillPolygon(xPoints, yPoints, 4);
-                      } else if (lostMoves == 2 && (!nodeInfo.isBlack && nodeInfo.isMatchAi)) {
-                        int[] xPoints = {
-                          posx + ((movenum + 2) * width / numMoves),
-                          posx + ((movenum + 2) * width / numMoves),
-                          posx + (movenum * width / numMoves),
-                          posx + (movenum * width / numMoves)
-                        };
-                        int[] yPoints = {
-                          posy + height - (int) (convertWinrate(lastWr) * height / 100),
-                          0,
-                          0,
-                          posy + height - (int) (convertWinrate(wr) * height / 100)
-                        };
-                        g.fillPolygon(xPoints, yPoints, 4);
-                      } else if (lostMoves > 2 && (!nodeInfo.isBlack && nodeInfo.isMatchAi)) {
-                        int[] xPoints = {
-                          posx + ((movenum + 1) * width / numMoves),
-                          posx + ((movenum + 1) * width / numMoves),
-                          posx + (movenum * width / numMoves),
-                          posx + (movenum * width / numMoves)
-                        };
-                        int[] yPoints = {
-                          posy + height - (int) (convertWinrate(lastWr) * height / 100),
-                          0,
-                          0,
-                          posy + height - (int) (convertWinrate(wr) * height / 100)
-                        };
-                        g.fillPolygon(xPoints, yPoints, 4);
-                      }
-                    }
+                    int[] xPoints = {
+                      posx + ((movenum + 1) * width / numMoves),
+                      posx + ((movenum + 1) * width / numMoves),
+                      posx + ((movenum) * width / numMoves),
+                      posx + ((movenum) * width / numMoves)
+                    };
+                    int[] yPoints = {
+                      posy + height - (int) (convertWinrate(lastWr) * height / 100),
+                      0,
+                      0,
+                      posy + height - (int) (convertWinrate(wr) * height / 100)
+                    };
+                    g.fillPolygon(xPoints, yPoints, 4);
+
+                    int[] xPoints2 = {
+                      posx + ((movenum) * width / numMoves),
+                      posx + ((movenum) * width / numMoves),
+                      posx + ((movenum - 1) * width / numMoves),
+                      posx + ((movenum - 1) * width / numMoves)
+                    };
+                    int[] yPoints2 = {
+                      posy + height - (int) (convertWinrate(wr) * height / 100),
+                      0,
+                      0,
+                      posy + height - (int) (convertWinrate(100 - previousWr) * height / 100)
+                    };
+                    g.fillPolygon(xPoints2, yPoints2, 4);
                   }
                 }
-
+              }
+              if (lastOkMove > 0) {
                 if (lastNodeOk) {
-                  if (node.getData().moveNumber <= Lizzie.config.matchAiLastMove
-                      && (node.getData().moveNumber + 1) > Lizzie.config.matchAiFirstMove)
+                  if (node.getData().moveNumber + 1 <= Lizzie.config.matchAiLastMove
+                      && (node.getData().moveNumber) >= Lizzie.config.matchAiFirstMove)
                     g.setColor(Color.CYAN);
                   else g.setColor(Color.ORANGE);
                   g.drawLine(
@@ -5461,8 +5395,8 @@ public class MoveListFrame extends JFrame {
                         posy + height - (int) (convertWinrate(lastWr) * height / 100),
                         posx + ((movenum + 1) * width / numMoves),
                         posy + height - (int) ((wr - (wr - lastWr) / lostMoves) * height / 100));
-                  if (node.getData().moveNumber <= Lizzie.config.matchAiLastMove
-                      && (node.getData().moveNumber + 1) > Lizzie.config.matchAiFirstMove)
+                  if (node.getData().moveNumber + 1 <= Lizzie.config.matchAiLastMove
+                      && (node.getData().moveNumber) >= Lizzie.config.matchAiFirstMove)
                     g.setColor(Color.CYAN);
                   else g.setColor(Color.ORANGE);
                   g.drawLine(
@@ -5478,8 +5412,7 @@ public class MoveListFrame extends JFrame {
                       posy + height - (int) (convertWinrate(wr) * height / 100));
                 }
               }
-              lastMatch = nodeInfo.isMatchAi;
-              lastMatchBlack = nodeInfo.isBlack;
+
               if (node == curMove) {
                 cwr = wr;
                 cmovenum = movenum;
@@ -5489,22 +5422,6 @@ public class MoveListFrame extends JFrame {
               }
               lastWr = wr;
               lastNodeOk = true;
-              // Check if we were in a variation and has reached the main trunk
-              //        if (topOfVariation.isPresent() && topOfVariation.get() == node) {
-              //          // Reached top of variation, go to end of main trunk before continuing
-              //          while (node.next().isPresent()) {
-              //            node = node.next().get();
-              //          }
-              //          movenum = node.getData().moveNumber - 1;
-              //          lastWr = node.getData().winrate;
-              //          if (!node.getData().blackToPlay) lastWr = 100 - lastWr;
-              //          g.setStroke(new BasicStroke(3));
-              //          topOfVariation = Optional.empty();
-              //          if (node.getData().getPlayouts() == 0) {
-              //            lastNodeOk = false;
-              //          }
-              //          inFirstPath = false;
-              //        }
               lastOkMove = lastNodeOk ? movenum : -1;
             } else {
               lastNodeOk = false;
@@ -5515,32 +5432,16 @@ public class MoveListFrame extends JFrame {
             }
             break;
           case 1:
-            //  g.setStroke(new BasicStroke(1));
-
             double matchValue = getMatchValue(node);
-            NodeInfo nodeinfo =
-                showBranch.getSelectedIndex() == 0
-                    ? (isMainEngine ? node.nodeInfoMain : node.nodeInfoMain2)
-                    : (isMainEngine ? node.nodeInfo : node.nodeInfo2);
             double lastMatchValue = 0;
             if (analyzed >= 1) {
-              if ((node.getData().moveNumber <= Lizzie.config.matchAiLastMove
-                      && (node.getData().moveNumber + 1) > Lizzie.config.matchAiFirstMove)
-                  && nodeinfo.analyzedMatchValue) {
-                if (node.getData().blackToPlay) {
-                  g.setColor(new Color(0, 0, 0, 200));
-                  lastMatchValue = lastMatchValueB;
-                } else {
-                  g.setColor(new Color(255, 255, 255, 200));
-                  lastMatchValue = lastMatchValueW;
-                }
-              } else
-                g.setColor(
-                    new Color(
-                        Color.ORANGE.getRed(),
-                        Color.ORANGE.getGreen(),
-                        Color.ORANGE.getBlue(),
-                        200));
+              if (node.getData().blackToPlay) {
+                g.setColor(new Color(0, 0, 0, 200));
+                lastMatchValue = lastMatchValueB;
+              } else {
+                g.setColor(new Color(255, 255, 255, 200));
+                lastMatchValue = lastMatchValueW;
+              }
               if (node != lastMove) {
                 g.drawLine(
                     posx + ((movenum + 2) * width / numMoves),
@@ -5598,7 +5499,7 @@ public class MoveListFrame extends JFrame {
                 g.setColor(Color.WHITE);
                 if (analyzedW >= 1)
                   g.drawString(
-                      String.format("" + "%.1f", lastMatchValueW),
+                      String.format(Locale.ENGLISH, "%.1f", lastMatchValueW),
                       posx + (movenum * width / numMoves) - 5,
                       posy
                           + height
@@ -6128,8 +6029,8 @@ public class MoveListFrame extends JFrame {
           showBranch.getSelectedIndex() == 0
               ? (isMainEngine ? node.nodeInfoMain : node.nodeInfoMain2)
               : (isMainEngine ? node.nodeInfo : node.nodeInfo2);
-      if ((node.getData().moveNumber <= Lizzie.config.matchAiLastMove
-          && (node.getData().moveNumber + 1) > Lizzie.config.matchAiFirstMove)) {
+      if ((node.getData().moveNumber + 1 <= Lizzie.config.matchAiLastMove
+          && node.getData().moveNumber >= Lizzie.config.matchAiFirstMove)) {
         if (nodeInfo.analyzed) {
           if (nodeInfo.isBlack) {
             totalAnalyzedBlack++;
@@ -6604,8 +6505,8 @@ public class MoveListFrame extends JFrame {
           showBranch.getSelectedIndex() == 0
               ? (isMainEngine ? node.nodeInfoMain : node.nodeInfoMain2)
               : (isMainEngine ? node.nodeInfo : node.nodeInfo2);
-      if ((node.getData().moveNumber <= Lizzie.config.matchAiLastMove
-          && (node.getData().moveNumber + 1) > Lizzie.config.matchAiFirstMove)) {
+      if ((node.getData().moveNumber + 1 <= Lizzie.config.matchAiLastMove
+          && (node.getData().moveNumber) >= Lizzie.config.matchAiFirstMove)) {
         if (nodeInfo.analyzed) {
           if (nodeInfo.isBlack) {
             blackAccracyValue = blackAccracyValue + nodeInfo.percentsMatch;

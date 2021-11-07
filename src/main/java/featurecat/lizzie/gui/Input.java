@@ -629,7 +629,7 @@ public class Input implements MouseListener, KeyListener, MouseWheelListener, Mo
         // return;
         // }
         if (e.isAltDown()) {
-          Lizzie.board.clearbestmovesafter(Lizzie.board.getHistory().getStart());
+          Lizzie.board.clearBestMovesAfter(Lizzie.board.getHistory().getStart());
         } else if (e.isShiftDown()) {
           deleteBranch();
         } else {

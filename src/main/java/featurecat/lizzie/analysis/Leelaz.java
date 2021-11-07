@@ -1965,7 +1965,7 @@ public class Leelaz {
       sendCommand("komi " + (komi == 0.0 ? "0" : komi));
       Lizzie.board.getHistory().getGameInfo().setKomi(komi);
       //  Lizzie.board.getHistory().getGameInfo().changeKomi();
-      Lizzie.board.clearbestmovesafter(Lizzie.board.getHistory().getStart());
+      Lizzie.board.clearBestMovesAfter(Lizzie.board.getHistory().getStart());
       if (isPondering) ponder();
     }
   }
@@ -1975,7 +1975,7 @@ public class Leelaz {
       sendCommand("komi " + (komi == 0.0 ? "0" : komi));
       Lizzie.board.getHistory().getGameInfo().setKomiNoMenu(komi);
       //  Lizzie.board.getHistory().getGameInfo().changeKomi();
-      Lizzie.board.clearbestmovesafter(Lizzie.board.getHistory().getStart());
+      Lizzie.board.clearBestMovesAfter(Lizzie.board.getHistory().getStart());
       if (isPondering) ponder();
     }
   }
@@ -2971,7 +2971,8 @@ public class Leelaz {
 
   public void analyzeAvoid(String type, String color, String coordList, int untilMove) {
     analyzeAvoid(
-        String.format("%s %s %s %d", type, color, coordList, untilMove <= 0 ? 1 : untilMove));
+        String.format(
+            Locale.ENGLISH, "%s %s %s %d", type, color, coordList, untilMove <= 0 ? 1 : untilMove));
     Lizzie.board.clearbestmoves();
   }
 
@@ -2988,11 +2989,18 @@ public class Leelaz {
       startPonderTime = System.currentTimeMillis();
     }
     String parameters =
-        String.format("%s %s %s %d", type, "b", coordList, untilMove <= 0 ? 1 : untilMove);
+        String.format(
+            Locale.ENGLISH, "%s %s %s %d", type, "b", coordList, untilMove <= 0 ? 1 : untilMove);
     parameters =
         parameters
             + " "
-            + String.format("%s %s %s %d", type, "w", coordList, untilMove <= 0 ? 1 : untilMove);
+            + String.format(
+                Locale.ENGLISH,
+                "%s %s %s %d",
+                type,
+                "w",
+                coordList,
+                untilMove <= 0 ? 1 : untilMove);
     sendCommand(
         String.format(
             (isKatago

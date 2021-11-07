@@ -27,7 +27,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.StringTokenizer;
@@ -104,10 +103,10 @@ public class Utils {
     return en_aes;
   }
 
-  public static boolean isWindows() {
-    String osName = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
-    return osName != null && !osName.contains("darwin") && osName.contains("win");
-  }
+  //  public static boolean isWindows() {
+  //    String osName = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
+  //    return osName != null && !osName.contains("darwin") && osName.contains("win");
+  //  }
 
   private static enum ParamState {
     NORMAL,
@@ -489,6 +488,7 @@ public class Utils {
     }
   }
 
+  @SuppressWarnings("deprecation")
   public static Double txtFieldDoubleValue(JTextField txt) {
     if (txt.getText().trim().isEmpty()) {
       return 0.0;
@@ -730,6 +730,16 @@ public class Utils {
       copy("/assets/newtheme/board.png", "theme" + File.separator + themeName);
       copy("/assets/newtheme/background.jpg", "theme" + File.separator + themeName);
       copy("/assets/newtheme/theme.txt", "theme" + File.separator + themeName);
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
+
+  public static void copyClockHelper() {
+    // TODO Auto-generated method stub
+    try {
+      copy("/assets/clockHelper/InVisibleFrame.jar", "clockHelper");
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();

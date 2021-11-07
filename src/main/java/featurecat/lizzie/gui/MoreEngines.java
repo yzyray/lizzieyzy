@@ -28,6 +28,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
@@ -868,9 +869,16 @@ public class MoreEngines extends JPanel {
 
     public Component getTableCellRendererComponent(
         JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-      if (row == curIndex)
-        return this.renderer.getTableCellRendererComponent(table, value, true, false, row, column);
-      return this.renderer.getTableCellRendererComponent(table, value, false, false, row, column);
+      if (column == 2) {
+        JLabel label =
+            (JLabel)
+                super.getTableCellRendererComponent(
+                    table, value, row == curIndex, hasFocus, row, column);
+        label.setToolTipText(value.toString());
+        return label;
+      }
+      return this.renderer.getTableCellRendererComponent(
+          table, value, row == curIndex, false, row, column);
     }
   }
 

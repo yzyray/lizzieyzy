@@ -471,7 +471,7 @@ public class InputIndependentMainBoard implements KeyListener {
         // return;
         // }
         if (e.isAltDown()) {
-          Lizzie.board.clearbestmovesafter(Lizzie.board.getHistory().getStart());
+          Lizzie.board.clearBestMovesAfter(Lizzie.board.getHistory().getStart());
         } else if (e.isShiftDown()) {
           deleteBranch();
         } else {

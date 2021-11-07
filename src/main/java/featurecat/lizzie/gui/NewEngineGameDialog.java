@@ -36,9 +36,9 @@ public class NewEngineGameDialog extends JDialog {
     FORMAT_HANDICAP.setMaximumIntegerDigits(99999);
   }
 
-  private JPanel dialogPane = new JPanel();
-  private JPanel contentPanel = new JPanel();
-  private JPanel buttonBar = new JPanel();
+  private PanelWithToolTips dialogPane = new PanelWithToolTips();
+  private PanelWithToolTips contentPanel = new PanelWithToolTips();
+  private PanelWithToolTips buttonBar = new PanelWithToolTips();
   private JFontButton okButton = new JFontButton();
 
   // private JCheckBox checkBoxPlayerIsBlack;
@@ -592,9 +592,9 @@ public class NewEngineGameDialog extends JDialog {
         new JFontLabel(
             Lizzie.resourceBundle.getString("NewEngineGameDialog.lblBatchGame")); // ("多盘");
     lblBatchGame.setBounds(
-        Lizzie.config.isFrameFontSmall() ? 279 : (Lizzie.config.isFrameFontMiddle() ? 283 : 288),
+        Lizzie.config.isFrameFontSmall() ? 279 : (Lizzie.config.isFrameFontMiddle() ? 283 : 328),
         240,
-        160,
+        100,
         20);
     LizzieFrame.toolbar.chkenginePkBatch.setBounds(
         Lizzie.config.isFrameFontSmall() ? 350 : (Lizzie.config.isFrameFontMiddle() ? 375 : 410),

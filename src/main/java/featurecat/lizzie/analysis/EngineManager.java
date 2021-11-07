@@ -1114,7 +1114,7 @@ public class EngineManager {
       }
     }
     LizzieFrame.toolbar.enableDisabelForEngineGame(true);
-    Lizzie.board.clearbestmovesafter(Lizzie.board.getHistory().getStart());
+    Lizzie.board.clearBestMovesAfter(Lizzie.board.getHistory().getStart());
     File file = new File("");
     String courseFile = "";
     try {
@@ -2152,7 +2152,7 @@ public class EngineManager {
                 newEng.notPondering();
                 Lizzie.board.resendMoveToEngine(newEng);
                 if (newEng == Lizzie.leelaz) {
-                  Lizzie.board.clearbestmovesafter(Lizzie.board.getHistory().getStart());
+                  Lizzie.board.clearBestMovesAfterFirstEngine(Lizzie.board.getHistory().getStart());
                   currentEngineNo = Lizzie.leelaz.currentEngineN();
                   featurecat.lizzie.gui.Menu.engineMenu.setText(
                       "["
@@ -2191,7 +2191,7 @@ public class EngineManager {
                 if (currentEngineNo2 > 20) LizzieFrame.menu.changeEngineIcon2(20, 3);
                 else LizzieFrame.menu.changeEngineIcon2(currentEngineNo2, 3);
 
-                Lizzie.board.clearbestmovesafter2(Lizzie.board.getHistory().getStart());
+                Lizzie.board.clearBestMovesAfterSecondEngine(Lizzie.board.getHistory().getStart());
                 Lizzie.board.resendMoveToEngine(newEng);
                 featurecat.lizzie.gui.Menu.engineMenu2.setText(
                     "["

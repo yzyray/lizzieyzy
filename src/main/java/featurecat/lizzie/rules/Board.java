@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Stack;
@@ -114,6 +115,12 @@ public class Board {
     //    return new int[] {x, y};
     int y = index % Board.boardHeight;
     int x = (index - y) / Board.boardHeight;
+    return new int[] {x, y};
+  }
+
+  public int[] getCoordKataGo(int index) {
+    int x = index % Board.boardWidth;
+    int y = (index - x) / Board.boardWidth;
     return new int[] {x, y};
   }
 
@@ -232,7 +239,7 @@ public class Board {
   public static String convertCoordinatesToName(int x, int y) {
     // coordinates take the form C16 A19 Q5 K10 etc. I is not used.
     if (boardWidth > 25 || boardHeight > 25) {
-      return String.format("(%d,%d)", x, y); // boardHeight - y - 1);
+      return String.format(Locale.ENGLISH, "(%d,%d)", x, y); // boardHeight - y - 1);
     } else {
       return coordsAsName(x) + (boardHeight - y);
     }
@@ -357,24 +364,31 @@ public class Board {
     for (BoardHistoryNode node : diffList) node.diffAnalyzed = false;
   }
 
-  public void clearbestmovesafter(BoardHistoryNode node) {
-    Stack<BoardHistoryNode> stack = new Stack<>();
-    stack.push(node);
-    while (!stack.isEmpty()) {
-      BoardHistoryNode cur = stack.pop();
-      if (cur.getData().getPlayouts() > 0) {
-        cur.getData().isChanged = true;
-        cur.nodeInfo.changed = true;
-        cur.nodeInfoMain.changed = true;
-      }
-      if (cur.numberOfChildren() >= 1) {
-        for (int i = cur.numberOfChildren() - 1; i >= 0; i--)
-          stack.push(cur.getVariations().get(i));
+  public void clearBestMovesAfterFirstEngine(BoardHistoryNode node) {
+    {
+      Stack<BoardHistoryNode> stack = new Stack<>();
+      stack.push(node);
+      while (!stack.isEmpty()) {
+        BoardHistoryNode cur = stack.pop();
+        if (cur.getData().getPlayouts() > 0) {
+          cur.getData().isChanged = true;
+          cur.nodeInfo.changed = true;
+          cur.nodeInfoMain.changed = true;
+        }
+        if (cur.numberOfChildren() >= 1) {
+          for (int i = cur.numberOfChildren() - 1; i >= 0; i--)
+            stack.push(cur.getVariations().get(i));
+        }
       }
     }
   }
 
-  public void clearbestmovesInfomationAfter(BoardHistoryNode node) {
+  public void clearBestMovesAfter(BoardHistoryNode node) {
+    clearBestMovesAfterFirstEngine(node);
+    if (Lizzie.config.isDoubleEngineMode()) clearBestMovesAfterSecondEngine(node);
+  }
+
+  public void clearBestMovesInfomationAfter(BoardHistoryNode node) {
     Stack<BoardHistoryNode> stack = new Stack<>();
     stack.push(node);
     while (!stack.isEmpty()) {
@@ -393,7 +407,7 @@ public class Board {
     }
   }
 
-  public void clearbestmovesInfomationAfter2(BoardHistoryNode node) {
+  public void clearBestMovesInfomationAfter2(BoardHistoryNode node) {
     Stack<BoardHistoryNode> stack = new Stack<>();
     stack.push(node);
     while (!stack.isEmpty()) {
@@ -412,7 +426,7 @@ public class Board {
     }
   }
 
-  public void clearbestmovesInfomation(BoardHistoryNode node) {
+  public void clearBestMovesInfomation(BoardHistoryNode node) {
     if (node.getData().getPlayouts() > 0) node.getData().bestMoves = new ArrayList<>();
     node.getData().winrate = 50;
     node.getData().setPlayouts(0);
@@ -464,7 +478,7 @@ public class Board {
     }
   }
 
-  public void clearbestmovesafter2(BoardHistoryNode node) {
+  public void clearBestMovesAfterSecondEngine(BoardHistoryNode node) {
     Stack<BoardHistoryNode> stack = new Stack<>();
     stack.push(node);
     while (!stack.isEmpty()) {
@@ -2663,8 +2677,7 @@ public class Board {
     isPkBoardKataB = false;
     isPkBoardKataW = false;
     isKataBoard = false;
-    clearbestmovesafter(history.getStart());
-    if (Lizzie.config.isDoubleEngineMode()) clearbestmovesafter2(history.getStart());
+    clearBestMovesAfter(history.getStart());
   }
 
   public void clearPkBoardStat() {
@@ -4109,5 +4122,56 @@ public class Board {
     } else {
       this.pass();
     }
+  }
+
+  public final int MINIMUM_LADDER_LENGTH_FOR_AUTO_CONTINUATION = 5;
+
+  public int continueLadder() {
+    int k;
+    // Repeating continueLadderByOne() is inefficient. So what? :p
+    for (k = 0; continueLadderByOne(); k++) ;
+    Lizzie.frame.refresh();
+    return k;
+  }
+
+  private boolean continueLadderByOne() {
+    final int PERIOD = 4, CHECK_LENGTH = MINIMUM_LADDER_LENGTH_FOR_AUTO_CONTINUATION;
+    BoardHistoryList copiedHistory = history.shallowCopy();
+    int[][] pastMove = new int[CHECK_LENGTH][];
+    int dx = 0, dy = 0;
+    for (int k = 0; k < CHECK_LENGTH; k++) {
+      Optional<int[]> lastMoveOpt = copiedHistory.getLastMove();
+      if (!lastMoveOpt.isPresent()) return false;
+      int[] move = pastMove[k] = lastMoveOpt.get();
+      copiedHistory.previous();
+      if (k < PERIOD) continue;
+      // check repeated pattern
+      int[] periodMove = pastMove[k - PERIOD];
+      int deltaX = periodMove[0] - move[0], deltaY = periodMove[1] - move[1];
+      if (k == PERIOD) { // first periodical move
+        dx = deltaX;
+        dy = deltaY;
+      }
+      boolean isRepeated = (deltaX == dx && deltaY == dy);
+      boolean isDiagonal = (Math.abs(deltaX) == 1 && Math.abs(deltaY) == 1);
+      if (!isRepeated || !isDiagonal) return false;
+    }
+    int[] myPeriodMove = pastMove[PERIOD - 1];
+    int x = myPeriodMove[0] + dx, y = myPeriodMove[1] + dy;
+    boolean continued = isValidEmpty(x, y) && isValidEmpty(x + dx, y) && isValidEmpty(x, y + dy);
+    if (!continued) return false;
+    place(x, y);
+    return true;
+  }
+
+  public boolean isCoordsEmpty(int x, int y) {
+    if (history.getStones()[getIndex(x, y)] != Stone.EMPTY) {
+      return false;
+    }
+    return true;
+  }
+
+  private boolean isValidEmpty(int x, int y) {
+    return isValid(x, y) && isCoordsEmpty(x, y);
   }
 }

@@ -48,7 +48,7 @@ public class Config {
   public boolean scoreMeanWinrateGraphBoard = false;
   public boolean showKataGoEstimate = false;
   // public boolean allowDrageDoubleClick = true;
-  public boolean showKataGoEstimateOnSubbord = true;
+  public boolean showKataGoEstimateOnSubbord = false;
   public boolean showKataGoEstimateOnMainbord = true;
   public boolean showSuggestionOrder = true;
   public boolean showSuggestionMaxRed = true;
@@ -595,6 +595,8 @@ public class Config {
 
   public boolean showPonderLimitedTips = true;
   public int foxAfterGet = 0; // 0=最小化,1=关闭,2=无动作
+  public String lastFoxName = "";
+
   public boolean continueWithBestMove = false;
 
   public boolean delayShowCandidates = false;
@@ -1007,7 +1009,7 @@ public class Config {
     mySaveTime = uiConfig.optInt("my-save-time", 3);
     myByoyomiSeconds = uiConfig.optInt("my-byoyomo-seconds", 4);
     myByoyomiTimes = uiConfig.optInt("my-byoyomo-times", 2);
-    showKataGoEstimateOnSubbord = uiConfig.optBoolean("show-katago-estimate-onsubbord", true);
+    showKataGoEstimateOnSubbord = uiConfig.optBoolean("show-katago-estimate-onsubbord", false);
     showKataGoEstimateOnMainbord = uiConfig.optBoolean("show-katago-estimate-onmainboard", true);
     if (!showKataGoEstimateOnMainbord && !showKataGoEstimateOnSubbord && showKataGoEstimate)
       isHiddenKataEstimate = true;
@@ -1275,6 +1277,7 @@ public class Config {
     scoreLossThreshold5 = uiConfig.optDouble("score-loss-threshold-5", -12);
     showPonderLimitedTips = uiConfig.optBoolean("show-ponder-limited-tips", true);
     foxAfterGet = uiConfig.optInt("fox-after-get", 0);
+    lastFoxName = uiConfig.optString("last-fox-name", "");
     continueWithBestMove = uiConfig.optBoolean("continue-with-best-move", false);
     delayShowCandidates = uiConfig.optBoolean("delay-show-candidates", false);
     delayCandidatesSeconds = uiConfig.optDouble("delay-candidates-seconds", 10.0);
