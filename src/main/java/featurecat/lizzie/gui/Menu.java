@@ -5655,23 +5655,20 @@ public class Menu extends JMenuBar {
     txtTimeLimit.setPreferredSize(new Dimension(50, Config.menuHeight - 2));
     txtTimeLimit.setText(String.valueOf(Lizzie.config.maxAnalyzeTimeMillis / 1000));
     txtTimeLimit.setColumns(3);
-    txtTimeLimit.addFocusListener(
-        new FocusListener() {
-          @Override
-          public void focusGained(FocusEvent e) {
-            // TODO Auto-generated method stub
+
+    Document dtTxtTimeLimit = txtTimeLimit.getDocument();
+    dtTxtTimeLimit.addDocumentListener(
+        new DocumentListener() {
+          public void insertUpdate(DocumentEvent e) {
+            dtTxtTimeLimitUpdate();
           }
 
-          @Override
-          public void focusLost(FocusEvent e) {
-            // TODO Auto-generated method stub
-            Lizzie.config.maxAnalyzeTimeMillis =
-                1000
-                    * Utils.parseTextToLong(
-                        txtTimeLimit, Lizzie.config.maxAnalyzeTimeMillis / 1000);
-            Lizzie.config.leelazConfig.put(
-                "max-analyze-time-seconds", Lizzie.config.maxAnalyzeTimeMillis / 1000);
-            reCalculateLeelazPonderingIfOutOfLimit();
+          public void removeUpdate(DocumentEvent e) {
+            dtTxtTimeLimitUpdate();
+          }
+
+          public void changedUpdate(DocumentEvent e) {
+            dtTxtTimeLimitUpdate();
           }
         });
 
@@ -5701,22 +5698,23 @@ public class Menu extends JMenuBar {
     txtPlayOutsLimit.setPreferredSize(new Dimension(80, Config.menuHeight - 2));
     txtPlayOutsLimit.setText(String.valueOf(Lizzie.config.limitPlayouts));
     txtPlayOutsLimit.setColumns(4);
-    txtPlayOutsLimit.addFocusListener(
-        new FocusListener() {
-          @Override
-          public void focusGained(FocusEvent e) {
-            // TODO Auto-generated method stub
+
+    Document dtTxtPlayOutsLimit = txtPlayOutsLimit.getDocument();
+    dtTxtPlayOutsLimit.addDocumentListener(
+        new DocumentListener() {
+          public void insertUpdate(DocumentEvent e) {
+            dtTxtPlayOutsLimitUpdate();
           }
 
-          @Override
-          public void focusLost(FocusEvent e) {
-            // TODO Auto-generated method stub
-            Lizzie.config.limitPlayouts =
-                Utils.parseTextToLong(txtPlayOutsLimit, Lizzie.config.limitPlayouts);
-            Lizzie.config.leelazConfig.put("limit-playouts", Lizzie.config.limitPlayouts);
-            reCalculateLeelazPonderingIfOutOfLimit();
+          public void removeUpdate(DocumentEvent e) {
+            dtTxtPlayOutsLimitUpdate();
+          }
+
+          public void changedUpdate(DocumentEvent e) {
+            dtTxtPlayOutsLimitUpdate();
           }
         });
+
     updateMenuAfterEngine(true);
     if (!Lizzie.config.showDoubleMenu) {
       updateMenuStatus();
@@ -5725,6 +5723,21 @@ public class Menu extends JMenuBar {
       engineMenu2.setVisible(false);
       engineMenu.setVisible(false);
     }
+  }
+
+  private void dtTxtPlayOutsLimitUpdate() {
+    Lizzie.config.limitPlayouts =
+        Utils.parseTextToLong(txtPlayOutsLimit, Lizzie.config.limitPlayouts);
+    Lizzie.config.uiConfig.put("limit-playouts", Lizzie.config.limitPlayouts);
+    reCalculateLeelazPonderingIfOutOfLimit();
+  }
+
+  private void dtTxtTimeLimitUpdate() {
+    Lizzie.config.maxAnalyzeTimeMillis =
+        1000 * Utils.parseTextToLong(txtTimeLimit, Lizzie.config.maxAnalyzeTimeMillis / 1000);
+    Lizzie.config.leelazConfig.put(
+        "max-analyze-time-seconds", Lizzie.config.maxAnalyzeTimeMillis / 1000);
+    reCalculateLeelazPonderingIfOutOfLimit();
   }
 
   private void setToolTipJMenu(JMenuItem menu) {
@@ -9471,7 +9484,7 @@ public class Menu extends JMenuBar {
                 engineMenu.setIcon(icon2);
                 if (Lizzie.config.isDoubleEngineMode()) engineMenu2.setIcon(icon2);
                 if (Lizzie.frame.floatBoard != null && Lizzie.frame.floatBoard.isVisible()) {
-                  Lizzie.frame.floatBoard.setPonderState(true);
+                  Lizzie.frame.floatBoard.setPonderState(isPondering);
                 }
                 LizzieFrame.toolbar.analyse.setText(
                     Lizzie.resourceBundle.getString("BottomToolbar.pauseAnalyse"));

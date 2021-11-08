@@ -3159,6 +3159,12 @@ public class Leelaz {
     }
   }
 
+  public void clearPonderLimit() {
+    outOfPlayoutsLimit = false;
+    stopByPlayouts = false;
+    stopByLimit = false;
+  }
+
   /** End the process */
   public void shutdown() {
     leela0110StopPonder();

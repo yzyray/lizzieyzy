@@ -96,6 +96,7 @@ public class Board {
     }
     if (boardWidth < 4) isExtremlySmallBoard = true;
     else isExtremlySmallBoard = false;
+    Lizzie.leelaz.clearPonderLimit();
   }
 
   /**
@@ -2075,8 +2076,7 @@ public class Board {
   private Thread ShowCandidateSchedule;
 
   public void clearAfterMove() {
-    Lizzie.leelaz.outOfPlayoutsLimit = false;
-    Lizzie.leelaz.stopByPlayouts = false;
+    Lizzie.leelaz.clearPonderLimit();
     if (!Lizzie.leelaz.isPondering()) Lizzie.frame.clearKataEstimate();
     if (Lizzie.frame.priorityMoveCoords.size() > 0) Lizzie.frame.priorityMoveCoords.clear();
     if (isLoadingFile) return;

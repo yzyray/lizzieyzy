@@ -2150,7 +2150,7 @@ public class BottomToolbar extends JPanel {
 
   private void setButtonSize(JButton button, boolean widden) {
     button.setSize(
-        button.getFontMetrics(button.getFont()).stringWidth(button.getText()) + (widden ? 20 : 13),
+        button.getFontMetrics(button.getFont()).stringWidth(button.getText()) + (widden ? 14 : 12),
         26);
   }
 

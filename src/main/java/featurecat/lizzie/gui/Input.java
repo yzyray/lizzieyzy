@@ -693,7 +693,7 @@ public class Input implements MouseListener, KeyListener, MouseWheelListener, Mo
       case VK_D:
         if (e.isAltDown()) {
           Lizzie.frame.setLzSaiEngine();
-        } else {
+        } else if(e.isShiftDown()){
           Lizzie.frame.setRules();
         }
         // toggleShowDynamicKomi();

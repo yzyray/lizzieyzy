@@ -300,6 +300,9 @@ public class FloatBoard extends JDialog {
             if (e.getKeyCode() == KeyEvent.VK_F) {
               toggleHide();
             }
+            if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+              Lizzie.frame.togglePonderMannul();
+            }
           }
         });
     addMouseListener(

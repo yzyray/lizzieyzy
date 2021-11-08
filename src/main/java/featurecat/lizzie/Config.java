@@ -59,6 +59,7 @@ public class Config {
   public boolean showBestMoves = true;
   public boolean showNextMoves = true;
   public boolean showSubBoard = true;
+  public boolean hideSubBoardFromLargeWinrate = false;
   public boolean largeSubBoard = false;
   public boolean startMaximized = true;
   public boolean loadEstimateEngine = false;
@@ -1016,6 +1017,7 @@ public class Config {
     // showBestMoves = uiConfig.getBoolean("show-best-moves");
     showNextMoves = uiConfig.getBoolean("show-next-moves");
     showSubBoard = uiConfig.getBoolean("show-subboard");
+    hideSubBoardFromLargeWinrate = uiConfig.optBoolean("hide-subboard-from-large-winrate");
     largeSubBoard = uiConfig.getBoolean("large-subboard");
     // handicapInsteadOfWinrate =
     // uiConfig.getBoolean("handicap-instead-of-winrate");
@@ -1690,6 +1692,19 @@ public class Config {
       Lizzie.frame.setHideListScrollpane(showListPane);
     } else if (extraMode != ExtraMode.Float_Board) {
       Lizzie.frame.setHideListScrollpane(false);
+    }
+    if (largeWinrateGraph) {
+      if (showVariationGraph && showSubBoard) {
+        showSubBoard = !showSubBoard;
+        uiConfig.put("show-subboard", showSubBoard);
+        hideSubBoardFromLargeWinrate = true;
+        uiConfig.put("hide-subboard-from-large-winrate", hideSubBoardFromLargeWinrate);
+      }
+    } else if (hideSubBoardFromLargeWinrate && !showSubBoard) {
+      showSubBoard = !showSubBoard;
+      uiConfig.put("show-subboard", showSubBoard);
+      hideSubBoardFromLargeWinrate = false;
+      uiConfig.put("hide-subboard-from-large-winrate", hideSubBoardFromLargeWinrate);
     }
     uiConfig.put("large-winrate-graph", largeWinrateGraph);
     Lizzie.frame.refreshContainer();
