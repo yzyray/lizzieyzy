@@ -619,7 +619,6 @@ public class Input implements MouseListener, KeyListener, MouseWheelListener, Mo
             Lizzie.frame.flashAnalyzeGame(true);
           } else {
             Lizzie.frame.moveToMainTrunk();
-            Lizzie.frame.testContibute();
           }
         }
         break;
@@ -693,7 +692,7 @@ public class Input implements MouseListener, KeyListener, MouseWheelListener, Mo
       case VK_D:
         if (e.isAltDown()) {
           Lizzie.frame.setLzSaiEngine();
-        } else if(e.isShiftDown()){
+        } else if (e.isShiftDown()) {
           Lizzie.frame.setRules();
         }
         // toggleShowDynamicKomi();
