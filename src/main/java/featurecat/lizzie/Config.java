@@ -48,7 +48,7 @@ public class Config {
   public boolean scoreMeanWinrateGraphBoard = false;
   public boolean showKataGoEstimate = false;
   // public boolean allowDrageDoubleClick = true;
-  public boolean showKataGoEstimateOnSubbord = true;
+  public boolean showKataGoEstimateOnSubbord = false;
   public boolean showKataGoEstimateOnMainbord = true;
   public boolean showSuggestionOrder = true;
   public boolean showSuggestionMaxRed = true;
@@ -59,6 +59,7 @@ public class Config {
   public boolean showBestMoves = true;
   public boolean showNextMoves = true;
   public boolean showSubBoard = true;
+  public boolean hideSubBoardFromLargeWinrate = false;
   public boolean largeSubBoard = false;
   public boolean startMaximized = true;
   public boolean loadEstimateEngine = false;
@@ -595,7 +596,12 @@ public class Config {
 
   public boolean showPonderLimitedTips = true;
   public int foxAfterGet = 0; // 0=最小化,1=关闭,2=无动作
+  public String lastFoxName = "";
+
   public boolean continueWithBestMove = false;
+
+  public boolean delayShowCandidates = false;
+  public double delayCandidatesSeconds = 10;
 
   private JSONObject loadAndMergeSaveBoardConfig(
       JSONObject defaultCfg, String fileName, boolean needValidation) throws IOException {
@@ -1004,13 +1010,14 @@ public class Config {
     mySaveTime = uiConfig.optInt("my-save-time", 3);
     myByoyomiSeconds = uiConfig.optInt("my-byoyomo-seconds", 4);
     myByoyomiTimes = uiConfig.optInt("my-byoyomo-times", 2);
-    showKataGoEstimateOnSubbord = uiConfig.optBoolean("show-katago-estimate-onsubbord", true);
+    showKataGoEstimateOnSubbord = uiConfig.optBoolean("show-katago-estimate-onsubbord", false);
     showKataGoEstimateOnMainbord = uiConfig.optBoolean("show-katago-estimate-onmainboard", true);
     if (!showKataGoEstimateOnMainbord && !showKataGoEstimateOnSubbord && showKataGoEstimate)
       isHiddenKataEstimate = true;
     // showBestMoves = uiConfig.getBoolean("show-best-moves");
     showNextMoves = uiConfig.getBoolean("show-next-moves");
     showSubBoard = uiConfig.getBoolean("show-subboard");
+    hideSubBoardFromLargeWinrate = uiConfig.optBoolean("hide-subboard-from-large-winrate");
     largeSubBoard = uiConfig.getBoolean("large-subboard");
     // handicapInsteadOfWinrate =
     // uiConfig.getBoolean("handicap-instead-of-winrate");
@@ -1272,7 +1279,10 @@ public class Config {
     scoreLossThreshold5 = uiConfig.optDouble("score-loss-threshold-5", -12);
     showPonderLimitedTips = uiConfig.optBoolean("show-ponder-limited-tips", true);
     foxAfterGet = uiConfig.optInt("fox-after-get", 0);
+    lastFoxName = uiConfig.optString("last-fox-name", "");
     continueWithBestMove = uiConfig.optBoolean("continue-with-best-move", false);
+    delayShowCandidates = uiConfig.optBoolean("delay-show-candidates", false);
+    delayCandidatesSeconds = uiConfig.optDouble("delay-candidates-seconds", 10.0);
     otherSizeWidth = uiConfig.optInt("other-size-width", 21);
     otherSizeHeight = uiConfig.optInt("other-size-height", 21);
     useFoxStyleCoords = uiConfig.optBoolean("use-fox-style-coords", false);
@@ -1683,6 +1693,19 @@ public class Config {
     } else if (extraMode != ExtraMode.Float_Board) {
       Lizzie.frame.setHideListScrollpane(false);
     }
+    if (largeWinrateGraph) {
+      if (showVariationGraph && showSubBoard) {
+        showSubBoard = !showSubBoard;
+        uiConfig.put("show-subboard", showSubBoard);
+        hideSubBoardFromLargeWinrate = true;
+        uiConfig.put("hide-subboard-from-large-winrate", hideSubBoardFromLargeWinrate);
+      }
+    } else if (hideSubBoardFromLargeWinrate && !showSubBoard) {
+      showSubBoard = !showSubBoard;
+      uiConfig.put("show-subboard", showSubBoard);
+      hideSubBoardFromLargeWinrate = false;
+      uiConfig.put("hide-subboard-from-large-winrate", hideSubBoardFromLargeWinrate);
+    }
     uiConfig.put("large-winrate-graph", largeWinrateGraph);
     Lizzie.frame.refreshContainer();
     Lizzie.frame.refresh();
@@ -1799,6 +1822,7 @@ public class Config {
 
   public void toggleShowSuggestionVariations() {
     showSuggestionVariations = !showSuggestionVariations;
+    uiConfig.put("show-suggestion-variations", showSuggestionVariations);
   }
 
   public void toggleEvaluationColoring() {

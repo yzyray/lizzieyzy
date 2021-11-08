@@ -447,7 +447,7 @@ public class RightClickMenu extends JPopupMenu {
     LizzieFrame.avoidcoords = "";
     // move = 0;
     Lizzie.leelaz.ponder();
-    Lizzie.board.clearbestmovesafter(Lizzie.board.getHistory().getStart());
+    Lizzie.board.clearBestMovesAfter(Lizzie.board.getHistory().getStart());
     LizzieFrame.boardRenderer.removeSelectedRect();
     Lizzie.frame.refresh();
   }
@@ -468,7 +468,7 @@ public class RightClickMenu extends JPopupMenu {
     LizzieFrame.avoidcoords = "";
     Lizzie.leelaz.Pondering();
     Lizzie.leelaz.analyzeAvoid("allow", LizzieFrame.allowcoords, 1);
-    Lizzie.board.clearbestmovesafter(Lizzie.board.getHistory().getStart());
+    Lizzie.board.clearBestMovesAfter(Lizzie.board.getHistory().getStart());
 
     LizzieFrame.boardRenderer.drawAllSelectedRectByCoords(true, LizzieFrame.allowcoords);
     Lizzie.frame.refresh();
@@ -487,7 +487,7 @@ public class RightClickMenu extends JPopupMenu {
     LizzieFrame.avoidcoords = "";
     Lizzie.leelaz.Pondering();
     Lizzie.leelaz.analyzeAvoid("allow", LizzieFrame.allowcoords, 1);
-    Lizzie.board.clearbestmovesafter(Lizzie.board.getHistory().getStart());
+    Lizzie.board.clearBestMovesAfter(Lizzie.board.getHistory().getStart());
     LizzieFrame.boardRenderer.drawAllSelectedRectByCoords(true, LizzieFrame.allowcoords);
     Lizzie.frame.refresh();
   }
@@ -510,7 +510,7 @@ public class RightClickMenu extends JPopupMenu {
     LizzieFrame.avoidcoords = "";
     Lizzie.leelaz.Pondering();
     Lizzie.leelaz.analyzeAvoid("allow", LizzieFrame.allowcoords, 1);
-    Lizzie.board.clearbestmovesafter(Lizzie.board.getHistory().getStart());
+    Lizzie.board.clearBestMovesAfter(Lizzie.board.getHistory().getStart());
     LizzieFrame.boardRenderer.drawAllSelectedRectByCoords(true, LizzieFrame.allowcoords);
     Lizzie.frame.refresh();
   }
@@ -527,7 +527,7 @@ public class RightClickMenu extends JPopupMenu {
       }
     }
     Lizzie.leelaz.analyzeAvoid("avoid", LizzieFrame.avoidcoords, Lizzie.config.selectAvoidMoves);
-    Lizzie.board.clearbestmovesafter(Lizzie.board.getHistory().getStart());
+    Lizzie.board.clearBestMovesAfter(Lizzie.board.getHistory().getStart());
     LizzieFrame.boardRenderer.drawAllSelectedRectByCoords(false, LizzieFrame.avoidcoords);
     Lizzie.frame.repaint();
   }

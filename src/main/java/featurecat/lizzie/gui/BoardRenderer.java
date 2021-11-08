@@ -62,6 +62,8 @@ public class BoardRenderer {
   private int scaledMarginHeight, availableHeight, squareHeight;
   public Optional<Branch> branchOpt = Optional.empty();
   private List<MoveData> bestMoves = new ArrayList<MoveData>();
+  private ArrayList<Double> estimateArray;
+  private ArrayList<Double> preEstimateArray;
   private List<int[]> nextCoords;
   private MoveData mouseOverTemp = new MoveData();
   private BoardHistoryNode mouseOverTempNode;
@@ -199,7 +201,7 @@ public class BoardRenderer {
     else isShowingBranch = false;
 
     if (!isShowingBranch) drawStones();
-
+    drawEstimate();
     renderImages(g);
 
     if (Lizzie.config.allowMoveNumber == 0
@@ -259,6 +261,37 @@ public class BoardRenderer {
       // timer.lap("leelaz");
     }
     // timer.print();
+  }
+
+  private boolean isShowingEstimate = false;
+
+  private void drawEstimate() {
+    boolean hasDraw = false;
+    if (!Lizzie.frame.isInScoreMode
+        && !Lizzie.frame.isCounting
+        && !Lizzie.frame.isShowingHeatmap
+        && Lizzie.config.showKataGoEstimate
+        && Lizzie.config.showKataGoEstimateOnMainbord) {
+      if (estimateArray != null) {
+        if (Lizzie.config.showKataGoEstimateBySize) {
+          drawKataEstimateBySize(estimateArray, shouldShowPreviousBestMoves());
+        } else {
+          drawKataEstimateByTransparent(estimateArray, shouldShowPreviousBestMoves());
+        }
+        hasDraw = true;
+      } else if (preEstimateArray != null) {
+        if (Lizzie.config.showKataGoEstimateBySize) {
+          drawKataEstimateBySize(preEstimateArray, true);
+        } else {
+          drawKataEstimateByTransparent(preEstimateArray, true);
+        }
+        hasDraw = true;
+      }
+    }
+    if (!hasDraw && isShowingEstimate) {
+      removeKataEstimateImage();
+    }
+    isShowingEstimate = hasDraw;
   }
 
   private void drawPass(Graphics2D g, Board board, Optional<int[]> lastMoveOpt) {
@@ -969,7 +1002,7 @@ public class BoardRenderer {
     needDrawSelectImageAll = false;
   }
 
-  public void removecountblock() {
+  public void removeKataEstimateImage() {
     kataEstimateImage = new BufferedImage(boardWidth, boardHeight, TYPE_INT_ARGB);
   }
 
@@ -997,14 +1030,17 @@ public class BoardRenderer {
     return Lizzie.config.showKataGoEstimateBigBelow;
   }
 
-  public void drawKataEstimateByTransparent(ArrayList<Double> estimateList) {
+  public void drawKataEstimateByTransparent(ArrayList<Double> estimateList, boolean reverse) {
+    // 不显示在活子上,取history.currentnode.data中的stones进行比较
     BufferedImage newEstimateImage = new BufferedImage(boardWidth, boardHeight, TYPE_INT_ARGB);
     Graphics2D g = newEstimateImage.createGraphics();
+    boolean blackToPlay = Lizzie.board.getHistory().isBlacksTurn();
+    if (reverse) blackToPlay = !blackToPlay;
     for (int i = 0; i < estimateList.size(); i++) {
-      if ((estimateList.get(i) > 0 && Lizzie.board.getHistory().isBlacksTurn())
-          || (estimateList.get(i) < 0 && !Lizzie.board.getHistory().isBlacksTurn())) {
-        int y = i / Board.boardWidth;
-        int x = i % Board.boardWidth;
+      int[] c = Lizzie.board.getCoordKataGo(i);
+      int x = c[0];
+      int y = c[1];
+      if ((estimateList.get(i) > 0 && blackToPlay) || (estimateList.get(i) < 0 && !blackToPlay)) {
         int stoneX = scaledMarginWidth + squareWidth * x;
         int stoneY = scaledMarginHeight + squareHeight * y;
         // g.setColor(Color.BLACK);
@@ -1032,15 +1068,9 @@ public class BoardRenderer {
               squareWidth);
         else
           g.fillRect(
-              stoneX - squareWidth * 3 / 10,
-              stoneY - squareWidth * 3 / 10,
-              squareWidth * 6 / 10,
-              squareWidth * 6 / 10);
+              stoneX - squareWidth / 4, stoneY - squareWidth / 4, squareWidth / 2, squareWidth / 2);
       }
-      if ((estimateList.get(i) < 0 && Lizzie.board.getHistory().isBlacksTurn())
-          || (estimateList.get(i) > 0 && !Lizzie.board.getHistory().isBlacksTurn())) {
-        int y = i / Board.boardWidth;
-        int x = i % Board.boardWidth;
+      if ((estimateList.get(i) < 0 && blackToPlay) || (estimateList.get(i) > 0 && !blackToPlay)) {
         int stoneX = scaledMarginWidth + squareWidth * x;
         int stoneY = scaledMarginHeight + squareHeight * y;
         int alpha =
@@ -1057,10 +1087,7 @@ public class BoardRenderer {
               squareWidth);
         else
           g.fillRect(
-              stoneX - squareWidth * 3 / 10,
-              stoneY - squareWidth * 3 / 10,
-              squareWidth * 6 / 10,
-              squareWidth * 6 / 10);
+              stoneX - squareWidth / 4, stoneY - squareWidth / 4, squareWidth / 2, squareWidth / 2);
       }
     }
     kataEstimateImage = newEstimateImage;
@@ -1077,14 +1104,16 @@ public class BoardRenderer {
     }
   }
 
-  public void drawKataEstimateBySize(ArrayList<Double> estimateList) {
+  public void drawKataEstimateBySize(ArrayList<Double> estimateList, boolean reverse) {
     BufferedImage newEstimateImage = new BufferedImage(boardWidth, boardHeight, TYPE_INT_ARGB);
     Graphics2D g = newEstimateImage.createGraphics();
+    boolean blackToPlay = Lizzie.board.getHistory().isBlacksTurn();
+    if (reverse) blackToPlay = !blackToPlay;
     for (int i = 0; i < estimateList.size(); i++) {
-      if ((estimateList.get(i) > 0 && Lizzie.board.getHistory().isBlacksTurn())
-          || (estimateList.get(i) < 0 && !Lizzie.board.getHistory().isBlacksTurn())) {
-        int y = i / Board.boardWidth;
-        int x = i % Board.boardWidth;
+      int[] c = Lizzie.board.getCoordKataGo(i);
+      int x = c[0];
+      int y = c[1];
+      if ((estimateList.get(i) > 0 && blackToPlay) || (estimateList.get(i) < 0 && !blackToPlay)) {
         int stoneX = scaledMarginWidth + squareWidth * x;
         int stoneY = scaledMarginHeight + squareHeight * y;
         Color cl = new Color(0, 0, 0, 180);
@@ -1092,10 +1121,7 @@ public class BoardRenderer {
         int length = (int) (convertLength(estimateList.get(i)) * squareWidth);
         if (length > 0) g.fillRect(stoneX - length / 2, stoneY - length / 2, length, length);
       }
-      if ((estimateList.get(i) < 0 && Lizzie.board.getHistory().isBlacksTurn())
-          || (estimateList.get(i) > 0 && !Lizzie.board.getHistory().isBlacksTurn())) {
-        int y = i / Board.boardWidth;
-        int x = i % Board.boardWidth;
+      if ((estimateList.get(i) < 0 && blackToPlay) || (estimateList.get(i) > 0 && !blackToPlay)) {
         int stoneX = scaledMarginWidth + squareWidth * x;
         int stoneY = scaledMarginHeight + squareHeight * y;
         int length = (int) (convertLength(estimateList.get(i)) * squareWidth);
@@ -1276,14 +1302,27 @@ public class BoardRenderer {
     // calculate best moves and branch
     if (this.boardIndex == 1) {
       bestMoves = Lizzie.board.getHistory().getCurrentHistoryNode().getData().bestMoves2;
+      estimateArray = Lizzie.board.getHistory().getCurrentHistoryNode().getData().estimateArray2;
+      if (Lizzie.config.showKataGoEstimate
+          && estimateArray == null
+          && Lizzie.board.getHistory().getCurrentHistoryNode().previous().isPresent()) {
+        preEstimateArray =
+            Lizzie.board
+                .getHistory()
+                .getCurrentHistoryNode()
+                .previous()
+                .get()
+                .getData()
+                .estimateArray2;
+      } else preEstimateArray = null;
     } else {
       if (shouldShowPreviousBestMoves()) {
         if (Lizzie.board.getHistory().getCurrentHistoryNode().previous().isPresent()) {
+          BoardData preData =
+              Lizzie.board.getHistory().getCurrentHistoryNode().previous().get().getData();
           if (Lizzie.config.showPreviousBestmovesOnlyFirstMove) {
             bestMoves = new ArrayList<MoveData>();
             BoardData thisData = Lizzie.board.getData();
-            BoardData preData =
-                Lizzie.board.getHistory().getCurrentHistoryNode().previous().get().getData();
             for (MoveData move : preData.bestMoves) {
               if (thisData.lastMove.isPresent()) {
                 int[] coords = Board.convertNameToCoordinates(move.coordinate);
@@ -1294,18 +1333,24 @@ public class BoardRenderer {
                 }
               }
             }
-          } else
-            bestMoves =
-                Lizzie.board
-                    .getHistory()
-                    .getCurrentHistoryNode()
-                    .previous()
-                    .get()
-                    .getData()
-                    .bestMoves;
+          } else bestMoves = preData.bestMoves;
+          estimateArray = preData.estimateArray;
         }
       } else {
         bestMoves = Lizzie.board.getHistory().getCurrentHistoryNode().getData().bestMoves;
+        estimateArray = Lizzie.board.getHistory().getCurrentHistoryNode().getData().estimateArray;
+        if (Lizzie.config.showKataGoEstimate
+            && estimateArray == null
+            && Lizzie.board.getHistory().getCurrentHistoryNode().previous().isPresent()) {
+          preEstimateArray =
+              Lizzie.board
+                  .getHistory()
+                  .getCurrentHistoryNode()
+                  .previous()
+                  .get()
+                  .getData()
+                  .estimateArray;
+        } else preEstimateArray = null;
       }
     }
 

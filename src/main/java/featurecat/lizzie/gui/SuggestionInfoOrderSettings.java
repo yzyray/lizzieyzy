@@ -36,8 +36,8 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 public class SuggestionInfoOrderSettings extends JDialog {
-  private JPanel middlePanel;
-  private JPanel infoPanel;
+  private PanelWithToolTips middlePanel;
+  private PanelWithToolTips infoPanel;
   private JPanel previewPanel;
   private JFontRadioButton rdoWinrate3;
   private JFontRadioButton rdoWinrate2;
@@ -67,10 +67,10 @@ public class SuggestionInfoOrderSettings extends JDialog {
     setTitle(Lizzie.resourceBundle.getString("SuggestionInfoOrderSettings.title"));
     setResizable(false);
     getContentPane().setLayout(null);
-    infoPanel = new JPanel();
+    infoPanel = new PanelWithToolTips();
     infoPanel.setLayout(null);
     infoPanel.setBounds(0, 200, 500, 160);
-    middlePanel = new JPanel();
+    middlePanel = new PanelWithToolTips();
     middlePanel.setLayout(null);
     middlePanel.setBounds(0, 170, 500, 30);
 

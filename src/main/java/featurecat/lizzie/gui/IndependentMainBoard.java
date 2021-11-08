@@ -995,7 +995,7 @@ public class IndependentMainBoard extends JFrame {
         else
           boardRenderer.drawAllSelectedRectByCoords(
               Lizzie.frame.selectForceAllow, LizzieFrame.avoidcoords);
-        Lizzie.board.clearbestmovesafter(Lizzie.board.getHistory().getStart());
+        Lizzie.board.clearBestMovesAfter(Lizzie.board.getHistory().getStart());
         repaint();
       } else {
         selectCoordsX2 = -1;

@@ -90,7 +90,7 @@ public class BottomToolbar extends JPanel {
   JButton share;
   JButton flashAnalyze;
 
-  JPanel buttonPane;
+  PanelWithToolTips buttonPane;
   //  JPanel buttonPane2;
 
   JButton rightMove;
@@ -360,7 +360,7 @@ public class BottomToolbar extends JPanel {
     //    buttonPane2.setLayout(null);
     //   this.add(buttonPane2);
 
-    buttonPane = new JPanel();
+    buttonPane = new PanelWithToolTips();
     buttonPane.setLayout(null);
     this.add(buttonPane);
 
@@ -472,42 +472,39 @@ public class BottomToolbar extends JPanel {
     rightMove.setMargin(new Insets(0, 0, 0, 0));
     leftMove.setMargin(new Insets(0, 0, 0, 0));
 
-    int extraLength = 0;
-    if (System.getProperty("os.name").toLowerCase().contains("mac")
-        && !Lizzie.config.useJavaLooks) {
-      extraLength = 20;
-    }
-
-    if (Config.frameFontSize > 12) {
-      extraLength += (Config.frameFontSize - 12) * 5;
-    }
-    autoPlay.setSize(60 + extraLength, 26);
-    flashAnalyze.setSize((Lizzie.config.isChinese ? 60 : 80) + extraLength, 26);
-    deleteMove.setSize((Lizzie.config.isChinese ? 40 : 50) + extraLength, 26);
-    badMoves.setSize(60 + extraLength, 26);
-    share.setSize(40 + extraLength, 26);
-    liveButton.setSize(40 + extraLength, 26);
-    kataEstimate.setSize((Lizzie.config.isChinese ? 60 : 82) + extraLength, 26);
-    batchOpen.setSize((Lizzie.config.isChinese ? 60 : 75) + extraLength, 26);
-    openfile.setSize(40 + extraLength, 26);
-    savefile.setSize(40 + extraLength, 26);
-    analyzeList.setSize((Lizzie.config.isChinese ? 60 : 80) + extraLength, 26);
-    refresh.setSize((Lizzie.config.isChinese ? 40 : 60) + extraLength, 26);
-    analyse.setSize((Lizzie.config.isChinese ? 70 : 90) + extraLength, 26);
-    tryPlay.setSize(40 + extraLength, 26);
-    setMain.setSize(70 + extraLength, 26);
-    backMain.setSize(70 + extraLength, 26);
-
-    clearButton.setSize((Lizzie.config.isChinese ? 60 : 50) + extraLength, 26);
-    countButton.setSize(60 + extraLength, 26);
-    finalScore.setSize((Lizzie.config.isChinese ? 60 : 70) + extraLength, 26);
-    heatMap.setSize((Lizzie.config.isChinese ? 50 : 57) + extraLength, 26);
-
-    move.setSize((Lizzie.config.isChinese ? 35 : 85) + extraLength, 26);
-    moveRank.setSize((Lizzie.config.isChinese ? 60 : 70) + extraLength, 26);
-    coords.setSize((Lizzie.config.isChinese ? 35 : 50) + extraLength, 26);
-
-    gotomove.setSize(35 + extraLength, 26);
+    //    int extraLength = 0;
+    //    if (System.getProperty("os.name").toLowerCase().contains("mac")
+    //        && !Lizzie.config.useJavaLooks) {
+    //      extraLength = 20;
+    //    }
+    //
+    //    if (Config.frameFontSize > 12) {
+    //      extraLength += (Config.frameFontSize - 12) * 5;
+    //    }
+    setButtonSize(autoPlay, false);
+    setButtonSize(flashAnalyze, false);
+    setButtonSize(deleteMove, true);
+    setButtonSize(badMoves, false);
+    setButtonSize(share, true);
+    setButtonSize(liveButton, true);
+    setButtonSize(kataEstimate, false);
+    setButtonSize(batchOpen, false);
+    setButtonSize(openfile, true);
+    setButtonSize(savefile, true);
+    setButtonSize(analyzeList, false);
+    setButtonSize(refresh, true);
+    setButtonSize(analyse, false);
+    setButtonSize(tryPlay, true);
+    setButtonSize(setMain, false);
+    setButtonSize(backMain, false);
+    setButtonSize(clearButton, false);
+    setButtonSize(countButton, false);
+    setButtonSize(finalScore, false);
+    setButtonSize(heatMap, false);
+    setButtonSize(move, true);
+    setButtonSize(moveRank, false);
+    setButtonSize(coords, true);
+    setButtonSize(gotomove, true);
     firstButton.setSize(30, 26);
     backward10.setSize(30, 26);
     backward1.setSize(30, 26);
@@ -2149,6 +2146,12 @@ public class BottomToolbar extends JPanel {
     if (chkenginePkBatch.isSelected()) txtenginePkBatch.setEnabled(true);
     else txtenginePkBatch.setEnabled(false);
     //  setFontSize(Lizzie.config.bottomFontSize);
+  }
+
+  private void setButtonSize(JButton button, boolean widden) {
+    button.setSize(
+        button.getFontMetrics(button.getFont()).stringWidth(button.getText()) + (widden ? 14 : 12),
+        26);
   }
 
   public void setDetailIcon() {

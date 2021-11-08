@@ -11,13 +11,12 @@ import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 public class AutoPlay extends JFrame {
 
-  private JPanel contentPane;
+  private PanelWithToolTips contentPane;
   private JTextField txtAutoPlayMain;
   private JTextField txtAutoPlaySub;
   private final ResourceBundle resourceBundle = Lizzie.resourceBundle;
@@ -34,7 +33,7 @@ public class AutoPlay extends JFrame {
     if (Lizzie.frame != null) setAlwaysOnTop(Lizzie.frame.isAlwaysOnTop());
     setTitle(resourceBundle.getString("AutoPlay.title")); // "设置自动播放");
     setLocationRelativeTo(Lizzie.frame);
-    contentPane = new JPanel();
+    contentPane = new PanelWithToolTips();
     contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
     setContentPane(contentPane);
     contentPane.setLayout(null);

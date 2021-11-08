@@ -303,7 +303,7 @@ public class SetKataRules extends JDialog {
     btnApply.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            Lizzie.board.clearbestmovesafter(Lizzie.board.getHistory().getStart());
+            Lizzie.board.clearBestMovesAfter(Lizzie.board.getHistory().getStart());
             if (jo == null) {
               jo = new JSONObject();
             }

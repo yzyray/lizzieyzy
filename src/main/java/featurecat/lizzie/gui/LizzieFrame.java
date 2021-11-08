@@ -15,6 +15,7 @@ import featurecat.lizzie.Config;
 import featurecat.lizzie.ExtraMode;
 import featurecat.lizzie.Lizzie;
 import featurecat.lizzie.analysis.AnalysisEngine;
+import featurecat.lizzie.analysis.ContributeEngine;
 import featurecat.lizzie.analysis.EngineManager;
 import featurecat.lizzie.analysis.GameInfo;
 import featurecat.lizzie.analysis.KataEstimate;
@@ -81,6 +82,7 @@ import javax.swing.table.TableModel;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
+import org.jdesktop.swingx.util.OS;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -491,6 +493,7 @@ public class LizzieFrame extends JFrame {
     menu = new Menu();
     RightClickMenu = new RightClickMenu();
     RightClickMenu2 = new RightClickMenu2();
+    openInVisibleFrame();
     // MenuTest menu = new MenuTest();
     // add(menu);
     // this.setJMenuBar(menu);
@@ -5497,7 +5500,7 @@ public class LizzieFrame extends JFrame {
     // if (Lizzie.config.handicapInsteadOfWinrate) {
     // double currHandicapedWR = Lizzie.leelaz.winrateToHandicap(100 - curWR);
     // double lastHandicapedWR = Lizzie.leelaz.winrateToHandicap(lastWR);
-    // text = String.format(": %.2f", currHandicapedWR - lastHandicapedWR);
+    // text = String.format(Locale.ENGLISH,": %.2f", currHandicapedWR - lastHandicapedWR);
     // } else {
 
     // }
@@ -5824,11 +5827,11 @@ public class LizzieFrame extends JFrame {
               : (float) (min(width * 0.4, height * 0.85) * 0.2));
     else setPanelFont(g, (float) (height * 0.18));
     if (isCounting || isAutocounting) {
-      bval = String.format("%d", estimateResults.allblackcounts);
-      wval = String.format("%d", estimateResults.allwhitecounts);
+      bval = String.format(Locale.ENGLISH, "%d", estimateResults.allblackcounts);
+      wval = String.format(Locale.ENGLISH, "%d", estimateResults.allwhitecounts);
     } else {
-      bval = String.format("%d", Lizzie.board.getData().blackCaptures);
-      wval = String.format("%d", Lizzie.board.getData().whiteCaptures);
+      bval = String.format(Locale.ENGLISH, "%d", Lizzie.board.getData().blackCaptures);
+      wval = String.format(Locale.ENGLISH, "%d", Lizzie.board.getData().whiteCaptures);
     }
 
     g.setColor(Color.WHITE);
@@ -8127,7 +8130,7 @@ public class LizzieFrame extends JFrame {
         if (selectForceAllow)
           boardRenderer.drawAllSelectedRectByCoords(selectForceAllow, LizzieFrame.allowcoords);
         else boardRenderer.drawAllSelectedRectByCoords(selectForceAllow, LizzieFrame.avoidcoords);
-        Lizzie.board.clearbestmovesafter(Lizzie.board.getHistory().getStart());
+        Lizzie.board.clearBestMovesAfter(Lizzie.board.getHistory().getStart());
         repaint();
       } else {
         selectCoordsX2 = -1;
@@ -9720,10 +9723,10 @@ public class LizzieFrame extends JFrame {
   }
 
   public void clearKataEstimate() {
-    boardRenderer.removecountblock();
-    if (Lizzie.config.showSubBoard) subBoardRenderer.removecountblock();
-    if (Lizzie.config.isDoubleEngineMode()) boardRenderer2.removecountblock();
-    if (floatBoard != null) floatBoard.boardRenderer.removecountblock();
+    boardRenderer.removeKataEstimateImage();
+    if (Lizzie.config.showSubBoard) subBoardRenderer.removeKataEstimateImage();
+    if (Lizzie.config.isDoubleEngineMode()) boardRenderer2.removeKataEstimateImage();
+    if (floatBoard != null) floatBoard.boardRenderer.removeKataEstimateImage();
     if (estimateResults != null && estimateResults.isVisible()) estimateResults.repaint();
   }
 
@@ -9762,46 +9765,41 @@ public class LizzieFrame extends JFrame {
   }
 
   public void drawKataEstimate(Leelaz engine, ArrayList<Double> tempcount) {
-    if (isInScoreMode) return;
-    if ((!Lizzie.leelaz.iskataHeatmapShowOwner && Lizzie.config.showKataGoEstimateBySize)
-        || (Lizzie.leelaz.iskataHeatmapShowOwner && Lizzie.config.showPureEstimateBySize)) {
-      if (Lizzie.config.showKataGoEstimateOnMainbord || isShowingHeatmap) {
-        if (Lizzie.config.isDoubleEngineMode()) {
-          if (engine == Lizzie.leelaz) LizzieFrame.boardRenderer.drawKataEstimateBySize(tempcount);
-          if (Lizzie.leelaz2 != null && engine == Lizzie.leelaz2)
-            LizzieFrame.boardRenderer2.drawKataEstimateBySize(tempcount);
-        } else {
-          LizzieFrame.boardRenderer.drawKataEstimateBySize(tempcount);
-          if (floatBoard != null && floatBoard.isVisible())
-            floatBoard.boardRenderer.drawKataEstimateBySize(tempcount);
-        }
+    if (isInScoreMode || !isShowingHeatmap) return;
+    if ((Lizzie.leelaz.iskataHeatmapShowOwner && Lizzie.config.showPureEstimateBySize)) {
+      if (Lizzie.config.isDoubleEngineMode()) {
+        if (engine == Lizzie.leelaz)
+          LizzieFrame.boardRenderer.drawKataEstimateBySize(tempcount, false);
+        if (Lizzie.leelaz2 != null && engine == Lizzie.leelaz2)
+          LizzieFrame.boardRenderer2.drawKataEstimateBySize(tempcount, false);
+      } else {
+        LizzieFrame.boardRenderer.drawKataEstimateBySize(tempcount, false);
+        if (floatBoard != null && floatBoard.isVisible())
+          floatBoard.boardRenderer.drawKataEstimateBySize(tempcount, false);
       }
-      if ((Lizzie.config.showKataGoEstimateOnSubbord || isShowingHeatmap)
-          && !Lizzie.config.isDoubleEngineMode()) {
+
+      if (!Lizzie.config.isDoubleEngineMode()) {
         if (Lizzie.config.showSubBoard)
-          LizzieFrame.subBoardRenderer.drawKataEstimateBySize(tempcount);
+          LizzieFrame.subBoardRenderer.drawKataEstimateBySize(tempcount, false);
         if (independentSubBoard != null && independentSubBoard.isVisible())
-          independentSubBoard.subBoardRenderer.drawKataEstimateBySize(tempcount);
+          independentSubBoard.subBoardRenderer.drawKataEstimateBySize(tempcount, false);
       }
     } else {
-      if (Lizzie.config.showKataGoEstimateOnMainbord || isShowingHeatmap) {
-        if (Lizzie.config.isDoubleEngineMode()) {
-          if (engine == Lizzie.leelaz)
-            LizzieFrame.boardRenderer.drawKataEstimateByTransparent(tempcount);
-          if (Lizzie.leelaz2 != null && engine == Lizzie.leelaz2)
-            LizzieFrame.boardRenderer2.drawKataEstimateByTransparent(tempcount);
-        } else {
-          LizzieFrame.boardRenderer.drawKataEstimateByTransparent(tempcount);
-          if (floatBoard != null && floatBoard.isVisible())
-            floatBoard.boardRenderer.drawKataEstimateByTransparent(tempcount);
-        }
+      if (Lizzie.config.isDoubleEngineMode()) {
+        if (engine == Lizzie.leelaz)
+          LizzieFrame.boardRenderer.drawKataEstimateByTransparent(tempcount, false);
+        if (Lizzie.leelaz2 != null && engine == Lizzie.leelaz2)
+          LizzieFrame.boardRenderer2.drawKataEstimateByTransparent(tempcount, false);
+      } else {
+        LizzieFrame.boardRenderer.drawKataEstimateByTransparent(tempcount, false);
+        if (floatBoard != null && floatBoard.isVisible())
+          floatBoard.boardRenderer.drawKataEstimateByTransparent(tempcount, false);
       }
-      if ((Lizzie.config.showKataGoEstimateOnSubbord || isShowingHeatmap)
-          && !Lizzie.config.isDoubleEngineMode()) {
+      if (!Lizzie.config.isDoubleEngineMode()) {
         if (Lizzie.config.showSubBoard)
-          LizzieFrame.subBoardRenderer.drawKataEstimateByTransparent(tempcount);
+          LizzieFrame.subBoardRenderer.drawKataEstimateByTransparent(tempcount, false);
         if (independentSubBoard != null && independentSubBoard.isVisible())
-          independentSubBoard.subBoardRenderer.drawKataEstimateByTransparent(tempcount);
+          independentSubBoard.subBoardRenderer.drawKataEstimateByTransparent(tempcount, false);
       }
     }
   }
@@ -12057,6 +12055,7 @@ public class LizzieFrame extends JFrame {
   public boolean isInTemporaryBoard;
 
   public boolean allowPlaceStone = true;
+  private Process processClockHelper;
 
   public void startTemporaryBoard() {
     if (isInTemporaryBoard) return;
@@ -12169,7 +12168,8 @@ public class LizzieFrame extends JFrame {
     Discribe lizzieCacheDiscribe = new Discribe();
     lizzieCacheDiscribe.setInfoWide(
         Lizzie.resourceBundle.getString("LizzieFrame.aboutAnalyzeGenmoveInfo"),
-        Lizzie.resourceBundle.getString("LizzieFrame.aboutAnalyzeGenmoveInfoTitle"));
+        Lizzie.resourceBundle.getString("LizzieFrame.aboutAnalyzeGenmoveInfoTitle"),
+        this);
   }
 
   public void leftClickInScoreMode(int x, int y) {
@@ -12420,5 +12420,113 @@ public class LizzieFrame extends JFrame {
     // https://stackoverflow.com/questions/3435994/buffers-have-not-been-created-whilst-creating-buffers
     super.addNotify();
     createBufferStrategy(2);
+  }
+
+  public void hideCandidates() {
+    if (toolbar.chkShowBlack.isSelected() || toolbar.chkShowBlack.isSelected()) {
+      toolbar.chkShowBlack.setSelected(false);
+      toolbar.chkShowWhite.setSelected(false);
+      if (Lizzie.config.showDoubleMenu) {
+        menu.chkShowBlack.setSelected(false);
+        menu.chkShowWhite.setSelected(false);
+      }
+    }
+  }
+
+  public void toggleShowCandidates() {
+    // TODO Auto-generated method stub
+    if (toolbar.chkShowBlack.isSelected() || toolbar.chkShowBlack.isSelected()) {
+      toolbar.chkShowBlack.setSelected(false);
+      toolbar.chkShowWhite.setSelected(false);
+      if (Lizzie.config.showDoubleMenu) {
+        menu.chkShowBlack.setSelected(false);
+        menu.chkShowWhite.setSelected(false);
+      }
+      boardRenderer.clearAfterMove();
+      if (Lizzie.config.isDoubleEngineMode() && boardRenderer2 != null)
+        boardRenderer2.clearAfterMove();
+    } else {
+      toolbar.chkShowBlack.setSelected(true);
+      toolbar.chkShowWhite.setSelected(true);
+      if (Lizzie.config.showDoubleMenu) {
+        menu.chkShowBlack.setSelected(true);
+        menu.chkShowWhite.setSelected(true);
+      }
+    }
+  }
+
+  public void showCandidates() {
+    // TODO Auto-generated method stub
+    toolbar.chkShowBlack.setSelected(true);
+    toolbar.chkShowWhite.setSelected(true);
+    if (Lizzie.config.showDoubleMenu) {
+      menu.chkShowBlack.setSelected(true);
+      menu.chkShowWhite.setSelected(true);
+    }
+  }
+
+  public void openCandidatesDelaySettings(Window owner) {
+    // TODO Auto-generated method stub
+    SetDelayShowCandidates setDelayShowCandidates = new SetDelayShowCandidates(owner);
+    setDelayShowCandidates.setVisible(true);
+  }
+
+  public void testContibute() {
+    // TODO Auto-generated method stub
+    ContributeEngine contributeEngine = new ContributeEngine();
+  }
+
+  private void openInVisibleFrame() {
+    String javaReadBoardName = "InVisibleFrame.jar";
+    File javaReadBoard = new File("clockHelper" + File.separator + "InVisibleFrame.jar");
+    if (!javaReadBoard.exists()) Utils.copyClockHelper();
+    try {
+      if (OS.isWindows()) {
+        boolean success = false;
+        String java64Path = "jre\\java11\\bin\\java.exe";
+        File java64 = new File(java64Path);
+
+        if (java64.exists()) {
+          try {
+            processClockHelper =
+                Runtime.getRuntime()
+                    .exec(java64Path + " -jar clockHelper" + File.separator + javaReadBoardName);
+            success = true;
+          } catch (Exception e) {
+            success = false;
+            e.printStackTrace();
+          }
+        }
+        if (!success) {
+          String java32Path = "jre\\java8_32\\bin\\java.exe";
+          File java32 = new File(java32Path);
+          if (java32.exists()) {
+            try {
+              processClockHelper =
+                  Runtime.getRuntime()
+                      .exec(java32 + " -jar clockHelper" + File.separator + javaReadBoardName);
+              success = true;
+            } catch (Exception e) {
+              success = false;
+              e.printStackTrace();
+            }
+          }
+        }
+        if (!success) {
+          processClockHelper =
+              Runtime.getRuntime()
+                  .exec("java -jar clockHelper" + File.separator + javaReadBoardName);
+        }
+      } else {
+        processClockHelper =
+            Runtime.getRuntime().exec("java -jar clockHelper" + File.separator + javaReadBoardName);
+      }
+    } catch (Exception e) {
+      Utils.showMsg(e.getLocalizedMessage());
+    }
+  }
+
+  public void shutdownClockHelper() {
+    processClockHelper.destroy();
   }
 }

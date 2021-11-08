@@ -28,6 +28,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
@@ -44,8 +45,8 @@ import javax.swing.table.TableModel;
 public class MoreEngines extends JPanel {
   public static Config config;
   public TableModel dataModel;
-  JPanel tablepanel;
-  JPanel selectpanel = new JPanel();
+  PanelWithToolTips tablepanel;
+  PanelWithToolTips selectpanel;
   JScrollPane scrollpane;
   public static JTable table;
   Font headFont;
@@ -98,7 +99,6 @@ public class MoreEngines extends JPanel {
     setLayout((LayoutManager) null);
     this.dataModel = getTableModel();
     table = new JTable(this.dataModel);
-    this.selectpanel.setLayout((LayoutManager) null);
     this.winrateFont = new Font("Microsoft YaHei", 0, Math.max(Config.frameFontSize, 14));
     this.headFont = new Font("Microsoft YaHei", 0, Math.max(Config.frameFontSize, 13));
     table.getTableHeader().setFont(this.headFont);
@@ -107,8 +107,11 @@ public class MoreEngines extends JPanel {
     table.getTableHeader().setResizingAllowed(false);
     TableCellRenderer tcr = new ColorTableCellRenderer();
     table.setDefaultRenderer(Object.class, tcr);
-    this.tablepanel = new JPanel(new BorderLayout());
-    this.tablepanel.setBounds(0, 385, 885, 380);
+    tablepanel = new PanelWithToolTips();
+    tablepanel.setLayout(new BorderLayout());
+    tablepanel.setBounds(0, 385, 885, 380);
+    selectpanel = new PanelWithToolTips();
+    selectpanel.setLayout((LayoutManager) null);
     add(this.tablepanel, "South");
     this.selectpanel.setBounds(0, 0, 900, 385);
     add(this.selectpanel, "North");
@@ -261,7 +264,8 @@ public class MoreEngines extends JPanel {
             Discribe lizzieCacheDiscribe = new Discribe();
             lizzieCacheDiscribe.setInfo(
                 resourceBundle.getString("MoreEngines.aboutRemoteEngine"),
-                resourceBundle.getString("MoreEngines.aboutRemoteEngineTitle"));
+                resourceBundle.getString("MoreEngines.aboutRemoteEngineTitle"),
+                engjf);
           }
         });
     this.txtIP = new JFontTextField();
@@ -865,9 +869,16 @@ public class MoreEngines extends JPanel {
 
     public Component getTableCellRendererComponent(
         JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-      if (row == curIndex)
-        return this.renderer.getTableCellRendererComponent(table, value, true, false, row, column);
-      return this.renderer.getTableCellRendererComponent(table, value, false, false, row, column);
+      if (column == 2) {
+        JLabel label =
+            (JLabel)
+                super.getTableCellRendererComponent(
+                    table, value, row == curIndex, hasFocus, row, column);
+        label.setToolTipText(value.toString());
+        return label;
+      }
+      return this.renderer.getTableCellRendererComponent(
+          table, value, row == curIndex, false, row, column);
     }
   }
 

@@ -4,6 +4,7 @@ import static java.lang.Math.round;
 
 import featurecat.lizzie.Config;
 import featurecat.lizzie.Lizzie;
+import featurecat.lizzie.analysis.MoveData;
 import featurecat.lizzie.gui.EngineData;
 import featurecat.lizzie.gui.HtmlMessage;
 import featurecat.lizzie.gui.LizzieFrame;
@@ -26,7 +27,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.StringTokenizer;
@@ -61,15 +61,13 @@ public class Utils {
     return String.valueOf(num);
   }
 
-  public static void showHtmlMessage(String title, String content) {
-    HtmlMessage htmlMessage =
-        new HtmlMessage(title, content, Lizzie.frame != null ? Lizzie.frame : null);
+  public static void showHtmlMessage(String title, String content, Window owner) {
+    HtmlMessage htmlMessage = new HtmlMessage(title, content, owner);
     htmlMessage.setVisible(true);
   }
 
-  public static void showHtmlMessageModal(String title, String content) {
-    HtmlMessage htmlMessage =
-        new HtmlMessage(title, content, Lizzie.frame != null ? Lizzie.frame : null);
+  public static void showHtmlMessageModal(String title, String content, Window owner) {
+    HtmlMessage htmlMessage = new HtmlMessage(title, content, owner);
     htmlMessage.setModal(true);
     htmlMessage.setVisible(true);
   }
@@ -105,10 +103,10 @@ public class Utils {
     return en_aes;
   }
 
-  public static boolean isWindows() {
-    String osName = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
-    return osName != null && !osName.contains("darwin") && osName.contains("win");
-  }
+  //  public static boolean isWindows() {
+  //    String osName = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
+  //    return osName != null && !osName.contains("darwin") && osName.contains("win");
+  //  }
 
   private static enum ParamState {
     NORMAL,
@@ -490,6 +488,7 @@ public class Utils {
     }
   }
 
+  @SuppressWarnings("deprecation")
   public static Double txtFieldDoubleValue(JTextField txt) {
     if (txt.getText().trim().isEmpty()) {
       return 0.0;
@@ -737,6 +736,16 @@ public class Utils {
     }
   }
 
+  public static void copyClockHelper() {
+    // TODO Auto-generated method stub
+    try {
+      copy("/assets/clockHelper/InVisibleFrame.jar", "clockHelper");
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
+
   public static void copyReadBoardJava(String javaReadBoardName) {
     // TODO Auto-generated method stub
     try {
@@ -757,5 +766,38 @@ public class Utils {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
+  }
+
+  @SuppressWarnings("unchecked")
+  public static List<MoveData> getBestMovesFromJsonArray(JSONArray moveInfos) {
+    // TODO Auto-generated method stub
+    ArrayList<MoveData> bestMoves = new ArrayList<MoveData>();
+    for (int i = 0; i < moveInfos.length(); i++) {
+      JSONObject moveInfo = moveInfos.getJSONObject(i);
+      MoveData mv = new MoveData();
+      mv.isKataData = true;
+      mv.order = moveInfo.getInt("order");
+      mv.coordinate = moveInfo.getString("move");
+      mv.playouts = moveInfo.getInt("visits");
+      mv.winrate = moveInfo.getDouble("winrate") * 100;
+      // mv.oriwinrate = mv.winrate;
+      mv.lcb = moveInfo.getDouble("lcb") * 100;
+      mv.policy = moveInfo.getDouble("prior") * 100;
+      mv.scoreMean = moveInfo.getDouble("scoreLead");
+      mv.scoreStdev = moveInfo.getDouble("scoreStdev");
+      JSONArray pv = moveInfo.getJSONArray("pv");
+      List<Object> list = pv.toList();
+      mv.variation = (List<String>) (List) list;
+      JSONArray pvVisits = moveInfo.optJSONArray("pvVisits");
+      if (pvVisits != null) {
+        List<Object> pvList = pvVisits.toList();
+        for (Object value : pvList) {
+          if (mv.pvVisits == null) mv.pvVisits = new ArrayList<String>();
+          mv.pvVisits.add(value.toString());
+        }
+      }
+      bestMoves.add(mv);
+    }
+    return bestMoves;
   }
 }

@@ -110,9 +110,9 @@ public class ConfigDialog2 extends JDialog {
   private List<String> fontList;
   private Theme theme;
 
-  private JPanel uiTab;
-  private JPanel themeTab;
-  private JPanel aboutTab;
+  private PanelWithToolTips uiTab;
+  private PanelWithToolTips themeTab;
+  private PanelWithToolTips aboutTab;
   private JButton okButton;
 
   // UI Tab
@@ -325,15 +325,15 @@ public class ConfigDialog2 extends JDialog {
     NumberFormat nf = NumberFormat.getIntegerInstance();
     nf.setGroupingUsed(false);
     // Theme Tab
-    themeTab = new JPanel();
+    themeTab = new PanelWithToolTips();
 
     themeTab.setLayout(null);
 
     // About Tab
-    aboutTab = new JPanel();
+    aboutTab = new PanelWithToolTips();
     LinkLabel lblLizzieName =
         new LinkLabel(
-            "<html><div align=\"center\"><b>Lizzie Yzy 2.4.5</b></div>"
+            "<html><div align=\"center\"><b>Lizzie Yzy 2.4.6</b></div>"
                 + "<div align=\"center\"><font style=\"font-weight:plain;font-size:12;\">Java version: "
                 + Lizzie.javaVersionString
                 + "</font></div></html>");
@@ -410,7 +410,7 @@ public class ConfigDialog2 extends JDialog {
 
     ButtonGroup ShowWinratGroup = new ButtonGroup();
 
-    uiTab = new JPanel();
+    uiTab = new PanelWithToolTips();
     tabbedPane.addTab(resourceBundle.getString("LizzieConfig.title.ui"), null, uiTab, null);
     uiTab.setLayout(null);
     // setShowLcbWinrate();
@@ -1209,7 +1209,8 @@ public class ConfigDialog2 extends JDialog {
           public void actionPerformed(ActionEvent e) {
             Utils.showHtmlMessageModal(
                 resourceBundle.getString("AdvanceTimeSettings.title"),
-                resourceBundle.getString("AdvanceTimeSettings.describe"));
+                resourceBundle.getString("AdvanceTimeSettings.describe"),
+                Lizzie.frame.configDialog2);
           }
         });
     btnNewButton.setBounds(435, 473, 18, 18);
@@ -1349,7 +1350,8 @@ public class ConfigDialog2 extends JDialog {
             lizzieCacheDiscribe.setInfo(
                 resourceBundle.getString("LizzieConfig.aboutLizzieCache"),
                 // "回退局面时,有时候引擎已经遗忘了之前的计算结果会从0计算。如启用Lizzie缓存,则界面上依然显示之前的计算结果,直到新的计算结果总计算量超过以前的结算结果为止。",
-                resourceBundle.getString("LizzieConfig.aboutLizzieCacheTitle")); //  "Lizzie缓存说明");
+                resourceBundle.getString("LizzieConfig.aboutLizzieCacheTitle"),
+                Lizzie.frame.configDialog2); //  "Lizzie缓存说明");
           }
         });
     uiTab.add(btnLizzieCache);
@@ -1605,8 +1607,20 @@ public class ConfigDialog2 extends JDialog {
             LizzieFrame.openSuggestionInfoCustom(Lizzie.frame.configDialog2);
           }
         });
-    btnSetOrder.setBounds(310, 369, Lizzie.config.isChinese ? 165 : 240, 23);
+    btnSetOrder.setMargin(new Insets(0, 0, 0, 0));
+    btnSetOrder.setBounds(310, 369, 90, 23);
     uiTab.add(btnSetOrder);
+
+    JButton btnSetDelay = new JButton(resourceBundle.getString("ConfigDialog2.btnSetDelay"));
+    btnSetDelay.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.frame.openCandidatesDelaySettings(Lizzie.frame.configDialog2);
+          }
+        });
+    btnSetDelay.setMargin(new Insets(0, 0, 0, 0));
+    btnSetDelay.setBounds(415, 369, 90, 23);
+    uiTab.add(btnSetDelay);
 
     JLabel SpecialCoords =
         new JLabel(resourceBundle.getString("ConfigDialog2.SpecialCoords")); // "特殊坐标");
@@ -1777,30 +1791,30 @@ public class ConfigDialog2 extends JDialog {
 
     JLabel lblLogGtpToFile =
         new JLabel(resourceBundle.getString("LizzieConfig.lblLogGtpToFile")); // ("记录GTP日志到文件");
-    lblLogGtpToFile.setToolTipText(
-        resourceBundle.getString("LizzieConfig.lblLogGtpToFile.tooltips"));
     lblLogGtpToFile.setBounds(608, 580, 205, 15);
     uiTab.add(lblLogGtpToFile);
+    lblLogGtpToFile.setToolTipText(
+        resourceBundle.getString("LizzieConfig.lblLogGtpToFile.tooltips"));
 
     JLabel lblLogConsoleToFile =
         new JLabel(resourceBundle.getString("LizzieConfig.lblLogConsoleToFile")); // ("记录控制台日志到文件");
-    lblLogConsoleToFile.setToolTipText(
-        resourceBundle.getString("LizzieConfig.lblLogConsoleToFile.tooltips"));
     lblLogConsoleToFile.setBounds(608, 550, 205, 15);
     uiTab.add(lblLogConsoleToFile);
+    lblLogConsoleToFile.setToolTipText(
+        resourceBundle.getString("LizzieConfig.lblLogConsoleToFile.tooltips"));
 
     chkLogConsoleToFile = new JCheckBox();
     chkLogConsoleToFile.setBounds(837, 547, 26, 23);
+    uiTab.add(chkLogConsoleToFile);
     chkLogConsoleToFile.setToolTipText(
         resourceBundle.getString("LizzieConfig.lblLogConsoleToFile.tooltips"));
-    uiTab.add(chkLogConsoleToFile);
     chkLogConsoleToFile.setSelected(Lizzie.config.logConsoleToFile);
 
     chkLogGtpToFile = new JCheckBox();
     chkLogGtpToFile.setBounds(837, 577, 26, 23);
+    uiTab.add(chkLogGtpToFile);
     chkLogGtpToFile.setToolTipText(
         resourceBundle.getString("LizzieConfig.lblLogGtpToFile.tooltips"));
-    uiTab.add(chkLogGtpToFile);
     chkLogGtpToFile.setSelected(Lizzie.config.logGtpToFile);
 
     chkPonder = new JCheckBox();

@@ -52,6 +52,8 @@ public class BoardData {
   public double pda2 = 0;
   public double komi = -999;
   public double wrn = 0;
+  public ArrayList<Double> estimateArray;
+  public ArrayList<Double> estimateArray2;
   //	public boolean commented=true;
   //	public boolean commented2=true;
 
@@ -199,16 +201,31 @@ public class BoardData {
 
   public void tryToSetBestMoves(
       List<MoveData> moves, String engName, boolean isFromLeelaz, int totalplayouts) {
+    tryToSetBestMoves(moves, engName, isFromLeelaz, totalplayouts, null);
+  }
+
+  public void tryToSetBestMoves2(
+      List<MoveData> moves, String engName, boolean isFromLeelaz, int totalplayouts) {
+    tryToSetBestMoves2(moves, engName, isFromLeelaz, totalplayouts, null);
+  }
+
+  public void tryToSetBestMoves(
+      List<MoveData> moves,
+      String engName,
+      boolean isFromLeelaz,
+      int totalplayouts,
+      ArrayList<Double> estimateArray) {
     if (Lizzie.config.enableLizzieCache
         && !Lizzie.config.isAutoAna
         && !EngineManager.isEngineGame) {
       if (!(totalplayouts > playouts || isChanged || pda != Lizzie.leelaz.pda)) {
-        return;
+        if (estimateArray == null || this.estimateArray != null) return;
       }
     }
     // added for change bestmoves when playouts is not increased
     if (totalplayouts < playouts) isChanged = false;
     setPlayouts(totalplayouts);
+    this.estimateArray = estimateArray;
     winrate = moves.get(0).winrate;
     if (moves.get(0).isKataData) {
       scoreMean = moves.get(0).scoreMean;
@@ -296,16 +313,21 @@ public class BoardData {
   }
 
   public void tryToSetBestMoves2(
-      List<MoveData> moves, String engName, boolean isFromLeelaz, int totalplayouts) {
+      List<MoveData> moves,
+      String engName,
+      boolean isFromLeelaz,
+      int totalplayouts,
+      ArrayList<Double> estimateArray) {
     if (Lizzie.config.enableLizzieCache && !Lizzie.config.isAutoAna) {
       if (!(totalplayouts > playouts2
           || isChanged2
           || pda != Lizzie.leelaz.pda)) { // ||Lizzie.frame.urlSgf
-        return;
+        if (estimateArray == null || this.estimateArray != null) return;
       }
     }
     if (totalplayouts < playouts2) isChanged2 = false;
     setPlayouts2(totalplayouts);
+    this.estimateArray2 = estimateArray;
     winrate2 = moves.get(0).winrate;
     if (moves.get(0).isKataData) {
       scoreMean2 = moves.get(0).scoreMean;

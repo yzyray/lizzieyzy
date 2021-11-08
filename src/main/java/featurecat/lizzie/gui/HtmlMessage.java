@@ -1,8 +1,10 @@
 package featurecat.lizzie.gui;
 
+import featurecat.lizzie.Config;
 import featurecat.lizzie.Lizzie;
 import featurecat.lizzie.gui.LizzieFrame.HtmlKit;
 import java.awt.Desktop;
+import java.awt.Font;
 import java.awt.Window;
 import java.io.IOException;
 import javax.imageio.ImageIO;
@@ -48,9 +50,6 @@ public class HtmlMessage extends JDialog {
             + "; font-family:"
             + Lizzie.config.fontName
             + ", Consolas, Menlo, Monaco, 'Ubuntu Mono', monospace;"
-            + (Lizzie.config.commentFontSize > 0
-                ? "font-size:" + Lizzie.config.commentFontSize
-                : "")
             + "}";
     htmlStyle.addRule(style);
 
@@ -59,6 +58,7 @@ public class HtmlMessage extends JDialog {
     lblMessage.setText(content);
     lblMessage.setEditable(false);
     lblMessage.setOpaque(false);
+    lblMessage.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
     lblMessage.putClientProperty(JEditorPane.HONOR_DISPLAY_PROPERTIES, Boolean.TRUE);
     lblMessage.addHyperlinkListener(
         new HyperlinkListener() {

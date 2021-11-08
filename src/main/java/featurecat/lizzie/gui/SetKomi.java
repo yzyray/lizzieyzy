@@ -112,7 +112,7 @@ public class SetKomi extends JDialog {
       // TODO Auto-generated catch block
       return;
     }
-    Lizzie.board.clearbestmovesafter(Lizzie.board.getHistory().getStart());
+    Lizzie.board.clearBestMovesAfter(Lizzie.board.getHistory().getStart());
     Lizzie.board.getHistory().getGameInfo().setKomi(komi);
     Lizzie.board.getHistory().getGameInfo().changeKomi();
     Lizzie.leelaz.sendCommand("komi " + komi);

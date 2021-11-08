@@ -42,8 +42,8 @@ public class Lizzie {
   public static Board board;
   public static Leelaz leelaz;
   public static Leelaz leelaz2;
-  public static String lizzieVersion = "yzy2.4.5";
-  public static String checkVersion = "211027";
+  public static String lizzieVersion = "yzy2.4.6";
+  public static String checkVersion = "211108";
   public static boolean readMode = false;
   private static String[] mainArgs;
   public static EngineManager engineManager;
@@ -102,13 +102,13 @@ public class Lizzie {
       //            	bosError.write("===========\n".getBytes());
       //            	bosError.write(sw.toString().getBytes());
       //			} catch (IOException e) {
-      //				// TODO Auto-generated catch block
+      //				// T	ODO Auto-generated catch block
       //				e.printStackTrace();
       //			}
       //        }
       //    });
     }
-    // -Dsun.java2d.uiScale=1.0
+    // d
     // -Dsun.java2d.uiScale.enabled=false
     // -Dsun.java2d.win.uiScaleX=1.25 -Dsun.java2d.win.uiScaleY=1.25
     // -Dsun.java2d.win.uiScaleX=125% -Dsun.java2d.win.uiScaleY=125%
@@ -440,6 +440,11 @@ public class Lizzie {
       } catch (Exception e) {
         e.printStackTrace();
       }
+    try {
+      frame.shutdownClockHelper();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
     Lizzie.frame.destroyEstimateEngine();
     Lizzie.frame.destroyAnalysisEngine();
     System.exit(0);

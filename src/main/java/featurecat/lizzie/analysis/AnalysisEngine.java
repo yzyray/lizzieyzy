@@ -40,8 +40,7 @@ public class AnalysisEngine {
   private ScheduledExecutorService executorErr;
   private List<String> commands;
   private boolean isPreLoad;
-  private HashMap<Integer, ArrayList<MoveData>> resultMap =
-      new HashMap<Integer, ArrayList<MoveData>>();
+  private HashMap<Integer, List<MoveData>> resultMap = new HashMap<Integer, List<MoveData>>();
   private int analyzeNumberCount;
   private BoardHistoryNode startAnalyzeNode;
   private int startAnalyzeNumber;
@@ -202,40 +201,12 @@ public class AnalysisEngine {
     }
   }
 
-  @SuppressWarnings("unchecked")
   public void parseResult(String line) {
     JSONObject result;
     result = new JSONObject(line);
     int turnNumber = result.getInt("turnNumber");
     JSONArray moveInfos = result.getJSONArray("moveInfos");
-    ArrayList<MoveData> bestMoves = new ArrayList<MoveData>();
-    for (int i = 0; i < moveInfos.length(); i++) {
-      JSONObject moveInfo = moveInfos.getJSONObject(i);
-      MoveData mv = new MoveData();
-      mv.isKataData = true;
-      mv.order = moveInfo.getInt("order");
-      mv.coordinate = moveInfo.getString("move");
-      mv.playouts = moveInfo.getInt("visits");
-      mv.winrate = moveInfo.getDouble("winrate") * 100;
-      // mv.oriwinrate = mv.winrate;
-      mv.lcb = moveInfo.getDouble("lcb") * 100;
-      mv.policy = moveInfo.getDouble("prior") * 100;
-      mv.scoreMean = moveInfo.getDouble("scoreLead");
-      mv.scoreStdev = moveInfo.getDouble("scoreStdev");
-      JSONArray pv = moveInfo.getJSONArray("pv");
-      List<Object> list = pv.toList();
-      mv.variation = (List<String>) (List) list;
-      JSONArray pvVisits = moveInfo.optJSONArray("pvVisits");
-      if (pvVisits != null) {
-        List<Object> pvList = pvVisits.toList();
-        for (Object value : pvList) {
-          if (mv.pvVisits == null) mv.pvVisits = new ArrayList<String>();
-          mv.pvVisits.add(value.toString());
-        }
-      }
-      bestMoves.add(mv);
-    }
-    resultMap.put(turnNumber, bestMoves);
+    resultMap.put(turnNumber, Utils.getBestMovesFromJsonArray(moveInfos));
     waitFrame.setProgress(resultMap.size(), analyzeNumberCount);
     tryToSetResult();
   }
@@ -251,7 +222,7 @@ public class AnalysisEngine {
       int moveNumber = startAnalyzeNumber;
       int times = 0;
       while (times < resultMap.size() && startAnalyzeNode.next().isPresent()) {
-        ArrayList<MoveData> moves = resultMap.get(moveNumber);
+        List<MoveData> moves = resultMap.get(moveNumber);
         startAnalyzeNode
             .getData()
             .tryToSetBestMoves(
@@ -265,7 +236,7 @@ public class AnalysisEngine {
         startAnalyzeNode = startAnalyzeNode.next().get();
       }
       if (times < resultMap.size()) {
-        ArrayList<MoveData> moves = resultMap.get(moveNumber);
+        List<MoveData> moves = resultMap.get(moveNumber);
         startAnalyzeNode
             .getData()
             .tryToSetBestMoves(

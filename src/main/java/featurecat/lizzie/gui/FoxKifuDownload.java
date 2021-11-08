@@ -90,6 +90,7 @@ public class FoxKifuDownload extends JFrame {
             }
           }
         });
+    txtUserName.setText(Lizzie.config.lastFoxName);
 
     JButton btnSearch =
         new JFontButton(Lizzie.resourceBundle.getString("FoxKifuDownload.btnSearch"));
@@ -286,7 +287,9 @@ public class FoxKifuDownload extends JFrame {
     foxReq = new GetFoxRequest(this);
     foxKifuInfos = new ArrayList<KifuInfo>();
     lastCode = "";
-    foxReq.sendCommand("user_name " + txtUserName.getText());
+    Lizzie.config.lastFoxName = txtUserName.getText();
+    foxReq.sendCommand("user_name " + Lizzie.config.lastFoxName);
+    Lizzie.config.uiConfig.put("last-fox-name", Lizzie.config.lastFoxName);
   }
 
   public void receiveResult(String string) {

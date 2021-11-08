@@ -198,6 +198,7 @@ public class EngineManager {
       int maxGameMoves) {
     if (Lizzie.frame.isTrying) Lizzie.frame.tryPlay(false);
     engineGameInfo = new EngineGameInfo();
+    if (Lizzie.frame.isShowingHeatmap) Lizzie.leelaz.toggleHeatmap(true);
     if (!isEmpty && Lizzie.leelaz != null) {
       Lizzie.leelaz.clearBestMoves();
     }
@@ -1113,7 +1114,7 @@ public class EngineManager {
       }
     }
     LizzieFrame.toolbar.enableDisabelForEngineGame(true);
-    Lizzie.board.clearbestmovesafter(Lizzie.board.getHistory().getStart());
+    Lizzie.board.clearBestMovesAfter(Lizzie.board.getHistory().getStart());
     File file = new File("");
     String courseFile = "";
     try {
@@ -1543,10 +1544,7 @@ public class EngineManager {
   private void checkEngineAlive() {
     if (isEmpty) return;
     if (!isEngineGame && Lizzie.leelaz != null) {
-      if (Lizzie.leelaz.process != null
-          && Lizzie.leelaz.isLoaded()
-          && Lizzie.leelaz.canCheckAlive
-          && !Lizzie.leelaz.process.isAlive())
+      if (Lizzie.leelaz.isLoaded() && Lizzie.leelaz.canCheckAlive && Lizzie.leelaz.isProcessDead())
         try {
           Lizzie.leelaz.restartClosedEngine(currentEngineNo);
         } catch (IOException e) {
@@ -1606,8 +1604,7 @@ public class EngineManager {
       return;
     }
     if (engineList.get(engineGameInfo.firstEngineIndex).canCheckAlive
-        && ((engineList.get(engineGameInfo.firstEngineIndex).process != null
-                && !engineList.get(engineGameInfo.firstEngineIndex).process.isAlive())
+        && ((engineList.get(engineGameInfo.firstEngineIndex).isProcessDead())
             || (engineList.get(engineGameInfo.firstEngineIndex).useJavaSSH
                 && engineList.get(engineGameInfo.firstEngineIndex).javaSSHClosed))) {
       try {
@@ -1618,8 +1615,7 @@ public class EngineManager {
       }
     }
     if (engineList.get(engineGameInfo.secondEngineIndex).canCheckAlive
-        && ((engineList.get(engineGameInfo.secondEngineIndex).process != null
-                && !engineList.get(engineGameInfo.secondEngineIndex).process.isAlive())
+        && ((engineList.get(engineGameInfo.secondEngineIndex).isProcessDead())
             || (engineList.get(engineGameInfo.secondEngineIndex).useJavaSSH
                 && engineList.get(engineGameInfo.secondEngineIndex).javaSSHClosed))) {
       try {
@@ -1818,9 +1814,8 @@ public class EngineManager {
     try {
       //  Lizzie.leelaz.normalQuit();
       Lizzie.leelaz.isNormalEnd = true;
-      if (Lizzie.leelaz.useJavaSSH) {
-        Lizzie.leelaz.javaSSH.close();
-      } else Lizzie.leelaz.process.destroyForcibly();
+      Lizzie.leelaz.shutdown();
+      ;
       Thread.sleep(200);
       Lizzie.leelaz.started = false;
       Lizzie.leelaz.isLoaded = false;
@@ -1836,9 +1831,7 @@ public class EngineManager {
     if (isEmpty || Lizzie.leelaz == null) return;
     try {
       engineList.get(index).isNormalEnd = true;
-      if (engineList.get(index).useJavaSSH) {
-        engineList.get(index).javaSSH.close();
-      } else engineList.get(index).process.destroyForcibly();
+      engineList.get(index).shutdown();
       Thread.sleep(200);
       engineList.get(index).started = false;
       engineList.get(index).isLoaded = false;
@@ -1853,11 +1846,8 @@ public class EngineManager {
     // currentEngineNo = -1;
     if (Lizzie.leelaz2 == null) return;
     try {
-      // Lizzie.leelaz2.normalQuit();
-      if (Lizzie.leelaz2.useJavaSSH) {
-        Lizzie.leelaz2.javaSSH.close();
-      }
-      Lizzie.leelaz2.process.destroyForcibly();
+      Lizzie.leelaz2.isNormalEnd = true;
+      Lizzie.leelaz2.shutdown();
       Thread.sleep(200);
       Lizzie.leelaz2.started = false;
       Lizzie.leelaz2.isLoaded = false;
@@ -2162,7 +2152,7 @@ public class EngineManager {
                 newEng.notPondering();
                 Lizzie.board.resendMoveToEngine(newEng);
                 if (newEng == Lizzie.leelaz) {
-                  Lizzie.board.clearbestmovesafter(Lizzie.board.getHistory().getStart());
+                  Lizzie.board.clearBestMovesAfterFirstEngine(Lizzie.board.getHistory().getStart());
                   currentEngineNo = Lizzie.leelaz.currentEngineN();
                   featurecat.lizzie.gui.Menu.engineMenu.setText(
                       "["
@@ -2172,10 +2162,11 @@ public class EngineManager {
 
                   changeEngIco(1);
                   LizzieFrame.toolbar.reSetButtonLocation();
-                  LizzieFrame.boardRenderer.removecountblock();
+                  LizzieFrame.boardRenderer.removeKataEstimateImage();
                   if (Lizzie.frame.floatBoard != null)
-                    Lizzie.frame.floatBoard.boardRenderer.removecountblock();
-                  if (Lizzie.config.showSubBoard) LizzieFrame.subBoardRenderer.removecountblock();
+                    Lizzie.frame.floatBoard.boardRenderer.removeKataEstimateImage();
+                  if (Lizzie.config.showSubBoard)
+                    LizzieFrame.subBoardRenderer.removeKataEstimateImage();
                   if (currentEngineNo > 20) LizzieFrame.menu.changeEngineIcon(20, 3);
                   else LizzieFrame.menu.changeEngineIcon(currentEngineNo, 3);
                   newEng.setResponseUpToDate();
@@ -2200,7 +2191,7 @@ public class EngineManager {
                 if (currentEngineNo2 > 20) LizzieFrame.menu.changeEngineIcon2(20, 3);
                 else LizzieFrame.menu.changeEngineIcon2(currentEngineNo2, 3);
 
-                Lizzie.board.clearbestmovesafter2(Lizzie.board.getHistory().getStart());
+                Lizzie.board.clearBestMovesAfterSecondEngine(Lizzie.board.getHistory().getStart());
                 Lizzie.board.resendMoveToEngine(newEng);
                 featurecat.lizzie.gui.Menu.engineMenu2.setText(
                     "["
@@ -2208,7 +2199,7 @@ public class EngineManager {
                         + "]: "
                         + engineList.get(currentEngineNo2).currentEnginename);
                 changeEngIco(2);
-                LizzieFrame.boardRenderer2.removecountblock();
+                LizzieFrame.boardRenderer2.removeKataEstimateImage();
                 Lizzie.leelaz.ponder();
                 Lizzie.leelaz2.setResponseUpToDate();
               }

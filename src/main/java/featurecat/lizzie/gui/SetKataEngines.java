@@ -106,7 +106,7 @@ public class SetKataEngines extends JDialog {
             if (Lizzie.config.chkKataEngineWRN) {
               Lizzie.leelaz.sendCommand(
                   "kata-set-param analysisWideRootNoise " + Lizzie.config.txtKataEngineWRN);
-              Lizzie.board.clearbestmovesafter(Lizzie.board.getHistory().getStart());
+              Lizzie.board.clearBestMovesAfter(Lizzie.board.getHistory().getStart());
               if (Lizzie.config.autoLoadKataEngineWRN) {
                 Lizzie.config.autoLoadTxtKataEngineWRN = Lizzie.config.txtKataEngineWRN;
                 Lizzie.config.uiConfig.put(

@@ -29,7 +29,7 @@ public class LoadEngine extends JPanel {
   public static Config config;
   public TableModel dataModel;
   JPanel tablepanel;
-  JPanel selectpanel = new JPanel();
+  PanelWithToolTips selectpanel = new PanelWithToolTips();
 
   JScrollPane scrollpane;
   public static boolean noShow = false;
@@ -419,6 +419,14 @@ public class LoadEngine extends JPanel {
     public Component getTableCellRendererComponent(
         JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
       {
+        if (column == 2) {
+          JLabel label =
+              (JLabel)
+                  super.getTableCellRendererComponent(
+                      table, value, isSelected, hasFocus, row, column);
+          label.setToolTipText(value.toString());
+          return label;
+        }
         return renderer.getTableCellRendererComponent(table, value, isSelected, false, row, column);
       }
     }
