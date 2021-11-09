@@ -970,9 +970,10 @@ public class AnalysisFrame extends JFrame {
             // {return "*"+data.coordinate;}
             // else
             return data.coordinate;
-          case 2: if (data.isNextMove) {
-    		  return "--";
-    	  }
+          case 2:
+            if (data.isNextMove) {
+              return "--";
+            }
             return String.format(Locale.ENGLISH, "%.1f", data.lcb);
           case 3:
             if (data.isNextMove) {
@@ -993,9 +994,9 @@ public class AnalysisFrame extends JFrame {
             return String.format(
                 Locale.ENGLISH, "%.1f", (double) data.playouts * 100 / totalPlayouts);
           case 6:
-        	  if (data.isNextMove) {
-        		  return "--";
-        	  }
+            if (data.isNextMove) {
+              return "--";
+            }
             return String.format(Locale.ENGLISH, "%.2f", data.policy);
           case 7:
             double score = data.scoreMean;
