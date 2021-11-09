@@ -92,23 +92,7 @@ public class Lizzie {
       MultiOutputStream multiError =
           new MultiOutputStream(new PrintStream(bosError), oldErrorPrintStream);
       System.setErr(new PrintStream(multiError));
-      //    Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-      //        @Override
-      //        public void uncaughtException(Thread thread, Throwable ex) {
-      //        	ex.printStackTrace();
-      //            StringWriter sw = new StringWriter();
-      //            ex.printStackTrace(new PrintWriter(sw, true));
-      //            try {
-      //            	bosError.write("===========\n".getBytes());
-      //            	bosError.write(sw.toString().getBytes());
-      //			} catch (IOException e) {
-      //				// T	ODO Auto-generated catch block
-      //				e.printStackTrace();
-      //			}
-      //        }
-      //    });
     }
-    // d
     // -Dsun.java2d.uiScale.enabled=false
     // -Dsun.java2d.win.uiScaleX=1.25 -Dsun.java2d.win.uiScaleY=1.25
     // -Dsun.java2d.win.uiScaleX=125% -Dsun.java2d.win.uiScaleY=125%

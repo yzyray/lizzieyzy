@@ -365,7 +365,7 @@ public class Board {
     for (BoardHistoryNode node : diffList) node.diffAnalyzed = false;
   }
 
-  public void clearBestMovesAfterFirstEngine(BoardHistoryNode node) {
+  public void clearBestMovesAfterForFirstEngine(BoardHistoryNode node) {
     {
       Stack<BoardHistoryNode> stack = new Stack<>();
       stack.push(node);
@@ -385,8 +385,8 @@ public class Board {
   }
 
   public void clearBestMovesAfter(BoardHistoryNode node) {
-    clearBestMovesAfterFirstEngine(node);
-    if (Lizzie.config.isDoubleEngineMode()) clearBestMovesAfterSecondEngine(node);
+    clearBestMovesAfterForFirstEngine(node);
+    if (Lizzie.config.isDoubleEngineMode()) clearBestMovesAfterForSecondEngine(node);
   }
 
   public void clearBestMovesInfomationAfter(BoardHistoryNode node) {
@@ -479,7 +479,7 @@ public class Board {
     }
   }
 
-  public void clearBestMovesAfterSecondEngine(BoardHistoryNode node) {
+  public void clearBestMovesAfterForSecondEngine(BoardHistoryNode node) {
     Stack<BoardHistoryNode> stack = new Stack<>();
     stack.push(node);
     while (!stack.isEmpty()) {
