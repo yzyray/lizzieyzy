@@ -660,4 +660,20 @@ public class BoardHistoryList {
 
     return diffMoveNo;
   }
+
+public String getCurrentTurnPlayerShortName() {
+	// TODO Auto-generated method stub
+	String name;
+	if(isBlacksTurn())
+	{
+		name=getGameInfo().getPlayerBlack();
+	}
+	else {
+		name=getGameInfo().getPlayerWhite();
+	}
+	if(name.length()>21)
+		return name.substring(0,20);
+	else
+		return name;
+}
 }

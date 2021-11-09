@@ -1,6 +1,9 @@
 package featurecat.lizzie.analysis;
 
+import featurecat.lizzie.Lizzie;
 import featurecat.lizzie.rules.Board;
+import featurecat.lizzie.rules.BoardHistoryNode;
+import featurecat.lizzie.rules.Stone;
 import featurecat.lizzie.util.Utils;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +14,8 @@ import org.json.JSONObject;
 public class ContributeEngine {
   public ArrayList<ContributeGameInfo> contributeGames;
   public ArrayList<ContributeUnParseGameInfo> unParseGameInfos;
-  public int watchingGameIndex = -1;
+  //public int watchingGameIndex = -1;
+  public ContributeGameInfo currentWatchGame;
 
   public ContributeEngine() {
     String jsonTestMove1 =
@@ -175,8 +179,119 @@ public class ContributeEngine {
   }
 
   public void watchGame(int index, boolean loadToLast) {
+	  int currentMoveNumber=Lizzie.board.getHistory().getCurrentHistoryNode().getData().moveNumber;
+	  boolean changedGame=false;
+	  ContributeGameInfo watchGame = contributeGames.get(index);
+	  ArrayList<ContributeMoveInfo> remainList=new ArrayList<ContributeMoveInfo>();
+	  if(currentWatchGame==watchGame&&isContributeGameAndCurrentBoardSame(watchGame,remainList))
+	  {
+		  if(remainList!=null&&remainList.size()>0)
+		  setContributeMoveList(remainList);		
+	  }
+	  else {
+		  changedGame=true;
+		  Lizzie.board.clear(false);
+		  currentWatchGame=watchGame;
+		  Lizzie.board.reopen(currentWatchGame.sizeX, currentWatchGame.sizeY);
+		  Lizzie.board.getHistory().getGameInfo().setPlayerBlack(currentWatchGame.blackPlayer);
+		  Lizzie.board.getHistory().getGameInfo().setPlayerWhite(currentWatchGame.whitePlayer);
+		  Lizzie.board.getHistory().getGameInfo().setKomi(currentWatchGame.komi);
+		  if(currentWatchGame.initMoveList!=null&&currentWatchGame.initMoveList.size()>0)
+		  setContributeMoveList(currentWatchGame.initMoveList);
+		  if(currentWatchGame.moveList!=null&&currentWatchGame.moveList.size()>0)
+		  setContributeMoveList(currentWatchGame.moveList);
+	  }
+	  if(!changedGame&&!loadToLast)
+	  {
+		 if(Lizzie.board.getHistory().getCurrentHistoryNode().getData().moveNumber-currentMoveNumber>1)
+		 Lizzie.board.goToMoveNumber(currentMoveNumber); 
+	  }else {
+		  while(Lizzie.board.nextMove(false));
+	  }
+	Lizzie.frame.refresh();
     // 切换到不同局,同步ContributeGameInfo到界面上(如是同一局直接返回),或直接跳倒数第二手
     // 还是显示前一手模式+跳到最后一手?
     // watchingGameIndex
   }
+
+private void setContributeMoveList(ArrayList<ContributeMoveInfo> remainList) {
+	// TODO Auto-generated method stub
+	 while(Lizzie.board.nextMove(false));
+	  for(ContributeMoveInfo move:remainList)
+	  {
+		  //把所有move place进去 再设置bestmoves进去
+		  if(move.isPass)
+			  Lizzie.board.getHistory().pass(move.isBlack?Stone.BLACK:Stone.WHITE);
+		  else
+			  Lizzie.board.getHistory().place(move.pos[0],move.pos[1], move.isBlack?Stone.BLACK:Stone.WHITE);
+		  if(move.candidates!=null)
+		  Lizzie.board
+          .getData().tryToSetBestMoves(move.candidates, Lizzie.board.getHistory().getCurrentTurnPlayerShortName(), false, MoveData.getPlayouts(move.candidates));
+	  }
+}
+
+private boolean isContributeGameAndCurrentBoardSame(ContributeGameInfo watchGame, ArrayList<ContributeMoveInfo> remainList) {
+	// TODO Auto-generated method stub
+	boolean isSame=true;
+	BoardHistoryNode startNode = Lizzie.board.getHistory().getStart();	
+	while(startNode.next().isPresent()&&!startNode.getData().lastMove.isPresent())
+		startNode=startNode.next().get();	
+	if(watchGame.initMoveList!=null&&watchGame.initMoveList.size()>0)
+	{
+		isSame=compareListAndNode(watchGame.initMoveList,startNode,remainList);		
+	}
+	if(watchGame.moveList!=null&&watchGame.moveList.size()>0)
+	{
+		isSame=compareListAndNode(watchGame.moveList,startNode,remainList);		
+	}
+	return isSame;
+}
+
+private boolean compareListAndNode(ArrayList<ContributeMoveInfo> list, BoardHistoryNode node, ArrayList<ContributeMoveInfo> remainList) {
+	boolean started=false;
+	
+	for(int i=0;i<list.size();i++)
+	{
+		ContributeMoveInfo move = list.get(i);
+		if(started||!move.isPass)
+		{	started=true;
+		if(node.getData().lastMove.isPresent())
+		{
+			if(node.getData().lastMove.get()[0]!=move.pos[0]||node.getData().lastMove.get()[1]!=move.pos[1])
+			return false;
+			if(node.next().isPresent())
+				node=node.next().get();
+			else
+			{
+				getRemainList(list,remainList,i+1);
+				return true;
+			}
+				
+		}
+		else {
+			if(move.isPass)
+			{
+				if(node.next().isPresent())
+					node=node.next().get();
+					else
+						return true;
+			}
+			else
+			{
+				getRemainList(list,remainList,i+1);
+				return true;
+			}
+		}
+		}
+	}
+	return true;
+}
+
+private void getRemainList(ArrayList<ContributeMoveInfo> list, ArrayList<ContributeMoveInfo> remainList, int i) {
+	// TODO Auto-generated method stub
+	for(;i<list.size();i++)
+	{
+		remainList.add(list.get(i));
+	}
+}
 }

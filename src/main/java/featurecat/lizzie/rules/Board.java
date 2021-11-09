@@ -2293,7 +2293,6 @@ public class Board {
   }
 
   public boolean goToMoveNumber(int moveNumber) {
-
     return goToMoveNumberHelper(moveNumber, false);
   }
 
