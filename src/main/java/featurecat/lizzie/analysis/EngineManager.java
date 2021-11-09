@@ -1815,7 +1815,6 @@ public class EngineManager {
       //  Lizzie.leelaz.normalQuit();
       Lizzie.leelaz.isNormalEnd = true;
       Lizzie.leelaz.shutdown();
-      ;
       Thread.sleep(200);
       Lizzie.leelaz.started = false;
       Lizzie.leelaz.isLoaded = false;
@@ -2152,7 +2151,8 @@ public class EngineManager {
                 newEng.notPondering();
                 Lizzie.board.resendMoveToEngine(newEng);
                 if (newEng == Lizzie.leelaz) {
-                  Lizzie.board.clearBestMovesAfterFirstEngine(Lizzie.board.getHistory().getStart());
+                  Lizzie.board.clearBestMovesAfterForFirstEngine(
+                      Lizzie.board.getHistory().getStart());
                   currentEngineNo = Lizzie.leelaz.currentEngineN();
                   featurecat.lizzie.gui.Menu.engineMenu.setText(
                       "["
@@ -2191,7 +2191,8 @@ public class EngineManager {
                 if (currentEngineNo2 > 20) LizzieFrame.menu.changeEngineIcon2(20, 3);
                 else LizzieFrame.menu.changeEngineIcon2(currentEngineNo2, 3);
 
-                Lizzie.board.clearBestMovesAfterSecondEngine(Lizzie.board.getHistory().getStart());
+                Lizzie.board.clearBestMovesAfterForSecondEngine(
+                    Lizzie.board.getHistory().getStart());
                 Lizzie.board.resendMoveToEngine(newEng);
                 featurecat.lizzie.gui.Menu.engineMenu2.setText(
                     "["
