@@ -1526,11 +1526,11 @@ public class SGFParser {
       if (data.isSaiData) {
         double score = data.scoreMean;
         if (data.blackToPlay) {
-          if (Lizzie.config.showKataGoBoardScoreMean)
+          if (Lizzie.config.showKataGoScoreLeadWithKomi)
             score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
           else score = -score;
         } else {
-          if (Lizzie.config.showKataGoBoardScoreMean)
+          if (Lizzie.config.showKataGoScoreLeadWithKomi)
             score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
           else score = -score;
         }
@@ -1538,9 +1538,9 @@ public class SGFParser {
             "%s "
                 + Lizzie.resourceBundle.getString("SGFParse.winrate")
                 + " %s %s\n"
-                + (Lizzie.config.showKataGoBoardScoreMean
-                    ? Lizzie.resourceBundle.getString("SGFParse.leadBoard")
-                    : Lizzie.resourceBundle.getString("SGFParse.leadScore"))
+                + (Lizzie.config.showKataGoScoreLeadWithKomi
+                    ? Lizzie.resourceBundle.getString("SGFParse.leadWithKomi")
+                    : Lizzie.resourceBundle.getString("SGFParse.leadJustScore"))
                 + " %s %s\n(%s / %s "
                 + Lizzie.resourceBundle.getString("SGFParse.playouts")
                 + ")\n"
@@ -1562,11 +1562,11 @@ public class SGFParser {
       } else {
         double score = node.getData().scoreMean;
         if (data.blackToPlay) {
-          if (Lizzie.config.showKataGoBoardScoreMean)
+          if (Lizzie.config.showKataGoScoreLeadWithKomi)
             score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
           else score = -score;
         } else {
-          if (Lizzie.config.showKataGoBoardScoreMean)
+          if (Lizzie.config.showKataGoScoreLeadWithKomi)
             score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
           else score = -score;
         }
@@ -1574,9 +1574,9 @@ public class SGFParser {
             "%s "
                 + Lizzie.resourceBundle.getString("SGFParse.winrate")
                 + " %s %s\n"
-                + (Lizzie.config.showKataGoBoardScoreMean
-                    ? Lizzie.resourceBundle.getString("SGFParse.leadBoard")
-                    : Lizzie.resourceBundle.getString("SGFParse.leadScore"))
+                + (Lizzie.config.showKataGoScoreLeadWithKomi
+                    ? Lizzie.resourceBundle.getString("SGFParse.leadWithKomi")
+                    : Lizzie.resourceBundle.getString("SGFParse.leadJustScore"))
                 + " %s %s "
                 + Lizzie.resourceBundle.getString("SGFParse.stdev")
                 + " %s\n(%s / %s "
@@ -1661,9 +1661,9 @@ public class SGFParser {
                   + " )"
                   + Lizzie.resourceBundle.getString("SGFParse.winrate")
                   + " [0-9\\.\\-]+%* \\(*[0-9.\\-+]*%*\\)*\n"
-                  + (Lizzie.config.showKataGoBoardScoreMean
-                      ? Lizzie.resourceBundle.getString("SGFParse.leadBoard")
-                      : Lizzie.resourceBundle.getString("SGFParse.leadScore"))
+                  + (Lizzie.config.showKataGoScoreLeadWithKomi
+                      ? Lizzie.resourceBundle.getString("SGFParse.leadWithKomi")
+                      : Lizzie.resourceBundle.getString("SGFParse.leadJustScore"))
                   + " [0-9\\.\\-+]* \\(*[0-9.\\-+]*\\)*\n\\("
                   + ".*"
                   + " / [0-9\\.]*[kmKM]* "
@@ -1680,9 +1680,9 @@ public class SGFParser {
                   + " )"
                   + Lizzie.resourceBundle.getString("SGFParse.winrate")
                   + " [0-9\\.\\-]+%* \\(*[0-9.\\-+]*%*\\)*\n"
-                  + (Lizzie.config.showKataGoBoardScoreMean
-                      ? Lizzie.resourceBundle.getString("SGFParse.leadBoard")
-                      : Lizzie.resourceBundle.getString("SGFParse.leadScore"))
+                  + (Lizzie.config.showKataGoScoreLeadWithKomi
+                      ? Lizzie.resourceBundle.getString("SGFParse.leadWithKomi")
+                      : Lizzie.resourceBundle.getString("SGFParse.leadJustScore"))
                   + " [0-9\\.\\-+]* \\(*[0-9.\\-+]*\\)* "
                   + Lizzie.resourceBundle.getString("SGFParse.stdev")
                   + " [0-9\\.\\-+]*\n\\("
@@ -1784,19 +1784,19 @@ public class SGFParser {
       if (data.isSaiData) {
         double score = data.scoreMean;
         if (data.blackToPlay) {
-          if (Lizzie.config.showKataGoBoardScoreMean)
+          if (Lizzie.config.showKataGoScoreLeadWithKomi)
             score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
         } else {
-          if (Lizzie.config.showKataGoBoardScoreMean)
+          if (Lizzie.config.showKataGoScoreLeadWithKomi)
             score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
         }
         String wf =
             "%s "
                 + Lizzie.resourceBundle.getString("SGFParse.winrate")
                 + " %s %s\n"
-                + (Lizzie.config.showKataGoBoardScoreMean
-                    ? Lizzie.resourceBundle.getString("SGFParse.leadBoard")
-                    : Lizzie.resourceBundle.getString("SGFParse.leadScore"))
+                + (Lizzie.config.showKataGoScoreLeadWithKomi
+                    ? Lizzie.resourceBundle.getString("SGFParse.leadWithKomi")
+                    : Lizzie.resourceBundle.getString("SGFParse.leadJustScore"))
                 + " %s %s\n(%s / %s "
                 + Lizzie.resourceBundle.getString("SGFParse.playouts")
                 + ")\n"
@@ -1818,19 +1818,19 @@ public class SGFParser {
       } else {
         double score = node.getData().scoreMean;
         if (data.blackToPlay) {
-          if (Lizzie.config.showKataGoBoardScoreMean)
+          if (Lizzie.config.showKataGoScoreLeadWithKomi)
             score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
         } else {
-          if (Lizzie.config.showKataGoBoardScoreMean)
+          if (Lizzie.config.showKataGoScoreLeadWithKomi)
             score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
         }
         String wf =
             "%s "
                 + Lizzie.resourceBundle.getString("SGFParse.winrate")
                 + " %s %s\n"
-                + (Lizzie.config.showKataGoBoardScoreMean
-                    ? Lizzie.resourceBundle.getString("SGFParse.leadBoard")
-                    : Lizzie.resourceBundle.getString("SGFParse.leadScore"))
+                + (Lizzie.config.showKataGoScoreLeadWithKomi
+                    ? Lizzie.resourceBundle.getString("SGFParse.leadWithKomi")
+                    : Lizzie.resourceBundle.getString("SGFParse.leadJustScore"))
                 + " %s %s "
                 + Lizzie.resourceBundle.getString("SGFParse.stdev")
                 + " %s\n(%s / %s "
@@ -1925,19 +1925,19 @@ public class SGFParser {
       if (data.isSaiData) {
         double score = data.scoreMean;
         if (data.blackToPlay) {
-          if (Lizzie.config.showKataGoBoardScoreMean)
+          if (Lizzie.config.showKataGoScoreLeadWithKomi)
             score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
         } else {
-          if (Lizzie.config.showKataGoBoardScoreMean)
+          if (Lizzie.config.showKataGoScoreLeadWithKomi)
             score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
         }
         String wf =
             "%s "
                 + Lizzie.resourceBundle.getString("SGFParse.winrate")
                 + " %s %s\n"
-                + (Lizzie.config.showKataGoBoardScoreMean
-                    ? Lizzie.resourceBundle.getString("SGFParse.leadBoard")
-                    : Lizzie.resourceBundle.getString("SGFParse.leadScore"))
+                + (Lizzie.config.showKataGoScoreLeadWithKomi
+                    ? Lizzie.resourceBundle.getString("SGFParse.leadWithKomi")
+                    : Lizzie.resourceBundle.getString("SGFParse.leadJustScore"))
                 + " %s %s\n(%s / %s "
                 + Lizzie.resourceBundle.getString("SGFParse.playouts")
                 + ")\n"
@@ -1959,19 +1959,19 @@ public class SGFParser {
       } else {
         double score = node.getData().scoreMean;
         if (data.blackToPlay) {
-          if (Lizzie.config.showKataGoBoardScoreMean)
+          if (Lizzie.config.showKataGoScoreLeadWithKomi)
             score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
         } else {
-          if (Lizzie.config.showKataGoBoardScoreMean)
+          if (Lizzie.config.showKataGoScoreLeadWithKomi)
             score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
         }
         String wf =
             "%s "
                 + Lizzie.resourceBundle.getString("SGFParse.winrate")
                 + " %s %s\n"
-                + (Lizzie.config.showKataGoBoardScoreMean
-                    ? Lizzie.resourceBundle.getString("SGFParse.leadBoard")
-                    : Lizzie.resourceBundle.getString("SGFParse.leadScore"))
+                + (Lizzie.config.showKataGoScoreLeadWithKomi
+                    ? Lizzie.resourceBundle.getString("SGFParse.leadWithKomi")
+                    : Lizzie.resourceBundle.getString("SGFParse.leadJustScore"))
                 + " %s %s "
                 + Lizzie.resourceBundle.getString("SGFParse.stdev")
                 + " %s\n(%s / %s "
@@ -2052,9 +2052,9 @@ public class SGFParser {
                   + " )"
                   + Lizzie.resourceBundle.getString("SGFParse.winrate")
                   + " [0-9\\.\\-]+%* \\(*[0-9.\\-+]*%*\\)*\n"
-                  + (Lizzie.config.showKataGoBoardScoreMean
-                      ? Lizzie.resourceBundle.getString("SGFParse.leadBoard")
-                      : Lizzie.resourceBundle.getString("SGFParse.leadScore"))
+                  + (Lizzie.config.showKataGoScoreLeadWithKomi
+                      ? Lizzie.resourceBundle.getString("SGFParse.leadWithKomi")
+                      : Lizzie.resourceBundle.getString("SGFParse.leadJustScore"))
                   + " [0-9\\.\\-+]* \\(*[0-9.\\-+]*\\)*\n\\("
                   + ".*"
                   + " / [0-9\\.]*[kmKM]* "
@@ -2071,9 +2071,9 @@ public class SGFParser {
                   + " )"
                   + Lizzie.resourceBundle.getString("SGFParse.winrate")
                   + " [0-9\\.\\-]+%* \\(*[0-9.\\-+]*%*\\)*\n"
-                  + (Lizzie.config.showKataGoBoardScoreMean
-                      ? Lizzie.resourceBundle.getString("SGFParse.leadBoard")
-                      : Lizzie.resourceBundle.getString("SGFParse.leadScore"))
+                  + (Lizzie.config.showKataGoScoreLeadWithKomi
+                      ? Lizzie.resourceBundle.getString("SGFParse.leadWithKomi")
+                      : Lizzie.resourceBundle.getString("SGFParse.leadJustScore"))
                   + " [0-9\\.\\-+]* \\(*[0-9.\\-+]*\\)* "
                   + Lizzie.resourceBundle.getString("SGFParse.stdev")
                   + " [0-9\\.\\-+]*\n\\("
@@ -2159,11 +2159,11 @@ public class SGFParser {
       if (data.isSaiData2) {
         double score = data.scoreMean2;
         if (data.blackToPlay) {
-          if (Lizzie.config.showKataGoBoardScoreMean)
+          if (Lizzie.config.showKataGoScoreLeadWithKomi)
             score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
           else score = -score;
         } else {
-          if (Lizzie.config.showKataGoBoardScoreMean)
+          if (Lizzie.config.showKataGoScoreLeadWithKomi)
             score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
           else score = -score;
         }
@@ -2171,9 +2171,9 @@ public class SGFParser {
             "%s "
                 + Lizzie.resourceBundle.getString("SGFParse.winrate")
                 + " %s %s\n"
-                + (Lizzie.config.showKataGoBoardScoreMean
-                    ? Lizzie.resourceBundle.getString("SGFParse.leadBoard")
-                    : Lizzie.resourceBundle.getString("SGFParse.leadScore"))
+                + (Lizzie.config.showKataGoScoreLeadWithKomi
+                    ? Lizzie.resourceBundle.getString("SGFParse.leadWithKomi")
+                    : Lizzie.resourceBundle.getString("SGFParse.leadJustScore"))
                 + " %s %s\n(%s / %s "
                 + Lizzie.resourceBundle.getString("SGFParse.playouts")
                 + ")\n"
@@ -2195,11 +2195,11 @@ public class SGFParser {
       } else {
         double score = data.scoreMean2;
         if (data.blackToPlay) {
-          if (Lizzie.config.showKataGoBoardScoreMean)
+          if (Lizzie.config.showKataGoScoreLeadWithKomi)
             score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
           else score = -score;
         } else {
-          if (Lizzie.config.showKataGoBoardScoreMean)
+          if (Lizzie.config.showKataGoScoreLeadWithKomi)
             score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
           else score = -score;
         }
@@ -2207,9 +2207,9 @@ public class SGFParser {
             "%s "
                 + Lizzie.resourceBundle.getString("SGFParse.winrate")
                 + " %s %s\n"
-                + (Lizzie.config.showKataGoBoardScoreMean
-                    ? Lizzie.resourceBundle.getString("SGFParse.leadBoard")
-                    : Lizzie.resourceBundle.getString("SGFParse.leadScore"))
+                + (Lizzie.config.showKataGoScoreLeadWithKomi
+                    ? Lizzie.resourceBundle.getString("SGFParse.leadWithKomi")
+                    : Lizzie.resourceBundle.getString("SGFParse.leadJustScore"))
                 + " %s %s "
                 + Lizzie.resourceBundle.getString("SGFParse.stdev")
                 + " %s\n(%s / %s "
@@ -2294,9 +2294,9 @@ public class SGFParser {
                   + " )"
                   + Lizzie.resourceBundle.getString("SGFParse.winrate")
                   + " [0-9\\.\\-]+%* \\(*[0-9.\\-+]*%*\\)*\n"
-                  + (Lizzie.config.showKataGoBoardScoreMean
-                      ? Lizzie.resourceBundle.getString("SGFParse.leadBoard")
-                      : Lizzie.resourceBundle.getString("SGFParse.leadScore"))
+                  + (Lizzie.config.showKataGoScoreLeadWithKomi
+                      ? Lizzie.resourceBundle.getString("SGFParse.leadWithKomi")
+                      : Lizzie.resourceBundle.getString("SGFParse.leadJustScore"))
                   + " [0-9\\.\\-+]* \\(*[0-9.\\-+]*\\)*\n\\("
                   + ".*"
                   + " / [0-9\\.]*[kmKM]* "
@@ -2313,9 +2313,9 @@ public class SGFParser {
                   + " )"
                   + Lizzie.resourceBundle.getString("SGFParse.winrate")
                   + " [0-9\\.\\-]+%* \\(*[0-9.\\-+]*%*\\)*\n"
-                  + (Lizzie.config.showKataGoBoardScoreMean
-                      ? Lizzie.resourceBundle.getString("SGFParse.leadBoard")
-                      : Lizzie.resourceBundle.getString("SGFParse.leadScore"))
+                  + (Lizzie.config.showKataGoScoreLeadWithKomi
+                      ? Lizzie.resourceBundle.getString("SGFParse.leadWithKomi")
+                      : Lizzie.resourceBundle.getString("SGFParse.leadJustScore"))
                   + " [0-9\\.\\-+]* \\(*[0-9.\\-+]*\\)* "
                   + Lizzie.resourceBundle.getString("SGFParse.stdev")
                   + " [0-9\\.\\-+]*\n\\("

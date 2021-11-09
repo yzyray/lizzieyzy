@@ -259,7 +259,7 @@ public class FirstUseSettings extends JDialog {
     JFontRadioButton rdoScoreOnBoardWithOutKomi =
         new JFontRadioButton(
             Lizzie.resourceBundle.getString(
-                "FirstUseSettings.rdoScoreOnBoardWithOutKomi")); // ("计算贴目后目数差");
+                "FirstUseSettings.rdoScoreOnBoardJustScore")); // ("计算贴目后目数差");
     rdoScoreOnBoardWithOutKomi.setBounds(
         Lizzie.config.isFrameFontSmall() ? 350 : (Lizzie.config.isFrameFontMiddle() ? 420 : 520),
         88,
@@ -679,10 +679,11 @@ public class FirstUseSettings extends JDialog {
             else Lizzie.config.noRefreshOnSub = false;
             Lizzie.config.uiConfig.put("no-refresh-on-sub", Lizzie.config.noRefreshOnSub);
 
-            if (rdoScoreOnBoardWithKomi.isSelected()) Lizzie.config.showKataGoBoardScoreMean = true;
-            else Lizzie.config.showKataGoBoardScoreMean = false;
+            if (rdoScoreOnBoardWithKomi.isSelected())
+              Lizzie.config.showKataGoScoreLeadWithKomi = true;
+            else Lizzie.config.showKataGoScoreLeadWithKomi = false;
             Lizzie.config.uiConfig.put(
-                "show-katago-boardscoremean", Lizzie.config.showKataGoBoardScoreMean);
+                "show-katago-score-lead-with-komi", Lizzie.config.showKataGoScoreLeadWithKomi);
 
             if (rdoAlwaysBlack.isSelected()) Lizzie.config.winrateAlwaysBlack = true;
             else Lizzie.config.winrateAlwaysBlack = false;
@@ -727,7 +728,7 @@ public class FirstUseSettings extends JDialog {
       else rdoMouseOverSuggestionRefresh.setSelected(true);
       if (Lizzie.config.noRefreshOnSub) rdoMouseOverSubboardNoRefresh.setSelected(true);
       else rdoMouseOverSubboardRefresh.setSelected(true);
-      if (Lizzie.config.showKataGoBoardScoreMean) rdoScoreOnBoardWithKomi.setSelected(true);
+      if (Lizzie.config.showKataGoScoreLeadWithKomi) rdoScoreOnBoardWithKomi.setSelected(true);
       else rdoScoreOnBoardWithOutKomi.setSelected(true);
       if (Lizzie.config.winrateAlwaysBlack) rdoAlwaysBlack.setSelected(true);
       else rdoAlternately.setSelected(true);

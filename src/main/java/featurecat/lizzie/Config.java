@@ -43,7 +43,7 @@ public class Config {
   public int showrect = 1;
   public boolean showlcbcolor = false;
   public boolean fastChange = true;
-  public boolean showKataGoBoardScoreMean = false;
+  public boolean showKataGoScoreLeadWithKomi = false;
   //  public boolean kataGoScoreMeanAlwaysBlack = false;
   public boolean scoreMeanWinrateGraphBoard = false;
   public boolean showKataGoEstimate = false;
@@ -881,7 +881,7 @@ public class Config {
     if (extraMode == ExtraMode.Double_Engine) showComment = false;
     showCaptured = uiConfig.getBoolean("show-captured");
     // showKataGoScoreMean = uiConfig.optBoolean("show-katago-scoremean", true);
-    showKataGoBoardScoreMean = uiConfig.optBoolean("show-katago-boardscoremean", false);
+    showKataGoScoreLeadWithKomi = uiConfig.optBoolean("show-katago-score-lead-with-komi", false);
     // kataGoScoreMeanAlwaysBlack = uiConfig.optBoolean("katago-scoremean-alwaysblack", false);
     showHeat = uiConfig.optBoolean("show-heat", false);
     showHeatAfterCalc = uiConfig.optBoolean("show-heat-aftercalc", false);

@@ -657,7 +657,7 @@ public class SuggestionInfoOrderSettings extends JDialog {
       Color oriColor = g.getColor();
       if (showScoreLead && showPlayouts && showWinrate) {
         double score = move.scoreMean;
-        if (Lizzie.config.showKataGoBoardScoreMean) {
+        if (Lizzie.config.showKataGoScoreLeadWithKomi) {
           score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
         }
         boolean shouldShowMaxColorWinrate = canShowMaxColor && hasMaxWinrate;
@@ -852,11 +852,11 @@ public class SuggestionInfoOrderSettings extends JDialog {
         boolean shouldShowMaxColorScoreLead = canShowMaxColor && move.scoreMean == maxScoreMean;
         double score = move.scoreMean;
         if (Lizzie.board.getHistory().isBlacksTurn()) {
-          if (Lizzie.config.showKataGoBoardScoreMean) {
+          if (Lizzie.config.showKataGoScoreLeadWithKomi) {
             score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
           }
         } else {
-          if (Lizzie.config.showKataGoBoardScoreMean) {
+          if (Lizzie.config.showKataGoScoreLeadWithKomi) {
             score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
           }
           if (Lizzie.config.winrateAlwaysBlack) {
@@ -932,11 +932,11 @@ public class SuggestionInfoOrderSettings extends JDialog {
         boolean shouldShowMaxColorScoreLead = canShowMaxColor && move.scoreMean == maxScoreMean;
         double score = move.scoreMean;
         if (Lizzie.board.getHistory().isBlacksTurn()) {
-          if (Lizzie.config.showKataGoBoardScoreMean) {
+          if (Lizzie.config.showKataGoScoreLeadWithKomi) {
             score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
           }
         } else {
-          if (Lizzie.config.showKataGoBoardScoreMean) {
+          if (Lizzie.config.showKataGoScoreLeadWithKomi) {
             score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
           }
           if (Lizzie.config.winrateAlwaysBlack) {
@@ -1034,11 +1034,11 @@ public class SuggestionInfoOrderSettings extends JDialog {
       } else if (showScoreLead) {
         double score = move.scoreMean;
         if (Lizzie.board.getHistory().isBlacksTurn()) {
-          if (Lizzie.config.showKataGoBoardScoreMean) {
+          if (Lizzie.config.showKataGoScoreLeadWithKomi) {
             score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
           }
         } else {
-          if (Lizzie.config.showKataGoBoardScoreMean) {
+          if (Lizzie.config.showKataGoScoreLeadWithKomi) {
             score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
           }
           if (Lizzie.config.winrateAlwaysBlack) {

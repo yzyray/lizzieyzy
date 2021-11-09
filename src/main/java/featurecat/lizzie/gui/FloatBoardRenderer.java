@@ -1667,11 +1667,11 @@ public class FloatBoardRenderer {
             if (showScoreLead && showPlayouts && showWinrate) {
               double score = move.scoreMean;
               if (Lizzie.board.getHistory().isBlacksTurn()) {
-                if (Lizzie.config.showKataGoBoardScoreMean) {
+                if (Lizzie.config.showKataGoScoreLeadWithKomi) {
                   score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
                 }
               } else {
-                if (Lizzie.config.showKataGoBoardScoreMean) {
+                if (Lizzie.config.showKataGoScoreLeadWithKomi) {
                   score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
                 }
                 if (Lizzie.config.winrateAlwaysBlack) {
@@ -1883,11 +1883,11 @@ public class FloatBoardRenderer {
                   canShowMaxColor && move.scoreMean == maxScoreMean;
               double score = move.scoreMean;
               if (Lizzie.board.getHistory().isBlacksTurn()) {
-                if (Lizzie.config.showKataGoBoardScoreMean) {
+                if (Lizzie.config.showKataGoScoreLeadWithKomi) {
                   score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
                 }
               } else {
-                if (Lizzie.config.showKataGoBoardScoreMean) {
+                if (Lizzie.config.showKataGoScoreLeadWithKomi) {
                   score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
                 }
                 if (Lizzie.config.winrateAlwaysBlack) {
@@ -1964,11 +1964,11 @@ public class FloatBoardRenderer {
                   canShowMaxColor && move.scoreMean == maxScoreMean;
               double score = move.scoreMean;
               if (Lizzie.board.getHistory().isBlacksTurn()) {
-                if (Lizzie.config.showKataGoBoardScoreMean) {
+                if (Lizzie.config.showKataGoScoreLeadWithKomi) {
                   score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
                 }
               } else {
-                if (Lizzie.config.showKataGoBoardScoreMean) {
+                if (Lizzie.config.showKataGoScoreLeadWithKomi) {
                   score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
                 }
                 if (Lizzie.config.winrateAlwaysBlack) {
@@ -2075,11 +2075,11 @@ public class FloatBoardRenderer {
             } else if (showScoreLead) {
               double score = move.scoreMean;
               if (Lizzie.board.getHistory().isBlacksTurn()) {
-                if (Lizzie.config.showKataGoBoardScoreMean) {
+                if (Lizzie.config.showKataGoScoreLeadWithKomi) {
                   score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
                 }
               } else {
-                if (Lizzie.config.showKataGoBoardScoreMean) {
+                if (Lizzie.config.showKataGoScoreLeadWithKomi) {
                   score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
                 }
                 if (Lizzie.config.winrateAlwaysBlack) {

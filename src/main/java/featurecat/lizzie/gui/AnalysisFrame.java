@@ -996,21 +996,21 @@ public class AnalysisFrame extends JFrame {
             double score = data.scoreMean;
             if (EngineManager.isEngineGame && EngineManager.engineGameInfo.isGenmove) {
               if (!Lizzie.board.getHistory().isBlacksTurn()) {
-                if (Lizzie.config.showKataGoBoardScoreMean) {
+                if (Lizzie.config.showKataGoScoreLeadWithKomi) {
                   score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
                 }
               } else {
-                if (Lizzie.config.showKataGoBoardScoreMean) {
+                if (Lizzie.config.showKataGoScoreLeadWithKomi) {
                   score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
                 }
               }
             } else {
               if (Lizzie.board.getHistory().isBlacksTurn()) {
-                if (Lizzie.config.showKataGoBoardScoreMean) {
+                if (Lizzie.config.showKataGoScoreLeadWithKomi) {
                   score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
                 }
               } else {
-                if (Lizzie.config.showKataGoBoardScoreMean) {
+                if (Lizzie.config.showKataGoScoreLeadWithKomi) {
                   score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
                 }
               }

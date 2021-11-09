@@ -1812,22 +1812,22 @@ public class Menu extends JMenuBar {
         new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
-            Lizzie.config.showKataGoBoardScoreMean = false;
+            Lizzie.config.showKataGoScoreLeadWithKomi = false;
             Lizzie.config.uiConfig.put(
-                "show-katago-boardscoremean", Lizzie.config.showKataGoBoardScoreMean);
+                "show-katago-score-lead-with-komi", Lizzie.config.showKataGoScoreLeadWithKomi);
           }
         });
 
     final JFontCheckBoxMenuItem leadWithoutKomi =
-        new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.leadWithoutKomi")); // 盘面
+        new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.leadJustScore")); // 盘面
     kataScolreLead.add(leadWithoutKomi);
     leadWithoutKomi.addActionListener(
         new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
-            Lizzie.config.showKataGoBoardScoreMean = true;
+            Lizzie.config.showKataGoScoreLeadWithKomi = true;
             Lizzie.config.uiConfig.put(
-                "show-katago-boardscoremean", Lizzie.config.showKataGoBoardScoreMean);
+                "show-katago-score-lead-with-komi", Lizzie.config.showKataGoScoreLeadWithKomi);
           }
         });
 
@@ -1884,7 +1884,7 @@ public class Menu extends JMenuBar {
         });
 
     final JFontCheckBoxMenuItem scoreLeadOnGraphWithoutKomi =
-        new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.leadWithoutKomi")); // 盘面
+        new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.leadJustScore")); // 盘面
     showScoreLeadOnWinrateGraph.add(scoreLeadOnGraphWithoutKomi);
     scoreLeadOnGraphWithoutKomi.addActionListener(
         new ActionListener() {
@@ -2218,7 +2218,7 @@ public class Menu extends JMenuBar {
             else suggestion2.setState(false);
             if (Lizzie.config.showScoremeanInSuggestion) suggestion3.setState(true);
             else suggestion3.setState(false);
-            if (Lizzie.config.showKataGoBoardScoreMean) {
+            if (Lizzie.config.showKataGoScoreLeadWithKomi) {
               leadWithKomi.setState(false);
               leadWithoutKomi.setState(true);
             } else {

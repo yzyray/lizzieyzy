@@ -213,7 +213,7 @@ public class LizzieFrame extends JFrame {
   // public String komi = "7.5";
   double winRate;
   double score;
-  double scoreOnStatic;
+  double scoreLead;
   double scoreStdev;
   // private ChangeMoveDialog2 ChangeMoveDialog2 = new ChangeMoveDialog2();
 
@@ -5519,19 +5519,23 @@ public class LizzieFrame extends JFrame {
       isKataStyle = true;
       if (!curData.bestMoves.isEmpty()) {
         double score = curData.bestMoves.get(0).scoreMean;
-        if (curData.blackToPlay) {
-          score = score + curData.getKomi();
-        } else {
-          score = -score + curData.getKomi();
+        if (Lizzie.config.showKataGoScoreLeadWithKomi) {
+          if (curData.blackToPlay) {
+            score = score + curData.getKomi();
+          } else {
+            score = -score + curData.getKomi();
+          }
         }
-        scoreOnStatic = score;
+        scoreLead = score;
         scoreStdev = Lizzie.leelaz.scoreStdev;
       } // +"目差:""复杂度:"
 
       text =
           text
-              + Lizzie.resourceBundle.getString("LizzieFrame.scoreLead")
-              + String.format(Locale.ENGLISH, "%.1f", scoreOnStatic);
+              + (Lizzie.config.showKataGoScoreLeadWithKomi
+                  ? Lizzie.resourceBundle.getString("LizzieFrame.scoreLeadWithKomi")
+                  : Lizzie.resourceBundle.getString("LizzieFrame.scoreLeadJustScore"))
+              + String.format(Locale.ENGLISH, "%.1f", scoreLead);
       if (EngineManager.isEngineGame && !Lizzie.leelaz.isSai)
         text =
             text
@@ -7296,10 +7300,10 @@ public class LizzieFrame extends JFrame {
           double scoreC = Lizzie.board.getHistory().getCurrentHistoryNode().getData().scoreMean;
           if (scoreC != 0) {
             if (Lizzie.board.getHistory().isBlacksTurn()) {
-              if (Lizzie.config.showKataGoBoardScoreMean)
+              if (Lizzie.config.showKataGoScoreLeadWithKomi)
                 scoreC = scoreC + Lizzie.board.getHistory().getGameInfo().getKomi();
             } else {
-              if (Lizzie.config.showKataGoBoardScoreMean)
+              if (Lizzie.config.showKataGoScoreLeadWithKomi)
                 scoreC = -scoreC + Lizzie.board.getHistory().getGameInfo().getKomi();
               else scoreC = -scoreC;
             }
@@ -10314,11 +10318,11 @@ public class LizzieFrame extends JFrame {
             double score = data.scoreMean;
             if (EngineManager.isEngineGame && EngineManager.engineGameInfo.isGenmove) {
               if (!Lizzie.board.getHistory().isBlacksTurn()) {
-                if (Lizzie.config.showKataGoBoardScoreMean) {
+                if (Lizzie.config.showKataGoScoreLeadWithKomi) {
                   score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
                 }
               } else {
-                if (Lizzie.config.showKataGoBoardScoreMean) {
+                if (Lizzie.config.showKataGoScoreLeadWithKomi) {
                   score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
                 }
                 if (Lizzie.config.winrateAlwaysBlack) {
@@ -10327,11 +10331,11 @@ public class LizzieFrame extends JFrame {
               }
             } else {
               if (Lizzie.board.getHistory().isBlacksTurn()) {
-                if (Lizzie.config.showKataGoBoardScoreMean) {
+                if (Lizzie.config.showKataGoScoreLeadWithKomi) {
                   score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
                 }
               } else {
-                if (Lizzie.config.showKataGoBoardScoreMean) {
+                if (Lizzie.config.showKataGoScoreLeadWithKomi) {
                   score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
                 }
                 if (Lizzie.config.winrateAlwaysBlack) {
@@ -12469,7 +12473,7 @@ public class LizzieFrame extends JFrame {
     SetDelayShowCandidates setDelayShowCandidates = new SetDelayShowCandidates(owner);
     setDelayShowCandidates.setVisible(true);
   }
-  
+
   private void openInVisibleFrame() {
     String javaReadBoardName = "InVisibleFrame.jar";
     File javaReadBoard = new File("clockHelper" + File.separator + "InVisibleFrame.jar");
