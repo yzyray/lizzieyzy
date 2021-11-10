@@ -795,12 +795,12 @@ public class AnalysisFrame extends JFrame {
                       curMove.playouts = next.getData().getPlayouts();
                       curMove.coordinate = Board.convertCoordinatesToName(coords[0], coords[1]);
                       curMove.winrate = 100.0 - next.getData().winrate;
-                      curMove.policy = 0;
+                      curMove.policy = move.policy;
                       curMove.scoreMean = -next.getData().scoreMean;
-                      curMove.scoreStdev = 0;
+                      curMove.scoreStdev = next.getData().scoreStdev;
                       curMove.order = move.order;
                       curMove.isNextMove = true;
-                      curMove.lcb = 0;
+                      curMove.lcb = -10000;
                       curMove.bestWinrate = data2.get(0).winrate;
                       curMove.bestScoreMean = data2.get(0).scoreMean;
                       data2.add(0, curMove);
@@ -816,12 +816,12 @@ public class AnalysisFrame extends JFrame {
                       curMove.playouts = next.getData().getPlayouts2();
                       curMove.coordinate = Board.convertCoordinatesToName(coords[0], coords[1]);
                       curMove.winrate = 100.0 - next.getData().winrate2;
-                      curMove.policy = 0;
+                      curMove.policy = move.policy;
                       curMove.scoreMean = -next.getData().scoreMean2;
-                      curMove.scoreStdev = 0;
+                      curMove.scoreStdev = next.getData().scoreStdev2;
                       curMove.order = move.order;
                       curMove.isNextMove = true;
-                      curMove.lcb = 0;
+                      curMove.lcb = -10000;
                       curMove.bestWinrate = data2.get(0).winrate;
                       curMove.bestScoreMean = data2.get(0).scoreMean;
                       data2.add(0, curMove);
@@ -854,12 +854,12 @@ public class AnalysisFrame extends JFrame {
                 curMove.playouts = 0;
                 curMove.coordinate = Board.convertCoordinatesToName(coords[0], coords[1]);
                 curMove.winrate = 100.0 - next.getData().winrate;
-                curMove.policy = 0;
+                curMove.policy = -10000;
                 curMove.scoreMean = -next.getData().scoreMean;
-                curMove.scoreStdev = 0;
+                curMove.scoreStdev = next.getData().scoreStdev;
                 curMove.order = -100;
                 curMove.isNextMove = true;
-                curMove.lcb = 0;
+                curMove.lcb = -10000;
                 curMove.bestWinrate = data2.get(0).winrate;
                 curMove.bestScoreMean = data2.get(0).scoreMean;
                 data2.add(0, curMove);
@@ -870,12 +870,12 @@ public class AnalysisFrame extends JFrame {
                 curMove.playouts = 0;
                 curMove.coordinate = Board.convertCoordinatesToName(coords[0], coords[1]);
                 curMove.winrate = 100.0 - next.getData().winrate2;
-                curMove.policy = 0;
+                curMove.policy = -10000;
                 curMove.scoreMean = -next.getData().scoreMean2;
-                curMove.scoreStdev = 0;
+                curMove.scoreStdev = next.getData().scoreStdev2;
                 curMove.order = -100;
                 curMove.isNextMove = true;
-                curMove.lcb = 0;
+                curMove.lcb = -10000;
                 curMove.bestWinrate = data2.get(0).winrate;
                 curMove.bestScoreMean = data2.get(0).scoreMean;
                 data2.add(0, curMove);
@@ -971,6 +971,7 @@ public class AnalysisFrame extends JFrame {
             // else
             return data.coordinate;
           case 2:
+            if (data.isNextMove && data.lcb < -1000) return "--";
             return String.format(Locale.ENGLISH, "%.1f", data.lcb);
           case 3:
             if (data.isNextMove) {
@@ -991,27 +992,28 @@ public class AnalysisFrame extends JFrame {
             return String.format(
                 Locale.ENGLISH, "%.1f", (double) data.playouts * 100 / totalPlayouts);
           case 6:
+            if (data.isNextMove && data.policy < -1000) return "--";
             return String.format(Locale.ENGLISH, "%.2f", data.policy);
           case 7:
             double score = data.scoreMean;
             if (EngineManager.isEngineGame && EngineManager.engineGameInfo.isGenmove) {
               if (!Lizzie.board.getHistory().isBlacksTurn()) {
                 if (Lizzie.config.showKataGoScoreLeadWithKomi) {
-                  score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
+                  score = score + Lizzie.board.getData().getKomi();
                 }
               } else {
                 if (Lizzie.config.showKataGoScoreLeadWithKomi) {
-                  score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
+                  score = score - Lizzie.board.getData().getKomi();
                 }
               }
             } else {
               if (Lizzie.board.getHistory().isBlacksTurn()) {
                 if (Lizzie.config.showKataGoScoreLeadWithKomi) {
-                  score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
+                  score = score + Lizzie.board.getData().getKomi();
                 }
               } else {
                 if (Lizzie.config.showKataGoScoreLeadWithKomi) {
-                  score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
+                  score = score - Lizzie.board.getData().getKomi();
                 }
               }
             }

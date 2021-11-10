@@ -1100,8 +1100,11 @@ public class Leelaz {
           }
           if (!EngineManager.isEngineGame || (!played && this == Lizzie.leelaz))
             Lizzie.frame.refresh(1);
-          // don't follow the maxAnalyzeTime rule if we are in analysis mode
-          if ((!EngineManager.isEngineGame && !Lizzie.config.isAutoAna)) {
+          // don't follow the maxAnalyzeTime rule if we are in game
+          if (!Lizzie.frame.isPlayingAgainstLeelaz
+              && Lizzie.frame.isAnaPlayingAgainstLeelaz
+              && !EngineManager.isEngineGame
+              && !Lizzie.config.isAutoAna) {
             if (!outOfPlayoutsLimit
                 && ((Lizzie.config.limitPlayout
                         && getBestMovesPlayouts() > Lizzie.config.limitPlayouts)

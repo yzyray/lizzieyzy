@@ -10198,12 +10198,9 @@ public class LizzieFrame extends JFrame {
                         curMove.playouts = next.getData().getPlayouts();
                         curMove.coordinate = Board.convertCoordinatesToName(coords[0], coords[1]);
                         curMove.winrate = 100.0 - next.getData().winrate;
-                        curMove.policy = 0;
                         curMove.scoreMean = -next.getData().scoreMean;
-                        curMove.scoreStdev = 0;
                         curMove.order = move.order;
                         curMove.isNextMove = true;
-                        curMove.lcb = 0;
                         curMove.bestWinrate = data2.get(0).winrate;
                         curMove.bestScoreMean = data2.get(0).scoreMean;
                         data2.add(0, curMove);
@@ -10217,10 +10214,8 @@ public class LizzieFrame extends JFrame {
                     curMove.winrate = move.winrate;
                     curMove.policy = move.policy;
                     curMove.scoreMean = move.scoreMean;
-                    curMove.scoreStdev = move.scoreStdev;
                     curMove.order = move.order;
                     curMove.isNextMove = true;
-                    curMove.lcb = move.lcb;
                     curMove.bestWinrate = data2.get(0).winrate;
                     curMove.bestScoreMean = data2.get(0).scoreMean;
                     data2.add(0, curMove);
