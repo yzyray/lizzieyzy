@@ -12476,6 +12476,12 @@ public class LizzieFrame extends JFrame {
     ContributeEngine contributeEngine = new ContributeEngine();
   }
 
+  public void testContibuteFrame() {
+    // TODO Auto-generated method stub
+    ContributeSettings contributeSettings = new ContributeSettings(this);
+    ContributeView contributeView = new ContributeView(this);
+  }
+
   private void openInVisibleFrame() {
     String javaReadBoardName = "InVisibleFrame.jar";
     File javaReadBoard = new File("clockHelper" + File.separator + "InVisibleFrame.jar");
