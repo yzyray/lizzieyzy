@@ -645,8 +645,8 @@ public class FloatBoard extends JDialog {
   }
 
   public boolean isMouseOver(int x, int y) {
-    if (!LizzieFrame.toolbar.chkShowBlack.isSelected()
-        && !LizzieFrame.toolbar.chkShowBlack.isSelected()) {
+    if ((Lizzie.board.getHistory().isBlacksTurn() && !Lizzie.config.showBlackCandidates)
+        || (!Lizzie.board.getHistory().isBlacksTurn() && !Lizzie.config.showWhiteCandidates)) {
       return false;
     }
     if (Lizzie.config.showSuggestionVariations)
@@ -757,7 +757,10 @@ public class FloatBoard extends JDialog {
     this.boardType = boardType;
     if (Lizzie.leelaz.isPondering()) btnStopGo.setIcon(toStop);
     else btnStopGo.setIcon(toPlay);
-    if (!isVisible()) setVisible(true);
+    if (!isVisible()) {
+      setVisible(true);
+      if (hideSuggestion) toggleHide();
+    }
   }
 
   public void setBoardType() {

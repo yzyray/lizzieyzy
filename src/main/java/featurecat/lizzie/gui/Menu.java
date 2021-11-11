@@ -94,8 +94,8 @@ public class Menu extends JMenuBar {
   JFontButton clearSelect;
   Separator forceSep;
 
-  JFontCheckBox chkShowBlack;
-  JFontCheckBox chkShowWhite;
+  private JFontCheckBox chkShowBlack;
+  private JFontCheckBox chkShowWhite;
   JFontCheckBox chkAnalyzeBlack;
   JFontCheckBox chkAnalyzeWhite;
   JFontCheckBox chkShowPlayouts;
@@ -8414,8 +8414,8 @@ public class Menu extends JMenuBar {
           new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-              // TBD
-              LizzieFrame.toolbar.chkShowBlack.setSelected(chkShowBlack.isSelected());
+              LizzieFrame.toolbar.setChkShowBlack(chkShowBlack.isSelected());
+              Lizzie.config.showBlackCandidates = chkShowBlack.isSelected();
               Lizzie.frame.refresh();
             }
           });
@@ -8432,8 +8432,8 @@ public class Menu extends JMenuBar {
           new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-              // TBD
-              LizzieFrame.toolbar.chkShowWhite.setSelected(chkShowWhite.isSelected());
+              LizzieFrame.toolbar.setChkShowWhite(chkShowWhite.isSelected());
+              Lizzie.config.showWhiteCandidates = chkShowWhite.isSelected();
               Lizzie.frame.refresh();
             }
           });
@@ -8564,8 +8564,8 @@ public class Menu extends JMenuBar {
       JFontLabel lblShowCandidate =
           new JFontLabel(resourceBundle.getString("Menu.lblShowCandidate"));
 
-      chkShowBlack.setSelected(LizzieFrame.toolbar.chkShowBlack.isSelected());
-      chkShowWhite.setSelected(LizzieFrame.toolbar.chkShowWhite.isSelected());
+      chkShowBlack.setSelected(Lizzie.config.showBlackCandidates);
+      chkShowWhite.setSelected(Lizzie.config.showWhiteCandidates);
 
       if (Lizzie.config.showWinrateInSuggestion) chkShowWinrate.setSelected(true);
       if (Lizzie.config.showPlayoutsInSuggestion) chkShowPlayouts.setSelected(true);
@@ -8744,7 +8744,8 @@ public class Menu extends JMenuBar {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                       // TBD
-                      LizzieFrame.toolbar.chkShowBlack.setSelected(chkShowBlack.isSelected());
+                      LizzieFrame.toolbar.setChkShowBlack(chkShowBlack.isSelected());
+                      Lizzie.config.showBlackCandidates = chkShowBlack.isSelected();
                       Lizzie.frame.refresh();
                     }
                   });
@@ -8756,7 +8757,8 @@ public class Menu extends JMenuBar {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                       // TBD
-                      LizzieFrame.toolbar.chkShowWhite.setSelected(chkShowWhite.isSelected());
+                      LizzieFrame.toolbar.setChkShowWhite(chkShowWhite.isSelected());
+                      Lizzie.config.showWhiteCandidates = chkShowWhite.isSelected();
                       Lizzie.frame.refresh();
                     }
                   });
@@ -8860,8 +8862,8 @@ public class Menu extends JMenuBar {
               JFontLabel lblShowCandidate =
                   new JFontLabel(resourceBundle.getString("Menu.lblShowCandidate"));
 
-              chkShowBlack.setSelected(LizzieFrame.toolbar.chkShowBlack.isSelected());
-              chkShowWhite.setSelected(LizzieFrame.toolbar.chkShowWhite.isSelected());
+              chkShowBlack.setSelected(Lizzie.config.showBlackCandidates);
+              chkShowWhite.setSelected(Lizzie.config.showWhiteCandidates);
 
               if (Lizzie.config.showWinrateInSuggestion) chkShowWinrate.setSelected(true);
               if (Lizzie.config.showPlayoutsInSuggestion) chkShowPlayouts.setSelected(true);
@@ -9543,6 +9545,16 @@ public class Menu extends JMenuBar {
 
   private boolean isEngineGame() {
     return Lizzie.engineManager != null && Lizzie.engineManager.isEngineGame();
+  }
+
+  public void setChkShowBlack(boolean show) {
+    if (chkShowBlack != null) chkShowBlack.setSelected(show);
+    Lizzie.config.showBlackCandidates = show;
+  }
+
+  public void setChkShowWhite(boolean show) {
+    if (chkShowWhite != null) chkShowWhite.setSelected(show);
+    Lizzie.config.showWhiteCandidates = show;
   }
 
   public void setBtnRankMark() {

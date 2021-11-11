@@ -803,7 +803,7 @@ public class NewGameDialog extends JDialog {
         Utils.showMsg(resourceBundle.getString("NewAnaGameDialog.noEngineHint"));
         return;
       }
-      // if (!checkContinuePlay.isSelected()) Lizzie.board.clear(false);
+      Lizzie.frame.isPlayingAgainstLeelaz = true;
       if (EngineManager.currentEngineNo != engine.getSelectedIndex())
         Lizzie.engineManager.switchEngine(engine.getSelectedIndex(), true);
       double komi = 7.5;
@@ -875,12 +875,10 @@ public class NewGameDialog extends JDialog {
       Lizzie.config.uiConfig.put("my-save-time", Lizzie.config.mySaveTime);
       Lizzie.config.uiConfig.put("my-byoyomo-seconds", Lizzie.config.myByoyomiSeconds);
       Lizzie.config.uiConfig.put("my-byoyomo-times", Lizzie.config.myByoyomiTimes);
-      LizzieFrame.toolbar.chkShowBlack.setSelected(chkShowBlack.isSelected());
-      LizzieFrame.toolbar.chkShowWhite.setSelected(chkShowWhite.isSelected());
-      if (Lizzie.config.showDoubleMenuVar) {
-        LizzieFrame.menu.chkShowBlack.setSelected(chkShowBlack.isSelected());
-        LizzieFrame.menu.chkShowWhite.setSelected(chkShowWhite.isSelected());
-      }
+      LizzieFrame.toolbar.setChkShowBlack(chkShowBlack.isSelected());
+      LizzieFrame.toolbar.setChkShowWhite(chkShowWhite.isSelected());
+      LizzieFrame.menu.setChkShowBlack(chkShowBlack.isSelected());
+      LizzieFrame.menu.setChkShowWhite(chkShowWhite.isSelected());
       // close window
       cancelled = false;
       setVisible(false);

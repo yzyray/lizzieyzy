@@ -603,6 +603,9 @@ public class Config {
   public boolean delayShowCandidates = false;
   public double delayCandidatesSeconds = 10;
 
+  public boolean showBlackCandidates = true;
+  public boolean showWhiteCandidates = true;
+
   private JSONObject loadAndMergeSaveBoardConfig(
       JSONObject defaultCfg, String fileName, boolean needValidation) throws IOException {
     File file = new File(fileName);

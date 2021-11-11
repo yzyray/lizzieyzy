@@ -223,10 +223,8 @@ public class BoardRenderer {
         }
         // timer.lap("movenumbers");
         if (Lizzie.config.showBestMovesNow()) {
-          if ((Lizzie.board.getHistory().isBlacksTurn()
-                  && LizzieFrame.toolbar.chkShowBlack.isSelected())
-              || (!Lizzie.board.getHistory().isBlacksTurn()
-                  && LizzieFrame.toolbar.chkShowWhite.isSelected())) {
+          if ((Lizzie.board.getHistory().isBlacksTurn() && Lizzie.config.showBlackCandidates)
+              || (!Lizzie.board.getHistory().isBlacksTurn() && Lizzie.config.showWhiteCandidates)) {
             if (!Lizzie.frame.isShowingHeatmap && !Lizzie.frame.isShowingPolicy) {
               drawUnimportantSuggCount = drawUnimportantSuggCount + 1;
               if (drawUnimportantSuggCount > 100 / getInterval()) {
@@ -3161,9 +3159,8 @@ public class BoardRenderer {
   private boolean notEnoughSuggestionAt(int coordX, int coordY, List<MoveData> bestMoves) {
     // TODO Auto-generated method stub
     if (bestMoves.isEmpty()) return true;
-    if ((Lizzie.board.getHistory().isBlacksTurn() && LizzieFrame.toolbar.chkShowBlack.isSelected())
-        || (!Lizzie.board.getHistory().isBlacksTurn()
-            && LizzieFrame.toolbar.chkShowWhite.isSelected())) {
+    if ((Lizzie.board.getHistory().isBlacksTurn() && Lizzie.config.showBlackCandidates)
+        || (!Lizzie.board.getHistory().isBlacksTurn() && Lizzie.config.showWhiteCandidates)) {
       String coordsName = Board.convertCoordinatesToName(coordX, coordY);
       for (MoveData move : bestMoves) {
         if (move.coordinate.equals(coordsName)) {

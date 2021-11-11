@@ -137,10 +137,8 @@ public class FloatBoardRenderer {
     g.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
     if (!isShowingRawBoard()) {
       if (Lizzie.config.showBestMovesNow()) {
-        if ((Lizzie.board.getHistory().isBlacksTurn()
-                && LizzieFrame.toolbar.chkShowBlack.isSelected())
-            || (!Lizzie.board.getHistory().isBlacksTurn()
-                && LizzieFrame.toolbar.chkShowWhite.isSelected())) {
+        if ((Lizzie.board.getHistory().isBlacksTurn() && Lizzie.config.showBlackCandidates)
+            || (!Lizzie.board.getHistory().isBlacksTurn() && Lizzie.config.showWhiteCandidates)) {
           if (!Lizzie.frame.isShowingHeatmap && !Lizzie.frame.isShowingPolicy) {
             drawUnimportantSuggCount = drawUnimportantSuggCount + 1;
             if (drawUnimportantSuggCount > 100 / getInterval()) {
@@ -730,9 +728,9 @@ public class FloatBoardRenderer {
       preEstimateArray =
           Lizzie.board.getHistory().getMainEnd().previous().get().getData().estimateArray;
     } else preEstimateArray = null;
-    if ((Lizzie.board.getHistory().isBlacksTurn() && !LizzieFrame.toolbar.chkShowBlack.isSelected())
-        || (!Lizzie.board.getHistory().isBlacksTurn()
-            && !LizzieFrame.toolbar.chkShowWhite.isSelected())) return;
+    if ((Lizzie.board.getHistory().isBlacksTurn() && !Lizzie.config.showBlackCandidates)
+        || (!Lizzie.board.getHistory().isBlacksTurn() && !Lizzie.config.showWhiteCandidates))
+      return;
     variationOpt = Optional.empty();
 
     if ((isShowingRawBoard() || !Lizzie.config.showBranchNow())) {

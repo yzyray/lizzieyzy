@@ -150,7 +150,9 @@ public class SubBoardRenderer {
     if ((!showHeat && !Lizzie.config.subBoardRaw)
         || (Lizzie.config.isFourSubMode() && !showHeat && this != Lizzie.frame.subBoardRenderer4)) {
       drawPlay(g);
-      if (!isMouseOver || statChanged || wheeled) drawBranch();
+      if (!maybeCleanBranch()) {
+        if (!isMouseOver || statChanged || wheeled) drawBranch();
+      }
       if (wheeled) wheeled = false;
     }
     if (!isMouseOver) drawStones();
@@ -160,10 +162,21 @@ public class SubBoardRenderer {
     drawEstimate();
     renderImages(g);
     if (Lizzie.frame.isInPlayMode()) return;
-    if (!showHeat) {
+    if (showingBranch && !showHeat) {
       drawMoveNumbers(g);
       return;
     }
+  }
+
+  private boolean maybeCleanBranch() {
+    // TODO Auto-generated method stub
+    if ((Lizzie.board.getHistory().isBlacksTurn() && !Lizzie.config.showBlackCandidates)
+        || (!Lizzie.board.getHistory().isBlacksTurn() && !Lizzie.config.showWhiteCandidates)) {
+      clearBranch();
+      showingBranch = false;
+      return true;
+    }
+    return false;
   }
 
   private boolean isShowingEstimate = false;

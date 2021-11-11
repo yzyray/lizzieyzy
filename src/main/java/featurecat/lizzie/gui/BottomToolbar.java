@@ -165,8 +165,8 @@ public class BottomToolbar extends JPanel {
   public JCheckBox chkAnaBlack;
   public JCheckBox chkAnaWhite;
 
-  public JCheckBox chkShowBlack;
-  public JCheckBox chkShowWhite;
+  private JCheckBox chkShowBlack;
+  private JCheckBox chkShowWhite;
 
   public JCheckBox chkAutoMain;
   public JCheckBox chkAutoSub;
@@ -1359,7 +1359,7 @@ public class BottomToolbar extends JPanel {
             // TBD
             setTxtUnfocuse();
             if (Lizzie.config.showDoubleMenu) {
-              LizzieFrame.menu.chkShowBlack.setSelected(chkShowBlack.isSelected());
+              LizzieFrame.menu.setChkShowBlack(chkShowBlack.isSelected());
             }
           }
         });
@@ -1370,7 +1370,7 @@ public class BottomToolbar extends JPanel {
             // TBD
             setTxtUnfocuse();
             if (Lizzie.config.showDoubleMenu) {
-              LizzieFrame.menu.chkShowWhite.setSelected(chkShowWhite.isSelected());
+              LizzieFrame.menu.setChkShowWhite(chkShowWhite.isSelected());
             }
           }
         });
@@ -4601,6 +4601,16 @@ public class BottomToolbar extends JPanel {
     //          }
     //        };
     //    share.addActionListener(shareListener);
+  }
+
+  public void setChkShowBlack(boolean show) {
+    if (chkShowBlack != null) chkShowBlack.setSelected(show);
+    Lizzie.config.showBlackCandidates = show;
+  }
+
+  public void setChkShowWhite(boolean show) {
+    if (chkShowWhite != null) chkShowWhite.setSelected(show);
+    Lizzie.config.showWhiteCandidates = show;
   }
 
   //  public void setFontSize(int fontSize) {

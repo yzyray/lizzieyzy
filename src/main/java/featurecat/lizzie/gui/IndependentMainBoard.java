@@ -1166,8 +1166,7 @@ public class IndependentMainBoard extends JFrame {
   }
 
   public boolean isMouseOver(int x, int y) {
-    if (!LizzieFrame.toolbar.chkShowBlack.isSelected()
-        && !LizzieFrame.toolbar.chkShowBlack.isSelected()) {
+    if (!Lizzie.config.showBlackCandidates && !Lizzie.config.showWhiteCandidates) {
       return false;
     }
     if (Lizzie.config.showSuggestionVariations)

@@ -425,8 +425,8 @@ public class ReadBoard {
           LizzieFrame.toolbar.chkAutoPlayBlack.setSelected(true);
           LizzieFrame.toolbar.chkAutoPlayWhite.setSelected(false);
           LizzieFrame.toolbar.chkAutoPlay.setSelected(true);
-          LizzieFrame.toolbar.chkShowBlack.setSelected(true);
-          LizzieFrame.toolbar.chkShowWhite.setSelected(true);
+          LizzieFrame.toolbar.setChkShowBlack(true);
+          LizzieFrame.toolbar.setChkShowWhite(true);
           Lizzie.config.UsePureNetInGame = false;
           Lizzie.frame.isAnaPlayingAgainstLeelaz = true;
           LizzieFrame.toolbar.isAutoPlay = true;
@@ -435,8 +435,8 @@ public class ReadBoard {
           LizzieFrame.toolbar.chkAutoPlayBlack.setSelected(false);
           LizzieFrame.toolbar.chkAutoPlayWhite.setSelected(true);
           LizzieFrame.toolbar.chkAutoPlay.setSelected(true);
-          LizzieFrame.toolbar.chkShowBlack.setSelected(true);
-          LizzieFrame.toolbar.chkShowWhite.setSelected(true);
+          LizzieFrame.toolbar.setChkShowBlack(true);
+          LizzieFrame.toolbar.setChkShowWhite(true);
           Lizzie.config.UsePureNetInGame = false;
           Lizzie.frame.isAnaPlayingAgainstLeelaz = true;
           LizzieFrame.toolbar.isAutoPlay = true;

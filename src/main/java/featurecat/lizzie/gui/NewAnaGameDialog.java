@@ -735,6 +735,7 @@ public class NewAnaGameDialog extends JDialog {
 
   public void apply() {
     try {
+      Lizzie.frame.isAnaPlayingAgainstLeelaz = true;
       if (engine.getSelectedIndex() == -1) {
         Utils.showMsg(resourceBundle.getString("NewAnaGameDialog.noEngineHint"));
         return;
@@ -756,12 +757,10 @@ public class NewAnaGameDialog extends JDialog {
 
       Lizzie.config.leelazConfig.put("play-ponder", Lizzie.config.playponder);
 
-      LizzieFrame.toolbar.chkShowBlack.setSelected(chkShowBlack.isSelected());
-      LizzieFrame.toolbar.chkShowWhite.setSelected(chkShowWhite.isSelected());
-      if (Lizzie.config.showDoubleMenuVar) {
-        LizzieFrame.menu.chkShowBlack.setSelected(chkShowBlack.isSelected());
-        LizzieFrame.menu.chkShowWhite.setSelected(chkShowWhite.isSelected());
-      }
+      LizzieFrame.toolbar.setChkShowBlack(chkShowBlack.isSelected());
+      LizzieFrame.toolbar.setChkShowWhite(chkShowWhite.isSelected());
+      LizzieFrame.menu.setChkShowBlack(chkShowBlack.isSelected());
+      LizzieFrame.menu.setChkShowWhite(chkShowWhite.isSelected());
       if (playerIsBlack()) {
         Lizzie.frame.playerIsBlack = true;
         LizzieFrame.toolbar.chkAutoPlayBlack.setSelected(false);

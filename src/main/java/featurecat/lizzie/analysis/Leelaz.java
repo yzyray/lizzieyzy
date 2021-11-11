@@ -1102,7 +1102,7 @@ public class Leelaz {
             Lizzie.frame.refresh(1);
           // don't follow the maxAnalyzeTime rule if we are in game
           if (!Lizzie.frame.isPlayingAgainstLeelaz
-              && Lizzie.frame.isAnaPlayingAgainstLeelaz
+              && !Lizzie.frame.isAnaPlayingAgainstLeelaz
               && !EngineManager.isEngineGame
               && !Lizzie.config.isAutoAna) {
             if (!outOfPlayoutsLimit
@@ -3047,6 +3047,9 @@ public class Leelaz {
     if (noAnalyze) return;
     isPondering = true;
     underPonder = false;
+    if (stopByPlayouts) outOfPlayoutsLimit = true;
+    stopByPlayouts = false;
+    stopByLimit = false;
     startPonderTime = System.currentTimeMillis();
     if (EngineManager.isEngineGame) pkMoveStartTime = startPonderTime;
     if (!Lizzie.config.playponder && Lizzie.frame.isPlayingAgainstLeelaz) {
@@ -3148,9 +3151,6 @@ public class Leelaz {
     }
     isPondering = !isPondering;
     // if(isPondering)
-    if (stopByPlayouts) outOfPlayoutsLimit = true;
-    stopByPlayouts = false;
-    stopByLimit = false;
     if (Lizzie.frame.isShowingHeatmap) {
       Lizzie.frame.isShowingHeatmap = false;
       ponder();
@@ -3165,7 +3165,6 @@ public class Leelaz {
   public void clearPonderLimit() {
     outOfPlayoutsLimit = false;
     stopByPlayouts = false;
-    stopByLimit = false;
   }
 
   /** End the process */

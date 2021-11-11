@@ -454,6 +454,7 @@ public class BoardHistoryList {
         // don't erase the
         // redo's
         this.next();
+        Lizzie.board.clearAfterMove();
         //   Lizzie.board.modifyEnd();
         return;
       }

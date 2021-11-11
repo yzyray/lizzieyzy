@@ -2964,6 +2964,7 @@ public class LizzieFrame extends JFrame {
     newGameDialog.dispose();
     if (newGameDialog.isCancelled()) {
       if (isPondering) Lizzie.leelaz.togglePonder();
+      Lizzie.frame.isPlayingAgainstLeelaz = false;
       return;
     }
     Lizzie.frame.isAnaPlayingAgainstLeelaz = false;
@@ -2974,7 +2975,6 @@ public class LizzieFrame extends JFrame {
     Lizzie.board.getHistory().setGameInfo(gameInfo);
     Lizzie.leelaz.komi(gameInfo.getKomi());
     Lizzie.frame.playerIsBlack = playerIsBlack;
-    Lizzie.frame.isPlayingAgainstLeelaz = true;
     // Lizzie.leelaz.isSettingHandicap=true;
     boolean isHandicapGame = gameInfo.getHandicap() != 0;
     Lizzie.frame.allowPlaceStone = false;
@@ -6753,8 +6753,8 @@ public class LizzieFrame extends JFrame {
   //  }
 
   public boolean isMouseOver(int x, int y) {
-    if (!LizzieFrame.toolbar.chkShowBlack.isSelected()
-        && !LizzieFrame.toolbar.chkShowBlack.isSelected()) {
+    if ((Lizzie.board.getHistory().isBlacksTurn() && !Lizzie.config.showBlackCandidates)
+        || (!Lizzie.board.getHistory().isBlacksTurn() && !Lizzie.config.showWhiteCandidates)) {
       return false;
     }
     if (Lizzie.config.showSuggestionVariations)
@@ -6763,8 +6763,8 @@ public class LizzieFrame extends JFrame {
   }
 
   public boolean isMouseOverIndependMainBoard(int x, int y) {
-    if (!LizzieFrame.toolbar.chkShowBlack.isSelected()
-        && !LizzieFrame.toolbar.chkShowBlack.isSelected()) {
+    if ((Lizzie.board.getHistory().isBlacksTurn() && !Lizzie.config.showBlackCandidates)
+        || (!Lizzie.board.getHistory().isBlacksTurn() && !Lizzie.config.showWhiteCandidates)) {
       return false;
     }
     if (Lizzie.config.showSuggestionVariations)
@@ -6775,8 +6775,7 @@ public class LizzieFrame extends JFrame {
 
   public boolean isMouseOverFloatBoard(int x, int y) {
     if (floatBoard == null) return false;
-    if (!LizzieFrame.toolbar.chkShowBlack.isSelected()
-        && !LizzieFrame.toolbar.chkShowBlack.isSelected()) {
+    if (!Lizzie.config.showBlackCandidates && !Lizzie.config.showWhiteCandidates) {
       return false;
     }
     if (Lizzie.config.showSuggestionVariations)
@@ -9273,9 +9272,9 @@ public class LizzieFrame extends JFrame {
       newgame.dispose();
       if (newgame.isCancelled()) {
         if (isPondering) Lizzie.leelaz.togglePonder();
+        Lizzie.frame.isAnaPlayingAgainstLeelaz = false;
         return;
       }
-      Lizzie.frame.isAnaPlayingAgainstLeelaz = true;
       LizzieFrame.toolbar.isAutoPlay = true;
       Lizzie.leelaz.isGamePaused = false;
     }
@@ -9308,19 +9307,15 @@ public class LizzieFrame extends JFrame {
         }
       }
       if (!Lizzie.frame.bothSync) {
-        toolbar.chkShowBlack.setSelected(false);
-        toolbar.chkShowWhite.setSelected(false);
-        if (Lizzie.config.showDoubleMenu) {
-          LizzieFrame.menu.chkShowBlack.setSelected(false);
-          LizzieFrame.menu.chkShowWhite.setSelected(false);
-        }
+        toolbar.setChkShowBlack(true);
+        toolbar.setChkShowWhite(true);
+        menu.setChkShowBlack(false);
+        menu.setChkShowWhite(false);
       } else {
-        toolbar.chkShowBlack.setSelected(true);
-        toolbar.chkShowWhite.setSelected(true);
-        if (Lizzie.config.showDoubleMenu) {
-          LizzieFrame.menu.chkShowBlack.setSelected(true);
-          LizzieFrame.menu.chkShowWhite.setSelected(true);
-        }
+        toolbar.setChkShowBlack(true);
+        toolbar.setChkShowWhite(true);
+        menu.setChkShowBlack(true);
+        menu.setChkShowWhite(true);
       }
       Lizzie.frame.updateTitle();
       Lizzie.frame.refresh();
@@ -9353,19 +9348,15 @@ public class LizzieFrame extends JFrame {
         }
       }
       if (!Lizzie.frame.bothSync) {
-        toolbar.chkShowBlack.setSelected(false);
-        toolbar.chkShowWhite.setSelected(false);
-        if (Lizzie.config.showDoubleMenu) {
-          LizzieFrame.menu.chkShowBlack.setSelected(false);
-          LizzieFrame.menu.chkShowWhite.setSelected(false);
-        }
+        toolbar.setChkShowBlack(false);
+        toolbar.setChkShowWhite(false);
+        menu.setChkShowBlack(false);
+        menu.setChkShowWhite(false);
       } else {
-        toolbar.chkShowBlack.setSelected(true);
-        toolbar.chkShowWhite.setSelected(true);
-        if (Lizzie.config.showDoubleMenu) {
-          LizzieFrame.menu.chkShowBlack.setSelected(true);
-          LizzieFrame.menu.chkShowWhite.setSelected(true);
-        }
+        toolbar.setChkShowBlack(true);
+        toolbar.setChkShowWhite(true);
+        menu.setChkShowBlack(true);
+        menu.setChkShowWhite(true);
       }
       toolbar.chkAutoPlay.setSelected(true);
       isAnaPlayingAgainstLeelaz = true;
@@ -9875,12 +9866,10 @@ public class LizzieFrame extends JFrame {
       if (Lizzie.config.isDoubleEngineMode()) {
         boardRenderer2.removeblock();
       }
-      LizzieFrame.toolbar.chkShowBlack.setSelected(true);
-      LizzieFrame.toolbar.chkShowWhite.setSelected(true);
-      if (Lizzie.config.showDoubleMenu) {
-        LizzieFrame.menu.chkShowBlack.setSelected(true);
-        LizzieFrame.menu.chkShowWhite.setSelected(true);
-      }
+      toolbar.setChkShowBlack(true);
+      toolbar.setChkShowWhite(true);
+      menu.setChkShowBlack(true);
+      menu.setChkShowWhite(true);
     }
     if (Lizzie.frame.isAnaPlayingAgainstLeelaz) {
       stopTimer();
@@ -9897,12 +9886,10 @@ public class LizzieFrame extends JFrame {
       LizzieFrame.toolbar.isAutoPlay = false;
       LizzieFrame.toolbar.chkAutoPlayBlack.setSelected(false);
       LizzieFrame.toolbar.chkAutoPlayWhite.setSelected(false);
-      LizzieFrame.toolbar.chkShowBlack.setSelected(true);
-      LizzieFrame.toolbar.chkShowWhite.setSelected(true);
-      if (Lizzie.config.showDoubleMenu) {
-        LizzieFrame.menu.chkShowBlack.setSelected(true);
-        LizzieFrame.menu.chkShowWhite.setSelected(true);
-      }
+      toolbar.setChkShowBlack(true);
+      toolbar.setChkShowWhite(true);
+      menu.setChkShowBlack(true);
+      menu.setChkShowWhite(true);
       Lizzie.leelaz.anaGameResignCount = 0;
       Lizzie.leelaz.notPondering();
       boardRenderer.removeblock();
@@ -12058,14 +12045,12 @@ public class LizzieFrame extends JFrame {
   public void startTemporaryBoard() {
     if (isInTemporaryBoard) return;
     isInTemporaryBoard = true;
-    tempShowBlack = toolbar.chkShowBlack.isSelected();
-    tempShowWhite = toolbar.chkShowWhite.isSelected();
-    toolbar.chkShowBlack.setSelected(false);
-    toolbar.chkShowWhite.setSelected(false);
-    if (Lizzie.config.showDoubleMenu) {
-      menu.chkShowBlack.setSelected(false);
-      menu.chkShowWhite.setSelected(false);
-    }
+    tempShowBlack = Lizzie.config.showBlackCandidates;
+    tempShowWhite = Lizzie.config.showWhiteCandidates;
+    toolbar.setChkShowBlack(false);
+    toolbar.setChkShowWhite(false);
+    menu.setChkShowBlack(false);
+    menu.setChkShowWhite(false);
     boardRenderer.clearAfterMove();
     if (independentMainBoard != null) independentMainBoard.boardRenderer.clearAfterMove();
   }
@@ -12075,12 +12060,10 @@ public class LizzieFrame extends JFrame {
   }
 
   public void stopTemporaryBoard() {
-    toolbar.chkShowBlack.setSelected(tempShowBlack);
-    toolbar.chkShowWhite.setSelected(tempShowWhite);
-    if (Lizzie.config.showDoubleMenu) {
-      menu.chkShowBlack.setSelected(tempShowBlack);
-      menu.chkShowWhite.setSelected(tempShowWhite);
-    }
+    toolbar.setChkShowBlack(tempShowBlack);
+    toolbar.setChkShowWhite(tempShowWhite);
+    menu.setChkShowBlack(tempShowWhite);
+    menu.setChkShowWhite(tempShowWhite);
     isInTemporaryBoard = false;
   }
 
@@ -12421,46 +12404,37 @@ public class LizzieFrame extends JFrame {
   }
 
   public void hideCandidates() {
-    if (toolbar.chkShowBlack.isSelected() || toolbar.chkShowBlack.isSelected()) {
-      toolbar.chkShowBlack.setSelected(false);
-      toolbar.chkShowWhite.setSelected(false);
-      if (Lizzie.config.showDoubleMenu) {
-        menu.chkShowBlack.setSelected(false);
-        menu.chkShowWhite.setSelected(false);
-      }
+    if (Lizzie.config.showBlackCandidates || Lizzie.config.showWhiteCandidates) {
+      toolbar.setChkShowBlack(false);
+      toolbar.setChkShowWhite(false);
+      menu.setChkShowBlack(false);
+      menu.setChkShowWhite(false);
     }
   }
 
   public void toggleShowCandidates() {
     // TODO Auto-generated method stub
-    if (toolbar.chkShowBlack.isSelected() || toolbar.chkShowBlack.isSelected()) {
-      toolbar.chkShowBlack.setSelected(false);
-      toolbar.chkShowWhite.setSelected(false);
-      if (Lizzie.config.showDoubleMenu) {
-        menu.chkShowBlack.setSelected(false);
-        menu.chkShowWhite.setSelected(false);
-      }
+    if (Lizzie.config.showBlackCandidates || Lizzie.config.showWhiteCandidates) {
+      toolbar.setChkShowBlack(false);
+      toolbar.setChkShowWhite(false);
+      menu.setChkShowBlack(false);
+      menu.setChkShowWhite(false);
       boardRenderer.clearAfterMove();
       if (Lizzie.config.isDoubleEngineMode() && boardRenderer2 != null)
         boardRenderer2.clearAfterMove();
     } else {
-      toolbar.chkShowBlack.setSelected(true);
-      toolbar.chkShowWhite.setSelected(true);
-      if (Lizzie.config.showDoubleMenu) {
-        menu.chkShowBlack.setSelected(true);
-        menu.chkShowWhite.setSelected(true);
-      }
+      toolbar.setChkShowBlack(true);
+      toolbar.setChkShowWhite(true);
+      menu.setChkShowBlack(true);
+      menu.setChkShowWhite(true);
     }
   }
 
   public void showCandidates() {
-    // TODO Auto-generated method stub
-    toolbar.chkShowBlack.setSelected(true);
-    toolbar.chkShowWhite.setSelected(true);
-    if (Lizzie.config.showDoubleMenu) {
-      menu.chkShowBlack.setSelected(true);
-      menu.chkShowWhite.setSelected(true);
-    }
+    toolbar.setChkShowBlack(true);
+    toolbar.setChkShowWhite(true);
+    menu.setChkShowBlack(true);
+    menu.setChkShowWhite(true);
   }
 
   public void openCandidatesDelaySettings(Window owner) {

@@ -1591,6 +1591,7 @@ public class Board {
           EngineManager.isEmpty = isEmpty;
           Lizzie.leelaz.playMove(color, convertCoordinatesToName(x, y));
           // modifyEnd(false);
+          clearAfterMove();
           return;
           // Lizzie.leelaz.playMove(color, convertCoordinatesToName(x, y));
         }
