@@ -4086,19 +4086,25 @@ public class BottomToolbar extends JPanel {
               isAutoPlayMain = false;
               return;
             }
+            BoardHistoryNode curNode = Lizzie.board.getHistory().getCurrentHistoryNode();
             while (chkAutoMain.isSelected()) {
               try {
-                if (!Lizzie.board.nextMove(true) && Lizzie.config.continueWithBestMove) {
-                  BoardHistoryNode cur = Lizzie.board.getHistory().getCurrentHistoryNode();
-                  if (!cur.getData().lastMove.isPresent()
-                      && cur.previous().isPresent()
-                      && !cur.previous().get().getData().lastMove.isPresent()) break;
-                  Lizzie.frame.playBestMove();
-                } else break;
-                try {
-                  time = 1000 * Integer.parseInt(txtAutoMain.getText().replace(" ", ""));
-                } catch (NumberFormatException err) {
+                if (curNode == Lizzie.board.getHistory().getCurrentHistoryNode()) {
+                  if (!Lizzie.board.nextMove(true)) {
+                    if (Lizzie.config.continueWithBestMove) {
+                      BoardHistoryNode cur = Lizzie.board.getHistory().getCurrentHistoryNode();
+                      if (!cur.getData().lastMove.isPresent()
+                          && cur.previous().isPresent()
+                          && !cur.previous().get().getData().lastMove.isPresent()) break;
+                      Lizzie.frame.playBestMove();
+                    } else break;
+                    try {
+                      time = 1000 * Integer.parseInt(txtAutoMain.getText().replace(" ", ""));
+                    } catch (NumberFormatException err) {
+                    }
+                  }
                 }
+                curNode = Lizzie.board.getHistory().getCurrentHistoryNode();
                 Thread.sleep((int) time);
               } catch (InterruptedException e) {
                 e.printStackTrace();

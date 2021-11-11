@@ -24,11 +24,8 @@ public class AutoPlay extends JFrame {
   private JTextField txtDisplayEntireVariationFirst;
   /** Create the frame. */
   public AutoPlay() {
-    setBounds(100, 100, 491, 233);
-    Lizzie.setFrameSize(
-        this,
-        Lizzie.config.isFrameFontSmall() ? 270 : Lizzie.config.isFrameFontMiddle() ? 280 : 330,
-        175);
+    // setBounds(100, 100, 491, 233);
+    Lizzie.setFrameSize(this, 330, 205);
     setResizable(false);
     if (Lizzie.frame != null) setAlwaysOnTop(Lizzie.frame.isAlwaysOnTop());
     setTitle(resourceBundle.getString("AutoPlay.title")); // "设置自动播放");
