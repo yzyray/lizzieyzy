@@ -39,6 +39,7 @@ public class ScoreResult extends JDialog {
   private JButton btnRecalculate;
   private JButton btnClose;
   private Color backColor = new Color(210, 210, 210);
+  private JButton confirmResult;
 
   public ScoreResult(Window owner) {
     super(owner);
@@ -140,12 +141,12 @@ public class ScoreResult extends JDialog {
     buttonBar.setBorder(new EmptyBorder(5, 0, 0, 0));
     btnRecalculate = new JFontButton(Lizzie.resourceBundle.getString("ScoreResult.btnRecalculate"));
     btnRecalculate.setFocusable(false);
-    GridBagConstraints gbc_button = new GridBagConstraints();
-    gbc_button.anchor = GridBagConstraints.EAST;
-    gbc_button.insets = new Insets(0, 0, 0, 0);
-    gbc_button.gridx = 0;
-    gbc_button.gridy = 0;
-    buttonBar.add(btnRecalculate, gbc_button);
+    GridBagConstraints gbc_btnRecalculate = new GridBagConstraints();
+    gbc_btnRecalculate.anchor = GridBagConstraints.EAST;
+    gbc_btnRecalculate.insets = new Insets(0, 0, 0, 5);
+    gbc_btnRecalculate.gridx = 0;
+    gbc_btnRecalculate.gridy = 0;
+    buttonBar.add(btnRecalculate, gbc_btnRecalculate);
     btnRecalculate.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
@@ -156,12 +157,29 @@ public class ScoreResult extends JDialog {
 
     dialogPane.add(buttonBar, BorderLayout.SOUTH);
 
+    confirmResult = new JFontButton(Lizzie.resourceBundle.getString("ScoreResult.confirmResult"));
+    confirmResult.setFocusable(false);
+    GridBagConstraints gbc_confirmResult = new GridBagConstraints();
+    gbc_confirmResult.insets = new Insets(0, 0, 0, 5);
+    gbc_confirmResult.gridx = 1;
+    gbc_confirmResult.gridy = 0;
+    buttonBar.add(confirmResult, gbc_confirmResult);
+    confirmResult.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            String result = scoreResult.getText();
+            Lizzie.board.getHistory().getGameInfo().setResult(result);
+            Utils.showMsg(Lizzie.resourceBundle.getString("ScoreResult.addResultTip") + result);
+            setVisible(false);
+          }
+        });
+
     btnClose = new JFontButton(Lizzie.resourceBundle.getString("ScoreResult.btnClose"));
     btnClose.setFocusable(false);
     btnClose.setPreferredSize(btnRecalculate.getPreferredSize());
     GridBagConstraints gbc_button_1 = new GridBagConstraints();
     gbc_button_1.anchor = GridBagConstraints.EAST;
-    gbc_button_1.gridx = 1;
+    gbc_button_1.gridx = 2;
     gbc_button_1.gridy = 0;
     buttonBar.add(btnClose, gbc_button_1);
     btnClose.addActionListener(

@@ -139,6 +139,10 @@ public class BoardHistoryNode {
     if (!Lizzie.board.isLoadingFile && Lizzie.leelaz != null && !EngineManager.isEngineGame) {
       Lizzie.leelaz.clearBestMoves();
     }
+    if (Lizzie.frame.isPlayingAgainstLeelaz || Lizzie.frame.isAnaPlayingAgainstLeelaz) {
+      if (Lizzie.frame.playerIsBlack == Lizzie.board.getHistory().isBlacksTurn())
+        Lizzie.frame.tryToResetByoTime();
+    }
     Optional<BoardHistoryNode> next = next(true);
     boolean nextDummy = next.isPresent() && next.get().isEndDummay();
     if (!newBranch && nextDummy) {

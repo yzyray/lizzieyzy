@@ -6270,7 +6270,6 @@ public class LizzieFrame extends JFrame {
                   Lizzie.resourceBundle.getString(
                       "LizzieFrame.waitEngineLoadingHint")); // ("请等待引擎加载完毕");
             if (Lizzie.config.showrect == 1) boardRenderer.removeblock();
-            tryToResetByoTime();
           } else {
             if (blackorwhite == 0) Lizzie.board.place(coords[0], coords[1]);
             if (blackorwhite == 1) Lizzie.board.place(coords[0], coords[1], Stone.BLACK);
@@ -11512,7 +11511,7 @@ public class LizzieFrame extends JFrame {
     }
   }
 
-  private void tryToResetByoTime() {
+  public void tryToResetByoTime() {
     if (isShowingByoTime) this.byoSeconds = this.maxByoTimes;
   }
 

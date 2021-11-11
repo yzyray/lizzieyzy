@@ -67,6 +67,7 @@ public class Board {
   public GroupInfo boardGroupInfo;
   private boolean hasBigBranch = false;
   public boolean isExtremlySmallBoard = false;
+  private boolean neverPassedInGame = true;
 
   public Board() {
     initialize(false);
@@ -78,6 +79,7 @@ public class Board {
     LizzieFrame.curFile = null;
     // scoreMode = false;
     isGameBoard = false;
+    neverPassedInGame = true;
     analysisMode = false;
     Optional.empty();
     forceRefresh = false;
@@ -1444,7 +1446,14 @@ public class Board {
 
   public void pass(Stone color, boolean newBranch, boolean dummy, boolean changeMove) {
     synchronized (this) {
-
+      if (Lizzie.frame.isPlayingAgainstLeelaz || Lizzie.frame.isAnaPlayingAgainstLeelaz) {
+        if (Lizzie.frame.playerIsBlack == Lizzie.board.getHistory().isBlacksTurn()) {
+          if (neverPassedInGame) {
+            neverPassedInGame = false;
+            Utils.showMsg(Lizzie.resourceBundle.getString("LizzieFrame.passInGameTip"));
+          }
+        }
+      }
       // check to see if this move is being replayed in history
       if (history.getNext().map(n -> !n.lastMove.isPresent()).orElse(false) && !newBranch) {
         // this is the next move in history. Just increment history so that we don't
