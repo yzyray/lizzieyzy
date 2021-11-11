@@ -143,7 +143,7 @@ public class AutoPlay extends JFrame {
             if (chkAutoPlayMainboard.isSelected() || chkAutoPlaySubboard.isSelected()) {
               if (chkAutoPlayMainboard.isSelected()) {
                 LizzieFrame.toolbar.chkAutoMain.setSelected(true);
-                LizzieFrame.toolbar.autoPlayMain();
+                LizzieFrame.toolbar.autoPlayMain(false);
                 // }
               } else {
                 LizzieFrame.toolbar.chkAutoMain.setSelected(false);

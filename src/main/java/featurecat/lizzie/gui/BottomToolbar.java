@@ -1385,9 +1385,7 @@ public class BottomToolbar extends JPanel {
         new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
-            // TBD
-            autoPlayMain();
-
+            autoPlayMain(false);
             setTxtUnfocuse();
           }
         });
@@ -4070,7 +4068,7 @@ public class BottomToolbar extends JPanel {
     else autoPlay.setVisible(false);
   }
 
-  public void autoPlayMain() {
+  public void autoPlayMain(boolean autoQuit) {
     if (isAutoPlayMain) return;
     isAutoPlayMain = true;
     Runnable runnable =
@@ -4097,7 +4095,10 @@ public class BottomToolbar extends JPanel {
                           && cur.previous().isPresent()
                           && !cur.previous().get().getData().lastMove.isPresent()) break;
                       Lizzie.frame.playBestMove();
-                    } else break;
+                    } else {
+                    	if(autoQuit)
+                    		break;
+                    } 
                     try {
                       time = 1000 * Integer.parseInt(txtAutoMain.getText().replace(" ", ""));
                     } catch (NumberFormatException err) {
