@@ -11546,8 +11546,8 @@ public class LizzieFrame extends JFrame {
               leftMinuts--;
               leftSeconds = 59;
             } else if (byoSeconds > 0) {
-              if (byoSeconds < 10) {
-                Utils.playByoyomi(byoSeconds);
+              if (byoSeconds <= 10) {
+                Utils.playByoyomi(byoSeconds - 1);
               }
               byoSeconds--;
             } else if (byoTimes > 1) {

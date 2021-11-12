@@ -1446,14 +1446,6 @@ public class Board {
 
   public void pass(Stone color, boolean newBranch, boolean dummy, boolean changeMove) {
     synchronized (this) {
-      if (Lizzie.frame.isPlayingAgainstLeelaz || Lizzie.frame.isAnaPlayingAgainstLeelaz) {
-        if (Lizzie.frame.playerIsBlack == Lizzie.board.getHistory().isBlacksTurn()) {
-          if (neverPassedInGame) {
-            neverPassedInGame = false;
-            Utils.showMsg(Lizzie.resourceBundle.getString("LizzieFrame.passInGameTip"));
-          }
-        }
-      }
       // check to see if this move is being replayed in history
       if (history.getNext().map(n -> !n.lastMove.isPresent()).orElse(false) && !newBranch) {
         // this is the next move in history. Just increment history so that we don't
@@ -1506,6 +1498,14 @@ public class Board {
       // update history with pass
       if (Lizzie.config.playSound) Utils.playVoiceFile();
       Lizzie.frame.refresh();
+      if (Lizzie.frame.isPlayingAgainstLeelaz || Lizzie.frame.isAnaPlayingAgainstLeelaz) {
+        if (Lizzie.frame.playerIsBlack != Lizzie.board.getHistory().isBlacksTurn()) {
+          if (neverPassedInGame) {
+            neverPassedInGame = false;
+            Utils.showMsg(Lizzie.resourceBundle.getString("LizzieFrame.passInGameTip"));
+          }
+        }
+      }
     }
   }
 
