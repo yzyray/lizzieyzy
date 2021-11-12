@@ -92,6 +92,9 @@ public class Lizzie {
       MultiOutputStream multiError =
           new MultiOutputStream(new PrintStream(bosError), oldErrorPrintStream);
       System.setErr(new PrintStream(multiError));
+      String sf = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss").format(new Date());
+      bos.write((sf + "\n").getBytes());
+      bosError.write((sf + "\n").getBytes());
     }
     // -Dsun.java2d.uiScale.enabled=false
     // -Dsun.java2d.win.uiScaleX=1.25 -Dsun.java2d.win.uiScaleY=1.25
@@ -414,7 +417,7 @@ public class Lizzie {
       config.deletePersist(false);
     }
     try {
-      engineManager.forceKillAllEngines();
+      if (engineManager != null) engineManager.forceKillAllEngines();
     } catch (Exception e) {
       e.printStackTrace();
     }
