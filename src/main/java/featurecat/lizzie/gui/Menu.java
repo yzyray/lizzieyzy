@@ -6467,7 +6467,7 @@ public class Menu extends JMenuBar {
     JPopupMenu selectAvoidPopup = new JPopupMenu();
     JFontCheckBoxMenuItem selectAvoidCustomMove = new JFontCheckBoxMenuItem();
     JFontTextField txtLimitLengthAvoid = new JFontTextField();
-    txtLimitLengthAllow.setDocument(new IntDocument());
+    txtLimitLengthAvoid.setDocument(new IntDocument());
     txtLimitLengthAvoid.setPreferredSize(
         new Dimension(
             50,
@@ -7537,7 +7537,7 @@ public class Menu extends JMenuBar {
       JPopupMenu selectAvoidPopup = new JPopupMenu();
       JFontCheckBoxMenuItem selectAvoidCustomMove = new JFontCheckBoxMenuItem();
       JFontTextField txtLimitLengthAvoid = new JFontTextField();
-      txtLimitLengthAllow.setDocument(new IntDocument());
+      txtLimitLengthAvoid.setDocument(new IntDocument());
       txtLimitLengthAvoid.setPreferredSize(
           new Dimension(
               50,
