@@ -216,11 +216,6 @@ public class ContributeEngine {
     while (Lizzie.board.nextMove(false)) ;
     for (ContributeMoveInfo move : remainList) {
       // 把所有move place进去 再设置bestmoves进去
-      if (move.isPass) Lizzie.board.getHistory().pass(move.isBlack ? Stone.BLACK : Stone.WHITE);
-      else
-        Lizzie.board
-            .getHistory()
-            .place(move.pos[0], move.pos[1], move.isBlack ? Stone.BLACK : Stone.WHITE);
       if (move.candidates != null)
         Lizzie.board
             .getData()
@@ -229,6 +224,11 @@ public class ContributeEngine {
                 Lizzie.board.getHistory().getCurrentTurnPlayerShortName(),
                 false,
                 MoveData.getPlayouts(move.candidates));
+      if (move.isPass) Lizzie.board.getHistory().pass(move.isBlack ? Stone.BLACK : Stone.WHITE);
+      else
+        Lizzie.board
+            .getHistory()
+            .place(move.pos[0], move.pos[1], move.isBlack ? Stone.BLACK : Stone.WHITE);
     }
   }
 
