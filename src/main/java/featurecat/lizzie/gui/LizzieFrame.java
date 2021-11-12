@@ -9109,37 +9109,41 @@ public class LizzieFrame extends JFrame {
               public void actionPerformed(ActionEvent evt) {
                 int moveNumber = Lizzie.board.getHistory().getMainEnd().getData().moveNumber;
                 if (moveNumber > maxMvNum || (firstSync && moveNumber > 0)) {
-                  if (((Lizzie.board.getHistory().getCurrentHistoryNode().isMainTrunk()
-                              && Lizzie.board
-                                      .getHistory()
-                                      .getCurrentHistoryNode()
-                                      .getData()
-                                      .moveNumber
-                                  == maxMvNum)
-                          || firstSync)
-                      || Lizzie.config.alwaysGotoLastOnLive) {
-                    moveToMainTrunk();
-                    Lizzie.board.goToMoveNumberBeyondBranch(moveNumber);
-                    if (firstSync) {
-                      renderVarTree(0, 0, false, false);
+                  SwingUtilities.invokeLater(
                       new Thread() {
                         public void run() {
-                          try {
-                            Thread.sleep(500);
-                          } catch (InterruptedException e1) {
-                            // TODO Auto-generated catch block
-                            e1.printStackTrace();
+                          if (((Lizzie.board.getHistory().getCurrentHistoryNode().isMainTrunk()
+                                      && Lizzie.board
+                                              .getHistory()
+                                              .getCurrentHistoryNode()
+                                              .getData()
+                                              .moveNumber
+                                          == maxMvNum)
+                                  || firstSync)
+                              || Lizzie.config.alwaysGotoLastOnLive) {
+                            moveToMainTrunk();
+                            Lizzie.board.goToMoveNumberBeyondBranch(moveNumber);
+                            if (firstSync) {
+                              renderVarTree(0, 0, false, false);
+                              new Thread() {
+                                public void run() {
+                                  try {
+                                    Thread.sleep(500);
+                                  } catch (InterruptedException e1) {
+                                    // TODO Auto-generated catch block
+                                    e1.printStackTrace();
+                                  }
+                                  renderVarTree(0, 0, false, true);
+                                }
+                              }.start();
+                              firstSync = false;
+                            }
                           }
+                          maxMvNum = moveNumber;
                           renderVarTree(0, 0, false, true);
+                          Lizzie.frame.refresh();
                         }
-                      }.start();
-                      firstSync = false;
-                    }
-                  }
-                  maxMvNum = moveNumber;
-                  renderVarTree(0, 0, false, true);
-                  renderVarTreeCur();
-                  Lizzie.frame.refresh();
+                      });
                 }
                 if (!urlSgf) {
                   timer.stop();
