@@ -60,4 +60,4 @@ Add some new features on Lizzie's basis:`Hawk Eye`,`Flash Analyze`,`Batch Analyz
 
 ##
 
-Put necessary jars for building maven [here](https://aistudio.baidu.com/aistudio/datasetdetail/116851)
+Put necessary jars for maven building [here](https://aistudio.baidu.com/aistudio/datasetdetail/116851)
