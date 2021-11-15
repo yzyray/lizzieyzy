@@ -29,6 +29,8 @@ LizzieYzy 是一个引擎界面,修改自[Lizzie](https://github.com/featurecat/
 
 Maven编译所需的额外文件上传在[这里](https://aistudio.baidu.com/aistudio/datasetdetail/116851)
 
+其他用到的jar代码链接: [foxRequestQ.jar](https://github.com/yzyray/FoxRequest) [InVisibleFrame.jar](https://github.com/yzyray/testbuffer)
+
 ##
 
 # LizzieYzy - Interface Of Go Engine
@@ -61,3 +63,5 @@ Add some new features on Lizzie's basis:`Hawk Eye`,`Flash Analyze`,`Batch Analyz
 ##
 
 Put necessary jars for maven building [here](https://aistudio.baidu.com/aistudio/datasetdetail/116851)
+
+Other jar source code links: [foxRequestQ.jar](https://github.com/yzyray/FoxRequest) [InVisibleFrame.jar](https://github.com/yzyray/testbuffer)
