@@ -27,7 +27,7 @@ LizzieYzy 是一个引擎界面,修改自[Lizzie](https://github.com/featurecat/
 
 ##
 
-Maven编译所需的额外文件上传在[这里](https://pan.baidu.com/s/1q615GHD62F92mNZbTYfcxA?_at_=1623121084609#list/path=%2Fsharelink875943949-871813486621563%2F公开整合包%2Flib(编译用)&parentPath=%2Fsharelink875943949-871813486621563)
+Maven编译所需的额外文件上传在[这里](https://aistudio.baidu.com/aistudio/datasetdetail/116851)
 
 ##
 
@@ -60,4 +60,4 @@ Add some new features on Lizzie's basis:`Hawk Eye`,`Flash Analyze`,`Batch Analyz
 
 ##
 
-Put necessary jars for building maven [here](https://pan.baidu.com/s/1q615GHD62F92mNZbTYfcxA?_at_=1623121084609#list/path=%2Fsharelink875943949-871813486621563%2F公开整合包%2Flib(编译用)&parentPath=%2Fsharelink875943949-871813486621563)
+Put necessary jars for building maven [here](https://aistudio.baidu.com/aistudio/datasetdetail/116851)
