@@ -250,7 +250,7 @@ public class AnalysisEngine {
       if (Lizzie.board.getHistory().getCurrentHistoryNode() == Lizzie.board.getHistory().getStart())
         Lizzie.board.nextMove(true);
       Lizzie.frame.refresh();
-      if (Lizzie.config.analysisAutoQuit) {
+      if (Lizzie.config.analysisAutoQuit && !Lizzie.frame.isBatchAna) {
         normalQuit();
       }
       if (Lizzie.config.analysisAlwaysOverride)
@@ -260,7 +260,7 @@ public class AnalysisEngine {
     }
   }
 
-  private void normalQuit() {
+  public void normalQuit() {
     // TODO Auto-generated method stub
     isNormalEnd = true;
     if (this.useJavaSSH) this.javaSSH.close();

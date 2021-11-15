@@ -11765,6 +11765,9 @@ public class LizzieFrame extends JFrame {
         Lizzie.frame.analysisTable.refreshTable();
       }
       Utils.showMsg(Lizzie.resourceBundle.getString("Leelaz.batchAutoAnalyzeComplete"));
+      if (Lizzie.config.analysisAutoQuit) {
+        analysisEngine.normalQuit();
+      }
     }
   }
 

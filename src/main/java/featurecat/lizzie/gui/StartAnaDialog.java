@@ -313,8 +313,6 @@ public class StartAnaDialog extends JDialog {
         return;
       }
     }
-    Lizzie.config.autoAnaDiffEnable = chkUseDiff.isSelected();
-    Lizzie.config.uiConfig.put("auto-ana-diff-enable", Lizzie.config.autoAnaDiffEnable);
 
     Lizzie.leelaz.nameCmd();
     cancelled = false;
@@ -327,6 +325,8 @@ public class StartAnaDialog extends JDialog {
       Lizzie.frame.flashAnalyzeGameBatch(
           LizzieFrame.toolbar.firstMove, LizzieFrame.toolbar.lastMove);
     } else {
+      Lizzie.config.autoAnaDiffEnable = chkUseDiff.isSelected();
+      Lizzie.config.uiConfig.put("auto-ana-diff-enable", Lizzie.config.autoAnaDiffEnable);
       Timer timer = new Timer();
       timer.schedule(
           new TimerTask() {
