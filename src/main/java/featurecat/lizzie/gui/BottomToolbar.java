@@ -3369,7 +3369,7 @@ public class BottomToolbar extends JPanel {
     if (threadAnalyzeDiffNode != null) threadAnalyzeDiffNode.interrupt();
     Lizzie.frame.isAutoAnalyzingDiffNode = false;
     chkAutoAnalyse.setSelected(true);
-    Lizzie.config.autoAnaStartMove = Utils.parseTextToInt(txtFirstAnaMove, -1);
+    Lizzie.config.autoAnaStartMove = Utils.parseTextToInt(txtFirstAnaMove, 0) - 1;
     Lizzie.config.autoAnaEndMove = Utils.parseTextToInt(txtLastAnaMove, -1);
     Lizzie.config.isAutoAna = true;
     Lizzie.leelaz.autoAnalysed = false;
