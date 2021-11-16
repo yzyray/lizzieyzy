@@ -1912,7 +1912,6 @@ public class EngineManager {
     newEng.blackResignMoveCounts = 0;
     newEng.whiteResignMoveCounts = 0;
     newEng.doublePass = false;
-    newEng.genmoveNode = 0;
     newEng.resigned = false;
     newEng.isResigning = false;
     newEng.width = Board.boardWidth;

@@ -176,7 +176,7 @@ public class Leelaz {
   // public long pkMoveTimeAll=0;
   public long pkMoveTimeGame = 0;
   public boolean canSuicidal = false;
-  public int genmoveNode = 0;
+  // public int genmoveNode = 0;
   public int anaGameResignCount = 0;
   public double heatwinrate = -1;
   public int symmetry = 0;
@@ -792,7 +792,6 @@ public class Leelaz {
           }
         }
         if (params[1].contains("resign")) {
-          genmoveNode++;
           pkMoveTime = System.currentTimeMillis() - pkMoveStartTime;
           pkMoveTimeGame = pkMoveTimeGame + pkMoveTime;
 
@@ -801,7 +800,6 @@ public class Leelaz {
           return;
         }
         if (Lizzie.board.getHistory().getMoveNumber() > EngineManager.engineGameInfo.maxGameMoves) {
-          genmoveNode++;
           pkMoveTime = System.currentTimeMillis() - pkMoveStartTime;
           pkMoveTimeGame = pkMoveTimeGame + pkMoveTime;
           outOfMoveNum = true;
@@ -815,7 +813,6 @@ public class Leelaz {
           isPassingLose = true;
         }
         if (!isPassingLose && params[1].startsWith("pass")) {
-          genmoveNode++;
           pkMoveTime = System.currentTimeMillis() - pkMoveStartTime;
           pkMoveTimeGame = pkMoveTimeGame + pkMoveTime;
           Optional<int[]> passStep = Optional.empty();
@@ -827,6 +824,14 @@ public class Leelaz {
             genmoveResign(true);
             return;
           }
+          Lizzie.engineManager
+              .engineList
+              .get(EngineManager.engineGameInfo.whiteEngineIndex)
+              .clearPkMoveStartTime();
+          Lizzie.engineManager
+              .engineList
+              .get(EngineManager.engineGameInfo.blackEngineIndex)
+              .clearPkMoveStartTime();
           Lizzie.board.pass();
           if (this.currentEngineN == EngineManager.engineGameInfo.blackEngineIndex) {
             if (!Lizzie.engineManager
@@ -876,10 +881,16 @@ public class Leelaz {
             return;
           }
           canCheckAlive = true;
-          genmoveNode++;
           pkMoveTime = System.currentTimeMillis() - pkMoveStartTime;
           pkMoveTimeGame = pkMoveTimeGame + pkMoveTime;
-
+          Lizzie.engineManager
+              .engineList
+              .get(EngineManager.engineGameInfo.whiteEngineIndex)
+              .clearPkMoveStartTime();
+          Lizzie.engineManager
+              .engineList
+              .get(EngineManager.engineGameInfo.blackEngineIndex)
+              .clearPkMoveStartTime();
           Lizzie.board.place(coords.get()[0], coords.get()[1]);
 
           //					}
@@ -1038,7 +1049,6 @@ public class Leelaz {
       if (stone == Stone.EMPTY) return;
     }
     if (isGenmove) {
-      genmoveNode++;
       pkMoveTime = System.currentTimeMillis() - pkMoveStartTime;
       pkMoveTimeGame = pkMoveTimeGame + pkMoveTime;
       outOfMoveNum = true;
@@ -2869,7 +2879,6 @@ public class Leelaz {
   }
 
   public void genmoveForPk(String color) {
-    genmoveNode++;
     if (LizzieFrame.toolbar.isPkStop) {
       LizzieFrame.toolbar.isPkGenmoveStop = true;
       if (color.equals("B")) {
@@ -2906,11 +2915,14 @@ public class Leelaz {
     // bestMoves = new ArrayList<>();
     // canGetGenmoveInfo = true;
     sendCommand(command);
-    pkMoveStartTime = System.currentTimeMillis();
     // isThinking = true;
 
     // isPondering = false;
     // genmovenoponder =false;
+  }
+
+  public void clearPkMoveStartTime() {
+    pkMoveStartTime = System.currentTimeMillis();
   }
 
   //	public void genmove_analyze(String color) {

@@ -4096,9 +4096,8 @@ public class BottomToolbar extends JPanel {
                           && !cur.previous().get().getData().lastMove.isPresent()) break;
                       Lizzie.frame.playBestMove();
                     } else {
-                    	if(autoQuit)
-                    		break;
-                    } 
+                      if (autoQuit) break;
+                    }
                     try {
                       time = 1000 * Integer.parseInt(txtAutoMain.getText().replace(" ", ""));
                     } catch (NumberFormatException err) {
