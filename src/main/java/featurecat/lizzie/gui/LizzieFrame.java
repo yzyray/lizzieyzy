@@ -12450,8 +12450,8 @@ public class LizzieFrame extends JFrame {
   }
 
   private void openInVisibleFrame() {
-    String javaReadBoardName = "InVisibleFrame.jar";
-    File javaReadBoard = new File("clockHelper" + File.separator + "InVisibleFrame.jar");
+    String javaReadBoardName = "invisibleFrame.jar";
+    File javaReadBoard = new File("clockHelper" + File.separator + javaReadBoardName);
     if (!javaReadBoard.exists()) Utils.copyClockHelper();
     try {
       if (OS.isWindows()) {
