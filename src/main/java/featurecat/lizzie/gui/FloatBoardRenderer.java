@@ -482,24 +482,30 @@ public class FloatBoardRenderer {
     return Lizzie.config.showKataGoEstimateBigBelow;
   }
 
-  public void drawKataEstimateByTransparent(ArrayList<Double> tempcount, boolean reverse) {
+  public void drawKataEstimateByTransparent(
+      ArrayList<Double> estimateList, boolean reverse, boolean fromRawNet) {
     BufferedImage newEstimateImage = new BufferedImage(boardWidth, boardHeight, TYPE_INT_ARGB);
     Graphics2D g = newEstimateImage.createGraphics();
-    Leelaz leelaz = Lizzie.leelaz;
-    boolean blackToPlay = Lizzie.board.getHistory().getMainEnd().getData().blackToPlay;
+    boolean blackToPlay = Lizzie.board.getHistory().isBlacksTurn();
+    boolean showBigSize = shouldShowCountBlockBig();
     if (reverse) blackToPlay = !blackToPlay;
-    for (int i = 0; i < tempcount.size(); i++) {
-      if ((tempcount.get(i) > 0 && blackToPlay) || (tempcount.get(i) < 0 && !blackToPlay)) {
-        int y = i / Board.boardWidth;
-        int x = i % Board.boardWidth;
+    for (int i = 0; i < estimateList.size(); i++) {
+      int[] c = Lizzie.board.getCoordKataGo(i);
+      int x = c[0];
+      int y = c[1];
+      if ((estimateList.get(i) > 0 && blackToPlay) || (estimateList.get(i) < 0 && !blackToPlay)) {
+        if (!showBigSize)
+          if ((!fromRawNet && Lizzie.config.showKataGoEstimateNotOnlive)
+              || (fromRawNet && Lizzie.config.showPureEstimateNotOnlive)) {
+            if (Lizzie.board.getHistory().getData().stones[Board.getIndex(c[0], c[1])]
+                == Stone.BLACK) continue;
+          }
         int stoneX = scaledMarginWidth + squareWidth * x;
         int stoneY = scaledMarginHeight + squareHeight * y;
         // g.setColor(Color.BLACK);
 
         int alpha =
-            shouldShowCountBlockBig()
-                ? (int) (tempcount.get(i) * 105)
-                : (int) (tempcount.get(i) * 255);
+            showBigSize ? (int) (estimateList.get(i) * 105) : (int) (estimateList.get(i) * 255);
         Color cl = new Color(0, 0, 0, Math.abs(alpha));
         if (!shouldShowCountBlockBig()
             && Lizzie.board.getHistory().getStones()[Board.getIndex(x, y)].isBlack()) {
@@ -511,7 +517,7 @@ public class FloatBoardRenderer {
                   255);
           g.setColor(cl2);
         } else g.setColor(cl);
-        if (shouldShowCountBlockBig())
+        if (showBigSize)
           g.fillRect(
               stoneX - squareWidth * 5 / 10,
               stoneY - squareWidth * 5 / 10,
@@ -521,21 +527,20 @@ public class FloatBoardRenderer {
           g.fillRect(
               stoneX - squareWidth / 4, stoneY - squareWidth / 4, squareWidth / 2, squareWidth / 2);
       }
-      if ((tempcount.get(i) < 0 && blackToPlay) || (tempcount.get(i) > 0 && !blackToPlay)) {
-        int y = i / Board.boardWidth;
-        int x = i % Board.boardWidth;
+      if ((estimateList.get(i) < 0 && blackToPlay) || (estimateList.get(i) > 0 && !blackToPlay)) {
+        if (!showBigSize)
+          if ((!fromRawNet && Lizzie.config.showKataGoEstimateNotOnlive)
+              || (fromRawNet && Lizzie.config.showPureEstimateNotOnlive)) {
+            if (Lizzie.board.getHistory().getData().stones[Board.getIndex(c[0], c[1])]
+                == Stone.WHITE) continue;
+          }
         int stoneX = scaledMarginWidth + squareWidth * x;
         int stoneY = scaledMarginHeight + squareHeight * y;
         int alpha =
-            (Lizzie.config.showKataGoEstimateBigBelow
-                    || (leelaz.isKatago
-                        && leelaz.iskataHeatmapShowOwner
-                        && Lizzie.config.showPureEstimateBigBelow))
-                ? (int) (tempcount.get(i) * 165)
-                : (int) (tempcount.get(i) * 255);
+            showBigSize ? (int) (estimateList.get(i) * 165) : (int) (estimateList.get(i) * 255);
         Color cl = new Color(255, 255, 255, Math.abs(alpha));
         g.setColor(cl);
-        if (shouldShowCountBlockBig())
+        if (showBigSize)
           g.fillRect(
               stoneX - squareWidth * 5 / 10,
               stoneY - squareWidth * 5 / 10,
@@ -646,39 +651,6 @@ public class FloatBoardRenderer {
     g.dispose();
   }
 
-  /*
-   * Draw a white/black dot on territory and captured stones. Dame is drawn as red
-   * dot.
-   */
-  //  private void drawScore(Graphics2D go) {
-  //    Graphics2D g = cachedStonesImage.createGraphics();
-  //    g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-  //    Stone scorestones[] = Lizzie.board.scoreStones();
-  //    int scoreRadius = stoneRadius / 4;
-  //    for (int i = 0; i < Board.boardWidth; i++) {
-  //      for (int j = 0; j < Board.boardHeight; j++) {
-  //        int stoneX = scaledMarginWidth + squareWidth * i;
-  //        int stoneY = scaledMarginHeight + squareHeight * j;
-  //        switch (scorestones[Board.getIndex(i, j)]) {
-  //          case WHITE_POINT:
-  //          case BLACK_CAPTURED:
-  //            g.setColor(Color.white);
-  //            fillCircle(g, stoneX, stoneY, scoreRadius);
-  //            break;
-  //          case BLACK_POINT:
-  //          case WHITE_CAPTURED:
-  //            g.setColor(Color.black);
-  //            fillCircle(g, stoneX, stoneY, scoreRadius);
-  //            break;
-  //          case DAME:
-  //            g.setColor(Color.red);
-  //            fillCircle(g, stoneX, stoneY, scoreRadius);
-  //            break;
-  //        }
-  //      }
-  //    }
-  //    g.dispose();
-  //  }
   private boolean isShowingEstimate = false;
 
   private void drawEstimate() {
@@ -692,14 +664,14 @@ public class FloatBoardRenderer {
         if (Lizzie.config.showKataGoEstimateBySize) {
           drawKataEstimateBySize(estimateArray, false);
         } else {
-          drawKataEstimateByTransparent(estimateArray, false);
+          drawKataEstimateByTransparent(estimateArray, false, false);
         }
         hasDraw = true;
       } else if (preEstimateArray != null) {
         if (Lizzie.config.showKataGoEstimateBySize) {
           drawKataEstimateBySize(preEstimateArray, true);
         } else {
-          drawKataEstimateByTransparent(preEstimateArray, true);
+          drawKataEstimateByTransparent(preEstimateArray, true, false);
         }
         hasDraw = true;
       }

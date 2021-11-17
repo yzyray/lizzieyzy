@@ -2056,6 +2056,25 @@ public class Menu extends JMenuBar {
             Lizzie.config.showKataGoEstimateNormal = true;
             Lizzie.config.showKataGoEstimateBySize = false;
             Lizzie.config.showKataGoEstimateBigBelow = false;
+            Lizzie.config.showKataGoEstimateNotOnlive = false;
+            if (Lizzie.leelaz.isKatago && !Lizzie.config.showKataGoEstimate)
+              Lizzie.frame.toggleShowKataEstimate();
+            Lizzie.config.saveKataEstimateConfigs();
+          }
+        });
+
+    final JFontCheckBoxMenuItem kataEstimateByTransparentNotOnLive =
+        new JFontCheckBoxMenuItem(
+            resourceBundle.getString("Menu.kataEstimateByTransparentNotOnLive"));
+    kataEstimate.add(kataEstimateByTransparentNotOnLive);
+    kataEstimateByTransparentNotOnLive.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.config.showKataGoEstimateNormal = true;
+            Lizzie.config.showKataGoEstimateBySize = false;
+            Lizzie.config.showKataGoEstimateBigBelow = false;
+            Lizzie.config.showKataGoEstimateNotOnlive = true;
             if (Lizzie.leelaz.isKatago && !Lizzie.config.showKataGoEstimate)
               Lizzie.frame.toggleShowKataEstimate();
             Lizzie.config.saveKataEstimateConfigs();
@@ -2117,6 +2136,24 @@ public class Menu extends JMenuBar {
             Lizzie.config.showPureEstimateNormal = true;
             Lizzie.config.showPureEstimateBySize = false;
             Lizzie.config.showPureEstimateBigBelow = false;
+            Lizzie.config.showPureEstimateNotOnlive = false;
+            if (Lizzie.leelaz.isheatmap) Lizzie.leelaz.ponder();
+            Lizzie.config.saveKataEstimateConfigs();
+          }
+        });
+
+    final JFontCheckBoxMenuItem pureEstimateByTransparentNotOnLive =
+        new JFontCheckBoxMenuItem(
+            resourceBundle.getString("Menu.kataEstimateByTransparentNotOnLive"));
+    kataEstimateInPureNet.add(pureEstimateByTransparentNotOnLive);
+    pureEstimateByTransparentNotOnLive.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.config.showPureEstimateNormal = true;
+            Lizzie.config.showPureEstimateBySize = false;
+            Lizzie.config.showPureEstimateBigBelow = false;
+            Lizzie.config.showPureEstimateNotOnlive = true;
             if (Lizzie.leelaz.isheatmap) Lizzie.leelaz.ponder();
             Lizzie.config.saveKataEstimateConfigs();
           }
@@ -2271,15 +2308,35 @@ public class Menu extends JMenuBar {
             else kataEstimateBySize.setState(false);
             if (Lizzie.config.showKataGoEstimateBigBelow) kataEstimateByBigSquare.setState(true);
             else kataEstimateByBigSquare.setState(false);
-            if (Lizzie.config.showKataGoEstimateNormal) kataEstimateByTransparent.setState(true);
-            else kataEstimateByTransparent.setState(false);
+            if (Lizzie.config.showKataGoEstimateNormal)
+              if (Lizzie.config.showKataGoEstimateNotOnlive) {
+                kataEstimateByTransparentNotOnLive.setSelected(true);
+                kataEstimateByTransparent.setState(false);
+              } else {
+                kataEstimateByTransparentNotOnLive.setSelected(false);
+                kataEstimateByTransparent.setState(true);
+              }
+            else {
+              kataEstimateByTransparentNotOnLive.setSelected(false);
+              kataEstimateByTransparent.setState(false);
+            }
 
             if (Lizzie.config.showPureEstimateBySize) pureEstimateBySize.setState(true);
             else pureEstimateBySize.setState(false);
             if (Lizzie.config.showPureEstimateBigBelow) pureEstimateByBigSquare.setState(true);
             else pureEstimateByBigSquare.setState(false);
-            if (Lizzie.config.showPureEstimateNormal) pureEstimateByTransparent.setState(true);
-            else pureEstimateByTransparent.setState(false);
+            if (Lizzie.config.showPureEstimateNormal)
+              if (Lizzie.config.showPureEstimateNotOnlive) {
+                pureEstimateByTransparentNotOnLive.setState(true);
+                pureEstimateByTransparent.setState(false);
+              } else {
+                pureEstimateByTransparentNotOnLive.setState(false);
+                pureEstimateByTransparent.setState(true);
+              }
+            else {
+              pureEstimateByTransparentNotOnLive.setState(false);
+              pureEstimateByTransparent.setState(false);
+            }
             if (Lizzie.config.winrateAlwaysBlack) alwaysShowBlackWinrate.setState(true);
             else alwaysShowBlackWinrate.setState(false);
             if (Lizzie.config.showSuggestionVariations) showVariationOnMouse.setState(true);

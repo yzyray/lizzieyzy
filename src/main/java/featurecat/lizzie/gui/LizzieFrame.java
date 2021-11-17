@@ -9792,19 +9792,20 @@ public class LizzieFrame extends JFrame {
     } else {
       if (Lizzie.config.isDoubleEngineMode()) {
         if (engine == Lizzie.leelaz)
-          LizzieFrame.boardRenderer.drawKataEstimateByTransparent(tempcount, false);
+          LizzieFrame.boardRenderer.drawKataEstimateByTransparent(tempcount, false, true);
         if (Lizzie.leelaz2 != null && engine == Lizzie.leelaz2)
-          LizzieFrame.boardRenderer2.drawKataEstimateByTransparent(tempcount, false);
+          LizzieFrame.boardRenderer2.drawKataEstimateByTransparent(tempcount, false, true);
       } else {
-        LizzieFrame.boardRenderer.drawKataEstimateByTransparent(tempcount, false);
+        LizzieFrame.boardRenderer.drawKataEstimateByTransparent(tempcount, false, true);
         if (floatBoard != null && floatBoard.isVisible())
-          floatBoard.boardRenderer.drawKataEstimateByTransparent(tempcount, false);
+          floatBoard.boardRenderer.drawKataEstimateByTransparent(tempcount, false, true);
       }
       if (!Lizzie.config.isDoubleEngineMode()) {
         if (Lizzie.config.showSubBoard)
-          LizzieFrame.subBoardRenderer.drawKataEstimateByTransparent(tempcount, false);
+          LizzieFrame.subBoardRenderer.drawKataEstimateByTransparent(tempcount, false, true);
         if (independentSubBoard != null && independentSubBoard.isVisible())
-          independentSubBoard.subBoardRenderer.drawKataEstimateByTransparent(tempcount, false);
+          independentSubBoard.subBoardRenderer.drawKataEstimateByTransparent(
+              tempcount, false, true);
       }
     }
   }
