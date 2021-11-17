@@ -377,10 +377,18 @@ public class BoardRenderer {
             }
           }
           g.setColor(node.getData().lastMoveColor.isWhite() ? Color.BLACK : Color.WHITE);
-          drawCircle(g, markX, markY, (int) Math.round(squareWidth * 0.22f), 5f);
-          if (Lizzie.config.moveRankMarkLastMove > 1 || Lizzie.config.moveRankMarkLastMove == 0) {
-            g.setColor(Color.RED);
-            drawPolygonSmall(g, markX, markY, stoneRadius);
+          switch (Lizzie.config.stoneIndicatorType) {
+            case 0:
+              drawPolygonCircle(g, markX, markY, stoneRadius);
+              break;
+            default:
+              drawCircle(g, markX, markY, (int) Math.round(squareWidth * 0.22f), 5f);
+              if (Lizzie.config.moveRankMarkLastMove > 1
+                  || Lizzie.config.moveRankMarkLastMove == 0) {
+                g.setColor(Color.RED);
+                drawPolygonSmall(g, markX, markY, stoneRadius);
+              }
+              break;
           }
         } else {
           NodeInfo nodeInfo =
@@ -431,8 +439,21 @@ public class BoardRenderer {
     } else if (winrateDiff <= Lizzie.config.winLossThreshold1
         || scoreDiff <= Lizzie.config.scoreLossThreshold1) g.setColor(new Color(140, 202, 34));
     else g.setColor(new Color(0, 180, 0));
-    int radius = (int) Math.round(squareWidth * (isLastMove ? 0.22f : radiusF));
-    fillCircle(g, markX, markY, radius);
+
+    if (isLastMove) {
+      switch (Lizzie.config.stoneIndicatorType) {
+        case 0:
+          drawPolygon(g, markX, markY, stoneRadius);
+          break;
+        default:
+          int radius = (int) Math.round(squareWidth * 0.22f);
+          fillCircle(g, markX, markY, radius);
+          break;
+      }
+    } else {
+      int radius = (int) Math.round(squareWidth * radiusF);
+      fillCircle(g, markX, markY, radius);
+    }
   }
 
   private boolean shouldShowPreviousBestMoves() {
@@ -3860,6 +3881,14 @@ public class BoardRenderer {
       centerY - (10 * radius / 22), centerY + (8 * radius / 22), centerY + (8 * radius / 22)
     };
     g.fillPolygon(xPoints, yPoints, 3);
+  }
+
+  private void drawPolygonCircle(Graphics2D g, int centerX, int centerY, int radius) {
+    int[] xPoints = {centerX, centerX - (radius / 2), centerX + (radius / 2)};
+    int[] yPoints = {
+      centerY - (10 * radius / 22), centerY + (8 * radius / 22), centerY + (8 * radius / 22)
+    };
+    g.drawPolygon(xPoints, yPoints, 3);
   }
 
   private void drawPolygonSmall(Graphics2D g, int centerX, int centerY, int radius) {

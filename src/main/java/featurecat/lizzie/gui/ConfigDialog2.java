@@ -2302,15 +2302,17 @@ public class ConfigDialog2 extends JDialog {
           new JLabel(resourceBundle.getString("LizzieConfig.title.stoneIndicatorType"));
       lblStoneIndicatorType.setBounds(10, 442, 163, 16);
       themeTab.add(lblStoneIndicatorType);
-      rdoStoneIndicatorDelta =
-          new JRadioButton(resourceBundle.getString("ConfigDialog2.triangle")); // ("三角");
-      rdoStoneIndicatorDelta.setBounds(170, 439, 52, 23);
-      themeTab.add(rdoStoneIndicatorDelta);
 
       rdoStoneIndicatorCircle =
           new JRadioButton(resourceBundle.getString("ConfigDialog2.circle")); // ("圆圈");
-      rdoStoneIndicatorCircle.setBounds(220, 439, 52, 23);
+      rdoStoneIndicatorCircle.setBounds(170, 439, 52, 23);
       themeTab.add(rdoStoneIndicatorCircle);
+
+      rdoStoneIndicatorDelta =
+          new JRadioButton(resourceBundle.getString("ConfigDialog2.triangle")); // ("三角");
+      rdoStoneIndicatorDelta.setBounds(220, 439, 52, 23);
+      themeTab.add(rdoStoneIndicatorDelta);
+
       rdoStoneIndicatorSolid =
           new JRadioButton(resourceBundle.getString("ConfigDialog2.solid")); // ("实心");
       rdoStoneIndicatorSolid.setBounds(270, 439, 52, 23);
