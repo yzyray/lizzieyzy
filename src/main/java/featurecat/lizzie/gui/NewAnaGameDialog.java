@@ -879,8 +879,8 @@ public class NewAnaGameDialog extends JDialog {
                 e.printStackTrace();
               }
               Lizzie.leelaz.setGameStatus(true);
-              LizzieFrame.menu.toggleDoubleMenuGameStatus();
               Lizzie.leelaz.clearBestMoves();
+              Lizzie.leelaz.isGamePaused = false;
               Lizzie.board.isGameBoard = true;
               gameInfo.setPlayerBlack(
                   playerIsBlack()
@@ -898,6 +898,7 @@ public class NewAnaGameDialog extends JDialog {
                     Lizzie.config.getMyByoyomiSeconds(),
                     Lizzie.config.getMyByoyomiTimes());
               Lizzie.frame.clearWRNforGame(false);
+              LizzieFrame.menu.toggleDoubleMenuGameStatus();
               //                if (handicap >= 2
               //                    && Lizzie.board.boardWidth == 19
               //                    && Lizzie.board.boardHeight == 19) {

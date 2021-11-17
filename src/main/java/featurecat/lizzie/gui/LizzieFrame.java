@@ -2996,7 +2996,6 @@ public class LizzieFrame extends JFrame {
               e.printStackTrace();
             }
             Lizzie.leelaz.setGameStatus(true);
-            menu.toggleDoubleMenuGameStatus();
             if (Lizzie.config.limitMyTime)
               countDownForHuman(
                   Lizzie.config.getMySaveTime(),
@@ -3029,6 +3028,7 @@ public class LizzieFrame extends JFrame {
 
             Lizzie.leelaz.isGamePaused = false;
             Lizzie.board.isGameBoard = true;
+            menu.toggleDoubleMenuGameStatus();
             Lizzie.frame.updateTitle();
           }
         };
@@ -9853,6 +9853,7 @@ public class LizzieFrame extends JFrame {
 
   public boolean stopAiPlayingAndPolicy() {
     toolbar.isPkStop = false;
+    Lizzie.leelaz.isGamePaused = false;
     boolean isGaming =
         Lizzie.frame.isPlayingAgainstLeelaz || Lizzie.frame.isAnaPlayingAgainstLeelaz;
     if (Lizzie.frame.isShowingHeatmap) {

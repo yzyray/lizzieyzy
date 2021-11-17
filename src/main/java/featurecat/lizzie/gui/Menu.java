@@ -9272,9 +9272,12 @@ public class Menu extends JMenuBar {
               }
               doubleMenuNewGame.setText(resourceBundle.getString("Menu.newGameBtn"));
             }
-            if (Lizzie.frame.isAnaPlayingAgainstLeelaz || Lizzie.frame.isPlayingAgainstLeelaz)
+            if (Lizzie.frame.isAnaPlayingAgainstLeelaz || Lizzie.frame.isPlayingAgainstLeelaz) {
               doubleMenuResign.setVisible(true);
-            else doubleMenuResign.setVisible(false);
+              if (Lizzie.leelaz.isGamePaused)
+                doubleMenuPauseGame.setText(resourceBundle.getString("Menu.continueGameBtn"));
+              else doubleMenuPauseGame.setText(resourceBundle.getString("Menu.pauseGameBtn"));
+            } else doubleMenuResign.setVisible(false);
             if (EngineManager.isEngineGame) {
               if (LizzieFrame.toolbar.isPkStop)
                 doubleMenuPauseGame.setText(resourceBundle.getString("Menu.continueGameBtn"));
