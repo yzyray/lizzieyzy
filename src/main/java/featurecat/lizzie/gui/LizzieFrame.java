@@ -8294,7 +8294,10 @@ public class LizzieFrame extends JFrame {
           public void run() {
             try {
               JSONObject filesystem = Lizzie.config.persisted.getJSONObject("filesystem");
-              JFileChooser chooser = new JFileChooser(filesystem.getString("last-image-folder"));
+              JFileChooser chooser =
+                  new JFileChooser(
+                      filesystem.optString(
+                          "last-image-folder", filesystem.getString("last-folder")));
               chooser.setAcceptAllFileFilterUsed(false);
               //    String writerNames[] = ImageIO.getWriterFormatNames();
               FileNameExtensionFilter filter1 = new FileNameExtensionFilter("*.png", "PNG");
@@ -8369,11 +8372,10 @@ public class LizzieFrame extends JFrame {
   }
 
   public void saveMainBoardPicture() {
-    if (Lizzie.config.isFloatBoardMode())
+    if (Lizzie.config.isFloatBoardMode()) saveImageToFile(getIndependMainBoardToClipboard());
+    else {
       saveImage(
           Lizzie.frame.boardX, Lizzie.frame.boardY, Lizzie.frame.maxSize, Lizzie.frame.maxSize);
-    else {
-      saveImageToFile(getIndependMainBoardToClipboard());
     }
   }
 
@@ -8397,7 +8399,10 @@ public class LizzieFrame extends JFrame {
           public void run() {
             try {
               JSONObject filesystem = Lizzie.config.persisted.getJSONObject("filesystem");
-              JFileChooser chooser = new JFileChooser(filesystem.getString("last-image-folder"));
+              JFileChooser chooser =
+                  new JFileChooser(
+                      filesystem.optString(
+                          "last-image-folder", filesystem.getString("last-folder")));
               chooser.setAcceptAllFileFilterUsed(false);
               FileNameExtensionFilter filter1 = new FileNameExtensionFilter("*.png", "PNG");
               FileNameExtensionFilter filter2 = new FileNameExtensionFilter("*.jpg", "JPG", "JPEG");
@@ -8466,7 +8471,10 @@ public class LizzieFrame extends JFrame {
           public void run() {
             try {
               JSONObject filesystem = Lizzie.config.persisted.getJSONObject("filesystem");
-              JFileChooser chooser = new JFileChooser(filesystem.getString("last-image-folder"));
+              JFileChooser chooser =
+                  new JFileChooser(
+                      filesystem.optString(
+                          "last-image-folder", filesystem.getString("last-folder")));
               chooser.setAcceptAllFileFilterUsed(false);
               FileNameExtensionFilter filter1 = new FileNameExtensionFilter("*.png", "PNG");
               FileNameExtensionFilter filter2 = new FileNameExtensionFilter("*.jpg", "JPG", "JPEG");
