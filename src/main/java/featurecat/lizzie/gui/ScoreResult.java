@@ -25,6 +25,7 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import org.json.JSONObject;
 
 public class ScoreResult extends JDialog {
   private JPanel dialogPane = new JPanel();
@@ -192,25 +193,58 @@ public class ScoreResult extends JDialog {
   }
 
   public void setScore(
-      int blackAlive, int blackPoint, int whiteAlive, int whitePoint, double komi) {
+      int blackAlive,
+      int blackPoint,
+      int whiteAlive,
+      int whitePoint,
+      int blackCaptures,
+      int whiteCaptures,
+      double komi) {
     double blackAll = blackAlive + blackPoint;
     double whiteAll = whiteAlive + whitePoint + komi;
-    blackScore.setText(
-        Lizzie.resourceBundle.getString("ScoreResult.lblBlackScore")
-            + blackAlive
-            + "+"
-            + blackPoint
-            + "="
-            + blackAll);
-    whiteScore.setText(
-        Lizzie.resourceBundle.getString("ScoreResult.lblWhiteScore")
-            + whiteAlive
-            + "+"
-            + whitePoint
-            + "+"
-            + komi
-            + "="
-            + whiteAll);
+    boolean isJapanese = false;
+    if (Lizzie.leelaz.recentRulesLine != null) {
+      String line = Lizzie.leelaz.recentRulesLine;
+      JSONObject jo = new JSONObject(new String(line.substring(2)));
+      if (jo.optString("scoring", "").contentEquals("TERRITORY")) isJapanese = true;
+    }
+    if (isJapanese) {
+      blackAll = blackPoint - whiteCaptures;
+      whiteAll = whitePoint - blackCaptures + komi;
+      blackScore.setText(
+          Lizzie.resourceBundle.getString("ScoreResult.lblBlackScore")
+              + blackPoint
+              + "-"
+              + whiteCaptures
+              + "="
+              + blackAll);
+      whiteScore.setText(
+          Lizzie.resourceBundle.getString("ScoreResult.lblWhiteScore")
+              + whitePoint
+              + "-"
+              + blackCaptures
+              + "+"
+              + komi
+              + "="
+              + whiteAll);
+    } else {
+      blackScore.setText(
+          Lizzie.resourceBundle.getString("ScoreResult.lblBlackScore")
+              + blackAlive
+              + "+"
+              + blackPoint
+              + "="
+              + blackAll);
+      whiteScore.setText(
+          Lizzie.resourceBundle.getString("ScoreResult.lblWhiteScore")
+              + whiteAlive
+              + "+"
+              + whitePoint
+              + "+"
+              + komi
+              + "="
+              + whiteAll);
+    }
     scoreResult.setText(
         (blackAll >= whiteAll
                 ? Lizzie.resourceBundle.getString("ScoreResult.blackWin")

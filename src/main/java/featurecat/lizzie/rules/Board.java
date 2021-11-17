@@ -3899,25 +3899,32 @@ public class Board {
   public void showGroupResult() {
     Lizzie.frame.drawScore(boardGroupInfo);
     int blackAlive = 0, blackPoint = 0, whiteAlive = 0, whitePoint = 0;
+    int blackCaptures = 0, whiteCaptures = 0;
+    blackCaptures = Lizzie.board.getData().blackCaptures;
+    whiteCaptures = Lizzie.board.getData().whiteCaptures;
     double komi = getHistory().getGameInfo().getKomi();
     for (int j = 0; j < boardHeight; j++) {
       for (int i = 0; i < boardWidth; i++) {
         if (!boardGroupInfo.groupStatus[i][j].isMarkedEmpty)
           if (boardGroupInfo.groupStatus[i][j].value == 1) {
             if (boardGroupInfo.oriStones[getIndex(i, j)] == Stone.BLACK) blackAlive++;
+            if (boardGroupInfo.oriStones[getIndex(i, j)] == Stone.WHITE) blackCaptures++;
             else blackPoint++;
           } else if (boardGroupInfo.groupStatus[i][j].value == 2) {
             if (boardGroupInfo.oriStones[getIndex(i, j)] == Stone.WHITE) whiteAlive++;
+            if (boardGroupInfo.oriStones[getIndex(i, j)] == Stone.BLACK) whiteCaptures++;
             else whitePoint++;
           }
       }
     }
     if (boardGroupInfo.scoreResult == null) {
       boardGroupInfo.scoreResult = new ScoreResult(Lizzie.frame);
-      boardGroupInfo.scoreResult.setScore(blackAlive, blackPoint, whiteAlive, whitePoint, komi);
+      boardGroupInfo.scoreResult.setScore(
+          blackAlive, blackPoint, whiteAlive, whitePoint, blackCaptures, whiteCaptures, komi);
       boardGroupInfo.scoreResult.setVisible(true);
     } else {
-      boardGroupInfo.scoreResult.setScore(blackAlive, blackPoint, whiteAlive, whitePoint, komi);
+      boardGroupInfo.scoreResult.setScore(
+          blackAlive, blackPoint, whiteAlive, whitePoint, blackCaptures, whiteCaptures, komi);
       boardGroupInfo.scoreResult.setVisible(true);
     }
   }
