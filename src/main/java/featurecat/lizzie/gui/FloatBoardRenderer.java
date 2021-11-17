@@ -965,7 +965,7 @@ public class FloatBoardRenderer {
 
   private void drawMoveRankMark(Graphics2D g) {
     g.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
-    BoardHistoryNode node = Lizzie.board.getHistory().getMainEnd();
+    BoardHistoryNode node = Lizzie.board.getHistory().getCurrentHistoryNode();
     int limit = Lizzie.config.moveRankMarkLastMove;
     boolean shouldLimit = limit > 0;
     int[] moveNumberList = node.getData().moveNumberList;
@@ -990,7 +990,7 @@ public class FloatBoardRenderer {
                 : node.getData().moveMNNumber > -1
                     ? node.getData().moveMNNumber
                     : node.getData().moveNumber;
-        if (node == Lizzie.board.getHistory().getMainEnd()) {
+        if (node == Lizzie.board.getHistory().getCurrentHistoryNode()) {
           int markX = x + scaledMarginWidth + squareWidth * coords[0];
           int markY = y + scaledMarginHeight + squareHeight * coords[1];
           int playouts = node.getData().getPlayouts();
@@ -1011,10 +1011,18 @@ public class FloatBoardRenderer {
             }
           }
           g.setColor(node.getData().lastMoveColor.isWhite() ? Color.BLACK : Color.WHITE);
-          drawCircle(g, markX, markY, (int) Math.round(squareWidth * 0.22f), 5f);
-          if (Lizzie.config.moveRankMarkLastMove > 1 || Lizzie.config.moveRankMarkLastMove == 0) {
-            g.setColor(Color.RED);
-            drawPolygonSmall(g, markX, markY, stoneRadius);
+          switch (Lizzie.config.stoneIndicatorType) {
+            case 0:
+              drawPolygonCircle(g, markX, markY, stoneRadius);
+              break;
+            default:
+              drawCircle(g, markX, markY, (int) Math.round(squareWidth * 0.22f), 5f);
+              if (Lizzie.config.moveRankMarkLastMove > 1
+                  || Lizzie.config.moveRankMarkLastMove == 0) {
+                g.setColor(Color.RED);
+                drawPolygonSmall(g, markX, markY, stoneRadius);
+              }
+              break;
           }
         } else {
           NodeInfo nodeInfo = node.previous().get().nodeInfo;
@@ -1064,8 +1072,21 @@ public class FloatBoardRenderer {
     } else if (winrateDiff <= Lizzie.config.winLossThreshold1
         || scoreDiff <= Lizzie.config.scoreLossThreshold1) g.setColor(new Color(140, 202, 34));
     else g.setColor(new Color(0, 180, 0));
-    int radius = (int) Math.round(squareWidth * (isLastMove ? 0.22f : radiusF));
-    fillCircle(g, markX, markY, radius);
+
+    if (isLastMove) {
+      switch (Lizzie.config.stoneIndicatorType) {
+        case 0:
+          drawPolygon(g, markX, markY, stoneRadius);
+          break;
+        default:
+          int radius = (int) Math.round(squareWidth * 0.22f);
+          fillCircle(g, markX, markY, radius);
+          break;
+      }
+    } else {
+      int radius = (int) Math.round(squareWidth * radiusF);
+      fillCircle(g, markX, markY, radius);
+    }
   }
 
   /** Draw move numbers and/or mark the last played move */
@@ -2427,6 +2448,22 @@ public class FloatBoardRenderer {
   private void drawCircle(Graphics2D g, int centerX, int centerY, int radius, float f) {
     g.setStroke(new BasicStroke(radius / f));
     g.drawOval(centerX - radius, centerY - radius, 2 * radius, 2 * radius);
+  }
+
+  private void drawPolygon(Graphics2D g, int centerX, int centerY, int radius) {
+    int[] xPoints = {centerX, centerX - (radius / 2), centerX + (radius / 2)};
+    int[] yPoints = {
+      centerY - (10 * radius / 22), centerY + (8 * radius / 22), centerY + (8 * radius / 22)
+    };
+    g.fillPolygon(xPoints, yPoints, 3);
+  }
+
+  private void drawPolygonCircle(Graphics2D g, int centerX, int centerY, int radius) {
+    int[] xPoints = {centerX, centerX - (radius / 2), centerX + (radius / 2)};
+    int[] yPoints = {
+      centerY - (10 * radius / 22), centerY + (8 * radius / 22), centerY + (8 * radius / 22)
+    };
+    g.drawPolygon(xPoints, yPoints, 3);
   }
 
   private void drawPolygonSmall(Graphics2D g, int centerX, int centerY, int radius) {
