@@ -191,8 +191,14 @@ public class ContributeEngine {
       Lizzie.board.clear(false);
       currentWatchGame = watchGame;
       Lizzie.board.reopen(currentWatchGame.sizeX, currentWatchGame.sizeY);
-      Lizzie.board.getHistory().getGameInfo().setPlayerBlack(currentWatchGame.blackPlayer);
-      Lizzie.board.getHistory().getGameInfo().setPlayerWhite(currentWatchGame.whitePlayer);
+      Lizzie.board
+          .getHistory()
+          .getGameInfo()
+          .setPlayerBlack(currentWatchGame.blackPlayer.replaceAll(" ", ""));
+      Lizzie.board
+          .getHistory()
+          .getGameInfo()
+          .setPlayerWhite(currentWatchGame.whitePlayer.replaceAll(" ", ""));
       Lizzie.board.getHistory().getGameInfo().setKomi(currentWatchGame.komi);
       if (currentWatchGame.initMoveList != null && currentWatchGame.initMoveList.size() > 0)
         setContributeMoveList(currentWatchGame.initMoveList);

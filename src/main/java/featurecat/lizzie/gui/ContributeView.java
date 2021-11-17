@@ -93,7 +93,11 @@ public class ContributeView extends JDialog {
     txtAutoPlayInterval.setColumns(5);
 
     JCheckBox chkAutoPlayNextGame = new JFontCheckBox("自动播放下一局");
+    chkAutoPlayNextGame.setText("跳转下一局");
     autoPlayPanel.add(chkAutoPlayNextGame);
+
+    JCheckBox chkIgnoreNone19 = new JFontCheckBox("跳过非19路");
+    autoPlayPanel.add(chkIgnoreNone19);
 
     txtRules = new JTextPane();
     txtRules.setText(

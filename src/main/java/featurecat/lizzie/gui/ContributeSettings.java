@@ -24,8 +24,9 @@ public class ContributeSettings extends JDialog {
     super(owner);
     setTitle("KataGo跑谱贡献设置");
 
+    String engineTip = "请务必使用官方KataGo引擎,否则无法跑谱贡献";
     String gamesTip = "同时进行多盘对局以增加GPU/CPU利用率,设置为default_gtp.cfg中numSearchThreads的数值即可";
-    String configTip = "跑谱贡献配置文件将不同于普通的分析引擎配置文件,默认名字为contribute_example.cfg";
+    String configTip = "可配置使用的显卡数量等,不同于普通的分析引擎配置文件,默认名字为contribute_example.cfg";
     String ownerShipTip = "以跑谱速度略微降低为代价,显示领地";
 
     JPanel mainPanel = new JPanel();
@@ -48,9 +49,17 @@ public class ContributeSettings extends JDialog {
 
     JLabel lblEngine = new JFontLabel("KataGo引擎");
     engineFilePanel.add(lblEngine);
+    lblEngine.setToolTipText(engineTip);
 
     JButton btnScanEngine = new JFontButton("浏览");
     engineFilePanel.add(btnScanEngine);
+    btnScanEngine.setToolTipText(engineTip);
+
+    JCheckBox chkRemoteEngine = new JFontCheckBox("远程引擎");
+    engineFilePanel.add(chkRemoteEngine);
+
+    JButton btnRemoteEngine = new JFontButton("设置");
+    engineFilePanel.add(btnRemoteEngine);
 
     txtEngineFile = new JFontTextField();
     GridBagConstraints gbc_txtEngineFile = new GridBagConstraints();
@@ -60,6 +69,7 @@ public class ContributeSettings extends JDialog {
     gbc_txtEngineFile.gridy = 0;
     mainPanel.add(txtEngineFile, gbc_txtEngineFile);
     txtEngineFile.setColumns(10);
+    txtEngineFile.setToolTipText(engineTip);
 
     JPanel configFilePanel = new JPanel();
     GridBagConstraints gbc_configFilePanel = new GridBagConstraints();
