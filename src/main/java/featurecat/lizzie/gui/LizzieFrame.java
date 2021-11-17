@@ -9843,6 +9843,7 @@ public class LizzieFrame extends JFrame {
   }
 
   public boolean stopAiPlayingAndPolicy() {
+    toolbar.isPkStop = false;
     boolean isGaming =
         Lizzie.frame.isPlayingAgainstLeelaz || Lizzie.frame.isAnaPlayingAgainstLeelaz;
     if (Lizzie.frame.isShowingHeatmap) {
@@ -11549,9 +11550,17 @@ public class LizzieFrame extends JFrame {
             } else if (leftMinuts > 0) {
               leftMinuts--;
               leftSeconds = 59;
-            } else if (byoSeconds > 0) {
+            } else if (byoSeconds >= 0) {
               if (byoSeconds <= 10) {
-                Utils.playByoyomi(byoSeconds - 1);
+                int seconds = byoSeconds - 1;
+                Runnable runnable =
+                    new Runnable() {
+                      public void run() {
+                        if (seconds >= 0) Utils.playByoyomi(seconds);
+                      }
+                    };
+                Thread thread = new Thread(runnable);
+                thread.start();
               }
               byoSeconds--;
             } else if (byoTimes > 1) {

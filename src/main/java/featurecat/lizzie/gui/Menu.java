@@ -8305,8 +8305,19 @@ public class Menu extends JMenuBar {
     }
     if (Lizzie.frame.isAnaPlayingAgainstLeelaz || Lizzie.frame.isPlayingAgainstLeelaz) {
       if (Lizzie.frame.isAnaPlayingAgainstLeelaz) {
-        Lizzie.leelaz.togglePonder();
-        Lizzie.leelaz.isGamePaused = !Lizzie.leelaz.isPondering();
+        boolean needTogglePonder = true;
+        if (Lizzie.leelaz.isGamePaused) {
+          if (!Lizzie.config.playponder
+              && Lizzie.frame.playerIsBlack == Lizzie.board.getHistory().isBlacksTurn()) {
+            Lizzie.leelaz.Pondering();
+            Lizzie.leelaz.isGamePaused = false;
+            needTogglePonder = false;
+          }
+        }
+        if (needTogglePonder) {
+          Lizzie.leelaz.togglePonder();
+          Lizzie.leelaz.isGamePaused = !Lizzie.leelaz.isPondering();
+        }
       }
       if (Lizzie.frame.isPlayingAgainstLeelaz) {
         Lizzie.leelaz.isGamePaused = !Lizzie.leelaz.isGamePaused;
@@ -9073,7 +9084,9 @@ public class Menu extends JMenuBar {
             if (!Lizzie.frame.isAnaPlayingAgainstLeelaz
                 && !Lizzie.frame.isPlayingAgainstLeelaz
                 && !EngineManager.isEngineGame) doubleMenuPauseGame.setEnabled(false);
-            else doubleMenuPauseGame.setEnabled(true);
+            else {
+              doubleMenuPauseGame.setEnabled(true);
+            }
             if ((Lizzie.frame.isAnaPlayingAgainstLeelaz
                     || Lizzie.frame.isPlayingAgainstLeelaz
                     || EngineManager.isEngineGame)
@@ -9081,12 +9094,14 @@ public class Menu extends JMenuBar {
               if (Lizzie.config.showDoubleMenu) {
                 doubleMenuStopGame.setVisible(true);
                 doubleMenuNewGame.setVisible(false);
-              } else doubleMenuNewGame.setText(resourceBundle.getString("Menu.endGameBtn"));
+              }
+              doubleMenuNewGame.setText(resourceBundle.getString("Menu.endGameBtn"));
             } else {
               if (Lizzie.config.showDoubleMenu) {
                 doubleMenuStopGame.setVisible(false);
                 doubleMenuNewGame.setVisible(true);
-              } else doubleMenuNewGame.setText(resourceBundle.getString("Menu.newGameBtn"));
+              }
+              doubleMenuNewGame.setText(resourceBundle.getString("Menu.newGameBtn"));
             }
             if (Lizzie.frame.isAnaPlayingAgainstLeelaz || Lizzie.frame.isPlayingAgainstLeelaz)
               doubleMenuResign.setVisible(true);
