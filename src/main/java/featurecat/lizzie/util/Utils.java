@@ -739,7 +739,7 @@ public class Utils {
   public static void copyClockHelper() {
     // TODO Auto-generated method stub
     try {
-      copy("/assets/clockHelper/InVisibleFrame.jar", "clockHelper");
+      copy("/assets/clockHelper/invisibleFrame.jar", "clockHelper");
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
