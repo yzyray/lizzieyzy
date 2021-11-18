@@ -187,7 +187,7 @@ public class SubBoardRenderer {
         && !Lizzie.frame.isCounting
         && !Lizzie.frame.isShowingHeatmap
         && Lizzie.config.showKataGoEstimate
-        && Lizzie.config.showKataGoEstimateOnMainbord) {
+        && Lizzie.config.showKataGoEstimateOnSubbord) {
       if (estimateArray != null) {
         if (Lizzie.config.showKataGoEstimateBySize) {
           drawKataEstimateBySize(estimateArray, false);
