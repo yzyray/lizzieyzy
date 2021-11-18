@@ -8,10 +8,13 @@ import featurecat.lizzie.rules.BoardHistoryNode;
 import featurecat.lizzie.rules.Stone;
 import featurecat.lizzie.util.Utils;
 
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
 import org.jdesktop.swingx.util.OS;
@@ -20,16 +23,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ContributeEngine {
-  public ArrayList<ContributeGameInfo> contributeGames;
-  public ArrayList<ContributeUnParseGameInfo> unParseGameInfos;
- public int watchingGameIndex = -1;
-  public ContributeGameInfo currentWatchGame;
+	private ArrayList<ContributeGameInfo> contributeGames;
+	private ArrayList<ContributeUnParseGameInfo> unParseGameInfos;
+	private int watchingGameIndex = -1;
+	private ContributeGameInfo currentWatchGame;
   
-  public Process process;
-  public boolean isNormalEnd = false;
+	private Process process;
+	public boolean isNormalEnd = false;
   
   private BufferedReader inputStream;
-  private BufferedOutputStream outputStream;
+  //private BufferedOutputStream outputStream;
   private BufferedReader errorStream;
   
   private String engineCommand;
@@ -37,17 +40,50 @@ public class ContributeEngine {
   private ScheduledExecutorService executorErr;
   private List<String> commands;
   
-  public boolean useJavaSSH = false;
-  public String ip;
-  public String port;
-  public String userName;
-  public String password;
-  public boolean useKeyGen;
-  public String keyGenPath;
+  private boolean useJavaSSH = false;
+  private ContributeSSHController javaSSH;
+  private String ip;
+  private String port;
+  private String userName;
+  private String password;
+  private boolean useKeyGen;
+  private String keyGenPath;
   public boolean javaSSHClosed;
+  private String engineParentPath="";
 
   public ContributeEngine() {
-	  engineCommand = Lizzie.config.analysisEngineCommand;
+	  if(Lizzie.config.contributeUseCommand)
+	  {
+		  engineCommand=Lizzie.config.contributeCommand;
+		  try {
+			  String katagoPath=Lizzie.config.contributeCommand.substring(0,Lizzie.config.contributeCommand.toLowerCase().lastIndexOf("katago"));
+			  engineParentPath=katagoPath.substring(0,getLastIndexOfFileSep(katagoPath));
+		  }
+		  catch (Exception e) {
+	    	 e.printStackTrace();
+	      }
+	  }
+	  else
+	  {		 
+		  engineCommand=Lizzie.config.contributeEnginePath+" contribute"; 
+		  try {
+			  engineParentPath=Lizzie.config.contributeEnginePath.substring(0,getLastIndexOfFileSep(Lizzie.config.contributeEnginePath));
+		  }
+		  catch (Exception e) {
+	    	 e.printStackTrace();
+	      }		 
+		  boolean useConfigFile=Lizzie.config.contributeConfigPath.trim().length()>0;
+		  if(useConfigFile)
+			  engineCommand+="-config "+Lizzie.config.contributeConfigPath;
+		  engineCommand+=" -override-config ";
+		  if(!useConfigFile)
+			  engineCommand+="\"serverUrl = https://katagotraining.org/\",";
+		  engineCommand+="\"username = "+Lizzie.config.contributeUserName+"\",";
+		  engineCommand+="\"password = "+Lizzie.config.contributePassword+"\",";
+		  engineCommand+="\"maxSimultaneousGames = "+Lizzie.config.contributeBatchGames+"\",";
+		  engineCommand+="\"includeOwnership = "+(Lizzie.config.contributeShowEstimate?"true":"false")+"\",";
+		  engineCommand+="\"logGamesAsJson = true\",";		  
+	  }
 	    RemoteEngineData remoteData = Utils.getContributeRemoteEngineData();
 	    this.useJavaSSH = remoteData.useJavaSSH;
 	    this.ip = remoteData.ip;
@@ -61,8 +97,155 @@ public class ContributeEngine {
   }
   
   private void startEngine(String engineCommand2) {
+	  commands = Utils.splitCommand(engineCommand);
+	  if (this.useJavaSSH) {
+	      this.javaSSH = new ContributeSSHController(this, this.ip, this.port);
+	      boolean loginStatus = false;
+	      if (this.useKeyGen) {
+	        loginStatus =
+	            this.javaSSH
+	                .loginByFileKey(this.engineCommand, this.userName, new File(this.keyGenPath))
+	                .booleanValue();
+	      } else {
+	        loginStatus =
+	            this.javaSSH.login(this.engineCommand, this.userName, this.password).booleanValue();
+	      }
+	      if (loginStatus) {
+	        this.inputStream = new BufferedReader(new InputStreamReader(this.javaSSH.getStdout()));
+	    //    this.outputStream = new BufferedOutputStream(this.javaSSH.getStdin());
+	        this.errorStream = new BufferedReader(new InputStreamReader(this.javaSSH.getSterr()));
+	        javaSSHClosed = false;
+	      } else {
+	        javaSSHClosed = true;
+	        return;
+	      }
+	    } else {
+	      ProcessBuilder processBuilder = new ProcessBuilder(commands);
+	      processBuilder.redirectErrorStream(true);
+	      try {
+	        process = processBuilder.start();
+	      } catch (IOException e) {
+	    	  tryToDignostic(
+	            Lizzie.resourceBundle.getString("Leelaz.engineFailed") + ": " + e.getLocalizedMessage());
+	        process = null;
+	        return;
+	      }
+	      initializeStreams();
+	    }
+	    executor = Executors.newSingleThreadScheduledExecutor();
+	    executor.execute(this::read);
+	    executorErr = Executors.newSingleThreadScheduledExecutor();
+	    executorErr.execute(this::readError);
+	    isNormalEnd = false;
+}
+  
+  private void readError() {
+	    String line = "";
+
+	    try {
+	      while ((line = errorStream.readLine()) != null) {
+	        try {
+	          parseLineForError(line);
+	        } catch (Exception e) {
+	          e.printStackTrace();
+	        }
+	      }
+	    } catch (IOException e) {
+	      e.printStackTrace();
+	    }
+	  }  
+
+private void read() {
+	    try {
+	      String line = "";
+	      while ((line = inputStream.readLine()) != null) {
+	        try {
+	          parseLine(line.toString());
+	        } catch (Exception ex) {
+	          ex.printStackTrace();
+	        }
+	      }
+	      // this line will be reached when engine shuts down
+	      if (this.useJavaSSH) javaSSHClosed = true;
+	      System.out.println("estimate process ended.");
+	      // Do no exit for switching weights
+	      // System.exit(-1);
+	    } catch (IOException e) {
+	    }
+	    if (this.useJavaSSH) javaSSHClosed = true;
+	    if (!isNormalEnd) {
+	    	tryToDignostic(Lizzie.resourceBundle.getString("Leelaz.engineEndUnormalHint"));
+	       }
+	    process = null;
+	    shutdown();
+	    return;
+	  }
+
+private void parseLineForError(String line) {
+	// TODO Auto-generated method stub
 	
 }
+
+private void parseLine(String line) {
+	// TODO Auto-generated method stub
+	if(line.startsWith("{")) {
+		//json game info
+	}
+	else if (line.contains("Finished game")){
+		//2021-11-02 09:21:45+0800: Finished game 8 (training), uploaded sgf katago_contribute/kata1/sgfs/kata1-b40c256-s10312780288-d2513725330/155A1E55A4145135.sgf and training data katago_contribute/kata1/tdata/kata1-b40c256-s10312780288-d2513725330/273F621AC4CF6ACF.npz (8 rows)
+		String params[]=line.split(" ");
+		String sgfPath="";
+		for(int i=0;i<params.length-1;i++) {
+			if(params[i].equals("sgf"))
+				sgfPath=params[i+1];
+		}
+		//katago_contribute/kata1/sgfs/kata1-b40c256-s10312780288-d2513725330/155A1E55A4145135.sgf
+		if(sgfPath.length()>0) {
+			String gameId=sgfPath.substring(getLastIndexOfFileSep(sgfPath)+1,sgfPath.lastIndexOf("."));
+			if(contributeGames!=null)
+			{
+				for(ContributeGameInfo game:contributeGames)
+				{
+					if(game.gameId.equals(gameId))
+					{
+						game.complete=true;
+						if(!useJavaSSH)
+						{
+							tryToGetResult(engineParentPath+File.separator+sgfPath);
+						}
+					}
+				}
+			}
+		}		
+	}
+		
+}
+
+private void tryToGetResult(String string) {
+	// TODO Auto-generated method stub
+	
+}
+
+private int getLastIndexOfFileSep(String path) {
+	return Math.max(path.lastIndexOf("/"),path.lastIndexOf("\\"));
+}
+
+private void normalQuit() {
+    isNormalEnd = true;
+    if (this.useJavaSSH) this.javaSSH.close();
+    else this.process.destroyForcibly();
+  }
+
+private void shutdown() {
+    if (useJavaSSH) javaSSH.close();
+    process.destroy();
+  }
+  
+  private void initializeStreams() {
+	    inputStream = new BufferedReader(new InputStreamReader(process.getInputStream()));
+	//    outputStream = new BufferedOutputStream(process.getOutputStream());
+	    errorStream = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+	  }
 
 public void test() {
 	  String jsonTestMove1 =
@@ -250,6 +433,10 @@ public void test() {
           .getGameInfo()
           .setPlayerWhite(currentWatchGame.whitePlayer.replaceAll(" ", ""));
       Lizzie.board.getHistory().getGameInfo().setKomi(currentWatchGame.komi);
+      if(currentWatchGame.complete)
+    	   Lizzie.board
+           .getHistory()
+           .getGameInfo().setResult(currentWatchGame.gameResult);
       if (currentWatchGame.initMoveList != null && currentWatchGame.initMoveList.size() > 0)
         setContributeMoveList(currentWatchGame.initMoveList);
       if (currentWatchGame.moveList != null && currentWatchGame.moveList.size() > 0)
