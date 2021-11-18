@@ -10,9 +10,7 @@ import javax.swing.SwingUtilities;
 
 public class PanelWithToolTips extends JPanel {
   public void add(JLabel label) {
-    String texts[] = label.getText().split("\n", 2);
-    String labelText = texts[0];
-    String toolTipText = (texts.length >= 2) ? texts[1] : labelText;
+    String labelText = label.getText();
     String displayedText =
         SwingUtilities.layoutCompoundLabel(
             label,
@@ -27,9 +25,15 @@ public class PanelWithToolTips extends JPanel {
             label.getBounds(),
             label.getBounds(),
             label.getIconTextGap());
-    label.setText(labelText);
-    if (displayedText != toolTipText) label.setToolTipText(toolTipText);
+    if (displayedText != labelText) label.setToolTipText(labelText);
     super.add(label);
+    SwingUtilities.invokeLater(
+        new Runnable() {
+          public void run() {
+            remove(label);
+            addImpl(label, null, -1);
+          }
+        });
   }
 
   public void add(JRadioButton radioButton) {
