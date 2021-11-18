@@ -12056,6 +12056,7 @@ public class LizzieFrame extends JFrame {
 
   public boolean allowPlaceStone = true;
   private Process processClockHelper;
+  public ContributeView contributeView;
 
   public void startTemporaryBoard() {
     if (isInTemporaryBoard) return;
@@ -12478,18 +12479,9 @@ public class LizzieFrame extends JFrame {
 
   public void testContibuteFrame() {
     // TODO Auto-generated method stub
-	String  sgfPath="katago_contribute/kata1/sgfs/kata1-b40c256-s10312780288-d2513725330/155A1E55A4145135.sgf";
-			if(sgfPath.length()>0) {			
-				String gameId=sgfPath.substring(getLastIndexOfFileSep(sgfPath)+1,sgfPath.lastIndexOf("."));
-				System.out.println(gameId);
-			}
-    //ContributeSettings contributeSettings = new ContributeSettings(this);
-  //  ContributeView contributeView = new ContributeView(this);
+    ContributeSettings contributeSettings = new ContributeSettings(this);
+     contributeView = new ContributeView(this);
   }
-  
-  private int getLastIndexOfFileSep(String path) {
-		return Math.max(path.lastIndexOf("/"),path.lastIndexOf("\\"));
-	}
   
   private void openInVisibleFrame() {
     String javaReadBoardName = "InVisibleFrame.jar";

@@ -24,7 +24,11 @@ public class ContributeView extends JDialog {
   private JTextField txtGameIndex;
   private JTextField txtAutoPlayInterval;
   private JLabel lblGameInfos;
+  private JLabel lblCurrentGameResult;
   private JTextPane txtRules;
+  private int finishedGames=0;
+  private int playingGames=0;
+  private int watchingGameIndex=0;
 
   public ContributeView(Window owner) {
     super(owner);
@@ -35,15 +39,15 @@ public class ContributeView extends JDialog {
     getContentPane().add(mainPanel, BorderLayout.CENTER);
     GridBagLayout gbl_mainPanel = new GridBagLayout();
     gbl_mainPanel.columnWidths = new int[] {336, 0};
-    gbl_mainPanel.rowHeights = new int[] {37, 37, 37, 0};
-    gbl_mainPanel.columnWeights = new double[] {0.0, Double.MIN_VALUE};
-    gbl_mainPanel.rowWeights = new double[] {0.0, 0.0, 0.0, Double.MIN_VALUE};
+    gbl_mainPanel.rowHeights = new int[] {37, 37, 37, 0, 0};
+    gbl_mainPanel.columnWeights = new double[] {1.0, Double.MIN_VALUE};
+    gbl_mainPanel.rowWeights = new double[] {0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
     mainPanel.setLayout(gbl_mainPanel);
 
     //		JPanel gameInfoPanel = new JPanel();
     //		mainPanel.add(gameInfoPanel);
 
-    lblGameInfos = new JFontLabel("已完成10局,正在进行5局,可观看15局,正在观看第3局");
+    lblGameInfos = new JFontLabel("已完成0局,正在进行0局,共0局,正在观看第0局");
     GridBagConstraints gbc_lblGameInfos = new GridBagConstraints();
     gbc_lblGameInfos.fill = GridBagConstraints.VERTICAL;
     gbc_lblGameInfos.insets = new Insets(0, 0, 5, 0);
@@ -77,6 +81,7 @@ public class ContributeView extends JDialog {
 
     JPanel autoPlayPanel = new JPanel();
     GridBagConstraints gbc_autoPlayPanel = new GridBagConstraints();
+    gbc_autoPlayPanel.insets = new Insets(0, 0, 5, 0);
     gbc_autoPlayPanel.fill = GridBagConstraints.VERTICAL;
     gbc_autoPlayPanel.gridx = 0;
     gbc_autoPlayPanel.gridy = 2;
@@ -99,6 +104,19 @@ public class ContributeView extends JDialog {
     JCheckBox chkIgnoreNone19 = new JFontCheckBox("跳过非19路");
     chkIgnoreNone19.setText("跳过非19x19");
     autoPlayPanel.add(chkIgnoreNone19);
+    
+    JPanel panel = new JPanel();
+    GridBagConstraints gbc_panel = new GridBagConstraints();
+    gbc_panel.fill = GridBagConstraints.BOTH;
+    gbc_panel.gridx = 0;
+    gbc_panel.gridy = 3;
+    mainPanel.add(panel, gbc_panel);
+    
+    lblCurrentGameResult = new JFontLabel("本局结果: ");
+    panel.add(lblCurrentGameResult);
+    
+    JButton btnHideShowResult = new JFontButton("隐藏");
+    panel.add(btnHideShowResult);
 
     txtRules = new JTextPane();
     txtRules.setText(
@@ -160,5 +178,24 @@ public class ContributeView extends JDialog {
     pack();
     setLocationRelativeTo(owner);
     setVisible(true);
+  }
+  
+  public void setResult(String result) {
+	  lblCurrentGameResult.setText("本局结果: "+result);
+  }
+  
+  public void setGames(int finishedGames,int playingGames) {
+	  this.finishedGames=finishedGames;
+			this.playingGames=playingGames;  
+			updateLblGameInfos();
+  }
+  
+  public void setWathGameIndex(int watchingGameIndex) {
+	this.watchingGameIndex=watchingGameIndex;
+	updateLblGameInfos();
+  }
+  
+  private void updateLblGameInfos() {
+  lblGameInfos = new JFontLabel("已完成"+finishedGames+"局,正在进行"+playingGames+"局,共"+(finishedGames+playingGames)+"局,正在观看第"+watchingGameIndex+"局");
   }
 }
