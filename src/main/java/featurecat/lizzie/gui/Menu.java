@@ -707,10 +707,10 @@ public class Menu extends JMenuBar {
 
     String moveNumberInBranchTips = resourceBundle.getString("Menu.moveNumberInBranchTips");
 
-    final JFontCheckBoxMenuItem moveNumberInBracnhFromOne =
+    final JFontCheckBoxMenuItem moveNumberInBranchFromOne =
         new JFontCheckBoxMenuItem(
             resourceBundle.getString("Menu.moveNumberInBracnhFromOne")); // ("分支内从1开始显示");
-    moveNumberInBracnhFromOne.addActionListener(
+    moveNumberInBranchFromOne.addActionListener(
         new ActionListener() {
 
           @Override
@@ -722,13 +722,13 @@ public class Menu extends JMenuBar {
                 "new-move-number-in-branch", Lizzie.config.newMoveNumberInBranch);
           }
         });
-    moveMenu.add(moveNumberInBracnhFromOne);
-    moveNumberInBracnhFromOne.setToolTipText(moveNumberInBranchTips);
+    moveMenu.add(moveNumberInBranchFromOne);
+    moveNumberInBranchFromOne.setToolTipText(moveNumberInBranchTips);
 
-    final JFontCheckBoxMenuItem moveNumberInBracnhFromOneContinue =
+    final JFontCheckBoxMenuItem moveNumberInBranchContinue =
         new JFontCheckBoxMenuItem(
             resourceBundle.getString("Menu.moveNumberInBracnhFromOneContinue")); // ("分支内继续总手数");
-    moveNumberInBracnhFromOneContinue.addActionListener(
+    moveNumberInBranchContinue.addActionListener(
         new ActionListener() {
 
           @Override
@@ -741,8 +741,8 @@ public class Menu extends JMenuBar {
                 "new-move-number-in-branch", Lizzie.config.newMoveNumberInBranch);
           }
         });
-    moveMenu.add(moveNumberInBracnhFromOneContinue);
-    moveNumberInBracnhFromOneContinue.setToolTipText(moveNumberInBranchTips);
+    moveMenu.add(moveNumberInBranchContinue);
+    moveNumberInBranchContinue.setToolTipText(moveNumberInBranchTips);
 
     moveMenu.addSeparator();
 
@@ -2472,19 +2472,18 @@ public class Menu extends JMenuBar {
             if (Lizzie.config.showVarMove) showMoveNumberOnVariationPane.setState(true);
             else showMoveNumberOnVariationPane.setState(false);
             if (Lizzie.config.newMoveNumberInBranch) {
-              moveNumberInBracnhFromOne.setState(true);
-              moveNumberInBracnhFromOneContinue.setState(false);
+              moveNumberInBranchFromOne.setState(true);
+              moveNumberInBranchContinue.setState(false);
             } else {
-              moveNumberInBracnhFromOne.setState(false);
-              moveNumberInBracnhFromOneContinue.setState(true);
+              moveNumberInBranchFromOne.setState(false);
+              moveNumberInBranchContinue.setState(true);
             }
 
-            if (Lizzie.config.showMoveAllInBranch || moveNumberInBracnhFromOneContinue.isSelected())
+            if (Lizzie.config.showMoveAllInBranch || allMoveNum.isSelected())
               showAllMoveNumberInBranch.setState(true);
             else showAllMoveNumberInBranch.setState(false);
-            if (moveNumberInBracnhFromOneContinue.isSelected())
-              showAllMoveNumberInBranch.setEnabled(false);
-            else showAllMoveNumberInBranch.setEnabled(true);
+            if (allMoveNum.isSelected()) showAllMoveNumberInBranch.setEnabled(false);
+
             if (Lizzie.config.showSuggestionOrder) showSuggestionOrder.setState(true);
             else showSuggestionOrder.setState(false);
             if (Lizzie.config.showSuggestionMaxRed) showMaxValueReverse.setState(true);

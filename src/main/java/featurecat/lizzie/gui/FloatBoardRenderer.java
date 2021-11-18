@@ -21,7 +21,6 @@ import java.awt.font.TextAttribute;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -1071,19 +1070,7 @@ public class FloatBoardRenderer {
     }
 
     int[] moveNumberList;
-    //    if (Lizzie.engineManager.isEngineGame && Lizzie.engineManager.engineGameInfo.isGenmove) {
-    //      if (isShowingBranch)
-    //        moveNumberList =
-    //            branchOpt.map(b -> b.data.moveNumberList).orElse(board.getMoveNumberList());
-    //      else moveNumberList = board.getMoveNumberList();
-    //    } else
     moveNumberList = branchOpt.map(b -> b.data.moveNumberList).orElse(board.getMoveNumberList());
-
-    // Allow to display only last move number
-    int lastMoveNumber =
-        branchOpt
-            .map(b -> b.data.moveNumber)
-            .orElse(Arrays.stream(moveNumberList).max().getAsInt());
     for (int i = 0; i < Board.boardWidth; i++) {
       for (int j = 0; j < Board.boardHeight; j++) {
         int stoneX = x + scaledMarginWidth + squareWidth * i;
@@ -1151,21 +1138,12 @@ public class FloatBoardRenderer {
             } else {
               g.setColor(Color.RED);
               drawPolygonSmall(g, stoneX, stoneY, stoneRadius);
-              //              if (Lizzie.engineManager.isEngineGame
-              //                  && Lizzie.engineManager.engineGameInfo.isGenmove
-              //                  && !isShowingBranch) {
-              //                continue;
-              //              }
             }
           }
           // Draw white letters on black stones nomally.
           // But use black letters for showing black moves without stones.
           else {
             if (reverse) continue;
-            //            if(stoneHere==Stone.BLACK_CAPTURED||stoneHere==Stone.WHITE_CAPTURED)
-            //            	 g.setColor(stoneHere==Stone.WHITE_CAPTURED? Color.WHITE : Color.BLACK);
-            //            else
-
             if (isShowingBranch
                 && Lizzie.config.showPvVisitsAllMove
                 && branch.pvVisitsList[here] > Lizzie.config.pvVisitsLimit) {
@@ -1208,11 +1186,6 @@ public class FloatBoardRenderer {
                     : Color.BLACK);
           }
           String moveNumberString = String.valueOf(mvNum);
-          if (Lizzie.config.showMoveNumberFromOne && Lizzie.config.allowMoveNumber > 0) {
-            if (lastMoveNumber > Lizzie.config.allowMoveNumber)
-              moveNumberString =
-                  String.valueOf(mvNum - (lastMoveNumber - Lizzie.config.allowMoveNumber));
-          }
           if (isShowingPvVists) {
             if (Lizzie.frame.isTrying) {
               if (mvNum < 0) {

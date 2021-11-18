@@ -1716,8 +1716,10 @@ public class BoardRenderer {
     Board board = Lizzie.board;
     Optional<int[]> lastMoveOpt = branchOpt.map(b -> b.data.lastMove).orElse(board.getLastMove());
     drawPass(g, board, lastMoveOpt);
+    boolean showAllinBranch = false;
     if (Lizzie.config.showMoveAllInBranch
         && !Lizzie.board.getHistory().getCurrentHistoryNode().isMainTrunk()) {
+      showAllinBranch = true;
     } else if (Lizzie.config.allowMoveNumber == 0
         && !branchOpt.isPresent()
         && !Lizzie.frame.isTrying) {
@@ -1772,9 +1774,8 @@ public class BoardRenderer {
         int here = Board.getIndex(i, j);
 
         // Allow to display only last move number
-        if (Lizzie.config.showMoveAllInBranch
-            && !Lizzie.board.getHistory().getCurrentHistoryNode().isMainTrunk()) {
-        } else {
+
+        if (!showAllinBranch) {
           if (!Lizzie.frame.isTrying && !EngineManager.isEngineGame) {
             if ((Lizzie.config.allowMoveNumber > -1
                 && lastMoveNumber - moveNumberList[here] >= Lizzie.config.allowMoveNumber)) {
@@ -1840,10 +1841,13 @@ public class BoardRenderer {
             g.setColor(stoneHere.isBlackColor() ? Color.WHITE : Color.BLACK);
           }
           String moveNumberString = String.valueOf(mvNum);
-          if (Lizzie.config.showMoveNumberFromOne && Lizzie.config.allowMoveNumber > 0) {
-            if (lastMoveNumber > Lizzie.config.allowMoveNumber)
+          if (!showAllinBranch
+              && Lizzie.config.showMoveNumberFromOne
+              && Lizzie.config.allowMoveNumber > 0) {
+            if (lastMoveNumber > Lizzie.config.allowMoveNumber) {
               moveNumberString =
                   String.valueOf(mvNum - (lastMoveNumber - Lizzie.config.allowMoveNumber));
+            }
           }
           if (isShowingPvVists) {
             if (Lizzie.frame.isTrying) {
