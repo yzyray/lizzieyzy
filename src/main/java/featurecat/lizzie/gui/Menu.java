@@ -684,7 +684,6 @@ public class Menu extends JMenuBar {
           }
         });
     moveMenu.add(anyMoveNum);
-    moveMenu.addSeparator();
 
     final JFontCheckBoxMenuItem moveNumberAlwaysFromOne =
         new JFontCheckBoxMenuItem(
@@ -704,6 +703,10 @@ public class Menu extends JMenuBar {
         });
     moveMenu.add(moveNumberAlwaysFromOne);
 
+    moveMenu.addSeparator();
+
+    String moveNumberInBranchTips = resourceBundle.getString("Menu.moveNumberInBranchTips");
+
     final JFontCheckBoxMenuItem moveNumberInBracnhFromOne =
         new JFontCheckBoxMenuItem(
             resourceBundle.getString("Menu.moveNumberInBracnhFromOne")); // ("分支内从1开始显示");
@@ -720,6 +723,7 @@ public class Menu extends JMenuBar {
           }
         });
     moveMenu.add(moveNumberInBracnhFromOne);
+    moveNumberInBracnhFromOne.setToolTipText(moveNumberInBranchTips);
 
     final JFontCheckBoxMenuItem moveNumberInBracnhFromOneContinue =
         new JFontCheckBoxMenuItem(
@@ -738,6 +742,9 @@ public class Menu extends JMenuBar {
           }
         });
     moveMenu.add(moveNumberInBracnhFromOneContinue);
+    moveNumberInBracnhFromOneContinue.setToolTipText(moveNumberInBranchTips);
+
+    moveMenu.addSeparator();
 
     final JFontCheckBoxMenuItem showAllMoveNumberInBranch =
         new JFontCheckBoxMenuItem(
@@ -753,6 +760,8 @@ public class Menu extends JMenuBar {
           }
         });
     moveMenu.add(showAllMoveNumberInBranch);
+
+    moveMenu.addSeparator();
 
     final JFontCheckBoxMenuItem showMoveNumberOnVariationPane =
         new JFontCheckBoxMenuItem(
@@ -2458,7 +2467,8 @@ public class Menu extends JMenuBar {
             }
             if (Lizzie.config.showMoveNumberFromOne) moveNumberAlwaysFromOne.setState(true);
             else moveNumberAlwaysFromOne.setState(false);
-
+            if (allMoveNum.isSelected()) moveNumberAlwaysFromOne.setEnabled(false);
+            else moveNumberAlwaysFromOne.setEnabled(true);
             if (Lizzie.config.showVarMove) showMoveNumberOnVariationPane.setState(true);
             else showMoveNumberOnVariationPane.setState(false);
             if (Lizzie.config.newMoveNumberInBranch) {
@@ -2469,8 +2479,12 @@ public class Menu extends JMenuBar {
               moveNumberInBracnhFromOneContinue.setState(true);
             }
 
-            if (Lizzie.config.showMoveAllInBranch) showAllMoveNumberInBranch.setState(true);
+            if (Lizzie.config.showMoveAllInBranch || moveNumberInBracnhFromOneContinue.isSelected())
+              showAllMoveNumberInBranch.setState(true);
             else showAllMoveNumberInBranch.setState(false);
+            if (moveNumberInBracnhFromOneContinue.isSelected())
+              showAllMoveNumberInBranch.setEnabled(false);
+            else showAllMoveNumberInBranch.setEnabled(true);
             if (Lizzie.config.showSuggestionOrder) showSuggestionOrder.setState(true);
             else showSuggestionOrder.setState(false);
             if (Lizzie.config.showSuggestionMaxRed) showMaxValueReverse.setState(true);

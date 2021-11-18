@@ -1385,11 +1385,13 @@ public class ConfigDialog2 extends JDialog {
     lblMoveNumInBracnh.setBounds(10, 130, 139, 15);
     uiTab.add(lblMoveNumInBracnh);
 
+    String moveNumberInBranchTips = resourceBundle.getString("Menu.moveNumberInBranchTips");
     rdoBranchMoveOne =
         new JRadioButton(
             resourceBundle.getString("LizzieConfig.rdoBranchMoveOne")); // ("从1开始"); // $NON-NLS-1$
     rdoBranchMoveOne.setBounds(225, 128, 86, 23);
     uiTab.add(rdoBranchMoveOne);
+    rdoBranchMoveOne.setToolTipText(moveNumberInBranchTips);
 
     rdoBranchMoveContinue =
         new JRadioButton(
@@ -1397,6 +1399,7 @@ public class ConfigDialog2 extends JDialog {
                 "LizzieConfig.rdoBranchMoveContinue")); // ("继续"); // $NON-NLS-1$
     rdoBranchMoveContinue.setBounds(Lizzie.config.isChinese ? 112 : 121, 128, 80, 23);
     uiTab.add(rdoBranchMoveContinue);
+    rdoBranchMoveContinue.setToolTipText(moveNumberInBranchTips);
 
     ButtonGroup branchMove = new ButtonGroup();
     branchMove.add(rdoBranchMoveContinue);
