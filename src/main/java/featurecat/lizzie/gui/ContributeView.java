@@ -97,6 +97,7 @@ public class ContributeView extends JDialog {
     autoPlayPanel.add(chkAutoPlayNextGame);
 
     JCheckBox chkIgnoreNone19 = new JFontCheckBox("跳过非19路");
+    chkIgnoreNone19.setText("跳过非19x19");
     autoPlayPanel.add(chkIgnoreNone19);
 
     txtRules = new JTextPane();

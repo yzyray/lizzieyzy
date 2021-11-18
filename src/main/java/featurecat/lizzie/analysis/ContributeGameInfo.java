@@ -14,4 +14,5 @@ public class ContributeGameInfo {
   public ArrayList<ContributeMoveInfo> initMoveList;
   public ArrayList<ContributeMoveInfo> moveList;
   public boolean isWatching;
+  public boolean complete=false;
 }

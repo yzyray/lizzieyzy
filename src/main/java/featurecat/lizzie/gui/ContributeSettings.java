@@ -19,6 +19,7 @@ public class ContributeSettings extends JDialog {
   private JTextField txtUserName;
   private JTextField txtPassword;
   private JTextField txtGames;
+  private JTextField textField;
 
   public ContributeSettings(Window owner) {
     super(owner);
@@ -34,9 +35,9 @@ public class ContributeSettings extends JDialog {
     getContentPane().add(mainPanel, BorderLayout.CENTER);
     GridBagLayout gbl_mainPanel = new GridBagLayout();
     gbl_mainPanel.columnWidths = new int[] {217, 217, 0};
-    gbl_mainPanel.rowHeights = new int[] {41, 41, 41, 41, 41, 41, 0};
-    gbl_mainPanel.columnWeights = new double[] {1.0, 0.0, Double.MIN_VALUE};
-    gbl_mainPanel.rowWeights = new double[] {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, Double.MIN_VALUE};
+    gbl_mainPanel.rowHeights = new int[] {41, 41, 0, 41, 41, 41, 41, 0};
+    gbl_mainPanel.columnWeights = new double[] {1.0, 1.0, Double.MIN_VALUE};
+    gbl_mainPanel.rowWeights = new double[] {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, Double.MIN_VALUE};
     mainPanel.setLayout(gbl_mainPanel);
 
     JPanel engineFilePanel = new JPanel();
@@ -54,12 +55,6 @@ public class ContributeSettings extends JDialog {
     JButton btnScanEngine = new JFontButton("浏览");
     engineFilePanel.add(btnScanEngine);
     btnScanEngine.setToolTipText(engineTip);
-
-    JCheckBox chkRemoteEngine = new JFontCheckBox("远程引擎");
-    engineFilePanel.add(chkRemoteEngine);
-
-    JButton btnRemoteEngine = new JFontButton("设置");
-    engineFilePanel.add(btnRemoteEngine);
 
     txtEngineFile = new JFontTextField();
     GridBagConstraints gbc_txtEngineFile = new GridBagConstraints();
@@ -96,13 +91,39 @@ public class ContributeSettings extends JDialog {
     mainPanel.add(txtConfigFile, gbc_txtConfigFile);
     txtConfigFile.setColumns(10);
     txtConfigFile.setToolTipText(configTip);
+    
+    JPanel panel_1 = new JPanel();
+    GridBagConstraints gbc_panel_1 = new GridBagConstraints();
+    gbc_panel_1.insets = new Insets(0, 0, 5, 5);
+    gbc_panel_1.fill = GridBagConstraints.BOTH;
+    gbc_panel_1.gridx = 0;
+    gbc_panel_1.gridy = 2;
+    mainPanel.add(panel_1, gbc_panel_1);
+    
+    JCheckBox chkUseCommand = new JFontCheckBox("自定义命令行");
+    panel_1.add(chkUseCommand);
+    
+    JCheckBox chkRemote = new JFontCheckBox("远程SSH");
+    panel_1.add(chkRemote);
+    
+    JButton btnRemoteSetting = new JFontButton("设置");
+    panel_1.add(btnRemoteSetting);
+    
+    textField = new JFontTextField();
+    GridBagConstraints gbc_textField = new GridBagConstraints();
+    gbc_textField.insets = new Insets(0, 0, 5, 0);
+    gbc_textField.fill = GridBagConstraints.BOTH;
+    gbc_textField.gridx = 1;
+    gbc_textField.gridy = 2;
+    mainPanel.add(textField, gbc_textField);
+    textField.setColumns(10);
 
     JPanel panel = new JPanel();
     GridBagConstraints gbc_panel = new GridBagConstraints();
     gbc_panel.fill = GridBagConstraints.VERTICAL;
     gbc_panel.insets = new Insets(0, 0, 5, 5);
     gbc_panel.gridx = 0;
-    gbc_panel.gridy = 2;
+    gbc_panel.gridy = 3;
     mainPanel.add(panel, gbc_panel);
 
     JLabel lblUserName = new JFontLabel("用户名");
@@ -116,7 +137,7 @@ public class ContributeSettings extends JDialog {
     gbc_txtUserName.fill = GridBagConstraints.BOTH;
     gbc_txtUserName.insets = new Insets(0, 0, 5, 0);
     gbc_txtUserName.gridx = 1;
-    gbc_txtUserName.gridy = 2;
+    gbc_txtUserName.gridy = 3;
     mainPanel.add(txtUserName, gbc_txtUserName);
     txtUserName.setColumns(10);
 
@@ -125,7 +146,7 @@ public class ContributeSettings extends JDialog {
     gbc_lblPassword.fill = GridBagConstraints.VERTICAL;
     gbc_lblPassword.insets = new Insets(0, 0, 5, 5);
     gbc_lblPassword.gridx = 0;
-    gbc_lblPassword.gridy = 3;
+    gbc_lblPassword.gridy = 4;
     mainPanel.add(lblPassword, gbc_lblPassword);
 
     txtPassword = new JFontTextField();
@@ -133,7 +154,7 @@ public class ContributeSettings extends JDialog {
     gbc_txtPassword.fill = GridBagConstraints.BOTH;
     gbc_txtPassword.insets = new Insets(0, 0, 5, 0);
     gbc_txtPassword.gridx = 1;
-    gbc_txtPassword.gridy = 3;
+    gbc_txtPassword.gridy = 4;
     mainPanel.add(txtPassword, gbc_txtPassword);
     txtPassword.setColumns(10);
 
@@ -142,7 +163,7 @@ public class ContributeSettings extends JDialog {
     gbc_lblGames.fill = GridBagConstraints.VERTICAL;
     gbc_lblGames.insets = new Insets(0, 0, 5, 5);
     gbc_lblGames.gridx = 0;
-    gbc_lblGames.gridy = 4;
+    gbc_lblGames.gridy = 5;
     mainPanel.add(lblGames, gbc_lblGames);
     lblGames.setToolTipText(gamesTip);
 
@@ -151,7 +172,7 @@ public class ContributeSettings extends JDialog {
     gbc_txtGames.fill = GridBagConstraints.BOTH;
     gbc_txtGames.insets = new Insets(0, 0, 5, 0);
     gbc_txtGames.gridx = 1;
-    gbc_txtGames.gridy = 4;
+    gbc_txtGames.gridy = 5;
     mainPanel.add(txtGames, gbc_txtGames);
     txtGames.setColumns(10);
     txtGames.setToolTipText(gamesTip);
@@ -161,7 +182,7 @@ public class ContributeSettings extends JDialog {
     gbc_lblShowOwnerShip.fill = GridBagConstraints.VERTICAL;
     gbc_lblShowOwnerShip.insets = new Insets(0, 0, 0, 5);
     gbc_lblShowOwnerShip.gridx = 0;
-    gbc_lblShowOwnerShip.gridy = 5;
+    gbc_lblShowOwnerShip.gridy = 6;
     mainPanel.add(lblShowOwnerShip, gbc_lblShowOwnerShip);
     lblShowOwnerShip.setToolTipText(ownerShipTip);
 
@@ -169,7 +190,7 @@ public class ContributeSettings extends JDialog {
     GridBagConstraints gbc_chkShowOwnerShip = new GridBagConstraints();
     gbc_chkShowOwnerShip.fill = GridBagConstraints.BOTH;
     gbc_chkShowOwnerShip.gridx = 1;
-    gbc_chkShowOwnerShip.gridy = 5;
+    gbc_chkShowOwnerShip.gridy = 6;
     mainPanel.add(chkShowOwnerShip, gbc_chkShowOwnerShip);
     chkShowOwnerShip.setToolTipText(ownerShipTip);
 
