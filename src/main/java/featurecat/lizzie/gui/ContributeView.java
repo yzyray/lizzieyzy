@@ -2,7 +2,9 @@ package featurecat.lizzie.gui;
 
 import featurecat.lizzie.Config;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -19,6 +21,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 
 public class ContributeView extends JDialog {
   private JTextField txtGameIndex;
@@ -26,39 +29,49 @@ public class ContributeView extends JDialog {
   private JLabel lblGameInfos;
   private JLabel lblCurrentGameResult;
   private JTextPane txtRules;
-  private int finishedGames=0;
-  private int playingGames=0;
-  private int watchingGameIndex=0;
+  private int finishedGames = 0;
+  private int playingGames = 0;
+  private int watchingGameIndex = 0;
+  private JTextField txtMoveNumber;
 
   public ContributeView(Window owner) {
     super(owner);
     setTitle("KataGo跑谱贡献");
 
     JPanel mainPanel = new JPanel();
-    mainPanel.setBorder(new EmptyBorder(2, 0, 0, 5));
+    mainPanel.setBorder(new EmptyBorder(0, 0, 0, 0));
     getContentPane().add(mainPanel, BorderLayout.CENTER);
     GridBagLayout gbl_mainPanel = new GridBagLayout();
-    gbl_mainPanel.columnWidths = new int[] {336, 0};
-    gbl_mainPanel.rowHeights = new int[] {37, 37, 37, 0, 0};
-    gbl_mainPanel.columnWeights = new double[] {1.0, Double.MIN_VALUE};
-    gbl_mainPanel.rowWeights = new double[] {0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE};
+    gbl_mainPanel.rowWeights = new double[] {1.0, 0.0, 0.0, 0.0, 0.0};
+    gbl_mainPanel.columnWeights = new double[] {1.0};
+    //    gbl_mainPanel.columnWidths = new int[] {336, 0};
+    //    gbl_mainPanel.rowHeights = new int[] {37, 37, 0, 37, 0, 0};
+    //    gbl_mainPanel.columnWeights = new double[] {1.0, Double.MIN_VALUE};
+    //    gbl_mainPanel.rowWeights = new double[] {0.0, 0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE};
     mainPanel.setLayout(gbl_mainPanel);
+
+    JPanel labelPanel = new JPanel();
+    labelPanel.setBorder(new LineBorder(Color.BLACK));
+    GridBagConstraints gbc_panel_1 = new GridBagConstraints();
+    gbc_panel_1.insets = new Insets(0, 0, 0, 0);
+    gbc_panel_1.fill = GridBagConstraints.BOTH;
+    gbc_panel_1.gridx = 0;
+    gbc_panel_1.gridy = 0;
+    mainPanel.add(labelPanel, gbc_panel_1);
 
     //		JPanel gameInfoPanel = new JPanel();
     //		mainPanel.add(gameInfoPanel);
 
     lblGameInfos = new JFontLabel("已完成0局,正在进行0局,共0局,正在观看第0局");
-    GridBagConstraints gbc_lblGameInfos = new GridBagConstraints();
-    gbc_lblGameInfos.fill = GridBagConstraints.VERTICAL;
-    gbc_lblGameInfos.insets = new Insets(0, 0, 5, 0);
-    gbc_lblGameInfos.gridx = 0;
-    gbc_lblGameInfos.gridy = 0;
-    mainPanel.add(lblGameInfos, gbc_lblGameInfos);
+    labelPanel.add(lblGameInfos);
 
     JPanel gameControlPanel = new JPanel();
+    gameControlPanel.setLayout(new FlowLayout(1, 4, 2));
+    gameControlPanel.setBorder(
+        new LineBorder(Color.BLACK)); // (new SoftBevelBorder(BevelBorder.LOWERED));
     GridBagConstraints gbc_gameControlPanel = new GridBagConstraints();
-    gbc_gameControlPanel.fill = GridBagConstraints.VERTICAL;
-    gbc_gameControlPanel.insets = new Insets(0, 0, 5, 0);
+    gbc_gameControlPanel.fill = GridBagConstraints.BOTH;
+    gbc_gameControlPanel.insets = new Insets(0, 0, 0, 0);
     gbc_gameControlPanel.gridx = 0;
     gbc_gameControlPanel.gridy = 1;
     mainPanel.add(gameControlPanel, gbc_gameControlPanel);
@@ -79,12 +92,62 @@ public class ContributeView extends JDialog {
     JButton btnConfirm = new JFontButton("确定");
     gameControlPanel.add(btnConfirm);
 
+    JPanel playPanel = new JPanel();
+    playPanel.setLayout(new FlowLayout(1, 4, 4));
+    playPanel.setBorder(
+        new LineBorder(Color.BLACK)); // setBorder(new SoftBevelBorder(BevelBorder.LOWERED));
+    GridBagConstraints gbc_playPanel = new GridBagConstraints();
+    gbc_playPanel.insets = new Insets(0, 0, 0, 0);
+    gbc_playPanel.fill = GridBagConstraints.BOTH;
+    gbc_playPanel.gridx = 0;
+    gbc_playPanel.gridy = 2;
+    mainPanel.add(playPanel, gbc_playPanel);
+
+    JButton btnFirst = new JFontButton("|<");
+    playPanel.add(btnFirst);
+
+    JButton btnPrevious10 = new JFontButton("<<");
+    playPanel.add(btnPrevious10);
+
+    JButton btnPrevious1 = new JFontButton("<");
+    playPanel.add(btnPrevious1);
+
+    JButton btnNext1 = new JFontButton(">");
+    playPanel.add(btnNext1);
+
+    JButton btnNext10 = new JFontButton(">>");
+    playPanel.add(btnNext10);
+
+    JButton btnLast = new JFontButton(">|");
+    playPanel.add(btnLast);
+
+    btnFirst.setMargin(new Insets(2, 5, 2, 5));
+    btnPrevious10.setMargin(new Insets(2, 5, 2, 5));
+    btnPrevious1.setMargin(new Insets(2, 8, 2, 8));
+    btnNext1.setMargin(new Insets(2, 8, 2, 8));
+    btnNext10.setMargin(new Insets(2, 5, 2, 5));
+    btnLast.setMargin(new Insets(2, 5, 2, 5));
+
+    txtMoveNumber = new JFontTextField();
+    playPanel.add(txtMoveNumber);
+    txtMoveNumber.setColumns(3);
+
+    JButton btnGoto = new JFontButton("跳转");
+    playPanel.add(btnGoto);
+    btnGoto.setMargin(new Insets(2, 5, 2, 5));
+
+    JCheckBox chkAlwaysLastMove = new JFontCheckBox("总是最后一手");
+    playPanel.add(chkAlwaysLastMove);
+
     JPanel autoPlayPanel = new JPanel();
+    autoPlayPanel.setLayout(new FlowLayout(1, 2, 2));
+    autoPlayPanel.setBorder(
+        new LineBorder(Color.BLACK)); // (new SoftBevelBorder(BevelBorder.LOWERED));
     GridBagConstraints gbc_autoPlayPanel = new GridBagConstraints();
-    gbc_autoPlayPanel.insets = new Insets(0, 0, 5, 0);
-    gbc_autoPlayPanel.fill = GridBagConstraints.VERTICAL;
+    gbc_autoPlayPanel.insets = new Insets(0, 0, 0, 0);
+    gbc_autoPlayPanel.fill = GridBagConstraints.BOTH;
     gbc_autoPlayPanel.gridx = 0;
-    gbc_autoPlayPanel.gridy = 2;
+    gbc_autoPlayPanel.gridy = 3;
     mainPanel.add(autoPlayPanel, gbc_autoPlayPanel);
 
     JCheckBox chkAutoPlay = new JFontCheckBox("自动播放");
@@ -104,19 +167,23 @@ public class ContributeView extends JDialog {
     JCheckBox chkIgnoreNone19 = new JFontCheckBox("跳过非19路");
     chkIgnoreNone19.setText("跳过非19x19");
     autoPlayPanel.add(chkIgnoreNone19);
-    
+
     JPanel panel = new JPanel();
+    panel.setLayout(new FlowLayout(1, 2, 2));
+    panel.setBorder(new LineBorder(Color.BLACK));
     GridBagConstraints gbc_panel = new GridBagConstraints();
     gbc_panel.fill = GridBagConstraints.BOTH;
     gbc_panel.gridx = 0;
-    gbc_panel.gridy = 3;
+    gbc_panel.gridy = 4;
     mainPanel.add(panel, gbc_panel);
-    
+
     lblCurrentGameResult = new JFontLabel("本局结果: ");
     panel.add(lblCurrentGameResult);
-    
+
     JButton btnHideShowResult = new JFontButton("隐藏");
     panel.add(btnHideShowResult);
+
+    btnHideShowResult.setMargin(new Insets(1, 7, 1, 7));
 
     txtRules = new JTextPane();
     txtRules.setText(
@@ -179,23 +246,33 @@ public class ContributeView extends JDialog {
     setLocationRelativeTo(owner);
     setVisible(true);
   }
-  
+
   public void setResult(String result) {
-	  lblCurrentGameResult.setText("本局结果: "+result);
+    lblCurrentGameResult.setText("本局结果: " + result);
   }
-  
-  public void setGames(int finishedGames,int playingGames) {
-	  this.finishedGames=finishedGames;
-			this.playingGames=playingGames;  
-			updateLblGameInfos();
+
+  public void setGames(int finishedGames, int playingGames) {
+    this.finishedGames = finishedGames;
+    this.playingGames = playingGames;
+    updateLblGameInfos();
   }
-  
+
   public void setWathGameIndex(int watchingGameIndex) {
-	this.watchingGameIndex=watchingGameIndex;
-	updateLblGameInfos();
+    this.watchingGameIndex = watchingGameIndex;
+    updateLblGameInfos();
   }
-  
+
   private void updateLblGameInfos() {
-  lblGameInfos = new JFontLabel("已完成"+finishedGames+"局,正在进行"+playingGames+"局,共"+(finishedGames+playingGames)+"局,正在观看第"+watchingGameIndex+"局");
+    lblGameInfos =
+        new JFontLabel(
+            "已完成"
+                + finishedGames
+                + "局,正在进行"
+                + playingGames
+                + "局,共"
+                + (finishedGames + playingGames)
+                + "局,正在观看第"
+                + watchingGameIndex
+                + "局");
   }
 }

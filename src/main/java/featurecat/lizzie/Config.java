@@ -602,16 +602,19 @@ public class Config {
 
   public boolean delayShowCandidates = false;
   public double delayCandidatesSeconds = 10;
-  
-  public String contributeEnginePath="";
-  public String contributeConfigPath="";
-  public String contributeUserName="";
-  public String contributePassword="";
-  public String contributeBatchGames="";
-  public boolean contributeShowEstimate=false;
-  public boolean contributeUseCommand=false;
-  public String contributeCommand="";
-  
+
+  public String contributeEnginePath = "";
+  public String contributeConfigPath = "";
+  public String contributeUserName = "";
+  public String contributePassword = "";
+  public String contributeBatchGames = "";
+  public boolean contributeShowEstimate = false;
+  public boolean contributeUseCommand = false;
+  public String contributeCommand = "";
+
+  public boolean contributeWatchSkipNone19 = false;
+  public boolean contributeWatchAlwaysLastMove = false;
+  public double contributeWatchAutoPlayInterval = 2.0;
 
   private JSONObject loadAndMergeSaveBoardConfig(
       JSONObject defaultCfg, String fileName, boolean needValidation) throws IOException {
