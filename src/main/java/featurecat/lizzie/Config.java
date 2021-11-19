@@ -242,7 +242,7 @@ public class Config {
 
   public boolean autoCheckVersion = true;
   public String autoCheckDate = "";
-  public String ignoreVersion = "";
+  public int ignoreVersion = 0;
 
   public String kataRules = "";
   public boolean autoLoadKataRules = false;
@@ -1212,7 +1212,7 @@ public class Config {
     sharePublic = uiConfig.optBoolean("share-public", true);
     autoCheckVersion = uiConfig.optBoolean("auto-check-version", true);
     autoCheckDate = uiConfig.optString("auto-check-date", "");
-    ignoreVersion = uiConfig.optString("ignore-version", "");
+    ignoreVersion = uiConfig.optInt("ignore-version", 0);
     // firstUse = uiConfig.optBoolean("first-time-use", true);
     loadSgfLast = uiConfig.optBoolean("load-sgf-last", false);
     useShortcutKataEstimate = uiConfig.optBoolean("shortcut-kata-estimate", false);

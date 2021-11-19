@@ -152,7 +152,7 @@ public class CheckVersion extends JDialog {
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             setVisible(false);
-            Lizzie.config.ignoreVersion = remoteVersion;
+            Lizzie.config.ignoreVersion = Integer.parseInt(remoteVersion);
             Lizzie.config.uiConfig.put("ignore-version", Lizzie.config.ignoreVersion);
           }
         });
