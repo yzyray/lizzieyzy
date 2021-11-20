@@ -19,6 +19,7 @@ import java.awt.Toolkit;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -4600,7 +4601,7 @@ public class Menu extends JMenuBar {
           }
         });
 
-    final JFontMenu helpMenu = new JFontMenu(resourceBundle.getString("Menu.other"));
+    final JFontMenu helpMenu = new JFontMenu(resourceBundle.getString("Menu.help"));
     helpMenu.setForeground(Color.BLACK);
     // helpMenu.setFont(headFont);
     this.add(helpMenu);
@@ -4634,6 +4635,24 @@ public class Menu extends JMenuBar {
             Lizzie.frame.openHelp();
           }
         });
+
+    final JFontMenuItem introductionJpn =
+        new JFontMenuItem(resourceBundle.getString("Menu.introductionJpn"));
+    helpMenu.add(introduction);
+
+    introductionJpn.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            try {
+              URI uri = new URI("https://www.h-eba.com/Lizzie/LizzieYzy/manual.html");
+              java.awt.Desktop.getDesktop().browse(uri);
+            } catch (Exception e1) {
+              // TODO Auto-generated catch block
+              e1.printStackTrace();
+            }
+          }
+        });
+    helpMenu.add(introductionJpn);
 
     final JFontMenuItem about =
         new JFontMenuItem(resourceBundle.getString("Menu.about")); // ("关于");
