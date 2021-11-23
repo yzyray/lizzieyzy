@@ -3551,7 +3551,7 @@ public class BottomToolbar extends JPanel {
     enginePkWhite.setEnabled(enable);
     chkenginePk.setEnabled(enable);
     btnEnginePkConfig.setEnabled(enable);
-    featurecat.lizzie.gui.Menu.engineMenu.setEnabled(enable);
+    Menu.engineMenu.setEnabled(enable);
     analyse.setEnabled(enable);
 
     chkenginePkTime.setEnabled(enable);

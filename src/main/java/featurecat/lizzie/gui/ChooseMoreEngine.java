@@ -262,7 +262,7 @@ public class ChooseMoreEngine extends JPanel {
   private void handleTableDoubleClick(int row, int col) {
     engch.setVisible(false);
     curIndex = Integer.parseInt(table.getModel().getValueAt(row, 0).toString()) - 1;
-    Lizzie.config.uiConfig.put("default-engine", curIndex);
+    //  Lizzie.config.uiConfig.put("default-engine", curIndex);
     if (engineMenuIndex == 1) Lizzie.engineManager.switchEngine(curIndex, true);
     if (engineMenuIndex == 2) Lizzie.engineManager.switchEngine(curIndex, false);
   }

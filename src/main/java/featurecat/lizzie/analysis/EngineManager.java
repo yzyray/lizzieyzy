@@ -52,7 +52,8 @@ public class EngineManager {
   private int timeScheduledTimes;
   Timer timer;
 
-  public EngineManager(Config config, int index) throws JSONException, IOException {
+  public EngineManager(Config config, int index, boolean loadDefault)
+      throws JSONException, IOException {
     ArrayList<EngineData> engineData = Utils.getEngineData();
     if (index > engineData.size() - 1) {
       index = 0;
@@ -78,7 +79,7 @@ public class EngineManager {
       e.userName = engineDt.userName;
       e.password = engineDt.password;
       e.initialCommand = engineDt.initialCommand;
-      if (i == index) {
+      if (i == index || loadDefault && engineDt.isDefault) {
         if (e.oriWidth != 19 || e.oriHeight != 19) {
           Board.boardWidth = e.oriWidth;
           Board.boardHeight = e.oriHeight;
@@ -92,8 +93,7 @@ public class EngineManager {
           public void run() {
             try {
               e.startEngine(engineDt.index);
-              featurecat.lizzie.gui.Menu.engineMenu.setText(
-                  "[" + (e.currentEngineN() + 1) + "]: " + e.oriEnginename);
+              Menu.engineMenu.setText("[" + (e.currentEngineN() + 1) + "]: " + e.oriEnginename);
             } catch (IOException e2) {
               // TODO Auto-generated catch block
               e2.printStackTrace();
@@ -132,7 +132,7 @@ public class EngineManager {
     if (index == -1) {
       Lizzie.leelaz.isKatago = true;
       Lizzie.leelaz.isLoaded = true;
-      featurecat.lizzie.gui.Menu.engineMenu.setText(resourceBundle.getString("Menu.noEngine"));
+      Menu.engineMenu.setText(resourceBundle.getString("Menu.noEngine"));
       if (Lizzie.config.isDoubleEngineMode())
         Menu.engineMenu2.setText(resourceBundle.getString("Menu.noEngine"));
       isEmpty = true;
@@ -397,8 +397,7 @@ public class EngineManager {
     Lizzie.config.isAutoAna = false;
     Lizzie.board.isPkBoard = true;
     LizzieFrame.toolbar.lblenginePkResult.setText("0:0");
-    featurecat.lizzie.gui.Menu.engineMenu.setText(
-        resourceBundle.getString("EngineManager.engineGamePlaying")); // 对战中
+    Menu.engineMenu.setText(resourceBundle.getString("EngineManager.engineGamePlaying")); // 对战中
     LizzieFrame.menu.toggleEngineMenuStatus(true, false);
     // 禁用某些按钮
     LizzieFrame.toolbar.enableDisabelForEngineGame(false);
@@ -1633,121 +1632,198 @@ public class EngineManager {
     //    }
   }
 
-  public void updateEngines() {
+  public void updateEngines() throws JSONException, IOException {
     isUpdating = true;
+    killAllEngines();
+    String currentEngineName = Lizzie.leelaz.oriEnginename;
     ArrayList<EngineData> engineData = Utils.getEngineData();
+    engineList = new ArrayList<Leelaz>();
+    // engineList.add(lz);
+    boolean loadLeelaz = false;
     for (int i = 0; i < engineData.size(); i++) {
       EngineData engineDt = engineData.get(i);
-      if (i < engineList.size()) {
-        boolean changedLeelazStatus = false;
-        if (!this.engineList.get(i).oriEngineCommand.equals(engineDt.commands))
-          changedLeelazStatus = true;
-        if (engineList.get(i).useJavaSSH != engineDt.useJavaSSH) changedLeelazStatus = true;
-        if (!this.engineList.get(i).ip.equals(engineDt.ip)) changedLeelazStatus = true;
-        if (!this.engineList.get(i).port.equals(engineDt.port)) changedLeelazStatus = true;
-        if (engineList.get(i).useKeyGen != engineDt.useKeyGen) changedLeelazStatus = true;
-        if (!this.engineList.get(i).keyGenPath.equals(engineDt.keyGenPath))
-          changedLeelazStatus = true;
-        if (!this.engineList.get(i).userName.equals(engineDt.userName)) changedLeelazStatus = true;
-        if (!this.engineList.get(i).password.equals(engineDt.password)) changedLeelazStatus = true;
-        if (!this.engineList.get(i).initialCommand.equals(engineDt.initialCommand))
-          changedLeelazStatus = true;
-        engineList.get(i).setEngineCommand(engineDt.commands);
-        engineList.get(i).width = engineDt.width;
-        engineList.get(i).height = engineDt.height;
-        engineList.get(i).oriWidth = engineDt.width;
-        engineList.get(i).oriHeight = engineDt.height;
-        engineList.get(i).komi = engineDt.komi;
-        engineList.get(i).isKatago = false;
-        engineList.get(i).isKatagoCustom = false;
-        engineList.get(i).orikomi = engineDt.komi;
-        engineList.get(i).isSai = false;
-        engineList.get(i).getEngineName(i);
-        engineList.get(i).useJavaSSH = engineDt.useJavaSSH;
-        engineList.get(i).ip = engineDt.ip;
-        engineList.get(i).port = engineDt.port;
-        engineList.get(i).useKeyGen = engineDt.useKeyGen;
-        engineList.get(i).keyGenPath = engineDt.keyGenPath;
-        engineList.get(i).userName = engineDt.userName;
-        engineList.get(i).password = engineDt.password;
-        engineList.get(i).initialCommand = engineDt.initialCommand;
-        if (!isEmpty && Lizzie.leelaz != null && engineList.get(i) == Lizzie.leelaz) {
-          if (changedLeelazStatus) {
-            engineList.get(i).isKatago = false;
-            engineList.get(i).isSai = false;
-            engineList.get(i).isZen = false;
-            engineList.get(i).noAnalyze = false;
-            reStartEngine(i);
-          } else {
-            if (Lizzie.leelaz.oriWidth != Board.boardWidth
-                || Lizzie.leelaz.oriHeight != Board.boardHeight) {
-              Lizzie.board.reopen(Lizzie.leelaz.oriWidth, Lizzie.leelaz.oriHeight);
-            }
-            if (Lizzie.leelaz.orikomi != Lizzie.board.getHistory().getGameInfo().getKomi()
-                && !Lizzie.board.getHistory().getGameInfo().changedKomi)
-              Lizzie.leelaz.komi(Lizzie.leelaz.orikomi);
-          }
-          Lizzie.leelaz.isCheckingName = true;
-          Lizzie.leelaz.nameCmd();
-          Runnable startPonder =
-              new Runnable() {
-                public void run() {
-                  while (Lizzie.leelaz.isCheckingName) {
-                    try {
-                      Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                      // TODO Auto-generated catch block
-                      e.printStackTrace();
-                    }
-                  }
-                  Lizzie.leelaz.ponder();
-                }
-              };
-          Thread startPonderTh = new Thread(startPonder);
-          startPonderTh.start();
-        } else if (engineList.get(i).isStarted() && changedLeelazStatus) {
-          engineList.get(i).normalQuit();
-          engineList.get(i).isKatago = false;
-          engineList.get(i).isSai = false;
-          engineList.get(i).isZen = false;
-          engineList.get(i).noAnalyze = false;
-          engineList.get(i).setEngineCommand(engineDt.commands);
-          try {
-            engineList.get(i).startEngine(i);
-          } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-          }
+      Leelaz e;
+      e = new Leelaz(engineDt.commands);
+      e.preload = engineDt.preload;
+      e.width = engineDt.width;
+      e.height = engineDt.height;
+      e.oriWidth = engineDt.width;
+      e.oriHeight = engineDt.height;
+      e.komi = engineDt.komi;
+      e.orikomi = engineDt.komi;
+      e.useJavaSSH = engineDt.useJavaSSH;
+      e.ip = engineDt.ip;
+      e.port = engineDt.port;
+      e.useKeyGen = engineDt.useKeyGen;
+      e.keyGenPath = engineDt.keyGenPath;
+      e.userName = engineDt.userName;
+      e.password = engineDt.password;
+      e.initialCommand = engineDt.initialCommand;
+      if (!loadLeelaz && engineDt.name.equals(currentEngineName)) {
+        loadLeelaz = true;
+        if (e.oriWidth != Board.boardWidth || e.oriHeight != Board.boardHeight) {
+          Board.boardWidth = e.oriWidth;
+          Board.boardHeight = e.oriHeight;
+          Zobrist.init();
+          Lizzie.board.clear(false);
         }
-        // engineList.get(i).currentEnginename = engineDt.name;
+        Lizzie.leelaz = e;
+        e.preload = true;
+        e.firstLoad = true;
+        currentEngineNo = i;
+        engineNo = i;
+        new Thread() {
+          public void run() {
+            try {
+              e.startEngine(engineDt.index);
+              Menu.engineMenu.setText("[" + (e.currentEngineN() + 1) + "]: " + e.oriEnginename);
+            } catch (IOException e2) {
+              // TODO Auto-generated catch block
+              e2.printStackTrace();
+            }
+            while (!e.isLoaded() || e.isCheckingName) {
+              try {
+                Thread.sleep(100);
+              } catch (InterruptedException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+              }
+            }
+            if (currentEngineNo > 20) LizzieFrame.menu.changeEngineIcon(20, 3);
+            else LizzieFrame.menu.changeEngineIcon(currentEngineNo, 3);
+            Lizzie.board.resendMoveToEngine(Lizzie.leelaz);
+          }
+        }.start();
       } else {
-        Leelaz e;
-        try {
-          e = new Leelaz(engineDt.commands);
-          e.width = engineDt.width;
-          e.height = engineDt.height;
-          e.oriWidth = engineDt.width;
-          e.oriHeight = engineDt.height;
-          e.orikomi = engineDt.komi;
-          e.komi = engineDt.komi;
-          e.useJavaSSH = engineDt.useJavaSSH;
-          e.ip = engineDt.ip;
-          e.port = engineDt.port;
-          e.useKeyGen = engineDt.useKeyGen;
-          e.keyGenPath = engineDt.keyGenPath;
-          e.userName = engineDt.userName;
-          e.password = engineDt.password;
-          e.initialCommand = engineDt.initialCommand;
-          engineList.add(e);
-        } catch (JSONException e1) {
-          // TODO Auto-generated catch block
-          e1.printStackTrace();
-        } catch (IOException e1) {
-          // TODO Auto-generated catch block
-          e1.printStackTrace();
+        if (e.preload) {
+          new Thread() {
+            public void run() {
+              try {
+                e.startEngine(engineDt.index);
+              } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+              }
+            }
+          }.start();
         }
       }
+      engineList.add(e);
     }
+    //    for (int i = 0; i < engineData.size(); i++) {
+    //      EngineData engineDt = engineData.get(i);
+    //      if (i < engineList.size()) {
+    //        boolean changedLeelazStatus = false;
+    //        if (!this.engineList.get(i).oriEngineCommand.equals(engineDt.commands))
+    //          changedLeelazStatus = true;
+    //        if (engineList.get(i).useJavaSSH != engineDt.useJavaSSH) changedLeelazStatus = true;
+    //        if (!this.engineList.get(i).ip.equals(engineDt.ip)) changedLeelazStatus = true;
+    //        if (!this.engineList.get(i).port.equals(engineDt.port)) changedLeelazStatus = true;
+    //        if (engineList.get(i).useKeyGen != engineDt.useKeyGen) changedLeelazStatus = true;
+    //        if (!this.engineList.get(i).keyGenPath.equals(engineDt.keyGenPath))
+    //          changedLeelazStatus = true;
+    //        if (!this.engineList.get(i).userName.equals(engineDt.userName)) changedLeelazStatus =
+    // true;
+    //        if (!this.engineList.get(i).password.equals(engineDt.password)) changedLeelazStatus =
+    // true;
+    //        if (!this.engineList.get(i).initialCommand.equals(engineDt.initialCommand))
+    //          changedLeelazStatus = true;
+    //        engineList.get(i).setEngineCommand(engineDt.commands);
+    //        engineList.get(i).width = engineDt.width;
+    //        engineList.get(i).height = engineDt.height;
+    //        engineList.get(i).oriWidth = engineDt.width;
+    //        engineList.get(i).oriHeight = engineDt.height;
+    //        engineList.get(i).komi = engineDt.komi;
+    //        engineList.get(i).isKatago = false;
+    //        engineList.get(i).isKatagoCustom = false;
+    //        engineList.get(i).orikomi = engineDt.komi;
+    //        engineList.get(i).isSai = false;
+    //        engineList.get(i).getEngineName(i);
+    //        engineList.get(i).useJavaSSH = engineDt.useJavaSSH;
+    //        engineList.get(i).ip = engineDt.ip;
+    //        engineList.get(i).port = engineDt.port;
+    //        engineList.get(i).useKeyGen = engineDt.useKeyGen;
+    //        engineList.get(i).keyGenPath = engineDt.keyGenPath;
+    //        engineList.get(i).userName = engineDt.userName;
+    //        engineList.get(i).password = engineDt.password;
+    //        engineList.get(i).initialCommand = engineDt.initialCommand;
+    //        if (!isEmpty && Lizzie.leelaz != null && engineList.get(i) == Lizzie.leelaz) {
+    //          if (changedLeelazStatus) {
+    //            engineList.get(i).isKatago = false;
+    //            engineList.get(i).isSai = false;
+    //            engineList.get(i).isZen = false;
+    //            engineList.get(i).noAnalyze = false;
+    //            reStartEngine(i);
+    //          } else {
+    //            if (Lizzie.leelaz.oriWidth != Board.boardWidth
+    //                || Lizzie.leelaz.oriHeight != Board.boardHeight) {
+    //              Lizzie.board.reopen(Lizzie.leelaz.oriWidth, Lizzie.leelaz.oriHeight);
+    //            }
+    //            if (Lizzie.leelaz.orikomi != Lizzie.board.getHistory().getGameInfo().getKomi()
+    //                && !Lizzie.board.getHistory().getGameInfo().changedKomi)
+    //              Lizzie.leelaz.komi(Lizzie.leelaz.orikomi);
+    //          }
+    //          Lizzie.leelaz.isCheckingName = true;
+    //          Lizzie.leelaz.nameCmd();
+    //          Runnable startPonder =
+    //              new Runnable() {
+    //                public void run() {
+    //                  while (Lizzie.leelaz.isCheckingName) {
+    //                    try {
+    //                      Thread.sleep(100);
+    //                    } catch (InterruptedException e) {
+    //                      // TODO Auto-generated catch block
+    //                      e.printStackTrace();
+    //                    }
+    //                  }
+    //                  Lizzie.leelaz.ponder();
+    //                }
+    //              };
+    //          Thread startPonderTh = new Thread(startPonder);
+    //          startPonderTh.start();
+    //        } else if (engineList.get(i).isStarted() && changedLeelazStatus) {
+    //          engineList.get(i).normalQuit();
+    //          engineList.get(i).isKatago = false;
+    //          engineList.get(i).isSai = false;
+    //          engineList.get(i).isZen = false;
+    //          engineList.get(i).noAnalyze = false;
+    //          engineList.get(i).setEngineCommand(engineDt.commands);
+    //          try {
+    //            engineList.get(i).startEngine(i);
+    //          } catch (IOException e) {
+    //            // TODO Auto-generated catch block
+    //            e.printStackTrace();
+    //          }
+    //        }
+    //        // engineList.get(i).currentEnginename = engineDt.name;
+    //      } else {
+    //        Leelaz e;
+    //        try {
+    //          e = new Leelaz(engineDt.commands);
+    //          e.width = engineDt.width;
+    //          e.height = engineDt.height;
+    //          e.oriWidth = engineDt.width;
+    //          e.oriHeight = engineDt.height;
+    //          e.orikomi = engineDt.komi;
+    //          e.komi = engineDt.komi;
+    //          e.useJavaSSH = engineDt.useJavaSSH;
+    //          e.ip = engineDt.ip;
+    //          e.port = engineDt.port;
+    //          e.useKeyGen = engineDt.useKeyGen;
+    //          e.keyGenPath = engineDt.keyGenPath;
+    //          e.userName = engineDt.userName;
+    //          e.password = engineDt.password;
+    //          e.initialCommand = engineDt.initialCommand;
+    //          engineList.add(e);
+    //        } catch (JSONException e1) {
+    //          // TODO Auto-generated catch block
+    //          e1.printStackTrace();
+    //        } catch (IOException e1) {
+    //          // TODO Auto-generated catch block
+    //          e1.printStackTrace();
+    //        }
+    //      }
+    //    }
 
     int j = LizzieFrame.toolbar.enginePkBlack.getItemCount();
     LizzieFrame.toolbar.removeEngineLis();
@@ -2153,7 +2229,7 @@ public class EngineManager {
                   Lizzie.board.clearBestMovesAfterForFirstEngine(
                       Lizzie.board.getHistory().getStart());
                   currentEngineNo = Lizzie.leelaz.currentEngineN();
-                  featurecat.lizzie.gui.Menu.engineMenu.setText(
+                  Menu.engineMenu.setText(
                       "["
                           + (currentEngineNo + 1)
                           + "]: "
@@ -2193,7 +2269,7 @@ public class EngineManager {
                 Lizzie.board.clearBestMovesAfterForSecondEngine(
                     Lizzie.board.getHistory().getStart());
                 Lizzie.board.resendMoveToEngine(newEng);
-                featurecat.lizzie.gui.Menu.engineMenu2.setText(
+                Menu.engineMenu2.setText(
                     "["
                         + (currentEngineNo2 + 1)
                         + "]: "

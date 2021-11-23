@@ -9539,14 +9539,12 @@ public class Menu extends JMenuBar {
     SwingUtilities.invokeLater(
         new Runnable() {
           public void run() {
-            JFontMenuItem[] engine =
-                index == 1 ? featurecat.lizzie.gui.Menu.engine : featurecat.lizzie.gui.Menu.engine2;
+            JFontMenuItem[] engine = index == 1 ? Menu.engine : Menu.engine2;
             for (int i = 0; i < 21; i++) {
               if (i < Lizzie.engineManager.engineList.size()
                   && !Lizzie.engineManager.engineList.get(i).isStarted()) engine[i].setIcon(null);
-              else if (engine[i].getIcon() != null
-                  && engine[i].getIcon() != featurecat.lizzie.gui.Menu.stop) {
-                engine[i].setIcon(featurecat.lizzie.gui.Menu.ready);
+              else if (engine[i].getIcon() != null && engine[i].getIcon() != Menu.stop) {
+                engine[i].setIcon(Menu.ready);
               }
             }
             if (EngineManager.currentEngineNo <= 20) {
@@ -9556,7 +9554,7 @@ public class Menu extends JMenuBar {
                   == null) {
               } else {
                 engine[index == 1 ? EngineManager.currentEngineNo : EngineManager.currentEngineNo2]
-                    .setIcon(featurecat.lizzie.gui.Menu.icon);
+                    .setIcon(Menu.icon);
               }
             }
           }
