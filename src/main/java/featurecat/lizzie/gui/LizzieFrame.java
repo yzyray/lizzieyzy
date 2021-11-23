@@ -9298,6 +9298,11 @@ public class LizzieFrame extends JFrame {
       stopAiPlayingAndPolicy();
     }
     if (isGenmove) {
+      if (Lizzie.config.limitMyTime)
+        countDownForHuman(
+            Lizzie.config.getMySaveTime(),
+            Lizzie.config.getMyByoyomiSeconds(),
+            Lizzie.config.getMyByoyomiTimes());
       if (!Lizzie.leelaz.isThinking) {
         if (!Lizzie.config.genmoveGameNoTime) sendAiTime(true, Lizzie.leelaz, true);
         isPlayingAgainstLeelaz = true;
