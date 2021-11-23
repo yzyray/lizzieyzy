@@ -379,6 +379,7 @@ public class BoardRenderer {
           g.setColor(node.getData().lastMoveColor.isWhite() ? Color.BLACK : Color.WHITE);
           switch (Lizzie.config.stoneIndicatorType) {
             case 0:
+              g.setStroke(new BasicStroke((int) Math.round(squareWidth * 0.22f) / 5f));
               drawPolygonCircle(g, markX, markY, stoneRadius);
               break;
             default:
