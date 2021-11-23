@@ -1330,6 +1330,11 @@ public class WinrateGraph {
     mouseOverNode = null;
   }
 
+  public void clearParames() {
+    origParams = new int[] {0, 0, 0, 0};
+    params = new int[] {0, 0, 0, 0, 0};
+  }
+
   public int moveNumber(int x, int y) {
     int origPosx = origParams[0];
     int origPosy = origParams[1];

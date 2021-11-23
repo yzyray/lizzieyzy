@@ -6050,6 +6050,7 @@ public class LizzieFrame extends JFrame {
   private void drawWinratePane(int x, int y, int w, int h) {
     if (w < 10 || h < 10) {
       cachedWinrateImage = new BufferedImage(1, 1, TYPE_INT_ARGB);
+      winrateGraph.clearParames();
       return;
     }
     if (refreshFromInfo && !refreshFromResized) {
