@@ -1,8 +1,8 @@
 package featurecat.lizzie.gui;
 
 import featurecat.lizzie.Config;
+import featurecat.lizzie.Lizzie;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -20,14 +20,18 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
+import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
+import javax.swing.border.SoftBevelBorder;
 
 public class ContributeView extends JDialog {
   private JTextField txtGameIndex;
   private JTextField txtAutoPlayInterval;
   private JLabel lblGameInfos;
+  private String result = "B+4";
   private JLabel lblCurrentGameResult;
+  private JLabel lblGameType;
+  private JLabel lblKomi;
   private JTextPane txtRules;
   private int finishedGames = 0;
   private int playingGames = 0;
@@ -37,7 +41,7 @@ public class ContributeView extends JDialog {
   public ContributeView(Window owner) {
     super(owner);
     setTitle("KataGo跑谱贡献");
-
+    setResizable(false);
     JPanel mainPanel = new JPanel();
     mainPanel.setBorder(new EmptyBorder(0, 0, 0, 0));
     getContentPane().add(mainPanel, BorderLayout.CENTER);
@@ -51,7 +55,7 @@ public class ContributeView extends JDialog {
     mainPanel.setLayout(gbl_mainPanel);
 
     JPanel labelPanel = new JPanel();
-    labelPanel.setBorder(new LineBorder(Color.BLACK));
+    labelPanel.setBorder(new SoftBevelBorder(BevelBorder.LOWERED));
     GridBagConstraints gbc_panel_1 = new GridBagConstraints();
     gbc_panel_1.insets = new Insets(0, 0, 0, 0);
     gbc_panel_1.fill = GridBagConstraints.BOTH;
@@ -67,8 +71,7 @@ public class ContributeView extends JDialog {
 
     JPanel gameControlPanel = new JPanel();
     gameControlPanel.setLayout(new FlowLayout(1, 4, 2));
-    gameControlPanel.setBorder(
-        new LineBorder(Color.BLACK)); // (new SoftBevelBorder(BevelBorder.LOWERED));
+    gameControlPanel.setBorder(new SoftBevelBorder(BevelBorder.LOWERED));
     GridBagConstraints gbc_gameControlPanel = new GridBagConstraints();
     gbc_gameControlPanel.fill = GridBagConstraints.BOTH;
     gbc_gameControlPanel.insets = new Insets(0, 0, 0, 0);
@@ -94,8 +97,7 @@ public class ContributeView extends JDialog {
 
     JPanel playPanel = new JPanel();
     playPanel.setLayout(new FlowLayout(1, 4, 4));
-    playPanel.setBorder(
-        new LineBorder(Color.BLACK)); // setBorder(new SoftBevelBorder(BevelBorder.LOWERED));
+    playPanel.setBorder(new SoftBevelBorder(BevelBorder.LOWERED));
     GridBagConstraints gbc_playPanel = new GridBagConstraints();
     gbc_playPanel.insets = new Insets(0, 0, 0, 0);
     gbc_playPanel.fill = GridBagConstraints.BOTH;
@@ -141,8 +143,7 @@ public class ContributeView extends JDialog {
 
     JPanel autoPlayPanel = new JPanel();
     autoPlayPanel.setLayout(new FlowLayout(1, 2, 2));
-    autoPlayPanel.setBorder(
-        new LineBorder(Color.BLACK)); // (new SoftBevelBorder(BevelBorder.LOWERED));
+    autoPlayPanel.setBorder(new SoftBevelBorder(BevelBorder.LOWERED));
     GridBagConstraints gbc_autoPlayPanel = new GridBagConstraints();
     gbc_autoPlayPanel.insets = new Insets(0, 0, 0, 0);
     gbc_autoPlayPanel.fill = GridBagConstraints.BOTH;
@@ -169,18 +170,34 @@ public class ContributeView extends JDialog {
     autoPlayPanel.add(chkIgnoreNone19);
 
     JPanel panel = new JPanel();
-    panel.setLayout(new FlowLayout(1, 2, 2));
-    panel.setBorder(new LineBorder(Color.BLACK));
+    panel.setLayout(new FlowLayout(1, 10, 2));
+    panel.setBorder(new SoftBevelBorder(BevelBorder.LOWERED));
     GridBagConstraints gbc_panel = new GridBagConstraints();
     gbc_panel.fill = GridBagConstraints.BOTH;
     gbc_panel.gridx = 0;
     gbc_panel.gridy = 4;
     mainPanel.add(panel, gbc_panel);
 
-    lblCurrentGameResult = new JFontLabel("本局结果: ");
+    lblGameType = new JLabel("本局类型: 自对弈");
+    panel.add(lblGameType);
+
+    lblKomi = new JLabel("贴目: 7.5");
+    panel.add(lblKomi);
+
+    lblCurrentGameResult = new JFontLabel("结果: ");
     panel.add(lblCurrentGameResult);
 
-    JButton btnHideShowResult = new JFontButton("隐藏");
+    JButton btnHideShowResult = new JFontButton();
+    btnHideShowResult.setText(Lizzie.config.contributeHideResult ? "显示" : "隐藏");
+    setResult(result);
+    btnHideShowResult.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.config.contributeHideResult = !Lizzie.config.contributeHideResult;
+            btnHideShowResult.setText(Lizzie.config.contributeHideResult ? "显示" : "隐藏");
+            setResult(result);
+          }
+        });
     panel.add(btnHideShowResult);
 
     btnHideShowResult.setMargin(new Insets(1, 7, 1, 7));
@@ -247,8 +264,17 @@ public class ContributeView extends JDialog {
     setVisible(true);
   }
 
-  public void setResult(String result) {
-    lblCurrentGameResult.setText("本局结果: " + result);
+  public void setType(String text) {
+    lblGameType.setText("本局类型: " + text);
+  }
+
+  public void setKomi(String text) {
+    lblKomi.setText("贴目: " + text);
+  }
+
+  public void setResult(String text) {
+    result = text;
+    lblCurrentGameResult.setText("结果: " + (Lizzie.config.contributeHideResult ? "---" : text));
   }
 
   public void setGames(int finishedGames, int playingGames) {
@@ -263,16 +289,15 @@ public class ContributeView extends JDialog {
   }
 
   private void updateLblGameInfos() {
-    lblGameInfos =
-        new JFontLabel(
-            "已完成"
-                + finishedGames
-                + "局,正在进行"
-                + playingGames
-                + "局,共"
-                + (finishedGames + playingGames)
-                + "局,正在观看第"
-                + watchingGameIndex
-                + "局");
+    lblGameInfos.setText(
+        "已完成"
+            + finishedGames
+            + "局,正在进行"
+            + playingGames
+            + "局,共"
+            + (finishedGames + playingGames)
+            + "局,正在观看第"
+            + watchingGameIndex
+            + "局");
   }
 }

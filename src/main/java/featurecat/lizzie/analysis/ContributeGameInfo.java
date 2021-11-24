@@ -16,4 +16,5 @@ public class ContributeGameInfo {
   public boolean isWatching;
   public boolean complete = false;
   public String gameResult = "";
+  public boolean isMatchGame = false;
 }

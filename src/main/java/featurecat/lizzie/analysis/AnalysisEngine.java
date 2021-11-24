@@ -206,7 +206,7 @@ public class AnalysisEngine {
     result = new JSONObject(line);
     int turnNumber = result.getInt("turnNumber");
     JSONArray moveInfos = result.getJSONArray("moveInfos");
-    resultMap.put(turnNumber, Utils.getBestMovesFromJsonArray(moveInfos));
+    resultMap.put(turnNumber, Utils.getBestMovesFromJsonArray(moveInfos, true, true));
     waitFrame.setProgress(resultMap.size(), analyzeNumberCount);
     tryToSetResult();
   }
@@ -311,8 +311,8 @@ public class AnalysisEngine {
       testRequest.put("rules", ruleSettings);
     } else testRequest.put("rules", "tromp-taylor");
     testRequest.put("komi", Lizzie.board.getHistory().getGameInfo().getKomi());
-    testRequest.put("boardXSize", Board.boardHeight);
-    testRequest.put("boardYSize", Board.boardWidth);
+    testRequest.put("boardXSize", Board.boardWidth);
+    testRequest.put("boardYSize", Board.boardHeight);
     // analyzeTurns
     // moves
     ArrayList<Integer> moveTurns = new ArrayList<Integer>();

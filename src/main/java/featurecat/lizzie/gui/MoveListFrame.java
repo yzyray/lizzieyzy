@@ -3312,14 +3312,15 @@ public class MoveListFrame extends JFrame {
 
     if (selectedIndex != 0) g.fillRect(posx, posy, width + 5, height);
     else g.fillRect(posx, posy, width + 2, height);
-    if (Lizzie.board.isPkBoard) {
+    if (Lizzie.board.isPkBoard && !Lizzie.frame.isShowingContributeGame) {
       g.setColor(new Color(0, 0, 0, 180));
       drawString(
           g,
           posx + width / 2,
           posy + height / 2,
           headFont,
-          Lizzie.resourceBundle.getString("Movelistframe.engineGameHint"), // "引擎对局需自动分析后才可显示图表",
+          Lizzie.resourceBundle.getString("Movelistframe.engineGameHint"),
+          // "引擎对局需自动分析后才可显示图表",
           (float) (height * 0.6),
           width * 0.6);
       return;

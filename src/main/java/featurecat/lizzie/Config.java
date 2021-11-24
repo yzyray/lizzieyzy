@@ -603,18 +603,20 @@ public class Config {
   public boolean delayShowCandidates = false;
   public double delayCandidatesSeconds = 10;
 
-  public String contributeEnginePath = "";
+  public String contributeEnginePath = "guanfang/katago.exe";
   public String contributeConfigPath = "";
-  public String contributeUserName = "";
-  public String contributePassword = "";
-  public String contributeBatchGames = "";
+  public String contributeUserName = "yzyray";
+  public String contributePassword = "turnon130";
+  public String contributeBatchGames = "1";
   public boolean contributeShowEstimate = false;
   public boolean contributeUseCommand = false;
   public String contributeCommand = "";
 
   public boolean contributeWatchSkipNone19 = false;
-  public boolean contributeWatchAlwaysLastMove = false;
+  public boolean contributeWatchAlwaysLastMove = true;
+  public boolean contributeWatchAutoPlay = true;
   public double contributeWatchAutoPlayInterval = 2.0;
+  public boolean contributeHideResult = false;
 
   private JSONObject loadAndMergeSaveBoardConfig(
       JSONObject defaultCfg, String fileName, boolean needValidation) throws IOException {

@@ -25,6 +25,8 @@ public class ContributeEngine {
   private ArrayList<ContributeGameInfo> contributeGames;
   private ArrayList<ContributeUnParseGameInfo> unParseGameInfos;
   private int watchingGameIndex = -1;
+  private int changeWatchingGameIndex = -1;
+  private Thread watchGameThread;
   private ContributeGameInfo currentWatchGame;
 
   private Process process;
@@ -48,26 +50,18 @@ public class ContributeEngine {
   private boolean useKeyGen;
   private String keyGenPath;
   public boolean javaSSHClosed;
-  private String engineParentPath = "";
+  private String courseFile = "";
 
   public ContributeEngine() {
     if (Lizzie.config.contributeUseCommand) {
       engineCommand = Lizzie.config.contributeCommand;
-      try {
-        String katagoPath =
-            Lizzie.config.contributeCommand.substring(
-                0, Lizzie.config.contributeCommand.toLowerCase().lastIndexOf("katago"));
-        engineParentPath = katagoPath.substring(0, getLastIndexOfFileSep(katagoPath));
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
     } else {
       engineCommand = Lizzie.config.contributeEnginePath + " contribute";
       try {
-        engineParentPath =
-            Lizzie.config.contributeEnginePath.substring(
-                0, getLastIndexOfFileSep(Lizzie.config.contributeEnginePath));
-      } catch (Exception e) {
+        File file = new File("");
+        courseFile = file.getCanonicalPath();
+      } catch (IOException e) {
+        // TODO Auto-generated catch block
         e.printStackTrace();
       }
       boolean useConfigFile = Lizzie.config.contributeConfigPath.trim().length() > 0;
@@ -94,19 +88,7 @@ public class ContributeEngine {
 
     contributeGames = new ArrayList<ContributeGameInfo>();
     unParseGameInfos = new ArrayList<ContributeUnParseGameInfo>();
-    testLines();
-    //   startEngine(engineCommand);
-  }
-
-  private void testLines() {
-    // TODO Auto-generated method stub
-    String line1 =
-        "{\"blackPlayer\":\"kata1-b40c256-s10312780288-d2513725330\",\"boardXSize\":19,\"boardYSize\":9,\"gameId\":\"8C3A37A596C4A007\",\"initialPlayer\":\"B\",\"initialStones\":[],\"initialTurnNumber\":0,\"move\":[\"W\",\"R5\"],\"moveInfos\":[{\"lcb\":0.411789224,\"move\":\"D4\",\"order\":0,\"prior\":0.0290139392,\"pv\":[\"D4\",\"Q4\",\"C6\",\"J6\",\"O3\",\"P2\",\"Q6\"],\"scoreLead\":-0.650186005,\"scoreMean\":-0.650186005,\"scoreSelfplay\":-0.931910802,\"scoreStdev\":10.4362585,\"utility\":-0.206014112,\"utilityLcb\":-0.182342383,\"visits\":230,\"winrate\":0.403021917},{\"lcb\":0.411744719,\"move\":\"R5\",\"order\":1,\"prior\":0.134325117,\"pv\":[\"R5\",\"D6\",\"C4\",\"R3\",\"P6\",\"P7\",\"O6\",\"O7\",\"P3\",\"N6\",\"E4\",\"Q4\",\"Q6\"],\"scoreLead\":-0.553495982,\"scoreMean\":-0.553495982,\"scoreSelfplay\":-0.851568654,\"scoreStdev\":10.9440635,\"utility\":-0.200783077,\"utilityLcb\":-0.182019276,\"visits\":588,\"winrate\":0.404795163},{\"lcb\":0.417061671,\"move\":\"D6\",\"order\":2,\"prior\":0.0482043773,\"pv\":[\"D6\",\"Q4\",\"C4\",\"K6\",\"O3\",\"P3\",\"O4\",\"L4\",\"Q6\"],\"scoreLead\":-0.602743492,\"scoreMean\":-0.602743492,\"scoreSelfplay\":-0.857608953,\"scoreStdev\":10.45662,\"utility\":-0.196769669,\"utilityLcb\":-0.171458192,\"visits\":157,\"winrate\":0.40768705},{\"lcb\":0.415725371,\"move\":\"C6\",\"order\":3,\"prior\":0.0257119387,\"pv\":[\"C6\",\"Q4\",\"D4\",\"K6\",\"O3\",\"P3\",\"O4\",\"K4\",\"Q6\"],\"scoreLead\":-0.638090716,\"scoreMean\":-0.638090716,\"scoreSelfplay\":-0.928961733,\"scoreStdev\":10.4675564,\"utility\":-0.206303305,\"utilityLcb\":-0.171929346,\"visits\":109,\"winrate\":0.402994275},{\"lcb\":0.47650713,\"move\":\"Q4\",\"order\":4,\"prior\":0.201449767,\"pv\":[\"Q4\",\"C5\",\"C3\",\"E4\",\"C7\",\"E6\"],\"scoreLead\":-0.323213479,\"scoreMean\":-0.323213479,\"scoreSelfplay\":-0.381685305,\"scoreStdev\":10.6445797,\"utility\":-0.0952725359,\"utilityLcb\":-0.0328620182,\"visits\":88,\"winrate\":0.453392123},{\"lcb\":0.423977935,\"move\":\"C4\",\"order\":5,\"prior\":0.0300614852,\"pv\":[\"C4\",\"R4\",\"D6\",\"O4\",\"P5\",\"O5\",\"Q3\"],\"scoreLead\":-0.597638077,\"scoreMean\":-0.597638077,\"scoreSelfplay\":-0.845657616,\"scoreStdev\":10.5177968,\"utility\":-0.188855677,\"utilityLcb\":-0.150809594,\"visits\":64,\"winrate\":0.409886793},{\"lcb\":0.497314454,\"move\":\"Q6\",\"order\":6,\"prior\":0.0666930974,\"pv\":[\"Q6\",\"R6\",\"R5\",\"Q5\",\"P6\",\"R4\",\"S5\",\"R7\",\"R3\",\"P5\",\"Q4\",\"P4\"],\"scoreLead\":-0.286929013,\"scoreMean\":-0.286929013,\"scoreSelfplay\":-0.358514113,\"scoreStdev\":10.7750358,\"utility\":-0.0979585101,\"utilityLcb\":0.0239233498,\"visits\":31,\"winrate\":0.452173024},{\"lcb\":0.498741718,\"move\":\"R4\",\"order\":7,\"prior\":0.0856196657,\"pv\":[\"R4\",\"C5\",\"P4\",\"R5\",\"Q5\",\"R6\"],\"scoreLead\":-0.28005121,\"scoreMean\":-0.28005121,\"scoreSelfplay\":-0.293528942,\"scoreStdev\":10.7529068,\"utility\":-0.069568964,\"utilityLcb\":0.0309431154,\"visits\":30,\"winrate\":0.461515022},{\"lcb\":0.475134022,\"move\":\"Q5\",\"order\":8,\"prior\":0.0532590933,\"pv\":[\"Q5\",\"D4\",\"C6\",\"R3\",\"P4\",\"D6\"],\"scoreLead\":-0.255666691,\"scoreMean\":-0.255666691,\"scoreSelfplay\":-0.318861147,\"scoreStdev\":11.0440182,\"utility\":-0.0922397198,\"utilityLcb\":-0.0341443709,\"visits\":23,\"winrate\":0.453617226},{\"lcb\":0.548670732,\"move\":\"R6\",\"order\":9,\"prior\":0.024626622,\"pv\":[\"R6\",\"R7\",\"Q4\",\"C5\"],\"scoreLead\":-0.243182455,\"scoreMean\":-0.243182455,\"scoreSelfplay\":-0.272283341,\"scoreStdev\":10.7335879,\"utility\":-0.0599970753,\"utilityLcb\":0.180094624,\"visits\":9,\"winrate\":0.45974788},{\"lcb\":0.545597085,\"move\":\"Q3\",\"order\":10,\"prior\":0.010609298,\"pv\":[\"Q3\",\"R4\",\"R3\",\"C5\"],\"scoreLead\":-0.132223046,\"scoreMean\":-0.132223046,\"scoreSelfplay\":-0.0698449511,\"scoreStdev\":10.8037429,\"utility\":-0.0373098608,\"utilityLcb\":0.13319495,\"visits\":6,\"winrate\":0.482447155},{\"lcb\":0.683495884,\"move\":\"F7\",\"order\":11,\"prior\":0.019130867,\"pv\":[\"F7\",\"D4\",\"R5\",\"D7\",\"P6\"],\"scoreLead\":0.688630409,\"scoreMean\":0.688630409,\"scoreSelfplay\":1.15353439,\"scoreStdev\":11.0101674,\"utility\":0.243819887,\"utilityLcb\":0.442939319,\"visits\":8,\"winrate\":0.609747946},{\"lcb\":0.685383238,\"move\":\"D7\",\"order\":12,\"prior\":0.00838891789,\"pv\":[\"D7\",\"C5\",\"Q4\",\"E6\"],\"scoreLead\":-0.217710837,\"scoreMean\":-0.217710837,\"scoreSelfplay\":-0.145621068,\"scoreStdev\":11.2186914,\"utility\":-0.0245287812,\"utilityLcb\":0.528029637,\"visits\":6,\"winrate\":0.480731972},{\"lcb\":0.989269478,\"move\":\"E1\",\"order\":13,\"prior\":0.0346729904,\"pv\":[\"E1\",\"R4\",\"C5\",\"D3\"],\"scoreLead\":7.34834574,\"scoreMean\":7.34834574,\"scoreSelfplay\":8.94696042,\"scoreStdev\":10.6734595,\"utility\":1.09665507,\"utilityLcb\":1.12185733,\"visits\":11,\"winrate\":0.979935306},{\"lcb\":0.991047954,\"move\":\"C1\",\"order\":14,\"prior\":0.0324443989,\"pv\":[\"C1\",\"D6\",\"R5\",\"C4\"],\"scoreLead\":8.40236836,\"scoreMean\":8.40236836,\"scoreSelfplay\":9.73915419,\"scoreStdev\":10.9224114,\"utility\":1.112235,\"utilityLcb\":1.13446588,\"visits\":10,\"winrate\":0.982814294},{\"lcb\":0.857557258,\"move\":\"F6\",\"order\":15,\"prior\":0.0115300342,\"pv\":[\"F6\",\"D6\",\"D5\",\"C5\"],\"scoreLead\":0.589361392,\"scoreMean\":0.589361392,\"scoreSelfplay\":0.943937096,\"scoreStdev\":11.0909651,\"utility\":0.203414365,\"utilityLcb\":0.939636284,\"visits\":6,\"winrate\":0.584882473},{\"lcb\":0.708746818,\"move\":\"D5\",\"order\":16,\"prior\":0.0109346863,\"pv\":[\"D5\",\"Q4\",\"D7\",\"C3\"],\"scoreLead\":0.253332512,\"scoreMean\":0.253332512,\"scoreSelfplay\":0.552879405,\"scoreStdev\":10.5815886,\"utility\":0.123840903,\"utilityLcb\":0.548226371,\"visits\":6,\"winrate\":0.551567015},{\"lcb\":0.867199898,\"move\":\"E6\",\"order\":17,\"prior\":0.0104588727,\"pv\":[\"E6\",\"R4\",\"C6\",\"C5\"],\"scoreLead\":0.267000896,\"scoreMean\":0.267000896,\"scoreSelfplay\":0.466307902,\"scoreStdev\":10.7677772,\"utility\":0.102288958,\"utilityLcb\":0.988067714,\"visits\":6,\"winrate\":0.539133692},{\"lcb\":0.784902828,\"move\":\"C5\",\"order\":18,\"prior\":0.0072018099,\"pv\":[\"C5\",\"Q4\",\"R3\"],\"scoreLead\":0.0290078599,\"scoreMean\":0.0290078599,\"scoreSelfplay\":0.171683443,\"scoreStdev\":10.7090626,\"utility\":0.0134675073,\"utilityLcb\":0.757304249,\"visits\":5,\"winrate\":0.509407738},{\"lcb\":0.730142354,\"move\":\"D3\",\"order\":19,\"prior\":0.00708987005,\"pv\":[\"D3\",\"C5\",\"R5\",\"E4\"],\"scoreLead\":-0.109001339,\"scoreMean\":-0.109001339,\"scoreSelfplay\":-0.0802570694,\"scoreStdev\":11.3003429,\"utility\":-0.02000496,\"utilityLcb\":0.639927093,\"visits\":5,\"winrate\":0.485723075},{\"lcb\":1.01969357,\"move\":\"C3\",\"order\":20,\"prior\":0.00466456264,\"pv\":[\"C3\",\"R4\",\"D6\",\"M4\"],\"scoreLead\":-0.0648853183,\"scoreMean\":-0.0648853183,\"scoreSelfplay\":-0.014294669,\"scoreStdev\":10.7327458,\"utility\":-0.0312999471,\"utilityLcb\":1.39802245,\"visits\":4,\"winrate\":0.490314905},{\"lcb\":1.00030125,\"move\":\"B9\",\"order\":21,\"prior\":0.0178851597,\"pv\":[\"B9\",\"Q4\",\"D4\",\"D6\"],\"scoreLead\":8.17815362,\"scoreMean\":8.17815362,\"scoreSelfplay\":9.83664288,\"scoreStdev\":10.4774375,\"utility\":1.11919874,\"utilityLcb\":1.15826783,\"visits\":8,\"winrate\":0.985831217},{\"lcb\":1.01201546,\"move\":\"A1\",\"order\":22,\"prior\":0.0139514403,\"pv\":[\"A1\",\"R4\",\"C5\",\"D7\"],\"scoreLead\":12.8445213,\"scoreMean\":12.8445213,\"scoreSelfplay\":13.8159124,\"scoreStdev\":10.2421329,\"utility\":1.1860912,\"utilityLcb\":1.22953555,\"visits\":7,\"winrate\":0.995924956},{\"lcb\":1.14454411,\"move\":\"S3\",\"order\":23,\"prior\":0.00788325816,\"pv\":[\"S3\",\"C5\",\"Q5\",\"D3\"],\"scoreLead\":3.06221988,\"scoreMean\":3.06221988,\"scoreSelfplay\":4.22072177,\"scoreStdev\":10.2725252,\"utility\":0.745836892,\"utilityLcb\":1.58296396,\"visits\":5,\"winrate\":0.83449705},{\"lcb\":1.01957799,\"move\":\"N9\",\"order\":24,\"prior\":0.00534055522,\"pv\":[\"N9\",\"R4\",\"C5\"],\"scoreLead\":7.63270156,\"scoreMean\":7.63270156,\"scoreSelfplay\":9.57141199,\"scoreStdev\":10.8286577,\"utility\":1.10314059,\"utilityLcb\":1.20775197,\"visits\":5,\"winrate\":0.98083303},{\"lcb\":1.05973461,\"move\":\"E3\",\"order\":25,\"prior\":0.00458878744,\"pv\":[\"E3\",\"D4\",\"R5\",\"D3\"],\"scoreLead\":0.465860389,\"scoreMean\":0.465860389,\"scoreSelfplay\":0.815108046,\"scoreStdev\":11.2101031,\"utility\":0.169534853,\"utilityLcb\":1.4767668,\"visits\":4,\"winrate\":0.575574625},{\"lcb\":0.70522012,\"move\":\"E4\",\"order\":26,\"prior\":0.00432151696,\"pv\":[\"E4\",\"R4\",\"C5\",\"D7\"],\"scoreLead\":0.230140535,\"scoreMean\":0.230140535,\"scoreSelfplay\":0.398309641,\"scoreStdev\":10.8131842,\"utility\":0.0664454782,\"utilityLcb\":0.545058498,\"visits\":4,\"winrate\":0.527956039},{\"lcb\":1.79168151,\"move\":\"R7\",\"order\":27,\"prior\":0.00392124429,\"pv\":[\"R7\",\"R6\",\"Q6\",\"R5\"],\"scoreLead\":0.932768956,\"scoreMean\":0.932768956,\"scoreSelfplay\":1.43481706,\"scoreStdev\":11.1106747,\"utility\":0.330622824,\"utilityLcb\":3.4528328,\"visits\":4,\"winrate\":0.635307446},{\"lcb\":1.14324709,\"move\":\"H6\",\"order\":28,\"prior\":0.00374870747,\"pv\":[\"H6\",\"D6\",\"Q6\"],\"scoreLead\":0.726161616,\"scoreMean\":0.726161616,\"scoreSelfplay\":1.20980753,\"scoreStdev\":10.9718092,\"utility\":0.271036212,\"utilityLcb\":1.69170828,\"visits\":4,\"winrate\":0.617072249},{\"lcb\":1.4671992,\"move\":\"R3\",\"order\":29,\"prior\":0.003677045,\"pv\":[\"R3\",\"C5\",\"R5\",\"R6\"],\"scoreLead\":0.381004637,\"scoreMean\":0.381004637,\"scoreSelfplay\":0.706595272,\"scoreStdev\":10.6353614,\"utility\":0.178011429,\"utilityLcb\":2.6103516,\"visits\":4,\"winrate\":0.566332467},{\"lcb\":1.06649285,\"move\":\"J1\",\"order\":30,\"prior\":0.00342844101,\"pv\":[\"J1\",\"Q4\",\"C5\"],\"scoreLead\":7.52553252,\"scoreMean\":7.52553252,\"scoreSelfplay\":9.22547737,\"scoreStdev\":10.7566052,\"utility\":1.10082991,\"utilityLcb\":1.33087288,\"visits\":4,\"winrate\":0.981291748},{\"lcb\":1.10277092,\"move\":\"E7\",\"order\":31,\"prior\":0.00332882511,\"pv\":[\"E7\",\"D6\",\"R5\"],\"scoreLead\":0.486253712,\"scoreMean\":0.486253712,\"scoreSelfplay\":0.782620267,\"scoreStdev\":10.9309526,\"utility\":0.146243644,\"utilityLcb\":1.591438,\"visits\":4,\"winrate\":0.56751375},{\"lcb\":1.05817791,\"move\":\"N1\",\"order\":32,\"prior\":0.00332145044,\"pv\":[\"N1\",\"R4\",\"C5\"],\"scoreLead\":7.4301893,\"scoreMean\":7.4301893,\"scoreSelfplay\":9.10384444,\"scoreStdev\":10.5530632,\"utility\":1.10156621,\"utilityLcb\":1.30882331,\"visits\":4,\"winrate\":0.981416023},{\"lcb\":0.656774979,\"move\":\"P4\",\"order\":33,\"prior\":0.00317440601,\"pv\":[\"P4\",\"R4\",\"C5\"],\"scoreLead\":0.0257591402,\"scoreMean\":0.0257591402,\"scoreSelfplay\":0.187021919,\"scoreStdev\":10.8356343,\"utility\":0.0260629798,\"utilityLcb\":0.42669776,\"visits\":4,\"winrate\":0.508391727},{\"lcb\":1.19720234,\"move\":\"D9\",\"order\":34,\"prior\":0.00279444852,\"pv\":[\"D9\",\"D4\",\"R5\"],\"scoreLead\":7.9553229,\"scoreMean\":7.9553229,\"scoreSelfplay\":9.31566207,\"scoreStdev\":11.0087581,\"utility\":1.10080452,\"utilityLcb\":1.69448902,\"visits\":3,\"winrate\":0.977319193},{\"lcb\":2.22619636,\"move\":\"P6\",\"order\":35,\"prior\":0.0023864056,\"pv\":[\"P6\",\"Q6\",\"Q5\"],\"scoreLead\":0.217488219,\"scoreMean\":0.217488219,\"scoreSelfplay\":0.419253707,\"scoreStdev\":10.9991624,\"utility\":0.0567512239,\"utilityLcb\":4.63124154,\"visits\":3,\"winrate\":0.531940684},{\"lcb\":2.83083596,\"move\":\"P3\",\"order\":36,\"prior\":0.00223683054,\"pv\":[\"P3\",\"Q4\",\"Q3\"],\"scoreLead\":0.657111873,\"scoreMean\":0.657111873,\"scoreSelfplay\":1.11418939,\"scoreStdev\":10.802924,\"utility\":0.254461867,\"utilityLcb\":6.22865528,\"visits\":3,\"winrate\":0.618171737},{\"lcb\":2.74306932,\"move\":\"C7\",\"order\":37,\"prior\":0.00185300154,\"pv\":[\"C7\",\"R4\",\"D4\"],\"scoreLead\":-0.0765924628,\"scoreMean\":-0.0765924628,\"scoreSelfplay\":-0.00539542238,\"scoreStdev\":10.843286,\"utility\":-0.0324626312,\"utilityLcb\":6.0415366,\"visits\":3,\"winrate\":0.493439972},{\"lcb\":3.48962703,\"move\":\"P5\",\"order\":38,\"prior\":0.0018191929,\"pv\":[\"P5\",\"R6\",\"Q4\"],\"scoreLead\":0.580941742,\"scoreMean\":0.580941742,\"scoreSelfplay\":0.914878011,\"scoreStdev\":10.9063092,\"utility\":0.212427619,\"utilityLcb\":8.06117576,\"visits\":3,\"winrate\":0.58268327},{\"lcb\":1.06321632,\"move\":\"O4\",\"order\":39,\"prior\":0.00174291292,\"pv\":[\"O4\",\"Q4\",\"C5\"],\"scoreLead\":0.751428902,\"scoreMean\":0.751428902,\"scoreSelfplay\":1.2611988,\"scoreStdev\":10.8922402,\"utility\":0.262650895,\"utilityLcb\":1.45697341,\"visits\":3,\"winrate\":0.620874643},{\"lcb\":3.28014854,\"move\":\"P7\",\"order\":40,\"prior\":0.00163422746,\"pv\":[\"P7\",\"Q6\",\"Q4\"],\"scoreLead\":0.804274887,\"scoreMean\":0.804274887,\"scoreSelfplay\":1.2640867,\"scoreStdev\":11.2016852,\"utility\":0.231983944,\"utilityLcb\":7.41784509,\"visits\":3,\"winrate\":0.618718485},{\"lcb\":2.75538222,\"move\":\"S5\",\"order\":41,\"prior\":0.00157304609,\"pv\":[\"S5\",\"Q4\",\"Q6\"],\"scoreLead\":0.184106842,\"scoreMean\":0.184106842,\"scoreSelfplay\":0.392372032,\"scoreStdev\":11.1420681,\"utility\":0.0592689637,\"utilityLcb\":6.05508593,\"visits\":3,\"winrate\":0.534709265},{\"lcb\":2.24798476,\"move\":\"J5\",\"order\":42,\"prior\":0.00140976778,\"pv\":[\"J5\",\"R4\",\"C5\"],\"scoreLead\":0.986083448,\"scoreMean\":0.986083448,\"scoreSelfplay\":1.58700724,\"scoreStdev\":10.9742351,\"utility\":0.309998925,\"utilityLcb\":4.63111908,\"visits\":3,\"winrate\":0.647569885},{\"lcb\":2.50896071,\"move\":\"F4\",\"order\":43,\"prior\":0.00140474865,\"pv\":[\"F4\",\"D4\",\"D5\"],\"scoreLead\":0.473270585,\"scoreMean\":0.473270585,\"scoreSelfplay\":0.805915445,\"scoreStdev\":11.3874679,\"utility\":0.19276049,\"utilityLcb\":5.40849755,\"visits\":3,\"winrate\":0.577206244},{\"lcb\":1.97573832,\"move\":\"T6\",\"order\":44,\"prior\":0.00133441656,\"pv\":[\"T6\",\"R4\"],\"scoreLead\":8.51880383,\"scoreMean\":8.51880383,\"scoreSelfplay\":9.71942997,\"scoreStdev\":10.9176559,\"utility\":1.1055886,\"utilityLcb\":2.7,\"visits\":2,\"winrate\":0.975738324},{\"lcb\":1.61269385,\"move\":\"K7\",\"order\":45,\"prior\":0.0012307344,\"pv\":[\"K7\",\"D6\"],\"scoreLead\":0.733570457,\"scoreMean\":0.733570457,\"scoreSelfplay\":1.18255627,\"scoreStdev\":11.0078098,\"utility\":0.250778129,\"utilityLcb\":2.7,\"visits\":2,\"winrate\":0.612693846},{\"lcb\":1.63003151,\"move\":\"M4\",\"order\":46,\"prior\":0.00120710477,\"pv\":[\"M4\",\"Q4\"],\"scoreLead\":0.880556166,\"scoreMean\":0.880556166,\"scoreSelfplay\":1.37919503,\"scoreStdev\":11.0354306,\"utility\":0.290909089,\"utilityLcb\":2.7,\"visits\":2,\"winrate\":0.630031511}],\"moves\":[[\"B\",\"Q7\"]],\"policy\":[3.68049223e-06,6.19486809e-06,6.17808655e-06,7.53280256e-06,6.76957688e-06,6.2530039e-06,5.57087606e-06,5.43178385e-06,5.44878594e-06,5.33101138e-06,5.18671504e-06,4.88331943e-06,5.503176e-06,4.79964456e-06,6.92415006e-06,5.93341929e-06,6.00028579e-06,5.5779069e-06,3.61465936e-06,6.47524894e-06,8.90591582e-06,1.43061297e-05,1.73704739e-05,2.0353531e-05,2.03701802e-05,1.8454235e-05,1.95316697e-05,1.818481e-05,1.74701963e-05,1.63404948e-05,1.62228826e-05,1.43759335e-05,1.65142992e-05,1.65479323e-05,2.81290831e-05,1.25817269e-05,1.13347996e-05,5.92474498e-06,6.33737591e-06,1.46806733e-05,0.000418685318,0.00287835486,0.000241473594,0.000135134833,8.49927601e-05,7.74028595e-05,6.58567151e-05,5.8113932e-05,5.34883802e-05,5.28141827e-05,6.74455659e-05,9.5486459e-05,0.000132852365,-1.0,0.000356320641,1.42922945e-05,6.41094448e-06,7.84140957e-06,2.30247133e-05,0.020761786,0.028109258,0.00144666806,0.000239257875,0.000142932578,0.000161094154,0.000158830313,0.000141837474,0.00011548755,0.000100778328,9.42824699e-05,0.000144586971,0.00061661005,0.0846912935,0.0194646474,2.69568445e-05,7.06108403e-06,8.38872438e-06,6.62079983e-05,0.00315508828,0.00585722877,0.000105115978,4.47749699e-05,4.83613221e-05,5.04693053e-05,5.54018225e-05,6.3225787e-05,5.62960922e-05,5.60773915e-05,5.88750263e-05,7.70132756e-05,0.000412710826,0.0513954312,0.234016597,0.000332746509,7.55729434e-06,7.69504732e-06,2.16730787e-05,0.0211149827,0.024825383,0.00148430374,0.00021313419,0.000115678253,0.000123376027,0.000133412919,0.000144928723,0.000137480034,0.000136500283,0.000125662933,0.00038736788,0.000940401864,0.434608012,0.0456792526,3.62762148e-05,7.60201965e-06,6.52342487e-06,1.40266093e-05,0.000475721114,0.00308499625,0.000285054935,0.000121995923,7.67280217e-05,6.47715351e-05,6.33398158e-05,6.44611937e-05,6.2430292e-05,6.33967356e-05,7.20937096e-05,0.000116166899,0.000556111161,0.00554762734,0.00114871492,1.63716359e-05,6.58723548e-06,6.42113901e-06,9.03051568e-06,1.38964742e-05,1.66100399e-05,1.92428961e-05,1.86723519e-05,1.75766909e-05,1.83625543e-05,1.80208172e-05,1.79513172e-05,1.78844584e-05,1.92637672e-05,1.85263489e-05,2.13879266e-05,2.29779071e-05,1.81737832e-05,1.39264985e-05,8.94638106e-06,5.85803582e-06,3.48918775e-06,5.82501298e-06,6.31948387e-06,7.85129851e-06,7.30364445e-06,6.77833941e-06,6.1586743e-06,5.78034133e-06,5.77612082e-06,5.57314888e-06,5.58367356e-06,5.59687669e-06,6.31927469e-06,6.68231496e-06,7.61636602e-06,7.25307382e-06,6.42931445e-06,6.07232596e-06,3.47920923e-06,2.8246609e-06],\"rootInfo\":{\"currentPlayer\":\"W\",\"scoreLead\":-0.53151578,\"scoreSelfplay\":-0.77868669,\"scoreStdev\":10.7260298,\"symHash\":\"0499B09CD37ABD33642F45051A0DE53D\",\"thisHash\":\"92C0EF21BA77060BC7E12D443568C6ED\",\"utility\":-0.181789062,\"visits\":1500,\"winrate\":0.413611871},\"rules\":{\"friendlyPassOk\":false,\"hasButton\":false,\"ko\":\"SITUATIONAL\",\"komi\":7.0,\"scoring\":\"AREA\",\"suicide\":false,\"tax\":\"NONE\",\"whiteHandicapBonus\":\"0\"},\"turnNumber\":1,\"whitePlayer\":\"kata1-b40c256-s10312780288-d2513725330\"}";
-    String line2 =
-        "{\"blackPlayer\":\"kata1-b40c256-s10312780288-d2513725330\",\"boardXSize\":19,\"boardYSize\":9,\"gameId\":\"8C3A37A596C4A007\",\"initialPlayer\":\"B\",\"initialStones\":[],\"initialTurnNumber\":0,\"move\":[\"B\",\"D6\"],\"moveInfos\":[{\"lcb\":0.40430922,\"move\":\"D6\",\"order\":0,\"prior\":0.299313873,\"pv\":[\"D6\",\"C4\",\"R3\",\"P6\",\"P7\",\"O6\",\"O7\",\"P3\",\"N6\",\"E4\",\"Q4\",\"Q6\"],\"scoreLead\":-0.495215883,\"scoreMean\":-0.495215883,\"scoreSelfplay\":-0.771733555,\"scoreStdev\":10.888411,\"utility\":-0.176860482,\"utilityLcb\":-0.201750062,\"visits\":294,\"winrate\":0.413527583},{\"lcb\":0.38488863,\"move\":\"D4\",\"order\":1,\"prior\":0.157995388,\"pv\":[\"D4\",\"C6\",\"D6\",\"C5\",\"D5\",\"C4\",\"D3\",\"D7\",\"E7\",\"D8\",\"R3\",\"P6\"],\"scoreLead\":-0.550912032,\"scoreMean\":-0.550912032,\"scoreSelfplay\":-0.862622475,\"scoreStdev\":10.8472309,\"utility\":-0.201343993,\"utilityLcb\":-0.248843094,\"visits\":87,\"winrate\":0.40248089},{\"lcb\":0.363900116,\"move\":\"R3\",\"order\":2,\"prior\":0.158468455,\"pv\":[\"R3\",\"P6\",\"P7\",\"O6\",\"O7\",\"P3\",\"N6\",\"N5\",\"M5\",\"N4\"],\"scoreLead\":-0.679683422,\"scoreMean\":-0.679683422,\"scoreSelfplay\":-0.977677303,\"scoreStdev\":11.3402493,\"utility\":-0.213523779,\"utilityLcb\":-0.29791236,\"visits\":71,\"winrate\":0.395155146},{\"lcb\":0.369205987,\"move\":\"C5\",\"order\":3,\"prior\":0.115465984,\"pv\":[\"C5\",\"P6\",\"P7\",\"O6\",\"N7\",\"D7\",\"E6\",\"E7\",\"F6\",\"F7\"],\"scoreLead\":-0.614543578,\"scoreMean\":-0.614543578,\"scoreSelfplay\":-0.93271096,\"scoreStdev\":10.6112298,\"utility\":-0.217997433,\"utilityLcb\":-0.283184592,\"visits\":49,\"winrate\":0.393349379},{\"lcb\":0.373547848,\"move\":\"C4\",\"order\":4,\"prior\":0.101293474,\"pv\":[\"C4\",\"C6\",\"Q4\",\"Q5\",\"R4\",\"P5\"],\"scoreLead\":-0.589922925,\"scoreMean\":-0.589922925,\"scoreSelfplay\":-0.936224926,\"scoreStdev\":11.0797972,\"utility\":-0.217939369,\"utilityLcb\":-0.278057672,\"visits\":40,\"winrate\":0.395813886},{\"lcb\":0.341204695,\"move\":\"Q3\",\"order\":5,\"prior\":0.0598101988,\"pv\":[\"Q3\",\"P6\",\"P7\",\"N6\",\"D4\",\"P4\"],\"scoreLead\":-0.665714796,\"scoreMean\":-0.665714796,\"scoreSelfplay\":-1.0390871,\"scoreStdev\":11.1921646,\"utility\":-0.24274179,\"utilityLcb\":-0.354213415,\"visits\":18,\"winrate\":0.382490482},{\"lcb\":0.343211855,\"move\":\"C6\",\"order\":6,\"prior\":0.0455303639,\"pv\":[\"C6\",\"D4\",\"R3\",\"P6\",\"P7\"],\"scoreLead\":-0.667099158,\"scoreMean\":-0.667099158,\"scoreSelfplay\":-1.02398959,\"scoreStdev\":10.979125,\"utility\":-0.23703047,\"utilityLcb\":-0.35040018,\"visits\":15,\"winrate\":0.385200636},{\"lcb\":0.169199044,\"move\":\"Q4\",\"order\":7,\"prior\":0.0148545485,\"pv\":[\"Q4\",\"Q5\",\"R4\",\"P5\",\"O3\"],\"scoreLead\":-0.618364132,\"scoreMean\":-0.618364132,\"scoreSelfplay\":-0.923022821,\"scoreStdev\":11.3693728,\"utility\":-0.218683247,\"utilityLcb\":-0.829586356,\"visits\":7,\"winrate\":0.395459455},{\"lcb\":0.229880065,\"move\":\"D5\",\"order\":8,\"prior\":0.0234855115,\"pv\":[\"D5\",\"P6\",\"P7\",\"O6\",\"N7\"],\"scoreLead\":-0.676911399,\"scoreMean\":-0.676911399,\"scoreSelfplay\":-1.04005638,\"scoreStdev\":10.8330438,\"utility\":-0.251226057,\"utilityLcb\":-0.654536431,\"visits\":6,\"winrate\":0.379254278}],\"moves\":[[\"B\",\"Q7\"],[\"W\",\"R5\"]],\"policy\":[5.27834345e-06,8.05490072e-06,7.61023603e-06,9.10493418e-06,9.49054083e-06,9.52584105e-06,8.53246183e-06,7.73154716e-06,7.19018726e-06,7.05459388e-06,6.79296636e-06,7.12325982e-06,8.26317319e-06,8.30255067e-06,8.36955951e-06,7.73968441e-06,7.75984608e-06,7.8471694e-06,5.73375837e-06,8.67422841e-06,9.59446606e-06,1.50996857e-05,1.59348547e-05,2.10667113e-05,1.67811177e-05,1.78038972e-05,1.63726199e-05,1.65041474e-05,1.60512282e-05,1.77085949e-05,2.0485184e-05,1.70838048e-05,2.23362003e-05,1.45192462e-05,9.66876723e-06,1.22883266e-05,1.34133752e-05,8.21268895e-06,8.9739533e-06,1.663478e-05,0.00029328774,0.00116160396,0.000188701175,0.000107033302,7.02075704e-05,4.78474176e-05,3.77513206e-05,3.05024951e-05,3.26868139e-05,6.69980291e-05,0.000180818184,0.000173466964,3.37481833e-05,-1.0,1.46525181e-05,2.21979371e-05,8.73357021e-06,9.21489573e-06,2.64512073e-05,0.0455303639,0.299313873,0.000393132883,0.000126923725,8.82173772e-05,8.32403966e-05,7.91604689e-05,7.64192737e-05,8.25827738e-05,0.000182828386,0.000365952263,0.00247891317,0.00320674083,5.32338854e-05,0.000736318994,0.000148411666,9.61466412e-06,9.35299613e-06,0.000186729376,0.115465984,0.0234855115,0.000149698462,3.15897341e-05,3.43229476e-05,3.06773582e-05,3.67310458e-05,4.3511176e-05,4.99089365e-05,6.9135458e-05,0.000104177292,0.000136864124,0.000432573666,0.000336469035,-1.0,7.28535379e-05,8.87773058e-06,8.59451302e-06,4.81283168e-05,0.101293474,0.157995388,0.000789408979,0.000159302886,8.57992272e-05,7.92763603e-05,8.62359739e-05,9.93733047e-05,0.000118766809,0.000155808666,0.000202627518,0.000604291388,0.00200473098,0.0148545485,0.000403855491,3.24890643e-05,8.83565099e-06,7.96041331e-06,1.45273198e-05,0.000294199883,0.00210139086,0.000161375196,0.000108317232,5.73204416e-05,4.28449312e-05,4.33493515e-05,4.76824716e-05,6.5196029e-05,0.000105987376,0.00014614503,0.000258521235,0.0020072707,0.0598101988,0.158468455,3.18329403e-05,8.07251126e-06,8.79091112e-06,1.01223113e-05,1.41376004e-05,1.70376443e-05,2.02964966e-05,1.93110609e-05,1.75654404e-05,1.82274252e-05,1.76539615e-05,1.72361943e-05,1.83009124e-05,1.93709693e-05,2.17752749e-05,2.72335838e-05,7.13420231e-05,5.46664523e-05,3.46060733e-05,1.45519462e-05,8.08746063e-06,6.44848842e-06,8.67459312e-06,7.91439743e-06,9.23737753e-06,8.79800609e-06,8.37780863e-06,7.3646579e-06,6.98478425e-06,6.74225703e-06,6.81230586e-06,6.82173231e-06,7.16121986e-06,7.30634929e-06,8.70200256e-06,8.71502471e-06,8.463825e-06,7.8611165e-06,8.88081377e-06,6.3061475e-06,1.49050436e-06],\"rootInfo\":{\"currentPlayer\":\"B\",\"scoreLead\":-0.554711424,\"scoreSelfplay\":-0.853328632,\"scoreStdev\":10.9461484,\"symHash\":\"3E9126DFCF72AA080DD4177C1A4CAF38\",\"thisHash\":\"93824AF0CCD9BC34B23F84434984664B\",\"utility\":-0.195802246,\"visits\":588,\"winrate\":0.404615824},\"rules\":{\"friendlyPassOk\":false,\"hasButton\":false,\"ko\":\"SITUATIONAL\",\"komi\":7.0,\"scoring\":\"AREA\",\"suicide\":false,\"tax\":\"NONE\",\"whiteHandicapBonus\":\"0\"},\"turnNumber\":2,\"whitePlayer\":\"kata1-b40c256-s10312780288-d2513725330\"}";
-    getJsonGameInfo(tryToGetJsonString(line1), contributeGames, unParseGameInfos);
-    getJsonGameInfo(tryToGetJsonString(line2), contributeGames, unParseGameInfos);
-    watchGame(0, true);
+    startEngine(engineCommand);
   }
 
   private void startEngine(String engineCommand2) {
@@ -199,6 +181,7 @@ public class ContributeEngine {
   private void parseLineForError(String line) {
     // TODO Auto-generated method stub
 
+    Lizzie.gtpConsole.addErrorLine(line + "\n");
   }
 
   private void parseLine(String line) {
@@ -215,30 +198,42 @@ public class ContributeEngine {
           }
           if (Lizzie.frame.contributeView != null)
             Lizzie.frame.contributeView.setGames(finishedGames, playingGames);
+          if (watchingGameIndex == -1 && contributeGames.size() > 0) {
+            watchingGameIndex = 0;
+            currentWatchGame = contributeGames.get(0);
+            setGameToBoard(currentWatchGame);
+            Lizzie.frame.refresh();
+            Lizzie.frame.renderVarTree(0, 0, false, false);
+            startWatchingGameThread();
+          }
         }
       }
-    } else if (line.contains("Finished game")) {
-      // 2021-11-02 09:21:45+0800: Finished game 8 (training), uploaded sgf
-      // katago_contribute/kata1/sgfs/kata1-b40c256-s10312780288-d2513725330/155A1E55A4145135.sgf
-      // and training data
-      // katago_contribute/kata1/tdata/kata1-b40c256-s10312780288-d2513725330/273F621AC4CF6ACF.npz
-      // (8 rows)
-      String params[] = line.split(" ");
-      String sgfPath = "";
-      for (int i = 0; i < params.length - 1; i++) {
-        if (params[i].equals("sgf")) sgfPath = params[i + 1];
-      }
-      // katago_contribute/kata1/sgfs/kata1-b40c256-s10312780288-d2513725330/155A1E55A4145135.sgf
-      if (sgfPath.length() > 0) {
-        String gameId =
-            sgfPath.substring(getLastIndexOfFileSep(sgfPath) + 1, sgfPath.lastIndexOf("."));
-        if (contributeGames != null) {
-          for (ContributeGameInfo game : contributeGames) {
-            if (game.gameId.equals(gameId)) {
-              game.complete = true;
-              if (!useJavaSSH) {
-                game.gameResult = SGFParser.getResult(engineParentPath + File.separator + sgfPath);
-                if (game == currentWatchGame) setReultToView(game.gameResult);
+    } else {
+      Lizzie.gtpConsole.addLine(line + "\n");
+      if (line.contains("Finis")) {
+        // 2021-11-02 09:21:45+0800: Finished game 8 (training), uploaded sgf
+        // katago_contribute/kata1/sgfs/kata1-b40c256-s10312780288-d2513725330/155A1E55A4145135.sgf
+        // and training data
+        // katago_contribute/kata1/tdata/kata1-b40c256-s10312780288-d2513725330/273F621AC4CF6ACF.npz
+        // (8 rows)
+        String params[] = line.split(" ");
+        String sgfPath = "";
+        for (int i = 0; i < params.length - 1; i++) {
+          if (params[i].equals("sgf")) sgfPath = params[i + 1];
+        }
+        // katago_contribute/kata1/sgfs/kata1-b40c256-s10312780288-d2513725330/155A1E55A4145135.sgf
+        if (sgfPath.length() > 0) {
+          String gameId =
+              sgfPath.substring(getLastIndexOfFileSep(sgfPath) + 1, sgfPath.lastIndexOf("."));
+          if (contributeGames != null) {
+            for (ContributeGameInfo game : contributeGames) {
+              if (game.gameId.equals(gameId)) {
+                game.complete = true;
+                if (game == currentWatchGame) maybePlayLastMove(game);
+                if (!useJavaSSH) {
+                  game.gameResult = SGFParser.getResult(courseFile + File.separator + sgfPath);
+                  if (game == currentWatchGame) setReultToView(game.gameResult);
+                }
               }
             }
           }
@@ -251,14 +246,24 @@ public class ContributeEngine {
     if (Lizzie.frame.contributeView != null) Lizzie.frame.contributeView.setResult(result);
   }
 
+  private void setTypeAndKomiToView(boolean isMatchGame, double komi) {
+    // TODO Auto-generated method stub
+    if (Lizzie.frame.contributeView != null) {
+      Lizzie.frame.contributeView.setKomi(String.valueOf(komi));
+      Lizzie.frame.contributeView.setType(isMatchGame ? "评分对局" : "自对弈");
+    }
+  }
+
   private int getLastIndexOfFileSep(String path) {
     return Math.max(path.lastIndexOf("/"), path.lastIndexOf("\\"));
   }
 
   private void normalQuit() {
     isNormalEnd = true;
-    if (this.useJavaSSH) this.javaSSH.close();
-    else this.process.destroyForcibly();
+    if (useJavaSSH) javaSSH.close();
+    else process.destroy();
+    if (watchGameThread != null) watchGameThread.interrupt();
+    Lizzie.frame.isShowingContributeGame = false;
   }
 
   private void shutdown() {
@@ -322,12 +327,14 @@ public class ContributeEngine {
       if (isExistGame) {
         if (tryToParseJsonGame(currentGame, false, jsonInfo, unParseInfos))
           tryToUseUnParseGameInfos(currentGame, unParseInfos);
+        if (currentGame == currentWatchGame) {
+          setGameToBoard(currentGame);
+        }
       } else {
         currentGame = new ContributeGameInfo();
         if (tryToParseJsonGame(currentGame, true, jsonInfo, unParseInfos))
           tryToUseUnParseGameInfos(currentGame, unParseInfos);
         games.add(currentGame);
-        if (watchingGameIndex == -1) watchGame(0, Lizzie.config.contributeWatchAlwaysLastMove);
       }
     } catch (Exception e) {
       e.printStackTrace();
@@ -369,6 +376,7 @@ public class ContributeEngine {
       currentGame.sizeY = jsonInfo.getInt("boardYSize");
       currentGame.rules = jsonInfo.getJSONObject("rules");
       currentGame.komi = currentGame.rules.getDouble("komi");
+      currentGame.isMatchGame = !currentGame.blackPlayer.equals(currentGame.whitePlayer);
     }
     JSONArray initStones = jsonInfo.getJSONArray("initialStones");
     if (initStones.length() > 0) {
@@ -405,7 +413,7 @@ public class ContributeEngine {
         move.pos = Board.convertNameToCoordinates(lastMove.get(1).toString(), currentGame.sizeY);
         move.isPass = move.pos[0] < 0;
         JSONArray moveInfos = jsonInfo.getJSONArray("moveInfos");
-        move.candidates = Utils.getBestMovesFromJsonArray(moveInfos);
+        move.candidates = Utils.getBestMovesFromJsonArray(moveInfos, false, move.isBlack);
         currentGame.moveList.add(move);
       } else {
         ContributeUnParseGameInfo unParseInfo = new ContributeUnParseGameInfo();
@@ -434,32 +442,20 @@ public class ContributeEngine {
     return true;
   }
 
-  public void watchGame(int index, boolean loadToLast) {
-    int currentMoveNumber = Lizzie.board.getHistory().getCurrentHistoryNode().getData().moveNumber;
-    boolean changedGame = false;
-    ContributeGameInfo watchGame = contributeGames.get(index);
+  public void setGameToBoard(ContributeGameInfo Game) {
     ArrayList<ContributeMoveInfo> remainList = new ArrayList<ContributeMoveInfo>();
-    if (currentWatchGame == watchGame
-        && isContributeGameAndCurrentBoardSame(watchGame, remainList)) {
-      if (remainList != null && remainList.size() > 0) setContributeMoveList(remainList);
-      else if (currentWatchGame.complete) {
-        // 判断是否跳转下一局,watchingGameIndex
-        watchGame(index + 1, loadToLast);
-        return;
-      }
+    if (currentWatchGame == Game && isContributeGameAndCurrentBoardSame(Game, remainList)) {
+      if (remainList != null && remainList.size() > 0)
+        setContributeMoveList(remainList, currentWatchGame.complete);
     } else {
-      if (Lizzie.config.contributeWatchSkipNone19
-          && (watchGame.sizeX != 19 || watchGame.sizeY != 19)) {
-        watchGame(index + 1, loadToLast);
-        return;
-      }
-      changedGame = true;
       Lizzie.board.clear(false);
-      currentWatchGame = watchGame;
-      watchingGameIndex = index;
+      Lizzie.board.isKataBoard = true;
+      Lizzie.board.isPkBoard = true;
+      Lizzie.board.isPkBoardKataB = true;
+      Lizzie.frame.isShowingContributeGame = true;
       if (Lizzie.frame.contributeView != null)
-        Lizzie.frame.contributeView.setWathGameIndex(watchingGameIndex);
-      Lizzie.board.reopen(currentWatchGame.sizeX, currentWatchGame.sizeY);
+        Lizzie.frame.contributeView.setWathGameIndex(watchingGameIndex + 1);
+      Lizzie.board.reopen(currentWatchGame.sizeY, currentWatchGame.sizeX);
       Lizzie.board
           .getHistory()
           .getGameInfo()
@@ -469,34 +465,49 @@ public class ContributeEngine {
           .getGameInfo()
           .setPlayerWhite(currentWatchGame.whitePlayer.replaceAll(" ", ""));
       Lizzie.board.getHistory().getGameInfo().setKomi(currentWatchGame.komi);
+      setTypeAndKomiToView(currentWatchGame.isMatchGame, currentWatchGame.komi);
       if (currentWatchGame.complete) {
         Lizzie.board.getHistory().getGameInfo().setResult(currentWatchGame.gameResult);
         setReultToView(currentWatchGame.gameResult);
       }
       if (currentWatchGame.initMoveList != null && currentWatchGame.initMoveList.size() > 0)
-        setContributeMoveList(currentWatchGame.initMoveList);
+        setContributeMoveList(currentWatchGame.initMoveList, false);
       if (currentWatchGame.moveList != null && currentWatchGame.moveList.size() > 0)
-        setContributeMoveList(currentWatchGame.moveList);
+        setContributeMoveList(currentWatchGame.moveList, currentWatchGame.complete);
+      if (Lizzie.board.getHistory().getCurrentHistoryNode().getData().getPlayouts() <= 0) {
+        Lizzie.board.nextMove(false);
+      }
     }
-    if (!changedGame && !loadToLast) {
-      //      if (Lizzie.board.getHistory().getCurrentHistoryNode().getData().moveNumber -
-      // currentMoveNumber
-      //          > 1)
-      Lizzie.board.goToMoveNumber(currentMoveNumber);
-    } else if (loadToLast) {
-      while (Lizzie.board.nextMove(false)) ;
-    }
-    Lizzie.frame.refresh();
-    // 切换到不同局,同步ContributeGameInfo到界面上(如是同一局直接返回),或直接跳倒数第二手
-    // 还是显示前一手模式+跳到最后一手?
-    // watchingGameIndex
   }
 
-  private void setContributeMoveList(ArrayList<ContributeMoveInfo> remainList) {
-    while (Lizzie.board.nextMove(false)) ;
-    for (ContributeMoveInfo move : remainList) {
-      // 把所有move place进去 再设置bestmoves进去
-      if (move.candidates != null)
+  private void maybePlayLastMove(ContributeGameInfo game) {
+    // TODO Auto-generated method stub
+    if (game.moveList != null && game.moveList.size() > 0) {
+      ContributeMoveInfo move = game.moveList.get(game.moveList.size() - 1);
+      BoardHistoryNode lastNode = Lizzie.board.getHistory().getMainEnd();
+      if (move.isPass) {
+        if (lastNode.getData().lastMoveColor.isBlack() != move.isBlack)
+          Lizzie.board
+              .getHistory()
+              .pass(move.isBlack ? Stone.BLACK : Stone.WHITE, false, false, false, true);
+      } else
+        Lizzie.board
+            .getHistory()
+            .place(
+                move.pos[0],
+                move.pos[1],
+                move.isBlack ? Stone.BLACK : Stone.WHITE,
+                false,
+                false,
+                true);
+    }
+  }
+
+  private void setContributeMoveList(
+      ArrayList<ContributeMoveInfo> remainList, boolean holdLastMove) {
+    for (int i = 0; i < remainList.size(); i++) {
+      ContributeMoveInfo move = remainList.get(i);
+      if (move.candidates != null) {
         Lizzie.board
             .getData()
             .tryToSetBestMoves(
@@ -504,11 +515,24 @@ public class ContributeEngine {
                 Lizzie.board.getHistory().getCurrentTurnPlayerShortName(),
                 false,
                 MoveData.getPlayouts(move.candidates));
-      if (move.isPass) Lizzie.board.getHistory().pass(move.isBlack ? Stone.BLACK : Stone.WHITE);
-      else
-        Lizzie.board
-            .getHistory()
-            .place(move.pos[0], move.pos[1], move.isBlack ? Stone.BLACK : Stone.WHITE);
+        SGFParser.appendComment();
+      }
+      if (i < (holdLastMove ? remainList.size() : remainList.size() - 1)) {
+        if (move.isPass)
+          Lizzie.board
+              .getHistory()
+              .pass(move.isBlack ? Stone.BLACK : Stone.WHITE, false, false, false, true);
+        else
+          Lizzie.board
+              .getHistory()
+              .place(
+                  move.pos[0],
+                  move.pos[1],
+                  move.isBlack ? Stone.BLACK : Stone.WHITE,
+                  false,
+                  false,
+                  true);
+      }
     }
   }
 
@@ -573,5 +597,66 @@ public class ContributeEngine {
             commands, engineCommand, message, !useJavaSSH && OS.isWindows(), false);
     engineFailedMessage.setModal(true);
     engineFailedMessage.setVisible(true);
+  }
+
+  private void startWatchingGameThread() {
+    Runnable runnable =
+        new Runnable() {
+          public void run() {
+            int timeCount = 0;
+            BoardHistoryNode node = Lizzie.board.getHistory().getCurrentHistoryNode();
+            while (true) {
+              try {
+                Thread.sleep(50);
+                timeCount++;
+              } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                break;
+              }
+              if (changeWatchingGameIndex > 0) {
+                if (changeWatchingGameIndex > contributeGames.size() - 1)
+                  changeWatchingGameIndex = contributeGames.size();
+                if (changeWatchingGameIndex != watchingGameIndex) {
+                  watchingGameIndex = changeWatchingGameIndex;
+                  changeWatchingGameIndex = -1;
+                  changeGame(watchingGameIndex);
+                  node = Lizzie.board.getHistory().getCurrentHistoryNode();
+                  timeCount = 0;
+                }
+              } else if (Lizzie.config.contributeWatchAutoPlay) {
+                if (timeCount * 50.0 / 1000.0 >= Lizzie.config.contributeWatchAutoPlayInterval) {
+                  if (node == Lizzie.board.getHistory().getCurrentHistoryNode()) {
+                    if (!Lizzie.board.nextMove(true)) {
+                      boolean shouldGoToNextGame = true;
+                      while (shouldGoToNextGame && contributeGames.size() > watchingGameIndex + 1) {
+                        watchingGameIndex++;
+                        shouldGoToNextGame = false;
+                        if (Lizzie.config.contributeWatchSkipNone19) {
+                          if (contributeGames.get(watchingGameIndex).sizeX != 19
+                              || contributeGames.get(watchingGameIndex).sizeY != 19)
+                            shouldGoToNextGame = true;
+                        }
+                      }
+                      changeGame(watchingGameIndex);
+                      node = Lizzie.board.getHistory().getCurrentHistoryNode();
+                      timeCount = 0;
+                    }
+                  }
+                  node = Lizzie.board.getHistory().getCurrentHistoryNode();
+                  timeCount = 0;
+                }
+              }
+            }
+          }
+
+          private void changeGame(int index) {
+            // TODO Auto-generated method stub
+            setGameToBoard(contributeGames.get(watchingGameIndex));
+            if (Lizzie.config.contributeWatchAlwaysLastMove) while (Lizzie.board.nextMove(false)) ;
+            Lizzie.frame.refresh();
+            Lizzie.frame.renderVarTree(0, 0, false, false);
+          }
+        };
+    watchGameThread = new Thread(runnable);
   }
 }

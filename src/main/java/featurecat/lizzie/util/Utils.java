@@ -786,7 +786,8 @@ public class Utils {
   }
 
   @SuppressWarnings("unchecked")
-  public static List<MoveData> getBestMovesFromJsonArray(JSONArray moveInfos) {
+  public static List<MoveData> getBestMovesFromJsonArray(
+      JSONArray moveInfos, boolean sideToMove, boolean isBlack) {
     // TODO Auto-generated method stub
     ArrayList<MoveData> bestMoves = new ArrayList<MoveData>();
     for (int i = 0; i < moveInfos.length(); i++) {
@@ -802,6 +803,10 @@ public class Utils {
       mv.policy = moveInfo.getDouble("prior") * 100;
       mv.scoreMean = moveInfo.getDouble("scoreLead");
       mv.scoreStdev = moveInfo.getDouble("scoreStdev");
+      if (!sideToMove && !isBlack) {
+        mv.winrate = 100 - mv.winrate;
+        mv.scoreMean = -mv.scoreMean;
+      }
       JSONArray pv = moveInfo.getJSONArray("pv");
       List<Object> list = pv.toList();
       mv.variation = (List<String>) (List) list;

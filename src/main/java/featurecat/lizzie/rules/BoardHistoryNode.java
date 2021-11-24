@@ -135,6 +135,36 @@ public class BoardHistoryNode {
     }
   }
 
+  public BoardHistoryNode getLast() {
+    BoardHistoryNode node = this;
+    while (!node.isMainTrunk()) node = node.previous.get();
+    while (node.next().isPresent()) node = node.next().get();
+    return node;
+  }
+
+  public BoardHistoryNode addAtLast(BoardData data) {
+    if (!this.previous.isPresent()) {
+      data.moveMNNumber = 1;
+    }
+    if (Lizzie.config.newMoveNumberInBranch && !variations.isEmpty()) {
+      if (data.moveMNNumber == -1) {
+        data.moveMNNumber = data.dummy ? 0 : 1;
+      }
+      data.lastMove.ifPresent(
+          m -> data.moveNumberList[Board.getIndex(m[0], m[1])] = data.moveMNNumber);
+    }
+    BoardHistoryNode node = new BoardHistoryNode(data);
+    // Add node
+    if (variations.size() == 0) {
+      if (this.data.blackToPlay != node.getData().lastMoveColor.isBlack()) {
+        this.data.blackToPlay = node.getData().lastMoveColor.isBlack();
+      }
+    }
+    variations.add(node);
+    node.previous = Optional.of(this);
+    return node;
+  }
+
   public BoardHistoryNode addOrGoto(BoardData data, boolean newBranch, boolean changeMove) {
     if (!Lizzie.board.isLoadingFile && Lizzie.leelaz != null && !EngineManager.isEngineGame) {
       Lizzie.leelaz.clearBestMoves();

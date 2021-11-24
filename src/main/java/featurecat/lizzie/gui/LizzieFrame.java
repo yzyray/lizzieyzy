@@ -12057,6 +12057,7 @@ public class LizzieFrame extends JFrame {
   public boolean allowPlaceStone = true;
   private Process processClockHelper;
   public ContributeView contributeView;
+  public boolean isShowingContributeGame = false;
 
   public void startTemporaryBoard() {
     if (isInTemporaryBoard) return;
@@ -12479,9 +12480,10 @@ public class LizzieFrame extends JFrame {
 
   public void testContibuteFrame() {
     // TODO Auto-generated method stub
-    ContributeEngine eng = new ContributeEngine();
-    // ContributeSettings contributeSettings = new ContributeSettings(this);
-    contributeView = new ContributeView(this);
+    ContributeEngine contributeEngine = new ContributeEngine();
+    //  ContributeSettings contributeSettings = new ContributeSettings(this);
+    if (contributeView == null) contributeView = new ContributeView(this);
+    if (!contributeView.isVisible()) contributeView.setVisible(true);
   }
 
   private void openInVisibleFrame() {

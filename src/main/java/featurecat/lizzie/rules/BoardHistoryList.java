@@ -387,6 +387,11 @@ public class BoardHistoryList {
   }
 
   public void pass(Stone color, boolean newBranch, boolean dummy, boolean changeMove) {
+    pass(color, newBranch, dummy, changeMove, false);
+  }
+
+  public void pass(
+      Stone color, boolean newBranch, boolean dummy, boolean changeMove, boolean addLast) {
     synchronized (this) {
 
       // check to see if this move is being replayed in history
@@ -423,7 +428,8 @@ public class BoardHistoryList {
       newState.dummy = dummy;
 
       // update history with pass
-      this.addOrGoto(newState, newBranch);
+      if (addLast) head.getLast().addAtLast(newState);
+      else this.addOrGoto(newState, newBranch);
     }
   }
 
@@ -432,10 +438,15 @@ public class BoardHistoryList {
   }
 
   public void place(int x, int y, Stone color, boolean newBranch) {
-    place(x, y, color, newBranch, false);
+    place(x, y, color, newBranch, false, false);
   }
 
   public void place(int x, int y, Stone color, boolean newBranch, boolean changeMove) {
+    place(x, y, color, newBranch, changeMove, false);
+  }
+
+  public void place(
+      int x, int y, Stone color, boolean newBranch, boolean changeMove, boolean addLast) {
     synchronized (this) {
       if (!Board.isValid(x, y)
           || (this.getStones()[Board.getIndex(x, y)] != Stone.EMPTY && !newBranch)) return;
@@ -529,7 +540,8 @@ public class BoardHistoryList {
       }
 
       // update history with this coordinate
-      this.addOrGoto(newState, newBranch, changeMove);
+      if (addLast) head.getLast().addAtLast(newState);
+      else this.addOrGoto(newState, newBranch, changeMove);
       //   Lizzie.board.modifyEnd();
       // Lizzie.frame.renderVarTree(0, 0, false, false);
     }
