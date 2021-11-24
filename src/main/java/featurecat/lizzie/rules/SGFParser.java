@@ -42,8 +42,8 @@ public class SGFParser {
 
   private static boolean isExtraMode2 = false;
   // static boolean oriEmpty = false;
-  
-public static boolean load(String filename, boolean showHint) throws IOException {
+
+  public static boolean load(String filename, boolean showHint) throws IOException {
     // Clear the board
     islzFirst = false;
     islzFirst2 = true;
@@ -3217,42 +3217,42 @@ public static boolean load(String filename, boolean showHint) throws IOException
       return String.format(Locale.ENGLISH, "%c%c", x, y);
     }
   }
-  
+
   public static String getResult(String filename) {
-	  File file = new File(filename);
-	    if (!file.exists() || !file.canRead()) {
-	      return "";
-	    }  
-	    String encoding = EncodingDetector.detect(filename);
-	    FileInputStream fp;
-		try {
-			fp = new FileInputStream(file);		
-	    if (encoding == "WINDOWS-1252") encoding = "GB18030";
-	    InputStreamReader reader = new InputStreamReader(fp, encoding);
-	    StringBuilder builder = new StringBuilder();
-	    while (reader.ready()) {
-	      builder.append((char) reader.read());
-	    }
-	    reader.close();
-	    fp.close();
-	    String value = builder.toString();
-	    if (value.isEmpty()) {
-	      Lizzie.board.isLoadingFile = false;
-	      return "";
-	    }
-	    return  parseResult(value);	     
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	return "";	  
+    File file = new File(filename);
+    if (!file.exists() || !file.canRead()) {
+      return "";
+    }
+    String encoding = EncodingDetector.detect(filename);
+    FileInputStream fp;
+    try {
+      fp = new FileInputStream(file);
+      if (encoding == "WINDOWS-1252") encoding = "GB18030";
+      InputStreamReader reader = new InputStreamReader(fp, encoding);
+      StringBuilder builder = new StringBuilder();
+      while (reader.ready()) {
+        builder.append((char) reader.read());
+      }
+      reader.close();
+      fp.close();
+      String value = builder.toString();
+      if (value.isEmpty()) {
+        Lizzie.board.isLoadingFile = false;
+        return "";
+      }
+      return parseResult(value);
+    } catch (Exception e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    return "";
   }
-  
+
   private static String parseResult(String value) {
-	  int tempIndex=value.indexOf("RE[")+1;
-	String temp= value.substring(tempIndex,Math.min(value.length(), tempIndex+20));
-	return temp.substring(0,temp.lastIndexOf("]"));
-}  
+    int tempIndex = value.indexOf("RE[") + 3;
+    String temp = value.substring(tempIndex, Math.min(value.length(), tempIndex + 20));
+    return temp.substring(0, temp.lastIndexOf("]"));
+  }
 }
 
 class BlunderMoves implements Comparable<BlunderMoves> {

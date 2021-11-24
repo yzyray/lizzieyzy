@@ -133,6 +133,10 @@ public class Board {
    * @return an optional array of coordinates, empty for pass and resign
    */
   public static Optional<int[]> asCoordinates(String namedCoordinate) {
+    return asCoordinates(namedCoordinate, boardHeight);
+  }
+
+  public static Optional<int[]> asCoordinates(String namedCoordinate, int boardHeight) {
     namedCoordinate = namedCoordinate.trim();
     if (namedCoordinate.equalsIgnoreCase("pass") || namedCoordinate.equalsIgnoreCase("resign")) {
       return Optional.empty();
@@ -246,9 +250,16 @@ public class Board {
     }
   }
 
+  public static int[] convertNameToCoordinates(String name, int boardHeight) {
+    // coordinates take the form C16 A19 Q5 K10 etc. I is not used.
+    Optional<int[]> coords = asCoordinates(name, boardHeight);
+    if (coords.isPresent()) return coords.get();
+    else return LizzieFrame.outOfBoundCoordinate;
+  }
+
   public static int[] convertNameToCoordinates(String name) {
     // coordinates take the form C16 A19 Q5 K10 etc. I is not used.
-    Optional<int[]> coords = asCoordinates(name);
+    Optional<int[]> coords = asCoordinates(name, boardHeight);
     if (coords.isPresent()) return coords.get();
     else return LizzieFrame.outOfBoundCoordinate;
     //    if (boardWidth > 25 || boardHeight > 25) {

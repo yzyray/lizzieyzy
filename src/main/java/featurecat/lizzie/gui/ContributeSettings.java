@@ -91,7 +91,7 @@ public class ContributeSettings extends JDialog {
     mainPanel.add(txtConfigFile, gbc_txtConfigFile);
     txtConfigFile.setColumns(10);
     txtConfigFile.setToolTipText(configTip);
-    
+
     JPanel panel_1 = new JPanel();
     GridBagConstraints gbc_panel_1 = new GridBagConstraints();
     gbc_panel_1.insets = new Insets(0, 0, 5, 5);
@@ -99,16 +99,16 @@ public class ContributeSettings extends JDialog {
     gbc_panel_1.gridx = 0;
     gbc_panel_1.gridy = 2;
     mainPanel.add(panel_1, gbc_panel_1);
-    
+
     JCheckBox chkUseCommand = new JFontCheckBox("自定义命令行");
     panel_1.add(chkUseCommand);
-    
+
     JCheckBox chkRemote = new JFontCheckBox("远程SSH");
     panel_1.add(chkRemote);
-    
+
     JButton btnRemoteSetting = new JFontButton("设置");
     panel_1.add(btnRemoteSetting);
-    
+
     textField = new JFontTextField();
     GridBagConstraints gbc_textField = new GridBagConstraints();
     gbc_textField.insets = new Insets(0, 0, 5, 0);

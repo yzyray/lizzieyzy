@@ -16,8 +16,7 @@ public class ContributeSSHController {
   private RemoteConnect newConnect;
   private ContributeEngine owner;
 
-  public ContributeSSHController(
-      ContributeEngine owner, String ip, String port) {
+  public ContributeSSHController(ContributeEngine owner, String ip, String port) {
     this.owner = owner;
     this.newConnect = new RemoteConnect();
     this.newConnect.setIp(ip);
@@ -33,23 +32,23 @@ public class ContributeSSHController {
       if (flag) {
         this.session = this.conn.openSession();
         this.session.execCommand(command);
-      } else  {
+      } else {
         Utils.showMsg(Lizzie.resourceBundle.getString("SSHController.connectFailed"));
         this.conn.close();
       }
     } catch (IOException e) {
       e.printStackTrace();
-        String err = e.getLocalizedMessage();
-        try {
-          this.owner.tryToDignostic(
-              String.valueOf(Lizzie.resourceBundle.getString("SSHController.engineFailed"))
-                  + ": "
-                  + ((err == null)
-                      ? Lizzie.resourceBundle.getString("Leelaz.engineStartNoExceptionMessage")
-                      : err));
-        } catch (JSONException e1) {
-          e1.printStackTrace();
-        }      
+      String err = e.getLocalizedMessage();
+      try {
+        this.owner.tryToDignostic(
+            String.valueOf(Lizzie.resourceBundle.getString("SSHController.engineFailed"))
+                + ": "
+                + ((err == null)
+                    ? Lizzie.resourceBundle.getString("Leelaz.engineStartNoExceptionMessage")
+                    : err));
+      } catch (JSONException e1) {
+        e1.printStackTrace();
+      }
     }
     return Boolean.valueOf(flag);
   }
@@ -63,23 +62,23 @@ public class ContributeSSHController {
       if (flag) {
         this.session = this.conn.openSession();
         this.session.execCommand(command);
-      } else  {
+      } else {
         Utils.showMsg(Lizzie.resourceBundle.getString("SSHController.connectFailed"));
         this.conn.close();
       }
     } catch (Exception e) {
-      e.printStackTrace();     
-        String err = e.getLocalizedMessage();
-        try {
-          this.owner.tryToDignostic(
-              String.valueOf(Lizzie.resourceBundle.getString("SSHController.engineFailed"))
-                  + ": "
-                  + ((err == null)
-                      ? Lizzie.resourceBundle.getString("Leelaz.engineStartNoExceptionMessage")
-                      : err));
-        } catch (JSONException e1) {
-          e1.printStackTrace();
-        }      
+      e.printStackTrace();
+      String err = e.getLocalizedMessage();
+      try {
+        this.owner.tryToDignostic(
+            String.valueOf(Lizzie.resourceBundle.getString("SSHController.engineFailed"))
+                + ": "
+                + ((err == null)
+                    ? Lizzie.resourceBundle.getString("Leelaz.engineStartNoExceptionMessage")
+                    : err));
+      } catch (JSONException e1) {
+        e1.printStackTrace();
+      }
     }
     return Boolean.valueOf(flag);
   }
