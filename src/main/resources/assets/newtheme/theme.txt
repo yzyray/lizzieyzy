@@ -6,7 +6,8 @@
   "blunder-bar-color": [
     255,
     204,
-    255
+    255,
+    170
   ],
   "use-pure-stone": false,
   "winrate-stroke-width": 1.7,
@@ -86,7 +87,7 @@
     77
   ],
   "winrate-font-name": "Lizzie Default",
-  "minimum-blunder-bar-width": 3,
+  "minimum-blunder-bar-width": 1,
   "show-stone-shadow": true,
   "winrate-miss-line-color": [
     0,

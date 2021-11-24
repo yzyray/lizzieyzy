@@ -233,7 +233,7 @@ public class Theme {
 
   /** The minimum width of the blunder bar */
   public int minimumBlunderBarWidth() {
-    return getIntByKey("minimum-blunder-bar-width", 3);
+    return getIntByKey("minimum-blunder-bar-width", 1);
   }
 
   /** The font size of the comment */
@@ -280,7 +280,7 @@ public class Theme {
 
   /** The color of the blunder bar */
   public Color blunderBarColor() {
-    return getColorByKey("blunder-bar-color", new Color(255, 204, 255));
+    return getColorByKey("blunder-bar-color", new Color(255, 204, 255, 170));
   }
 
   public Color bestMoveColor() {

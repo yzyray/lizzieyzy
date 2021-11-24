@@ -3449,8 +3449,8 @@ public class ConfigDialog2 extends JDialog {
     txtBackgroundFilter.setEnabled(!chkPureBackground.isSelected());
     spnWinrateStrokeWidth.setValue(Lizzie.config.uiConfig.optFloat("winrate-stroke-width", 1.7f));
     spnMinimumBlunderBarWidth.setValue(
-        Lizzie.config.uiConfig.optInt("minimum-blunder-bar-width", 3));
-    spnShadowSize.setValue(Lizzie.config.uiConfig.optInt("shadow-size", 100));
+        Lizzie.config.uiConfig.optInt("minimum-blunder-bar-width", 1));
+    spnShadowSize.setValue(Lizzie.config.uiConfig.optInt("shadow-size", 85));
     setFontValue(cmbFontName, Lizzie.config.uiConfig.optString("font-name", null));
     setFontValue(cmbUiFontName, Lizzie.config.uiConfig.optString("ui-font-name", null));
     setFontValue(cmbWinrateFontName, Lizzie.config.uiConfig.optString("winrate-font-name", null));
@@ -3473,7 +3473,8 @@ public class ConfigDialog2 extends JDialog {
             Lizzie.config.uiConfig.optJSONArray("winrate-miss-line-color"), Color.blue.darker()));
     lblBlunderBarColor.setColor(
         Theme.array2Color(
-            Lizzie.config.uiConfig.optJSONArray("blunder-bar-color"), new Color(255, 204, 255)));
+            Lizzie.config.uiConfig.optJSONArray("blunder-bar-color"),
+            new Color(255, 204, 255, 170)));
     lblScoreMeanLineColor.setColor(
         Theme.array2Color(
             Lizzie.config.uiConfig.optJSONArray("scoremean-line-color"), new Color(255, 0, 255)));

@@ -95,7 +95,7 @@ public class CheckVersion extends JDialog {
     txtpnhttpspanbaiducomsqghdfmnzbtyfcxa.setBackground(UIManager.getColor("Button.background"));
     txtpnhttpspanbaiducomsqghdfmnzbtyfcxa.setText(
         resourceBundle.getString("CheckVersion.download")
-            + "https://pan.baidu.com/s/1q615GHD62F92mNZbTYfcxA"
+            + "https://aistudio.baidu.com/aistudio/datasetdetail/116865"
             + resourceBundle.getString("CheckVersion.download2"));
     scrollPane_1.setViewportView(txtpnhttpspanbaiducomsqghdfmnzbtyfcxa);
     txtpnhttpspanbaiducomsqghdfmnzbtyfcxa.setCaretPosition(0);
@@ -113,7 +113,7 @@ public class CheckVersion extends JDialog {
             try {
               Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
               Transferable transferableString =
-                  new StringSelection("https://pan.baidu.com/s/1q615GHD62F92mNZbTYfcxA");
+                  new StringSelection("https://aistudio.baidu.com/aistudio/datasetdetail/116865");
               clipboard.setContents(transferableString, null);
               JOptionPane.showMessageDialog(
                   dialog, resourceBundle.getString("CheckVersion.copySuccess"));
