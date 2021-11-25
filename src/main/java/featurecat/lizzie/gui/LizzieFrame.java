@@ -11557,6 +11557,8 @@ public class LizzieFrame extends JFrame {
 
           @Override
           public void run() {
+            if (Lizzie.board.getHistory().isEmptyBoard()
+                && Lizzie.board.getHistory().getGameInfo().getHandicap() > 0) return;
             if (playerIsBlack && !Lizzie.board.getHistory().isBlacksTurn()) return;
             if (!playerIsBlack && Lizzie.board.getHistory().isBlacksTurn()) return;
             if (Lizzie.leelaz.isGamePaused) return;
