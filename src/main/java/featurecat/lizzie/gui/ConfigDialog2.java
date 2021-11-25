@@ -1631,13 +1631,18 @@ public class ConfigDialog2 extends JDialog {
     uiTab.add(SpecialCoords);
 
     SpecialCoordsCbx = new JComboBox<String>();
-    SpecialCoordsCbx.setBounds(532, 668, 55, 23);
+    SpecialCoordsCbx.setBounds(489, 668, 113, 23);
     uiTab.add(SpecialCoordsCbx);
     SpecialCoordsCbx.addItem(resourceBundle.getString("ConfigDialog2.SpecialCoordsNormal"));
     SpecialCoordsCbx.addItem(resourceBundle.getString("ConfigDialog2.SpecialCoordsWithI"));
     SpecialCoordsCbx.addItem(resourceBundle.getString("ConfigDialog2.SpecialCoordsFox"));
-    if (Lizzie.config.useFoxStyleCoords) SpecialCoordsCbx.setSelectedIndex(2);
-    else if (Lizzie.config.useIinCoordsName) SpecialCoordsCbx.setSelectedIndex(1);
+    SpecialCoordsCbx.addItem(resourceBundle.getString("ConfigDialog2.SpecialCoordsNumberFromTop"));
+    SpecialCoordsCbx.addItem(
+        resourceBundle.getString("ConfigDialog2.SpecialCoordsNumberFromBottom"));
+    if (Lizzie.config.useIinCoordsName) SpecialCoordsCbx.setSelectedIndex(1);
+    else if (Lizzie.config.useFoxStyleCoords) SpecialCoordsCbx.setSelectedIndex(2);
+    else if (Lizzie.config.useNumCoordsFromTop) SpecialCoordsCbx.setSelectedIndex(3);
+    else if (Lizzie.config.useNumCoordsFromBottom) SpecialCoordsCbx.setSelectedIndex(4);
     else SpecialCoordsCbx.setSelectedIndex(0);
 
     chkLimitTime = new JCheckBox();
@@ -3649,6 +3654,10 @@ public class ConfigDialog2 extends JDialog {
     Lizzie.config.uiConfig.put("use-i-in-coords-name", Lizzie.config.useIinCoordsName);
     Lizzie.config.useFoxStyleCoords = curSpecialCoordsIndex == 2;
     Lizzie.config.uiConfig.put("use-fox-style-coords", Lizzie.config.useFoxStyleCoords);
+    Lizzie.config.useNumCoordsFromTop = curSpecialCoordsIndex == 3;
+    Lizzie.config.uiConfig.put("use-num-coords-from-top", Lizzie.config.useNumCoordsFromTop);
+    Lizzie.config.useNumCoordsFromBottom = curSpecialCoordsIndex == 4;
+    Lizzie.config.uiConfig.put("use-num-coords-from-bottom", Lizzie.config.useNumCoordsFromBottom);
     if (oriSpecialCoordsIndex != curSpecialCoordsIndex) {
       LizzieFrame.boardRenderer.reDrawGobanAnyway();
       if (LizzieFrame.boardRenderer2 != null) LizzieFrame.boardRenderer2.reDrawGobanAnyway();

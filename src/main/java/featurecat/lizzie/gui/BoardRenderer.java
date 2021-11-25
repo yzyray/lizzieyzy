@@ -834,29 +834,55 @@ public class BoardRenderer {
       if (showCoordinates()) {
         g.setColor(Color.BLACK);
         for (int i = 0; i < Board.boardWidth; i++) {
-          drawString(
-              g,
-              scaledMarginWidth + squareWidth * i,
-              scaledMarginHeight * 4 / 10,
-              LizzieFrame.uiFont,
-              Board.asName(i),
-              stoneRadius * 4 / 5,
-              stoneRadius);
-          if ((!Lizzie.config.showNameInBoard
-                  || (Lizzie.board != null
-                      && (Lizzie.board.getHistory().getGameInfo().getPlayerWhite().equals("")
-                          && Lizzie.board.getHistory().getGameInfo().getPlayerBlack().equals("")))
-                  || (Lizzie.config.isThinkingMode() && boardIndex == 2))
-              && (!Lizzie.frame.isShowingHeatmap || Lizzie.leelaz.isZen)
-              && (!Lizzie.frame.isShowingPolicy || Lizzie.leelaz.isKatago || Lizzie.leelaz.isZen))
+          if (Lizzie.config.useNumCoordsFromTop || Lizzie.config.useNumCoordsFromBottom) {
             drawString(
                 g,
                 scaledMarginWidth + squareWidth * i,
-                -scaledMarginHeight * 4 / 10 + boardHeight,
+                scaledMarginHeight * 4 / 10,
+                LizzieFrame.uiFont,
+                String.valueOf(i + 1),
+                stoneRadius * 4 / 5,
+                stoneRadius);
+            if ((!Lizzie.config.showNameInBoard
+                    || (Lizzie.board != null
+                        && (Lizzie.board.getHistory().getGameInfo().getPlayerWhite().equals("")
+                            && Lizzie.board.getHistory().getGameInfo().getPlayerBlack().equals("")))
+                    || (Lizzie.config.isThinkingMode() && boardIndex == 2))
+                && (!Lizzie.frame.isShowingHeatmap || Lizzie.leelaz.isZen)
+                && (!Lizzie.frame.isShowingPolicy || Lizzie.leelaz.isKatago || Lizzie.leelaz.isZen))
+              drawString(
+                  g,
+                  scaledMarginWidth + squareWidth * i,
+                  -scaledMarginHeight * 4 / 10 + boardHeight,
+                  LizzieFrame.uiFont,
+                  String.valueOf(i + 1),
+                  stoneRadius * 4 / 5,
+                  stoneRadius);
+          } else {
+            drawString(
+                g,
+                scaledMarginWidth + squareWidth * i,
+                scaledMarginHeight * 4 / 10,
                 LizzieFrame.uiFont,
                 Board.asName(i),
                 stoneRadius * 4 / 5,
                 stoneRadius);
+            if ((!Lizzie.config.showNameInBoard
+                    || (Lizzie.board != null
+                        && (Lizzie.board.getHistory().getGameInfo().getPlayerWhite().equals("")
+                            && Lizzie.board.getHistory().getGameInfo().getPlayerBlack().equals("")))
+                    || (Lizzie.config.isThinkingMode() && boardIndex == 2))
+                && (!Lizzie.frame.isShowingHeatmap || Lizzie.leelaz.isZen)
+                && (!Lizzie.frame.isShowingPolicy || Lizzie.leelaz.isKatago || Lizzie.leelaz.isZen))
+              drawString(
+                  g,
+                  scaledMarginWidth + squareWidth * i,
+                  -scaledMarginHeight * 4 / 10 + boardHeight,
+                  LizzieFrame.uiFont,
+                  Board.asName(i),
+                  stoneRadius * 4 / 5,
+                  stoneRadius);
+          }
         }
         for (int i = 0; i < Board.boardHeight; i++) {
           drawString(
@@ -864,10 +890,11 @@ public class BoardRenderer {
               scaledMarginWidth * 4 / 10,
               scaledMarginHeight + squareHeight * i,
               LizzieFrame.uiFont,
-              ""
-                  + (Board.boardHeight <= 25 && !Lizzie.config.useFoxStyleCoords
+              String.valueOf(
+                  +(Board.boardHeight <= 25
+                          && !(Lizzie.config.useNumCoordsFromTop || Lizzie.config.useFoxStyleCoords)
                       ? (Board.boardHeight - i)
-                      : (i + 1)),
+                      : (i + 1))),
               stoneRadius * 4 / 5,
               stoneRadius);
           drawString(
@@ -875,10 +902,11 @@ public class BoardRenderer {
               -scaledMarginWidth * 4 / 10 + boardWidth,
               scaledMarginHeight + squareHeight * i,
               LizzieFrame.uiFont,
-              ""
-                  + (Board.boardHeight <= 25 && !Lizzie.config.useFoxStyleCoords
+              String.valueOf(
+                  +(Board.boardHeight <= 25
+                          && !(Lizzie.config.useNumCoordsFromTop || Lizzie.config.useFoxStyleCoords)
                       ? (Board.boardHeight - i)
-                      : (i + 1)),
+                      : (i + 1))),
               stoneRadius * 4 / 5,
               stoneRadius);
         }

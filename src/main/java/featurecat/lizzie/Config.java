@@ -464,6 +464,10 @@ public class Config {
   public boolean useDefaultInfoRowOrder = true;
 
   public boolean useIinCoordsName = false;
+  public boolean useFoxStyleCoords = false;
+  public boolean useNumCoordsFromTop = false;
+  public boolean useNumCoordsFromBottom = false;
+
   public boolean autoReplayBranch = false;
   public boolean autoReplayDisplayEntireVariationsFirst = false;
   public double displayEntireVariationsFirstSeconds = 3.0;
@@ -575,7 +579,7 @@ public class Config {
 
   public int otherSizeWidth = 21;
   public int otherSizeHeight = 21;
-  public boolean useFoxStyleCoords = false;
+
   public boolean stopAtEmptyBoard = false;
 
   public boolean useScoreDiffInVariationTree = true;
@@ -1293,6 +1297,8 @@ public class Config {
     otherSizeWidth = uiConfig.optInt("other-size-width", 21);
     otherSizeHeight = uiConfig.optInt("other-size-height", 21);
     useFoxStyleCoords = uiConfig.optBoolean("use-fox-style-coords", false);
+    useNumCoordsFromTop = uiConfig.optBoolean("use-num-coords-from-top", false);
+    useNumCoordsFromBottom = uiConfig.optBoolean("use-num-coords-from-bottom", false);
     showScrollVariation = uiConfig.optBoolean("show-scroll-variation", true);
     ignoreOutOfWidth = uiConfig.optBoolean("ignore-out-of-width", false);
     enginePkPonder = uiConfig.optBoolean("engine-pk-ponder", false);
