@@ -197,6 +197,10 @@ public class ContributeSettings extends JDialog {
     JPanel buttonPanel = new JPanel();
     getContentPane().add(buttonPanel, BorderLayout.SOUTH);
 
+    JButton btnSave = new JFontButton("保存设置");
+    btnSave.setText("仅保存设置");
+    buttonPanel.add(btnSave);
+
     JButton btnStart = new JFontButton("开始跑谱贡献");
     buttonPanel.add(btnStart);
     pack();

@@ -2,16 +2,25 @@ package featurecat.lizzie.gui;
 
 import featurecat.lizzie.Config;
 import featurecat.lizzie.Lizzie;
+import featurecat.lizzie.util.DocType;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.util.ArrayDeque;
+import java.util.NoSuchElementException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
@@ -23,6 +32,11 @@ import javax.swing.JTextPane;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.SoftBevelBorder;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
 
 public class ContributeView extends JDialog {
   private JTextField txtGameIndex;
@@ -32,11 +46,17 @@ public class ContributeView extends JDialog {
   private JLabel lblCurrentGameResult;
   private JLabel lblGameType;
   private JLabel lblKomi;
+  private JLabel lblTip;
+  private JIMSendTextPane console;
   private JTextPane txtRules;
   private int finishedGames = 0;
   private int playingGames = 0;
   private int watchingGameIndex = 0;
   private JTextField txtMoveNumber;
+  private ArrayDeque<DocType> docQueue;
+  private int checkCount = 0;
+  private int scrollLength = 0;
+  private ScheduledExecutorService executor;
 
   public ContributeView(Window owner) {
     super(owner);
@@ -240,16 +260,51 @@ public class ContributeView extends JDialog {
     consolePanel.setLayout(new BorderLayout());
     getContentPane().add(consolePanel, BorderLayout.NORTH);
 
-    JIMSendTextPane textPane = new JIMSendTextPane(false);
-    textPane.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
-    textPane.setPreferredSize(
-        new Dimension((int) textPane.getPreferredSize().getWidth(), Config.menuHeight * 7));
+    docQueue = new ArrayDeque<>();
+    console = new JIMSendTextPane(false);
+    console.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
+    console.setBorder(BorderFactory.createEmptyBorder());
+    console.setEditable(false);
+    console.setBackground(Color.BLACK);
+    console.setForeground(Color.LIGHT_GRAY);
 
-    JScrollPane scrollConsole = new JScrollPane(textPane);
-    consolePanel.add(scrollConsole, BorderLayout.CENTER);
+    Font gtpFont;
+    try {
+      gtpFont =
+          Font.createFont(
+              Font.TRUETYPE_FONT,
+              Thread.currentThread()
+                  .getContextClassLoader()
+                  .getResourceAsStream("fonts/SourceCodePro-Regular.ttf"));
 
+      gtpFont = gtpFont.deriveFont(Font.PLAIN, Config.frameFontSize);
+    } catch (IOException | FontFormatException e) {
+      e.printStackTrace();
+      gtpFont = new Font(Font.MONOSPACED, Font.PLAIN, Config.frameFontSize);
+    }
+    console.setFont(gtpFont);
+
+    JScrollPane scrollConsole = new JScrollPane(console);
+    JPanel consoleTextPane = new JPanel();
+    consoleTextPane.setLayout(new BorderLayout());
+    lblTip = new JFontLabel("New label");
+    lblTip.setText("正在初始化...正在下载权重...");
+    consoleTextPane.add(lblTip, BorderLayout.SOUTH);
+    consoleTextPane.add(scrollConsole, BorderLayout.CENTER);
+    consolePanel.add(consoleTextPane, BorderLayout.CENTER);
+    consoleTextPane.setPreferredSize(
+        new Dimension((int) consoleTextPane.getPreferredSize().getWidth(), Config.menuHeight * 7));
+
+    JPanel consoleButtonPane = new JPanel();
+    consoleButtonPane.setLayout(new BorderLayout(0, 0));
     JButton btnHideShowConsole = new JFontButton("隐藏控制台");
-    consolePanel.add(btnHideShowConsole, BorderLayout.SOUTH);
+    consoleButtonPane.add(btnHideShowConsole);
+    JButton btnMore = new JFontButton("更多信息");
+    consoleButtonPane.add(btnMore, BorderLayout.EAST);
+    consolePanel.add(consoleButtonPane, BorderLayout.SOUTH);
+
+    executor = Executors.newSingleThreadScheduledExecutor();
+    executor.execute(this::read);
 
     btnHideShowConsole.addActionListener(
         new ActionListener() {
@@ -299,5 +354,89 @@ public class ContributeView extends JDialog {
             + "局,正在观看第"
             + watchingGameIndex
             + "局");
+  }
+
+  private void checkConsole() {
+    if (console.getText().length() > 200000) {
+      console.setText(
+          console
+              .getText()
+              .substring(console.getText().length() - 70000, console.getText().length()));
+      console.setCaretPosition(console.getDocument().getLength());
+    }
+  }
+
+  public void addDocs(DocType doc) {
+    SimpleAttributeSet attrSet = new SimpleAttributeSet();
+    StyleConstants.setForeground(attrSet, doc.contentColor);
+    if (doc.isCommand) {
+      StyleConstants.setFontFamily(attrSet, Lizzie.config.uiFontName);
+    }
+    StyleConstants.setFontSize(attrSet, doc.fontSize);
+    insert(doc.content, attrSet);
+  }
+
+  private void insert(String str, AttributeSet attrSet) {
+    Document doc = console.getDocument();
+    try {
+      doc.insertString(doc.getLength(), str, attrSet);
+    } catch (BadLocationException e) {
+      e.printStackTrace();
+    }
+  }
+
+  private void setDocs(String str, Color col, boolean isCommand, int fontSize) {
+    DocType doc = new DocType();
+    doc.content = str;
+    doc.contentColor = col;
+    doc.isCommand = isCommand;
+    doc.fontSize = fontSize;
+    docQueue.addLast(doc);
+  }
+
+  public void addErrorLine(String line) {
+    setDocs(line, new Color(255, 0, 0), false, Config.frameFontSize);
+  }
+
+  public void addLine(String line) {
+    if (line == null || line.trim().length() == 0) {
+      return;
+    }
+    setDocs(" " + line, Color.GREEN, false, Config.frameFontSize);
+  }
+
+  private void read() {
+    while (true) {
+      try {
+        Thread.sleep(100);
+      } catch (InterruptedException e1) {
+        // TODO Auto-generated catch block
+        e1.printStackTrace();
+      }
+      synchronized (docQueue) {
+        while (!docQueue.isEmpty()) {
+          try {
+            DocType doc = docQueue.removeFirst();
+            addDocs(doc);
+          } catch (NoSuchElementException e) {
+            e.printStackTrace();
+            docQueue = new ArrayDeque<>();
+            docQueue.clear();
+            break;
+          }
+        }
+      }
+      checkCount++;
+      if (checkCount > 300) {
+        checkCount = 0;
+        checkConsole();
+      } else {
+        int length = console.getDocument().getLength();
+        if (length != scrollLength) {
+          scrollLength = length;
+          console.setCaretPosition(scrollLength);
+        }
+      }
+    }
   }
 }

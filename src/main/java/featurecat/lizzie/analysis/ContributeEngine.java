@@ -179,9 +179,7 @@ public class ContributeEngine {
   }
 
   private void parseLineForError(String line) {
-    // TODO Auto-generated method stub
-
-    Lizzie.gtpConsole.addErrorLine(line + "\n");
+    Lizzie.frame.addContributeLine(line, false);
   }
 
   private void parseLine(String line) {
@@ -209,7 +207,7 @@ public class ContributeEngine {
         }
       }
     } else {
-      Lizzie.gtpConsole.addLine(line + "\n");
+      Lizzie.frame.addContributeLine(line, true);
       if (line.contains("Finis")) {
         // 2021-11-02 09:21:45+0800: Finished game 8 (training), uploaded sgf
         // katago_contribute/kata1/sgfs/kata1-b40c256-s10312780288-d2513725330/155A1E55A4145135.sgf

@@ -12539,4 +12539,15 @@ public class LizzieFrame extends JFrame {
   public void shutdownClockHelper() {
     processClockHelper.destroy();
   }
+
+  public void addContributeLine(String line, boolean stdout) {
+    // TODO Auto-generated method stub
+    if (stdout) {
+      Lizzie.gtpConsole.addLine(line + "\n");
+      if (contributeView != null) contributeView.addLine(line + "\n");
+    } else {
+      Lizzie.gtpConsole.addErrorLine(line + "\n");
+      if (contributeView != null) contributeView.addErrorLine(line + "\n");
+    }
+  }
 }
