@@ -204,6 +204,7 @@ public class BoardHistoryNode {
     node.previous = Optional.of(this);
     // if (Lizzie.config.playSound) Utils.playVoiceFile();
     Lizzie.board.clearAfterMove();
+    Lizzie.leelaz.maybeAjustPDA(node);
     return node;
   }
 

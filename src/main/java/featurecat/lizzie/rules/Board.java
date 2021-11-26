@@ -4191,4 +4191,18 @@ public class Board {
   private boolean isValidEmpty(int x, int y) {
     return isValid(x, y) && isCoordsEmpty(x, y);
   }
+
+  public boolean isFirstWhiteNode(BoardHistoryNode node) {
+    // TODO Auto-generated method stub
+    if (node.getData().lastMove.isPresent() && node.getData().lastMoveColor != Stone.WHITE) {
+      return false;
+    }
+    while (node.previous().isPresent()) {
+      node = node.previous().get();
+      if (node.getData().lastMove.isPresent() && node.getData().lastMoveColor == Stone.WHITE) {
+        return false;
+      }
+    }
+    return true;
+  }
 }
