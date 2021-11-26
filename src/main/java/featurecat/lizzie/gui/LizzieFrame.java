@@ -12529,4 +12529,10 @@ public class LizzieFrame extends JFrame {
   public void shutdownClockHelper() {
     processClockHelper.destroy();
   }
+
+  public void flattenBoard() {
+    Lizzie.board.hasStartStone = true;
+    Lizzie.board.addStartListAll();
+    Lizzie.board.flatten();
+  }
 }

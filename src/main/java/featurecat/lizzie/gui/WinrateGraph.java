@@ -1097,7 +1097,7 @@ public class WinrateGraph {
             if (!node.getData().blackToPlay) {
               curscoreMean = -curscoreMean;
             }
-            if (Lizzie.config.scoreMeanWinrateGraphBoard)
+            if (Lizzie.config.showKataGoScoreLeadWithKomi)
               curscoreMean = curscoreMean + Lizzie.board.getHistory().getGameInfo().getKomi();
             //            if (Math.abs(curscoreMean) > maxcoreMean)
             //            	maxcoreMean = Math.abs(curscoreMean);

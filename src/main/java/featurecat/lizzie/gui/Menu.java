@@ -1877,37 +1877,38 @@ public class Menu extends JMenuBar {
     //          }
     //        });
 
-    final JFontMenu showScoreLeadOnWinrateGraph =
-        new JFontMenu(resourceBundle.getString("Menu.showScoreLeadOnWinrateGraph")); // 目差在胜率图上显示
-    kataSettings.add(showScoreLeadOnWinrateGraph);
-
-    final JFontCheckBoxMenuItem scoreLeadOnGraphWithKomi =
-        new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.leadWithKomi")); // 目差
-    showScoreLeadOnWinrateGraph.add(scoreLeadOnGraphWithKomi);
-    scoreLeadOnGraphWithKomi.addActionListener(
-        new ActionListener() {
-
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            Lizzie.config.scoreMeanWinrateGraphBoard = false;
-            Lizzie.config.uiConfig.put(
-                "scoremean-winrategraph-board", Lizzie.config.scoreMeanWinrateGraphBoard);
-          }
-        });
-
-    final JFontCheckBoxMenuItem scoreLeadOnGraphWithoutKomi =
-        new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.leadJustScore")); // 盘面
-    showScoreLeadOnWinrateGraph.add(scoreLeadOnGraphWithoutKomi);
-    scoreLeadOnGraphWithoutKomi.addActionListener(
-        new ActionListener() {
-
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            Lizzie.config.scoreMeanWinrateGraphBoard = true;
-            Lizzie.config.uiConfig.put(
-                "scoremean-winrategraph-board", Lizzie.config.scoreMeanWinrateGraphBoard);
-          }
-        });
+    //    final JFontMenu showScoreLeadOnWinrateGraph =
+    //        new JFontMenu(resourceBundle.getString("Menu.showScoreLeadOnWinrateGraph")); //
+    // 目差在胜率图上显示
+    //    kataSettings.add(showScoreLeadOnWinrateGraph);
+    //
+    //    final JFontCheckBoxMenuItem scoreLeadOnGraphWithKomi =
+    //        new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.leadWithKomi")); // 目差
+    //    showScoreLeadOnWinrateGraph.add(scoreLeadOnGraphWithKomi);
+    //    scoreLeadOnGraphWithKomi.addActionListener(
+    //        new ActionListener() {
+    //
+    //          @Override
+    //          public void actionPerformed(ActionEvent e) {
+    //            Lizzie.config.scoreMeanWinrateGraphBoard = false;
+    //            Lizzie.config.uiConfig.put(
+    //                "scoremean-winrategraph-board", Lizzie.config.scoreMeanWinrateGraphBoard);
+    //          }
+    //        });
+    //
+    //    final JFontCheckBoxMenuItem scoreLeadOnGraphWithoutKomi =
+    //        new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.leadJustScore")); // 盘面
+    //    showScoreLeadOnWinrateGraph.add(scoreLeadOnGraphWithoutKomi);
+    //    scoreLeadOnGraphWithoutKomi.addActionListener(
+    //        new ActionListener() {
+    //
+    //          @Override
+    //          public void actionPerformed(ActionEvent e) {
+    //            Lizzie.config.scoreMeanWinrateGraphBoard = true;
+    //            Lizzie.config.uiConfig.put(
+    //                "scoremean-winrategraph-board", Lizzie.config.scoreMeanWinrateGraphBoard);
+    //          }
+    //        });
 
     final JFontMenu kataEstimate =
         new JFontMenu(resourceBundle.getString("Menu.kataEstimate")); // ("Kata评估显示");
@@ -2491,13 +2492,13 @@ public class Menu extends JMenuBar {
             else showMaxValueReverse.setState(false);
             if (Lizzie.config.whiteSuggestionWhite) showWhiteSuggestWhite.setState(true);
             else showWhiteSuggestWhite.setState(false);
-            if (Lizzie.config.scoreMeanWinrateGraphBoard) {
-              scoreLeadOnGraphWithKomi.setState(false);
-              scoreLeadOnGraphWithoutKomi.setState(true);
-            } else {
-              scoreLeadOnGraphWithKomi.setState(true);
-              scoreLeadOnGraphWithoutKomi.setState(false);
-            }
+            //            if (Lizzie.config.scoreMeanWinrateGraphBoard) {
+            //              scoreLeadOnGraphWithKomi.setState(false);
+            //              scoreLeadOnGraphWithoutKomi.setState(true);
+            //            } else {
+            //              scoreLeadOnGraphWithKomi.setState(true);
+            //              scoreLeadOnGraphWithoutKomi.setState(false);
+            //            }
 
             if (Lizzie.config.showHeat) {
               if (Lizzie.config.showHeatAfterCalc) {
@@ -2865,6 +2866,17 @@ public class Menu extends JMenuBar {
           }
         });
     gameMenu.add(playPassMove);
+
+    final JFontMenuItem flattenBoard =
+        new JFontMenuItem(resourceBundle.getString("Menu.flattenBoard"));
+    flattenBoard.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.frame.flattenBoard();
+          }
+        });
+    gameMenu.add(flattenBoard);
 
     final JMenuItem continueLadder =
         new JMenuItem(resourceBundle.getString("Menu.game.continueLadder"));

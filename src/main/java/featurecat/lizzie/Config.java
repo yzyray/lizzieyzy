@@ -45,7 +45,7 @@ public class Config {
   public boolean fastChange = true;
   public boolean showKataGoScoreLeadWithKomi = false;
   //  public boolean kataGoScoreMeanAlwaysBlack = false;
-  public boolean scoreMeanWinrateGraphBoard = false;
+  // public boolean scoreMeanWinrateGraphBoard = false;
   public boolean showKataGoEstimate = false;
   // public boolean allowDrageDoubleClick = true;
   public boolean showKataGoEstimateOnSubbord = false;
@@ -897,7 +897,7 @@ public class Config {
     showMoveNumberFromOne = uiConfig.optBoolean("movenumber-from-one", false);
     // kataGoNotShowWinrate = uiConfig.optBoolean("katago-notshow-winrate", false);
     showKataGoEstimate = uiConfig.optBoolean("show-katago-estimate", false);
-    scoreMeanWinrateGraphBoard = uiConfig.optBoolean("scoremean-winrategraph-board", false);
+    // scoreMeanWinrateGraphBoard = uiConfig.optBoolean("scoremean-winrategraph-board", false);
     showSuggestionOrder = uiConfig.optBoolean("show-suggestion-order", true);
     showSuggestionMaxRed = uiConfig.optBoolean("show-suggestion-maxred", true);
 
