@@ -256,7 +256,7 @@ public class ContributeEngine {
     return Math.max(path.lastIndexOf("/"), path.lastIndexOf("\\"));
   }
 
-  private void normalQuit() {
+  public void normalQuit() {
     isNormalEnd = true;
     if (useJavaSSH) javaSSH.close();
     else process.destroy();

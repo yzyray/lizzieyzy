@@ -1,10 +1,15 @@
 package featurecat.lizzie.gui;
 
+import featurecat.lizzie.Lizzie;
+import featurecat.lizzie.util.Utils;
 import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.net.URI;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
@@ -14,12 +19,17 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 public class ContributeSettings extends JDialog {
-  private JTextField txtEngineFile;
-  private JTextField txtConfigFile;
+  private JTextField txtEnginePath;
+  private JTextField txtConfigPath;
   private JTextField txtUserName;
   private JTextField txtPassword;
   private JTextField txtGames;
-  private JTextField textField;
+  private JTextField txtCommand;
+  private JCheckBox chkUseCommand;
+  private JCheckBox chkRemote;
+  private JCheckBox chkShowOwnerShip;
+  private JButton btnRemoteSetting;
+  private JDialog thisDialog = this;
 
   public ContributeSettings(Window owner) {
     super(owner);
@@ -28,7 +38,7 @@ public class ContributeSettings extends JDialog {
     String engineTip = "请务必使用官方KataGo引擎,否则无法跑谱贡献";
     String gamesTip = "同时进行多盘对局以增加GPU/CPU利用率,设置为default_gtp.cfg中numSearchThreads的数值即可";
     String configTip = "可配置使用的显卡数量等,不同于普通的分析引擎配置文件,默认名字为contribute_example.cfg";
-    String ownerShipTip = "以跑谱速度略微降低为代价,显示领地";
+    String ownerShipTip = "以跑谱速度略微降低为代价,显示领地(可在底部工具栏-Kata评估关闭显示,但速度不会恢复)";
 
     JPanel mainPanel = new JPanel();
     mainPanel.setBorder(new EmptyBorder(2, 0, 0, 5));
@@ -48,23 +58,32 @@ public class ContributeSettings extends JDialog {
     gbc_engineFilePanel.gridy = 0;
     mainPanel.add(engineFilePanel, gbc_engineFilePanel);
 
-    JLabel lblEngine = new JFontLabel("KataGo引擎");
+    JLabel lblEngine = new JFontLabel("KataGo引擎路径");
     engineFilePanel.add(lblEngine);
     lblEngine.setToolTipText(engineTip);
 
     JButton btnScanEngine = new JFontButton("浏览");
+    btnScanEngine.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            GetEngineLine getEngineLine = new GetEngineLine();
+            String el = getEngineLine.getEngineLine(thisDialog, true, false, true, false);
+            if (!el.isEmpty()) txtEnginePath.setText(el);
+          }
+        });
     engineFilePanel.add(btnScanEngine);
     btnScanEngine.setToolTipText(engineTip);
 
-    txtEngineFile = new JFontTextField();
+    txtEnginePath = new JFontTextField();
     GridBagConstraints gbc_txtEngineFile = new GridBagConstraints();
     gbc_txtEngineFile.fill = GridBagConstraints.BOTH;
     gbc_txtEngineFile.insets = new Insets(0, 0, 5, 0);
     gbc_txtEngineFile.gridx = 1;
     gbc_txtEngineFile.gridy = 0;
-    mainPanel.add(txtEngineFile, gbc_txtEngineFile);
-    txtEngineFile.setColumns(10);
-    txtEngineFile.setToolTipText(engineTip);
+    mainPanel.add(txtEnginePath, gbc_txtEngineFile);
+    txtEnginePath.setColumns(10);
+    txtEnginePath.setToolTipText(engineTip);
+    txtEnginePath.setText(Lizzie.config.contributeEnginePath);
 
     JPanel configFilePanel = new JPanel();
     GridBagConstraints gbc_configFilePanel = new GridBagConstraints();
@@ -74,23 +93,32 @@ public class ContributeSettings extends JDialog {
     gbc_configFilePanel.gridy = 1;
     mainPanel.add(configFilePanel, gbc_configFilePanel);
 
-    JLabel lblConfig = new JFontLabel("配置文件(可选)");
+    JLabel lblConfig = new JFontLabel("配置文件路径(可选)");
     configFilePanel.add(lblConfig);
     lblConfig.setToolTipText(configTip);
 
     JButton btnScanConfig = new JFontButton("浏览");
+    btnScanConfig.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            GetEngineLine getEngineLine = new GetEngineLine();
+            String el = getEngineLine.getEngineLine(thisDialog, true, false, false, true);
+            if (!el.isEmpty()) txtConfigPath.setText(el);
+          }
+        });
     configFilePanel.add(btnScanConfig);
     btnScanConfig.setToolTipText(configTip);
 
-    txtConfigFile = new JFontTextField();
+    txtConfigPath = new JFontTextField();
     GridBagConstraints gbc_txtConfigFile = new GridBagConstraints();
     gbc_txtConfigFile.fill = GridBagConstraints.BOTH;
     gbc_txtConfigFile.insets = new Insets(0, 0, 5, 0);
     gbc_txtConfigFile.gridx = 1;
     gbc_txtConfigFile.gridy = 1;
-    mainPanel.add(txtConfigFile, gbc_txtConfigFile);
-    txtConfigFile.setColumns(10);
-    txtConfigFile.setToolTipText(configTip);
+    mainPanel.add(txtConfigPath, gbc_txtConfigFile);
+    txtConfigPath.setColumns(10);
+    txtConfigPath.setToolTipText(configTip);
+    txtConfigPath.setText(Lizzie.config.contributeConfigPath);
 
     JPanel panel_1 = new JPanel();
     GridBagConstraints gbc_panel_1 = new GridBagConstraints();
@@ -100,23 +128,47 @@ public class ContributeSettings extends JDialog {
     gbc_panel_1.gridy = 2;
     mainPanel.add(panel_1, gbc_panel_1);
 
-    JCheckBox chkUseCommand = new JFontCheckBox("自定义命令行");
+    chkUseCommand = new JFontCheckBox("自定义命令行");
     panel_1.add(chkUseCommand);
+    chkUseCommand.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            boolean useCommand = chkUseCommand.isSelected();
+            chkRemote.setEnabled(useCommand);
+            btnRemoteSetting.setEnabled(useCommand);
+            txtCommand.setEnabled(useCommand);
+          }
+        });
 
-    JCheckBox chkRemote = new JFontCheckBox("远程SSH");
+    chkRemote = new JFontCheckBox("远程SSH");
+    chkRemote.setSelected(Utils.getContributeRemoteEngineData().useJavaSSH);
     panel_1.add(chkRemote);
 
-    JButton btnRemoteSetting = new JFontButton("设置");
+    btnRemoteSetting = new JFontButton("设置");
+    btnRemoteSetting.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            RemoteEngineSettings remoteEngineSettings =
+                new RemoteEngineSettings(thisDialog, false, true);
+            remoteEngineSettings.setVisible(true);
+          }
+        });
     panel_1.add(btnRemoteSetting);
 
-    textField = new JFontTextField();
-    GridBagConstraints gbc_textField = new GridBagConstraints();
-    gbc_textField.insets = new Insets(0, 0, 5, 0);
-    gbc_textField.fill = GridBagConstraints.BOTH;
-    gbc_textField.gridx = 1;
-    gbc_textField.gridy = 2;
-    mainPanel.add(textField, gbc_textField);
-    textField.setColumns(10);
+    txtCommand = new JFontTextField();
+    GridBagConstraints gbc_txtCommand = new GridBagConstraints();
+    gbc_txtCommand.insets = new Insets(0, 0, 5, 0);
+    gbc_txtCommand.fill = GridBagConstraints.BOTH;
+    gbc_txtCommand.gridx = 1;
+    gbc_txtCommand.gridy = 2;
+    mainPanel.add(txtCommand, gbc_txtCommand);
+    txtCommand.setColumns(10);
+    txtCommand.setText(Lizzie.config.contributeCommand);
+
+    chkUseCommand.setSelected(Lizzie.config.contributeUseCommand);
+    chkRemote.setEnabled(Lizzie.config.contributeUseCommand);
+    btnRemoteSetting.setEnabled(Lizzie.config.contributeUseCommand);
+    txtCommand.setEnabled(Lizzie.config.contributeUseCommand);
 
     JPanel panel = new JPanel();
     GridBagConstraints gbc_panel = new GridBagConstraints();
@@ -130,6 +182,18 @@ public class ContributeSettings extends JDialog {
     panel.add(lblUserName);
 
     JButton btnSignUp = new JFontButton("注册");
+    btnSignUp.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            try {
+              URI uri = new URI("https://katagotraining.org/accounts/signup/");
+              java.awt.Desktop.getDesktop().browse(uri);
+            } catch (Exception e1) {
+              // TODO Auto-generated catch block
+              e1.printStackTrace();
+            }
+          }
+        });
     panel.add(btnSignUp);
 
     txtUserName = new JTextField();
@@ -140,6 +204,7 @@ public class ContributeSettings extends JDialog {
     gbc_txtUserName.gridy = 3;
     mainPanel.add(txtUserName, gbc_txtUserName);
     txtUserName.setColumns(10);
+    txtUserName.setText(Lizzie.config.contributeUserName);
 
     JLabel lblPassword = new JFontLabel("密码");
     GridBagConstraints gbc_lblPassword = new GridBagConstraints();
@@ -157,6 +222,7 @@ public class ContributeSettings extends JDialog {
     gbc_txtPassword.gridy = 4;
     mainPanel.add(txtPassword, gbc_txtPassword);
     txtPassword.setColumns(10);
+    txtPassword.setText(Lizzie.config.contributePassword);
 
     JLabel lblGames = new JFontLabel("同时对局数");
     GridBagConstraints gbc_lblGames = new GridBagConstraints();
@@ -176,6 +242,8 @@ public class ContributeSettings extends JDialog {
     mainPanel.add(txtGames, gbc_txtGames);
     txtGames.setColumns(10);
     txtGames.setToolTipText(gamesTip);
+    txtGames.setDocument(new IntDocument());
+    txtGames.setText(Lizzie.config.contributeBatchGames);
 
     JLabel lblShowOwnerShip = new JFontLabel("显示领地");
     GridBagConstraints gbc_lblShowOwnerShip = new GridBagConstraints();
@@ -186,25 +254,59 @@ public class ContributeSettings extends JDialog {
     mainPanel.add(lblShowOwnerShip, gbc_lblShowOwnerShip);
     lblShowOwnerShip.setToolTipText(ownerShipTip);
 
-    JCheckBox chkShowOwnerShip = new JFontCheckBox();
+    chkShowOwnerShip = new JFontCheckBox();
     GridBagConstraints gbc_chkShowOwnerShip = new GridBagConstraints();
     gbc_chkShowOwnerShip.fill = GridBagConstraints.BOTH;
     gbc_chkShowOwnerShip.gridx = 1;
     gbc_chkShowOwnerShip.gridy = 6;
     mainPanel.add(chkShowOwnerShip, gbc_chkShowOwnerShip);
     chkShowOwnerShip.setToolTipText(ownerShipTip);
+    chkShowOwnerShip.setSelected(Lizzie.config.contributeShowEstimate);
 
     JPanel buttonPanel = new JPanel();
     getContentPane().add(buttonPanel, BorderLayout.SOUTH);
 
     JButton btnSave = new JFontButton("保存设置");
+    btnSave.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            saveConfig();
+            setVisible(false);
+          }
+        });
     btnSave.setText("仅保存设置");
     buttonPanel.add(btnSave);
 
     JButton btnStart = new JFontButton("开始跑谱贡献");
+    btnStart.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.frame.startContributeEngine();
+            setVisible(false);
+          }
+        });
     buttonPanel.add(btnStart);
     pack();
     setLocationRelativeTo(owner);
     setVisible(true);
+  }
+
+  private void saveConfig() {
+    Lizzie.config.contributeEnginePath = this.txtEnginePath.getText();
+    Lizzie.config.uiConfig.put("contribute-engine-path", Lizzie.config.contributeEnginePath);
+    Lizzie.config.contributeConfigPath = this.txtConfigPath.getText();
+    Lizzie.config.uiConfig.put("contribute-config-path", Lizzie.config.contributeConfigPath);
+    Lizzie.config.contributeUserName = this.txtUserName.getText();
+    Lizzie.config.uiConfig.put("contribute-user-name", Lizzie.config.contributeUserName);
+    Lizzie.config.contributePassword = this.txtPassword.getText();
+    Lizzie.config.uiConfig.put("contribute-password", Lizzie.config.contributePassword);
+    Lizzie.config.contributeBatchGames = this.txtGames.getText();
+    Lizzie.config.uiConfig.put("contribute-batch-games", Lizzie.config.contributeBatchGames);
+    Lizzie.config.contributeShowEstimate = this.chkShowOwnerShip.isSelected();
+    Lizzie.config.uiConfig.put("contribute-show-estimate", Lizzie.config.contributeShowEstimate);
+    Lizzie.config.contributeUseCommand = this.chkUseCommand.isSelected();
+    Lizzie.config.uiConfig.put("contribute-use-command", Lizzie.config.contributeUseCommand);
+    Lizzie.config.contributeCommand = this.txtCommand.getText();
+    Lizzie.config.uiConfig.put("contribute-command", Lizzie.config.contributeCommand);
   }
 }

@@ -248,6 +248,23 @@ public class Utils {
     return remoteData;
   }
 
+  public static void saveContributeRemoteEngineData(RemoteEngineData remoteEngineData) {
+    JSONObject remoteEngineInfo = new JSONObject();
+    remoteEngineInfo.put("useJavaSSH", remoteEngineData.useJavaSSH);
+    remoteEngineInfo.put("ip", remoteEngineData.ip);
+    remoteEngineInfo.put("port", remoteEngineData.port);
+    remoteEngineInfo.put("userName", remoteEngineData.userName);
+    remoteEngineInfo.put("password", remoteEngineData.password);
+    remoteEngineInfo.put("useKeyGen", remoteEngineData.useKeyGen);
+    remoteEngineInfo.put("keyGenPath", remoteEngineData.keyGenPath);
+    Lizzie.config.leelazConfig.put("contribute-engine-ssh-info", remoteEngineInfo);
+    try {
+      Lizzie.config.save();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
   public static RemoteEngineData getAnalysisEngineRemoteEngineData() {
     RemoteEngineData remoteData = new RemoteEngineData();
     Optional<JSONObject> remoteEngineInfoOpt =

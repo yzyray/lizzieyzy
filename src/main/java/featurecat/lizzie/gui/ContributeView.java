@@ -20,7 +20,6 @@ import java.util.ArrayDeque;
 import java.util.NoSuchElementException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
@@ -263,7 +262,7 @@ public class ContributeView extends JDialog {
     docQueue = new ArrayDeque<>();
     console = new JIMSendTextPane(false);
     console.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
-    console.setBorder(BorderFactory.createEmptyBorder());
+    console.setBorder(new SoftBevelBorder(BevelBorder.LOWERED));
     console.setEditable(false);
     console.setBackground(Color.BLACK);
     console.setForeground(Color.LIGHT_GRAY);
@@ -285,6 +284,7 @@ public class ContributeView extends JDialog {
     console.setFont(gtpFont);
 
     JScrollPane scrollConsole = new JScrollPane(console);
+    scrollConsole.setBorder(new SoftBevelBorder(BevelBorder.LOWERED));
     JPanel consoleTextPane = new JPanel();
     consoleTextPane.setLayout(new BorderLayout());
     lblTip = new JFontLabel("New label");
@@ -292,7 +292,7 @@ public class ContributeView extends JDialog {
     consoleTextPane.add(lblTip, BorderLayout.SOUTH);
     consoleTextPane.add(scrollConsole, BorderLayout.CENTER);
     consolePanel.add(consoleTextPane, BorderLayout.CENTER);
-    consoleTextPane.setPreferredSize(
+    scrollConsole.setPreferredSize(
         new Dimension((int) consoleTextPane.getPreferredSize().getWidth(), Config.menuHeight * 7));
 
     JPanel consoleButtonPane = new JPanel();

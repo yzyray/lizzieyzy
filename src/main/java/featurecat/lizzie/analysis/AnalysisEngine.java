@@ -197,7 +197,9 @@ public class AnalysisEngine {
     synchronized (this) {
       if (line.startsWith("{")) {
         parseResult(line);
-      } else Lizzie.gtpConsole.addLine(line);
+      } else {
+        Lizzie.gtpConsole.addLine(line);
+      }
     }
   }
 

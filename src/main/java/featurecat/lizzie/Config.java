@@ -603,17 +603,17 @@ public class Config {
   public boolean delayShowCandidates = false;
   public double delayCandidatesSeconds = 10;
 
-  public String contributeEnginePath = "guanfang/katago.exe";
+  public String contributeEnginePath = "";
   public String contributeConfigPath = "";
-  public String contributeUserName = "yzyray";
-  public String contributePassword = "turnon130";
-  public String contributeBatchGames = "1";
+  public String contributeUserName = "";
+  public String contributePassword = "";
+  public String contributeBatchGames = "6";
   public boolean contributeShowEstimate = false;
   public boolean contributeUseCommand = false;
   public String contributeCommand = "";
 
   public boolean contributeWatchSkipNone19 = false;
-  public boolean contributeWatchAlwaysLastMove = true;
+  public boolean contributeWatchAlwaysLastMove = false;
   public boolean contributeWatchAutoPlay = true;
   public double contributeWatchAutoPlayInterval = 2.0;
   public boolean contributeHideResult = false;
@@ -1308,6 +1308,21 @@ public class Config {
     noCapture = uiConfig.optBoolean("no-capture", false);
     showrect = uiConfig.optInt("show-move-rect", 1);
     winrateAlwaysBlack = uiConfig.optBoolean("win-rate-always-black", false);
+
+    contributeEnginePath = uiConfig.optString("contribute-engine-path", "");
+    contributeConfigPath = uiConfig.optString("contribute-config-path", "");
+    contributeUserName = uiConfig.optString("contribute-user-name", "");
+    contributePassword = uiConfig.optString("contribute-password", "");
+    contributeBatchGames = uiConfig.optString("contribute-batch-games", "6");
+    contributeShowEstimate = uiConfig.optBoolean("contribute-show-estimate", false);
+    contributeUseCommand = uiConfig.optBoolean("contribute-use-command", false);
+    contributeCommand = uiConfig.optString("contribute-command", "");
+    contributeWatchSkipNone19 = uiConfig.optBoolean("contribute-watch-skip-none-19", false);
+    contributeWatchAlwaysLastMove = uiConfig.optBoolean("contribute-watch-always-last-move", false);
+    contributeWatchAutoPlay = uiConfig.optBoolean("contribute-watch-auto-play", true);
+    contributeWatchAutoPlayInterval =
+        uiConfig.optDouble("contribute-watch-auto-play-interval", 2.0);
+    contributeHideResult = uiConfig.optBoolean("contribute-hide-result", false);
 
     // chkPkStartNum = uiConfig.optBoolean("chkpk-start-num", false);
     // pkStartNum = uiConfig.optInt("pk-start-num", 1);
