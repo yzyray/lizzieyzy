@@ -479,7 +479,7 @@ public class LizzieFrame extends JFrame {
   public static boolean isTempForcing = false;
   public FoxKifuDownload foxKifuDownload;
   public int noneMaxX, noneMaxY, noneMaxWidth, noneMaxHeight;
-  private ContributeEngine contributeEngine;
+  public ContributeEngine contributeEngine;
 
   /** Creates a window */
   public LizzieFrame() {
@@ -12474,24 +12474,6 @@ public class LizzieFrame extends JFrame {
     setDelayShowCandidates.setVisible(true);
   }
 
-  public void startContributeEngine() {
-    if (contributeEngine != null) contributeEngine.normalQuit();
-    contributeEngine = new ContributeEngine();
-  }
-
-  public void testContibute() {
-    // TODO Auto-generated method stub
-    ContributeEngine contributeEngine = new ContributeEngine();
-  }
-
-  public void testContibuteFrame() {
-    // TODO Auto-generated method stub
-    //    ContributeEngine contributeEngine = new ContributeEngine();
-    ContributeSettings contributeSettings = new ContributeSettings(this);
-    if (contributeView == null) contributeView = new ContributeView(this);
-    if (!contributeView.isVisible()) contributeView.setVisible(true);
-  }
-
   private void openInVisibleFrame() {
     String javaReadBoardName = "InVisibleFrame.jar";
     File javaReadBoard = new File("clockHelper" + File.separator + "InVisibleFrame.jar");
@@ -12555,5 +12537,21 @@ public class LizzieFrame extends JFrame {
       Lizzie.gtpConsole.addErrorLine(line + "\n");
       if (contributeView != null) contributeView.addErrorLine(line + "\n");
     }
+  }
+
+  public void startContributeEngine() {
+    if (contributeEngine != null) contributeEngine.normalQuit();
+    contributeEngine = new ContributeEngine();
+  }
+
+  public void testContibute() {
+    ContributeEngine contributeEngine = new ContributeEngine();
+  }
+
+  public void testContibuteFrame() {
+    //    ContributeEngine contributeEngine = new ContributeEngine();
+    ContributeSettings contributeSettings = new ContributeSettings(this);
+    if (contributeView == null) contributeView = new ContributeView(this);
+    if (!contributeView.isVisible()) contributeView.setVisible(true);
   }
 }

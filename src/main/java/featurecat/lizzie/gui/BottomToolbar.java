@@ -920,8 +920,8 @@ public class BottomToolbar extends JPanel {
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             if (EngineManager.isEngineGame) return;
-            for (int i = 0; i < 10; i++) Lizzie.board.nextMove(false);
             if (Lizzie.frame.commentEditPane.isVisible()) Lizzie.frame.setCommentEditable(false);
+            for (int i = 0; i < 10; i++) Lizzie.board.nextMove(false);
             Lizzie.board.clearAfterMove();
             Lizzie.frame.refresh();
             setTxtUnfocuse();
@@ -931,8 +931,8 @@ public class BottomToolbar extends JPanel {
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             if (EngineManager.isEngineGame) return;
-            for (int i = 0; i < 10; i++) Lizzie.board.previousMove(false);
             if (Lizzie.frame.commentEditPane.isVisible()) Lizzie.frame.setCommentEditable(false);
+            for (int i = 0; i < 10; i++) Lizzie.board.previousMove(false);
             Lizzie.board.clearAfterMove();
             Lizzie.frame.refresh();
             setTxtUnfocuse();

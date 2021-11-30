@@ -616,7 +616,10 @@ public class Config {
   public boolean contributeWatchAlwaysLastMove = false;
   public boolean contributeWatchAutoPlay = true;
   public double contributeWatchAutoPlayInterval = 2.0;
+  public boolean contributeWatchAutoPlayNextGame = true;
   public boolean contributeHideResult = false;
+  public boolean contributeHideConsole = false;
+  public boolean contributeHideRules = false;
 
   private JSONObject loadAndMergeSaveBoardConfig(
       JSONObject defaultCfg, String fileName, boolean needValidation) throws IOException {
@@ -1320,9 +1323,13 @@ public class Config {
     contributeWatchSkipNone19 = uiConfig.optBoolean("contribute-watch-skip-none-19", false);
     contributeWatchAlwaysLastMove = uiConfig.optBoolean("contribute-watch-always-last-move", false);
     contributeWatchAutoPlay = uiConfig.optBoolean("contribute-watch-auto-play", true);
+    contributeWatchAutoPlayNextGame =
+        uiConfig.optBoolean("contribute-watch-auto-play-next-game", true);
     contributeWatchAutoPlayInterval =
         uiConfig.optDouble("contribute-watch-auto-play-interval", 2.0);
     contributeHideResult = uiConfig.optBoolean("contribute-hide-result", false);
+    contributeHideConsole = uiConfig.optBoolean("contribute-hide-console", false);
+    contributeHideRules = uiConfig.optBoolean("contribute-hide-rules", false);
 
     // chkPkStartNum = uiConfig.optBoolean("chkpk-start-num", false);
     // pkStartNum = uiConfig.optInt("pk-start-num", 1);

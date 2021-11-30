@@ -24,7 +24,7 @@ import org.json.JSONObject;
 public class ContributeEngine {
   private ArrayList<ContributeGameInfo> contributeGames;
   private ArrayList<ContributeUnParseGameInfo> unParseGameInfos;
-  private int watchingGameIndex = -1;
+  public int watchingGameIndex = -1;
   private int changeWatchingGameIndex = -1;
   private Thread watchGameThread;
   private ContributeGameInfo currentWatchGame;
@@ -244,8 +244,13 @@ public class ContributeEngine {
     if (Lizzie.frame.contributeView != null) Lizzie.frame.contributeView.setResult(result);
   }
 
+  private void setRulesToView(JSONObject rules) {
+    if (Lizzie.frame.contributeView != null) {
+      Lizzie.frame.contributeView.setRules(rules);
+    }
+  }
+
   private void setTypeAndKomiToView(boolean isMatchGame, double komi) {
-    // TODO Auto-generated method stub
     if (Lizzie.frame.contributeView != null) {
       Lizzie.frame.contributeView.setKomi(String.valueOf(komi));
       Lizzie.frame.contributeView.setType(isMatchGame ? "评分对局" : "自对弈");
@@ -464,6 +469,7 @@ public class ContributeEngine {
           .setPlayerWhite(currentWatchGame.whitePlayer.replaceAll(" ", ""));
       Lizzie.board.getHistory().getGameInfo().setKomi(currentWatchGame.komi);
       setTypeAndKomiToView(currentWatchGame.isMatchGame, currentWatchGame.komi);
+      setRulesToView(currentWatchGame.rules);
       if (currentWatchGame.complete) {
         Lizzie.board.getHistory().getGameInfo().setResult(currentWatchGame.gameResult);
         setReultToView(currentWatchGame.gameResult);
@@ -625,7 +631,7 @@ public class ContributeEngine {
                 if (timeCount * 50.0 / 1000.0 >= Lizzie.config.contributeWatchAutoPlayInterval) {
                   if (node == Lizzie.board.getHistory().getCurrentHistoryNode()) {
                     if (!Lizzie.board.nextMove(true)) {
-                      boolean shouldGoToNextGame = true;
+                      boolean shouldGoToNextGame = Lizzie.config.contributeWatchAutoPlayNextGame;
                       while (shouldGoToNextGame && contributeGames.size() > watchingGameIndex + 1) {
                         watchingGameIndex++;
                         shouldGoToNextGame = false;
@@ -656,5 +662,10 @@ public class ContributeEngine {
           }
         };
     watchGameThread = new Thread(runnable);
+  }
+
+  public void setWatchGame(int index) {
+    // TODO Auto-generated method stub
+    changeWatchingGameIndex = index;
   }
 }
