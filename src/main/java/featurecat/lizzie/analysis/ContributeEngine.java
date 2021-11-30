@@ -53,6 +53,11 @@ public class ContributeEngine {
   private String courseFile = "";
 
   public ContributeEngine() {
+    if (Lizzie.frame.isContributing) {
+      Utils.showMsg("已在跑普贡献中!");
+      return;
+    }
+    Lizzie.frame.isContributing = true;
     if (Lizzie.config.contributeUseCommand) {
       engineCommand = Lizzie.config.contributeCommand;
     } else {
@@ -237,7 +242,19 @@ public class ContributeEngine {
           }
         }
       }
+      if (line.toLowerCase().contains("predownload")) {
+        setTip("预先下载权重中...");
+      } else if (line.toLowerCase().contains("download")) {
+        setTip("正在下载权重...");
+      }
+      if (line.toLowerCase().contains("Starting")) {
+        setTip("开始新的一局...");
+      }
     }
+  }
+
+  private void setTip(String text) {
+    if (Lizzie.frame.contributeView != null) Lizzie.frame.contributeView.setTip(text);
   }
 
   private void setReultToView(String result) {
@@ -267,11 +284,13 @@ public class ContributeEngine {
     else process.destroy();
     if (watchGameThread != null) watchGameThread.interrupt();
     Lizzie.frame.isShowingContributeGame = false;
+    Lizzie.frame.isContributing = false;
   }
 
   private void shutdown() {
     if (useJavaSSH) javaSSH.close();
     process.destroy();
+    Lizzie.frame.isContributing = false;
   }
 
   private void initializeStreams() {

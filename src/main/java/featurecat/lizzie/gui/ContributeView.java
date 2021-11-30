@@ -435,7 +435,7 @@ public class ContributeView extends JDialog {
     JPanel consoleTextPane = new JPanel();
     consoleTextPane.setLayout(new BorderLayout());
     lblTip = new JFontLabel("New label");
-    lblTip.setText("正在初始化...正在下载权重...");
+    lblTip.setText("正在初始化...");
     lblTip.setBorder(new EmptyBorder(0, 4, 2, 0));
     consoleTextPane.add(lblTip, BorderLayout.SOUTH);
     consoleTextPane.add(scrollConsole, BorderLayout.CENTER);
@@ -491,6 +491,10 @@ public class ContributeView extends JDialog {
   public void setResult(String text) {
     result = text;
     lblCurrentGameResult.setText("结果: " + (Lizzie.config.contributeHideResult ? "---" : text));
+  }
+
+  public void setTip(String text) {
+    lblTip.setText(text);
   }
 
   public void setRules(JSONObject jsonRules) {

@@ -2047,6 +2047,10 @@ public class EngineManager {
   }
 
   public void switchEngine(int index, boolean isMain) {
+    if (Lizzie.frame.isContributing) {
+      Utils.showMsg("跑普贡献中,请另外打开一个LizzieYzy");
+      return;
+    }
     engineNo = index;
     if (Lizzie.config.isDoubleEngineMode()
         && index == (isMain ? currentEngineNo2 : currentEngineNo)) {

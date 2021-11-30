@@ -480,6 +480,7 @@ public class LizzieFrame extends JFrame {
   public FoxKifuDownload foxKifuDownload;
   public int noneMaxX, noneMaxY, noneMaxWidth, noneMaxHeight;
   public ContributeEngine contributeEngine;
+  public boolean isContributing = false;
 
   /** Creates a window */
   public LizzieFrame() {
@@ -2953,6 +2954,10 @@ public class LizzieFrame extends JFrame {
 
   public void startNewGame() {
     // GameInfo gameInfo = Lizzie.board.getHistory().getGameInfo();
+    if (Lizzie.frame.isContributing) {
+      Utils.showMsg("跑普贡献中,请另外打开一个LizzieYzy");
+      return;
+    }
     Lizzie.frame.stopAiPlayingAndPolicy();
     boolean isPondering = false;
     if (Lizzie.leelaz.isPondering()) {
@@ -9228,6 +9233,10 @@ public class LizzieFrame extends JFrame {
   }
 
   public void startEngineGameDialog() {
+    if (Lizzie.frame.isContributing) {
+      Utils.showMsg("跑普贡献中,请另外打开一个LizzieYzy");
+      return;
+    }
     if (EngineManager.isEngineGame) {
       Utils.showMsg(
           Lizzie.resourceBundle.getString(
@@ -9254,6 +9263,10 @@ public class LizzieFrame extends JFrame {
   }
 
   public void startAnalyzeGameDialog() {
+    if (Lizzie.frame.isContributing) {
+      Utils.showMsg("跑普贡献中,请另外打开一个LizzieYzy");
+      return;
+    }
     boolean isPondering = false;
     if (Lizzie.leelaz.isPondering()) {
       Lizzie.leelaz.togglePonder();
@@ -9281,6 +9294,10 @@ public class LizzieFrame extends JFrame {
 
   public void continueAiPlaying(
       boolean isGenmove, boolean continueNow, boolean playerIsB, boolean fromShortCut) {
+    if (Lizzie.frame.isContributing) {
+      Utils.showMsg("跑普贡献中,请另外打开一个LizzieYzy");
+      return;
+    }
     if (EngineManager.isEmpty) return;
     if (isPlayingAgainstLeelaz || isAnaPlayingAgainstLeelaz) {
       stopAiPlayingAndPolicy();
