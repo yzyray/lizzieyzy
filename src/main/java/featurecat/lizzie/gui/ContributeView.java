@@ -400,6 +400,15 @@ public class ContributeView extends JDialog {
             setVisible(false);
           }
         });
+    
+    JButton btnSaveAll = new JFontButton("保存所有棋谱");
+    btnSaveAll.addActionListener(new ActionListener() {
+    	public void actionPerformed(ActionEvent e) {
+    		if(Lizzie.frame.contributeEngine!=null)
+    		Lizzie.frame.contributeEngine.saveAllGames();
+    	}
+    });
+    buttonPanel.add(btnSaveAll);
     buttonPanel.add(btnShutdown);
 
     JPanel consolePanel = new JPanel();
