@@ -28,6 +28,7 @@ public class ContributeSettings extends JDialog {
   private JCheckBox chkUseCommand;
   private JCheckBox chkRemote;
   private JCheckBox chkShowOwnerShip;
+  private JCheckBox chkAutoSave;
   private JButton btnRemoteSetting;
   private JDialog thisDialog = this;
 
@@ -39,15 +40,17 @@ public class ContributeSettings extends JDialog {
     String gamesTip = "同时进行多盘对局以增加GPU/CPU利用率,设置为default_gtp.cfg中numSearchThreads的数值即可";
     String configTip = "可配置使用的显卡数量等,不同于普通的分析引擎配置文件,默认名字为contribute_example.cfg";
     String ownerShipTip = "以跑谱速度略微降低为代价,显示领地(可在底部工具栏-Kata评估关闭显示,但速度不会恢复)";
+    String autoSaveTip = "将观看过且已对局结束棋谱保存到LizzieYzy目录内\"ContributeGames\"文件夹中";
 
     JPanel mainPanel = new JPanel();
     mainPanel.setBorder(new EmptyBorder(2, 0, 0, 5));
     getContentPane().add(mainPanel, BorderLayout.CENTER);
     GridBagLayout gbl_mainPanel = new GridBagLayout();
     gbl_mainPanel.columnWidths = new int[] {217, 217, 0};
-    gbl_mainPanel.rowHeights = new int[] {41, 41, 0, 41, 41, 41, 41, 0};
+    gbl_mainPanel.rowHeights = new int[] {41, 41, 0, 41, 41, 41, 41, 0, 0};
     gbl_mainPanel.columnWeights = new double[] {1.0, 1.0, Double.MIN_VALUE};
-    gbl_mainPanel.rowWeights = new double[] {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, Double.MIN_VALUE};
+    gbl_mainPanel.rowWeights =
+        new double[] {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, Double.MIN_VALUE};
     mainPanel.setLayout(gbl_mainPanel);
 
     JPanel engineFilePanel = new JPanel();
@@ -248,7 +251,7 @@ public class ContributeSettings extends JDialog {
     JLabel lblShowOwnerShip = new JFontLabel("显示领地");
     GridBagConstraints gbc_lblShowOwnerShip = new GridBagConstraints();
     gbc_lblShowOwnerShip.fill = GridBagConstraints.VERTICAL;
-    gbc_lblShowOwnerShip.insets = new Insets(0, 0, 0, 5);
+    gbc_lblShowOwnerShip.insets = new Insets(0, 0, 5, 5);
     gbc_lblShowOwnerShip.gridx = 0;
     gbc_lblShowOwnerShip.gridy = 6;
     mainPanel.add(lblShowOwnerShip, gbc_lblShowOwnerShip);
@@ -256,12 +259,40 @@ public class ContributeSettings extends JDialog {
 
     chkShowOwnerShip = new JFontCheckBox();
     GridBagConstraints gbc_chkShowOwnerShip = new GridBagConstraints();
+    gbc_chkShowOwnerShip.insets = new Insets(0, 0, 5, 0);
     gbc_chkShowOwnerShip.fill = GridBagConstraints.BOTH;
     gbc_chkShowOwnerShip.gridx = 1;
     gbc_chkShowOwnerShip.gridy = 6;
     mainPanel.add(chkShowOwnerShip, gbc_chkShowOwnerShip);
     chkShowOwnerShip.setToolTipText(ownerShipTip);
     chkShowOwnerShip.setSelected(Lizzie.config.contributeShowEstimate);
+
+    JPanel panel_2 = new JPanel();
+    GridBagConstraints gbc_panel_2 = new GridBagConstraints();
+    gbc_panel_2.insets = new Insets(0, 0, 0, 5);
+    gbc_panel_2.fill = GridBagConstraints.BOTH;
+    gbc_panel_2.gridx = 0;
+    gbc_panel_2.gridy = 7;
+    mainPanel.add(panel_2, gbc_panel_2);
+
+    JLabel lblAutoSave = new JFontLabel("自动保存棋谱");
+    lblAutoSave.setText("保存已观看棋谱");
+    panel_2.add(lblAutoSave);
+    lblAutoSave.setToolTipText(autoSaveTip);
+
+    chkAutoSave = new JFontCheckBox();
+    chkAutoSave.setToolTipText(autoSaveTip);
+    GridBagConstraints gbc_chkAutoSave = new GridBagConstraints();
+    gbc_chkAutoSave.anchor = GridBagConstraints.WEST;
+    gbc_chkAutoSave.gridx = 1;
+    gbc_chkAutoSave.gridy = 7;
+    mainPanel.add(chkAutoSave, gbc_chkAutoSave);
+    chkAutoSave.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            if (chkAutoSave.isSelected()) Utils.showMsg(autoSaveTip);
+          }
+        });
 
     JPanel buttonPanel = new JPanel();
     getContentPane().add(buttonPanel, BorderLayout.SOUTH);
@@ -308,5 +339,7 @@ public class ContributeSettings extends JDialog {
     Lizzie.config.uiConfig.put("contribute-use-command", Lizzie.config.contributeUseCommand);
     Lizzie.config.contributeCommand = this.txtCommand.getText();
     Lizzie.config.uiConfig.put("contribute-command", Lizzie.config.contributeCommand);
+    Lizzie.config.contributeAutoSave = this.chkAutoSave.isSelected();
+    Lizzie.config.uiConfig.put("contribute-auto-save", Lizzie.config.contributeAutoSave);
   }
 }

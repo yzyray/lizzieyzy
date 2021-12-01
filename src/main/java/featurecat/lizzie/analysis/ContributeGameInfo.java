@@ -17,4 +17,5 @@ public class ContributeGameInfo {
   public boolean complete = false;
   public String gameResult = "";
   public boolean isMatchGame = false;
+  public boolean saved = false;
 }

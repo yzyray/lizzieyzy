@@ -611,6 +611,7 @@ public class Config {
   public boolean contributeShowEstimate = false;
   public boolean contributeUseCommand = false;
   public String contributeCommand = "";
+  public boolean contributeAutoSave = false;
 
   public boolean contributeWatchSkipNone19 = false;
   public boolean contributeWatchAlwaysLastMove = false;
@@ -1320,6 +1321,7 @@ public class Config {
     contributeShowEstimate = uiConfig.optBoolean("contribute-show-estimate", false);
     contributeUseCommand = uiConfig.optBoolean("contribute-use-command", false);
     contributeCommand = uiConfig.optString("contribute-command", "");
+    contributeAutoSave = uiConfig.optBoolean("contribute-auto-save", false);
     contributeWatchSkipNone19 = uiConfig.optBoolean("contribute-watch-skip-none-19", false);
     contributeWatchAlwaysLastMove = uiConfig.optBoolean("contribute-watch-always-last-move", false);
     contributeWatchAutoPlay = uiConfig.optBoolean("contribute-watch-auto-play", true);
