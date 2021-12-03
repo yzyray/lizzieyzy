@@ -2408,12 +2408,12 @@ public class ConfigDialog2 extends JDialog {
       themeTab.add(btnReset);
 
       chkUseScoreDiff = new JCheckBox(resourceBundle.getString("LizzieConfig.chkUseScoreDiff"));
-      chkUseScoreDiff.setBounds(172, 612, 200, 23);
+      chkUseScoreDiff.setBounds(172, 612, 235, 23);
       themeTab.add(chkUseScoreDiff);
 
       txtPercentScoreDiff = new JTextField();
       txtPercentScoreDiff.setDocument(new DoubleDocument());
-      txtPercentScoreDiff.setBounds(380, 612, 45, 24);
+      txtPercentScoreDiff.setBounds(407, 612, 30, 24);
       themeTab.add(txtPercentScoreDiff);
 
       chkUseScoreDiff.addActionListener(
@@ -2425,7 +2425,7 @@ public class ConfigDialog2 extends JDialog {
 
       JLabel lblPercentScoreDiff =
           new JLabel(resourceBundle.getString("LizzieConfig.lblUseScoreDiffPercent"));
-      lblPercentScoreDiff.setBounds(430, 612, 250, 24);
+      lblPercentScoreDiff.setBounds(440, 612, 250, 24);
       themeTab.add(lblPercentScoreDiff);
 
       btnBackgroundPath = new JButton("...");
