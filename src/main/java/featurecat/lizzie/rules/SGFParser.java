@@ -85,16 +85,15 @@ public class SGFParser {
         }
       }
     }
-    if (isExtraMode2
-        && !Lizzie.config.isDoubleEngineMode()
-        && !Lizzie.config.isAutoAna
-        && showHint) {
-      SwingUtilities.invokeLater(
-          new Runnable() {
-            public void run() {
-              if (Lizzie.config.loadSgfLast) while (Lizzie.board.nextMove(false)) ;
-              Lizzie.board.clearAfterMove();
-              if (showHint) Lizzie.frame.refresh();
+    SwingUtilities.invokeLater(
+        new Runnable() {
+          public void run() {
+            if (Lizzie.config.loadSgfLast) while (Lizzie.board.nextMove(false)) ;
+            Lizzie.board.clearAfterMove();
+            if (isExtraMode2
+                && !Lizzie.config.isDoubleEngineMode()
+                && !Lizzie.config.isAutoAna
+                && showHint) {
               int ret =
                   JOptionPane.showConfirmDialog(
                       Lizzie.frame,
@@ -105,8 +104,9 @@ public class SGFParser {
                 Lizzie.config.toggleExtraMode(2);
               }
             }
-          });
-    }
+          }
+        });
+
     return returnValue;
   }
 
