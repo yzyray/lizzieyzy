@@ -996,7 +996,7 @@ public class ConfigDialog2 extends JDialog {
         new JLabel(
             resourceBundle.getString(
                 "LizzieConfig.lblViewSettings")); // ("界面面板选项:"); // $NON-NLS-1$
-    lblViewSettings.setFont(new Font("Microsoft YaHei", Font.BOLD, 14));
+    lblViewSettings.setFont(new Font(Lizzie.config.uiFontName, Font.BOLD, 14));
     lblViewSettings.setBounds(10, 2, 408, 23);
     uiTab.add(lblViewSettings);
 
@@ -1005,7 +1005,7 @@ public class ConfigDialog2 extends JDialog {
             resourceBundle.getString(
                 "LizzieConfig.lblSuggestionMoveAndWinrateSettings")); // ("选点与胜率图选项:"); //
     // $NON-NLS-1$
-    lblSuggestionMoveAndWinrateSettings.setFont(new Font("Microsoft YaHei", Font.BOLD, 14));
+    lblSuggestionMoveAndWinrateSettings.setFont(new Font(Lizzie.config.uiFontName, Font.BOLD, 14));
     lblSuggestionMoveAndWinrateSettings.setBounds(10, 206, 395, 23);
     uiTab.add(lblSuggestionMoveAndWinrateSettings);
 
@@ -1013,14 +1013,14 @@ public class ConfigDialog2 extends JDialog {
         new JLabel(
             resourceBundle.getString(
                 "LizzieConfig.lblEngineSettings")); // ("其他选项:"); // $NON-NLS-1$
-    lblOtherSettings.setFont(new Font("Microsoft YaHei", Font.BOLD, 14));
+    lblOtherSettings.setFont(new Font(Lizzie.config.uiFontName, Font.BOLD, 14));
     lblOtherSettings.setBounds(10, 421, 492, 23);
     uiTab.add(lblOtherSettings);
 
     JLabel lblEngineSettings =
         new JLabel(
             resourceBundle.getString("LizzieConfig.lblOtherSettings")); // ("引擎选项:"); // $NON-NLS-1$
-    lblEngineSettings.setFont(new Font("Microsoft YaHei", Font.BOLD, 14));
+    lblEngineSettings.setFont(new Font(Lizzie.config.uiFontName, Font.BOLD, 14));
     lblEngineSettings.setBounds(10, 522, 492, 23);
     uiTab.add(lblEngineSettings);
 
@@ -3384,7 +3384,12 @@ public class ConfigDialog2 extends JDialog {
         }
 
         if (theme.uiFontName().equals("Lizzie默认") || theme.uiFontName().equals("Lizzie Default")) {
-          LizzieFrame.uiFont = new Font("Microsoft YaHei", Font.TRUETYPE_FONT, 12);
+          if (Lizzie.config.isChinese)
+            LizzieFrame.uiFont = new Font("Microsoft YaHei", Font.TRUETYPE_FONT, 12);
+          else
+            LizzieFrame.uiFont =
+                new Font(
+                    resourceBundle.getString("FontList.systemDefault"), Font.TRUETYPE_FONT, 12);
         } else if (theme.uiFontName() != null) {
           LizzieFrame.uiFont = new Font(theme.uiFontName(), Font.PLAIN, 12);
         }
@@ -3580,7 +3585,11 @@ public class ConfigDialog2 extends JDialog {
     if (!Lizzie.config.uiConfig.optString("ui-font-name").isEmpty()
         && (Lizzie.config.uiConfig.getString("ui-font-name").equals("Lizzie默认")
             || Lizzie.config.uiConfig.getString("ui-font-name").equals("Lizzie Default"))) {
-      LizzieFrame.uiFont = new Font("Microsoft YaHei", Font.TRUETYPE_FONT, 12);
+      if (Lizzie.config.isChinese)
+        LizzieFrame.uiFont = new Font("Microsoft YaHei", Font.TRUETYPE_FONT, 12);
+      else
+        LizzieFrame.uiFont =
+            new Font(resourceBundle.getString("FontList.systemDefault"), Font.TRUETYPE_FONT, 12);
     } else if (!Lizzie.config.uiConfig.optString("ui-font-name").isEmpty()) {
       LizzieFrame.uiFont =
           new Font(Lizzie.config.uiConfig.optString("ui-font-name"), Font.PLAIN, 12);

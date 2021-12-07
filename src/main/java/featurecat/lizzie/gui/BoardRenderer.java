@@ -568,7 +568,7 @@ public class BoardRenderer {
     g0.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     Font font =
         new Font(
-            "Microsoft YaHei",
+            Lizzie.config.uiFontName,
             Font.PLAIN,
             (int) (Math.min(28, this.scaledMarginHeight * 53 / 100)));
     g0.setFont(font);

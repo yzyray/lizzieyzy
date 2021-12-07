@@ -100,8 +100,8 @@ public class MoreEngines extends JPanel {
     setLayout((LayoutManager) null);
     this.dataModel = getTableModel();
     table = new JTable(this.dataModel);
-    this.winrateFont = new Font("Microsoft YaHei", 0, Math.max(Config.frameFontSize, 14));
-    this.headFont = new Font("Microsoft YaHei", 0, Math.max(Config.frameFontSize, 13));
+    this.winrateFont = new Font(Lizzie.config.uiFontName, 0, Math.max(Config.frameFontSize, 14));
+    this.headFont = new Font(Lizzie.config.uiFontName, 0, Math.max(Config.frameFontSize, 13));
     table.getTableHeader().setFont(this.headFont);
     table.setFont(this.winrateFont);
     table.getTableHeader().setReorderingAllowed(false);
@@ -138,7 +138,7 @@ public class MoreEngines extends JPanel {
     table.setFont(this.winrateFont);
     this.engineName = new JFontLabel(this.resourceBundle.getString("MoreEngines.engineName"));
     this.engineName.setForeground(Color.BLUE);
-    this.engineName.setFont(new Font("Microsoft YaHei", 0, 14));
+    this.engineName.setFont(new Font(Lizzie.config.uiFontName, 0, 14));
     JFontLabel lblName = new JFontLabel(this.resourceBundle.getString("MoreEngines.lblName"));
     this.txtName = new JFontTextField();
     this.txtName.setFont(new Font(Config.sysDefaultFontName, 0, Config.frameFontSize));

@@ -167,8 +167,11 @@ public class Theme {
   /** Use custom font for the UI */
   public String uiFontName() {
     String key = "ui-font-name";
-    String name = config.optString(key, uiConfig.optString(key, "Microsoft YaHei")); // 微软雅黑
-    if (name.equals("Lizzie默认") || name.equals("Lizzie Default")) name = "Microsoft YaHei"; // 微软雅黑
+    String name = config.optString(key, uiConfig.optString(key, null)); // 微软雅黑
+    if (Lizzie.config != null
+        && Lizzie.config.isChinese
+        && (name.equals("Lizzie默认") || name.equals("Lizzie Default")))
+      name = "Microsoft YaHei"; // 微软雅黑
     return name;
   }
 
