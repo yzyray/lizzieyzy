@@ -523,6 +523,8 @@ public class Leelaz {
 
   public void forceQuit() {
     isNormalEnd = true;
+    started = false;
+    isLoaded = false;
     leela0110StopPonder();
     //		if(isScreen)
     //			sendCommand("name");
@@ -541,8 +543,6 @@ public class Leelaz {
       } catch (Exception e) {
       }
     }
-    started = false;
-    isLoaded = false;
     outputStream = null;
   }
 

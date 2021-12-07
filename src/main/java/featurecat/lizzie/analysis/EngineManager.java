@@ -1543,7 +1543,7 @@ public class EngineManager {
   private void checkEngineAlive() {
     if (isEmpty) return;
     if (!isEngineGame && Lizzie.leelaz != null) {
-      if (Lizzie.leelaz.isLoaded() && Lizzie.leelaz.canCheckAlive && Lizzie.leelaz.isProcessDead())
+      if (Lizzie.leelaz.isStarted() && Lizzie.leelaz.canCheckAlive && Lizzie.leelaz.isProcessDead())
         try {
           Lizzie.leelaz.restartClosedEngine(currentEngineNo);
         } catch (IOException e) {
@@ -1864,7 +1864,6 @@ public class EngineManager {
     }
     currentEngineNo2 = -1;
     currentEngineNo = -1;
-    EngineManager.isEmpty = true;
     Lizzie.leelaz.notPondering();
     Lizzie.leelaz.isLoaded = true;
     Menu.engineMenu.setText(resourceBundle.getString("Menu.noEngine"));
