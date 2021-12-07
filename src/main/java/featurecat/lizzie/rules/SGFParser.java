@@ -689,7 +689,7 @@ public class SGFParser {
             if (tagContent.equals("G")) {
               Lizzie.board.isKataBoard = true;
             }
-          } else if (tag.equals("KM")) {
+          } else if (tag.equals("KM") || tag.equals("KO")) { // Cyberoro and some site uses komi tag as KO.
             if (Lizzie.config.readKomi) {
               try {
                 if (!tagContent.trim().isEmpty()) {
