@@ -4192,17 +4192,21 @@ public class Board {
     return isValid(x, y) && isCoordsEmpty(x, y);
   }
 
-  public boolean isFirstWhiteNode(BoardHistoryNode node) {
+  public boolean isFirstWhiteNodeWithHandicap(BoardHistoryNode node) {
     // TODO Auto-generated method stub
     if (node.getData().lastMove.isPresent() && node.getData().lastMoveColor != Stone.WHITE) {
       return false;
     }
+    int blackStones = 0;
     while (node.previous().isPresent()) {
       node = node.previous().get();
-      if (node.getData().lastMove.isPresent() && node.getData().lastMoveColor == Stone.WHITE) {
-        return false;
-      }
+      if (node.getData().lastMove.isPresent())
+        if (node.getData().lastMoveColor == Stone.WHITE) {
+          return false;
+        }
+      if (node.getData().lastMoveColor == Stone.BLACK) blackStones++;
     }
-    return true;
+    if (blackStones > 1) return true;
+    else return false;
   }
 }
