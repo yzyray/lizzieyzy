@@ -37,6 +37,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.CountDownLatch;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class BoardRenderer {
   // Percentage of the boardLength to offset before drawing black lines
@@ -564,26 +566,32 @@ public class BoardRenderer {
         boardWidth);
   }
 
+  private boolean isKoreanName(String input) {
+    final Pattern p =
+        Pattern.compile(
+            "^[\\u1100-\\u11ff\\uac00-\\ud7af\\u3130–\\u318F\\u3200–\\u32FF\\uA960–\\uA97F\\uD7B0–\\uD7FF\\uFF00–\\uFFEF\\w\\s]+$");
+    Matcher m = p.matcher(input);
+    return m.matches();
+  }
+
   private void drawName(Graphics2D g0) {
+    String black = Lizzie.board.getHistory().getGameInfo().getPlayerBlack();
+    String white = Lizzie.board.getHistory().getGameInfo().getPlayerWhite();
+    if (black.length() == 0 && white.length() == 0) {
+      if (!emptyName) {
+        emptyName = true;
+        changedName = true;
+        Lizzie.frame.refresh();
+      }
+      return;
+    }
+
     g0.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-    Font font =
+    g0.setFont(
         new Font(
             Lizzie.config.uiFontName,
             Font.PLAIN,
-            (int) (Math.min(28, this.scaledMarginHeight * 53 / 100)));
-    g0.setFont(font);
-    String black = Lizzie.board.getHistory().getGameInfo().getPlayerBlack();
-    String white = Lizzie.board.getHistory().getGameInfo().getPlayerWhite();
-
-    //    if(LizzieFrame.isShowingByoTime)
-    //    {
-    //    	String byoString=
-    //	((Lizzie.frame.leftMinuts>0||Lizzie.frame.leftSeconds>0)?("时间:"+Lizzie.frame.leftMinuts+":"+Lizzie.frame.leftSeconds+" "):"")+(Lizzie.frame.byoSeconds>=0?("读秒:"+Lizzie.frame.byoSeconds+"("+Lizzie.frame.byoTimes+")"):"");
-    //    	if(Lizzie.frame.playerIsBlack)
-    //    		black=byoString+"   "+black;
-    //    	else
-    //    		white=white+"   "+byoString;
-    //    }
+            (int) (Math.min(28, this.scaledMarginHeight * 53 / 100))));
 
     int lengthB = g0.getFontMetrics().stringWidth(black);
     int height = g0.getFontMetrics().getHeight();
@@ -623,14 +631,7 @@ public class BoardRenderer {
     }
     lengthB = g0.getFontMetrics().stringWidth(black);
     lengthW = g0.getFontMetrics().stringWidth(white);
-    if (black.length() == 0 && white.length() == 0) {
-      if (!emptyName) {
-        emptyName = true;
-        changedName = true;
-        Lizzie.frame.refresh();
-      }
-      return;
-    }
+
     if (emptyName) {
       emptyName = false;
       changedName = true;
@@ -665,23 +666,16 @@ public class BoardRenderer {
           stoneRadius * 5 / 4,
           stoneRadius * 5 / 4);
     }
-    //  g0.setColor(Color.BLACK);
 
-    // set maximum size of font
-
-    //  String regex = "[\u4e00-\u9fa5]";
-    //    Font f =
-    //        drawStringBoldGetFont(
-    //            g0,
-    //            x + boardWidth / 2 - lengthB / 2 - stoneRadius * 4 / 3,
-    //            y - scaledMarginHeight + boardHeight + stoneRadius * 8 / 5,
-    //            new Font(Lizzie.config.uiFontName, Font.PLAIN, 16),
-    //            black,
-    //            stoneRadius * 5 / 4,
-    //            lengthB);
-
-    FontRenderContext frcb = g0.getFontRenderContext();
     if (black.length() > 0) {
+      Font font =
+          new Font(
+              isKoreanName(black) ? "Malgun Gothic" : Lizzie.config.uiFontName,
+              Font.PLAIN,
+              (int) (Math.min(28, this.scaledMarginHeight * 53 / 100)));
+      g0.setFont(font);
+      FontRenderContext frcb = g0.getFontRenderContext();
+
       TextLayout tlb = new TextLayout(black, font, frcb);
 
       Shape shab =
@@ -689,41 +683,26 @@ public class BoardRenderer {
               AffineTransform.getTranslateInstance(
                   x + boardWidth / 2 - lengthB - scaledMarginWidth * 3 / 5,
                   y - scaledMarginHeight + boardHeight + stoneRadius * 13 / 8 + (height + 2) / 4));
-
-      // -scaledMarginHeight/15
-      // double a =sha.getBounds().getHeight();
-      // g0.setColor(Color.WHITE);
-      // g0.setStroke(new BasicStroke(2));
-      //  g0.draw(shab);
       g0.setColor(Color.BLACK);
       g0.fill(shab);
     }
 
     g0.setColor(Color.WHITE);
-    //    drawStringBold(
-    //        g0,
-    //        x
-    //            + boardWidth / 2
-    //            + white.replaceAll(regex, "12").length() * stoneRadius / 4
-    //            + stoneRadius * 5 / 4,
-    //        y - scaledMarginHeight + stoneRadius + boardHeight + stoneRadius * 3 / 5,
-    //        Lizzie.frame.uiFont,
-    //        white,
-    //        stoneRadius,
-    //        stoneRadius * white.replaceAll(regex, "12").length() / 2);
 
-    FontRenderContext frc = g0.getFontRenderContext();
     if (white.length() > 0) {
+      Font font =
+          new Font(
+              isKoreanName(white) ? "Malgun Gothic" : Lizzie.config.uiFontName,
+              Font.PLAIN,
+              (int) (Math.min(28, this.scaledMarginHeight * 53 / 100)));
+      g0.setFont(font);
+      FontRenderContext frc = g0.getFontRenderContext();
       TextLayout tl = new TextLayout(white, font, frc);
-
-      // float sw = (float) tl.getBounds().getWidth();
-      // float sh = (float) tl.getBounds().getHeight();
       Shape sha =
           tl.getOutline(
               AffineTransform.getTranslateInstance(
                   x + boardWidth / 2 + scaledMarginWidth * 3 / 5 + 1,
                   y - scaledMarginHeight + boardHeight + stoneRadius * 13 / 8 + (height + 2) / 4));
-      // double a =sha.getBounds().getHeight();
       g0.setColor(Color.BLACK);
       g0.setStroke(new BasicStroke(2));
       g0.draw(sha);
