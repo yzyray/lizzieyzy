@@ -5525,9 +5525,7 @@ public class LizzieFrame extends JFrame {
           } else {
             score = -score + curData.getKomi();
           }
-        } else if (curData.blackToPlay) {
-          score = score;
-        } else {
+        } else if (!curData.blackToPlay) {
           score = -score;
         }
         scoreLead = score;
