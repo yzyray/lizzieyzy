@@ -399,7 +399,7 @@ public class Config {
   public int newEngineGameHandicap = 0;
 
   public boolean UsePlayMode = true;
-  public int useLanguage = 0; // 0默认 1中文2英文..
+  public int useLanguage = 0; // 0默认 1中文2英文3韩语..
   public boolean needReopenFirstUseSettings = false;
 
   public boolean autoCheckEngineAlive = true;

@@ -147,9 +147,19 @@ public class FirstUseSettings extends JDialog {
         23);
     panel.add(rdoLanguageEnglish);
 
+    JFontRadioButton rdoLanguageKorean =
+        new JFontRadioButton(Lizzie.resourceBundle.getString("FirstUseSettings.rdoLanguageKorean"));
+    rdoLanguageKorean.setBounds(
+        Lizzie.config.isFrameFontSmall() ? 460 : (Lizzie.config.isFrameFontMiddle() ? 530 : 660),
+        328,
+        140,
+        23);
+    panel.add(rdoLanguageKorean);
+
     ButtonGroup languageGroup = new ButtonGroup();
     languageGroup.add(rdoLanguageChinese);
     languageGroup.add(rdoLanguageEnglish);
+    languageGroup.add(rdoLanguageKorean);
 
     JFontLabel lblLooks =
         new JFontLabel(Lizzie.resourceBundle.getString("FirstUseSettings.lblLooks")); // "界面样式");
@@ -524,6 +534,7 @@ public class FirstUseSettings extends JDialog {
             if (!rdoLanguageChinese.isSelected() && !rdoLanguageEnglish.isSelected()) {
               if (Lizzie.config.isChinese || locale.getLanguage().equals("zh"))
                 rdoLanguageChinese.setSelected(true);
+              else if (locale.getLanguage().equals("ko")) rdoLanguageKorean.setSelected(true);
               else rdoLanguageEnglish.setSelected(true);
             }
             rdoMouseOverSubboardNoRefresh.setSelected(true);
@@ -595,7 +606,9 @@ public class FirstUseSettings extends JDialog {
                   Lizzie.resourceBundle.getString("FirstUseSettings.confirmHint")); // ("有未选择的选项");
               return;
             }
-            if (!rdoLanguageChinese.isSelected() && !rdoLanguageEnglish.isSelected()) {
+            if (!rdoLanguageChinese.isSelected()
+                && !rdoLanguageEnglish.isSelected()
+                && !rdoLanguageKorean.isSelected()) {
               Utils.showMsg(
                   Lizzie.resourceBundle.getString("FirstUseSettings.confirmHint")); // ("有未选择的选项");
               return;
@@ -641,14 +654,17 @@ public class FirstUseSettings extends JDialog {
             if (rdoLanguageChinese.isSelected()) {
               Lizzie.config.useLanguage = 1;
               Lizzie.config.uiConfig.put("use-language", Lizzie.config.useLanguage);
+            } else if (rdoLanguageEnglish.isSelected()) {
+              Lizzie.config.useLanguage = 2;
+              Lizzie.config.uiConfig.put("use-language", Lizzie.config.useLanguage);
+            } else if (rdoLanguageKorean.isSelected()) {
+              Lizzie.config.useLanguage = 3;
+              Lizzie.config.uiConfig.put("use-language", Lizzie.config.useLanguage);
             }
             boolean oriUseJavaLooks = Lizzie.config.useJavaLooks;
             Lizzie.config.useJavaLooks = rdoJavaLooks.isSelected();
             Lizzie.config.uiConfig.put("use-java-looks", Lizzie.config.useJavaLooks);
-            if (rdoLanguageEnglish.isSelected()) {
-              Lizzie.config.useLanguage = 2;
-              Lizzie.config.uiConfig.put("use-language", Lizzie.config.useLanguage);
-            }
+
             shouldShowRestartHint = oriUseJavaLooks ^ Lizzie.config.useJavaLooks;
             Lizzie.config.limitTime = chkLimitTime.isSelected();
             Lizzie.config.limitPlayout = chkLimitPlayouts.isSelected();
@@ -757,6 +773,9 @@ public class FirstUseSettings extends JDialog {
           });
     }
     if (Lizzie.config.isChinese) rdoLanguageChinese.setSelected(true);
+    else if (Lizzie.config.useLanguage == 3
+        || Lizzie.config.useLanguage == 0 && Locale.getDefault().equals("ko"))
+      rdoLanguageKorean.setSelected(true);
     else rdoLanguageEnglish.setSelected(true);
 
     rdoLanguageChinese.addActionListener(
@@ -795,6 +814,28 @@ public class FirstUseSettings extends JDialog {
               Lizzie.config.uiConfig.put("use-language", Lizzie.config.useLanguage);
               Lizzie.resourceBundle =
                   ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("en", "US"));
+              Lizzie.config.isChinese = false;
+              setVisible(false);
+              FirstUseSettings firstUseSettings = new FirstUseSettings(false);
+              firstUseSettings.setVisible(true);
+            }
+          }
+        });
+
+    rdoLanguageKorean.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            if (firstTime) {
+              Lizzie.config.needReopenFirstUseSettings = true;
+              Lizzie.config.useLanguage = 3;
+              Lizzie.config.uiConfig.put("use-language", Lizzie.config.useLanguage);
+              setVisible(false);
+            } else {
+              Lizzie.config.useLanguage = 3;
+              Lizzie.config.uiConfig.put("use-language", Lizzie.config.useLanguage);
+              Lizzie.resourceBundle =
+                  ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("ko"));
               Lizzie.config.isChinese = false;
               setVisible(false);
               FirstUseSettings firstUseSettings = new FirstUseSettings(false);

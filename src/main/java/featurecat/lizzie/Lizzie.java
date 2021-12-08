@@ -118,6 +118,8 @@ public class Lizzie {
         resourceBundle = ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("zh", "CN"));
       else if (config.useLanguage == 2)
         resourceBundle = ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("en", "US"));
+      else if (config.useLanguage == 3)
+        resourceBundle = ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("ko"));
       config.isChinese = (resourceBundle.getString("Lizzie.isChinese")).equals("yes");
       FirstUseSettings firstUseSettings = new FirstUseSettings(true);
       firstUseSettings.setVisible(true);
@@ -126,6 +128,8 @@ public class Lizzie {
       resourceBundle = ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("zh", "CN"));
     else if (config.useLanguage == 2)
       resourceBundle = ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("en", "US"));
+    else if (config.useLanguage == 3)
+      resourceBundle = ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("ko"));
     config.isChinese = (resourceBundle.getString("Lizzie.isChinese")).equals("yes");
     if (config.theme.uiFontName() != null) config.uiFontName = config.theme.uiFontName();
     if (Lizzie.config.uiFontName != null

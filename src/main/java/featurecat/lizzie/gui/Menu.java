@@ -23,7 +23,6 @@ import java.net.URI;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import javax.imageio.ImageIO;
@@ -41,12 +40,7 @@ import org.json.JSONArray;
 
 public class Menu extends JMenuBar {
   final ButtonGroup buttonGroup = new ButtonGroup();
-  private final ResourceBundle resourceBundle =
-      Lizzie.config.useLanguage == 0
-          ? ResourceBundle.getBundle("l10n.DisplayStrings")
-          : (Lizzie.config.useLanguage == 1
-              ? ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("zh", "CN"))
-              : ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("en", "US")));
+  private final ResourceBundle resourceBundle = Lizzie.resourceBundle;
   public static ImageIcon icon;
   public static ImageIcon icon2;
   public static ImageIcon stop;
@@ -4796,6 +4790,17 @@ public class Menu extends JMenuBar {
           }
         });
 
+    final JFontCheckBoxMenuItem languageKR = new JFontCheckBoxMenuItem("한국어");
+    language.add(languageKR);
+    languageKR.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.config.useLanguage = 3;
+            Lizzie.config.uiConfig.put("use-language", Lizzie.config.useLanguage);
+            Utils.showMsg(Lizzie.resourceBundle.getString("Lizzie.hint.restart"));
+          }
+        });
+
     final JFontMenu frameFontSize =
         new JFontMenu(resourceBundle.getString("menu.frameFontSize")); // 界面字体大小
     settings.add(frameFontSize);
@@ -4907,12 +4912,14 @@ public class Menu extends JMenuBar {
             else playSound.setState(false);
             if (Lizzie.config.notPlaySoundInSync) notPlaySoundInSync.setState(true);
             else notPlaySoundInSync.setState(false);
+            languageDefault.setState(false);
+            languageZH.setState(false);
+            languageEN.setState(false);
+            languageKR.setState(false);
             if (Lizzie.config.useLanguage == 0) languageDefault.setState(true);
-            else languageDefault.setState(false);
             if (Lizzie.config.useLanguage == 1) languageZH.setState(true);
-            else languageZH.setState(false);
             if (Lizzie.config.useLanguage == 2) languageEN.setState(true);
-            else languageEN.setState(false);
+            if (Lizzie.config.useLanguage == 3) languageKR.setState(true);
             if (Lizzie.config.useJavaLooks) {
               frameLooksJava.setState(true);
               frameLooksSystem.setSelected(false);

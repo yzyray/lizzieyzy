@@ -49,11 +49,6 @@ import org.json.JSONArray;
 
 public class BottomToolbar extends JPanel {
   private final ResourceBundle resourceBundle = Lizzie.resourceBundle;
-  //      Lizzie.config.useLanguage == 0
-  //          ? ResourceBundle.getBundle("l10n.DisplayStrings")
-  //          : (Lizzie.config.useLanguage == 1
-  //              ? ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("zh", "CN"))
-  //              : ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("en", "US")));
   public boolean showDetail = Lizzie.config.showDetailedToolbarMenu && Lizzie.config.isChinese;
   JButton firstButton;
   JButton lastButton;
