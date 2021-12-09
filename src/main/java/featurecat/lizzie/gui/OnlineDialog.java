@@ -233,7 +233,7 @@ public class OnlineDialog extends JDialog {
             resourceBundle.getString("OnlineDialog.lblPrompt2.text")
                 + "https://home.yikeweiqi.com/#/live/room/18328/1/15630642"); // 支持弈客直播，例如
     lblPrompt2.setBounds(10, 30, 475, 14);
-    buttonPane.add(lblPrompt2);
+    // buttonPane.add(lblPrompt2);
     //    JLabel lblPrompt3 =
     //        new JLabel(
     //
@@ -484,6 +484,10 @@ public class OnlineDialog extends JDialog {
         }
       } else {
         sgf = data;
+        SGFParser.loadFromString(sgf);
+        Lizzie.board.setMovelistAll();
+        if (Lizzie.leelaz.isPondering()) Lizzie.leelaz.ponder();
+        return;
       }
     }
     try {
@@ -551,26 +555,36 @@ public class OnlineDialog extends JDialog {
   }
 
   public void get() throws IOException {
+	  new Thread() {
+          public void run() {
+            try {
+            	 URL url = new URL(ajaxUrl);
+            	    HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
-    URL url = new URL(ajaxUrl);
-    HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            	    con.setRequestMethod("GET");
+            	    con.setRequestProperty(
+            	        "User-Agent",
+            	        "Mozilla/5.0 (Linux; U; Android 2.3.6; zh-cn; GT-S5660 Build/GINGERBREAD) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1 MicroMessenger/4.5.255");
+            	    con.setConnectTimeout(10 * 1000);
+            	    con.setReadTimeout(10 * 1000);
+            	    con.getResponseCode();
 
-    con.setRequestMethod("GET");
-    con.setRequestProperty(
-        "User-Agent",
-        "Mozilla/5.0 (Linux; U; Android 2.3.6; zh-cn; GT-S5660 Build/GINGERBREAD) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1 MicroMessenger/4.5.255");
-
-    con.getResponseCode();
-
-    BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-    StringBuffer response = new StringBuffer();
-    String line;
-    while ((line = in.readLine()) != null) {
-      response.append(line);
-    }
-    in.close();
-    String sgf = response.toString();
-    parseSgf(sgf, "", 0, false, true);
+            	    BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), "UTF-8"));
+            	    StringBuffer response = new StringBuffer();
+            	    String line;
+            	    while ((line = in.readLine()) != null) {
+            	      response.append(line);
+            	      response.append((char) 10);
+            	    }
+            	    in.close();
+            	    String sgf = response.toString();
+            	    parseSgf(sgf, "", 0, false, true);
+            } catch (IOException e) {
+              // TODO Auto-generated catch block
+              e.printStackTrace();
+            }
+          }
+        }.start();   
   }
 
   public void refresh(String format) throws IOException {
