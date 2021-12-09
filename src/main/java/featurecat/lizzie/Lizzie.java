@@ -414,6 +414,11 @@ public class Lizzie {
       config.deletePersist(false);
     }
     try {
+      frame.closeContributeEngine();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    try {
       engineManager.forceKillAllEngines();
     } catch (Exception e) {
       e.printStackTrace();

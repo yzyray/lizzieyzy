@@ -208,13 +208,14 @@ public class ContributeEngine {
           if (watchingGameIndex == -1 && contributeGames.size() > 0) {
             watchingGameIndex = 0;
             currentWatchGame = contributeGames.get(0);
-            setGameToBoard(currentWatchGame, watchingGameIndex,false);
+            setGameToBoard(currentWatchGame, watchingGameIndex, false);
             Lizzie.frame.refresh();
             Lizzie.frame.renderVarTree(0, 0, false, false);
             startWatchingGameThread();
           }
         }
       }
+      // Lizzie.gtpConsole.addLine(line);
     } else {
       Lizzie.frame.addContributeLine(line, true);
       if (line.contains("Finis")) {
@@ -285,10 +286,11 @@ public class ContributeEngine {
   public void normalQuit() {
     isNormalEnd = true;
     if (useJavaSSH) javaSSH.close();
-    else process.destroy();
+    else if (process != null) process.destroy();
     if (watchGameThread != null) watchGameThread.interrupt();
     Lizzie.frame.isShowingContributeGame = false;
     Lizzie.frame.isContributing = false;
+    Lizzie.frame.contributeEngine = null;
   }
 
   private void shutdown() {
@@ -354,7 +356,9 @@ public class ContributeEngine {
         if (tryToParseJsonGame(currentGame, false, jsonInfo, unParseInfos))
           tryToUseUnParseGameInfos(currentGame, unParseInfos);
         if (currentGame == currentWatchGame) {
-          setGameToBoard(currentGame, watchingGameIndex,false);
+          setGameToBoard(currentGame, watchingGameIndex, false);
+          Lizzie.frame.lastMove();
+          Lizzie.frame.renderVarTree(0, 0, false, true);
         }
       } else {
         currentGame = new ContributeGameInfo();
@@ -468,12 +472,19 @@ public class ContributeEngine {
     return true;
   }
 
-  public void setGameToBoard(ContributeGameInfo game, int index,boolean saveGame) {
+  public void setGameToBoard(ContributeGameInfo game, int index, boolean saveGame) {
     ArrayList<ContributeMoveInfo> remainList = new ArrayList<ContributeMoveInfo>();
-    if (currentWatchGame == game && isContributeGameAndCurrentBoardSame(game, remainList)) {
-      if (remainList != null && remainList.size() > 0)
+    if (currentWatchGame == game
+        && Board.boardWidth == currentWatchGame.sizeX
+        && Board.boardHeight == currentWatchGame.sizeY
+        && isContributeGameAndCurrentBoardSame(game, remainList)) {
+      if (remainList != null && remainList.size() > 0) {
         setContributeMoveList(remainList, currentWatchGame.complete);
+        Lizzie.frame.redrawTree = true;
+        Lizzie.frame.refresh();
+      }
     } else {
+      currentWatchGame = game;
       Lizzie.board.clear(false);
       Lizzie.board.isKataBoard = true;
       Lizzie.board.isPkBoard = true;
@@ -481,7 +492,7 @@ public class ContributeEngine {
       Lizzie.frame.isShowingContributeGame = true;
       if (Lizzie.frame.contributeView != null)
         Lizzie.frame.contributeView.setWathGameIndex(watchingGameIndex + 1);
-      Lizzie.board.reopen(currentWatchGame.sizeY, currentWatchGame.sizeX);
+      Lizzie.board.reopen(currentWatchGame.sizeX, currentWatchGame.sizeY);
       Lizzie.board
           .getHistory()
           .getGameInfo()
@@ -501,76 +512,79 @@ public class ContributeEngine {
         setContributeMoveList(currentWatchGame.initMoveList, false);
       if (currentWatchGame.moveList != null && currentWatchGame.moveList.size() > 0)
         setContributeMoveList(currentWatchGame.moveList, currentWatchGame.complete);
-      if (Lizzie.board.getHistory().getCurrentHistoryNode().getData().getPlayouts() <= 0) {
+      boolean moved = false;
+      while (Lizzie.board.getHistory().getCurrentHistoryNode().getData().getPlayouts() <= 0) {
         Lizzie.board.nextMove(false);
+        moved = true;
       }
-      if (!saveGame&&Lizzie.config.contributeAutoSave
+      if (moved) {
+        Lizzie.frame.redrawTree = true;
+        Lizzie.frame.refresh();
+      }
+      if (!saveGame
+          && Lizzie.config.contributeAutoSave
           && currentWatchGame.complete
           && !currentWatchGame.saved) {
-     saveGame(game,index);
+        saveGame(game, index);
       }
     }
   }
-  
+
   public void saveAllGames() {
-	  if(contributeGames==null||contributeGames.isEmpty())
-	  {
-		  Utils.showMsg("没有可以保存的棋局");
-		  return;
-	  } 
-	  for(int i=0;i<contributeGames.size();i++)
-	  {
-		  saveGame(contributeGames.get(i),i);
-	  }
-	  Utils.showMsg("棋谱保存在LizzieYzy目录内\"ContributeGames\"文件夹中");
+    if (contributeGames == null || contributeGames.isEmpty()) {
+      Utils.showMsg("没有可以保存的棋局");
+      return;
+    }
+    for (int i = 0; i < contributeGames.size(); i++) {
+      saveGame(contributeGames.get(i), i);
+    }
+    Utils.showMsg("棋谱保存在LizzieYzy目录内\"ContributeGames\"文件夹中");
   }
 
-  private void saveGame(ContributeGameInfo game,int index) {
-	  if(game!=currentWatchGame)
-	  {
-		  setGameToBoard(game,index,true); 
-	  }
-	   File file = new File("");
-       String courseFile = "";
-       try {
-         courseFile = file.getCanonicalPath();
-       } catch (IOException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-       }
-       File autoSaveFile =
-           new File(
-               courseFile
-                   + File.separator
-                   + "ContributeGames"
-                   + File.separator
-                   + timeStamp
-                   + File.separator
-                   + (index + 1)
-                   + "_"
-                   + game.gameId
-                   + "_"
-                   + getShortName(Lizzie.board.getHistory().getGameInfo().getPlayerBlack())
-                   + "_VS_"
-                   + getShortName(Lizzie.board.getHistory().getGameInfo().getPlayerWhite())
-                   + "("
-                   + Lizzie.board.getHistory().getGameInfo().getResult()
-                   + ").sgf");
-       File fileParent = autoSaveFile.getParentFile();
-       if (!fileParent.exists()) {
-         fileParent.mkdirs();
-       }
-       try {
-         SGFParser.save(Lizzie.board, autoSaveFile.getPath());
-         if(game.complete)
-         game.saved=true;
-       } catch (IOException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-       }
-}
+  private void saveGame(ContributeGameInfo game, int index) {
+    if (game != currentWatchGame) {
+      setGameToBoard(game, index, true);
+    }
+    File file = new File("");
+    String courseFile = "";
+    try {
+      courseFile = file.getCanonicalPath();
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    File autoSaveFile =
+        new File(
+            courseFile
+                + File.separator
+                + "ContributeGames"
+                + File.separator
+                + timeStamp
+                + File.separator
+                + (index + 1)
+                + "_"
+                + game.gameId
+                + "_"
+                + getShortName(Lizzie.board.getHistory().getGameInfo().getPlayerBlack())
+                + "_VS_"
+                + getShortName(Lizzie.board.getHistory().getGameInfo().getPlayerWhite())
+                + "("
+                + Lizzie.board.getHistory().getGameInfo().getResult()
+                + ").sgf");
+    File fileParent = autoSaveFile.getParentFile();
+    if (!fileParent.exists()) {
+      fileParent.mkdirs();
+    }
+    try {
+      SGFParser.save(Lizzie.board, autoSaveFile.getPath());
+      if (game.complete) game.saved = true;
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
 
-private String getShortName(String name) {
+  private String getShortName(String name) {
     if (name.length() > 19) return name.substring(0, 19);
     else return name;
   }
@@ -604,13 +618,18 @@ private String getShortName(String name) {
       ContributeMoveInfo move = remainList.get(i);
       if (move.candidates != null) {
         Lizzie.board
+            .getHistory()
+            .getMainEnd()
             .getData()
             .tryToSetBestMoves(
                 move.candidates,
                 Lizzie.board.getHistory().getCurrentTurnPlayerShortName(),
                 false,
                 MoveData.getPlayouts(move.candidates));
-        SGFParser.appendComment();
+        if (Lizzie.board.getHistory().getMainEnd().getData().getPlayouts() > 0) {
+          Lizzie.board.getHistory().getMainEnd().getData().comment =
+              SGFParser.formatCommentPk(Lizzie.board.getHistory().getMainEnd());
+        }
       }
       if (i < (holdLastMove ? remainList.size() : remainList.size() - 1)) {
         if (move.isPass)
@@ -708,9 +727,9 @@ private String getShortName(String name) {
                 // TODO Auto-generated catch block
                 break;
               }
-              if (changeWatchingGameIndex > 0) {
+              if (changeWatchingGameIndex >= 0) {
                 if (changeWatchingGameIndex > contributeGames.size() - 1)
-                  changeWatchingGameIndex = contributeGames.size();
+                  changeWatchingGameIndex = contributeGames.size() - 1;
                 if (changeWatchingGameIndex != watchingGameIndex) {
                   watchingGameIndex = changeWatchingGameIndex;
                   changeWatchingGameIndex = -1;
@@ -718,23 +737,31 @@ private String getShortName(String name) {
                   node = Lizzie.board.getHistory().getCurrentHistoryNode();
                   timeCount = 0;
                 }
-              } else if (Lizzie.config.contributeWatchAutoPlay) {
+              }
+              if (Lizzie.config.contributeWatchAutoPlay) {
                 if (timeCount * 50.0 / 1000.0 >= Lizzie.config.contributeWatchAutoPlayInterval) {
                   if (node == Lizzie.board.getHistory().getCurrentHistoryNode()) {
                     if (!Lizzie.board.nextMove(true)) {
                       boolean shouldGoToNextGame = Lizzie.config.contributeWatchAutoPlayNextGame;
-                      while (shouldGoToNextGame && contributeGames.size() > watchingGameIndex + 1) {
-                        watchingGameIndex++;
-                        shouldGoToNextGame = false;
-                        if (Lizzie.config.contributeWatchSkipNone19) {
-                          if (contributeGames.get(watchingGameIndex).sizeX != 19
-                              || contributeGames.get(watchingGameIndex).sizeY != 19)
-                            shouldGoToNextGame = true;
+                      if (shouldGoToNextGame && currentWatchGame.complete) {
+                        boolean needChange = false;
+                        while (shouldGoToNextGame
+                            && contributeGames.size() > watchingGameIndex + 1) {
+                          watchingGameIndex++;
+                          needChange = true;
+                          shouldGoToNextGame = false;
+                          if (Lizzie.config.contributeWatchSkipNone19) {
+                            if (contributeGames.get(watchingGameIndex).sizeX != 19
+                                || contributeGames.get(watchingGameIndex).sizeY != 19)
+                              shouldGoToNextGame = true;
+                          }
+                        }
+                        if (needChange) {
+                          changeGame(watchingGameIndex);
+                          node = Lizzie.board.getHistory().getCurrentHistoryNode();
+                          timeCount = 0;
                         }
                       }
-                      changeGame(watchingGameIndex);
-                      node = Lizzie.board.getHistory().getCurrentHistoryNode();
-                      timeCount = 0;
                     }
                   }
                   node = Lizzie.board.getHistory().getCurrentHistoryNode();
@@ -746,13 +773,26 @@ private String getShortName(String name) {
 
           private void changeGame(int index) {
             // TODO Auto-generated method stub
-            setGameToBoard(contributeGames.get(watchingGameIndex), watchingGameIndex,false);
+            setGameToBoard(contributeGames.get(watchingGameIndex), watchingGameIndex, false);
             if (Lizzie.config.contributeWatchAlwaysLastMove) while (Lizzie.board.nextMove(false)) ;
+            Lizzie.frame.redrawTree = true;
             Lizzie.frame.refresh();
-            Lizzie.frame.renderVarTree(0, 0, false, false);
+
+            new Thread() {
+              public void run() {
+                try {
+                  Thread.sleep(100);
+                } catch (InterruptedException e1) {
+                  // TODO Auto-generated catch block
+                  e1.printStackTrace();
+                }
+                Lizzie.frame.renderVarTree(0, 0, false, true);
+              }
+            }.start();
           }
         };
     watchGameThread = new Thread(runnable);
+    watchGameThread.start();
   }
 
   public void setWatchGame(int index) {

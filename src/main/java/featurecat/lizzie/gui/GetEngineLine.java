@@ -49,7 +49,7 @@ public class GetEngineLine {
       if (result == JFileChooser.APPROVE_OPTION) {
         File configFile = chooseConfig.getSelectedFile();
         return relativizePath(configFile.toPath());
-      }
+      } else return "";
     }
     if (isKataGoOnly) {
       isKataGo = true;

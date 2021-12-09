@@ -416,7 +416,7 @@ public class LizzieFrame extends JFrame {
   //   private boolean mouseOnVarTree = false;
 
   private BoardHistoryNode treeNode;
-  private boolean redrawTree = false;
+  public boolean redrawTree = false;
   private boolean completeDrawTree = true;
   private boolean redrawTreeLater = false;
   private boolean canDrawCurColor = false;
@@ -9142,8 +9142,7 @@ public class LizzieFrame extends JFrame {
                     }
                   }
                   maxMvNum = moveNumber;
-                  renderVarTree(0, 0, false, true);
-                  renderVarTreeCur();
+                  redrawTree = true;
                   Lizzie.frame.refresh();
                 }
                 if (!urlSgf) {
@@ -9542,7 +9541,7 @@ public class LizzieFrame extends JFrame {
     else varTreeScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
   }
 
-  private void renderVarTreeCur() {
+  public void renderVarTreeCur() {
     if (shouldShowSimpleVariation()) return;
     BoardHistoryNode cur = Lizzie.board.getHistory().getCurrentHistoryNode();
     if (cur == Lizzie.board.getHistory().getStart()) return;
@@ -12561,14 +12560,16 @@ public class LizzieFrame extends JFrame {
     contributeEngine = new ContributeEngine();
   }
 
-  public void testContibute() {
-    ContributeEngine contributeEngine = new ContributeEngine();
+  public void closeContributeEngine() {
+    if (contributeEngine != null) contributeEngine.normalQuit();
+  }
+
+  public void openContributeView() {
+    if (contributeView == null) contributeView = new ContributeView(this);
+    if (!contributeView.isVisible()) contributeView.setVisible(true);
   }
 
   public void testContibuteFrame() {
-    //    ContributeEngine contributeEngine = new ContributeEngine();
     ContributeSettings contributeSettings = new ContributeSettings(this);
-    if (contributeView == null) contributeView = new ContributeView(this);
-    if (!contributeView.isVisible()) contributeView.setVisible(true);
   }
 }

@@ -85,6 +85,9 @@ public class SGFParser {
         }
       }
     }
+    if (Lizzie.config.loadSgfLast) while (Lizzie.board.nextMove(false)) ;
+    Lizzie.board.clearAfterMove();
+    Lizzie.frame.refresh();
     if (isExtraMode2
         && !Lizzie.config.isDoubleEngineMode()
         && !Lizzie.config.isAutoAna
@@ -92,9 +95,6 @@ public class SGFParser {
       SwingUtilities.invokeLater(
           new Runnable() {
             public void run() {
-              if (Lizzie.config.loadSgfLast) while (Lizzie.board.nextMove(false)) ;
-              Lizzie.board.clearAfterMove();
-              if (showHint) Lizzie.frame.refresh();
               int ret =
                   JOptionPane.showConfirmDialog(
                       Lizzie.frame,

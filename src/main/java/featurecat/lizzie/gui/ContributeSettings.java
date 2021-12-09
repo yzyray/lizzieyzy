@@ -312,7 +312,9 @@ public class ContributeSettings extends JDialog {
     btnStart.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
+            saveConfig();
             Lizzie.frame.startContributeEngine();
+            Lizzie.frame.openContributeView();
             setVisible(false);
           }
         });

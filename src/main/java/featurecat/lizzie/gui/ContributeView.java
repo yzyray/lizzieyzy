@@ -46,7 +46,7 @@ public class ContributeView extends JDialog {
   private JTextField txtGameIndex;
   private JTextField txtAutoPlayInterval;
   private JLabel lblGameInfos;
-  private String result = "B+4";
+  private String result = "";
   private JLabel lblCurrentGameResult;
   private JLabel lblGameType;
   private JLabel lblKomi;
@@ -234,7 +234,7 @@ public class ContributeView extends JDialog {
     playPanel.add(btnGoto);
     btnGoto.setMargin(new Insets(2, 5, 2, 5));
 
-    JCheckBox chkAlwaysLastMove = new JFontCheckBox("总是最后一手");
+    JCheckBox chkAlwaysLastMove = new JFontCheckBox("自动跳转最新一手");
     playPanel.add(chkAlwaysLastMove);
     chkAlwaysLastMove.addActionListener(
         new ActionListener() {
@@ -387,6 +387,8 @@ public class ContributeView extends JDialog {
           }
         });
     btnShowHideRules.setText(Lizzie.config.contributeHideRules ? "显示规则" : "隐藏规则");
+    if (Lizzie.config.contributeHideRules) txtRules.setVisible(false);
+    else txtRules.setVisible(true);
 
     rulePanel.add(btnShowHideRules, BorderLayout.SOUTH);
     JPanel buttonPanel = new JPanel();
@@ -400,14 +402,14 @@ public class ContributeView extends JDialog {
             setVisible(false);
           }
         });
-    
+
     JButton btnSaveAll = new JFontButton("保存所有棋谱");
-    btnSaveAll.addActionListener(new ActionListener() {
-    	public void actionPerformed(ActionEvent e) {
-    		if(Lizzie.frame.contributeEngine!=null)
-    		Lizzie.frame.contributeEngine.saveAllGames();
-    	}
-    });
+    btnSaveAll.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            if (Lizzie.frame.contributeEngine != null) Lizzie.frame.contributeEngine.saveAllGames();
+          }
+        });
     buttonPanel.add(btnSaveAll);
     buttonPanel.add(btnShutdown);
 
@@ -418,7 +420,6 @@ public class ContributeView extends JDialog {
     docQueue = new ArrayDeque<>();
     console = new JIMSendTextPane(false);
     console.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
-    console.setBorder(new SoftBevelBorder(BevelBorder.LOWERED));
     console.setEditable(false);
     console.setBackground(Color.BLACK);
     console.setForeground(Color.LIGHT_GRAY);
@@ -440,7 +441,6 @@ public class ContributeView extends JDialog {
     console.setFont(gtpFont);
 
     JScrollPane scrollConsole = new JScrollPane(console);
-    scrollConsole.setBorder(new SoftBevelBorder(BevelBorder.LOWERED));
     JPanel consoleTextPane = new JPanel();
     consoleTextPane.setLayout(new BorderLayout());
     lblTip = new JFontLabel("New label");
@@ -469,7 +469,10 @@ public class ContributeView extends JDialog {
                 "contribute-hide-console", Lizzie.config.contributeHideConsole);
           }
         });
+
     btnHideShowConsole.setText(Lizzie.config.contributeHideConsole ? "显示控制台" : "隐藏控制台");
+    if (Lizzie.config.contributeHideConsole) scrollConsole.setVisible(false);
+    else scrollConsole.setVisible(true);
 
     JButton btnMore = new JFontButton("完整控制台");
     btnMore.addActionListener(
@@ -499,7 +502,8 @@ public class ContributeView extends JDialog {
 
   public void setResult(String text) {
     result = text;
-    lblCurrentGameResult.setText("结果: " + (Lizzie.config.contributeHideResult ? "---" : text));
+    lblCurrentGameResult.setText(
+        "结果: " + (Lizzie.config.contributeHideResult ? "---" : text.length() > 0 ? text : "无"));
   }
 
   public void setTip(String text) {
