@@ -612,6 +612,8 @@ public class Config {
   public boolean showBlackCandidates = true;
   public boolean showWhiteCandidates = true;
 
+  public boolean useTerritoryInScore = false;
+
   private JSONObject loadAndMergeSaveBoardConfig(
       JSONObject defaultCfg, String fileName, boolean needValidation) throws IOException {
     File file = new File(fileName);
@@ -1320,6 +1322,7 @@ public class Config {
     allowDoubleClick = uiConfig.optBoolean("allow-double-click", true);
     allowDrag = uiConfig.optBoolean("allow-drag", false);
     noRefreshOnSub = uiConfig.optBoolean("no-refresh-on-sub", true);
+    useTerritoryInScore = uiConfig.optBoolean("use-territory-in-score", false);
 
     // chkEngineSgfStart = uiConfig.optBoolean("engine-sgf-start", true);
     engineSgfStartRandom = uiConfig.optBoolean("engine-sgf-random", true);

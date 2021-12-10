@@ -555,36 +555,37 @@ public class OnlineDialog extends JDialog {
   }
 
   public void get() throws IOException {
-	  new Thread() {
-          public void run() {
-            try {
-            	 URL url = new URL(ajaxUrl);
-            	    HttpURLConnection con = (HttpURLConnection) url.openConnection();
+    new Thread() {
+      public void run() {
+        try {
+          URL url = new URL(ajaxUrl);
+          HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
-            	    con.setRequestMethod("GET");
-            	    con.setRequestProperty(
-            	        "User-Agent",
-            	        "Mozilla/5.0 (Linux; U; Android 2.3.6; zh-cn; GT-S5660 Build/GINGERBREAD) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1 MicroMessenger/4.5.255");
-            	    con.setConnectTimeout(10 * 1000);
-            	    con.setReadTimeout(10 * 1000);
-            	    con.getResponseCode();
+          con.setRequestMethod("GET");
+          con.setRequestProperty(
+              "User-Agent",
+              "Mozilla/5.0 (Linux; U; Android 2.3.6; zh-cn; GT-S5660 Build/GINGERBREAD) AppleWebKit/533.1 (KHTML, like Gecko) Version/4.0 Mobile Safari/533.1 MicroMessenger/4.5.255");
+          con.setConnectTimeout(10 * 1000);
+          con.setReadTimeout(10 * 1000);
+          con.getResponseCode();
 
-            	    BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(), "UTF-8"));
-            	    StringBuffer response = new StringBuffer();
-            	    String line;
-            	    while ((line = in.readLine()) != null) {
-            	      response.append(line);
-            	      response.append((char) 10);
-            	    }
-            	    in.close();
-            	    String sgf = response.toString();
-            	    parseSgf(sgf, "", 0, false, true);
-            } catch (IOException e) {
-              // TODO Auto-generated catch block
-              e.printStackTrace();
-            }
+          BufferedReader in =
+              new BufferedReader(new InputStreamReader(con.getInputStream(), "UTF-8"));
+          StringBuffer response = new StringBuffer();
+          String line;
+          while ((line = in.readLine()) != null) {
+            response.append(line);
+            response.append((char) 10);
           }
-        }.start();   
+          in.close();
+          String sgf = response.toString();
+          parseSgf(sgf, "", 0, false, true);
+        } catch (IOException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
+      }
+    }.start();
   }
 
   public void refresh(String format) throws IOException {

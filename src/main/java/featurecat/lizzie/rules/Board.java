@@ -3908,12 +3908,16 @@ public class Board {
         if (!boardGroupInfo.groupStatus[i][j].isMarkedEmpty)
           if (boardGroupInfo.groupStatus[i][j].value == 1) {
             if (boardGroupInfo.oriStones[getIndex(i, j)] == Stone.BLACK) blackAlive++;
-            if (boardGroupInfo.oriStones[getIndex(i, j)] == Stone.WHITE) blackCaptures++;
-            else blackPoint++;
+            else {
+              if (boardGroupInfo.oriStones[getIndex(i, j)] == Stone.WHITE) blackCaptures++;
+              blackPoint++;
+            }
           } else if (boardGroupInfo.groupStatus[i][j].value == 2) {
             if (boardGroupInfo.oriStones[getIndex(i, j)] == Stone.WHITE) whiteAlive++;
-            if (boardGroupInfo.oriStones[getIndex(i, j)] == Stone.BLACK) whiteCaptures++;
-            else whitePoint++;
+            else {
+              if (boardGroupInfo.oriStones[getIndex(i, j)] == Stone.BLACK) whiteCaptures++;
+              whitePoint++;
+            }
           }
       }
     }
