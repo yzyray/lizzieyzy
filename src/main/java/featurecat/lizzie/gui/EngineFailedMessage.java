@@ -32,7 +32,8 @@ public class EngineFailedMessage extends JDialog {
       String command,
       String message,
       boolean canUseCmdDignostic,
-      boolean isGtpEngine) {
+      boolean isGtpEngine,
+      boolean restartContribute) {
     // this.setModal(true);
     // setType(Type.POPUP);
     setTitle(Lizzie.resourceBundle.getString("Leelaz.engineFailed")); // "消息提醒");
@@ -63,7 +64,7 @@ public class EngineFailedMessage extends JDialog {
             (int)
                 (lblEngineFaied.getText().replaceAll(regex, "12").length()
                     * (Config.frameFontSize / 1.9))),
-        canUseCmdDignostic ? 190 : 160);
+        canUseCmdDignostic ? 190 : restartContribute ? 180 : 160);
 
     JTextArea engineCmd = new JTextArea();
     engineCmd.setLineWrap(true);
@@ -82,6 +83,19 @@ public class EngineFailedMessage extends JDialog {
         new JFontLabel(Lizzie.resourceBundle.getString("EngineFailedMessage.engineCmd"));
     lblEngineCmd.setBounds(10, 40, 120, 20);
     getContentPane().add(lblEngineCmd);
+
+    if (restartContribute) {
+      JButton btnRestart =
+          new JFontButton(Lizzie.resourceBundle.getString("EngineFailedMessage.btnRestart"));
+      btnRestart.addActionListener(
+          new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              Lizzie.frame.startContributeEngine();
+            }
+          });
+      btnRestart.setBounds(10, 117, 120, 25);
+      getContentPane().add(btnRestart);
+    }
 
     if (canUseCmdDignostic) {
       JButton btnRunInCmd =

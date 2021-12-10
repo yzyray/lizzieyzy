@@ -2,6 +2,7 @@ package featurecat.lizzie.analysis;
 
 import featurecat.lizzie.Lizzie;
 import featurecat.lizzie.gui.EngineFailedMessage;
+import featurecat.lizzie.gui.Menu;
 import featurecat.lizzie.gui.RemoteEngineData;
 import featurecat.lizzie.rules.Board;
 import featurecat.lizzie.rules.BoardHistoryNode;
@@ -60,7 +61,6 @@ public class ContributeEngine {
       Utils.showMsg("已在跑普贡献中!");
       return;
     }
-    Lizzie.frame.isContributing = true;
     if (Lizzie.config.contributeUseCommand) {
       engineCommand = Lizzie.config.contributeCommand;
     } else {
@@ -98,6 +98,8 @@ public class ContributeEngine {
     unParseGameInfos = new ArrayList<ContributeUnParseGameInfo>();
     startEngine(engineCommand);
     timeStamp = new SimpleDateFormat("yyyy-MM-dd-HH").format(new Date());
+    Lizzie.frame.isContributing = true;
+    Menu.engineMenu.setText("跑普贡献中");
   }
 
   private void startEngine(String engineCommand2) {
@@ -143,6 +145,7 @@ public class ContributeEngine {
     executorErr = Executors.newSingleThreadScheduledExecutor();
     executorErr.execute(this::readError);
     isNormalEnd = false;
+    clearBoardAndView();
   }
 
   private void readError() {
@@ -258,6 +261,10 @@ public class ContributeEngine {
     }
   }
 
+  private void clearBoardAndView() {
+    Lizzie.board.clear(false);
+  }
+
   private void setTip(String text) {
     if (Lizzie.frame.contributeView != null) Lizzie.frame.contributeView.setTip(text);
   }
@@ -285,12 +292,13 @@ public class ContributeEngine {
 
   public void normalQuit() {
     isNormalEnd = true;
-    if (useJavaSSH) javaSSH.close();
-    else if (process != null) process.destroy();
-    if (watchGameThread != null) watchGameThread.interrupt();
     Lizzie.frame.isShowingContributeGame = false;
     Lizzie.frame.isContributing = false;
     Lizzie.frame.contributeEngine = null;
+    if (useJavaSSH) javaSSH.close();
+    else if (process != null) process.destroy();
+    if (watchGameThread != null) watchGameThread.interrupt();
+    Menu.engineMenu.setText(Lizzie.resourceBundle.getString("Menu.noEngine"));
   }
 
   private void shutdown() {
@@ -472,7 +480,7 @@ public class ContributeEngine {
     return true;
   }
 
-  public void setGameToBoard(ContributeGameInfo game, int index, boolean saveGame) {
+  public synchronized void setGameToBoard(ContributeGameInfo game, int index, boolean saveGame) {
     ArrayList<ContributeMoveInfo> remainList = new ArrayList<ContributeMoveInfo>();
     if (currentWatchGame == game
         && Board.boardWidth == currentWatchGame.sizeX
@@ -708,7 +716,7 @@ public class ContributeEngine {
   public void tryToDignostic(String message) {
     EngineFailedMessage engineFailedMessage =
         new EngineFailedMessage(
-            commands, engineCommand, message, !useJavaSSH && OS.isWindows(), false);
+            commands, engineCommand, message, !useJavaSSH && OS.isWindows(), false, true);
     engineFailedMessage.setModal(true);
     engineFailedMessage.setVisible(true);
   }

@@ -16,6 +16,8 @@ import java.awt.Insets;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.NoSuchElementException;
@@ -90,7 +92,7 @@ public class ContributeView extends JDialog {
     //		JPanel gameInfoPanel = new JPanel();
     //		mainPanel.add(gameInfoPanel);
 
-    lblGameInfos = new JFontLabel("已完成0局,正在进行0局,共0局,正在观看第0局");
+    lblGameInfos = new JFontLabel("正在观看第0局,已完成0局,正在进行0局,共0局");
     labelPanel.add(lblGameInfos);
 
     JPanel gameControlPanel = new JPanel();
@@ -487,6 +489,14 @@ public class ContributeView extends JDialog {
     executor = Executors.newSingleThreadScheduledExecutor();
     executor.execute(this::read);
 
+    this.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+    this.addWindowListener(
+        new WindowAdapter() {
+          public void windowClosing(WindowEvent e) {
+            Utils.showMsg("请使用结束跑普贡献关闭此窗口");
+          }
+        });
+
     pack();
     setLocationRelativeTo(owner);
     setVisible(true);
@@ -573,14 +583,14 @@ public class ContributeView extends JDialog {
 
   private void updateLblGameInfos() {
     lblGameInfos.setText(
-        "已完成"
+        "正在观看第"
+            + watchingGameIndex
+            + "局,已完成"
             + finishedGames
             + "局,正在进行"
             + playingGames
             + "局,共"
             + (finishedGames + playingGames)
-            + "局,正在观看第"
-            + watchingGameIndex
             + "局");
   }
 

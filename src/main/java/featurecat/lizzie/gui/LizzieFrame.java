@@ -12565,8 +12565,11 @@ public class LizzieFrame extends JFrame {
   }
 
   public void openContributeView() {
-    if (contributeView == null) contributeView = new ContributeView(this);
-    if (!contributeView.isVisible()) contributeView.setVisible(true);
+    if (contributeView != null) {
+      contributeView.setVisible(false);
+      contributeView.dispose();
+    }
+    contributeView = new ContributeView(this);
   }
 
   public void testContibuteFrame() {

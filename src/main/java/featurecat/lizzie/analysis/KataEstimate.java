@@ -639,7 +639,7 @@ public class KataEstimate {
   public void tryToDignostic(String message) {
     EngineFailedMessage engineFailedMessage =
         new EngineFailedMessage(
-            commands, engineCommand, message, !this.useJavaSSH && OS.isWindows(), true);
+            commands, engineCommand, message, !this.useJavaSSH && OS.isWindows(), true, false);
     engineFailedMessage.setVisible(true);
   }
 }
