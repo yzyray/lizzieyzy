@@ -165,7 +165,6 @@ public class FirstUseSettings extends JDialog {
         90,
         23);
     panel.add(rdoLanguageJapanese);
-
     ButtonGroup languageGroup = new ButtonGroup();
     languageGroup.add(rdoLanguageChinese);
     languageGroup.add(rdoLanguageEnglish);

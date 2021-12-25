@@ -4,7 +4,6 @@ import featurecat.lizzie.Lizzie;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -24,12 +23,7 @@ public class RightClickMenu2 extends JPopupMenu {
   private JFontMenuItem previousMove;
   private JFontMenuItem moveStone;
   private JFontMenuItem findStone;
-  private final ResourceBundle resourceBundle =
-      Lizzie.config.useLanguage == 0
-          ? ResourceBundle.getBundle("l10n.DisplayStrings")
-          : (Lizzie.config.useLanguage == 1
-              ? ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("zh", "CN"))
-              : ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("en", "US")));
+  private final ResourceBundle resourceBundle = Lizzie.resourceBundle;
   private boolean isFromIndependent;
 
   public RightClickMenu2() {

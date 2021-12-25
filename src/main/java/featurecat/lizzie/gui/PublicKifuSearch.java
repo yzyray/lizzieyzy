@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.ResourceBundle;
 import javax.imageio.ImageIO;
 import javax.swing.AbstractCellEditor;
@@ -43,15 +42,7 @@ import org.jdesktop.swingx.JXDatePicker;
 import org.json.JSONArray;
 
 public class PublicKifuSearch extends JFrame {
-  private final ResourceBundle resourceBundle =
-      Lizzie.config.useLanguage == 0
-          ? ResourceBundle.getBundle("l10n.DisplayStrings")
-          : (Lizzie.config.useLanguage == 1
-              ? ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("zh", "CN"))
-              : ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("en", "US")));
-  // private static Connection con = null;
-  //  private static Statement sql = null;
-  //  private static ResultSet rs = null;
+  private final ResourceBundle resourceBundle = Lizzie.resourceBundle;
   private DefaultTableModel model;
   private JTable table;
   private final JPanel panel = new JPanel();

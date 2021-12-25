@@ -3,17 +3,10 @@ package featurecat.lizzie.analysis;
 import featurecat.lizzie.Lizzie;
 import featurecat.lizzie.gui.LizzieFrame;
 import java.util.Date;
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class GameInfo {
-  private static final ResourceBundle resourceBundle =
-      Lizzie.config.useLanguage == 0
-          ? ResourceBundle.getBundle("l10n.DisplayStrings")
-          : (Lizzie.config.useLanguage == 1
-              ? ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("zh", "CN"))
-              : ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("en", "US")));
-  public static final String DEFAULT_NAME_HUMAN_PLAYER = resourceBundle.getString("GameInfo.me");
+  private static final ResourceBundle resourceBundle = Lizzie.resourceBundle;
   public static final String DEFAULT_NAME_CPU_PLAYER = "Leela Zero";
   public static double DEFAULT_KOMI = 7.5;
   public boolean changedKomi = false;

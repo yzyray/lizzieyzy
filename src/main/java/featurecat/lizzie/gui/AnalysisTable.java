@@ -10,7 +10,6 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Locale;
 import java.util.ResourceBundle;
 import javax.imageio.ImageIO;
 import javax.swing.AbstractCellEditor;
@@ -25,12 +24,7 @@ import javax.swing.table.TableCellRenderer;
 import org.json.JSONObject;
 
 public class AnalysisTable {
-  private final ResourceBundle resourceBundle =
-      Lizzie.config.useLanguage == 0
-          ? ResourceBundle.getBundle("l10n.DisplayStrings")
-          : (Lizzie.config.useLanguage == 1
-              ? ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("zh", "CN"))
-              : ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("en", "US")));
+  private final ResourceBundle resourceBundle = Lizzie.resourceBundle;
   public JFrame frame;
   public JButton stopGo;
   public JButton stopStart;
@@ -298,13 +292,7 @@ class MyButtonFirst implements TableCellRenderer {
 
   public Component getTableCellRendererComponent(
       JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-    ResourceBundle resourceBundle =
-        Lizzie.config.useLanguage == 0
-            ? ResourceBundle.getBundle("l10n.DisplayStrings")
-            : (Lizzie.config.useLanguage == 1
-                ? ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("zh", "CN"))
-                : ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("en", "US")));
-    button.setText(resourceBundle.getString("AnalysisTable.prior"));
+    button.setText(Lizzie.resourceBundle.getString("AnalysisTable.prior"));
     if (row == 0 || row == 1) button.setEnabled(false);
     else button.setEnabled(true);
     return panel;
@@ -348,13 +336,7 @@ class MyButtonFirstEditor extends AbstractCellEditor implements TableCellEditor 
   @Override
   public Component getTableCellEditorComponent(
       JTable table, Object value, boolean isSelected, int row, int column) {
-    ResourceBundle resourceBundle =
-        Lizzie.config.useLanguage == 0
-            ? ResourceBundle.getBundle("l10n.DisplayStrings")
-            : (Lizzie.config.useLanguage == 1
-                ? ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("zh", "CN"))
-                : ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("en", "US")));
-    button.setText(resourceBundle.getString("AnalysisTable.prior"));
+    button.setText(Lizzie.resourceBundle.getString("AnalysisTable.prior"));
     Lizzie.frame.analysisTable.changeRow = row;
     if (row == 0 || row == 1) button.setEnabled(false);
     else button.setEnabled(true);
@@ -391,13 +373,7 @@ class MyButtonUp implements TableCellRenderer {
 
   public Component getTableCellRendererComponent(
       JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-    ResourceBundle resourceBundle =
-        Lizzie.config.useLanguage == 0
-            ? ResourceBundle.getBundle("l10n.DisplayStrings")
-            : (Lizzie.config.useLanguage == 1
-                ? ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("zh", "CN"))
-                : ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("en", "US")));
-    button.setText(resourceBundle.getString("AnalysisTable.up"));
+    button.setText(Lizzie.resourceBundle.getString("AnalysisTable.up"));
     if (row == 0 || row == 1) button.setEnabled(false);
     else button.setEnabled(true);
     return panel;
@@ -442,13 +418,7 @@ class MyButtonUpEditor extends AbstractCellEditor implements TableCellEditor {
   @Override
   public Component getTableCellEditorComponent(
       JTable table, Object value, boolean isSelected, int row, int column) {
-    ResourceBundle resourceBundle =
-        Lizzie.config.useLanguage == 0
-            ? ResourceBundle.getBundle("l10n.DisplayStrings")
-            : (Lizzie.config.useLanguage == 1
-                ? ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("zh", "CN"))
-                : ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("en", "US")));
-    button.setText(resourceBundle.getString("AnalysisTable.up"));
+    button.setText(Lizzie.resourceBundle.getString("AnalysisTable.up"));
     Lizzie.frame.analysisTable.changeRow = row;
     if (row == 0 || row == 1) button.setEnabled(false);
     else button.setEnabled(true);
@@ -485,13 +455,7 @@ class MyButtonDown implements TableCellRenderer {
 
   public Component getTableCellRendererComponent(
       JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-    ResourceBundle resourceBundle =
-        Lizzie.config.useLanguage == 0
-            ? ResourceBundle.getBundle("l10n.DisplayStrings")
-            : (Lizzie.config.useLanguage == 1
-                ? ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("zh", "CN"))
-                : ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("en", "US")));
-    button.setText(resourceBundle.getString("AnalysisTable.down"));
+    button.setText(Lizzie.resourceBundle.getString("AnalysisTable.down"));
     if (row == 0) button.setEnabled(false);
     else button.setEnabled(true);
     return panel;
@@ -538,13 +502,7 @@ class MyButtonDownEditor extends AbstractCellEditor implements TableCellEditor {
   @Override
   public Component getTableCellEditorComponent(
       JTable table, Object value, boolean isSelected, int row, int column) {
-    ResourceBundle resourceBundle =
-        Lizzie.config.useLanguage == 0
-            ? ResourceBundle.getBundle("l10n.DisplayStrings")
-            : (Lizzie.config.useLanguage == 1
-                ? ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("zh", "CN"))
-                : ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("en", "US")));
-    button.setText(resourceBundle.getString("AnalysisTable.down"));
+    button.setText(Lizzie.resourceBundle.getString("AnalysisTable.down"));
     Lizzie.frame.analysisTable.changeRow = row;
     if (row == 0) button.setEnabled(false);
     else button.setEnabled(true);
@@ -581,13 +539,7 @@ class MyButtonDelete implements TableCellRenderer {
 
   public Component getTableCellRendererComponent(
       JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-    ResourceBundle resourceBundle =
-        Lizzie.config.useLanguage == 0
-            ? ResourceBundle.getBundle("l10n.DisplayStrings")
-            : (Lizzie.config.useLanguage == 1
-                ? ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("zh", "CN"))
-                : ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("en", "US")));
-    button.setText(resourceBundle.getString("AnalysisTable.delete"));
+    button.setText(Lizzie.resourceBundle.getString("AnalysisTable.delete"));
     if (row == 0) button.setEnabled(false);
     else button.setEnabled(true);
     return panel;
@@ -626,13 +578,7 @@ class MyButtonDeleteEditor extends AbstractCellEditor implements TableCellEditor
   @Override
   public Component getTableCellEditorComponent(
       JTable table, Object value, boolean isSelected, int row, int column) {
-    ResourceBundle resourceBundle =
-        Lizzie.config.useLanguage == 0
-            ? ResourceBundle.getBundle("l10n.DisplayStrings")
-            : (Lizzie.config.useLanguage == 1
-                ? ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("zh", "CN"))
-                : ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("en", "US")));
-    button.setText(resourceBundle.getString("AnalysisTable.delete"));
+    button.setText(Lizzie.resourceBundle.getString("AnalysisTable.delete"));
     Lizzie.frame.analysisTable.changeRow = row;
     if (row == 0) button.setEnabled(false);
     else button.setEnabled(true);

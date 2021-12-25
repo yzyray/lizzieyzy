@@ -9,7 +9,6 @@ import featurecat.lizzie.analysis.GameInfo;
 import java.awt.*;
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.Locale;
 import java.util.ResourceBundle;
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -19,12 +18,7 @@ import javax.swing.border.*;
 public class GameInfoDialog extends JDialog {
   // create formatters
   public static final DecimalFormat FORMAT_HANDICAP = new DecimalFormat("0");
-  private final ResourceBundle resourceBundle =
-      Lizzie.config.useLanguage == 0
-          ? ResourceBundle.getBundle("l10n.DisplayStrings")
-          : (Lizzie.config.useLanguage == 1
-              ? ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("zh", "CN"))
-              : ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("en", "US")));
+  private final ResourceBundle resourceBundle = Lizzie.resourceBundle;
 
   static {
     FORMAT_HANDICAP.setMaximumIntegerDigits(1);

@@ -3716,9 +3716,10 @@ public class Leelaz {
   public void maybeAjustPDA(BoardHistoryNode node) {
     // TODO Auto-generated method stub
     if (!isDymPda) return;
-    if (Lizzie.board.isFirstWhiteNode(node)) {
+    if (Lizzie.board.isFirstWhiteNodeWithHandicap(node)) {
       if (Lizzie.config.chkAutoPDA) sendCommand(Lizzie.config.AutoPDA);
       else sendCommand("dympdacap " + pdaCap);
+      if (isPondering()) ponder(true, !Lizzie.board.getHistory().isBlacksTurn());
     }
   }
 }

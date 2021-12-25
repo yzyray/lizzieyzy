@@ -77,12 +77,7 @@ public class NewAnaGameDialog extends JDialog {
     initComponents();
   }
 
-  private ResourceBundle resourceBundle = // ResourceBundle.getBundle("l10n.DisplayStrings");
-      Lizzie.resourceBundle;
-  //          ? ResourceBundle.getBundle("l10n.DisplayStrings")
-  //          : (Lizzie.config.useLanguage == 1
-  //              ? ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("zh", "CN"))
-  //              : ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("en", "US")));
+  private ResourceBundle resourceBundle = Lizzie.resourceBundle;
 
   private void initComponents() {
     setMinimumSize(new Dimension(100, 150));
