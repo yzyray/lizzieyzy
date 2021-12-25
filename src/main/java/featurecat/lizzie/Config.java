@@ -399,7 +399,7 @@ public class Config {
   public int newEngineGameHandicap = 0;
 
   public boolean UsePlayMode = true;
-  public int useLanguage = 0; // 0默认 1中文2英文..
+  public int useLanguage = 0; // 0默认 1中文2英文3韩语4日本語..
   public boolean needReopenFirstUseSettings = false;
 
   public boolean autoCheckEngineAlive = true;
@@ -611,6 +611,8 @@ public class Config {
 
   public boolean showBlackCandidates = true;
   public boolean showWhiteCandidates = true;
+
+  public boolean useTerritoryInScore = false;
 
   private JSONObject loadAndMergeSaveBoardConfig(
       JSONObject defaultCfg, String fileName, boolean needValidation) throws IOException {
@@ -1320,6 +1322,7 @@ public class Config {
     allowDoubleClick = uiConfig.optBoolean("allow-double-click", true);
     allowDrag = uiConfig.optBoolean("allow-drag", false);
     noRefreshOnSub = uiConfig.optBoolean("no-refresh-on-sub", true);
+    useTerritoryInScore = uiConfig.optBoolean("use-territory-in-score", false);
 
     // chkEngineSgfStart = uiConfig.optBoolean("engine-sgf-start", true);
     engineSgfStartRandom = uiConfig.optBoolean("engine-sgf-random", true);
