@@ -1892,6 +1892,7 @@ public class Leelaz {
     }
     if (shouldPlay) {
       played = true;
+      playNow = false;
       if ((curWR < resignWinrate) && Lizzie.board.getHistory().getMoveNumber() > minMove) {
         if (isBlackEngine) {
           blackResignMoveCounts = blackResignMoveCounts + 1;
