@@ -11,6 +11,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JDialog;
 import javax.swing.JEditorPane;
 import javax.swing.JTextPane;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.text.html.HTMLDocument;
@@ -74,6 +75,7 @@ public class HtmlMessage extends JDialog {
           }
         });
     this.add(lblMessage);
+    lblMessage.setBorder(new EmptyBorder(12, 12, 12, 12));
     try {
       this.setIconImage(ImageIO.read(MoreEngines.class.getResourceAsStream("/assets/logo.png")));
     } catch (IOException e) {

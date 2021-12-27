@@ -5775,13 +5775,9 @@ public class LizzieFrame extends JFrame {
               ? 18
               : (float) (min(width * 0.4, height * 0.85) * 0.2));
     else setPanelFont(g, (float) (height * 0.18));
-    if (isCounting || isAutocounting) {
-      bval = String.format(Locale.ENGLISH, "%d", estimateResults.allblackcounts);
-      wval = String.format(Locale.ENGLISH, "%d", estimateResults.allwhitecounts);
-    } else {
-      bval = String.format(Locale.ENGLISH, "%d", Lizzie.board.getData().blackCaptures);
-      wval = String.format(Locale.ENGLISH, "%d", Lizzie.board.getData().whiteCaptures);
-    }
+
+    bval = String.format(Locale.ENGLISH, "%d", Lizzie.board.getData().blackCaptures);
+    wval = String.format(Locale.ENGLISH, "%d", Lizzie.board.getData().whiteCaptures);
 
     g.setColor(Color.WHITE);
     //    int bw = g.getFontMetrics().stringWidth(bval);
@@ -5824,49 +5820,26 @@ public class LizzieFrame extends JFrame {
     String bAiScore = String.format(Locale.ENGLISH, "%.1f", blackValue * 100 / analyzedBlack);
     String wAiScore = String.format(Locale.ENGLISH, "%.1f", whiteValue * 100 / analyzedWhite);
     if (!isSmallCap) {
-      if (isCounting) {
-        drawStringMid(
-            g,
-            posX + width / 4,
-            posY + height * 28 / 32,
-            uiFont,
-            Font.PLAIN,
-            Lizzie.resourceBundle.getString("LizzieFrame.points") + bval, // "目数:"
-            height / 6,
-            width * 3 / 10,
-            0);
-        drawStringMid(
-            g,
-            posX + width * 3 / 4,
-            posY + height * 28 / 32,
-            uiFont,
-            Font.PLAIN,
-            Lizzie.resourceBundle.getString("LizzieFrame.points") + wval,
-            height / 6,
-            width * 3 / 10,
-            0);
-      } else {
-        drawStringMid(
-            g,
-            posX + width / 4,
-            posY + height * 28 / 32,
-            uiFont,
-            Font.PLAIN,
-            Lizzie.resourceBundle.getString("LizzieFrame.captures") + bval, // 提子
-            height / 6,
-            width * 3 / 10,
-            0);
-        drawStringMid(
-            g,
-            posX + width * 3 / 4,
-            posY + height * 28 / 32,
-            uiFont,
-            Font.PLAIN,
-            Lizzie.resourceBundle.getString("LizzieFrame.captures") + wval,
-            height / 6,
-            width * 3 / 10,
-            0);
-      }
+      drawStringMid(
+          g,
+          posX + width / 4,
+          posY + height * 28 / 32,
+          uiFont,
+          Font.PLAIN,
+          Lizzie.resourceBundle.getString("LizzieFrame.captures") + bval, // 提子
+          height / 6,
+          width * 3 / 10,
+          0);
+      drawStringMid(
+          g,
+          posX + width * 3 / 4,
+          posY + height * 28 / 32,
+          uiFont,
+          Font.PLAIN,
+          Lizzie.resourceBundle.getString("LizzieFrame.captures") + wval,
+          height / 6,
+          width * 3 / 10,
+          0);
 
       if (analyzedBlack > 0)
         drawStringMid(

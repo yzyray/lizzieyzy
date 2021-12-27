@@ -447,8 +447,12 @@ public class Utils {
   }
 
   public static void showMsg(String message) {
-    Message msg = new Message();
-    msg.setMessage(message);
+    //  Message msg = new Message();
+    //    msg.setMessage(message);
+    HtmlMessage htmlMessage =
+        new HtmlMessage(Lizzie.resourceBundle.getString("Message.title"), message, null);
+    if (Lizzie.frame != null) htmlMessage.setLocationRelativeTo(Lizzie.frame);
+    htmlMessage.setVisible(true);
     //  msg.setVisible(true);
   }
 
