@@ -929,9 +929,15 @@ public class Config {
     showNextMoveBlunder = uiConfig.optBoolean("show-next-move-blunder", true);
     batchAnalysisPlayouts = uiConfig.optInt("batch-analysis-playouts", 100);
     minPlayoutsForNextMove = uiConfig.optInt("min-playouts-for-next-move", 30);
-    shouldWidenCheckBox =
-        useJavaLooks
-            || !(Boolean) Toolkit.getDefaultToolkit().getDesktopProperty("win.xpstyle.themeActive");
+    try {
+      shouldWidenCheckBox =
+          useJavaLooks
+              || !(Boolean)
+                  Toolkit.getDefaultToolkit().getDesktopProperty("win.xpstyle.themeActive");
+    } catch (Exception e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
     showSuggestionVariations = uiConfig.optBoolean("show-suggestion-variations", true);
     subBoardRaw = uiConfig.optBoolean("subboard-raw", false);
     backgroundFilter = theme.backgroundFilter();
