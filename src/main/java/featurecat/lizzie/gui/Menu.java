@@ -153,7 +153,11 @@ public class Menu extends JMenuBar {
     setPreferredSize(new Dimension(100, Config.menuHeight)); // 中25 大30
     // headFont = new Font(Config.sysDefaultFontName, Font.PLAIN,
     // Math.max(Lizzie.config.allFontSize, 12)); // 中16 大20
+    Font baseMenuFont =
+        new Font(
+            resourceBundle.getString("Menu.baseMenu.fontName"), Font.PLAIN, Config.frameFontSize);
     final JFontMenu fileMenu = new JFontMenu(resourceBundle.getString("Menu.fileMenu")); // ("文件");
+    fileMenu.setFont(baseMenuFont);
     fileMenu.setForeground(Color.BLACK);
     // fileMenu.setFont(headFont);
     this.add(fileMenu);
@@ -441,6 +445,7 @@ public class Menu extends JMenuBar {
         });
 
     final JFontMenu viewMenu = new JFontMenu(resourceBundle.getString("Menu.viewMenu")); // ("显示");
+    viewMenu.setFont(baseMenuFont);
     this.add(viewMenu);
     viewMenu.setForeground(Color.BLACK);
     // viewMenu.setFont(headFont);
@@ -2535,6 +2540,7 @@ public class Menu extends JMenuBar {
         });
 
     final JFontMenu gameMenu = new JFontMenu(resourceBundle.getString("Menu.game"));
+    gameMenu.setFont(baseMenuFont);
     gameMenu.setForeground(Color.BLACK);
     this.add(gameMenu);
 
@@ -2889,6 +2895,7 @@ public class Menu extends JMenuBar {
     gameMenu.add(continueLadder);
 
     final JFontMenu analyzeMenu = new JFontMenu(resourceBundle.getString("Menu.analyze"));
+    analyzeMenu.setFont(baseMenuFont);
     analyzeMenu.setForeground(Color.BLACK);
     // analyMenu.setFont(headFont);
     this.add(analyzeMenu);
@@ -3112,6 +3119,7 @@ public class Menu extends JMenuBar {
         });
 
     final JFontMenu editMenu = new JFontMenu(resourceBundle.getString("Menu.edit"));
+    editMenu.setFont(baseMenuFont);
     editMenu.setForeground(Color.BLACK);
     // editMenu.setFont(headFont);
     this.add(editMenu);
@@ -3560,6 +3568,7 @@ public class Menu extends JMenuBar {
         });
 
     final JFontMenu shareKifu = new JFontMenu(resourceBundle.getString("Menu.share"));
+    shareKifu.setFont(baseMenuFont);
     shareKifu.setForeground(Color.BLACK);
     // shareKifu.setFont(headFont);
     this.add(shareKifu);
@@ -3644,6 +3653,7 @@ public class Menu extends JMenuBar {
         });
 
     final JFontMenu live = new JFontMenu(resourceBundle.getString("Menu.sync"));
+    live.setFont(baseMenuFont);
     live.setForeground(Color.BLACK);
     // live.setFont(headFont);
     this.add(live);
@@ -4609,6 +4619,7 @@ public class Menu extends JMenuBar {
 
     final JFontMenu helpMenu = new JFontMenu(resourceBundle.getString("Menu.help"));
     helpMenu.setForeground(Color.BLACK);
+    helpMenu.setFont(baseMenuFont);
     // helpMenu.setFont(headFont);
     this.add(helpMenu);
 
@@ -4673,12 +4684,14 @@ public class Menu extends JMenuBar {
 
     quickLinks = new JFontMenu(resourceBundle.getString("Menu.quickLinks")); // ("快速启动");
     quickLinks.setForeground(Color.BLACK);
+    quickLinks.setFont(baseMenuFont);
     // quickLinks.setFont(headFont);
     this.add(quickLinks);
     updateFastLinks();
 
     final JFontMenu settings = new JFontMenu(resourceBundle.getString("Menu.settings"));
     settings.setForeground(Color.BLACK);
+    settings.setFont(baseMenuFont);
     // settings.setFont(headFont);
     this.add(settings);
 
