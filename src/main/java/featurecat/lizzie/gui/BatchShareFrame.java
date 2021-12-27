@@ -35,17 +35,19 @@ public class BatchShareFrame extends JDialog {
   public BatchShareFrame() {
     this.setModal(true);
     // setType(Type.POPUP);
+    PanelWithToolTips contenePane = new PanelWithToolTips();
+    contenePane.setLayout(null);
     setResizable(false);
     setTitle(Lizzie.resourceBundle.getString("BatchShareFrame.title")); // ("批量分享");
     setAlwaysOnTop(Lizzie.frame.isAlwaysOnTop());
     setLocationRelativeTo(Lizzie.frame);
-    getContentPane().setLayout(null);
+    getContentPane().add(contenePane);
 
     JButton btnApply =
         new JButton(Lizzie.resourceBundle.getString("BatchShareFrame.btnApply")); // ("选择棋谱并分享");
     btnApply.setBounds(131, 108, 137, 23);
     btnApply.setMargin(new Insets(0, 0, 0, 0));
-    getContentPane().add(btnApply);
+    contenePane.add(btnApply);
 
     JButton btnCancel =
         new JButton(Lizzie.resourceBundle.getString("BatchShareFrame.btnCancel")); // ("取消");
@@ -57,7 +59,7 @@ public class BatchShareFrame extends JDialog {
         });
     btnCancel.setBounds(285, 108, 117, 23);
     btnCancel.setMargin(new Insets(0, 0, 0, 0));
-    getContentPane().add(btnCancel);
+    contenePane.add(btnCancel);
 
     JButton btnLoggin =
         new JButton(Lizzie.resourceBundle.getString("loggin.btnLoggin")); // ("注册/登录");
@@ -69,11 +71,11 @@ public class BatchShareFrame extends JDialog {
           }
         });
     btnLoggin.setBounds(440, 10, 87, 23);
-    getContentPane().add(btnLoggin);
+    contenePane.add(btnLoggin);
 
     txtUploader = new JTextField();
     txtUploader.setBounds(325, 10, 105, 23);
-    getContentPane().add(txtUploader);
+    contenePane.add(txtUploader);
     txtUploader.setColumns(10);
     txtUploader.setEnabled(false);
     if (!Lizzie.config.uploadUser.equals("") && !Lizzie.config.uploadPassWd.equals("")) {
@@ -87,33 +89,33 @@ public class BatchShareFrame extends JDialog {
 
     txtOtherInfo = new JTextField();
     txtOtherInfo.setBounds(123, 43, 403, 23);
-    getContentPane().add(txtOtherInfo);
+    contenePane.add(txtOtherInfo);
     txtOtherInfo.setColumns(10);
 
     JLabel lblUploader =
         new JLabel(Lizzie.resourceBundle.getString("ShareFrame.lblUploader")); // ("上传者:");
     lblUploader.setBounds(272, 14, 46, 15);
-    getContentPane().add(lblUploader);
+    contenePane.add(lblUploader);
 
     JLabel lblOther =
         new JLabel(Lizzie.resourceBundle.getString("ShareFrame.lblOther")); // ("其他信息:");
     lblOther.setBounds(66, 47, 61, 15);
-    getContentPane().add(lblOther);
+    contenePane.add(lblOther);
 
     JLabel lblLabel =
         new JLabel(Lizzie.resourceBundle.getString("ShareFrame.lblLabel")); // ("标签:");
     lblLabel.setBounds(10, 14, 37, 15);
-    getContentPane().add(lblLabel);
+    contenePane.add(lblLabel);
 
     otherLabel = new JTextField();
     otherLabel.setBounds(165, 10, 97, 23);
-    getContentPane().add(otherLabel);
+    contenePane.add(otherLabel);
     otherLabel.setEnabled(false);
 
     cboxLabel = new JComboBox<String>();
     setShareLabelCombox();
     cboxLabel.setBounds(73, 11, 85, 21);
-    getContentPane().add(cboxLabel);
+    contenePane.add(cboxLabel);
     cboxLabel.addItemListener(
         new ItemListener() {
           public void itemStateChanged(ItemEvent e) {
@@ -145,7 +147,7 @@ public class BatchShareFrame extends JDialog {
           }
         });
     btnConfig.setBounds(42, 10, 27, 23);
-    getContentPane().add(btnConfig);
+    contenePane.add(btnConfig);
 
     chkPublic = new JCheckBox(Lizzie.resourceBundle.getString("ShareFrame.chkPublic")); // ("公开");
     chkPublic.setBounds(10, 43, 50, 23);
@@ -164,11 +166,11 @@ public class BatchShareFrame extends JDialog {
           }
         });
     chkPublic.setSelected(Lizzie.config.sharePublic);
-    getContentPane().add(chkPublic);
+    contenePane.add(chkPublic);
 
     JLabel lblNotice = new JLabel(Lizzie.resourceBundle.getString("ShareFrame.lblNotice"));
     lblNotice.setBounds(10, 76, 516, 15);
-    getContentPane().add(lblNotice);
+    contenePane.add(lblNotice);
     //    checkBox.setVisible(false);
     try {
       this.setIconImage(ImageIO.read(MoreEngines.class.getResourceAsStream("/assets/logo.png")));

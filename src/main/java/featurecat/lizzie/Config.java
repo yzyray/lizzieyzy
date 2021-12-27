@@ -12,6 +12,7 @@ import java.util.*;
 import javax.swing.*;
 import org.jdesktop.swingx.util.OS;
 import org.json.*;
+
 public class Config {
   public String language = "en";
   // public boolean showBorder = false;

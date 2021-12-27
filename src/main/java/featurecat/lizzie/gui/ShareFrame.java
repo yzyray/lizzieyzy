@@ -35,16 +35,18 @@ public class ShareFrame extends JDialog {
   public ShareFrame() {
     this.setModal(true);
     // setType(Type.POPUP);
+    PanelWithToolTips contenePane = new PanelWithToolTips();
+    contenePane.setLayout(null);
     setResizable(false);
     setTitle(Lizzie.resourceBundle.getString("ShareFrame.title")); // "分享信息");
     setAlwaysOnTop(Lizzie.frame.isAlwaysOnTop());
     setLocationRelativeTo(Lizzie.frame);
-    getContentPane().setLayout(null);
+    getContentPane().add(contenePane);
 
     JButton btnApply =
         new JButton(Lizzie.resourceBundle.getString("ShareFrame.btnApply")); // ("分享");
     btnApply.setBounds(193, 133, 69, 23);
-    getContentPane().add(btnApply);
+    contenePane.add(btnApply);
     btnApply.setMargin(new Insets(0, 0, 0, 0));
 
     JButton btnCancel =
@@ -56,17 +58,17 @@ public class ShareFrame extends JDialog {
           }
         });
     btnCancel.setBounds(272, 133, 69, 23);
-    getContentPane().add(btnCancel);
+    contenePane.add(btnCancel);
     btnCancel.setMargin(new Insets(0, 0, 0, 0));
 
     txtBlack = new JTextField();
     txtBlack.setBounds(34, 10, 229, 23);
-    getContentPane().add(txtBlack);
+    contenePane.add(txtBlack);
     txtBlack.setColumns(10);
 
     txtWhite = new JTextField();
     txtWhite.setBounds(315, 10, 211, 23);
-    getContentPane().add(txtWhite);
+    contenePane.add(txtWhite);
     txtWhite.setColumns(10);
     txtBlack.setText(Lizzie.board.getHistory().getGameInfo().getPlayerBlack());
     txtWhite.setText(Lizzie.board.getHistory().getGameInfo().getPlayerWhite());
@@ -81,12 +83,12 @@ public class ShareFrame extends JDialog {
           }
         });
     btnLogin.setBounds(440, 44, 87, 23);
-    getContentPane().add(btnLogin);
+    contenePane.add(btnLogin);
     btnLogin.setMargin(new Insets(0, 0, 0, 0));
 
     txtUploader = new JTextField();
     txtUploader.setBounds(325, 44, 105, 23);
-    getContentPane().add(txtUploader);
+    contenePane.add(txtUploader);
     txtUploader.setColumns(10);
     txtUploader.setEnabled(false);
     if (!Lizzie.config.uploadUser.equals("") && !Lizzie.config.uploadPassWd.equals("")) {
@@ -100,40 +102,40 @@ public class ShareFrame extends JDialog {
 
     txtOtherInfo = new JTextField();
     txtOtherInfo.setBounds(123, 77, 403, 23);
-    getContentPane().add(txtOtherInfo);
+    contenePane.add(txtOtherInfo);
     txtOtherInfo.setColumns(10);
 
     JLabel lblBlack = new JLabel(Lizzie.resourceBundle.getString("ShareFrame.lblBlack")); // ("黑:");
     lblBlack.setBounds(10, 13, 25, 15);
-    getContentPane().add(lblBlack);
+    contenePane.add(lblBlack);
 
     JLabel lblWhite = new JLabel(Lizzie.resourceBundle.getString("ShareFrame.lblWhite")); // ("白:");
     lblWhite.setBounds(291, 14, 25, 15);
-    getContentPane().add(lblWhite);
+    contenePane.add(lblWhite);
 
     JLabel lblUploader =
         new JLabel(Lizzie.resourceBundle.getString("ShareFrame.lblUploader")); // ("上传者:");
     lblUploader.setBounds(Lizzie.config.isChinese ? 272 : 267, 48, 87, 15);
-    getContentPane().add(lblUploader);
+    contenePane.add(lblUploader);
 
     JLabel lblOther =
         new JLabel(Lizzie.resourceBundle.getString("ShareFrame.lblOther")); // ("其他信息:");
     lblOther.setBounds(66, 81, 61, 15);
-    getContentPane().add(lblOther);
+    contenePane.add(lblOther);
 
     JLabel lblLabel = new JLabel(Lizzie.resourceBundle.getString("ShareFrame.lblLabel")); // "标签:");
     lblLabel.setBounds(Lizzie.config.isChinese ? 10 : 5, 48, 37, 15);
-    getContentPane().add(lblLabel);
+    contenePane.add(lblLabel);
 
     otherLabel = new JTextField();
     otherLabel.setBounds(165, 44, 97, 23);
-    getContentPane().add(otherLabel);
+    contenePane.add(otherLabel);
     otherLabel.setEnabled(false);
 
     cboxLabel = new JComboBox<String>();
     setShareLabelCombox();
     cboxLabel.setBounds(73, 45, 85, 21);
-    getContentPane().add(cboxLabel);
+    contenePane.add(cboxLabel);
     cboxLabel.addItemListener(
         new ItemListener() {
           public void itemStateChanged(ItemEvent e) {
@@ -165,7 +167,7 @@ public class ShareFrame extends JDialog {
           }
         });
     btnConfig.setBounds(42, 44, 27, 23);
-    getContentPane().add(btnConfig);
+    contenePane.add(btnConfig);
 
     chkPublic = new JCheckBox(Lizzie.resourceBundle.getString("ShareFrame.chkPublic")); // ("公开");
     if (Lizzie.config.isChinese) chkPublic.setBounds(10, 77, 50, 23);
@@ -185,14 +187,14 @@ public class ShareFrame extends JDialog {
           }
         });
     chkPublic.setSelected(Lizzie.config.sharePublic);
-    getContentPane().add(chkPublic);
+    contenePane.add(chkPublic);
 
     JLabel lblNotice =
         new JLabel(
             Lizzie.resourceBundle.getString(
                 "ShareFrame.lblNotice")); // ("注:请勿使用包含符号(例如><|\\/.,等)的黑白名字,标签,上传者,其他信息");
     lblNotice.setBounds(10, 110, 516, 15);
-    getContentPane().add(lblNotice);
+    contenePane.add(lblNotice);
     //    checkBox.setVisible(false);
     try {
       this.setIconImage(ImageIO.read(MoreEngines.class.getResourceAsStream("/assets/logo.png")));
