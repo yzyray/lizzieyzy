@@ -418,8 +418,7 @@ public class MoveListFrame extends JFrame {
     statisticsGraph.add(keyPanel);
     statisticsGraph.add(lossPanel);
 
-    chkCurrent =
-        new JCheckBox(Lizzie.resourceBundle.getString("Movelistframe.lblShowBranchItemCurrent"));
+    chkCurrent = new JCheckBox(Lizzie.resourceBundle.getString("Movelistframe.current"));
     chkCurrent.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
