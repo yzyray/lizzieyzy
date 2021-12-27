@@ -253,9 +253,6 @@ public class Leelaz {
       commandString = Utils.doDecrypt2(commandString);
     }
     this.engineCommand = commandString == null ? oriEngineCommand : commandString;
-    if (this.engineCommand.toLowerCase().contains("override-version")) {
-      this.isKatago = true;
-    }
     if (this.engineCommand.toLowerCase().contains("katajigo")) {
       this.noAnalyze = true;
     }
@@ -966,7 +963,7 @@ public class Leelaz {
         if (params[1].toLowerCase().startsWith("sai")) this.isSai = true;
         //				if (params[1].startsWith("KataGoYm"))
         //					sendCommandToLeelazWithOutLog("lizzie_use");
-        if (params[1].startsWith("KataGo") || isKatago) {
+        if (params[1].startsWith("KataGo")) {
           canAddPlayer = true;
           if (params[1].startsWith("KataGoPda")) {
             isKatagoCustom = true;
@@ -1004,6 +1001,7 @@ public class Leelaz {
           //	isLoaded = true;
           // Lizzie.frame.menu.showWRNandPDA(true);
         } else {
+          isKatago = false;
           setLeelaSaiEnginePara();
           // Lizzie.frame.menu.showWRNandPDA(false);
         }
@@ -1428,7 +1426,7 @@ public class Leelaz {
           }
           //						if (params[1].startsWith("KataGoYm"))
           //							sendCommandToLeelazWithOutLog("lizzie_use");
-          if (params[1].startsWith("KataGo") || isKatago) {
+          if (params[1].startsWith("KataGo")) {
             canAddPlayer = true;
             if (Lizzie.config.firstLoadKataGo) {
               Lizzie.config.firstLoadKataGo = false;
@@ -1486,6 +1484,7 @@ public class Leelaz {
               else LizzieFrame.menu.changeEngineIcon(currentEngineN, 2);
             }
           } else {
+            isKatago = false;
             setLeelaSaiEnginePara();
           }
           if (params[1].toLowerCase().startsWith("katajigo")) {
