@@ -4801,6 +4801,17 @@ public class Menu extends JMenuBar {
           }
         });
 
+    final JFontCheckBoxMenuItem languageJP = new JFontCheckBoxMenuItem("日本語");
+    language.add(languageJP);
+    languageJP.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.config.useLanguage = 4;
+            Lizzie.config.uiConfig.put("use-language", Lizzie.config.useLanguage);
+            Utils.showMsg(Lizzie.resourceBundle.getString("Lizzie.hint.restart"));
+          }
+        });
+
     final JFontMenu frameFontSize =
         new JFontMenu(resourceBundle.getString("menu.frameFontSize")); // 界面字体大小
     settings.add(frameFontSize);
@@ -4916,10 +4927,12 @@ public class Menu extends JMenuBar {
             languageZH.setState(false);
             languageEN.setState(false);
             languageKR.setState(false);
+            languageJP.setState(false);
             if (Lizzie.config.useLanguage == 0) languageDefault.setState(true);
             if (Lizzie.config.useLanguage == 1) languageZH.setState(true);
             if (Lizzie.config.useLanguage == 2) languageEN.setState(true);
             if (Lizzie.config.useLanguage == 3) languageKR.setState(true);
+            if (Lizzie.config.useLanguage == 4) languageJP.setState(true);
             if (Lizzie.config.useJavaLooks) {
               frameLooksJava.setState(true);
               frameLooksSystem.setSelected(false);
