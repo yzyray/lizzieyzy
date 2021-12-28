@@ -1141,7 +1141,7 @@ public class MoreEngines extends JPanel {
     ArrayList<EngineData> engineData = Utils.getEngineData();
     EngineData engineDt = new EngineData();
     engineDt.index = this.curIndex;
-    engineDt.commands = this.command.getText();
+    engineDt.commands = this.command.getText().trim();
     engineDt.name = this.txtName.getText();
     if (txtInitialCommand
         .getText()
