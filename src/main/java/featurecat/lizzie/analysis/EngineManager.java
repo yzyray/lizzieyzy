@@ -80,6 +80,7 @@ public class EngineManager {
       e.password = engineDt.password;
       e.initialCommand = engineDt.initialCommand;
       if (i == index || loadDefault && engineDt.isDefault) {
+        if (engineDt.isDefault) index = engineDt.index;
         if (e.oriWidth != 19 || e.oriHeight != 19) {
           Board.boardWidth = e.oriWidth;
           Board.boardHeight = e.oriHeight;
