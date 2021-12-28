@@ -268,11 +268,7 @@ public class Lizzie {
                 oldfile2.renameTo(newfile2);
               }
             }
-
-            Runnable runnable2 =
-                new Runnable() {
-                  public void run() {
-                    if (Lizzie.config.loadEstimateEngine) {
+            if (Lizzie.config.loadEstimateEngine) {
                       try {
                         frame.zen = new KataEstimate(true);
                       } catch (IOException e1) {
@@ -293,11 +289,7 @@ public class Lizzie {
                         SocketCheckVersion socketCheckVersion = new SocketCheckVersion();
                         socketCheckVersion.SocketCheckVersion(true);
                       }
-                    }
-                  }
-                };
-            Thread thread2 = new Thread(runnable2);
-            thread2.start();
+                    }                  
           }
         });
   }
