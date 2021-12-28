@@ -55,6 +55,7 @@ public class ContributeEngine {
   public boolean javaSSHClosed;
   private String courseFile = "";
   private String timeStamp;
+  private int errorTimes;
 
   public ContributeEngine() {
     if (Lizzie.frame.isContributing) {
@@ -183,7 +184,10 @@ public class ContributeEngine {
     }
     if (this.useJavaSSH) javaSSHClosed = true;
     if (!isNormalEnd) {
-      tryToDignostic(Lizzie.resourceBundle.getString("Leelaz.engineEndUnormalHint"));
+      if (errorTimes < 3) {
+        errorTimes++;
+        startEngine(engineCommand);
+      } else tryToDignostic(Lizzie.resourceBundle.getString("Leelaz.engineEndUnormalHint"));
     }
     process = null;
     shutdown();
@@ -546,7 +550,7 @@ public class ContributeEngine {
     for (int i = 0; i < contributeGames.size(); i++) {
       saveGame(contributeGames.get(i), i);
     }
-    Utils.showMsg("棋谱保存在LizzieYzy目录内\"ContributeGames\"文件夹中");
+    Utils.showMsg("棋谱保存在LizzieYzy目录内\"ContributeGames\\"+timeStamp+"\"文件夹中");
   }
 
   private void saveGame(ContributeGameInfo game, int index) {
