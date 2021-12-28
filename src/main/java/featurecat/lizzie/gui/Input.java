@@ -129,7 +129,7 @@ public class Input implements MouseListener, KeyListener, MouseWheelListener, Mo
 
   @Override
   public void mouseDragged(MouseEvent e) {
-    if (Lizzie.frame.isPlayingAgainstLeelaz) return;
+    if (Lizzie.frame.isPlayingAgainstLeelaz || Lizzie.frame.isContributing) return;
     if (!SwingUtilities.isMiddleMouseButton(e) && (selectMode || e.isAltDown())) {
       Lizzie.frame.selectDragged(Utils.zoomOut(e.getX()), Utils.zoomOut(e.getY()));
       return;

@@ -56,6 +56,7 @@ public class ContributeEngine {
   private String courseFile = "";
   private String timeStamp;
   private int errorTimes;
+  private String errorTips = "";
 
   public ContributeEngine() {
     if (Lizzie.frame.isContributing) {
@@ -84,7 +85,7 @@ public class ContributeEngine {
           "\"includeOwnership = "
               + (Lizzie.config.contributeShowEstimate ? "true" : "false")
               + "\",";
-      engineCommand += "\"logGamesAsJson = true\",";
+      engineCommand += "\"logGamesAsJson = true\"";
     }
     RemoteEngineData remoteData = Utils.getContributeRemoteEngineData();
     this.useJavaSSH = remoteData.useJavaSSH;
@@ -136,7 +137,6 @@ public class ContributeEngine {
             Lizzie.resourceBundle.getString("Leelaz.engineFailed")
                 + ": "
                 + e.getLocalizedMessage());
-        process = null;
         return;
       }
       initializeStreams();
@@ -187,9 +187,13 @@ public class ContributeEngine {
       if (errorTimes < 3) {
         errorTimes++;
         startEngine(engineCommand);
-      } else tryToDignostic(Lizzie.resourceBundle.getString("Leelaz.engineEndUnormalHint"));
+      } else
+        tryToDignostic(
+            errorTips.length() > 0
+                ? errorTips
+                : Lizzie.resourceBundle.getString("Leelaz.engineEndUnormalHint"));
     }
-    process = null;
+    // process = null;
     shutdown();
     return;
   }
@@ -262,6 +266,10 @@ public class ContributeEngine {
       if (line.toLowerCase().contains("Starting")) {
         setTip("开始新的一局...");
       }
+      if (line.contains("Invalid username/password")) {
+        setTip("错误的用户名或密码");
+        errorTips = "错误的用户名或密码";
+      }
     }
   }
 
@@ -285,7 +293,7 @@ public class ContributeEngine {
 
   private void setTypeAndKomiToView(boolean isMatchGame, double komi) {
     if (Lizzie.frame.contributeView != null) {
-      Lizzie.frame.contributeView.setKomi(String.valueOf(komi));
+      Lizzie.frame.contributeView.setKomi(komi);
       Lizzie.frame.contributeView.setType(isMatchGame ? "评分对局" : "自对弈");
     }
   }
@@ -298,11 +306,11 @@ public class ContributeEngine {
     isNormalEnd = true;
     Lizzie.frame.isShowingContributeGame = false;
     Lizzie.frame.isContributing = false;
-    Lizzie.frame.contributeEngine = null;
     if (useJavaSSH) javaSSH.close();
-    else if (process != null) process.destroy();
+    process.destroy();
     if (watchGameThread != null) watchGameThread.interrupt();
     Menu.engineMenu.setText(Lizzie.resourceBundle.getString("Menu.noEngine"));
+    Lizzie.frame.contributeEngine = null;
   }
 
   private void shutdown() {
@@ -369,8 +377,9 @@ public class ContributeEngine {
           tryToUseUnParseGameInfos(currentGame, unParseInfos);
         if (currentGame == currentWatchGame) {
           setGameToBoard(currentGame, watchingGameIndex, false);
-          Lizzie.frame.lastMove();
-          Lizzie.frame.renderVarTree(0, 0, false, true);
+          if (Lizzie.board.getHistory().getCurrentHistoryNode().next().isPresent()
+              && !Lizzie.board.getHistory().getCurrentHistoryNode().next().get().next().isPresent())
+            Lizzie.board.nextMove(true);
         }
       } else {
         currentGame = new ContributeGameInfo();
@@ -550,7 +559,7 @@ public class ContributeEngine {
     for (int i = 0; i < contributeGames.size(); i++) {
       saveGame(contributeGames.get(i), i);
     }
-    Utils.showMsg("棋谱保存在LizzieYzy目录内\"ContributeGames\\"+timeStamp+"\"文件夹中");
+    Utils.showMsg("棋谱保存在LizzieYzy目录内\"ContributeGames\\" + timeStamp + "\"文件夹中");
   }
 
   private void saveGame(ContributeGameInfo game, int index) {

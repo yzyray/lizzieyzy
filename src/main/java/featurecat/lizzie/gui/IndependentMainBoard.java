@@ -770,6 +770,7 @@ public class IndependentMainBoard extends JFrame {
 
   private void onClicked(int x, int y) {
     // Check for board click
+    if (Lizzie.frame.isContributing) return;
     Optional<int[]> boardCoordinates;
 
     boardCoordinates = boardRenderer.convertScreenToCoordinates(x, y);

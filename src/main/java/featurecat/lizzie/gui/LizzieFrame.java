@@ -6239,6 +6239,7 @@ public class LizzieFrame extends JFrame {
 
   public void onClicked(int x, int y) {
     // Check for board click
+    if (Lizzie.frame.isContributing) return;
     Optional<int[]> boardCoordinates;
     if (Lizzie.config.isThinkingMode()) {
       boardCoordinates = boardRenderer2.convertScreenToCoordinates(x, y);
@@ -12561,7 +12562,9 @@ public class LizzieFrame extends JFrame {
   }
 
   public void closeContributeEngine() {
-    if (contributeEngine != null) contributeEngine.normalQuit();
+    if (contributeEngine != null) {
+      contributeEngine.normalQuit();
+    }
   }
 
   public void openContributeView() {

@@ -93,7 +93,14 @@ public class EngineFailedMessage extends JDialog {
               Lizzie.frame.startContributeEngine();
             }
           });
-      btnRestart.setBounds(10, 117, 120, 25);
+      btnRestart.setBounds(
+          345
+              + (Lizzie.config.isFrameFontSmall()
+                  ? 85
+                  : (Lizzie.config.isFrameFontMiddle() ? 95 : 108)),
+          117,
+          120,
+          25);
       getContentPane().add(btnRestart);
     }
 

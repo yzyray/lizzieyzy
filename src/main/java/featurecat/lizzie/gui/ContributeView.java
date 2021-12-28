@@ -20,6 +20,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.util.ArrayDeque;
+import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -340,10 +341,10 @@ public class ContributeView extends JDialog {
     gbc_panel.gridy = 4;
     mainPanel.add(panel, gbc_panel);
 
-    lblGameType = new JLabel("本局类型: 自对弈");
+    lblGameType = new JFontLabel("本局类型: 自对弈");
     panel.add(lblGameType);
 
-    lblKomi = new JLabel("贴目: 7.5");
+    lblKomi = new JFontLabel("贴目: --");
     panel.add(lblKomi);
 
     lblCurrentGameResult = new JFontLabel("结果: ");
@@ -506,8 +507,8 @@ public class ContributeView extends JDialog {
     lblGameType.setText("本局类型: " + text);
   }
 
-  public void setKomi(String text) {
-    lblKomi.setText("贴目: " + text);
+  public void setKomi(double komi) {
+    lblKomi.setText("贴目: " + String.format(Locale.ENGLISH, "%.1f", komi));
   }
 
   public void setResult(String text) {

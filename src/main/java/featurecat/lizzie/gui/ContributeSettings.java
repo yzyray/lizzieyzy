@@ -199,7 +199,7 @@ public class ContributeSettings extends JDialog {
         });
     panel.add(btnSignUp);
 
-    txtUserName = new JTextField();
+    txtUserName = new JFontTextField();
     GridBagConstraints gbc_txtUserName = new GridBagConstraints();
     gbc_txtUserName.fill = GridBagConstraints.BOTH;
     gbc_txtUserName.insets = new Insets(0, 0, 5, 0);
