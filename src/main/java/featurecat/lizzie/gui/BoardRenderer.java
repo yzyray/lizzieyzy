@@ -2479,7 +2479,7 @@ public class BoardRenderer {
                   canShowMaxColor && move.scoreMean == maxScoreMean;
               String winrateText = String.format(Locale.ENGLISH, "%.1f", roundedWinrate);
               String playoutsText = Utils.getPlayoutsString(move.playouts);
-              String scoreLeadText = String.valueOf(round(score * 10) / 10.0);
+              String scoreLeadText = Utils.convertScoreToString(score, maxScoreMean);
               if (Lizzie.config.useDefaultInfoRowOrder) {
                 if (shouldShowMaxColorWinrate) g.setColor(maxColor);
                 if (roundedWinrate < 10)

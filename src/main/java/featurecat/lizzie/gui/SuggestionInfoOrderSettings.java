@@ -665,7 +665,7 @@ public class SuggestionInfoOrderSettings extends JDialog {
         boolean shouldShowMaxColorScoreLead = canShowMaxColor && move.scoreMean == maxScoreMean;
         String winrateText = String.format(Locale.ENGLISH, "%.1f", roundedWinrate);
         String playoutsText = Utils.getPlayoutsString(move.playouts);
-        String scoreLeadText = String.format(Locale.ENGLISH, "%.1f", score);
+        String scoreLeadText = Utils.convertScoreToString(score, 5.0);
         if (currerentUseDefaultInfoRowOrder) {
           if (shouldShowMaxColorWinrate) g.setColor(maxColor);
           if (roundedWinrate < 10)

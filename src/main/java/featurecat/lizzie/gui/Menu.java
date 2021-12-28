@@ -906,6 +906,20 @@ public class Menu extends JMenuBar {
           }
         });
     Suggestions.add(suggestion3);
+    Suggestions.addSeparator();
+
+    final JFontCheckBoxMenuItem showScoreAsDiff =
+        new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.showScoreAsDiff")); // ("目差");
+    showScoreAsDiff.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.config.showScoreAsDiff = !Lizzie.config.showScoreAsDiff;
+            Lizzie.config.uiConfig.put("show-score-as-diff", Lizzie.config.showScoreAsDiff);
+            Lizzie.frame.refresh();
+          }
+        });
+    Suggestions.add(showScoreAsDiff);
 
     final JFontMenuItem customInfoOrdr =
         new JFontMenuItem(resourceBundle.getString("Menu.customInfoOrdr"));
@@ -2267,6 +2281,8 @@ public class Menu extends JMenuBar {
             else suggestion2.setState(false);
             if (Lizzie.config.showScoremeanInSuggestion) suggestion3.setState(true);
             else suggestion3.setState(false);
+            if (Lizzie.config.showScoreAsDiff) showScoreAsDiff.setState(true);
+            else showScoreAsDiff.setState(false);
             if (Lizzie.config.showKataGoScoreLeadWithKomi) {
               leadWithKomi.setState(false);
               leadWithoutKomi.setState(true);

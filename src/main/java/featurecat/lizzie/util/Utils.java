@@ -804,4 +804,15 @@ public class Utils {
     }
     return bestMoves;
   }
+
+  public static String convertScoreToString(double score, double bestScore) {
+    if (Lizzie.config.showScoreAsDiff) {
+      double diff = score - bestScore;
+      String result = "";
+      if (diff > 0) result = "+" + String.valueOf(round(diff * 10) / 10.0);
+      else if (diff < 0) result = "-" + String.valueOf(round(Math.abs(diff) * 10) / 10.0);
+      else result = String.valueOf(round(diff * 10) / 10.0);
+      return result;
+    } else return String.valueOf(round(score * 10) / 10.0);
+  }
 }

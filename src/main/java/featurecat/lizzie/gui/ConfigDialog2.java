@@ -55,8 +55,6 @@ import javax.imageio.ImageIO;
 import javax.swing.AbstractCellEditor;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -78,7 +76,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
-import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.ListCellRenderer;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
@@ -257,6 +254,7 @@ public class ConfigDialog2 extends JDialog {
   private JCheckBox chkVariationRemoveDeadChain;
   private JCheckBox chkShowScoreLeadLine;
   private JCheckBox chkShowMouseOverWinrateGraph;
+  private JCheckBox chkShowScoreAsLead;
   private JComboBox<String> comboBoxPvVisits;
   private JComboBox<String> chkShowIndependentSubBoard;
   private JTextField txtPvVisitsLimit;
@@ -354,56 +352,58 @@ public class ConfigDialog2 extends JDialog {
 
     lblOriginLizzieInfo.setFont(new Font("Tahoma", Font.PLAIN, 14));
     // 注释这里
-    GroupLayout gl = new GroupLayout(aboutTab);
-    gl.setHorizontalGroup(
-        gl.createParallelGroup(Alignment.LEADING)
-            .addGroup(
-                gl.createSequentialGroup()
-                    .addGroup(
-                        gl.createParallelGroup(Alignment.LEADING)
-                            .addGroup(
-                                gl.createSequentialGroup()
-                                    .addContainerGap()
-                                    .addComponent(
-                                        lblLizzieInfo,
-                                        GroupLayout.DEFAULT_SIZE,
-                                        628,
-                                        Short.MAX_VALUE))
-                            .addGroup(
-                                gl.createSequentialGroup()
-                                    .addContainerGap()
-                                    .addComponent(lblOriginTitle))
-                            .addGroup(
-                                gl.createSequentialGroup()
-                                    .addContainerGap()
-                                    .addComponent(
-                                        lblOriginLizzieInfo,
-                                        GroupLayout.PREFERRED_SIZE,
-                                        620,
-                                        GroupLayout.PREFERRED_SIZE))
-                            .addGroup(
-                                gl.createSequentialGroup().addComponent(lblLizzieName).addGap(225)))
-                    .addContainerGap()));
-    gl.setVerticalGroup(
-        gl.createParallelGroup(Alignment.LEADING)
-            .addGroup(
-                gl.createSequentialGroup()
-                    .addGap(18)
-                    .addComponent(lblLizzieName)
-                    .addGap(18)
-                    .addPreferredGap(ComponentPlacement.RELATED)
-                    .addComponent(
-                        lblLizzieInfo, GroupLayout.PREFERRED_SIZE, 183, GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(ComponentPlacement.RELATED)
-                    .addComponent(lblOriginTitle)
-                    .addPreferredGap(ComponentPlacement.RELATED)
-                    .addComponent(
-                        lblOriginLizzieInfo,
-                        GroupLayout.PREFERRED_SIZE,
-                        282,
-                        GroupLayout.PREFERRED_SIZE)
-                    .addGap(126)));
-    aboutTab.setLayout(gl);
+    //    GroupLayout gl = new GroupLayout(aboutTab);
+    //    gl.setHorizontalGroup(
+    //        gl.createParallelGroup(Alignment.LEADING)
+    //            .addGroup(
+    //                gl.createSequentialGroup()
+    //                    .addGroup(
+    //                        gl.createParallelGroup(Alignment.LEADING)
+    //                            .addGroup(
+    //                                gl.createSequentialGroup()
+    //                                    .addContainerGap()
+    //                                    .addComponent(
+    //                                        lblLizzieInfo,
+    //                                        GroupLayout.DEFAULT_SIZE,
+    //                                        628,
+    //                                        Short.MAX_VALUE))
+    //                            .addGroup(
+    //                                gl.createSequentialGroup()
+    //                                    .addContainerGap()
+    //                                    .addComponent(lblOriginTitle))
+    //                            .addGroup(
+    //                                gl.createSequentialGroup()
+    //                                    .addContainerGap()
+    //                                    .addComponent(
+    //                                        lblOriginLizzieInfo,
+    //                                        GroupLayout.PREFERRED_SIZE,
+    //                                        620,
+    //                                        GroupLayout.PREFERRED_SIZE))
+    //                            .addGroup(
+    //
+    // gl.createSequentialGroup().addComponent(lblLizzieName).addGap(225)))
+    //                    .addContainerGap()));
+    //    gl.setVerticalGroup(
+    //        gl.createParallelGroup(Alignment.LEADING)
+    //            .addGroup(
+    //                gl.createSequentialGroup()
+    //                    .addGap(18)
+    //                    .addComponent(lblLizzieName)
+    //                    .addGap(18)
+    //                    .addPreferredGap(ComponentPlacement.RELATED)
+    //                    .addComponent(
+    //                        lblLizzieInfo, GroupLayout.PREFERRED_SIZE, 183,
+    // GroupLayout.PREFERRED_SIZE)
+    //                    .addPreferredGap(ComponentPlacement.RELATED)
+    //                    .addComponent(lblOriginTitle)
+    //                    .addPreferredGap(ComponentPlacement.RELATED)
+    //                    .addComponent(
+    //                        lblOriginLizzieInfo,
+    //                        GroupLayout.PREFERRED_SIZE,
+    //                        282,
+    //                        GroupLayout.PREFERRED_SIZE)
+    //                    .addGap(126)));
+    //    aboutTab.setLayout(gl);
     ButtonGroup group = new ButtonGroup();
     nf.setGroupingUsed(false);
     ButtonGroup showMoveGroup = new ButtonGroup();
@@ -943,7 +943,7 @@ public class ConfigDialog2 extends JDialog {
     uiTab.add(chkShowPlayoutsInSuggestion);
     chkShowScoremeanInSuggestion =
         new JCheckBox(resourceBundle.getString("LizzieConfig.title.showScoremeanInSuggestion"));
-    chkShowScoremeanInSuggestion.setBounds(216, 368, 86, 23);
+    chkShowScoremeanInSuggestion.setBounds(216, 368, 75, 23);
     uiTab.add(chkShowScoremeanInSuggestion);
 
     JLabel lblGtpConsoleStyle =
@@ -1603,6 +1603,11 @@ public class ConfigDialog2 extends JDialog {
 
     chkShowMouseOverWinrateGraph.setSelected(Lizzie.config.showMouseOverWinrateGraph);
 
+    chkShowScoreAsLead = new JCheckBox(resourceBundle.getString("Menu.showScoreAsDiff"));
+    chkShowScoreAsLead.setBounds(295, 368, 110, 23); // 216, 368, 86, 23
+    uiTab.add(chkShowScoreAsLead);
+    chkShowScoreAsLead.setSelected(Lizzie.config.showScoreAsDiff);
+
     JButton btnSetOrder = new JButton(resourceBundle.getString("ConfigDialog2.btnSetOrder"));
     btnSetOrder.addActionListener(
         new ActionListener() {
@@ -1611,7 +1616,7 @@ public class ConfigDialog2 extends JDialog {
           }
         });
     btnSetOrder.setMargin(new Insets(0, 0, 0, 0));
-    btnSetOrder.setBounds(310, 369, 90, 23);
+    btnSetOrder.setBounds(410, 369, 90, 23);
     uiTab.add(btnSetOrder);
 
     JButton btnSetDelay = new JButton(resourceBundle.getString("ConfigDialog2.btnSetDelay"));
@@ -1622,7 +1627,7 @@ public class ConfigDialog2 extends JDialog {
           }
         });
     btnSetDelay.setMargin(new Insets(0, 0, 0, 0));
-    btnSetDelay.setBounds(415, 369, 90, 23);
+    btnSetDelay.setBounds(505, 369, 90, 23);
     uiTab.add(btnSetDelay);
 
     JLabel SpecialCoords =
@@ -3629,6 +3634,8 @@ public class ConfigDialog2 extends JDialog {
   }
 
   private void saveConfig() {
+    Lizzie.config.showScoreAsDiff = chkShowScoreAsLead.isSelected();
+    Lizzie.config.uiConfig.put("show-score-as-diff", Lizzie.config.showScoreAsDiff);
     Lizzie.config.logConsoleToFile = chkLogConsoleToFile.isSelected();
     Lizzie.config.logGtpToFile = chkLogGtpToFile.isSelected();
     Lizzie.config.uiConfig.put("log-console-to-file", Lizzie.config.logConsoleToFile);

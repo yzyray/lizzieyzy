@@ -614,6 +614,8 @@ public class Config {
 
   public boolean useTerritoryInScore = false;
 
+  public boolean showScoreAsDiff = false;
+
   private JSONObject loadAndMergeSaveBoardConfig(
       JSONObject defaultCfg, String fileName, boolean needValidation) throws IOException {
     File file = new File(fileName);
@@ -1314,6 +1316,7 @@ public class Config {
     noCapture = uiConfig.optBoolean("no-capture", false);
     showrect = uiConfig.optInt("show-move-rect", 1);
     winrateAlwaysBlack = uiConfig.optBoolean("win-rate-always-black", false);
+    showScoreAsDiff = uiConfig.optBoolean("show-score-as-diff", false);
 
     // chkPkStartNum = uiConfig.optBoolean("chkpk-start-num", false);
     // pkStartNum = uiConfig.optInt("pk-start-num", 1);
