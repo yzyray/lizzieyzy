@@ -141,7 +141,7 @@ public class ContributeView extends JDialog {
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             try {
-              int index = Integer.parseInt(txtGameIndex.getText());
+              int index = Integer.parseInt(txtGameIndex.getText()) - 1;
               if (Lizzie.frame.contributeEngine != null)
                 Lizzie.frame.contributeEngine.setWatchGame(index);
             } catch (NumberFormatException ex) {
@@ -234,6 +234,16 @@ public class ContributeView extends JDialog {
     txtMoveNumber.setDocument(new IntDocument());
 
     JButton btnGoto = new JFontButton("跳转");
+    btnGoto.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent arg0) {
+            try {
+              Lizzie.board.goToMoveNumberBeyondBranch(Integer.parseInt(txtMoveNumber.getText()));
+            } catch (Exception e) {
+              e.printStackTrace();
+            }
+          }
+        });
     playPanel.add(btnGoto);
     btnGoto.setMargin(new Insets(2, 5, 2, 5));
 

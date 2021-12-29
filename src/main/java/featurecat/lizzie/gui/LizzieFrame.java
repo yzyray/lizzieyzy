@@ -6239,7 +6239,6 @@ public class LizzieFrame extends JFrame {
 
   public void onClicked(int x, int y) {
     // Check for board click
-    if (Lizzie.frame.isContributing) return;
     Optional<int[]> boardCoordinates;
     if (Lizzie.config.isThinkingMode()) {
       boardCoordinates = boardRenderer2.convertScreenToCoordinates(x, y);
@@ -6251,6 +6250,7 @@ public class LizzieFrame extends JFrame {
     int moveNumber = winrateGraph.moveNumber(x - grx, y - gry);
 
     if (boardCoordinates.isPresent()) {
+      if (Lizzie.frame.isContributing) return;
       // 增加判断是否为插入模式
       int[] coords = boardCoordinates.get();
       if (Lizzie.frame.bothSync) {

@@ -31,9 +31,10 @@ public class ContributeEngine {
   private int changeWatchingGameIndex = -1;
   private Thread watchGameThread;
   private ContributeGameInfo currentWatchGame;
+  private BoardHistoryNode startNode;
 
   private Process process;
-  public boolean isNormalEnd = false;
+  private boolean isNormalEnd = false;
 
   private BufferedReader inputStream;
   // private BufferedOutputStream outputStream;
@@ -65,6 +66,10 @@ public class ContributeEngine {
     }
     if (Lizzie.config.contributeUseCommand) {
       engineCommand = Lizzie.config.contributeCommand;
+      if (!engineCommand.contains("-override")) engineCommand += " -override-config ";
+      if (!engineCommand.contains(" -config")) {
+        engineCommand += " \"serverUrl = https://katagotraining.org/\",";
+      }
     } else {
       engineCommand = Lizzie.config.contributeEnginePath + " contribute";
       try {
@@ -78,15 +83,13 @@ public class ContributeEngine {
       if (useConfigFile) engineCommand += "-config " + Lizzie.config.contributeConfigPath;
       engineCommand += " -override-config ";
       if (!useConfigFile) engineCommand += "\"serverUrl = https://katagotraining.org/\",";
-      engineCommand += "\"username = " + Lizzie.config.contributeUserName + "\",";
-      engineCommand += "\"password = " + Lizzie.config.contributePassword + "\",";
-      engineCommand += "\"maxSimultaneousGames = " + Lizzie.config.contributeBatchGames + "\",";
-      engineCommand +=
-          "\"includeOwnership = "
-              + (Lizzie.config.contributeShowEstimate ? "true" : "false")
-              + "\",";
-      engineCommand += "\"logGamesAsJson = true\"";
     }
+    engineCommand += "\"username = " + Lizzie.config.contributeUserName + "\",";
+    engineCommand += "\"password = " + Lizzie.config.contributePassword + "\",";
+    engineCommand += "\"maxSimultaneousGames = " + Lizzie.config.contributeBatchGames + "\",";
+    engineCommand +=
+        "\"includeOwnership = " + (Lizzie.config.contributeShowEstimate ? "true" : "false") + "\",";
+    engineCommand += "\"logGamesAsJson = true\"";
     RemoteEngineData remoteData = Utils.getContributeRemoteEngineData();
     this.useJavaSSH = remoteData.useJavaSSH;
     this.ip = remoteData.ip;
@@ -101,7 +104,9 @@ public class ContributeEngine {
     startEngine(engineCommand);
     timeStamp = new SimpleDateFormat("yyyy-MM-dd-HH").format(new Date());
     Lizzie.frame.isContributing = true;
+    Lizzie.board.clear(false);
     Menu.engineMenu.setText("跑普贡献中");
+    Lizzie.frame.refresh();
   }
 
   private void startEngine(String engineCommand2) {
@@ -182,10 +187,12 @@ public class ContributeEngine {
       // System.exit(-1);
     } catch (IOException e) {
     }
+    shutdown();
     if (this.useJavaSSH) javaSSHClosed = true;
     if (!isNormalEnd) {
       if (errorTimes < 3) {
         errorTimes++;
+        Lizzie.frame.isContributing = true;
         startEngine(engineCommand);
       } else
         tryToDignostic(
@@ -194,12 +201,12 @@ public class ContributeEngine {
                 : Lizzie.resourceBundle.getString("Leelaz.engineEndUnormalHint"));
     }
     // process = null;
-    shutdown();
     return;
   }
 
   private void parseLineForError(String line) {
     Lizzie.frame.addContributeLine(line, false);
+    parseTips(line);
   }
 
   private void parseLine(String line) {
@@ -226,7 +233,7 @@ public class ContributeEngine {
           }
         }
       }
-      // Lizzie.gtpConsole.addLine(line);
+      Lizzie.gtpConsole.addLine(line);
     } else {
       Lizzie.frame.addContributeLine(line, true);
       if (line.contains("Finis")) {
@@ -258,19 +265,56 @@ public class ContributeEngine {
           }
         }
       }
-      if (line.toLowerCase().contains("predownload")) {
-        setTip("预先下载权重中...");
-      } else if (line.toLowerCase().contains("download")) {
-        setTip("正在下载权重...");
-      }
-      if (line.toLowerCase().contains("Starting")) {
-        setTip("开始新的一局...");
-      }
-      if (line.contains("Invalid username/password")) {
-        setTip("错误的用户名或密码");
-        errorTips = "错误的用户名或密码";
-      }
+      parseTips(line);
     }
+  }
+
+  private void parseTips(String line) {
+    // TODO Auto-generated method stub
+    if (line.contains("Starting game")) {
+      setTip("开始新的一局");
+    }
+    if (line.toLowerCase().contains("predownload")) {
+      setTip("预先下载权重中...");
+    } else if (line.toLowerCase().contains("download")) {
+      setTip("正在下载权重...");
+    }
+    if (line.toLowerCase().contains("Starting")) {
+      setTip("开始新的一局...");
+    }
+    if (line.contains("Invalid username/password")) {
+      setTip("错误的用户名或密码");
+      errorTips = "错误的用户名或密码";
+    }
+    if (line.contains("No response from server")) {
+      setTip("服务器无回应");
+      errorTips = "服务器无回应";
+    }
+    if (line.contains(" When uploading")) {
+      setTip("上传数据出错");
+      errorTips = "上传数据出错";
+    }
+    if (line.contains("status 200 for initial query")) {
+      setTip("初始化错误,请查看控制台");
+      errorTips = "初始化错误,请查看控制台";
+    }
+    if (line.contains("Could not parse serverUrl")) {
+      setTip("无法解析服务器地址");
+      errorTips = "无法解析服务器地址";
+    }
+    if (line.contains("Did you verify your email address")) {
+      setTip("请确认用户是否经过邮箱验证!");
+      errorTips = "请确认用户是否经过邮箱验证!";
+    }
+    if (line.contains("Model file was incompletely downloaded")) {
+      setTip("权重未完全下载");
+      errorTips = "权重未完全下载";
+    }
+    //	      When uploading
+    //	      status 200 for initial query
+    //	      Could not parse serverUrl
+    //	      Did you verify your email address
+    //	      Model file was incompletely downloaded
   }
 
   private void clearBoardAndView() {
@@ -307,7 +351,11 @@ public class ContributeEngine {
     Lizzie.frame.isShowingContributeGame = false;
     Lizzie.frame.isContributing = false;
     if (useJavaSSH) javaSSH.close();
-    process.destroy();
+    try {
+      process.destroy();
+    } catch (Exception e) {
+
+    }
     if (watchGameThread != null) watchGameThread.interrupt();
     Menu.engineMenu.setText(Lizzie.resourceBundle.getString("Menu.noEngine"));
     Lizzie.frame.contributeEngine = null;
@@ -315,7 +363,11 @@ public class ContributeEngine {
 
   private void shutdown() {
     if (useJavaSSH) javaSSH.close();
-    process.destroy();
+    try {
+      process.destroy();
+    } catch (Exception e) {
+
+    }
     Lizzie.frame.isContributing = false;
   }
 
@@ -506,14 +558,14 @@ public class ContributeEngine {
       }
     } else {
       currentWatchGame = game;
+      if (Lizzie.frame.contributeView != null)
+        Lizzie.frame.contributeView.setWathGameIndex(watchingGameIndex + 1);
+      Lizzie.board.reopen(currentWatchGame.sizeX, currentWatchGame.sizeY);
       Lizzie.board.clear(false);
       Lizzie.board.isKataBoard = true;
       Lizzie.board.isPkBoard = true;
       Lizzie.board.isPkBoardKataB = true;
       Lizzie.frame.isShowingContributeGame = true;
-      if (Lizzie.frame.contributeView != null)
-        Lizzie.frame.contributeView.setWathGameIndex(watchingGameIndex + 1);
-      Lizzie.board.reopen(currentWatchGame.sizeX, currentWatchGame.sizeY);
       Lizzie.board
           .getHistory()
           .getGameInfo()
@@ -532,7 +584,7 @@ public class ContributeEngine {
       if (currentWatchGame.initMoveList != null && currentWatchGame.initMoveList.size() > 0)
         setContributeMoveList(currentWatchGame.initMoveList, false);
       if (currentWatchGame.moveList != null && currentWatchGame.moveList.size() > 0)
-        setContributeMoveList(currentWatchGame.moveList, currentWatchGame.complete);
+        setContributeMoveList(currentWatchGame.moveList, !currentWatchGame.complete);
       boolean moved = false;
       while (Lizzie.board.getHistory().getCurrentHistoryNode().getData().getPlayouts() <= 0) {
         Lizzie.board.nextMove(false);
@@ -559,7 +611,8 @@ public class ContributeEngine {
     for (int i = 0; i < contributeGames.size(); i++) {
       saveGame(contributeGames.get(i), i);
     }
-    Utils.showMsg("棋谱保存在LizzieYzy目录内\"ContributeGames\\" + timeStamp + "\"文件夹中");
+    setGameToBoard(currentWatchGame, watchingGameIndex, false);
+    Utils.showMsg("棋谱保存在LizzieYzy目录内\"ContributeGames-" + timeStamp + "\"文件夹中");
   }
 
   private void saveGame(ContributeGameInfo game, int index) {
@@ -652,7 +705,7 @@ public class ContributeEngine {
               SGFParser.formatCommentPk(Lizzie.board.getHistory().getMainEnd());
         }
       }
-      if (i < (holdLastMove ? remainList.size() : remainList.size() - 1)) {
+      if (i < (holdLastMove ? remainList.size() - 1 : remainList.size())) {
         if (move.isPass)
           Lizzie.board
               .getHistory()
@@ -674,7 +727,7 @@ public class ContributeEngine {
   private boolean isContributeGameAndCurrentBoardSame(
       ContributeGameInfo watchGame, ArrayList<ContributeMoveInfo> remainList) {
     boolean isSame = true;
-    BoardHistoryNode startNode = Lizzie.board.getHistory().getStart();
+    startNode = Lizzie.board.getHistory().getStart();
     while (startNode.next().isPresent() && !startNode.getData().lastMove.isPresent())
       startNode = startNode.next().get();
     if (watchGame.initMoveList != null && watchGame.initMoveList.size() > 0) {

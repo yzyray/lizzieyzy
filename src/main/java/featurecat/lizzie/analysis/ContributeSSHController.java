@@ -85,7 +85,7 @@ public class ContributeSSHController {
 
   public void close() {
     owner.javaSSHClosed = true;
-    owner.isNormalEnd = true;
+    // owner.isNormalEnd = true;
     if (this.session != null) this.session.close();
     if (this.conn != null) this.conn.close();
   }

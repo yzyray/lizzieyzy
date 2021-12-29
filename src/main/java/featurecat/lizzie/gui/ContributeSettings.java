@@ -40,7 +40,7 @@ public class ContributeSettings extends JDialog {
     String gamesTip = "同时进行多盘对局以增加GPU/CPU利用率,设置为default_gtp.cfg中numSearchThreads的数值即可";
     String configTip = "可配置使用的显卡数量等,不同于普通的分析引擎配置文件,默认名字为contribute_example.cfg";
     String ownerShipTip = "以跑谱速度略微降低为代价,显示领地(可在底部工具栏-Kata评估关闭显示,但速度不会恢复)";
-    String autoSaveTip = "将观看过且已对局结束棋谱保存到LizzieYzy目录内\"ContributeGames\"文件夹中";
+    String autoSaveTip = "自动保存观看过且已对局结束的棋谱,保存到LizzieYzy目录内\"ContributeGames\"文件夹中";
 
     JPanel mainPanel = new JPanel();
     mainPanel.setBorder(new EmptyBorder(2, 0, 0, 5));
@@ -302,10 +302,9 @@ public class ContributeSettings extends JDialog {
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             saveConfig();
-            setVisible(false);
+            // setVisible(false);
           }
         });
-    btnSave.setText("仅保存设置");
     buttonPanel.add(btnSave);
 
     JButton btnStart = new JFontButton("开始跑谱贡献");
