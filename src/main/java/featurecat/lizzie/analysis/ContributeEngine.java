@@ -567,8 +567,10 @@ public class ContributeEngine {
       Lizzie.board.reopen(currentWatchGame.sizeX, currentWatchGame.sizeY);
       Lizzie.board.clear(false);
       Lizzie.board.isKataBoard = true;
-      Lizzie.board.isPkBoard = true;
-      Lizzie.board.isPkBoardKataB = true;
+      if (game.isMatchGame) {
+        Lizzie.board.isPkBoard = true;
+        Lizzie.board.isPkBoardKataB = true;
+      }
       Lizzie.frame.isShowingContributeGame = true;
       Lizzie.board
           .getHistory()
