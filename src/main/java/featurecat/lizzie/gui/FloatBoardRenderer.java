@@ -1521,6 +1521,7 @@ public class FloatBoardRenderer {
           Color hsbColor = Color.getHSBColor(hue, saturation, brightness);
           Color color =
               new Color(hsbColor.getRed(), hsbColor.getGreen(), hsbColor.getBlue(), (int) alpha);
+          boolean needSkipNumbers = (outOfOrder || lackOfPlayouts) && !isMouseOver;
           if (!branchOpt.isPresent() || isMouseOver) {
             if (Lizzie.config.showSuggestionOrder && move.order == 0) {
               boolean blackToPlay = Lizzie.board.getData().blackToPlay;
@@ -1539,19 +1540,21 @@ public class FloatBoardRenderer {
           }
           if (!branchOpt.isPresent()) {
             {
-              if (!hasBackground) {
-                if (isFancyBoard) {
-                  g.setPaint(paint);
-                  Composite comp = g.getComposite();
-                  g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC, 0.8f));
-                  fillCircle(g, suggestionX, suggestionY, stoneRadius + 1);
-                  g.setComposite(comp);
-                } else {
-                  g.setColor(noFancyColor);
-                  Composite comp = g.getComposite();
-                  g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC, 0.8f));
-                  fillCircle(g, suggestionX, suggestionY, stoneRadius + 1);
-                  g.setComposite(comp);
+              if (!hasBackground || isMouseOver) {
+                if (!needSkipNumbers) {
+                  if (isFancyBoard) {
+                    g.setPaint(paint);
+                    Composite comp = g.getComposite();
+                    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC, 0.8f));
+                    fillCircle(g, suggestionX, suggestionY, stoneRadius + 1);
+                    g.setComposite(comp);
+                  } else {
+                    g.setColor(noFancyColor);
+                    Composite comp = g.getComposite();
+                    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC, 0.8f));
+                    fillCircle(g, suggestionX, suggestionY, stoneRadius + 1);
+                    g.setComposite(comp);
+                  }
                 }
                 if (isBestMove) {
                   g.setColor(color);
@@ -1574,7 +1577,7 @@ public class FloatBoardRenderer {
               }
             }
           }
-          if ((outOfOrder || lackOfPlayouts) && !isMouseOver) {
+          if (needSkipNumbers) {
             continue;
           }
           if (!branchOpt.isPresent() || isMouseOver) {
@@ -2145,19 +2148,19 @@ public class FloatBoardRenderer {
           Color color =
               new Color(hsbColor.getRed(), hsbColor.getGreen(), hsbColor.getBlue(), (int) alpha);
           if (!branchOpt.isPresent()) {
-            if (isFancyBoard) {
-              g.setPaint(paint);
-              Composite comp = g.getComposite();
-              g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC, 0.8f));
-              fillCircle(g, suggestionX, suggestionY, stoneRadius + 1);
-              g.setComposite(comp);
-            } else {
-              g.setColor(noFancyColor);
-              Composite comp = g.getComposite();
-              g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC, 0.8f));
-              fillCircle(g, suggestionX, suggestionY, stoneRadius + 1);
-              g.setComposite(comp);
-            }
+            //            if (isFancyBoard) {
+            //              g.setPaint(paint);
+            //              Composite comp = g.getComposite();
+            //              g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC, 0.8f));
+            //              fillCircle(g, suggestionX, suggestionY, stoneRadius + 1);
+            //              g.setComposite(comp);
+            //            } else {
+            //              g.setColor(noFancyColor);
+            //              Composite comp = g.getComposite();
+            //              g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC, 0.8f));
+            //              fillCircle(g, suggestionX, suggestionY, stoneRadius + 1);
+            //              g.setComposite(comp);
+            //            }
             g.setColor(color);
             fillCircle(g, suggestionX, suggestionY, stoneRadius + 1);
             float alphaCircle = 48 + 48 * alphaRatio;
