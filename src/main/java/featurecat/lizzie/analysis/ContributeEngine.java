@@ -290,6 +290,10 @@ public class ContributeEngine {
       setTip("服务器无回应");
       errorTips = "服务器无回应";
     }
+    if (line.contains("Error connecting to server")) {
+      setTip("服务器连接失败");
+      errorTips = "服务器连接失败";
+    }
     if (line.contains(" When uploading")) {
       setTip("上传数据出错");
       errorTips = "上传数据出错";
