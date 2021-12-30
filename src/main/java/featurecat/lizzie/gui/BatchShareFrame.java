@@ -4,6 +4,7 @@ import featurecat.lizzie.Lizzie;
 import featurecat.lizzie.rules.BoardHistoryNode;
 import featurecat.lizzie.rules.NodeInfo;
 import java.awt.FileDialog;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -29,22 +30,27 @@ public class BatchShareFrame extends JDialog {
   int selectedLabelIndex = 0;
   JComboBox<String> cboxLabel;
   ItemListener lis;
-  JCheckBox checkBox;
+  JCheckBox chkPublic;
 
   public BatchShareFrame() {
     this.setModal(true);
     // setType(Type.POPUP);
+    PanelWithToolTips contenePane = new PanelWithToolTips();
+    contenePane.setLayout(null);
     setResizable(false);
-    setTitle("批量分享");
+    setTitle(Lizzie.resourceBundle.getString("BatchShareFrame.title")); // ("批量分享");
     setAlwaysOnTop(Lizzie.frame.isAlwaysOnTop());
     setLocationRelativeTo(Lizzie.frame);
-    getContentPane().setLayout(null);
+    getContentPane().add(contenePane);
 
-    JButton btnApply = new JButton("选择棋谱并分享");
-    btnApply.setBounds(151, 108, 117, 23);
-    getContentPane().add(btnApply);
+    JButton btnApply =
+        new JButton(Lizzie.resourceBundle.getString("BatchShareFrame.btnApply")); // ("选择棋谱并分享");
+    btnApply.setBounds(131, 108, 137, 23);
+    btnApply.setMargin(new Insets(0, 0, 0, 0));
+    contenePane.add(btnApply);
 
-    JButton btnCancel = new JButton("取消");
+    JButton btnCancel =
+        new JButton(Lizzie.resourceBundle.getString("BatchShareFrame.btnCancel")); // ("取消");
     btnCancel.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
@@ -52,9 +58,11 @@ public class BatchShareFrame extends JDialog {
           }
         });
     btnCancel.setBounds(285, 108, 117, 23);
-    getContentPane().add(btnCancel);
+    btnCancel.setMargin(new Insets(0, 0, 0, 0));
+    contenePane.add(btnCancel);
 
-    JButton btnLoggin = new JButton("注册/登录");
+    JButton btnLoggin =
+        new JButton(Lizzie.resourceBundle.getString("loggin.btnLoggin")); // ("注册/登录");
     btnLoggin.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
@@ -63,48 +71,51 @@ public class BatchShareFrame extends JDialog {
           }
         });
     btnLoggin.setBounds(440, 10, 87, 23);
-    getContentPane().add(btnLoggin);
+    contenePane.add(btnLoggin);
 
     txtUploader = new JTextField();
     txtUploader.setBounds(325, 10, 105, 23);
-    getContentPane().add(txtUploader);
+    contenePane.add(txtUploader);
     txtUploader.setColumns(10);
     txtUploader.setEnabled(false);
     if (!Lizzie.config.uploadUser.equals("") && !Lizzie.config.uploadPassWd.equals("")) {
       SocketLoggin login = new SocketLoggin();
       String result = login.SocketLoggin(Lizzie.config.uploadUser, Lizzie.config.uploadPassWd);
       if (result.startsWith("success")) {
-        btnLoggin.setText("重新登录");
+        btnLoggin.setText(Lizzie.resourceBundle.getString("ShareFrame.reLogin")); // ("重新登录");
         txtUploader.setText(Lizzie.config.uploadUser);
       }
     }
 
     txtOtherInfo = new JTextField();
     txtOtherInfo.setBounds(123, 43, 403, 23);
-    getContentPane().add(txtOtherInfo);
+    contenePane.add(txtOtherInfo);
     txtOtherInfo.setColumns(10);
 
-    JLabel label_2 = new JLabel("上传者:");
-    label_2.setBounds(272, 14, 46, 15);
-    getContentPane().add(label_2);
+    JLabel lblUploader =
+        new JLabel(Lizzie.resourceBundle.getString("ShareFrame.lblUploader")); // ("上传者:");
+    lblUploader.setBounds(272, 14, 46, 15);
+    contenePane.add(lblUploader);
 
-    JLabel label_3 = new JLabel("其他信息:");
-    label_3.setBounds(66, 47, 61, 15);
-    getContentPane().add(label_3);
+    JLabel lblOther =
+        new JLabel(Lizzie.resourceBundle.getString("ShareFrame.lblOther")); // ("其他信息:");
+    lblOther.setBounds(66, 47, 61, 15);
+    contenePane.add(lblOther);
 
-    JLabel label_4 = new JLabel("标签:");
-    label_4.setBounds(10, 14, 37, 15);
-    getContentPane().add(label_4);
+    JLabel lblLabel =
+        new JLabel(Lizzie.resourceBundle.getString("ShareFrame.lblLabel")); // ("标签:");
+    lblLabel.setBounds(10, 14, 37, 15);
+    contenePane.add(lblLabel);
 
     otherLabel = new JTextField();
     otherLabel.setBounds(165, 10, 97, 23);
-    getContentPane().add(otherLabel);
+    contenePane.add(otherLabel);
     otherLabel.setEnabled(false);
 
     cboxLabel = new JComboBox<String>();
     setShareLabelCombox();
     cboxLabel.setBounds(73, 11, 85, 21);
-    getContentPane().add(cboxLabel);
+    contenePane.add(cboxLabel);
     cboxLabel.addItemListener(
         new ItemListener() {
           public void itemStateChanged(ItemEvent e) {
@@ -136,16 +147,16 @@ public class BatchShareFrame extends JDialog {
           }
         });
     btnConfig.setBounds(42, 10, 27, 23);
-    getContentPane().add(btnConfig);
+    contenePane.add(btnConfig);
 
-    checkBox = new JCheckBox("公开");
-    checkBox.setBounds(10, 43, 50, 23);
-    checkBox.addActionListener(
+    chkPublic = new JCheckBox(Lizzie.resourceBundle.getString("ShareFrame.chkPublic")); // ("公开");
+    chkPublic.setBounds(10, 43, 50, 23);
+    chkPublic.addActionListener(
         new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
             // TBD
-            if (checkBox.isSelected()) {
+            if (chkPublic.isSelected()) {
               Lizzie.config.sharePublic = true;
               Lizzie.config.uiConfig.put("share-public", true);
             } else {
@@ -154,12 +165,12 @@ public class BatchShareFrame extends JDialog {
             }
           }
         });
-    checkBox.setSelected(Lizzie.config.sharePublic);
-    getContentPane().add(checkBox);
+    chkPublic.setSelected(Lizzie.config.sharePublic);
+    contenePane.add(chkPublic);
 
-    JLabel label_5 = new JLabel("注:请勿使用包含符号(例如><|\\/.,等)标签,上传者,其他信息,黑白名字将会根据棋谱内信息上传");
-    label_5.setBounds(10, 76, 516, 15);
-    getContentPane().add(label_5);
+    JLabel lblNotice = new JLabel(Lizzie.resourceBundle.getString("ShareFrame.lblNotice"));
+    lblNotice.setBounds(10, 76, 516, 15);
+    contenePane.add(lblNotice);
     //    checkBox.setVisible(false);
     try {
       this.setIconImage(ImageIO.read(MoreEngines.class.getResourceAsStream("/assets/logo.png")));
@@ -173,7 +184,8 @@ public class BatchShareFrame extends JDialog {
             String up = formatStr(txtUploader.getText());
             if (up.equals("")) {
               Message msg = new Message();
-              msg.setMessage("上传者为空,请先登录");
+              msg.setMessage(
+                  Lizzie.resourceBundle.getString("ShareFrame.emptyUploader")); // "上传者为空,请先登录");
               //   msg.setVisible(true);
               return;
             }
@@ -311,7 +323,7 @@ public class BatchShareFrame extends JDialog {
     if (!Lizzie.config.shareLabel5.equals("")) {
       cboxLabel.addItem(Lizzie.config.shareLabel5);
     }
-    cboxLabel.addItem("其他");
+    cboxLabel.addItem(Lizzie.resourceBundle.getString("ShareFrame.shareLabelOther")); // "其他");
     otherLabel.setEnabled(false);
     otherLabel.setText("");
     // cboxLabel.addItemListener(lis);

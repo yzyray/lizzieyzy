@@ -9,6 +9,7 @@ import featurecat.lizzie.gui.LizzieFrame;
 import featurecat.lizzie.gui.Message;
 import featurecat.lizzie.rules.Board;
 import featurecat.lizzie.rules.BoardData;
+import featurecat.lizzie.rules.BoardHistoryNode;
 import featurecat.lizzie.rules.Stone;
 import featurecat.lizzie.util.Utils;
 import java.awt.Component;
@@ -252,9 +253,6 @@ public class Leelaz {
       commandString = Utils.doDecrypt2(commandString);
     }
     this.engineCommand = commandString == null ? oriEngineCommand : commandString;
-    if (this.engineCommand.toLowerCase().contains("override-version")) {
-      this.isKatago = true;
-    }
     if (this.engineCommand.toLowerCase().contains("katajigo")) {
       this.noAnalyze = true;
     }
@@ -522,6 +520,8 @@ public class Leelaz {
 
   public void forceQuit() {
     isNormalEnd = true;
+    started = false;
+    isLoaded = false;
     leela0110StopPonder();
     //		if(isScreen)
     //			sendCommand("name");
@@ -540,8 +540,6 @@ public class Leelaz {
       } catch (Exception e) {
       }
     }
-    started = false;
-    isLoaded = false;
     outputStream = null;
   }
 
@@ -965,7 +963,7 @@ public class Leelaz {
         if (params[1].toLowerCase().startsWith("sai")) this.isSai = true;
         //				if (params[1].startsWith("KataGoYm"))
         //					sendCommandToLeelazWithOutLog("lizzie_use");
-        if (params[1].startsWith("KataGo") || isKatago) {
+        if (params[1].startsWith("KataGo")) {
           canAddPlayer = true;
           if (params[1].startsWith("KataGoPda")) {
             isKatagoCustom = true;
@@ -1003,6 +1001,7 @@ public class Leelaz {
           //	isLoaded = true;
           // Lizzie.frame.menu.showWRNandPDA(true);
         } else {
+          isKatago = false;
           setLeelaSaiEnginePara();
           // Lizzie.frame.menu.showWRNandPDA(false);
         }
@@ -1032,12 +1031,7 @@ public class Leelaz {
     if (Lizzie.gtpConsole.isVisible() || Lizzie.config.alwaysGtp)
       Lizzie.gtpConsole.addLine(line + "\n");
     else if (line.startsWith("PDA:")) {
-
-      String[] params = line.trim().split(" ");
-      if (params.length == 2) pda = Double.parseDouble(params[1]);
-      LizzieFrame.menu.txtPDA.setText(String.format(Locale.ENGLISH, "%.3f", pda));
-      if (LizzieFrame.menu.setPda != null)
-        LizzieFrame.menu.setPda.curPDA.setText(String.format(Locale.ENGLISH, "%.3f", pda));
+      parsePDALine(line);
     }
   }
 
@@ -1156,25 +1150,26 @@ public class Leelaz {
       if (isCheckingPda) {
         if (line.startsWith("pda:")) {
           isDymPda = true;
-
           String[] params = line.trim().split(" ");
-          if (params.length == 2) pda = Double.parseDouble(params[1]);
-          LizzieFrame.menu.txtPDA.setText(String.format(Locale.ENGLISH, "%.3f", pda));
-          if (LizzieFrame.menu.setPda != null)
-            LizzieFrame.menu.setPda.curPDA.setText(String.format(Locale.ENGLISH, "%.3f", pda));
-          if (Lizzie.config.chkAutoPDA) {
-            sendCommand(Lizzie.config.AutoPDA);
-            if (Lizzie.config.chkDymPDA) {
-              this.pdaCap = Double.parseDouble(Lizzie.config.dymPDACap.trim());
-              if (LizzieFrame.menu.setPda != null)
-                LizzieFrame.menu.setPda.txtDymCap.setText(Lizzie.config.dymPDACap);
-            }
-            if (Lizzie.config.chkStaticPDA) {
-              LizzieFrame.menu.txtPDA.setText(Lizzie.config.staticPDAcur);
-              isStaticPda = true;
-              this.pda = Double.parseDouble(Lizzie.config.staticPDAcur.trim());
-            } else {
-              isStaticPda = false;
+          if (params.length == 2) {
+            pda = Double.parseDouble(params[1]);
+            LizzieFrame.menu.txtPDA.setText(String.format(Locale.ENGLISH, "%.3f", pda));
+            if (LizzieFrame.menu.setPda != null)
+              LizzieFrame.menu.setPda.curPDA.setText(String.format(Locale.ENGLISH, "%.3f", pda));
+            if (Lizzie.config.chkAutoPDA) {
+              sendCommand(Lizzie.config.AutoPDA);
+              if (Lizzie.config.chkDymPDA) {
+                this.pdaCap = Double.parseDouble(Lizzie.config.dymPDACap.trim());
+                if (LizzieFrame.menu.setPda != null)
+                  LizzieFrame.menu.setPda.txtDymCap.setText(Lizzie.config.dymPDACap);
+              }
+              if (Lizzie.config.chkStaticPDA) {
+                LizzieFrame.menu.txtPDA.setText(Lizzie.config.staticPDAcur);
+                isStaticPda = true;
+                this.pda = Double.parseDouble(Lizzie.config.staticPDAcur.trim());
+              } else {
+                isStaticPda = false;
+              }
             }
           }
           if (!EngineManager.isEngineGame && this == Lizzie.leelaz) ponder();
@@ -1218,13 +1213,7 @@ public class Leelaz {
       }
       if (this.isKatago) {
         if (line.startsWith("PDA:")) {
-
-          // String[] params = line.trim().split(",");
-          String[] params = line.trim().split(" ");
-          if (params.length == 2) pda = Double.parseDouble(params[1]);
-          LizzieFrame.menu.txtPDA.setText(String.format(Locale.ENGLISH, "%.3f", pda));
-          if (LizzieFrame.menu.setPda != null)
-            LizzieFrame.menu.setPda.curPDA.setText(String.format(Locale.ENGLISH, "%.3f", pda));
+          parsePDALine(line);
         }
       } else {
         if (line.startsWith("| ST")) {
@@ -1367,7 +1356,7 @@ public class Leelaz {
               Lizzie.frame.zen.sendAndEstimate(command, false);
             }
           }
-          if (Lizzie.frame.isPlayingAgainstLeelaz && isResponseUpToDate()) {
+          if (Lizzie.frame.isPlayingAgainstLeelaz && isResponseUpToPreDate()) {
             if (params[1].startsWith("resign")) {
               if (Lizzie.frame.playerIsBlack) {
 
@@ -1437,7 +1426,7 @@ public class Leelaz {
           }
           //						if (params[1].startsWith("KataGoYm"))
           //							sendCommandToLeelazWithOutLog("lizzie_use");
-          if (params[1].startsWith("KataGo") || isKatago) {
+          if (params[1].startsWith("KataGo")) {
             canAddPlayer = true;
             if (Lizzie.config.firstLoadKataGo) {
               Lizzie.config.firstLoadKataGo = false;
@@ -1495,6 +1484,7 @@ public class Leelaz {
               else LizzieFrame.menu.changeEngineIcon(currentEngineN, 2);
             }
           } else {
+            isKatago = false;
             setLeelaSaiEnginePara();
           }
           if (params[1].toLowerCase().startsWith("katajigo")) {
@@ -1534,6 +1524,16 @@ public class Leelaz {
         isCommandLine = true;
       }
       parseHeatMap(line);
+    }
+  }
+
+  private void parsePDALine(String line) {
+    String[] params = line.trim().split(" ");
+    if (params.length == 2) {
+      pda = Double.parseDouble(params[1]);
+      LizzieFrame.menu.txtPDA.setText(String.format(Locale.ENGLISH, "%.3f", pda));
+      if (LizzieFrame.menu.setPda != null)
+        LizzieFrame.menu.setPda.curPDA.setText(String.format(Locale.ENGLISH, "%.3f", pda));
     }
   }
 
@@ -1891,6 +1891,7 @@ public class Leelaz {
     }
     if (shouldPlay) {
       played = true;
+      playNow = false;
       if ((curWR < resignWinrate) && Lizzie.board.getHistory().getMoveNumber() > minMove) {
         if (isBlackEngine) {
           blackResignMoveCounts = blackResignMoveCounts + 1;
@@ -3710,5 +3711,15 @@ public class Leelaz {
 
   public boolean isProcessDead() {
     return Lizzie.leelaz.process != null && !Lizzie.leelaz.process.isAlive();
+  }
+
+  public void maybeAjustPDA(BoardHistoryNode node) {
+    // TODO Auto-generated method stub
+    if (!isDymPda) return;
+    if (Lizzie.board.isFirstWhiteNodeWithHandicap(node)) {
+      if (Lizzie.config.chkAutoPDA) sendCommand(Lizzie.config.AutoPDA);
+      else sendCommand("dympdacap " + pdaCap);
+      if (isPondering()) ponder(true, !Lizzie.board.getHistory().isBlacksTurn());
+    }
   }
 }

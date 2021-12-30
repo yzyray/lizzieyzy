@@ -41,12 +41,7 @@ import org.json.JSONArray;
 
 @SuppressWarnings("serial")
 public class AnalysisFrame extends JFrame {
-  private final ResourceBundle resourceBundle =
-      Lizzie.config.useLanguage == 0
-          ? ResourceBundle.getBundle("l10n.DisplayStrings")
-          : (Lizzie.config.useLanguage == 1
-              ? ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("zh", "CN"))
-              : ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("en", "US")));
+  private final ResourceBundle resourceBundle = Lizzie.resourceBundle;;
   TableModel dataModel;
   JScrollPane scrollpane;
   JPanel topPanel;
@@ -95,8 +90,8 @@ public class AnalysisFrame extends JFrame {
     }
     table = new JTable(dataModel);
 
-    winrateFont = new Font("Microsoft YaHei", Font.BOLD, Math.max(Config.frameFontSize, 14));
-    headFont = new Font("Microsoft YaHei", Font.PLAIN, Math.max(Config.frameFontSize, 13));
+    winrateFont = new Font(Lizzie.config.uiFontName, Font.BOLD, Math.max(Config.frameFontSize, 14));
+    headFont = new Font(Lizzie.config.uiFontName, Font.PLAIN, Math.max(Config.frameFontSize, 13));
 
     table.getTableHeader().setFont(headFont);
     table.getTableHeader().setReorderingAllowed(false);

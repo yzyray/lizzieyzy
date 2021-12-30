@@ -22,7 +22,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.Locale;
 import java.util.ResourceBundle;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -31,25 +30,22 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 
 public class EstimateResults extends JDialog {
-  private final ResourceBundle resourceBundle =
-      Lizzie.config.useLanguage == 0
-          ? ResourceBundle.getBundle("l10n.DisplayStrings")
-          : (Lizzie.config.useLanguage == 1
-              ? ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("zh", "CN"))
-              : ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("en", "US")));
-  public int allblackcounts = 0;
-  public int allwhitecounts = 0;
+  private final ResourceBundle resourceBundle = Lizzie.resourceBundle;
+  public int allBlackCounts = 0;
+  public int allWhiteCounts = 0;
 
   int blackPoints = 0;
   int whitePoints = 0;
   private boolean isBlackToPlay = true;
 
-  int blackEat = 0;
-  int whiteEat = 0;
   int blackAlives = 0;
   int whiteAlives = 0;
   int allBlackAreas = 0;
   int allWhiteAreas = 0;
+  int blackTerritory = 0;
+  int whiteTerritory = 0;
+  int blackCaptured = 0;
+  int whiteCaptured = 0;
   JPanel buttonpanel = new JPanel();
   // private BufferedImage cachedImage;
   public boolean iscounted = false;
@@ -59,7 +55,7 @@ public class EstimateResults extends JDialog {
   public JButton btnAuto =
       new JButton(resourceBundle.getString("EstimateResults.autoEstimate")); // "自动判断");
   private JButton btnArea =
-      new JButton(resourceBundle.getString("EstimateResults.areas")); // "数子模式");
+      new JButton(resourceBundle.getString("EstimateResults.areaMode")); // "数子模式");
   public JButton btnSettings;
   private BufferedImage cachedBackgroundImage;
   private TexturePaint paint;
@@ -71,7 +67,7 @@ public class EstimateResults extends JDialog {
     this.setResizable(false);
     this.setTitle(resourceBundle.getString("EstimateResults.title")); // "Zen形式判断");
     if (Lizzie.config.estimateArea)
-      btnArea.setText(resourceBundle.getString("EstimateResults.territory")); // "数目模式");
+      btnArea.setText(resourceBundle.getString("EstimateResults.territoryMode")); // "数目模式");
     this.addWindowListener(
         new WindowAdapter() {
           public void windowClosing(WindowEvent e) {
@@ -176,12 +172,12 @@ public class EstimateResults extends JDialog {
             // setSize(220,260);
             Lizzie.config.estimateArea = !Lizzie.config.estimateArea;
             if (Lizzie.config.estimateArea) {
-              btnArea.setText(resourceBundle.getString("EstimateResults.territory"));
+              btnArea.setText(resourceBundle.getString("EstimateResults.territoryMode"));
               if (!Lizzie.config.useZenEstimate)
                 Lizzie.frame.zen.sendCommand("kata-set-rules chinese");
               // "数目模式");
             } else {
-              btnArea.setText(resourceBundle.getString("EstimateResults.areas"));
+              btnArea.setText(resourceBundle.getString("EstimateResults.areaMode"));
               if (!Lizzie.config.useZenEstimate)
                 Lizzie.frame.zen.sendCommand("kata-set-rules japanese");
               // "数子模式");
@@ -259,30 +255,31 @@ public class EstimateResults extends JDialog {
       int whiteEatCount,
       int blackPrisonerCount,
       int whitePrisonerCount,
-      int blackpont,
-      int whitepoint,
+      int blackPoints,
+      int whitePoints,
       int blackAlive,
       int whiteAlive) {
     // synchronized (this) {
-    allblackcounts = 0;
-    allwhitecounts = 0;
-    blackEat = 0;
-    whiteEat = 0;
+    allBlackCounts = 0;
+    allWhiteCounts = 0;
     this.isBlackToPlay = Lizzie.board.getHistory().getData().blackToPlay;
 
-    allblackcounts = blackpont + blackEatCount + whitePrisonerCount;
-    allwhitecounts = whitepoint + whiteEatCount + blackPrisonerCount;
+    allBlackCounts = blackPoints + blackEatCount + whitePrisonerCount;
+    allWhiteCounts = whitePoints + whiteEatCount + blackPrisonerCount;
 
-    this.blackPoints = blackpont;
-    this.whitePoints = whitepoint;
+    this.blackPoints = blackPoints;
+    this.whitePoints = whitePoints;
 
-    allBlackAreas = blackAlive + blackpont;
-    allWhiteAreas = whiteAlive + whitepoint;
+    allBlackAreas = blackAlive + blackPoints;
+    allWhiteAreas = whiteAlive + whitePoints;
 
-    blackEat = blackEatCount;
-    whiteEat = whiteEatCount;
     blackAlives = blackAlive;
     whiteAlives = whiteAlive;
+
+    blackTerritory = blackPoints;
+    whiteTerritory = whitePoints;
+    blackCaptured = blackPrisonerCount + whiteEatCount;
+    whiteCaptured = whitePrisonerCount + blackEatCount;
     if (!Lizzie.frame.isAutocounting) {
       btnEstimate.setText(resourceBundle.getString("EstimateResults.closeEstimate")); // "关闭判断");
       iscounted = true;
@@ -336,7 +333,8 @@ public class EstimateResults extends JDialog {
     int lead = Math.abs(allBlackAreas - allWhiteAreas);
     boolean estimateAreaBlackLead = false;
     if (Lizzie.config.estimateArea) {
-      g2.setFont(new Font("SimHei", Font.PLAIN, 20));
+      g2.setFont(
+          new Font(Lizzie.config.isChinese ? "SimHei" : Lizzie.config.uiFontName, Font.PLAIN, 20));
       if (lead < 20) {
         if (allBlackAreas >= allWhiteAreas
             && allBlackAreas - (allWhiteAreas + (this.isBlackToPlay ? 0 : 1)) >= 0) {
@@ -372,8 +370,9 @@ public class EstimateResults extends JDialog {
         }
       }
     } else {
-      g2.setFont(new Font("SimHei", Font.PLAIN, 23));
-      if (allblackcounts >= allwhitecounts) {
+      g2.setFont(
+          new Font(Lizzie.config.isChinese ? "SimHei" : Lizzie.config.uiFontName, Font.PLAIN, 23));
+      if (allBlackCounts >= allWhiteCounts) {
         g2.setColor(Color.BLACK);
         g2.drawString(resourceBundle.getString("EstimateResults.Black"), 29, topCap + 52);
       } else {
@@ -384,7 +383,8 @@ public class EstimateResults extends JDialog {
     // allFont = new Font("allFont", Font.BOLD, 20);
     g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
     if (Lizzie.config.estimateArea) {
-      g2.setFont(new Font("SimHei", Font.PLAIN, 17));
+      g2.setFont(
+          new Font(Lizzie.config.isChinese ? "SimHei" : Lizzie.config.uiFontName, Font.PLAIN, 17));
 
       if (lead < 20)
         g2.drawString(
@@ -427,11 +427,12 @@ public class EstimateResults extends JDialog {
             topCap + 50);
 
     } else {
-      g2.setFont(new Font("SimHei", Font.PLAIN, 20));
+      g2.setFont(
+          new Font(Lizzie.config.isChinese ? "SimHei" : Lizzie.config.uiFontName, Font.PLAIN, 20));
       g2.drawString(
           "  "
               + resourceBundle.getString("EstimateResults.lead")
-              + Math.abs(allblackcounts - allwhitecounts)
+              + Math.abs(allBlackCounts - allWhiteCounts)
               + resourceBundle.getString("EstimateResults.points"),
           53,
           topCap + 51);
@@ -443,41 +444,44 @@ public class EstimateResults extends JDialog {
       sumB = blackAlives + blackPoints;
       sumW = whiteAlives + whitePoints;
     } else {
-      sumB = allblackcounts + blackEat;
-      sumW = allwhitecounts + whiteEat;
+      sumB = blackTerritory - blackCaptured;
+      sumW = whiteTerritory - whiteCaptured;
     }
     g2.setColor(Color.BLACK);
-    g2.setFont(new Font("SimHei", Font.PLAIN, 17));
+    g2.setFont(
+        new Font(Lizzie.config.isChinese ? "SimHei" : Lizzie.config.uiFontName, Font.PLAIN, 17));
     g2.drawString(
         Lizzie.config.estimateArea
-            ? resourceBundle.getString("EstimateResults.area2")
-            : resourceBundle.getString("EstimateResults.points2"),
+            ? resourceBundle.getString("EstimateResults.areaPoints")
+            : resourceBundle.getString("EstimateResults.territoryPoints"),
         Lizzie.config.isChinese ? 112 : 95,
         topCap + 104);
     g2.drawString(
         Lizzie.config.estimateArea
-            ? resourceBundle.getString("EstimateResults.alives")
-            : resourceBundle.getString("EstimateResults.captures"),
+            ? resourceBundle.getString("EstimateResults.areaAlives")
+            : resourceBundle.getString("EstimateResults.territoryCaptured"),
         Lizzie.config.isChinese ? 112 : 95,
         topCap + 130);
     g2.drawString(
-        resourceBundle.getString("EstimateResults.sums"),
+        Lizzie.config.estimateArea
+            ? resourceBundle.getString("EstimateResults.areaSums")
+            : resourceBundle.getString("EstimateResults.territoryDifference"),
         Lizzie.config.isChinese ? 112 : 95,
         topCap + 156);
 
-    if ((Lizzie.config.estimateArea ? blackPoints : allblackcounts) < 10)
+    if ((Lizzie.config.estimateArea ? blackPoints : blackTerritory) < 10)
       g2.drawString(
-          (String.valueOf(Lizzie.config.estimateArea ? blackPoints : allblackcounts)),
+          (String.valueOf(Lizzie.config.estimateArea ? blackPoints : blackTerritory)),
           37,
           topCap + 104); // 黑目数
-    else if ((Lizzie.config.estimateArea ? blackPoints : allblackcounts) < 100)
+    else if ((Lizzie.config.estimateArea ? blackPoints : blackTerritory) < 100)
       g2.drawString(
-          (String.valueOf(Lizzie.config.estimateArea ? blackPoints : allblackcounts)),
+          (String.valueOf(Lizzie.config.estimateArea ? blackPoints : blackTerritory)),
           33,
           topCap + 104); // 黑目数
     else
       g2.drawString(
-          (String.valueOf(Lizzie.config.estimateArea ? blackPoints : allblackcounts)),
+          (String.valueOf(Lizzie.config.estimateArea ? blackPoints : blackTerritory)),
           29,
           topCap + 104); // 黑目数
 
@@ -487,9 +491,10 @@ public class EstimateResults extends JDialog {
         g2.drawString(String.valueOf(blackAlives), 33, topCap + 130); // 黑活子
       else g2.drawString(String.valueOf(blackAlives), 29, topCap + 130); // 黑活子
     } else {
-      if (blackEat < 10) g2.drawString(String.valueOf(blackEat), 37, topCap + 130); // 黑提子
-      else if (blackEat < 100) g2.drawString(String.valueOf(blackEat), 33, topCap + 130); // 黑提子
-      else g2.drawString(String.valueOf(blackEat), 29, topCap + 130); // 黑提子
+      if (blackCaptured < 10) g2.drawString(String.valueOf(blackCaptured), 37, topCap + 130); // 黑提子
+      else if (blackCaptured < 100)
+        g2.drawString(String.valueOf(blackCaptured), 33, topCap + 130); // 黑提子
+      else g2.drawString(String.valueOf(blackCaptured), 29, topCap + 130); // 黑提子
     }
 
     if (sumB < 10) g2.drawString(String.valueOf(sumB), 37, topCap + 156);
@@ -498,19 +503,19 @@ public class EstimateResults extends JDialog {
 
     g2.setColor(Color.WHITE);
 
-    if ((Lizzie.config.estimateArea ? whitePoints : allwhitecounts) < 10)
+    if ((Lizzie.config.estimateArea ? whitePoints : whiteTerritory) < 10)
       g2.drawString(
-          (String.valueOf(Lizzie.config.estimateArea ? whitePoints : allwhitecounts)),
+          (String.valueOf(Lizzie.config.estimateArea ? whitePoints : whiteTerritory)),
           206,
           topCap + 104); // 白目数
-    else if ((Lizzie.config.estimateArea ? whitePoints : allwhitecounts) < 100)
+    else if ((Lizzie.config.estimateArea ? whitePoints : whiteTerritory) < 100)
       g2.drawString(
-          (String.valueOf(Lizzie.config.estimateArea ? whitePoints : allwhitecounts)),
+          (String.valueOf(Lizzie.config.estimateArea ? whitePoints : whiteTerritory)),
           202,
           topCap + 104); // 白目数
     else
       g2.drawString(
-          (String.valueOf(Lizzie.config.estimateArea ? whitePoints : allwhitecounts)),
+          (String.valueOf(Lizzie.config.estimateArea ? whitePoints : whiteTerritory)),
           198,
           topCap + 104); // 白目数
 
@@ -520,9 +525,11 @@ public class EstimateResults extends JDialog {
         g2.drawString(String.valueOf(whiteAlives), 202, topCap + 130); // 白活子
       else g2.drawString(String.valueOf(whiteAlives), 198, topCap + 130); // 白活子
     } else {
-      if (whiteEat < 10) g2.drawString(String.valueOf(whiteEat), 206, topCap + 130); // 白提子
-      else if (whiteEat < 100) g2.drawString(String.valueOf(whiteEat), 202, topCap + 130); // 白提子
-      else g2.drawString(String.valueOf(whiteEat), 198, topCap + 130); // 白提子
+      if (whiteCaptured < 10)
+        g2.drawString(String.valueOf(whiteCaptured), 206, topCap + 130); // 白提子
+      else if (whiteCaptured < 100)
+        g2.drawString(String.valueOf(whiteCaptured), 202, topCap + 130); // 白提子
+      else g2.drawString(String.valueOf(whiteCaptured), 198, topCap + 130); // 白提子
     }
 
     if (sumW < 10) g2.drawString(String.valueOf(sumW), 206, topCap + 156);

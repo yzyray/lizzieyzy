@@ -5,7 +5,6 @@ import featurecat.lizzie.Lizzie;
 import java.awt.Font;
 import java.awt.Window;
 import java.io.IOException;
-import java.util.Locale;
 import java.util.ResourceBundle;
 import javax.imageio.ImageIO;
 import javax.swing.JDialog;
@@ -13,12 +12,7 @@ import javax.swing.JLabel;
 
 public class Message extends JDialog {
   JLabel lblmessage;
-  private final ResourceBundle resourceBundle =
-      Lizzie.config.useLanguage == 0
-          ? ResourceBundle.getBundle("l10n.DisplayStrings")
-          : (Lizzie.config.useLanguage == 1
-              ? ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("zh", "CN"))
-              : ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("en", "US")));
+  private final ResourceBundle resourceBundle = Lizzie.resourceBundle;
 
   public Message() {
     // this.setModal(true);

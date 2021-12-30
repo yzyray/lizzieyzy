@@ -92,8 +92,7 @@ public class SocketCheckVersion {
             String remoteVersion = params[1];
             String remoteVersionDis = params[2];
             if (Integer.parseInt(remoteVersion) <= Integer.parseInt(Lizzie.checkVersion)
-                || Integer.parseInt(remoteVersion)
-                    <= Integer.parseInt(Lizzie.config.ignoreVersion)) {
+                || Integer.parseInt(remoteVersion) <= Lizzie.config.ignoreVersion) {
               if (!isAutoCheck) {
                 CheckVersion checkVersion =
                     new CheckVersion(false, remoteVersion, remoteVersionDis);
@@ -108,7 +107,7 @@ public class SocketCheckVersion {
               //              msg = new SMessage();
               //              msg.setMessage(
               //
-              // "检查更新失败,请重试或下载最新版Lizzie,链接:https://pan.baidu.com/s/1q615GHD62F92mNZbTYfcxA");
+              // "检查更新失败,请重试或下载最新版Lizzie,链接:https://aistudio.baidu.com/aistudio/datasetdetail/116865");
               Utils.showMsg(Lizzie.resourceBundle.getString("Socket.connectFailed"));
             }
             // msg.setVisible(true);

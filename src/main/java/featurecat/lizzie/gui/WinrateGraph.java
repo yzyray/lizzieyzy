@@ -182,7 +182,7 @@ public class WinrateGraph {
       g.drawLine(x, posy, x, posy + height);
       g.setStroke(previousStroke);
       String moveNumString =
-          "" + Lizzie.board.getHistory().getCurrentHistoryNode().getData().moveNumber;
+          String.valueOf(Lizzie.board.getHistory().getCurrentHistoryNode().getData().moveNumber);
       //  int mw = g.getFontMetrics().stringWidth(moveNumString);
       int margin = strokeRadius;
       //      int mx = x - posx < width / 2 ? x + margin : x - mw - margin;
@@ -422,7 +422,7 @@ public class WinrateGraph {
               g.setColor(Color.WHITE);
               g.drawLine(x, posy, x, posy + height);
               // Show move number
-              String moveNumString = "" + node.getData().moveNumber;
+              String moveNumString = String.valueOf(node.getData().moveNumber);
               //    int mw = g.getFontMetrics().stringWidth(moveNumString);
               int margin = strokeRadius;
               // int mx = x - posx < width / 2 ? x + margin : x - mw - margin;
@@ -431,7 +431,7 @@ public class WinrateGraph {
                 g.setFont(f);
                 g.setColor(Color.BLACK);
                 int moveNum = node.getData().moveNumber;
-                if (wr < 10) {
+                if (wr < 3) {
                   int fontHeight = g.getFontMetrics().getAscent() - g.getFontMetrics().getDescent();
                   if (moveNum < 10)
                     g.drawString(
@@ -599,7 +599,7 @@ public class WinrateGraph {
             g.setFont(f);
             g.setColor(Color.BLACK);
             int moveNum = node.getData().moveNumber;
-            if (wr < 10) {
+            if (wr < 3) {
               int fontHeight = g.getFontMetrics().getAscent() - g.getFontMetrics().getDescent();
               if (moveNum < 10)
                 g.drawString(
@@ -1097,7 +1097,7 @@ public class WinrateGraph {
             if (!node.getData().blackToPlay) {
               curscoreMean = -curscoreMean;
             }
-            if (Lizzie.config.scoreMeanWinrateGraphBoard)
+            if (Lizzie.config.showKataGoScoreLeadWithKomi)
               curscoreMean = curscoreMean + Lizzie.board.getHistory().getGameInfo().getKomi();
             //            if (Math.abs(curscoreMean) > maxcoreMean)
             //            	maxcoreMean = Math.abs(curscoreMean);
@@ -1328,6 +1328,11 @@ public class WinrateGraph {
 
   public void clearMouseOverNode() {
     mouseOverNode = null;
+  }
+
+  public void clearParames() {
+    origParams = new int[] {0, 0, 0, 0};
+    params = new int[] {0, 0, 0, 0, 0};
   }
 
   public int moveNumber(int x, int y) {

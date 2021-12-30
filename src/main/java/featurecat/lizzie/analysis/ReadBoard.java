@@ -33,7 +33,7 @@ public class ReadBoard {
   // private long startSyncTime = 0;
 
   public boolean isLoaded = false;
-  private int version = 1108;
+  private int version = 1206;
   private String engineCommand;
   public String currentEnginename = "";
   private int port = -1;

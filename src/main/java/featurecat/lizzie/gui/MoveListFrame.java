@@ -310,8 +310,8 @@ public class MoveListFrame extends JFrame {
     dataModel = getTableModel();
     table = new JTable(dataModel);
 
-    winrateFont = new Font("Microsoft YaHei", Font.BOLD, Math.max(Config.frameFontSize, 14));
-    headFont = new Font("Microsoft YaHei", Font.PLAIN, Math.max(Config.frameFontSize, 13));
+    winrateFont = new Font(Lizzie.config.uiFontName, Font.BOLD, Math.max(Config.frameFontSize, 14));
+    headFont = new Font(Lizzie.config.uiFontName, Font.PLAIN, Math.max(Config.frameFontSize, 13));
 
     table.getTableHeader().setFont(headFont);
     table.getTableHeader().setReorderingAllowed(false);
@@ -418,8 +418,7 @@ public class MoveListFrame extends JFrame {
     statisticsGraph.add(keyPanel);
     statisticsGraph.add(lossPanel);
 
-    chkCurrent =
-        new JCheckBox(Lizzie.resourceBundle.getString("Movelistframe.lblShowBranchItemCurrent"));
+    chkCurrent = new JCheckBox(Lizzie.resourceBundle.getString("Movelistframe.current"));
     chkCurrent.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
@@ -5808,7 +5807,7 @@ public class MoveListFrame extends JFrame {
               if (!node.getData().blackToPlay) {
                 curscoreMean = -curscoreMean;
               }
-              if (Lizzie.config.scoreMeanWinrateGraphBoard)
+              if (Lizzie.config.showKataGoScoreLeadWithKomi)
                 curscoreMean = curscoreMean + Lizzie.board.getHistory().getGameInfo().getKomi();
 
               if (node == curMove) {

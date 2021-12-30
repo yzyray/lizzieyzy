@@ -12,7 +12,6 @@ import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
-import java.util.Locale;
 import java.util.ResourceBundle;
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
@@ -26,12 +25,7 @@ import javax.swing.UIManager;
 
 public class CheckVersion extends JDialog {
   JDialog dialog = this;
-  private final ResourceBundle resourceBundle =
-      Lizzie.config.useLanguage == 0
-          ? ResourceBundle.getBundle("l10n.DisplayStrings")
-          : (Lizzie.config.useLanguage == 1
-              ? ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("zh", "CN"))
-              : ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("en", "US")));
+  private final ResourceBundle resourceBundle = Lizzie.resourceBundle;
 
   public CheckVersion(boolean hasNewVersion, String remoteVersion, String newVersionDis) {
     this.setModal(true);
@@ -95,7 +89,7 @@ public class CheckVersion extends JDialog {
     txtpnhttpspanbaiducomsqghdfmnzbtyfcxa.setBackground(UIManager.getColor("Button.background"));
     txtpnhttpspanbaiducomsqghdfmnzbtyfcxa.setText(
         resourceBundle.getString("CheckVersion.download")
-            + "https://pan.baidu.com/s/1q615GHD62F92mNZbTYfcxA"
+            + "https://aistudio.baidu.com/aistudio/datasetdetail/116865"
             + resourceBundle.getString("CheckVersion.download2"));
     scrollPane_1.setViewportView(txtpnhttpspanbaiducomsqghdfmnzbtyfcxa);
     txtpnhttpspanbaiducomsqghdfmnzbtyfcxa.setCaretPosition(0);
@@ -113,7 +107,7 @@ public class CheckVersion extends JDialog {
             try {
               Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
               Transferable transferableString =
-                  new StringSelection("https://pan.baidu.com/s/1q615GHD62F92mNZbTYfcxA");
+                  new StringSelection("https://aistudio.baidu.com/aistudio/datasetdetail/116865");
               clipboard.setContents(transferableString, null);
               JOptionPane.showMessageDialog(
                   dialog, resourceBundle.getString("CheckVersion.copySuccess"));
@@ -152,7 +146,7 @@ public class CheckVersion extends JDialog {
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             setVisible(false);
-            Lizzie.config.ignoreVersion = remoteVersion;
+            Lizzie.config.ignoreVersion = Integer.parseInt(remoteVersion);
             Lizzie.config.uiConfig.put("ignore-version", Lizzie.config.ignoreVersion);
           }
         });

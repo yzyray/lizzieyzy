@@ -68,17 +68,6 @@ public class Lizzie {
     } catch (IOException | FontFormatException e) {
       e.printStackTrace();
     }
-    if (Lizzie.config.uiFontName != null
-        && !(Lizzie.config.uiFontName.equals("Lizzie默认")
-            || Lizzie.config.uiFontName.equals("Lizzie Default"))) {
-      LizzieFrame.uiFont = new Font(Lizzie.config.uiFontName, Font.PLAIN, 12);
-    }
-    LizzieFrame.playoutsFont = new Font(Lizzie.config.fontName, Font.PLAIN, 12);
-    if (Lizzie.config.winrateFontName != null
-        && !(Lizzie.config.winrateFontName.equals("Lizzie默认")
-            || Lizzie.config.winrateFontName.equals("Lizzie Default"))) {
-      LizzieFrame.winrateFont = new Font(Lizzie.config.winrateFontName, Font.BOLD, 12);
-    }
     if (config.logConsoleToFile) {
       PrintStream oldPrintStream = System.out;
       FileOutputStream bos =
@@ -129,6 +118,10 @@ public class Lizzie {
         resourceBundle = ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("zh", "CN"));
       else if (config.useLanguage == 2)
         resourceBundle = ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("en", "US"));
+      else if (config.useLanguage == 3)
+        resourceBundle = ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("ko"));
+      else if (config.useLanguage == 4)
+        resourceBundle = ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("ja", "JP"));
       config.isChinese = (resourceBundle.getString("Lizzie.isChinese")).equals("yes");
       FirstUseSettings firstUseSettings = new FirstUseSettings(true);
       firstUseSettings.setVisible(true);
@@ -137,8 +130,23 @@ public class Lizzie {
       resourceBundle = ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("zh", "CN"));
     else if (config.useLanguage == 2)
       resourceBundle = ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("en", "US"));
-
+    else if (config.useLanguage == 3)
+      resourceBundle = ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("ko"));
+    else if (config.useLanguage == 4)
+      resourceBundle = ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("ja", "JP"));
     config.isChinese = (resourceBundle.getString("Lizzie.isChinese")).equals("yes");
+    if (config.theme.uiFontName() != null) config.uiFontName = config.theme.uiFontName();
+    if (Lizzie.config.uiFontName != null
+        && !(Lizzie.config.uiFontName.equals("Lizzie默认")
+            || Lizzie.config.uiFontName.equals("Lizzie Default"))) {
+      LizzieFrame.uiFont = new Font(Lizzie.config.uiFontName, Font.PLAIN, 12);
+    }
+    LizzieFrame.playoutsFont = new Font(Lizzie.config.fontName, Font.PLAIN, 12);
+    if (Lizzie.config.winrateFontName != null
+        && !(Lizzie.config.winrateFontName.equals("Lizzie默认")
+            || Lizzie.config.winrateFontName.equals("Lizzie Default"))) {
+      LizzieFrame.winrateFont = new Font(Lizzie.config.winrateFontName, Font.BOLD, 12);
+    }
     config.shareLabel1 =
         config.uiConfig.optString(
             "share-label-1", resourceBundle.getString("ShareFrame.shareLabel1"));
@@ -149,21 +157,23 @@ public class Lizzie {
         config.uiConfig.optString(
             "share-label-3", resourceBundle.getString("ShareFrame.shareLabel3"));
     if (Lizzie.config.uiConfig.optBoolean("autoload-default", false)) {
-      int defaultEngine = Lizzie.config.uiConfig.optInt("default-engine", -1);
-      start(defaultEngine);
+      start(-1, true);
+    } else if (Lizzie.config.uiConfig.optBoolean("autoload-last", false)) {
+      int lastEngine = Lizzie.config.uiConfig.optInt("last-engine", -1);
+      start(lastEngine, false);
     } else if (Lizzie.config.uiConfig.optBoolean("autoload-empty", false)) {
-      start(-1);
+      start(-1, false);
     } else {
       if (mainArgs.length == 1) {
         if (mainArgs[0].equals("read")) {
           readMode = true;
           config.showStatus = false;
-          start(-1);
+          start(-1, false);
           return;
         }
       }
       if (Utils.getEngineData().isEmpty()) {
-        start(-1);
+        start(-1, false);
       } else {
         loadEngine = LoadEngine.createDialog();
         loadEngine.setVisible(true);
@@ -188,7 +198,7 @@ public class Lizzie {
     firstUseSettings.setVisible(true);
   }
 
-  public static void start(int index) {
+  public static void start(int index, boolean loadDefault) {
     board = new Board();
     frame = new LizzieFrame();
     LizzieFrame.menu.doubleMenu(true);
@@ -225,13 +235,13 @@ public class Lizzie {
               e2.printStackTrace();
             }
             try {
-              Lizzie.engineManager = new EngineManager(Lizzie.config, index);
+              Lizzie.engineManager = new EngineManager(Lizzie.config, index, loadDefault);
             } catch (Exception e) {
               try {
                 Message msg = new Message();
                 msg.setMessage(resourceBundle.getString("Lizzie.engineFailed"));
                 //  msg.setVisible(true);
-                Lizzie.engineManager = new EngineManager(Lizzie.config, -1);
+                Lizzie.engineManager = new EngineManager(Lizzie.config, -1, false);
                 //  frame.refresh();
               } catch (JSONException e1) {
                 // TODO Auto-generated catch block
@@ -258,36 +268,28 @@ public class Lizzie {
                 oldfile2.renameTo(newfile2);
               }
             }
-
-            Runnable runnable2 =
-                new Runnable() {
-                  public void run() {
-                    if (Lizzie.config.loadEstimateEngine) {
-                      try {
-                        frame.zen = new KataEstimate(true);
-                      } catch (IOException e1) {
-                        e1.printStackTrace();
-                      }
-                    }
-                    if (Lizzie.config.analysisEnginePreLoad) {
-                      try {
-                        frame.analysisEngine = new AnalysisEngine(true);
-                      } catch (IOException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                      }
-                    }
-                    if (config.autoCheckVersion) {
-                      String date = new SimpleDateFormat("yyyyMMdd").format(new Date());
-                      if (!config.autoCheckDate.equals(date)) {
-                        SocketCheckVersion socketCheckVersion = new SocketCheckVersion();
-                        socketCheckVersion.SocketCheckVersion(true);
-                      }
-                    }
-                  }
-                };
-            Thread thread2 = new Thread(runnable2);
-            thread2.start();
+            if (Lizzie.config.loadEstimateEngine) {
+              try {
+                frame.zen = new KataEstimate(true);
+              } catch (IOException e1) {
+                e1.printStackTrace();
+              }
+            }
+            if (Lizzie.config.analysisEnginePreLoad) {
+              try {
+                frame.analysisEngine = new AnalysisEngine(true);
+              } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+              }
+            }
+            if (config.autoCheckVersion) {
+              String date = new SimpleDateFormat("yyyyMMdd").format(new Date());
+              if (!config.autoCheckDate.equals(date)) {
+                SocketCheckVersion socketCheckVersion = new SocketCheckVersion();
+                socketCheckVersion.SocketCheckVersion(true);
+              }
+            }
           }
         });
   }
@@ -406,7 +408,7 @@ public class Lizzie {
     //    }
     if (config.autoSaveOnExit) frame.saveAutoGame(1);
     if (Lizzie.config.uiConfig.optBoolean("autoload-last", false)) {
-      Lizzie.config.uiConfig.put("default-engine", EngineManager.currentEngineNo);
+      Lizzie.config.uiConfig.put("last-engine", EngineManager.currentEngineNo);
     }
     try {
       config.persist();

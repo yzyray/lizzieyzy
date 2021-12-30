@@ -69,12 +69,7 @@ public class OtherPrograms extends JPanel {
   public String engineSacnName = "";
   public String weightPath = "";
   public String commandHelp = "";
-  private final ResourceBundle resourceBundle =
-      Lizzie.config.useLanguage == 0
-          ? ResourceBundle.getBundle("l10n.DisplayStrings")
-          : (Lizzie.config.useLanguage == 1
-              ? ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("zh", "CN"))
-              : ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("en", "US")));
+  private final ResourceBundle resourceBundle = Lizzie.resourceBundle;
   private String osName;
 
   public OtherPrograms() {
@@ -86,8 +81,9 @@ public class OtherPrograms extends JPanel {
     dataModel = getTableModel();
     table = new JTable(dataModel);
     selectpanel.setLayout(null);
-    winrateFont = new Font("Microsoft YaHei", Font.PLAIN, Math.max(Config.frameFontSize, 14));
-    headFont = new Font("Microsoft YaHei", Font.PLAIN, Math.max(Config.frameFontSize, 13));
+    winrateFont =
+        new Font(Lizzie.config.uiFontName, Font.PLAIN, Math.max(Config.frameFontSize, 14));
+    headFont = new Font(Lizzie.config.uiFontName, Font.PLAIN, Math.max(Config.frameFontSize, 13));
 
     table.getTableHeader().setFont(headFont);
     table.setFont(winrateFont);
@@ -138,7 +134,7 @@ public class OtherPrograms extends JPanel {
 
     engineName = new JLabel(resourceBundle.getString("OtherPrograms.engineName"));
     // = new JLabel("单击选中列表中的启动项进行设置");
-    engineName.setFont(new Font("Microsoft YaHei", Font.PLAIN, 14));
+    engineName.setFont(new Font(Lizzie.config.uiFontName, Font.PLAIN, 14));
     JLabel lblname =
         new JLabel(resourceBundle.getString("MoreEngines.lblName")); // new JLabel("名称：");
     txtName = new JTextField();

@@ -2,6 +2,9 @@ package featurecat.lizzie.gui;
 
 import featurecat.lizzie.Config;
 import featurecat.lizzie.Lizzie;
+import featurecat.lizzie.rules.BoardHistoryNode;
+import featurecat.lizzie.rules.Movelist;
+import featurecat.lizzie.rules.Stone;
 import featurecat.lizzie.util.Utils;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -25,6 +28,7 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import org.json.JSONObject;
 
 public class ScoreResult extends JDialog {
   private JPanel dialogPane = new JPanel();
@@ -40,6 +44,14 @@ public class ScoreResult extends JDialog {
   private JButton btnClose;
   private Color backColor = new Color(210, 210, 210);
   private JButton confirmResult;
+  private JButton btnToggleRules;
+  int saved_blackAlive;
+  int saved_blackPoint;
+  int saved_whiteAlive;
+  int saved_whitePoint;
+  int saved_blackCaptures;
+  int saved_whiteCaptures;
+  double saved_komi;
 
   public ScoreResult(Window owner) {
     super(owner);
@@ -139,12 +151,45 @@ public class ScoreResult extends JDialog {
   private void initButtonBar() {
     buttonBar.setLayout(new GridBagLayout());
     buttonBar.setBorder(new EmptyBorder(5, 0, 0, 0));
+    btnToggleRules =
+        new JFontButton(
+            Lizzie.config.useTerritoryInScore
+                ? Lizzie.resourceBundle.getString("ScoreResult.btnToggleRulesArea")
+                : Lizzie.resourceBundle.getString("ScoreResult.btnToggleRulesTerritory"));
+    btnToggleRules.setFocusable(false);
+    GridBagConstraints gbc_btnToggleRules = new GridBagConstraints();
+    gbc_btnToggleRules.anchor = GridBagConstraints.EAST;
+    gbc_btnToggleRules.insets = new Insets(0, 0, 0, 5);
+    gbc_btnToggleRules.gridx = 0;
+    gbc_btnToggleRules.gridy = 0;
+    buttonBar.add(btnToggleRules, gbc_btnToggleRules);
+    btnToggleRules.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.config.useTerritoryInScore = !Lizzie.config.useTerritoryInScore;
+            Lizzie.config.uiConfig.put("use-territory-in-score", Lizzie.config.useTerritoryInScore);
+            btnToggleRules.setText(
+                Lizzie.config.useTerritoryInScore
+                    ? Lizzie.resourceBundle.getString("ScoreResult.btnToggleRulesArea")
+                    : Lizzie.resourceBundle.getString("ScoreResult.btnToggleRulesTerritory"));
+            pack();
+            setScore(
+                saved_blackAlive,
+                saved_blackPoint,
+                saved_whiteAlive,
+                saved_whitePoint,
+                saved_blackCaptures,
+                saved_whiteCaptures,
+                saved_komi);
+          }
+        });
+
     btnRecalculate = new JFontButton(Lizzie.resourceBundle.getString("ScoreResult.btnRecalculate"));
     btnRecalculate.setFocusable(false);
     GridBagConstraints gbc_btnRecalculate = new GridBagConstraints();
     gbc_btnRecalculate.anchor = GridBagConstraints.EAST;
     gbc_btnRecalculate.insets = new Insets(0, 0, 0, 5);
-    gbc_btnRecalculate.gridx = 0;
+    gbc_btnRecalculate.gridx = 1;
     gbc_btnRecalculate.gridy = 0;
     buttonBar.add(btnRecalculate, gbc_btnRecalculate);
     btnRecalculate.addActionListener(
@@ -161,7 +206,7 @@ public class ScoreResult extends JDialog {
     confirmResult.setFocusable(false);
     GridBagConstraints gbc_confirmResult = new GridBagConstraints();
     gbc_confirmResult.insets = new Insets(0, 0, 0, 5);
-    gbc_confirmResult.gridx = 1;
+    gbc_confirmResult.gridx = 2;
     gbc_confirmResult.gridy = 0;
     buttonBar.add(confirmResult, gbc_confirmResult);
     confirmResult.addActionListener(
@@ -179,7 +224,7 @@ public class ScoreResult extends JDialog {
     btnClose.setPreferredSize(btnRecalculate.getPreferredSize());
     GridBagConstraints gbc_button_1 = new GridBagConstraints();
     gbc_button_1.anchor = GridBagConstraints.EAST;
-    gbc_button_1.gridx = 2;
+    gbc_button_1.gridx = 3;
     gbc_button_1.gridy = 0;
     buttonBar.add(btnClose, gbc_button_1);
     btnClose.addActionListener(
@@ -192,25 +237,95 @@ public class ScoreResult extends JDialog {
   }
 
   public void setScore(
-      int blackAlive, int blackPoint, int whiteAlive, int whitePoint, double komi) {
+      int blackAlive,
+      int blackPoint,
+      int whiteAlive,
+      int whitePoint,
+      int blackCaptures,
+      int whiteCaptures,
+      double komi) {
+    saved_blackAlive = blackAlive;
+    saved_blackPoint = blackPoint;
+    saved_whiteAlive = whiteAlive;
+    saved_whitePoint = whitePoint;
+    saved_blackCaptures = blackCaptures;
+    saved_whiteCaptures = whiteCaptures;
+    saved_komi = komi;
+
+    if (Lizzie.leelaz.recentRulesLine != null && Lizzie.leelaz.recentRulesLine.length() > 2) {
+      JSONObject jo = new JSONObject(new String(Lizzie.leelaz.recentRulesLine.substring(2)));
+      boolean whiteHandicapBonusN = false;
+      boolean whiteHandicapBonusN1 = false;
+      if (jo.optString("whiteHandicapBonus", "").contentEquals("N")) whiteHandicapBonusN = true;
+      else if (jo.optString("whiteHandicapBonus", "").contentEquals("N-1"))
+        whiteHandicapBonusN1 = true;
+      if (whiteHandicapBonusN1 || whiteHandicapBonusN) {
+        int blackStoneForCalcHandicap = 0;
+        BoardHistoryNode node = Lizzie.board.getHistory().getCurrentHistoryNode();
+
+        while (node.previous().isPresent()) {
+          if (node.getData().lastMove.isPresent()) {
+            if (node.getData().lastMoveColor == Stone.BLACK) blackStoneForCalcHandicap++;
+            else if (node.getData().lastMoveColor == Stone.WHITE) blackStoneForCalcHandicap = 0;
+          }
+          node = node.previous().get();
+        }
+        if (Lizzie.board.hasStartStone) {
+          for (Movelist move : Lizzie.board.startStonelist) {
+            if (!move.ispass) {
+              if (move.isblack) blackStoneForCalcHandicap++;
+              else blackStoneForCalcHandicap = 0;
+            }
+          }
+        }
+        if (blackStoneForCalcHandicap > 1) {
+          if (whiteHandicapBonusN) {
+            blackAlive = blackAlive - blackStoneForCalcHandicap;
+          } else {
+            blackAlive = blackAlive - (blackStoneForCalcHandicap - 1);
+          }
+        }
+      }
+    }
     double blackAll = blackAlive + blackPoint;
     double whiteAll = whiteAlive + whitePoint + komi;
-    blackScore.setText(
-        Lizzie.resourceBundle.getString("ScoreResult.lblBlackScore")
-            + blackAlive
-            + "+"
-            + blackPoint
-            + "="
-            + blackAll);
-    whiteScore.setText(
-        Lizzie.resourceBundle.getString("ScoreResult.lblWhiteScore")
-            + whiteAlive
-            + "+"
-            + whitePoint
-            + "+"
-            + komi
-            + "="
-            + whiteAll);
+    if (Lizzie.config.useTerritoryInScore) {
+      blackAll = blackPoint - whiteCaptures;
+      whiteAll = whitePoint - blackCaptures + komi;
+      blackScore.setText(
+          Lizzie.resourceBundle.getString("ScoreResult.lblBlackScore")
+              + blackPoint
+              + "-"
+              + whiteCaptures
+              + "="
+              + blackAll);
+      whiteScore.setText(
+          Lizzie.resourceBundle.getString("ScoreResult.lblWhiteScore")
+              + whitePoint
+              + "-"
+              + blackCaptures
+              + "+"
+              + komi
+              + "="
+              + whiteAll);
+    } else {
+      blackScore.setText(
+          Lizzie.resourceBundle.getString("ScoreResult.lblBlackScore")
+              + blackAlive
+              + "+"
+              + blackPoint
+              + "="
+              + blackAll);
+      whiteScore.setText(
+          Lizzie.resourceBundle.getString("ScoreResult.lblWhiteScore")
+              + whiteAlive
+              + "+"
+              + whitePoint
+              + "+"
+              + komi
+              + "="
+              + whiteAll);
+    }
     scoreResult.setText(
         (blackAll >= whiteAll
                 ? Lizzie.resourceBundle.getString("ScoreResult.blackWin")

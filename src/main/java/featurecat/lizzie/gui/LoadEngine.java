@@ -73,12 +73,7 @@ public class LoadEngine extends JPanel {
   public String enginePath = "";
   public String weightPath = "";
   public String commandHelp = "";
-  private final ResourceBundle resourceBundle =
-      Lizzie.config.useLanguage == 0
-          ? ResourceBundle.getBundle("l10n.DisplayStrings")
-          : (Lizzie.config.useLanguage == 1
-              ? ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("zh", "CN"))
-              : ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("en", "US")));
+  private final ResourceBundle resourceBundle = Lizzie.resourceBundle;
 
   public LoadEngine() {
     // super(new BorderLayout());
@@ -89,8 +84,9 @@ public class LoadEngine extends JPanel {
     dataModel = getTableModel();
     table = new JTable(dataModel);
     selectpanel.setLayout(null);
-    winrateFont = new Font("Microsoft YaHei", Font.PLAIN, Math.max(Config.frameFontSize, 14));
-    headFont = new Font("Microsoft YaHei", Font.PLAIN, Math.max(Config.frameFontSize, 13));
+    winrateFont =
+        new Font(Lizzie.config.uiFontName, Font.PLAIN, Math.max(Config.frameFontSize, 14));
+    headFont = new Font(Lizzie.config.uiFontName, Font.PLAIN, Math.max(Config.frameFontSize, 13));
 
     table.getTableHeader().setFont(headFont);
     table.setFont(winrateFont);
@@ -181,17 +177,10 @@ public class LoadEngine extends JPanel {
     rdoLast = new JFontRadioButton(resourceBundle.getString("ChooseMoreEngine.lblrdoLast"));
     rdoMannul = new JFontRadioButton(resourceBundle.getString("ChooseMoreEngine.lblrdoMannul"));
     rdoNone = new JFontRadioButton(resourceBundle.getString("ChooseMoreEngine.lblrdoNone"));
-    if (Lizzie.config.uiConfig.optBoolean("autoload-default", false)) {
-      if (Lizzie.config.uiConfig.optBoolean("autoload-last", false)) {
-        this.rdoLast.setSelected(true);
-      } else {
-        this.rdoDefault.setSelected(true);
-      }
-    } else {
-      if (Lizzie.config.uiConfig.optBoolean("autoload-empty", false))
-        this.rdoNone.setSelected(true);
-      else this.rdoMannul.setSelected(true);
-    }
+    if (Lizzie.config.uiConfig.optBoolean("autoload-default", false)) rdoDefault.setSelected(true);
+    else if (Lizzie.config.uiConfig.optBoolean("autoload-last", false)) rdoLast.setSelected(true);
+    else if (Lizzie.config.uiConfig.optBoolean("autoload-empty", false)) rdoNone.setSelected(true);
+    else rdoMannul.setSelected(true);
 
     ok.setBounds(
         Lizzie.config.isFrameFontSmall() ? 600 : (Lizzie.config.isFrameFontMiddle() ? 550 : 480),
@@ -295,29 +284,23 @@ public class LoadEngine extends JPanel {
             }
             engjf.setVisible(false);
             if (rdoDefault.isSelected()) {
-              Lizzie.config.uiConfig.put("default-engine", curIndex);
               Lizzie.config.uiConfig.put("autoload-default", true);
-              Lizzie.config.uiConfig.put("autoload-empty", false);
-            } else {
               Lizzie.config.uiConfig.put("autoload-last", false);
-            }
-
-            if (rdoLast.isSelected()) {
-              Lizzie.config.uiConfig.put("autoload-last", true);
-              Lizzie.config.uiConfig.put("autoload-default", true);
               Lizzie.config.uiConfig.put("autoload-empty", false);
-            }
-            if (rdoMannul.isSelected()) {
+            } else if (rdoLast.isSelected()) {
+              Lizzie.config.uiConfig.put("autoload-last", true);
+              Lizzie.config.uiConfig.put("autoload-default", false);
+              Lizzie.config.uiConfig.put("autoload-empty", false);
+            } else if (rdoMannul.isSelected()) {
               Lizzie.config.uiConfig.put("autoload-last", false);
               Lizzie.config.uiConfig.put("autoload-default", false);
               Lizzie.config.uiConfig.put("autoload-empty", false);
-            }
-            if (rdoNone.isSelected()) {
+            } else if (rdoNone.isSelected()) {
               Lizzie.config.uiConfig.put("autoload-last", false);
               Lizzie.config.uiConfig.put("autoload-default", false);
               Lizzie.config.uiConfig.put("autoload-empty", true);
             }
-            Lizzie.start(curIndex);
+            Lizzie.start(curIndex, false);
           }
         });
     exit.addActionListener(
@@ -336,26 +319,23 @@ public class LoadEngine extends JPanel {
           public void actionPerformed(ActionEvent e) {
             engjf.setVisible(false);
             if (rdoDefault.isSelected()) {
-              Lizzie.config.uiConfig.put("autoload-last", false);
-              Lizzie.config.uiConfig.put("autoload-default", false);
-              Lizzie.config.uiConfig.put("autoload-empty", true);
-            }
-            if (rdoLast.isSelected()) {
-              Lizzie.config.uiConfig.put("autoload-last", true);
               Lizzie.config.uiConfig.put("autoload-default", true);
+              Lizzie.config.uiConfig.put("autoload-last", false);
               Lizzie.config.uiConfig.put("autoload-empty", false);
-            }
-            if (rdoMannul.isSelected()) {
+            } else if (rdoLast.isSelected()) {
+              Lizzie.config.uiConfig.put("autoload-last", true);
+              Lizzie.config.uiConfig.put("autoload-default", false);
+              Lizzie.config.uiConfig.put("autoload-empty", false);
+            } else if (rdoMannul.isSelected()) {
               Lizzie.config.uiConfig.put("autoload-last", false);
               Lizzie.config.uiConfig.put("autoload-default", false);
               Lizzie.config.uiConfig.put("autoload-empty", false);
-            }
-            if (rdoNone.isSelected()) {
+            } else if (rdoNone.isSelected()) {
               Lizzie.config.uiConfig.put("autoload-last", false);
               Lizzie.config.uiConfig.put("autoload-default", false);
               Lizzie.config.uiConfig.put("autoload-empty", true);
             }
-            Lizzie.start(-1);
+            Lizzie.start(-1, false);
           }
         });
 
@@ -441,29 +421,23 @@ public class LoadEngine extends JPanel {
     engjf.setVisible(false);
     curIndex = Integer.parseInt(table.getModel().getValueAt(row, 0).toString()) - 1;
     if (rdoDefault.isSelected()) {
-      Lizzie.config.uiConfig.put("default-engine", curIndex);
       Lizzie.config.uiConfig.put("autoload-default", true);
-      Lizzie.config.uiConfig.put("autoload-empty", false);
-    } else {
       Lizzie.config.uiConfig.put("autoload-last", false);
-    }
-
-    if (rdoLast.isSelected()) {
-      Lizzie.config.uiConfig.put("autoload-last", true);
-      Lizzie.config.uiConfig.put("autoload-default", true);
       Lizzie.config.uiConfig.put("autoload-empty", false);
-    }
-    if (rdoMannul.isSelected()) {
+    } else if (rdoLast.isSelected()) {
+      Lizzie.config.uiConfig.put("autoload-last", true);
+      Lizzie.config.uiConfig.put("autoload-default", false);
+      Lizzie.config.uiConfig.put("autoload-empty", false);
+    } else if (rdoMannul.isSelected()) {
       Lizzie.config.uiConfig.put("autoload-last", false);
       Lizzie.config.uiConfig.put("autoload-default", false);
       Lizzie.config.uiConfig.put("autoload-empty", false);
-    }
-    if (rdoNone.isSelected()) {
+    } else if (rdoNone.isSelected()) {
       Lizzie.config.uiConfig.put("autoload-last", false);
       Lizzie.config.uiConfig.put("autoload-default", false);
       Lizzie.config.uiConfig.put("autoload-empty", true);
     }
-    Lizzie.start(curIndex);
+    Lizzie.start(curIndex, false);
   }
 
   //  private ArrayList<EngineData> getEngineData() {

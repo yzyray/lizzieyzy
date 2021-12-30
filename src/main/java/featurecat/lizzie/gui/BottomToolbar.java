@@ -49,11 +49,6 @@ import org.json.JSONArray;
 
 public class BottomToolbar extends JPanel {
   private final ResourceBundle resourceBundle = Lizzie.resourceBundle;
-  //      Lizzie.config.useLanguage == 0
-  //          ? ResourceBundle.getBundle("l10n.DisplayStrings")
-  //          : (Lizzie.config.useLanguage == 1
-  //              ? ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("zh", "CN"))
-  //              : ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("en", "US")));
   public boolean showDetail = Lizzie.config.showDetailedToolbarMenu && Lizzie.config.isChinese;
   JButton firstButton;
   JButton lastButton;
@@ -3551,7 +3546,7 @@ public class BottomToolbar extends JPanel {
     enginePkWhite.setEnabled(enable);
     chkenginePk.setEnabled(enable);
     btnEnginePkConfig.setEnabled(enable);
-    featurecat.lizzie.gui.Menu.engineMenu.setEnabled(enable);
+    Menu.engineMenu.setEnabled(enable);
     analyse.setEnabled(enable);
 
     chkenginePkTime.setEnabled(enable);
@@ -4090,7 +4085,9 @@ public class BottomToolbar extends JPanel {
             while (chkAutoMain.isSelected()) {
               try {
                 if (curNode == Lizzie.board.getHistory().getCurrentHistoryNode()) {
-                  if (!Lizzie.board.nextMove(true)) {
+                  if (Lizzie.config.directlyWithBestMove) {
+                    Lizzie.frame.playBestMove();
+                  } else if (!Lizzie.board.nextMove(true)) {
                     if (Lizzie.config.continueWithBestMove) {
                       BoardHistoryNode cur = Lizzie.board.getHistory().getCurrentHistoryNode();
                       if (!cur.getData().lastMove.isPresent()

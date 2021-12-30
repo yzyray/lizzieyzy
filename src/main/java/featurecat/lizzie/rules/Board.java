@@ -3899,25 +3899,36 @@ public class Board {
   public void showGroupResult() {
     Lizzie.frame.drawScore(boardGroupInfo);
     int blackAlive = 0, blackPoint = 0, whiteAlive = 0, whitePoint = 0;
+    int blackCaptures = 0, whiteCaptures = 0;
+    blackCaptures = Lizzie.board.getData().blackCaptures;
+    whiteCaptures = Lizzie.board.getData().whiteCaptures;
     double komi = getHistory().getGameInfo().getKomi();
     for (int j = 0; j < boardHeight; j++) {
       for (int i = 0; i < boardWidth; i++) {
         if (!boardGroupInfo.groupStatus[i][j].isMarkedEmpty)
           if (boardGroupInfo.groupStatus[i][j].value == 1) {
             if (boardGroupInfo.oriStones[getIndex(i, j)] == Stone.BLACK) blackAlive++;
-            else blackPoint++;
+            else {
+              if (boardGroupInfo.oriStones[getIndex(i, j)] == Stone.WHITE) blackCaptures++;
+              blackPoint++;
+            }
           } else if (boardGroupInfo.groupStatus[i][j].value == 2) {
             if (boardGroupInfo.oriStones[getIndex(i, j)] == Stone.WHITE) whiteAlive++;
-            else whitePoint++;
+            else {
+              if (boardGroupInfo.oriStones[getIndex(i, j)] == Stone.BLACK) whiteCaptures++;
+              whitePoint++;
+            }
           }
       }
     }
     if (boardGroupInfo.scoreResult == null) {
       boardGroupInfo.scoreResult = new ScoreResult(Lizzie.frame);
-      boardGroupInfo.scoreResult.setScore(blackAlive, blackPoint, whiteAlive, whitePoint, komi);
+      boardGroupInfo.scoreResult.setScore(
+          blackAlive, blackPoint, whiteAlive, whitePoint, blackCaptures, whiteCaptures, komi);
       boardGroupInfo.scoreResult.setVisible(true);
     } else {
-      boardGroupInfo.scoreResult.setScore(blackAlive, blackPoint, whiteAlive, whitePoint, komi);
+      boardGroupInfo.scoreResult.setScore(
+          blackAlive, blackPoint, whiteAlive, whitePoint, blackCaptures, whiteCaptures, komi);
       boardGroupInfo.scoreResult.setVisible(true);
     }
   }
@@ -4183,5 +4194,23 @@ public class Board {
 
   private boolean isValidEmpty(int x, int y) {
     return isValid(x, y) && isCoordsEmpty(x, y);
+  }
+
+  public boolean isFirstWhiteNodeWithHandicap(BoardHistoryNode node) {
+    // TODO Auto-generated method stub
+    if (node.getData().lastMove.isPresent() && node.getData().lastMoveColor != Stone.WHITE) {
+      return false;
+    }
+    int blackStones = 0;
+    while (node.previous().isPresent()) {
+      node = node.previous().get();
+      if (node.getData().lastMove.isPresent())
+        if (node.getData().lastMoveColor == Stone.WHITE) {
+          return false;
+        }
+      if (node.getData().lastMoveColor == Stone.BLACK) blackStones++;
+    }
+    if (blackStones > 1) return true;
+    else return false;
   }
 }

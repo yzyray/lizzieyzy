@@ -12,10 +12,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -71,27 +69,20 @@ public class ChooseMoreEngine extends JPanel {
   public String enginePath = "";
   public String weightPath = "";
   public String commandHelp = "";
-  private static final ResourceBundle resourceBundle =
-      Lizzie.config.useLanguage == 0
-          ? ResourceBundle.getBundle("l10n.DisplayStrings")
-          : (Lizzie.config.useLanguage == 1
-              ? ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("zh", "CN"))
-              : ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("en", "US")));
-  private String osName;
-  private BufferedInputStream inputStream;
-  private Path curPath;
+  private static final ResourceBundle resourceBundle = Lizzie.resourceBundle;
 
   public ChooseMoreEngine() {
     // super(new BorderLayout());
 
-    curPath = (new File("")).getAbsoluteFile().toPath();
-    osName = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
+    (new File("")).getAbsoluteFile().toPath();
+    System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
     this.setLayout(null);
     dataModel = getTableModel();
     table = new JTable(dataModel);
     selectpanel.setLayout(null);
-    winrateFont = new Font("Microsoft YaHei", Font.PLAIN, Math.max(Config.frameFontSize, 14));
-    headFont = new Font("Microsoft YaHei", Font.PLAIN, Math.max(Config.frameFontSize, 13));
+    winrateFont =
+        new Font(Lizzie.config.uiFontName, Font.PLAIN, Math.max(Config.frameFontSize, 14));
+    headFont = new Font(Lizzie.config.uiFontName, Font.PLAIN, Math.max(Config.frameFontSize, 13));
 
     table.getTableHeader().setFont(headFont);
     table.setFont(winrateFont);
@@ -262,7 +253,7 @@ public class ChooseMoreEngine extends JPanel {
   private void handleTableDoubleClick(int row, int col) {
     engch.setVisible(false);
     curIndex = Integer.parseInt(table.getModel().getValueAt(row, 0).toString()) - 1;
-    Lizzie.config.uiConfig.put("default-engine", curIndex);
+    //  Lizzie.config.uiConfig.put("default-engine", curIndex);
     if (engineMenuIndex == 1) Lizzie.engineManager.switchEngine(curIndex, true);
     if (engineMenuIndex == 2) Lizzie.engineManager.switchEngine(curIndex, false);
   }

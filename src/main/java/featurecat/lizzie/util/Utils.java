@@ -447,8 +447,12 @@ public class Utils {
   }
 
   public static void showMsg(String message) {
-    Message msg = new Message();
-    msg.setMessage(message);
+    //  Message msg = new Message();
+    //    msg.setMessage(message);
+    HtmlMessage htmlMessage =
+        new HtmlMessage(Lizzie.resourceBundle.getString("Message.title"), message, null);
+    if (Lizzie.frame != null) htmlMessage.setLocationRelativeTo(Lizzie.frame);
+    htmlMessage.setVisible(true);
     //  msg.setVisible(true);
   }
 
@@ -799,5 +803,16 @@ public class Utils {
       bestMoves.add(mv);
     }
     return bestMoves;
+  }
+
+  public static String convertScoreToString(double score, double bestScore) {
+    if (Lizzie.config.showScoreAsDiff) {
+      double diff = score - bestScore;
+      String result = "";
+      if (diff > 0) result = "+" + String.valueOf(round(diff * 10) / 10.0);
+      else if (diff < 0) result = "-" + String.valueOf(round(Math.abs(diff) * 10) / 10.0);
+      else result = String.valueOf(round(diff * 10) / 10.0);
+      return result;
+    } else return String.valueOf(round(score * 10) / 10.0);
   }
 }

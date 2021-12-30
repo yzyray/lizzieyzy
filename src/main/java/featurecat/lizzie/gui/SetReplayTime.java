@@ -21,10 +21,6 @@ import javax.swing.text.InternationalFormatter;
 
 public class SetReplayTime extends JDialog {
   private JFormattedTextField time;
-  //  private final ResourceBundle resourceBundle = Lizzie.config.useLanguage==0?
-  // ResourceBundle.getBundle("l10n.DisplayStrings"):(Lizzie.config.useLanguage==1?
-  // ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("zh", "CN")):
-  // ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("en", "US")));
   private int replaytime;
 
   public SetReplayTime() {

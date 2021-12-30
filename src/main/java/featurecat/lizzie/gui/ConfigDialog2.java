@@ -257,6 +257,7 @@ public class ConfigDialog2 extends JDialog {
   private JCheckBox chkVariationRemoveDeadChain;
   private JCheckBox chkShowScoreLeadLine;
   private JCheckBox chkShowMouseOverWinrateGraph;
+  private JCheckBox chkShowScoreAsLead;
   private JComboBox<String> comboBoxPvVisits;
   private JComboBox<String> chkShowIndependentSubBoard;
   private JTextField txtPvVisitsLimit;
@@ -943,7 +944,7 @@ public class ConfigDialog2 extends JDialog {
     uiTab.add(chkShowPlayoutsInSuggestion);
     chkShowScoremeanInSuggestion =
         new JCheckBox(resourceBundle.getString("LizzieConfig.title.showScoremeanInSuggestion"));
-    chkShowScoremeanInSuggestion.setBounds(216, 368, 86, 23);
+    chkShowScoremeanInSuggestion.setBounds(216, 368, 75, 23);
     uiTab.add(chkShowScoremeanInSuggestion);
 
     JLabel lblGtpConsoleStyle =
@@ -996,7 +997,7 @@ public class ConfigDialog2 extends JDialog {
         new JLabel(
             resourceBundle.getString(
                 "LizzieConfig.lblViewSettings")); // ("界面面板选项:"); // $NON-NLS-1$
-    lblViewSettings.setFont(new Font("Microsoft YaHei", Font.BOLD, 14));
+    lblViewSettings.setFont(new Font(Lizzie.config.uiFontName, Font.BOLD, 14));
     lblViewSettings.setBounds(10, 2, 408, 23);
     uiTab.add(lblViewSettings);
 
@@ -1005,7 +1006,7 @@ public class ConfigDialog2 extends JDialog {
             resourceBundle.getString(
                 "LizzieConfig.lblSuggestionMoveAndWinrateSettings")); // ("选点与胜率图选项:"); //
     // $NON-NLS-1$
-    lblSuggestionMoveAndWinrateSettings.setFont(new Font("Microsoft YaHei", Font.BOLD, 14));
+    lblSuggestionMoveAndWinrateSettings.setFont(new Font(Lizzie.config.uiFontName, Font.BOLD, 14));
     lblSuggestionMoveAndWinrateSettings.setBounds(10, 206, 395, 23);
     uiTab.add(lblSuggestionMoveAndWinrateSettings);
 
@@ -1013,14 +1014,14 @@ public class ConfigDialog2 extends JDialog {
         new JLabel(
             resourceBundle.getString(
                 "LizzieConfig.lblEngineSettings")); // ("其他选项:"); // $NON-NLS-1$
-    lblOtherSettings.setFont(new Font("Microsoft YaHei", Font.BOLD, 14));
+    lblOtherSettings.setFont(new Font(Lizzie.config.uiFontName, Font.BOLD, 14));
     lblOtherSettings.setBounds(10, 421, 492, 23);
     uiTab.add(lblOtherSettings);
 
     JLabel lblEngineSettings =
         new JLabel(
             resourceBundle.getString("LizzieConfig.lblOtherSettings")); // ("引擎选项:"); // $NON-NLS-1$
-    lblEngineSettings.setFont(new Font("Microsoft YaHei", Font.BOLD, 14));
+    lblEngineSettings.setFont(new Font(Lizzie.config.uiFontName, Font.BOLD, 14));
     lblEngineSettings.setBounds(10, 522, 492, 23);
     uiTab.add(lblEngineSettings);
 
@@ -1267,7 +1268,7 @@ public class ConfigDialog2 extends JDialog {
     // txtAdvanceTime.setColumns(10);
     chkAlwaysGtp.setSelected(Lizzie.config.alwaysGtp);
 
-    chkNoCapture = new JCheckBox(); // $NON-NLS-1$
+    chkNoCapture = new JCheckBox(); // gomoku
     chkNoCapture.setBounds(377, 668, 26, 23);
     uiTab.add(chkNoCapture);
 
@@ -1278,8 +1279,8 @@ public class ConfigDialog2 extends JDialog {
               int ret =
                   JOptionPane.showConfirmDialog(
                       Lizzie.frame.configDialog2,
-                      "选择五子棋则无法提子,无法用于围棋分析",
-                      "五子棋?",
+                      resourceBundle.getString("ConfigDialog2.chkNoCapture.content"),
+                      resourceBundle.getString("ConfigDialog2.chkNoCapture.title"),
                       JOptionPane.OK_CANCEL_OPTION);
               if (ret == JOptionPane.CANCEL_OPTION || ret == -1) {
                 chkNoCapture.setSelected(false);
@@ -1385,11 +1386,13 @@ public class ConfigDialog2 extends JDialog {
     lblMoveNumInBracnh.setBounds(10, 130, 139, 15);
     uiTab.add(lblMoveNumInBracnh);
 
+    String moveNumberInBranchTips = resourceBundle.getString("Menu.moveNumberInBranchTips");
     rdoBranchMoveOne =
         new JRadioButton(
             resourceBundle.getString("LizzieConfig.rdoBranchMoveOne")); // ("从1开始"); // $NON-NLS-1$
     rdoBranchMoveOne.setBounds(225, 128, 86, 23);
     uiTab.add(rdoBranchMoveOne);
+    rdoBranchMoveOne.setToolTipText(moveNumberInBranchTips);
 
     rdoBranchMoveContinue =
         new JRadioButton(
@@ -1397,6 +1400,7 @@ public class ConfigDialog2 extends JDialog {
                 "LizzieConfig.rdoBranchMoveContinue")); // ("继续"); // $NON-NLS-1$
     rdoBranchMoveContinue.setBounds(Lizzie.config.isChinese ? 112 : 121, 128, 80, 23);
     uiTab.add(rdoBranchMoveContinue);
+    rdoBranchMoveContinue.setToolTipText(moveNumberInBranchTips);
 
     ButtonGroup branchMove = new ButtonGroup();
     branchMove.add(rdoBranchMoveContinue);
@@ -1600,6 +1604,11 @@ public class ConfigDialog2 extends JDialog {
 
     chkShowMouseOverWinrateGraph.setSelected(Lizzie.config.showMouseOverWinrateGraph);
 
+    chkShowScoreAsLead = new JCheckBox(resourceBundle.getString("Menu.showScoreAsDiff"));
+    chkShowScoreAsLead.setBounds(295, 368, 110, 23); // 216, 368, 86, 23
+    uiTab.add(chkShowScoreAsLead);
+    chkShowScoreAsLead.setSelected(Lizzie.config.showScoreAsDiff);
+
     JButton btnSetOrder = new JButton(resourceBundle.getString("ConfigDialog2.btnSetOrder"));
     btnSetOrder.addActionListener(
         new ActionListener() {
@@ -1608,7 +1617,7 @@ public class ConfigDialog2 extends JDialog {
           }
         });
     btnSetOrder.setMargin(new Insets(0, 0, 0, 0));
-    btnSetOrder.setBounds(310, 369, 90, 23);
+    btnSetOrder.setBounds(410, 369, 90, 23);
     uiTab.add(btnSetOrder);
 
     JButton btnSetDelay = new JButton(resourceBundle.getString("ConfigDialog2.btnSetDelay"));
@@ -1619,7 +1628,7 @@ public class ConfigDialog2 extends JDialog {
           }
         });
     btnSetDelay.setMargin(new Insets(0, 0, 0, 0));
-    btnSetDelay.setBounds(415, 369, 90, 23);
+    btnSetDelay.setBounds(505, 369, 90, 23);
     uiTab.add(btnSetDelay);
 
     JLabel SpecialCoords =
@@ -1628,13 +1637,18 @@ public class ConfigDialog2 extends JDialog {
     uiTab.add(SpecialCoords);
 
     SpecialCoordsCbx = new JComboBox<String>();
-    SpecialCoordsCbx.setBounds(532, 668, 55, 23);
+    SpecialCoordsCbx.setBounds(489, 668, 113, 23);
     uiTab.add(SpecialCoordsCbx);
     SpecialCoordsCbx.addItem(resourceBundle.getString("ConfigDialog2.SpecialCoordsNormal"));
     SpecialCoordsCbx.addItem(resourceBundle.getString("ConfigDialog2.SpecialCoordsWithI"));
     SpecialCoordsCbx.addItem(resourceBundle.getString("ConfigDialog2.SpecialCoordsFox"));
-    if (Lizzie.config.useFoxStyleCoords) SpecialCoordsCbx.setSelectedIndex(2);
-    else if (Lizzie.config.useIinCoordsName) SpecialCoordsCbx.setSelectedIndex(1);
+    SpecialCoordsCbx.addItem(resourceBundle.getString("ConfigDialog2.SpecialCoordsNumberFromTop"));
+    SpecialCoordsCbx.addItem(
+        resourceBundle.getString("ConfigDialog2.SpecialCoordsNumberFromBottom"));
+    if (Lizzie.config.useIinCoordsName) SpecialCoordsCbx.setSelectedIndex(1);
+    else if (Lizzie.config.useFoxStyleCoords) SpecialCoordsCbx.setSelectedIndex(2);
+    else if (Lizzie.config.useNumCoordsFromTop) SpecialCoordsCbx.setSelectedIndex(3);
+    else if (Lizzie.config.useNumCoordsFromBottom) SpecialCoordsCbx.setSelectedIndex(4);
     else SpecialCoordsCbx.setSelectedIndex(0);
 
     chkLimitTime = new JCheckBox();
@@ -2302,15 +2316,17 @@ public class ConfigDialog2 extends JDialog {
           new JLabel(resourceBundle.getString("LizzieConfig.title.stoneIndicatorType"));
       lblStoneIndicatorType.setBounds(10, 442, 163, 16);
       themeTab.add(lblStoneIndicatorType);
-      rdoStoneIndicatorDelta =
-          new JRadioButton(resourceBundle.getString("ConfigDialog2.triangle")); // ("三角");
-      rdoStoneIndicatorDelta.setBounds(170, 439, 52, 23);
-      themeTab.add(rdoStoneIndicatorDelta);
 
       rdoStoneIndicatorCircle =
           new JRadioButton(resourceBundle.getString("ConfigDialog2.circle")); // ("圆圈");
-      rdoStoneIndicatorCircle.setBounds(220, 439, 52, 23);
+      rdoStoneIndicatorCircle.setBounds(170, 439, 52, 23);
       themeTab.add(rdoStoneIndicatorCircle);
+
+      rdoStoneIndicatorDelta =
+          new JRadioButton(resourceBundle.getString("ConfigDialog2.triangle")); // ("三角");
+      rdoStoneIndicatorDelta.setBounds(220, 439, 52, 23);
+      themeTab.add(rdoStoneIndicatorDelta);
+
       rdoStoneIndicatorSolid =
           new JRadioButton(resourceBundle.getString("ConfigDialog2.solid")); // ("实心");
       rdoStoneIndicatorSolid.setBounds(270, 439, 52, 23);
@@ -2398,12 +2414,12 @@ public class ConfigDialog2 extends JDialog {
       themeTab.add(btnReset);
 
       chkUseScoreDiff = new JCheckBox(resourceBundle.getString("LizzieConfig.chkUseScoreDiff"));
-      chkUseScoreDiff.setBounds(172, 612, 200, 23);
+      chkUseScoreDiff.setBounds(172, 612, 235, 23);
       themeTab.add(chkUseScoreDiff);
 
       txtPercentScoreDiff = new JTextField();
       txtPercentScoreDiff.setDocument(new DoubleDocument());
-      txtPercentScoreDiff.setBounds(380, 612, 45, 24);
+      txtPercentScoreDiff.setBounds(407, 612, 30, 24);
       themeTab.add(txtPercentScoreDiff);
 
       chkUseScoreDiff.addActionListener(
@@ -2415,7 +2431,7 @@ public class ConfigDialog2 extends JDialog {
 
       JLabel lblPercentScoreDiff =
           new JLabel(resourceBundle.getString("LizzieConfig.lblUseScoreDiffPercent"));
-      lblPercentScoreDiff.setBounds(430, 612, 250, 24);
+      lblPercentScoreDiff.setBounds(440, 612, 250, 24);
       themeTab.add(lblPercentScoreDiff);
 
       btnBackgroundPath = new JButton("...");
@@ -3374,7 +3390,12 @@ public class ConfigDialog2 extends JDialog {
         }
 
         if (theme.uiFontName().equals("Lizzie默认") || theme.uiFontName().equals("Lizzie Default")) {
-          LizzieFrame.uiFont = new Font("Microsoft YaHei", Font.TRUETYPE_FONT, 12);
+          if (Lizzie.config.isChinese)
+            LizzieFrame.uiFont = new Font("Microsoft YaHei", Font.TRUETYPE_FONT, 12);
+          else
+            LizzieFrame.uiFont =
+                new Font(
+                    resourceBundle.getString("FontList.systemDefault"), Font.TRUETYPE_FONT, 12);
         } else if (theme.uiFontName() != null) {
           LizzieFrame.uiFont = new Font(theme.uiFontName(), Font.PLAIN, 12);
         }
@@ -3444,8 +3465,8 @@ public class ConfigDialog2 extends JDialog {
     txtBackgroundFilter.setEnabled(!chkPureBackground.isSelected());
     spnWinrateStrokeWidth.setValue(Lizzie.config.uiConfig.optFloat("winrate-stroke-width", 1.7f));
     spnMinimumBlunderBarWidth.setValue(
-        Lizzie.config.uiConfig.optInt("minimum-blunder-bar-width", 3));
-    spnShadowSize.setValue(Lizzie.config.uiConfig.optInt("shadow-size", 100));
+        Lizzie.config.uiConfig.optInt("minimum-blunder-bar-width", 1));
+    spnShadowSize.setValue(Lizzie.config.uiConfig.optInt("shadow-size", 85));
     setFontValue(cmbFontName, Lizzie.config.uiConfig.optString("font-name", null));
     setFontValue(cmbUiFontName, Lizzie.config.uiConfig.optString("ui-font-name", null));
     setFontValue(cmbWinrateFontName, Lizzie.config.uiConfig.optString("winrate-font-name", null));
@@ -3468,7 +3489,8 @@ public class ConfigDialog2 extends JDialog {
             Lizzie.config.uiConfig.optJSONArray("winrate-miss-line-color"), Color.blue.darker()));
     lblBlunderBarColor.setColor(
         Theme.array2Color(
-            Lizzie.config.uiConfig.optJSONArray("blunder-bar-color"), new Color(255, 204, 255)));
+            Lizzie.config.uiConfig.optJSONArray("blunder-bar-color"),
+            new Color(255, 204, 255, 170)));
     lblScoreMeanLineColor.setColor(
         Theme.array2Color(
             Lizzie.config.uiConfig.optJSONArray("scoremean-line-color"), new Color(255, 0, 255)));
@@ -3569,7 +3591,11 @@ public class ConfigDialog2 extends JDialog {
     if (!Lizzie.config.uiConfig.optString("ui-font-name").isEmpty()
         && (Lizzie.config.uiConfig.getString("ui-font-name").equals("Lizzie默认")
             || Lizzie.config.uiConfig.getString("ui-font-name").equals("Lizzie Default"))) {
-      LizzieFrame.uiFont = new Font("Microsoft YaHei", Font.TRUETYPE_FONT, 12);
+      if (Lizzie.config.isChinese)
+        LizzieFrame.uiFont = new Font("Microsoft YaHei", Font.TRUETYPE_FONT, 12);
+      else
+        LizzieFrame.uiFont =
+            new Font(resourceBundle.getString("FontList.systemDefault"), Font.TRUETYPE_FONT, 12);
     } else if (!Lizzie.config.uiConfig.optString("ui-font-name").isEmpty()) {
       LizzieFrame.uiFont =
           new Font(Lizzie.config.uiConfig.optString("ui-font-name"), Font.PLAIN, 12);
@@ -3609,6 +3635,8 @@ public class ConfigDialog2 extends JDialog {
   }
 
   private void saveConfig() {
+    Lizzie.config.showScoreAsDiff = chkShowScoreAsLead.isSelected();
+    Lizzie.config.uiConfig.put("show-score-as-diff", Lizzie.config.showScoreAsDiff);
     Lizzie.config.logConsoleToFile = chkLogConsoleToFile.isSelected();
     Lizzie.config.logGtpToFile = chkLogGtpToFile.isSelected();
     Lizzie.config.uiConfig.put("log-console-to-file", Lizzie.config.logConsoleToFile);
@@ -3643,6 +3671,10 @@ public class ConfigDialog2 extends JDialog {
     Lizzie.config.uiConfig.put("use-i-in-coords-name", Lizzie.config.useIinCoordsName);
     Lizzie.config.useFoxStyleCoords = curSpecialCoordsIndex == 2;
     Lizzie.config.uiConfig.put("use-fox-style-coords", Lizzie.config.useFoxStyleCoords);
+    Lizzie.config.useNumCoordsFromTop = curSpecialCoordsIndex == 3;
+    Lizzie.config.uiConfig.put("use-num-coords-from-top", Lizzie.config.useNumCoordsFromTop);
+    Lizzie.config.useNumCoordsFromBottom = curSpecialCoordsIndex == 4;
+    Lizzie.config.uiConfig.put("use-num-coords-from-bottom", Lizzie.config.useNumCoordsFromBottom);
     if (oriSpecialCoordsIndex != curSpecialCoordsIndex) {
       LizzieFrame.boardRenderer.reDrawGobanAnyway();
       if (LizzieFrame.boardRenderer2 != null) LizzieFrame.boardRenderer2.reDrawGobanAnyway();

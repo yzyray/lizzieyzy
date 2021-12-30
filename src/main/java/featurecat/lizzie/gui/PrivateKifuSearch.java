@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.ResourceBundle;
 import javax.imageio.ImageIO;
 import javax.swing.AbstractCellEditor;
@@ -40,15 +39,7 @@ import javax.swing.table.TableCellRenderer;
 import org.jdesktop.swingx.JXDatePicker;
 
 public class PrivateKifuSearch extends JFrame {
-  private final ResourceBundle resourceBundle =
-      Lizzie.config.useLanguage == 0
-          ? ResourceBundle.getBundle("l10n.DisplayStrings")
-          : (Lizzie.config.useLanguage == 1
-              ? ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("zh", "CN"))
-              : ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("en", "US")));
-  //  private static Connection con = null;
-  //  private static Statement sql = null;
-  //  private static ResultSet rs = null;
+  private final ResourceBundle resourceBundle = Lizzie.resourceBundle;
   private DefaultTableModel model;
   private JTable table;
   private final JPanel panel = new JPanel();
@@ -278,60 +269,98 @@ public class PrivateKifuSearch extends JFrame {
             }
             String sqlText =
                 "select ID,black "
+                    + "\""
                     + resourceBundle.getString("PrivateKifuSearch.sql.black")
+                    + "\""
                     + ",white "
+                    + "\""
                     + resourceBundle.getString("PrivateKifuSearch.sql.white")
+                    + "\""
                     + ",case when bscore>=0"
                     + " and bscore<=100 then bscore when bscore>100 then '"
                     + resourceBundle.getString("PrivateKifuSearch.sql.AIGame")
                     + "' when bsc"
-                    + "ore =-1then '"
+                    + "ore =-1 then '"
                     + resourceBundle.getString("PrivateKifuSearch.sql.lackInfo")
                     + "' ELSE  '' end as "
+                    + "\""
                     + resourceBundle.getString("PrivateKifuSearch.sql.blackScore")
+                    + "\""
                     + ",case when wscore"
                     + ">=0 and wscore<=100 then wscore when wscore>100 then '"
                     + resourceBundle.getString("PrivateKifuSearch.sql.AIGame")
                     + "' when w"
-                    + "score =-1then '"
+                    + "score =-1 then '"
                     + resourceBundle.getString("PrivateKifuSearch.sql.lackInfo")
                     + "' ELSE  '' end as "
+                    + "\""
                     + resourceBundle.getString("PrivateKifuSearch.sql.whiteScore")
+                    + "\""
                     + ",case when analyzedmove>0"
                     + " then analyzedmove else '' end as "
+                    + "\""
                     + resourceBundle.getString("PrivateKifuSearch.sql.analyzed")
+                    + "\""
                     + ",case when allmove>0 then allm"
                     + "ove else '' end as  "
+                    + "\""
                     + resourceBundle.getString("PrivateKifuSearch.sql.move")
+                    + "\""
                     + ",uploader "
+                    + "\""
                     + resourceBundle.getString("PrivateKifuSearch.sql.uploader")
+                    + "\""
                     + ",label "
+                    + "\""
                     + resourceBundle.getString("PrivateKifuSearch.sql.label")
+                    + "\""
                     + ",otherinfo "
+                    + "\""
                     + resourceBundle.getString("PrivateKifuSearch.sql.otherInfo")
+                    + "\""
                     + ","
                     + "case  isdelete when '2' then '"
+                    + "\""
                     + resourceBundle.getString("PrivateKifuSearch.sql.private")
+                    + "\""
                     + "' when '0' then '"
+                    + "\""
                     + resourceBundle.getString("PrivateKifuSearch.sql.public")
+                    + "\""
                     + "' end as "
+                    + "\""
                     + resourceBundle.getString("PrivateKifuSearch.sql.isPublic")
+                    + "\""
                     + ",crea"
                     + "tetime "
+                    + "\""
                     + resourceBundle.getString("PrivateKifuSearch.sql.uploadTime")
+                    + "\""
                     + ",filename as "
+                    + "\""
                     + resourceBundle.getString("PrivateKifuSearch.sql.fileName")
+                    + "\""
                     + ",url "
+                    + "\""
                     + resourceBundle.getString("PrivateKifuSearch.sql.url")
+                    + "\""
                     + ",''as  "
+                    + "\""
                     + resourceBundle.getString("PrivateKifuSearch.sql.edit")
+                    + "\""
                     + ",'' as"
                     + " "
+                    + "\""
                     + resourceBundle.getString("PrivateKifuSearch.sql.copy")
+                    + "\""
                     + ",'' as "
+                    + "\""
                     + resourceBundle.getString("PrivateKifuSearch.sql.view")
+                    + "\""
                     + ",'' as "
+                    + "\""
                     + resourceBundle.getString("PrivateKifuSearch.sql.open")
+                    + "\""
                     + " from PRIVATE_SEARCH where  createtime between to_date('"
                     + sdf.format(datepick.getDate())
                     + "','yyyy-mm-dd') and to_date('"

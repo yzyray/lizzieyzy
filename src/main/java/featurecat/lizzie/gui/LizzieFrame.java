@@ -342,7 +342,7 @@ public class LizzieFrame extends JFrame {
   public int lastGrh = -1;
   private long winratePaneTime;
   private boolean refreshFromInfo = false;
-  private boolean refreshFromResized = false;
+  private boolean refreshWinratePane = false;
 
   public int statx;
   public int staty;
@@ -2085,7 +2085,7 @@ public class LizzieFrame extends JFrame {
         new ComponentAdapter() {
           @Override
           public void componentResized(ComponentEvent e) {
-            refreshFromResized = true;
+            refreshWinratePane = true;
             reSetLoc();
           }
         });
@@ -2996,7 +2996,6 @@ public class LizzieFrame extends JFrame {
               e.printStackTrace();
             }
             Lizzie.leelaz.setGameStatus(true);
-            menu.toggleDoubleMenuGameStatus();
             if (Lizzie.config.limitMyTime)
               countDownForHuman(
                   Lizzie.config.getMySaveTime(),
@@ -3029,6 +3028,7 @@ public class LizzieFrame extends JFrame {
 
             Lizzie.leelaz.isGamePaused = false;
             Lizzie.board.isGameBoard = true;
+            menu.toggleDoubleMenuGameStatus();
             Lizzie.frame.updateTitle();
           }
         };
@@ -3571,7 +3571,7 @@ public class LizzieFrame extends JFrame {
    * @param g0 not used
    */
   public void paintMianPanel(Graphics g0) {
-    if (this.redrawWinratePaneOnly) {
+    if (redrawWinratePaneOnly) {
       drawWinratePane(this.grx, this.gry, this.grw, this.grh);
       redrawWinratePaneOnly = false;
     } else {
@@ -4941,67 +4941,11 @@ public class LizzieFrame extends JFrame {
         this.cachedImage = cachedImage;
       }
     }
-    // draw the image
-    // Graphics2D bsGraphics = (Graphics2D) bs.getDrawGraphics();
-    // bsGraphics.setRenderingHint(RenderingHints.KEY_RENDERING,
-    // RenderingHints.VALUE_RENDER_QUALITY);
-    // bsGraphics.drawImage(cachedBackground, 0, 0, null);
-    // bsGraphics.drawImage(cachedImage, 0, 0, null);
 
-    // cleanup
-    // bsGraphics.dispose();
-    // bs.show();
-
-    //    if (Config.isScaled) {
-    //
-    //    	 // final AffineTransform t = g1.getTransform();
-    //         // t.setToScale(1, 1);
-    //        //  g1.setTransform(t);
-    //      g0.drawImage(
-    //          cachedBackground,
-    //          0,
-    //          Lizzie.config.showTopToolBar
-    //              ? Utils.zoomOut(
-    //                  Lizzie.frame.getJMenuBar().getHeight() * (Lizzie.config.showDoubleMenu ? 2 :
-    // 1)
-    //                      + (Lizzie.config.showDoubleMenu
-    //                          ? topPanelHeight - Config.menuHeight
-    //                          : 0))
-    //              : Utils.zoomOut(Lizzie.frame.getJMenuBar().getHeight()),
-    //          null);
-    //      g0.drawImage(
-    //          cachedImage,
-    //          0,
-    //          Lizzie.config.showTopToolBar
-    //              ? Utils.zoomOut(
-    //                  Lizzie.frame.getJMenuBar().getHeight() * (Lizzie.config.showDoubleMenu ? 2 :
-    // 1)
-    //                      + (Lizzie.config.showDoubleMenu
-    //                          ? topPanelHeight - Config.menuHeight
-    //                          : 0))
-    //              : Utils.zoomOut(Lizzie.frame.getJMenuBar().getHeight()),
-    //          null);
-    //      if (Lizzie.config.showWinrateGraph && cachedWinrateImage != null && !showControls)
-    //        g0.drawImage(
-    //            cachedWinrateImage,
-    //            grx,
-    //            gry
-    //                + (Lizzie.config.showTopToolBar
-    //                    ? Utils.zoomOut(
-    //                        Lizzie.frame.getJMenuBar().getHeight()
-    //                                * (Lizzie.config.showDoubleMenu ? 2 : 1)
-    //                            + (Lizzie.config.showDoubleMenu
-    //                                ? topPanelHeight - Config.menuHeight
-    //                                : 0))
-    //                    : Utils.zoomOut(Lizzie.frame.getJMenuBar().getHeight())),
-    //            null);
-    //    } else
-    //   {
     if (!Lizzie.config.usePureBackground) g0.drawImage(cachedBackground, 0, 0, null);
     g0.drawImage(cachedImage, 0, 0, null);
     if (Lizzie.config.showWinrateGraph && cachedWinrateImage != null && !showControls)
       g0.drawImage(cachedWinrateImage, grx, gry, null);
-    //  }
   }
 
   private String getLoadingText() {
@@ -5525,6 +5469,8 @@ public class LizzieFrame extends JFrame {
           } else {
             score = -score + curData.getKomi();
           }
+        } else if (!curData.blackToPlay) {
+          score = -score;
         }
         scoreLead = score;
         scoreStdev = Lizzie.leelaz.scoreStdev;
@@ -5829,13 +5775,9 @@ public class LizzieFrame extends JFrame {
               ? 18
               : (float) (min(width * 0.4, height * 0.85) * 0.2));
     else setPanelFont(g, (float) (height * 0.18));
-    if (isCounting || isAutocounting) {
-      bval = String.format(Locale.ENGLISH, "%d", estimateResults.allblackcounts);
-      wval = String.format(Locale.ENGLISH, "%d", estimateResults.allwhitecounts);
-    } else {
-      bval = String.format(Locale.ENGLISH, "%d", Lizzie.board.getData().blackCaptures);
-      wval = String.format(Locale.ENGLISH, "%d", Lizzie.board.getData().whiteCaptures);
-    }
+
+    bval = String.format(Locale.ENGLISH, "%d", Lizzie.board.getData().blackCaptures);
+    wval = String.format(Locale.ENGLISH, "%d", Lizzie.board.getData().whiteCaptures);
 
     g.setColor(Color.WHITE);
     //    int bw = g.getFontMetrics().stringWidth(bval);
@@ -5878,49 +5820,26 @@ public class LizzieFrame extends JFrame {
     String bAiScore = String.format(Locale.ENGLISH, "%.1f", blackValue * 100 / analyzedBlack);
     String wAiScore = String.format(Locale.ENGLISH, "%.1f", whiteValue * 100 / analyzedWhite);
     if (!isSmallCap) {
-      if (isCounting) {
-        drawStringMid(
-            g,
-            posX + width / 4,
-            posY + height * 28 / 32,
-            uiFont,
-            Font.PLAIN,
-            Lizzie.resourceBundle.getString("LizzieFrame.points") + bval, // "目数:"
-            height / 6,
-            width * 3 / 10,
-            0);
-        drawStringMid(
-            g,
-            posX + width * 3 / 4,
-            posY + height * 28 / 32,
-            uiFont,
-            Font.PLAIN,
-            Lizzie.resourceBundle.getString("LizzieFrame.points") + wval,
-            height / 6,
-            width * 3 / 10,
-            0);
-      } else {
-        drawStringMid(
-            g,
-            posX + width / 4,
-            posY + height * 28 / 32,
-            uiFont,
-            Font.PLAIN,
-            Lizzie.resourceBundle.getString("LizzieFrame.captures") + bval, // 提子
-            height / 6,
-            width * 3 / 10,
-            0);
-        drawStringMid(
-            g,
-            posX + width * 3 / 4,
-            posY + height * 28 / 32,
-            uiFont,
-            Font.PLAIN,
-            Lizzie.resourceBundle.getString("LizzieFrame.captures") + wval,
-            height / 6,
-            width * 3 / 10,
-            0);
-      }
+      drawStringMid(
+          g,
+          posX + width / 4,
+          posY + height * 28 / 32,
+          uiFont,
+          Font.PLAIN,
+          Lizzie.resourceBundle.getString("LizzieFrame.captures") + bval, // 提子
+          height / 6,
+          width * 3 / 10,
+          0);
+      drawStringMid(
+          g,
+          posX + width * 3 / 4,
+          posY + height * 28 / 32,
+          uiFont,
+          Font.PLAIN,
+          Lizzie.resourceBundle.getString("LizzieFrame.captures") + wval,
+          height / 6,
+          width * 3 / 10,
+          0);
 
       if (analyzedBlack > 0)
         drawStringMid(
@@ -6050,123 +5969,40 @@ public class LizzieFrame extends JFrame {
   private void drawWinratePane(int x, int y, int w, int h) {
     if (w < 10 || h < 10) {
       cachedWinrateImage = new BufferedImage(1, 1, TYPE_INT_ARGB);
+      winrateGraph.clearParames();
       return;
     }
-    if (refreshFromInfo && !refreshFromResized) {
-      new Thread() {
-        public void run() {
-          if (lastGrw != w || lastGrh != h) {
-            lastGrw = w;
-            lastGrh = h;
-            BufferedImage cachedWinrateImage = new BufferedImage(w, h, TYPE_INT_ARGB);
-            BufferedImage cachedWinrateBackgroundImage = new BufferedImage(w, h, TYPE_INT_ARGB);
-            BufferedImage cachedWinrateBlunderImage = new BufferedImage(w, h, TYPE_INT_ARGB);
-            Graphics2D g = (Graphics2D) cachedWinrateImage.getGraphics();
-            Graphics2D gBlunder = (Graphics2D) cachedWinrateBlunderImage.getGraphics();
-            Graphics2D gBackground = (Graphics2D) cachedWinrateBackgroundImage.getGraphics();
-            g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            gBlunder.setRenderingHint(
-                RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-            gBlunder.setRenderingHint(
-                RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            gBackground.setRenderingHint(
-                RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-            gBackground.setRenderingHint(
-                RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            winrateGraph.draw(g, gBlunder, gBackground, 0, 0, w, h);
-            gBackground.drawImage(cachedWinrateBlunderImage, 0, 0, null);
-            gBackground.drawImage(cachedWinrateImage, 0, 0, null);
-            Lizzie.frame.cachedWinrateImage = cachedWinrateBackgroundImage;
-            g.dispose();
-            gBlunder.dispose();
-            gBackground.dispose();
-          } else {
-            BufferedImage cachedWinrateImage = new BufferedImage(w, h, TYPE_INT_ARGB);
-            BufferedImage cachedWinrateBackgroundImage = new BufferedImage(w, h, TYPE_INT_ARGB);
-            BufferedImage cachedWinrateBlunderImage = new BufferedImage(w, h, TYPE_INT_ARGB);
-            Graphics2D g = (Graphics2D) cachedWinrateImage.getGraphics();
-            Graphics2D gBlunder = (Graphics2D) cachedWinrateBlunderImage.getGraphics();
-            Graphics2D gBackground = (Graphics2D) cachedWinrateBackgroundImage.getGraphics();
-            g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-            g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            gBlunder.setRenderingHint(
-                RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-            gBlunder.setRenderingHint(
-                RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            gBackground.setRenderingHint(
-                RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-            gBackground.setRenderingHint(
-                RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            winrateGraph.draw(g, gBlunder, gBackground, 0, 0, w, h);
-            gBackground.drawImage(cachedWinrateBlunderImage, 0, 0, null);
-            gBackground.drawImage(cachedWinrateImage, 0, 0, null);
-            Lizzie.frame.cachedWinrateImage = cachedWinrateBackgroundImage;
-            g.dispose();
-            gBlunder.dispose();
-            gBackground.dispose();
-          }
-          winratePaneTime = System.currentTimeMillis();
-        }
-      }.start();
-    } else {
-      refreshFromResized = false;
-      if (lastGrw != w || lastGrh != h) {
-        lastGrw = w;
-        lastGrh = h;
-        BufferedImage cachedWinrateImage = new BufferedImage(w, h, TYPE_INT_ARGB);
-        BufferedImage cachedWinrateBackgroundImage = new BufferedImage(w, h, TYPE_INT_ARGB);
-        BufferedImage cachedWinrateBlunderImage = new BufferedImage(w, h, TYPE_INT_ARGB);
-        Graphics2D g = (Graphics2D) cachedWinrateImage.getGraphics();
-        Graphics2D gBlunder = (Graphics2D) cachedWinrateBlunderImage.getGraphics();
-        Graphics2D gBackground = (Graphics2D) cachedWinrateBackgroundImage.getGraphics();
-        g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        gBlunder.setRenderingHint(
-            RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        gBlunder.setRenderingHint(
-            RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        gBackground.setRenderingHint(
-            RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        gBackground.setRenderingHint(
-            RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        winrateGraph.draw(g, gBlunder, gBackground, 0, 0, w, h);
-        gBackground.drawImage(cachedWinrateBlunderImage, 0, 0, null);
-        gBackground.drawImage(cachedWinrateImage, 0, 0, null);
-        Lizzie.frame.cachedWinrateImage = cachedWinrateBackgroundImage;
-        g.dispose();
-        gBlunder.dispose();
-        gBackground.dispose();
-      } else {
-        if (refreshFromInfo && (System.currentTimeMillis() - winratePaneTime) < 200) {
-          refreshFromInfo = false;
-          return;
-        }
-        BufferedImage cachedWinrateImage = new BufferedImage(w, h, TYPE_INT_ARGB);
-        BufferedImage cachedWinrateBackgroundImage = new BufferedImage(w, h, TYPE_INT_ARGB);
-        BufferedImage cachedWinrateBlunderImage = new BufferedImage(w, h, TYPE_INT_ARGB);
-        Graphics2D g = (Graphics2D) cachedWinrateImage.getGraphics();
-        Graphics2D gBlunder = (Graphics2D) cachedWinrateBlunderImage.getGraphics();
-        Graphics2D gBackground = (Graphics2D) cachedWinrateBackgroundImage.getGraphics();
-        g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        gBlunder.setRenderingHint(
-            RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        gBlunder.setRenderingHint(
-            RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        gBackground.setRenderingHint(
-            RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        gBackground.setRenderingHint(
-            RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        winrateGraph.draw(g, gBlunder, gBackground, 0, 0, w, h);
-        gBackground.drawImage(cachedWinrateBlunderImage, 0, 0, null);
-        gBackground.drawImage(cachedWinrateImage, 0, 0, null);
-        Lizzie.frame.cachedWinrateImage = cachedWinrateBackgroundImage;
-        g.dispose();
-        gBlunder.dispose();
-        gBackground.dispose();
-      }
+    if (lastGrw != w
+        || lastGrh != h
+        || refreshWinratePane
+        || !refreshFromInfo
+        || (System.currentTimeMillis() - winratePaneTime) >= 200) {
+      BufferedImage cachedWinrateImage = new BufferedImage(w, h, TYPE_INT_ARGB);
+      BufferedImage cachedWinrateBackgroundImage = new BufferedImage(w, h, TYPE_INT_ARGB);
+      BufferedImage cachedWinrateBlunderImage = new BufferedImage(w, h, TYPE_INT_ARGB);
+      Graphics2D g = (Graphics2D) cachedWinrateImage.getGraphics();
+      Graphics2D gBlunder = (Graphics2D) cachedWinrateBlunderImage.getGraphics();
+      Graphics2D gBackground = (Graphics2D) cachedWinrateBackgroundImage.getGraphics();
+      g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+      g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+      gBlunder.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+      gBlunder.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+      gBackground.setRenderingHint(
+          RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+      gBackground.setRenderingHint(
+          RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+      winrateGraph.draw(g, gBlunder, gBackground, 0, 0, w, h);
+      gBackground.drawImage(cachedWinrateBlunderImage, 0, 0, null);
+      gBackground.drawImage(cachedWinrateImage, 0, 0, null);
+      Lizzie.frame.cachedWinrateImage = cachedWinrateBackgroundImage;
+      g.dispose();
+      gBlunder.dispose();
+      gBackground.dispose();
+      refreshWinratePane = false;
+      refreshFromInfo = false;
       winratePaneTime = System.currentTimeMillis();
+      lastGrw = w;
+      lastGrh = h;
     }
   }
 
@@ -6560,7 +6396,8 @@ public class LizzieFrame extends JFrame {
       }
       winrateGraph.setMouseOverNode(mouseOverNode);
       if (mouseOverNode != curNode || !noRefresh) {
-        this.redrawWinratePaneOnly = true;
+        redrawWinratePaneOnly = true;
+        refreshWinratePane = true;
         repaint();
       }
       return true;
@@ -9298,6 +9135,11 @@ public class LizzieFrame extends JFrame {
       stopAiPlayingAndPolicy();
     }
     if (isGenmove) {
+      if (Lizzie.config.limitMyTime)
+        countDownForHuman(
+            Lizzie.config.getMySaveTime(),
+            Lizzie.config.getMyByoyomiSeconds(),
+            Lizzie.config.getMyByoyomiTimes());
       if (!Lizzie.leelaz.isThinking) {
         if (!Lizzie.config.genmoveGameNoTime) sendAiTime(true, Lizzie.leelaz, true);
         isPlayingAgainstLeelaz = true;
@@ -9792,19 +9634,20 @@ public class LizzieFrame extends JFrame {
     } else {
       if (Lizzie.config.isDoubleEngineMode()) {
         if (engine == Lizzie.leelaz)
-          LizzieFrame.boardRenderer.drawKataEstimateByTransparent(tempcount, false);
+          LizzieFrame.boardRenderer.drawKataEstimateByTransparent(tempcount, false, true);
         if (Lizzie.leelaz2 != null && engine == Lizzie.leelaz2)
-          LizzieFrame.boardRenderer2.drawKataEstimateByTransparent(tempcount, false);
+          LizzieFrame.boardRenderer2.drawKataEstimateByTransparent(tempcount, false, true);
       } else {
-        LizzieFrame.boardRenderer.drawKataEstimateByTransparent(tempcount, false);
+        LizzieFrame.boardRenderer.drawKataEstimateByTransparent(tempcount, false, true);
         if (floatBoard != null && floatBoard.isVisible())
-          floatBoard.boardRenderer.drawKataEstimateByTransparent(tempcount, false);
+          floatBoard.boardRenderer.drawKataEstimateByTransparent(tempcount, false, true);
       }
       if (!Lizzie.config.isDoubleEngineMode()) {
         if (Lizzie.config.showSubBoard)
-          LizzieFrame.subBoardRenderer.drawKataEstimateByTransparent(tempcount, false);
+          LizzieFrame.subBoardRenderer.drawKataEstimateByTransparent(tempcount, false, true);
         if (independentSubBoard != null && independentSubBoard.isVisible())
-          independentSubBoard.subBoardRenderer.drawKataEstimateByTransparent(tempcount, false);
+          independentSubBoard.subBoardRenderer.drawKataEstimateByTransparent(
+              tempcount, false, true);
       }
     }
   }
@@ -9852,6 +9695,7 @@ public class LizzieFrame extends JFrame {
 
   public boolean stopAiPlayingAndPolicy() {
     toolbar.isPkStop = false;
+    Lizzie.leelaz.isGamePaused = false;
     boolean isGaming =
         Lizzie.frame.isPlayingAgainstLeelaz || Lizzie.frame.isAnaPlayingAgainstLeelaz;
     if (Lizzie.frame.isShowingHeatmap) {
@@ -11549,6 +11393,8 @@ public class LizzieFrame extends JFrame {
 
           @Override
           public void run() {
+            if (Lizzie.board.getHistory().isEmptyBoard()
+                && Lizzie.board.getHistory().getGameInfo().getHandicap() > 0) return;
             if (playerIsBlack && !Lizzie.board.getHistory().isBlacksTurn()) return;
             if (!playerIsBlack && Lizzie.board.getHistory().isBlacksTurn()) return;
             if (Lizzie.leelaz.isGamePaused) return;
@@ -12518,5 +12364,11 @@ public class LizzieFrame extends JFrame {
 
   public void shutdownClockHelper() {
     processClockHelper.destroy();
+  }
+
+  public void flattenBoard() {
+    Lizzie.board.hasStartStone = true;
+    Lizzie.board.addStartListAll();
+    Lizzie.board.flatten();
   }
 }
