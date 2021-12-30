@@ -605,6 +605,7 @@ public class Config {
   public String lastFoxName = "";
 
   public boolean continueWithBestMove = false;
+  public boolean directlyWithBestMove = true;
 
   public boolean delayShowCandidates = false;
   public double delayCandidatesSeconds = 10;
@@ -1302,6 +1303,7 @@ public class Config {
     foxAfterGet = uiConfig.optInt("fox-after-get", 0);
     lastFoxName = uiConfig.optString("last-fox-name", "");
     continueWithBestMove = uiConfig.optBoolean("continue-with-best-move", false);
+    directlyWithBestMove = uiConfig.optBoolean("directly-with-best-move", false);
     delayShowCandidates = uiConfig.optBoolean("delay-show-candidates", false);
     delayCandidatesSeconds = uiConfig.optDouble("delay-candidates-seconds", 10.0);
     otherSizeWidth = uiConfig.optInt("other-size-width", 21);

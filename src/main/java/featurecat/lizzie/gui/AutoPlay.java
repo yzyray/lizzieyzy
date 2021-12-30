@@ -25,7 +25,7 @@ public class AutoPlay extends JFrame {
   /** Create the frame. */
   public AutoPlay() {
     // setBounds(100, 100, 491, 233);
-    Lizzie.setFrameSize(this, 330, 205);
+    Lizzie.setFrameSize(this, 330, 232);
     setResizable(false);
     if (Lizzie.frame != null) setAlwaysOnTop(Lizzie.frame.isAlwaysOnTop());
     setTitle(resourceBundle.getString("AutoPlay.title")); // "设置自动播放");
@@ -50,7 +50,7 @@ public class AutoPlay extends JFrame {
     JCheckBox chkAutoPlaySubboard =
         new JFontCheckBox(
             resourceBundle.getString("AutoPlay.chkAutoPlaySubbord")); // "自动播放(小棋盘)(毫秒)");
-    chkAutoPlaySubboard.setBounds(6, 60, 168, 24);
+    chkAutoPlaySubboard.setBounds(6, 87, 168, 24);
     contentPane.add(chkAutoPlaySubboard);
     chkAutoPlaySubboard.setFocusable(false);
 
@@ -60,7 +60,7 @@ public class AutoPlay extends JFrame {
     txtAutoPlayMain.setColumns(10);
 
     txtAutoPlaySub = new JFontTextField();
-    txtAutoPlaySub.setBounds(180, 60, 66, 24);
+    txtAutoPlaySub.setBounds(180, 87, 66, 24);
     contentPane.add(txtAutoPlaySub);
     txtAutoPlaySub.setColumns(10);
 
@@ -77,7 +77,7 @@ public class AutoPlay extends JFrame {
         new JFontCheckBox(resourceBundle.getString("AutoPlay.chbDisplayEntireVariationFirst"));
     chkDisplayEntireVariationFirst.setBounds(
         17,
-        114,
+        141,
         Lizzie.config.isFrameFontSmall() ? 185 : Lizzie.config.isFrameFontMiddle() ? 195 : 230,
         23);
     contentPane.add(chkDisplayEntireVariationFirst);
@@ -86,7 +86,7 @@ public class AutoPlay extends JFrame {
         Lizzie.config.autoReplayDisplayEntireVariationsFirst);
 
     txtDisplayEntireVariationFirst = new JFontTextField();
-    txtDisplayEntireVariationFirst.setBounds(268, 114, 43, 24);
+    txtDisplayEntireVariationFirst.setBounds(268, 141, 43, 24);
     contentPane.add(txtDisplayEntireVariationFirst);
     txtDisplayEntireVariationFirst.setEnabled(Lizzie.config.autoReplayBranch);
     txtDisplayEntireVariationFirst.setText(
@@ -94,7 +94,7 @@ public class AutoPlay extends JFrame {
 
     JCheckBox chkAutoPlayBranch =
         new JFontCheckBox(resourceBundle.getString("AutoPlay.chkAutoPlayBranch"));
-    chkAutoPlayBranch.setBounds(6, 87, 168, 24);
+    chkAutoPlayBranch.setBounds(6, 114, 168, 24);
     contentPane.add(chkAutoPlayBranch);
     chkAutoPlayBranch.setSelected(Lizzie.config.autoReplayBranch);
     chkAutoPlayBranch.addActionListener(
@@ -107,14 +107,27 @@ public class AutoPlay extends JFrame {
         });
 
     txtAutoPlayBranch = new JTextField();
-    txtAutoPlayBranch.setBounds(180, 87, 66, 24);
+    txtAutoPlayBranch.setBounds(180, 114, 66, 24);
     contentPane.add(txtAutoPlayBranch);
     txtAutoPlayBranch.setText(
         String.valueOf((int) (Lizzie.config.replayBranchIntervalSeconds * 1000)));
 
+    JCheckBox chkDirectlyWithBestMove =
+        new JFontCheckBox(resourceBundle.getString("AutoPlay.chkDirectlyWithBestMove"));
+    chkDirectlyWithBestMove.setBounds(17, 33, 294, 23);
+    contentPane.add(chkDirectlyWithBestMove);
+    chkDirectlyWithBestMove.setSelected(Lizzie.config.continueWithBestMove);
+    chkDirectlyWithBestMove.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.config.directlyWithBestMove = chkDirectlyWithBestMove.isSelected();
+          }
+        });
+    chkDirectlyWithBestMove.setEnabled(chkAutoPlayMainboard.isSelected());
+
     JCheckBox chkContinueWithBestMove =
         new JFontCheckBox(resourceBundle.getString("AutoPlay.chkContinueWithBestMove"));
-    chkContinueWithBestMove.setBounds(17, 33, 294, 23);
+    chkContinueWithBestMove.setBounds(17, 60, 294, 23);
     contentPane.add(chkContinueWithBestMove);
     chkContinueWithBestMove.setSelected(Lizzie.config.continueWithBestMove);
     chkContinueWithBestMove.addActionListener(
@@ -123,13 +136,14 @@ public class AutoPlay extends JFrame {
             Lizzie.config.continueWithBestMove = chkContinueWithBestMove.isSelected();
           }
         });
-
     chkContinueWithBestMove.setEnabled(chkAutoPlayMainboard.isSelected());
+
     chkAutoPlayMainboard.addActionListener(
         new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
             chkContinueWithBestMove.setEnabled(chkAutoPlayMainboard.isSelected());
+            chkDirectlyWithBestMove.setEnabled(chkAutoPlayMainboard.isSelected());
           }
         });
 
@@ -180,6 +194,10 @@ public class AutoPlay extends JFrame {
                     / 1000;
             Lizzie.config.uiConfig.put(
                 "replay-branch-interval-seconds", Lizzie.config.replayBranchIntervalSeconds);
+            Lizzie.config.uiConfig.put(
+                "continue-with-best-move", Lizzie.config.continueWithBestMove);
+            Lizzie.config.uiConfig.put(
+                "directly-with-best-move", Lizzie.config.directlyWithBestMove);
             Lizzie.config.autoReplayBranch = chkAutoPlayBranch.isSelected();
             if (Lizzie.config.autoReplayBranch) {
               Lizzie.frame.autoReplayBranch();
@@ -188,7 +206,7 @@ public class AutoPlay extends JFrame {
             setVisible(false);
           }
         });
-    okButton.setBounds(110, 144, 93, 25);
+    okButton.setBounds(110, 171, 93, 25);
     contentPane.add(okButton);
   }
 }

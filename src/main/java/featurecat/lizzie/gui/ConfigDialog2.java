@@ -1268,7 +1268,7 @@ public class ConfigDialog2 extends JDialog {
     // txtAdvanceTime.setColumns(10);
     chkAlwaysGtp.setSelected(Lizzie.config.alwaysGtp);
 
-    chkNoCapture = new JCheckBox(); // $NON-NLS-1$
+    chkNoCapture = new JCheckBox(); // gomoku
     chkNoCapture.setBounds(377, 668, 26, 23);
     uiTab.add(chkNoCapture);
 
@@ -1279,8 +1279,8 @@ public class ConfigDialog2 extends JDialog {
               int ret =
                   JOptionPane.showConfirmDialog(
                       Lizzie.frame.configDialog2,
-                      "选择五子棋则无法提子,无法用于围棋分析",
-                      "五子棋?",
+                      resourceBundle.getString("ConfigDialog2.chkNoCapture.content"),
+                      resourceBundle.getString("ConfigDialog2.chkNoCapture.title"),
                       JOptionPane.OK_CANCEL_OPTION);
               if (ret == JOptionPane.CANCEL_OPTION || ret == -1) {
                 chkNoCapture.setSelected(false);

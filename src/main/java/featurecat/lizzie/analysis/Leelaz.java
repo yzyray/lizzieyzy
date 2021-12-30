@@ -1356,7 +1356,7 @@ public class Leelaz {
               Lizzie.frame.zen.sendAndEstimate(command, false);
             }
           }
-          if (Lizzie.frame.isPlayingAgainstLeelaz && isResponseUpToDate()) {
+          if (Lizzie.frame.isPlayingAgainstLeelaz && isResponseUpToPreDate()) {
             if (params[1].startsWith("resign")) {
               if (Lizzie.frame.playerIsBlack) {
 

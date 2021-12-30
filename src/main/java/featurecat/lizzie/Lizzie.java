@@ -269,27 +269,27 @@ public class Lizzie {
               }
             }
             if (Lizzie.config.loadEstimateEngine) {
-                      try {
-                        frame.zen = new KataEstimate(true);
-                      } catch (IOException e1) {
-                        e1.printStackTrace();
-                      }
-                    }
-                    if (Lizzie.config.analysisEnginePreLoad) {
-                      try {
-                        frame.analysisEngine = new AnalysisEngine(true);
-                      } catch (IOException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                      }
-                    }
-                    if (config.autoCheckVersion) {
-                      String date = new SimpleDateFormat("yyyyMMdd").format(new Date());
-                      if (!config.autoCheckDate.equals(date)) {
-                        SocketCheckVersion socketCheckVersion = new SocketCheckVersion();
-                        socketCheckVersion.SocketCheckVersion(true);
-                      }
-                    }                  
+              try {
+                frame.zen = new KataEstimate(true);
+              } catch (IOException e1) {
+                e1.printStackTrace();
+              }
+            }
+            if (Lizzie.config.analysisEnginePreLoad) {
+              try {
+                frame.analysisEngine = new AnalysisEngine(true);
+              } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+              }
+            }
+            if (config.autoCheckVersion) {
+              String date = new SimpleDateFormat("yyyyMMdd").format(new Date());
+              if (!config.autoCheckDate.equals(date)) {
+                SocketCheckVersion socketCheckVersion = new SocketCheckVersion();
+                socketCheckVersion.SocketCheckVersion(true);
+              }
+            }
           }
         });
   }

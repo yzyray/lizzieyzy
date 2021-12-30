@@ -4085,7 +4085,9 @@ public class BottomToolbar extends JPanel {
             while (chkAutoMain.isSelected()) {
               try {
                 if (curNode == Lizzie.board.getHistory().getCurrentHistoryNode()) {
-                  if (!Lizzie.board.nextMove(true)) {
+                  if (Lizzie.config.directlyWithBestMove) {
+                    Lizzie.frame.playBestMove();
+                  } else if (!Lizzie.board.nextMove(true)) {
                     if (Lizzie.config.continueWithBestMove) {
                       BoardHistoryNode cur = Lizzie.board.getHistory().getCurrentHistoryNode();
                       if (!cur.getData().lastMove.isPresent()
