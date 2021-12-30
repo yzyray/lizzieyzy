@@ -153,9 +153,7 @@ public class Menu extends JMenuBar {
     setPreferredSize(new Dimension(100, Config.menuHeight)); // 中25 大30
     // headFont = new Font(Config.sysDefaultFontName, Font.PLAIN,
     // Math.max(Lizzie.config.allFontSize, 12)); // 中16 大20
-    Font baseMenuFont =
-        new Font(
-            resourceBundle.getString("Menu.baseMenu.fontName"), Font.PLAIN, Config.frameFontSize);
+    Font baseMenuFont = new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize);
     final JFontMenu fileMenu = new JFontMenu(resourceBundle.getString("Menu.fileMenu")); // ("文件");
     fileMenu.setFont(baseMenuFont);
     fileMenu.setForeground(Color.BLACK);

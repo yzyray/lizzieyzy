@@ -135,6 +135,8 @@ public class Lizzie {
     else if (config.useLanguage == 4)
       resourceBundle = ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("ja", "JP"));
     config.isChinese = (resourceBundle.getString("Lizzie.isChinese")).equals("yes");
+    if (resourceBundle.containsKey("Lizzie.defaultFontName"))
+      Config.sysDefaultFontName = resourceBundle.getString("Lizzie.defaultFontName");
     if (config.theme.uiFontName() != null) config.uiFontName = config.theme.uiFontName();
     if (Lizzie.config.uiFontName != null
         && !(Lizzie.config.uiFontName.equals("Lizzie默认")
@@ -297,10 +299,11 @@ public class Lizzie {
   public static void setLookAndFeel() {
     try {
       if (System.getProperty("os.name").contains("Mac")) {
-        if (config.useJavaLooks) setUIFont(new javax.swing.plaf.FontUIResource("", Font.PLAIN, 12));
+        if (config.useJavaLooks)
+          setUIFont(new javax.swing.plaf.FontUIResource(Config.sysDefaultFontName, Font.PLAIN, 12));
         else System.setProperty("apple.laf.useScreenMenuBar", "true");
       } else {
-        setUIFont(new javax.swing.plaf.FontUIResource("", Font.PLAIN, 12));
+        setUIFont(new javax.swing.plaf.FontUIResource(Config.sysDefaultFontName, Font.PLAIN, 12));
       }
       UIManager.put(
           "OptionPane.buttonFont",
