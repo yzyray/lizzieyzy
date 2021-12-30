@@ -3244,4 +3244,40 @@ class BlunderMoves implements Comparable<BlunderMoves> {
     if (Math.abs(move.diffWinrate) > Math.abs(this.diffWinrate)) return 1;
     else return -1;
   }
+
+  public static String getResult(String filename) {
+    File file = new File(filename);
+    if (!file.exists() || !file.canRead()) {
+      return "";
+    }
+    String encoding = EncodingDetector.detect(filename);
+    FileInputStream fp;
+    try {
+      fp = new FileInputStream(file);
+      if (encoding == "WINDOWS-1252") encoding = "GB18030";
+      InputStreamReader reader = new InputStreamReader(fp, encoding);
+      StringBuilder builder = new StringBuilder();
+      while (reader.ready()) {
+        builder.append((char) reader.read());
+      }
+      reader.close();
+      fp.close();
+      String value = builder.toString();
+      if (value.isEmpty()) {
+        Lizzie.board.isLoadingFile = false;
+        return "";
+      }
+      return parseResult(value);
+    } catch (Exception e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    return "";
+  }
+
+  private static String parseResult(String value) {
+    int tempIndex = value.indexOf("RE[") + 3;
+    String temp = value.substring(tempIndex, Math.min(value.length(), tempIndex + 20));
+    return temp.substring(0, temp.lastIndexOf("]"));
+  }
 }

@@ -213,7 +213,7 @@ public class AnalysisSettings extends JDialog {
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             GetEngineLine getEngineLine = new GetEngineLine();
-            String el = getEngineLine.getEngineLine(dialog, true, true);
+            String el = getEngineLine.getEngineLine(dialog, true, true, false, false);
             if (!el.isEmpty()) {
               engineCmd.setText(el);
             }
@@ -244,7 +244,8 @@ public class AnalysisSettings extends JDialog {
         new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
-            RemoteEngineSettings remoteEngineSettings = new RemoteEngineSettings(dialog, true);
+            RemoteEngineSettings remoteEngineSettings =
+                new RemoteEngineSettings(dialog, true, false);
             remoteEngineSettings.setVisible(true);
           }
         });

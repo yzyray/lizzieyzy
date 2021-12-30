@@ -197,6 +197,40 @@ public class Utils {
     return commandList;
   }
 
+  public static RemoteEngineData getContributeRemoteEngineData() {
+    RemoteEngineData remoteData = new RemoteEngineData();
+    Optional<JSONObject> remoteEngineInfoOpt =
+        Optional.ofNullable(Lizzie.config.leelazConfig.optJSONObject("contribute-engine-ssh-info"));
+    if (remoteEngineInfoOpt.isPresent()) {
+      JSONObject remoteEngineInfo = remoteEngineInfoOpt.get();
+      remoteData.useJavaSSH = remoteEngineInfo.optBoolean("useJavaSSH", false);
+      remoteData.ip = remoteEngineInfo.optString("ip", "");
+      remoteData.port = remoteEngineInfo.optString("port", "");
+      remoteData.userName = remoteEngineInfo.optString("userName", "");
+      remoteData.useKeyGen = remoteEngineInfo.optBoolean("useKeyGen", false);
+      remoteData.password = remoteEngineInfo.optString("password", "");
+      remoteData.keyGenPath = remoteEngineInfo.optString("keyGenPath", "");
+    }
+    return remoteData;
+  }
+
+  public static void saveContributeRemoteEngineData(RemoteEngineData remoteEngineData) {
+    JSONObject remoteEngineInfo = new JSONObject();
+    remoteEngineInfo.put("useJavaSSH", remoteEngineData.useJavaSSH);
+    remoteEngineInfo.put("ip", remoteEngineData.ip);
+    remoteEngineInfo.put("port", remoteEngineData.port);
+    remoteEngineInfo.put("userName", remoteEngineData.userName);
+    remoteEngineInfo.put("password", remoteEngineData.password);
+    remoteEngineInfo.put("useKeyGen", remoteEngineData.useKeyGen);
+    remoteEngineInfo.put("keyGenPath", remoteEngineData.keyGenPath);
+    Lizzie.config.leelazConfig.put("contribute-engine-ssh-info", remoteEngineInfo);
+    try {
+      Lizzie.config.save();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
   public static RemoteEngineData getEstimateEngineRemoteEngineData() {
     RemoteEngineData remoteData = new RemoteEngineData();
     Optional<JSONObject> remoteEngineInfoOpt =
@@ -492,7 +526,6 @@ public class Utils {
     }
   }
 
-  @SuppressWarnings("deprecation")
   public static Double txtFieldDoubleValue(JTextField txt) {
     if (txt.getText().trim().isEmpty()) {
       return 0.0;
@@ -773,7 +806,8 @@ public class Utils {
   }
 
   @SuppressWarnings("unchecked")
-  public static List<MoveData> getBestMovesFromJsonArray(JSONArray moveInfos) {
+  public static List<MoveData> getBestMovesFromJsonArray(
+      JSONArray moveInfos, boolean sideToMove, boolean isBlack) {
     // TODO Auto-generated method stub
     ArrayList<MoveData> bestMoves = new ArrayList<MoveData>();
     for (int i = 0; i < moveInfos.length(); i++) {
@@ -789,6 +823,10 @@ public class Utils {
       mv.policy = moveInfo.getDouble("prior") * 100;
       mv.scoreMean = moveInfo.getDouble("scoreLead");
       mv.scoreStdev = moveInfo.getDouble("scoreStdev");
+      if (!sideToMove && !isBlack) {
+        mv.winrate = 100 - mv.winrate;
+        mv.scoreMean = -mv.scoreMean;
+      }
       JSONArray pv = moveInfo.getJSONArray("pv");
       List<Object> list = pv.toList();
       mv.variation = (List<String>) (List) list;

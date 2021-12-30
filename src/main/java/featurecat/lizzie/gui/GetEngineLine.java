@@ -31,10 +31,26 @@ public class GetEngineLine {
   }
 
   public String getEngineLine(
-      Component parentComponent, boolean isKataGoOnly, boolean isAnalysisEngine) {
+      Component parentComponent,
+      boolean isKataGoOnly,
+      boolean isAnalysisEngine,
+      boolean getEnginePath,
+      boolean getConfigPath) {
     boolean isKataGo = false;
     boolean isLeela = false;
     boolean isIkatago = false;
+    if (getConfigPath) {
+      JFileChooser chooseConfig = new JFileChooser(".");
+      FileFilterTest2 fileFilter2 = new FileFilterTest2();
+      chooseConfig.setFileFilter(fileFilter2);
+      chooseConfig.setMultiSelectionEnabled(false);
+      chooseConfig.setDialogTitle(resourceBundle.getString("MoreEngines.chooseConfig"));
+      int result = chooseConfig.showOpenDialog(parentComponent);
+      if (result == JFileChooser.APPROVE_OPTION) {
+        File configFile = chooseConfig.getSelectedFile();
+        return relativizePath(configFile.toPath());
+      } else return "";
+    }
     if (isKataGoOnly) {
       isKataGo = true;
     } else {
@@ -91,6 +107,7 @@ public class GetEngineLine {
       engineFile = chooser.getSelectedFile();
       if (engineFile != null) {
         enginePath = relativizePath(engineFile.toPath());
+        if (getEnginePath) return enginePath;
         if (isIkatago) {
           boolean isColab = false;
           Object[] options = {"Colab", resourceBundle.getString("MoreEngines.otherPlatform")};

@@ -3311,7 +3311,7 @@ public class MoveListFrame extends JFrame {
 
     if (selectedIndex != 0) g.fillRect(posx, posy, width + 5, height);
     else g.fillRect(posx, posy, width + 2, height);
-    if (Lizzie.board.isPkBoard) {
+    if (Lizzie.board.isPkBoard && !Lizzie.frame.isShowingContributeGame) {
       g.setColor(new Color(0, 0, 0, 180));
       drawString(
           g,

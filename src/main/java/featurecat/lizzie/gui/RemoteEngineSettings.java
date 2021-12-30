@@ -34,10 +34,12 @@ public class RemoteEngineSettings extends JDialog {
   private String keyGenPath = "";
   private JDialog thisDialog = this;
   private boolean isAnalysisEngine;
+  private boolean isContributeEngine;
 
-  public RemoteEngineSettings(JDialog owner, Boolean isAnalysisEngine) {
+  public RemoteEngineSettings(JDialog owner, boolean isAnalysisEngine, boolean isContributeEngine) {
     super(owner);
     this.isAnalysisEngine = isAnalysisEngine;
+    this.isContributeEngine = isContributeEngine;
     setResizable(false);
     setTitle(Lizzie.resourceBundle.getString("RemoteEngineSettings.title"));
     try {
@@ -78,6 +80,8 @@ public class RemoteEngineSettings extends JDialog {
     RemoteEngineData remoteEngineData;
     if (isAnalysisEngine) {
       remoteEngineData = Utils.getAnalysisEngineRemoteEngineData();
+    } else if (isContributeEngine) {
+      remoteEngineData = Utils.getContributeRemoteEngineData();
     } else {
       remoteEngineData = Utils.getEstimateEngineRemoteEngineData();
     }
@@ -182,6 +186,7 @@ public class RemoteEngineSettings extends JDialog {
             remoteEngineData.keyGenPath = keyGenPath;
             remoteEngineData.useKeyGen = chkUseKeyGen.isSelected();
             if (isAnalysisEngine) Utils.saveAnalysisEngineRemoteEngineData(remoteEngineData);
+            else if (isContributeEngine) Utils.saveContributeRemoteEngineData(remoteEngineData);
             else Utils.saveEstimateEngineRemoteEngineData(remoteEngineData);
             setVisible(false);
           }

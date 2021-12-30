@@ -387,25 +387,35 @@ public class BoardHistoryList {
   }
 
   public void pass(Stone color, boolean newBranch, boolean dummy, boolean changeMove) {
+    pass(color, newBranch, dummy, changeMove, false);
+  }
+
+  public void pass(
+      Stone color, boolean newBranch, boolean dummy, boolean changeMove, boolean addLast) {
     synchronized (this) {
 
       // check to see if this move is being replayed in history
-      if (this.getNext().map(n -> !n.lastMove.isPresent()).orElse(false) && !newBranch) {
+      if (!addLast
+          && this.getNext().map(n -> !n.lastMove.isPresent()).orElse(false)
+          && !newBranch) {
         // this is the next move in history. Just increment history so that we don't
         // erase the
         // redo's
         this.next();
         return;
       }
+      BoardHistoryNode curNode = this.head;
+      if (addLast) curNode = head.getLast();
 
-      Stone[] stones = this.getStones().clone();
-      Zobrist zobrist = this.getZobrist();
-      int moveNumber = this.getMoveNumber() + 1;
+      Stone[] stones = curNode.getData().stones.clone();
+      Zobrist zobrist = curNode.getData().zobrist.clone();
+
+      int moveNumber = curNode.getData().moveNumber + 1;
+
       int[] moveNumberList =
-          newBranch && this.getNext(true).isPresent()
+          newBranch && curNode.next(true).map(s -> s.getData()).isPresent()
               ? new int[Board.boardWidth * Board.boardHeight]
-              : this.getMoveNumberList().clone();
-
+              : curNode.getData().moveNumberList.clone();
       // build the new game state
       BoardData newState =
           new BoardData(
@@ -416,14 +426,15 @@ public class BoardHistoryList {
               zobrist,
               moveNumber,
               moveNumberList,
-              this.getData().blackCaptures,
-              this.getData().whiteCaptures,
+              curNode.getData().blackCaptures,
+              curNode.getData().whiteCaptures,
               0,
               0);
       newState.dummy = dummy;
 
       // update history with pass
-      this.addOrGoto(newState, newBranch);
+      if (addLast) head.getLast().addAtLast(newState);
+      else this.addOrGoto(newState, newBranch);
     }
   }
 
@@ -432,44 +443,53 @@ public class BoardHistoryList {
   }
 
   public void place(int x, int y, Stone color, boolean newBranch) {
-    place(x, y, color, newBranch, false);
+    place(x, y, color, newBranch, false, false);
   }
 
   public void place(int x, int y, Stone color, boolean newBranch, boolean changeMove) {
+    place(x, y, color, newBranch, changeMove, false);
+  }
+
+  public void place(
+      int x, int y, Stone color, boolean newBranch, boolean changeMove, boolean addLast) {
     synchronized (this) {
+      BoardHistoryNode curNode = this.head;
+      if (addLast) curNode = head.getLast();
       if (!Board.isValid(x, y)
-          || (this.getStones()[Board.getIndex(x, y)] != Stone.EMPTY && !newBranch)) return;
+          || (curNode.getData().stones[Board.getIndex(x, y)] != Stone.EMPTY && !newBranch)) return;
       // Lizzie.board.modifyStart();
       double nextWinrate = -100;
-      if (this.getData().winrate >= 0) nextWinrate = 100 - this.getData().winrate;
+      if (curNode.getData().winrate >= 0) nextWinrate = 100 - curNode.getData().winrate;
 
       // check to see if this coordinate is being replayed in history
-      Optional<int[]> nextLast = this.getNext().flatMap(n -> n.lastMove);
-      if (nextLast.isPresent()
-          && nextLast.get()[0] == x
-          && nextLast.get()[1] == y
-          && !newBranch
-          && !changeMove) {
-        // this is the next coordinate in history. Just increment history so that we
-        // don't erase the
-        // redo's
-        this.next();
-        Lizzie.board.clearAfterMove();
-        //   Lizzie.board.modifyEnd();
-        return;
+      if (!addLast) {
+        Optional<int[]> nextLast = this.getNext().flatMap(n -> n.lastMove);
+        if (nextLast.isPresent()
+            && nextLast.get()[0] == x
+            && nextLast.get()[1] == y
+            && !newBranch
+            && !changeMove) {
+          // this is the next coordinate in history. Just increment history so that we
+          // don't erase the
+          // redo's
+          this.next();
+          //   Lizzie.board.modifyEnd();
+          return;
+        }
       }
-
       // load a copy of the data at the current node of history
-      Stone[] stones = this.getStones().clone();
-      Zobrist zobrist = this.getZobrist();
+      Stone[] stones = curNode.getData().stones.clone();
+      Zobrist zobrist = curNode.getData().zobrist.clone();
       Optional<int[]> lastMove = Optional.of(new int[] {x, y});
-      int moveNumber = this.getMoveNumber() + 1;
+      int moveNumber = curNode.getData().moveNumber + 1;
       int moveMNNumber =
-          this.getMoveMNNumber() > -1 && !newBranch ? this.getMoveMNNumber() + 1 : -1;
+          curNode.getData().moveMNNumber > -1 && !newBranch
+              ? curNode.getData().moveMNNumber + 1
+              : -1;
       int[] moveNumberList =
-          newBranch && this.getNext(true).isPresent()
+          newBranch && curNode.next(true).map(s -> s.getData()).isPresent()
               ? new int[Board.boardWidth * Board.boardHeight]
-              : this.getMoveNumberList().clone();
+              : curNode.getData().moveNumberList.clone();
 
       moveNumberList[Board.getIndex(x, y)] = moveMNNumber > -1 ? moveMNNumber : moveNumber;
 
@@ -495,8 +515,8 @@ public class BoardHistoryList {
         }
       }
 
-      int bc = this.getData().blackCaptures;
-      int wc = this.getData().whiteCaptures;
+      int bc = curNode.getData().blackCaptures;
+      int wc = curNode.getData().whiteCaptures;
       if (color.isBlack()) bc += capturedStones;
       else wc += capturedStones;
       BoardData newState =
@@ -515,7 +535,12 @@ public class BoardHistoryList {
       newState.moveMNNumber = moveMNNumber;
 
       // don't make this coordinate if it is suicidal or violates superko
-      if (this.violatesKoRule(newState)) {
+      boolean violatesKoRule =
+          curNode
+              .previous()
+              .map(p -> p != null && newState.zobrist.equals(p.getData().zobrist))
+              .orElse(false);
+      if (violatesKoRule) {
         //    Lizzie.board.modifyEnd();
         return;
       }
@@ -530,7 +555,8 @@ public class BoardHistoryList {
       }
 
       // update history with this coordinate
-      this.addOrGoto(newState, newBranch, changeMove);
+      if (addLast) head.getLast().addAtLast(newState);
+      else this.addOrGoto(newState, newBranch, changeMove);
       //   Lizzie.board.modifyEnd();
       // Lizzie.frame.renderVarTree(0, 0, false, false);
     }
@@ -660,5 +686,17 @@ public class BoardHistoryList {
     }
 
     return diffMoveNo;
+  }
+
+  public String getCurrentTurnPlayerShortName() {
+    // TODO Auto-generated method stub
+    String name;
+    if (isBlacksTurn()) {
+      name = getGameInfo().getPlayerBlack();
+    } else {
+      name = getGameInfo().getPlayerWhite();
+    }
+    if (name.length() > 21) return name.substring(0, 20);
+    else return name;
   }
 }

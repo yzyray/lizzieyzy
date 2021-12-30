@@ -769,13 +769,11 @@ public class IndependentMainBoard extends JFrame {
   }
 
   private void onClicked(int x, int y) {
+    if (Lizzie.frame.isContributing) return;
     // Check for board click
     Optional<int[]> boardCoordinates;
-
     boardCoordinates = boardRenderer.convertScreenToCoordinates(x, y);
-
     if (boardCoordinates.isPresent()) {
-      // 增加判断是否为插入模式
       int[] coords = boardCoordinates.get();
       if (Lizzie.frame.bothSync) {
         if (Lizzie.frame.blackorwhite == 0) Lizzie.board.place(coords[0], coords[1]);
