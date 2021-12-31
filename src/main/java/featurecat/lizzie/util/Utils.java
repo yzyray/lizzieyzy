@@ -845,6 +845,23 @@ public class Utils {
     return bestMoves;
   }
 
+  public static ArrayList<Double> getOwnershipArrayFromJsonArray(
+      JSONArray ownerShipInfos, boolean isBlack) {
+    // TODO Auto-generated method stub
+    try {
+      List<Object> objectArray = ownerShipInfos.toList();
+      ArrayList<Double> ownershipArray = new ArrayList<Double>();
+      for (Object obj : objectArray) {
+        double value = Double.parseDouble(obj.toString());
+        ownershipArray.add(isBlack ? value : -value);
+      }
+      return ownershipArray;
+    } catch (Exception e) {
+      e.printStackTrace();
+      return null;
+    }
+  }
+
   public static String convertScoreToString(double score, double bestScore) {
     if (Lizzie.config.showScoreAsDiff) {
       double diff = score - bestScore;

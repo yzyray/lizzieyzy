@@ -530,6 +530,15 @@ public class ContributeEngine {
         move.isPass = move.pos[0] < 0;
         JSONArray moveInfos = jsonInfo.getJSONArray("moveInfos");
         move.candidates = Utils.getBestMovesFromJsonArray(moveInfos, false, move.isBlack);
+        if (jsonInfo.has("ownership")) {
+          JSONArray ownershipInfos = jsonInfo.getJSONArray("ownership");
+          ArrayList<Double> ownershipArray =
+              Utils.getOwnershipArrayFromJsonArray(ownershipInfos, move.isBlack);
+          if (ownershipArray != null) {
+            move.hasOwnership = true;
+            move.ownershipArray = ownershipArray;
+          } else move.hasOwnership = false;
+        }
         currentGame.moveList.add(move);
       } else {
         ContributeUnParseGameInfo unParseInfo = new ContributeUnParseGameInfo();
@@ -722,15 +731,27 @@ public class ContributeEngine {
     for (int i = 0; i < remainList.size(); i++) {
       ContributeMoveInfo move = remainList.get(i);
       if (move.candidates != null) {
-        Lizzie.board
-            .getHistory()
-            .getMainEnd()
-            .getData()
-            .tryToSetBestMoves(
-                move.candidates,
-                Lizzie.board.getHistory().getCurrentTurnPlayerShortName(),
-                false,
-                MoveData.getPlayouts(move.candidates));
+        if (move.hasOwnership && move.ownershipArray != null) {
+          Lizzie.board
+              .getHistory()
+              .getMainEnd()
+              .getData()
+              .tryToSetBestMoves(
+                  move.candidates,
+                  Lizzie.board.getHistory().getCurrentTurnPlayerShortName(),
+                  false,
+                  MoveData.getPlayouts(move.candidates),
+                  move.ownershipArray);
+        } else
+          Lizzie.board
+              .getHistory()
+              .getMainEnd()
+              .getData()
+              .tryToSetBestMoves(
+                  move.candidates,
+                  Lizzie.board.getHistory().getCurrentTurnPlayerShortName(),
+                  false,
+                  MoveData.getPlayouts(move.candidates));
         if (Lizzie.board.getHistory().getMainEnd().getData().getPlayouts() > 0) {
           Lizzie.board.getHistory().getMainEnd().getData().comment =
               SGFParser.formatCommentPk(Lizzie.board.getHistory().getMainEnd());
