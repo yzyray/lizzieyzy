@@ -2965,7 +2965,8 @@ public class LizzieFrame extends JFrame {
 
   public void startNewGame() {
     if (Lizzie.frame.isContributing) {
-      Utils.showMsg("跑普贡献中,请另外打开一个LizzieYzy");
+      Utils.showMsg(
+          Lizzie.resourceBundle.getString("Contribute.tips.contributingAndStartAnotherLizzieYzy"));
       return;
     }
     Lizzie.frame.stopAiPlayingAndPolicy();
@@ -9104,7 +9105,8 @@ public class LizzieFrame extends JFrame {
 
   public void startAnalyzeGameDialog() {
     if (Lizzie.frame.isContributing) {
-      Utils.showMsg("跑普贡献中,请另外打开一个LizzieYzy");
+      Utils.showMsg(
+          Lizzie.resourceBundle.getString("Contribute.tips.contributingAndStartAnotherLizzieYzy"));
       return;
     }
     boolean isPondering = false;
@@ -9135,7 +9137,8 @@ public class LizzieFrame extends JFrame {
   public void continueAiPlaying(
       boolean isGenmove, boolean continueNow, boolean playerIsB, boolean fromShortCut) {
     if (Lizzie.frame.isContributing) {
-      Utils.showMsg("跑普贡献中,请另外打开一个LizzieYzy");
+      Utils.showMsg(
+          Lizzie.resourceBundle.getString("Contribute.tips.contributingAndStartAnotherLizzieYzy"));
       return;
     }
     if (EngineManager.isEmpty) return;

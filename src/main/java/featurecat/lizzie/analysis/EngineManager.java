@@ -2123,7 +2123,8 @@ public class EngineManager {
 
   public void switchEngine(int index, boolean isMain) {
     if (Lizzie.frame.isContributing) {
-      Utils.showMsg("跑普贡献中,请另外打开一个LizzieYzy");
+      Utils.showMsg(
+          resourceBundle.getString("Contribute.tips.contributingAndStartAnotherLizzieYzy"));
       return;
     }
     engineNo = index;

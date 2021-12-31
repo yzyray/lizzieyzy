@@ -101,7 +101,7 @@ public class ContributeEngine {
     timeStamp = new SimpleDateFormat("yyyy-MM-dd-HH").format(new Date());
     Lizzie.frame.isContributing = true;
     Lizzie.board.clear(false);
-    Menu.engineMenu.setText("跑普贡献中");
+    Menu.engineMenu.setText(Lizzie.resourceBundle.getString("Contribute.engineMenu.contributing"));
     Lizzie.frame.refresh();
   }
 
@@ -268,51 +268,74 @@ public class ContributeEngine {
   private void parseTips(String line) {
     // TODO Auto-generated method stub
     if (line.contains("Starting game")) {
-      setTip("开始新的一局");
+      setTip(Lizzie.resourceBundle.getString("Contribute.tips.startingNewGame")); // ("开始新的一局...");
     }
     if (line.toLowerCase().contains("predownload")) {
-      setTip("预先下载权重中...");
+      setTip(Lizzie.resourceBundle.getString("Contribute.tips.predownload")); // ("预先下载权重中...");
     } else if (line.toLowerCase().contains("download")) {
-      setTip("正在下载权重...");
-    }
-    if (line.toLowerCase().contains("Starting")) {
-      setTip("开始新的一局...");
+      setTip(Lizzie.resourceBundle.getString("Contribute.tips.download")); // ("正在下载权重...");
     }
     if (line.contains("Invalid username/password")) {
-      setTip("错误的用户名或密码");
-      errorTips = "错误的用户名或密码";
+      setTip(
+          Lizzie.resourceBundle.getString(
+              "Contribute.tips.invalidUserNamePassword")); // ("错误的用户名或密码");
+      errorTips =
+          Lizzie.resourceBundle.getString(
+              "Contribute.tips.invalidUserNamePassword"); //// "错误的用户名或密码";
     }
     if (line.contains("No response from server")) {
-      setTip("服务器无回应");
-      errorTips = "服务器无回应";
+      setTip(
+          Lizzie.resourceBundle.getString("Contribute.tips.noResponseFromServer")); // ("服务器无回应");
+      errorTips =
+          Lizzie.resourceBundle.getString("Contribute.tips.noResponseFromServer"); // //"服务器无回应";
     }
     if (line.contains("Error connecting to server")) {
-      setTip("服务器连接失败");
-      errorTips = "服务器连接失败";
+      setTip(
+          Lizzie.resourceBundle.getString(
+              "Contribute.tips.errorConnectingToServer")); // ("服务器连接失败");
+      errorTips =
+          Lizzie.resourceBundle.getString("Contribute.tips.errorConnectingToServer"); // "服务器连接失败";
     }
     if (line.contains(" When uploading")) {
-      setTip("上传数据出错");
-      errorTips = "上传数据出错";
+      setTip(Lizzie.resourceBundle.getString("Contribute.tips.uploadError")); // ("上传数据出错,请查看控制台");
+      errorTips =
+          Lizzie.resourceBundle.getString("Contribute.tips.uploadError"); // "上传数据出错,请查看控制台";
     }
     if (line.contains("status 200 for initial query")) {
-      setTip("初始化错误,请查看控制台");
-      errorTips = "初始化错误,请查看控制台";
+      setTip(Lizzie.resourceBundle.getString("Contribute.tips.initialQuery")); // ("初始化错误,请查看控制台");
+      errorTips =
+          Lizzie.resourceBundle.getString("Contribute.tips.initialQuery"); // "初始化错误,请查看控制台";
     }
     if (line.contains("Could not parse serverUrl")) {
-      setTip("无法解析服务器地址");
-      errorTips = "无法解析服务器地址";
+      setTip(
+          Lizzie.resourceBundle.getString(
+              "Contribute.tips.couldNotParseServerUrl")); // ("无法解析服务器地址");
+      errorTips =
+          Lizzie.resourceBundle.getString("Contribute.tips.couldNotParseServerUrl"); // "无法解析服务器地址";
     }
     if (line.contains("Did you verify your email address")) {
-      setTip("请确认用户是否经过邮箱验证!");
-      errorTips = "请确认用户是否经过邮箱验证!";
+      setTip(
+          Lizzie.resourceBundle.getString(
+              "Contribute.tips.didYouVerifyYourEmailAddress")); // ("请确认用户是否经过邮箱验证!");
+      errorTips =
+          Lizzie.resourceBundle.getString(
+              "Contribute.tips.didYouVerifyYourEmailAddress"); // "请确认用户是否经过邮箱验证!";
     }
     if (line.contains("Model file was incompletely downloaded")) {
-      setTip("权重未完全下载");
-      errorTips = "权重未完全下载";
+      setTip(
+          Lizzie.resourceBundle.getString(
+              "Contribute.tips.modelFileWasIncompletelyDownloaded")); // ("权重未完全下载");
+      errorTips =
+          Lizzie.resourceBundle.getString(
+              "Contribute.tips.modelFileWasIncompletelyDownloaded"); // 权重未完全下载";
     }
     if (line.contains("Compile with -DBUILD_DISTRIBUTED")) {
-      setTip("请使用支持分布式训练的官方引擎");
-      errorTips = "请使用支持分布式训练的官方引擎";
+      setTip(
+          Lizzie.resourceBundle.getString(
+              "Contribute.tips.useOfficialEngineSupportDistributedTraining")); // ("请使用支持分布式训练的官方引擎");
+      errorTips =
+          Lizzie.resourceBundle.getString(
+              "Contribute.tips.useOfficialEngineSupportDistributedTraining"); // "请使用支持分布式训练的官方引擎";
     }
 
     //	      When uploading
@@ -340,10 +363,13 @@ public class ContributeEngine {
     }
   }
 
-  private void setTypeAndKomiToView(boolean isMatchGame, double komi) {
+  private void setTypeAndKomiToView(boolean isRatingGame, double komi) {
     if (Lizzie.frame.contributeView != null) {
       Lizzie.frame.contributeView.setKomi(komi);
-      Lizzie.frame.contributeView.setType(isMatchGame ? "评分对局" : "自对弈");
+      Lizzie.frame.contributeView.setType(
+          isRatingGame
+              ? Lizzie.resourceBundle.getString("contributeView.gameType.ratingGame")
+              : Lizzie.resourceBundle.getString("contributeView.gameType.trainingGame"));
     }
   }
 
@@ -466,7 +492,7 @@ public class ContributeEngine {
       currentGame.sizeY = jsonInfo.getInt("boardYSize");
       currentGame.rules = jsonInfo.getJSONObject("rules");
       currentGame.komi = currentGame.rules.getDouble("komi");
-      currentGame.isMatchGame = !currentGame.blackPlayer.equals(currentGame.whitePlayer);
+      currentGame.isRatingGame = !currentGame.blackPlayer.equals(currentGame.whitePlayer);
     }
     JSONArray initStones = jsonInfo.getJSONArray("initialStones");
     if (initStones.length() > 0) {
@@ -550,7 +576,7 @@ public class ContributeEngine {
       Lizzie.board.reopen(currentWatchGame.sizeX, currentWatchGame.sizeY);
       Lizzie.board.clear(false);
       Lizzie.board.isKataBoard = true;
-      if (game.isMatchGame) {
+      if (game.isRatingGame) {
         Lizzie.board.isPkBoard = true;
         Lizzie.board.isPkBoardKataB = true;
       }
@@ -564,7 +590,7 @@ public class ContributeEngine {
           .getGameInfo()
           .setPlayerWhite(currentWatchGame.whitePlayer.replaceAll(" ", ""));
       Lizzie.board.getHistory().getGameInfo().setKomi(currentWatchGame.komi);
-      setTypeAndKomiToView(currentWatchGame.isMatchGame, currentWatchGame.komi);
+      setTypeAndKomiToView(currentWatchGame.isRatingGame, currentWatchGame.komi);
       setRulesToView(currentWatchGame.rules);
       if (currentWatchGame.complete) {
         Lizzie.board.getHistory().getGameInfo().setResult(currentWatchGame.gameResult);
@@ -594,14 +620,28 @@ public class ContributeEngine {
 
   public void saveAllGames() {
     if (contributeGames == null || contributeGames.isEmpty()) {
-      Utils.showMsg("没有可以保存的棋局");
+      Utils.showMsg(Lizzie.resourceBundle.getString("Contribute.tips.noGameToSave"));
       return;
     }
     for (int i = 0; i < contributeGames.size(); i++) {
       saveGame(contributeGames.get(i), i);
     }
     setGameToBoard(currentWatchGame, watchingGameIndex, false);
-    Utils.showMsg("棋谱保存在LizzieYzy目录内\"ContributeGames-" + timeStamp + "\"文件夹中");
+    File file = new File("");
+    String courseFile = "";
+    try {
+      courseFile = file.getCanonicalPath();
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    Utils.showMsg(
+        Lizzie.resourceBundle.getString("EngineGameInfo.engineGameEndHintKifuPos")
+            + courseFile
+            + File.separator
+            + "ContributeGames"
+            + File.separator
+            + timeStamp);
   }
 
   private void saveGame(ContributeGameInfo game, int index) {
