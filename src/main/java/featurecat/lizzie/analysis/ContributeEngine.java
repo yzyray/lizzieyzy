@@ -60,10 +60,6 @@ public class ContributeEngine {
   private String errorTips = "";
 
   public ContributeEngine() {
-    if (Lizzie.frame.isContributing) {
-      Utils.showMsg("已在跑普贡献中!");
-      return;
-    }
     if (Lizzie.config.contributeUseCommand) {
       engineCommand = Lizzie.config.contributeCommand;
       if (!engineCommand.contains("-override")) engineCommand += " -override-config ";
@@ -91,7 +87,7 @@ public class ContributeEngine {
         "\"includeOwnership = " + (Lizzie.config.contributeShowEstimate ? "true" : "false") + "\",";
     engineCommand += "\"logGamesAsJson = true\"";
     RemoteEngineData remoteData = Utils.getContributeRemoteEngineData();
-    this.useJavaSSH = remoteData.useJavaSSH;
+    // this.useJavaSSH = remoteData.useJavaSSH;
     this.ip = remoteData.ip;
     this.port = remoteData.port;
     this.userName = remoteData.userName;
@@ -314,6 +310,11 @@ public class ContributeEngine {
       setTip("权重未完全下载");
       errorTips = "权重未完全下载";
     }
+    if (line.contains("Compile with -DBUILD_DISTRIBUTED")) {
+      setTip("请使用支持分布式训练的官方引擎");
+      errorTips = "请使用支持分布式训练的官方引擎";
+    }
+
     //	      When uploading
     //	      status 200 for initial query
     //	      Could not parse serverUrl

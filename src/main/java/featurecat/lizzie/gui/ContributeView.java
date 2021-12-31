@@ -409,7 +409,7 @@ public class ContributeView extends JDialog {
     JPanel buttonPanel = new JPanel();
     ruleAndButtonPanel.add(buttonPanel, BorderLayout.SOUTH);
 
-    JButton btnShutdown = new JFontButton("结束跑谱贡献");
+    JButton btnShutdown = new JFontButton("结束贡献跑谱");
     btnShutdown.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {

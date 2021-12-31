@@ -618,7 +618,6 @@ public class Input implements MouseListener, KeyListener, MouseWheelListener, Mo
           if (e.isControlDown()) {
             Lizzie.frame.flashAnalyzeGame(true);
           } else {
-            Lizzie.frame.testContibuteFrame();
             Lizzie.frame.moveToMainTrunk();
           }
         }

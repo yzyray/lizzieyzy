@@ -50,6 +50,7 @@ public class Menu extends JMenuBar {
   public static JFontMenu engineMenu;
   public static JFontMenu shutdownEngine;
   public static JFontMenu quickLinks;
+  private JFontMenu contributeMenu;
   JFontMenuItem shutdownAllEngine;
   JFontMenuItem shutdownCurrentEngine;
   JFontMenuItem restartCurrentEngine;
@@ -4942,10 +4943,24 @@ public class Menu extends JMenuBar {
           }
         });
 
+    final JFontCheckBoxMenuItem showContribute =
+        new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.showContribute"));
+    settings.add(showContribute);
+    showContribute.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.config.showContribute = !Lizzie.config.showContribute;
+            Lizzie.config.uiConfig.put("show-Contribute", Lizzie.config.showContribute);
+            contributeMenu.setVisible(Lizzie.config.showContribute);
+          }
+        });
+
     settings.addMenuListener(
         new MenuListener() {
 
           public void menuSelected(MenuEvent e) {
+            if (Lizzie.config.showContribute) showContribute.setState(true);
+            else showContribute.setState(false);
             if (Lizzie.config.playSound) playSound.setState(true);
             else playSound.setState(false);
             if (Lizzie.config.notPlaySoundInSync) notPlaySoundInSync.setState(true);
@@ -4999,6 +5014,50 @@ public class Menu extends JMenuBar {
           public void menuCanceled(MenuEvent e) {
             // TODO Auto-generated method stub
 
+          }
+        });
+
+    contributeMenu = new JFontMenu(resourceBundle.getString("Menu.contributeMenu")); // ("跑谱贡献");
+    contributeMenu.setForeground(Color.BLACK);
+    contributeMenu.setFont(baseMenuFont);
+    this.add(contributeMenu);
+
+    final JFontMenuItem kataGoDistributedTraining =
+        new JFontMenuItem(resourceBundle.getString("Menu.kataGoDistributedTraining"));
+    contributeMenu.add(kataGoDistributedTraining);
+
+    kataGoDistributedTraining.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.frame.startContributeEngine();
+          }
+        });
+
+    final JFontMenuItem kataGoTrainingSettings =
+        new JFontMenuItem(resourceBundle.getString("Menu.kataGoTrainingSettings"));
+    contributeMenu.add(kataGoTrainingSettings);
+
+    kataGoTrainingSettings.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.frame.openContributeSettings();
+          }
+        });
+
+    final JFontMenuItem kataGoOfficialWebsite =
+        new JFontMenuItem(resourceBundle.getString("Menu.kataGoOfficialWebsite"));
+    contributeMenu.add(kataGoOfficialWebsite);
+
+    kataGoOfficialWebsite.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            try {
+              URI uri = new URI("https://katagotraining.org/");
+              java.awt.Desktop.getDesktop().browse(uri);
+            } catch (Exception e1) {
+              // TODO Auto-generated catch block
+              e1.printStackTrace();
+            }
           }
         });
 

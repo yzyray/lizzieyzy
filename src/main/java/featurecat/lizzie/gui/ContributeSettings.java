@@ -145,7 +145,7 @@ public class ContributeSettings extends JDialog {
 
     chkRemote = new JFontCheckBox("远程SSH");
     chkRemote.setSelected(Utils.getContributeRemoteEngineData().useJavaSSH);
-    panel_1.add(chkRemote);
+    //   panel_1.add(chkRemote);
 
     btnRemoteSetting = new JFontButton("设置");
     btnRemoteSetting.addActionListener(
@@ -156,7 +156,7 @@ public class ContributeSettings extends JDialog {
             remoteEngineSettings.setVisible(true);
           }
         });
-    panel_1.add(btnRemoteSetting);
+    // panel_1.add(btnRemoteSetting);
 
     txtCommand = new JFontTextField();
     GridBagConstraints gbc_txtCommand = new GridBagConstraints();
@@ -313,14 +313,12 @@ public class ContributeSettings extends JDialog {
           public void actionPerformed(ActionEvent e) {
             saveConfig();
             Lizzie.frame.startContributeEngine();
-            Lizzie.frame.openContributeView();
             setVisible(false);
           }
         });
     buttonPanel.add(btnStart);
     pack();
     setLocationRelativeTo(owner);
-    setVisible(true);
   }
 
   private void saveConfig() {

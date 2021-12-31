@@ -636,6 +636,8 @@ public class Config {
   public boolean contributeHideConsole = false;
   public boolean contributeHideRules = false;
 
+  public boolean showContribute = true;
+
   private JSONObject loadAndMergeSaveBoardConfig(
       JSONObject defaultCfg, String fileName, boolean needValidation) throws IOException {
     File file = new File(fileName);
@@ -1360,6 +1362,7 @@ public class Config {
     contributeHideResult = uiConfig.optBoolean("contribute-hide-result", false);
     contributeHideConsole = uiConfig.optBoolean("contribute-hide-console", false);
     contributeHideRules = uiConfig.optBoolean("contribute-hide-rules", false);
+    showContribute = uiConfig.optBoolean("show-Contribute", true);
 
     chkDymPDA = uiConfig.optBoolean("chk-dym-pda", false);
     chkStaticPDA = uiConfig.optBoolean("chk-static-pda", false);

@@ -12374,8 +12374,24 @@ public class LizzieFrame extends JFrame {
   }
 
   public void startContributeEngine() {
+    if (Lizzie.frame.isContributing) {
+      Utils.showMsg(Lizzie.resourceBundle.getString("Contribute.tips.alreadyTraining"));
+      return;
+    }
+    if (Lizzie.config.contributeUserName.length() <= 0) {
+      Utils.showMsg(Lizzie.resourceBundle.getString("Contribute.tips.noUserName"));
+      openContributeSettings();
+      return;
+    }
+    if (Lizzie.config.contributeEnginePath.length() <= 0)
+      if (!Lizzie.config.contributeUseCommand || Lizzie.config.contributeCommand.length() <= 0) {
+        Utils.showMsg(Lizzie.resourceBundle.getString("Contribute.tips.noEnginePath"));
+        openContributeSettings();
+        return;
+      }
     if (contributeEngine != null) contributeEngine.normalQuit();
     contributeEngine = new ContributeEngine();
+    Lizzie.frame.openContributeView();
   }
 
   public void closeContributeEngine() {
@@ -12392,7 +12408,8 @@ public class LizzieFrame extends JFrame {
     contributeView = new ContributeView(this);
   }
 
-  public void testContibuteFrame() {
+  public void openContributeSettings() {
     ContributeSettings contributeSettings = new ContributeSettings(this);
+    contributeSettings.setVisible(true);
   }
 }
