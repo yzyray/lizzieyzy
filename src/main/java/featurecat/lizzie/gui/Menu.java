@@ -2893,8 +2893,8 @@ public class Menu extends JMenuBar {
         });
     gameMenu.add(flattenBoard);
 
-    final JMenuItem continueLadder =
-        new JMenuItem(resourceBundle.getString("Menu.game.continueLadder"));
+    final JFontMenuItem continueLadder =
+        new JFontMenuItem(resourceBundle.getString("Menu.game.continueLadder"));
     continueLadder.addActionListener(
         new ActionListener() {
           @Override

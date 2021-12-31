@@ -36,7 +36,6 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -572,7 +571,7 @@ public class BottomToolbar extends JPanel {
         });
 
     JPopupMenu flashAnalyzePopup = new JPopupMenu();
-    final JMenuItem flashAnalyzeAllGame =
+    final JFontMenuItem flashAnalyzeAllGame =
         new JFontMenuItem(resourceBundle.getString("Menu.flashAnalyzeAllGame"));
     flashAnalyzePopup.add(flashAnalyzeAllGame);
     flashAnalyzeAllGame.addActionListener(
@@ -582,7 +581,7 @@ public class BottomToolbar extends JPanel {
           }
         });
 
-    final JMenuItem flashAnalyzePartGame =
+    final JFontMenuItem flashAnalyzePartGame =
         new JFontMenuItem(resourceBundle.getString("Menu.flashAnalyzePartGame"));
     flashAnalyzePopup.add(flashAnalyzePartGame);
     flashAnalyzePartGame.addActionListener(
@@ -591,7 +590,7 @@ public class BottomToolbar extends JPanel {
             Lizzie.frame.flashAnalyzePart();
           }
         });
-    final JMenuItem flashAnalyzeSettings =
+    final JFontMenuItem flashAnalyzeSettings =
         new JFontMenuItem(resourceBundle.getString("Menu.flashAnalyzeSettings"));
     flashAnalyzePopup.add(flashAnalyzeSettings);
     flashAnalyzeSettings.addActionListener(
@@ -614,8 +613,9 @@ public class BottomToolbar extends JPanel {
         });
 
     sharePopup = new JPopupMenu();
-    JMenuItem shareCurSgf =
-        new JMenuItem(Lizzie.resourceBundle.getString("BottomToolbar.shareCurSgf")); // ("分享当前棋谱");
+    JFontMenuItem shareCurSgf =
+        new JFontMenuItem(
+            Lizzie.resourceBundle.getString("BottomToolbar.shareCurSgf")); // ("分享当前棋谱");
     shareCurSgf.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
@@ -623,8 +623,8 @@ public class BottomToolbar extends JPanel {
           }
         });
 
-    JMenuItem shareBatchSgf =
-        new JMenuItem(
+    JFontMenuItem shareBatchSgf =
+        new JFontMenuItem(
             Lizzie.resourceBundle.getString("BottomToolbar.shareBatchSgf")); // ("分享当前棋谱");
     shareBatchSgf.addActionListener(
         new ActionListener() {
@@ -669,8 +669,8 @@ public class BottomToolbar extends JPanel {
     //          }
     //        });
 
-    JMenuItem editHistoryRemote =
-        new JMenuItem(
+    JFontMenuItem editHistoryRemote =
+        new JFontMenuItem(
             Lizzie.resourceBundle.getString(
                 "BottomToolbar.editHistoryRemote")); // ("查询(修改)已分享棋谱信息");
     editHistoryRemote.addActionListener(
@@ -680,8 +680,8 @@ public class BottomToolbar extends JPanel {
           }
         });
 
-    JMenuItem shareHistoryRemote =
-        new JMenuItem(
+    JFontMenuItem shareHistoryRemote =
+        new JFontMenuItem(
             Lizzie.resourceBundle.getString("BottomToolbar.shareHistoryRemote")); // ("公开棋谱查询");
     shareHistoryRemote.addActionListener(
         new ActionListener() {
@@ -699,8 +699,8 @@ public class BottomToolbar extends JPanel {
     sharePopup.setVisible(false);
 
     yike = new JPopupMenu();
-    JMenuItem yikeLive =
-        new JMenuItem(Lizzie.resourceBundle.getString("BottomToolbar.yikeLive")); // ("弈客直播");
+    JFontMenuItem yikeLive =
+        new JFontMenuItem(Lizzie.resourceBundle.getString("BottomToolbar.yikeLive")); // ("弈客直播");
     yikeLive.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
@@ -712,8 +712,8 @@ public class BottomToolbar extends JPanel {
         });
     yike.add(yikeLive);
 
-    JMenuItem yikeRoom =
-        new JMenuItem(Lizzie.resourceBundle.getString("BottomToolbar.yikeRoom")); // ("弈客大厅");
+    JFontMenuItem yikeRoom =
+        new JFontMenuItem(Lizzie.resourceBundle.getString("BottomToolbar.yikeRoom")); // ("弈客大厅");
     yikeRoom.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
@@ -725,7 +725,8 @@ public class BottomToolbar extends JPanel {
         });
     yike.add(yikeRoom);
 
-    JMenuItem foxKifu = new JMenuItem(Lizzie.resourceBundle.getString("Menu.foxKifu")); // ("野狐");
+    JFontMenuItem foxKifu =
+        new JFontMenuItem(Lizzie.resourceBundle.getString("Menu.foxKifu")); // ("野狐");
     foxKifu.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
@@ -734,8 +735,9 @@ public class BottomToolbar extends JPanel {
         });
     yike.add(foxKifu);
 
-    JMenuItem syncBoardJava =
-        new JMenuItem(Lizzie.resourceBundle.getString("BottomToolbar.syncBoardJava")); // ("棋盘同步");
+    JFontMenuItem syncBoardJava =
+        new JFontMenuItem(
+            Lizzie.resourceBundle.getString("BottomToolbar.syncBoardJava")); // ("棋盘同步");
     syncBoardJava.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
@@ -744,8 +746,8 @@ public class BottomToolbar extends JPanel {
         });
     yike.add(syncBoardJava);
 
-    JMenuItem syncBoard =
-        new JMenuItem(Lizzie.resourceBundle.getString("BottomToolbar.syncBoard")); // ("棋盘同步");
+    JFontMenuItem syncBoard =
+        new JFontMenuItem(Lizzie.resourceBundle.getString("BottomToolbar.syncBoard")); // ("棋盘同步");
     syncBoard.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
