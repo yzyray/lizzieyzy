@@ -3588,17 +3588,6 @@ public class Menu extends JMenuBar {
     // shareKifu.setFont(headFont);
     this.add(shareKifu);
 
-    final JFontMenuItem shareSearch =
-        new JFontMenuItem(resourceBundle.getString("Menu.shareSearch")); // ("公开棋谱查询");
-    shareKifu.add(shareSearch);
-
-    shareSearch.addActionListener(
-        new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            Lizzie.frame.openPublicKifuSearch();
-          }
-        });
-
     final JFontMenuItem shareCurrentSgf =
         new JFontMenuItem(resourceBundle.getString("Menu.shareCurrentSgf")); // ("分享当前棋谱(Ctrl+E)");
     shareKifu.add(shareCurrentSgf);
@@ -3664,6 +3653,17 @@ public class Menu extends JMenuBar {
                   resourceBundle.getString(
                       "Menu.shareHistoryLoaclHintOpenFailed")); // ("打开失败");//shareHistoryLoaclHintOpenFailed
             }
+          }
+        });
+
+    final JFontMenuItem shareSearch =
+        new JFontMenuItem(resourceBundle.getString("Menu.shareSearch")); // ("公开棋谱查询");
+    shareKifu.add(shareSearch);
+
+    shareSearch.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.frame.openPublicKifuSearch();
           }
         });
 

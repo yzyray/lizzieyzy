@@ -690,10 +690,10 @@ public class BottomToolbar extends JPanel {
           }
         });
 
-    sharePopup.add(shareHistoryRemote);
     sharePopup.add(shareCurSgf);
     sharePopup.add(shareBatchSgf);
     sharePopup.add(editHistoryRemote);
+    sharePopup.add(shareHistoryRemote);
     // sharePopup.add(shareHistory);
     sharePopup.setVisible(true);
     sharePopup.setVisible(false);
