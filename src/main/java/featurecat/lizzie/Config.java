@@ -617,6 +617,27 @@ public class Config {
 
   public boolean showScoreAsDiff = false;
 
+  public String contributeEnginePath = "";
+  public String contributeConfigPath = "";
+  public String contributeUserName = "";
+  public String contributePassword = "";
+  public String contributeBatchGames = "6";
+  public boolean contributeShowEstimate = false;
+  public boolean contributeUseCommand = false;
+  public String contributeCommand = "";
+  public boolean contributeAutoSave = false;
+
+  public boolean contributeWatchSkipNone19 = false;
+  public boolean contributeWatchAlwaysLastMove = false;
+  public boolean contributeWatchAutoPlay = true;
+  public double contributeWatchAutoPlayInterval = 2.0;
+  public boolean contributeWatchAutoPlayNextGame = true;
+  public boolean contributeHideResult = false;
+  public boolean contributeHideConsole = false;
+  public boolean contributeHideRules = false;
+
+  public boolean showContribute = true;
+
   private JSONObject loadAndMergeSaveBoardConfig(
       JSONObject defaultCfg, String fileName, boolean needValidation) throws IOException {
     File file = new File(fileName);
@@ -1322,6 +1343,26 @@ public class Config {
 
     // chkPkStartNum = uiConfig.optBoolean("chkpk-start-num", false);
     // pkStartNum = uiConfig.optInt("pk-start-num", 1);
+    contributeEnginePath = uiConfig.optString("contribute-engine-path", "");
+    contributeConfigPath = uiConfig.optString("contribute-config-path", "");
+    contributeUserName = uiConfig.optString("contribute-user-name", "");
+    contributePassword = uiConfig.optString("contribute-password", "");
+    contributeBatchGames = uiConfig.optString("contribute-batch-games", "6");
+    contributeShowEstimate = uiConfig.optBoolean("contribute-show-estimate", false);
+    contributeUseCommand = uiConfig.optBoolean("contribute-use-command", false);
+    contributeCommand = uiConfig.optString("contribute-command", "");
+    contributeAutoSave = uiConfig.optBoolean("contribute-auto-save", false);
+    contributeWatchSkipNone19 = uiConfig.optBoolean("contribute-watch-skip-none-19", false);
+    contributeWatchAlwaysLastMove = uiConfig.optBoolean("contribute-watch-always-last-move", false);
+    contributeWatchAutoPlay = uiConfig.optBoolean("contribute-watch-auto-play", true);
+    contributeWatchAutoPlayNextGame =
+        uiConfig.optBoolean("contribute-watch-auto-play-next-game", true);
+    contributeWatchAutoPlayInterval =
+        uiConfig.optDouble("contribute-watch-auto-play-interval", 2.0);
+    contributeHideResult = uiConfig.optBoolean("contribute-hide-result", false);
+    contributeHideConsole = uiConfig.optBoolean("contribute-hide-console", false);
+    contributeHideRules = uiConfig.optBoolean("contribute-hide-rules", false);
+    showContribute = uiConfig.optBoolean("show-Contribute", true);
 
     chkDymPDA = uiConfig.optBoolean("chk-dym-pda", false);
     chkStaticPDA = uiConfig.optBoolean("chk-static-pda", false);

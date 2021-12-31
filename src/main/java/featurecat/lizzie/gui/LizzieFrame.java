@@ -15,6 +15,7 @@ import featurecat.lizzie.Config;
 import featurecat.lizzie.ExtraMode;
 import featurecat.lizzie.Lizzie;
 import featurecat.lizzie.analysis.AnalysisEngine;
+import featurecat.lizzie.analysis.ContributeEngine;
 import featurecat.lizzie.analysis.EngineManager;
 import featurecat.lizzie.analysis.GameInfo;
 import featurecat.lizzie.analysis.KataEstimate;
@@ -415,7 +416,7 @@ public class LizzieFrame extends JFrame {
   //   private boolean mouseOnVarTree = false;
 
   private BoardHistoryNode treeNode;
-  private boolean redrawTree = false;
+  public boolean redrawTree = false;
   private boolean completeDrawTree = true;
   private boolean redrawTreeLater = false;
   private boolean canDrawCurColor = false;
@@ -478,6 +479,18 @@ public class LizzieFrame extends JFrame {
   public static boolean isTempForcing = false;
   public FoxKifuDownload foxKifuDownload;
   public int noneMaxX, noneMaxY, noneMaxWidth, noneMaxHeight;
+
+  private boolean tempShowBlack;
+  private boolean tempShowWhite;
+  public boolean isInTemporaryBoard;
+
+  public boolean allowPlaceStone = true;
+  private Process processClockHelper;
+
+  public ContributeEngine contributeEngine;
+  public boolean isContributing = false;
+  public ContributeView contributeView;
+  public boolean isShowingContributeGame = false;
 
   /** Creates a window */
   public LizzieFrame() {
@@ -2342,6 +2355,7 @@ public class LizzieFrame extends JFrame {
     if (Lizzie.leelaz.isPondering()) Lizzie.leelaz.togglePonder();
     configDialog2 = new ConfigDialog2();
     configDialog2.switchTab(index);
+    Utils.changeFontRecursive(configDialog2, Config.sysDefaultFontName);
     configDialog2.setVisible(true);
     if (oriPonder) Lizzie.leelaz.togglePonder();
   }
@@ -2482,7 +2496,7 @@ public class LizzieFrame extends JFrame {
       SGFParser.loadFromString(tryString);
       Lizzie.board.resetMoveList(tryMoveList);
       Lizzie.board.setMovelistAll();
-      if (Lizzie.board.getcurrentmovenumber() == 0 && Lizzie.leelaz.isPondering())
+      if (Lizzie.board.getCurrentMovenumber() == 0 && Lizzie.leelaz.isPondering())
         Lizzie.leelaz.ponder();
       this.setTitle(titleBeforeTrying);
       if (needRefresh) refresh();
@@ -2950,7 +2964,11 @@ public class LizzieFrame extends JFrame {
   }
 
   public void startNewGame() {
-    // GameInfo gameInfo = Lizzie.board.getHistory().getGameInfo();
+    if (Lizzie.frame.isContributing) {
+      Utils.showMsg(
+          Lizzie.resourceBundle.getString("Contribute.tips.contributingAndStartAnotherLizzieYzy"));
+      return;
+    }
     Lizzie.frame.stopAiPlayingAndPolicy();
     boolean isPondering = false;
     if (Lizzie.leelaz.isPondering()) {
@@ -2958,7 +2976,6 @@ public class LizzieFrame extends JFrame {
       isPondering = true;
     }
     NewGameDialog newGameDialog = new NewGameDialog(this);
-    // newGameDialog.setGameInfo(gameInfo);
     newGameDialog.setVisible(true);
     boolean playerIsBlack = newGameDialog.playerIsBlack();
     newGameDialog.dispose();
@@ -6083,7 +6100,7 @@ public class LizzieFrame extends JFrame {
     int moveNumber = winrateGraph.moveNumber(x - grx, y - gry);
 
     if (boardCoordinates.isPresent()) {
-      // 增加判断是否为插入模式
+      if (Lizzie.frame.isContributing) return;
       int[] coords = boardCoordinates.get();
       if (Lizzie.frame.bothSync) {
         if (blackorwhite == 0) Lizzie.board.place(coords[0], coords[1]);
@@ -6143,7 +6160,7 @@ public class LizzieFrame extends JFrame {
     Optional<int[]> boardCoordinates = boardRenderer.convertScreenToCoordinates(x, y);
     if (boardCoordinates.isPresent()) {
       int[] coords = boardCoordinates.get();
-      return Lizzie.board.getmovenumberinbranch(Board.getIndex(coords[0], coords[1]));
+      return Lizzie.board.getMovenumberInBranch(Board.getIndex(coords[0], coords[1]));
     }
     return -1;
   }
@@ -8985,7 +9002,7 @@ public class LizzieFrame extends JFrame {
                             }
                           }
                           maxMvNum = moveNumber;
-                          renderVarTree(0, 0, false, true);
+                          redrawTree = true;
                           Lizzie.frame.refresh();
                         }
                       });
@@ -9005,15 +9022,6 @@ public class LizzieFrame extends JFrame {
   }
 
   public void shareSGF() {
-    //    if (shareTime > 0) {
-    //      if ((System.currentTimeMillis() - shareTime) < 10000) {
-    //        Message msg = new Message();
-    //        msg.setMessage("请勿频繁分享(10秒内)");
-    //        msg.setVisible(true);
-    //        return;
-    //      }
-    //    } else
-    //    	shareTime = System.currentTimeMillis();
     shareFrame = new ShareFrame();
     shareFrame.setVisible(true);
   }
@@ -9029,10 +9037,6 @@ public class LizzieFrame extends JFrame {
       return;
     }
     if (Lizzie.leelaz.isKatago) {
-      // Utils.showMsg(Lizzie.resourceBundle.getString("LizzieFrame.setParamsWarning"));
-      //      Message msg = new Message();
-      //      msg.setMessage("当前引擎不是Leela或者Sai,设置参数可能无效");
-      //      msg.setVisible(true);
       SetKataEngines setKataEngines = new SetKataEngines();
       setKataEngines.setVisible(true);
     } else {
@@ -9063,9 +9067,6 @@ public class LizzieFrame extends JFrame {
             }
             Lizzie.leelaz.getRcentLine = false;
             if (!success) {
-              //              Message msg = new Message();
-              //              msg.setMessage("无法获取当前引擎规则");
-              //              msg.setVisible(true);"获取当前引擎规则失败"
               if (setkatarules.isVisible())
                 JOptionPane.showMessageDialog(
                     setkatarules, Lizzie.resourceBundle.getString("LizzieFrame.ruleWarning"));
@@ -9103,6 +9104,11 @@ public class LizzieFrame extends JFrame {
   }
 
   public void startAnalyzeGameDialog() {
+    if (Lizzie.frame.isContributing) {
+      Utils.showMsg(
+          Lizzie.resourceBundle.getString("Contribute.tips.contributingAndStartAnotherLizzieYzy"));
+      return;
+    }
     boolean isPondering = false;
     if (Lizzie.leelaz.isPondering()) {
       Lizzie.leelaz.togglePonder();
@@ -9130,6 +9136,11 @@ public class LizzieFrame extends JFrame {
 
   public void continueAiPlaying(
       boolean isGenmove, boolean continueNow, boolean playerIsB, boolean fromShortCut) {
+    if (Lizzie.frame.isContributing) {
+      Utils.showMsg(
+          Lizzie.resourceBundle.getString("Contribute.tips.contributingAndStartAnotherLizzieYzy"));
+      return;
+    }
     if (EngineManager.isEmpty) return;
     if (isPlayingAgainstLeelaz || isAnaPlayingAgainstLeelaz) {
       stopAiPlayingAndPolicy();
@@ -9371,21 +9382,14 @@ public class LizzieFrame extends JFrame {
     else varTreeScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
   }
 
-  private void renderVarTreeCur() {
+  public void renderVarTreeCur() {
     if (shouldShowSimpleVariation()) return;
     BoardHistoryNode cur = Lizzie.board.getHistory().getCurrentHistoryNode();
     if (cur == Lizzie.board.getHistory().getStart()) return;
     Graphics2D g = (Graphics2D) cachedVarImage2.getGraphics();
-    // Color curcolor = g.getColor();
     g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-    //    g.fillOval(
-    //        tree_curposx - 1 + (tree_DOT_DIAM + tree_diff - tree_RING_DIAM) / 2,
-    //        tree_posy - 1 + (tree_DOT_DIAM + tree_diff - tree_RING_DIAM) / 2,
-    //        tree_RING_DIAM + 2,
-    //        tree_RING_DIAM + 2);
     if (Lizzie.config.showCommentNodeColor && !cur.getData().comment.isEmpty()) {
-      // g.setColor(Lizzie.config.varPanelColor);
       if (Lizzie.config.usePureBackground) g.setColor(Lizzie.config.pureBackgroundColor);
       else g.setPaint(Lizzie.frame.backgroundPaint);
       g.fillOval(
@@ -9406,7 +9410,6 @@ public class LizzieFrame extends JFrame {
           tree_RING_DIAM,
           tree_RING_DIAM);
     } else {
-      // g.setColor(Lizzie.config.varPanelColor);
       if (Lizzie.config.usePureBackground) g.setColor(Lizzie.config.pureBackgroundColor);
       else g.setPaint(Lizzie.frame.backgroundPaint);
       g.fillOval(
@@ -9419,9 +9422,6 @@ public class LizzieFrame extends JFrame {
     Color blunderColor = getBlunderNodeColor(cur);
     g.setColor(blunderColor);
     g.fillOval(tree_curposx + tree_diff, tree_posy + tree_diff, tree_diam, tree_diam);
-
-    //   if (blunderColor != Color.WHITE) g.setColor(reverseColor(blunderColor));
-    //  else
     g.setColor(Color.BLACK);
     g.fillOval(
         tree_curposx + (tree_DOT_DIAM + tree_diff - tree_CENTER_DIAM) / 2,
@@ -10567,7 +10567,7 @@ public class LizzieFrame extends JFrame {
     ArrayList<TempGameData> data = getSaveGameList();
     data.get(index - 1).name = name;
     data.get(index - 1).time = df.format(new Date());
-    data.get(index - 1).curMoveNumer = Lizzie.board.getcurrentmovenumber();
+    data.get(index - 1).curMoveNumer = Lizzie.board.getCurrentMovenumber();
     data.get(index - 1).moves =
         Lizzie.board.moveListToString(Lizzie.board.getmovelistForSaveLoad());
     saveTempGame(data);
@@ -10593,7 +10593,7 @@ public class LizzieFrame extends JFrame {
     TempGameData newData = new TempGameData();
     newData.name = name;
     newData.time = df.format(new Date());
-    newData.curMoveNumer = Lizzie.board.getcurrentmovenumber();
+    newData.curMoveNumer = Lizzie.board.getCurrentMovenumber();
     newData.moves = Lizzie.board.moveListToString(Lizzie.board.getMoveList());
     data.add(newData);
     saveTempGame(data);
@@ -10618,7 +10618,7 @@ public class LizzieFrame extends JFrame {
     Lizzie.config.saveBoardConfig.put("save-auto-game-index" + index, index == 2 ? -5 : 1);
     Lizzie.config.saveBoardConfig.put("save-auto-game-time" + index, df.format(new Date()));
     Lizzie.config.saveBoardConfig.put(
-        "save-auto-game-move-number" + index, Lizzie.board.getcurrentmovenumber());
+        "save-auto-game-move-number" + index, Lizzie.board.getCurrentMovenumber());
     Lizzie.config.saveBoardConfig.put(
         "save-auto-game-move-list" + index,
         Lizzie.board.moveListToString(Lizzie.board.getmovelistForSaveLoad()));
@@ -11904,13 +11904,6 @@ public class LizzieFrame extends JFrame {
     Lizzie.board.getHistory().setGameInfo(gameInfo);
   }
 
-  private boolean tempShowBlack;
-  private boolean tempShowWhite;
-  public boolean isInTemporaryBoard;
-
-  public boolean allowPlaceStone = true;
-  private Process processClockHelper;
-
   public void startTemporaryBoard() {
     if (isInTemporaryBoard) return;
     isInTemporaryBoard = true;
@@ -12370,5 +12363,56 @@ public class LizzieFrame extends JFrame {
     Lizzie.board.hasStartStone = true;
     Lizzie.board.addStartListAll();
     Lizzie.board.flatten();
+  }
+
+  public void addContributeLine(String line, boolean stdout) {
+    // TODO Auto-generated method stub
+    if (stdout) {
+      Lizzie.gtpConsole.addLine(line + "\n");
+      if (contributeView != null) contributeView.addLine(line + "\n");
+    } else {
+      Lizzie.gtpConsole.addErrorLine(line + "\n");
+      if (contributeView != null) contributeView.addErrorLine(line + "\n");
+    }
+  }
+
+  public void startContributeEngine() {
+    if (Lizzie.frame.isContributing) {
+      Utils.showMsg(Lizzie.resourceBundle.getString("Contribute.tips.alreadyTraining"));
+      return;
+    }
+    if (Lizzie.config.contributeUserName.length() <= 0) {
+      Utils.showMsg(Lizzie.resourceBundle.getString("Contribute.tips.noUserName"));
+      openContributeSettings();
+      return;
+    }
+    if (Lizzie.config.contributeEnginePath.length() <= 0)
+      if (!Lizzie.config.contributeUseCommand || Lizzie.config.contributeCommand.length() <= 0) {
+        Utils.showMsg(Lizzie.resourceBundle.getString("Contribute.tips.noEnginePath"));
+        openContributeSettings();
+        return;
+      }
+    if (contributeEngine != null) contributeEngine.normalQuit();
+    contributeEngine = new ContributeEngine();
+    Lizzie.frame.openContributeView();
+  }
+
+  public void closeContributeEngine() {
+    if (contributeEngine != null) {
+      contributeEngine.normalQuit();
+    }
+  }
+
+  public void openContributeView() {
+    if (contributeView != null) {
+      contributeView.setVisible(false);
+      contributeView.dispose();
+    }
+    contributeView = new ContributeView(this);
+  }
+
+  public void openContributeSettings() {
+    ContributeSettings contributeSettings = new ContributeSettings(this);
+    contributeSettings.setVisible(true);
   }
 }

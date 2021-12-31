@@ -2122,6 +2122,11 @@ public class EngineManager {
   }
 
   public void switchEngine(int index, boolean isMain) {
+    if (Lizzie.frame.isContributing) {
+      Utils.showMsg(
+          resourceBundle.getString("Contribute.tips.contributingAndStartAnotherLizzieYzy"));
+      return;
+    }
     engineNo = index;
     if (Lizzie.config.isDoubleEngineMode()
         && index == (isMain ? currentEngineNo2 : currentEngineNo)) {

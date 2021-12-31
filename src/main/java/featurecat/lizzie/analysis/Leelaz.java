@@ -3404,7 +3404,7 @@ public class Leelaz {
     if (engineFailedMessage != null && engineFailedMessage.isVisible()) return;
     engineFailedMessage =
         new EngineFailedMessage(
-            commands, engineCommand, message, !useJavaSSH && OS.isWindows(), true);
+            commands, engineCommand, message, !useJavaSSH && OS.isWindows(), true, false);
     engineFailedMessage.setModal(isModal);
     engineFailedMessage.setVisible(true);
   }

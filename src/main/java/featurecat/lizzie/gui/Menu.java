@@ -50,6 +50,7 @@ public class Menu extends JMenuBar {
   public static JFontMenu engineMenu;
   public static JFontMenu shutdownEngine;
   public static JFontMenu quickLinks;
+  private JFontMenu contributeMenu;
   JFontMenuItem shutdownAllEngine;
   JFontMenuItem shutdownCurrentEngine;
   JFontMenuItem restartCurrentEngine;
@@ -153,9 +154,7 @@ public class Menu extends JMenuBar {
     setPreferredSize(new Dimension(100, Config.menuHeight)); // 中25 大30
     // headFont = new Font(Config.sysDefaultFontName, Font.PLAIN,
     // Math.max(Lizzie.config.allFontSize, 12)); // 中16 大20
-    Font baseMenuFont =
-        new Font(
-            resourceBundle.getString("Menu.baseMenu.fontName"), Font.PLAIN, Config.frameFontSize);
+    Font baseMenuFont = new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize);
     final JFontMenu fileMenu = new JFontMenu(resourceBundle.getString("Menu.fileMenu")); // ("文件");
     fileMenu.setFont(baseMenuFont);
     fileMenu.setForeground(Color.BLACK);
@@ -2894,8 +2893,8 @@ public class Menu extends JMenuBar {
         });
     gameMenu.add(flattenBoard);
 
-    final JMenuItem continueLadder =
-        new JMenuItem(resourceBundle.getString("Menu.game.continueLadder"));
+    final JFontMenuItem continueLadder =
+        new JFontMenuItem(resourceBundle.getString("Menu.game.continueLadder"));
     continueLadder.addActionListener(
         new ActionListener() {
           @Override
@@ -3589,17 +3588,6 @@ public class Menu extends JMenuBar {
     // shareKifu.setFont(headFont);
     this.add(shareKifu);
 
-    final JFontMenuItem shareSearch =
-        new JFontMenuItem(resourceBundle.getString("Menu.shareSearch")); // ("公开棋谱查询");
-    shareKifu.add(shareSearch);
-
-    shareSearch.addActionListener(
-        new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            Lizzie.frame.openPublicKifuSearch();
-          }
-        });
-
     final JFontMenuItem shareCurrentSgf =
         new JFontMenuItem(resourceBundle.getString("Menu.shareCurrentSgf")); // ("分享当前棋谱(Ctrl+E)");
     shareKifu.add(shareCurrentSgf);
@@ -3665,6 +3653,17 @@ public class Menu extends JMenuBar {
                   resourceBundle.getString(
                       "Menu.shareHistoryLoaclHintOpenFailed")); // ("打开失败");//shareHistoryLoaclHintOpenFailed
             }
+          }
+        });
+
+    final JFontMenuItem shareSearch =
+        new JFontMenuItem(resourceBundle.getString("Menu.shareSearch")); // ("公开棋谱查询");
+    shareKifu.add(shareSearch);
+
+    shareSearch.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.frame.openPublicKifuSearch();
           }
         });
 
@@ -4944,10 +4943,24 @@ public class Menu extends JMenuBar {
           }
         });
 
+    final JFontCheckBoxMenuItem showContribute =
+        new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.showContribute"));
+    settings.add(showContribute);
+    showContribute.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.config.showContribute = !Lizzie.config.showContribute;
+            Lizzie.config.uiConfig.put("show-Contribute", Lizzie.config.showContribute);
+            contributeMenu.setVisible(Lizzie.config.showContribute);
+          }
+        });
+
     settings.addMenuListener(
         new MenuListener() {
 
           public void menuSelected(MenuEvent e) {
+            if (Lizzie.config.showContribute) showContribute.setState(true);
+            else showContribute.setState(false);
             if (Lizzie.config.playSound) playSound.setState(true);
             else playSound.setState(false);
             if (Lizzie.config.notPlaySoundInSync) notPlaySoundInSync.setState(true);
@@ -5001,6 +5014,50 @@ public class Menu extends JMenuBar {
           public void menuCanceled(MenuEvent e) {
             // TODO Auto-generated method stub
 
+          }
+        });
+
+    contributeMenu = new JFontMenu(resourceBundle.getString("Menu.contributeMenu")); // ("跑谱贡献");
+    contributeMenu.setForeground(Color.BLACK);
+    contributeMenu.setFont(baseMenuFont);
+    this.add(contributeMenu);
+
+    final JFontMenuItem kataGoDistributedTraining =
+        new JFontMenuItem(resourceBundle.getString("Menu.kataGoDistributedTraining"));
+    contributeMenu.add(kataGoDistributedTraining);
+
+    kataGoDistributedTraining.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.frame.startContributeEngine();
+          }
+        });
+
+    final JFontMenuItem kataGoTrainingSettings =
+        new JFontMenuItem(resourceBundle.getString("Menu.kataGoTrainingSettings"));
+    contributeMenu.add(kataGoTrainingSettings);
+
+    kataGoTrainingSettings.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.frame.openContributeSettings();
+          }
+        });
+
+    final JFontMenuItem kataGoOfficialWebsite =
+        new JFontMenuItem(resourceBundle.getString("Menu.kataGoOfficialWebsite"));
+    contributeMenu.add(kataGoOfficialWebsite);
+
+    kataGoOfficialWebsite.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            try {
+              URI uri = new URI("https://katagotraining.org/");
+              java.awt.Desktop.getDesktop().browse(uri);
+            } catch (Exception e1) {
+              // TODO Auto-generated catch block
+              e1.printStackTrace();
+            }
           }
         });
 

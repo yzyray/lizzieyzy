@@ -51,7 +51,7 @@ public class GtpConsolePane extends JDialog {
   private JFontLabel lblCommand = new JFontLabel();
   private JPanel pnlCommand = new JPanel();
   private ScheduledExecutorService executor;
-  int checkCount = 0;
+  private int checkCount = 0;
   private Font gtpFont;
   private ArrayDeque<DocType> docQueue;
   private FileOutputStream bos;
@@ -193,7 +193,7 @@ public class GtpConsolePane extends JDialog {
     fastCommands.setVisible(true);
   }
 
-  public void addDocs(DocType doc) {
+  private void addDocs(DocType doc) {
     SimpleAttributeSet attrSet = new SimpleAttributeSet();
     StyleConstants.setForeground(attrSet, doc.contentColor);
     if (doc.isCommand) {
@@ -203,7 +203,7 @@ public class GtpConsolePane extends JDialog {
     insert(doc.content, attrSet);
   }
 
-  public void setDocs(String str, Color col, boolean isCommand, int fontSize) {
+  private void setDocs(String str, Color col, boolean isCommand, int fontSize) {
     DocType doc = new DocType();
     doc.content = str;
     doc.contentColor = col;
@@ -212,7 +212,7 @@ public class GtpConsolePane extends JDialog {
     docQueue.addLast(doc);
   }
 
-  public void insert(String str, AttributeSet attrSet) {
+  private void insert(String str, AttributeSet attrSet) {
     Document doc = console.getDocument();
     try {
       doc.insertString(doc.getLength(), str, attrSet);

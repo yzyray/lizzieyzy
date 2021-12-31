@@ -78,7 +78,8 @@ public class SetEstimateParam extends JDialog {
         new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
-            RemoteEngineSettings remoteEngineSettings = new RemoteEngineSettings(dialog, false);
+            RemoteEngineSettings remoteEngineSettings =
+                new RemoteEngineSettings(dialog, false, false);
             remoteEngineSettings.setVisible(true);
           }
         });
@@ -157,7 +158,7 @@ public class SetEstimateParam extends JDialog {
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             GetEngineLine getEngineLine = new GetEngineLine();
-            String el = getEngineLine.getEngineLine(dialog, true, false);
+            String el = getEngineLine.getEngineLine(dialog, true, false, false, false);
             if (!el.isEmpty()) {
               textAreaCommand.setText(el);
             }

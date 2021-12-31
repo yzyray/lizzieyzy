@@ -176,7 +176,7 @@ public class SocketUpfile {
     } finally {
       if (socket != null)
         try {
-          System.out.println("close......");
+          // System.out.println("close......");
           br.close();
           pw.close();
           socket.close();

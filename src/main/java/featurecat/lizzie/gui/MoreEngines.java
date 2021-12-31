@@ -100,8 +100,8 @@ public class MoreEngines extends JPanel {
     setLayout((LayoutManager) null);
     this.dataModel = getTableModel();
     table = new JTable(this.dataModel);
-    this.winrateFont = new Font(Lizzie.config.uiFontName, 0, Math.max(Config.frameFontSize, 14));
-    this.headFont = new Font(Lizzie.config.uiFontName, 0, Math.max(Config.frameFontSize, 13));
+    this.winrateFont = new Font(Config.sysDefaultFontName, 0, Math.max(Config.frameFontSize, 14));
+    this.headFont = new Font(Config.sysDefaultFontName, 0, Math.max(Config.frameFontSize, 13));
     table.getTableHeader().setFont(this.headFont);
     table.setFont(this.winrateFont);
     table.getTableHeader().setReorderingAllowed(false);
@@ -653,7 +653,7 @@ public class MoreEngines extends JPanel {
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             GetEngineLine getEngineLine = new GetEngineLine();
-            String el = getEngineLine.getEngineLine(MoreEngines.engjf, false, false);
+            String el = getEngineLine.getEngineLine(MoreEngines.engjf, false, false, false, false);
             if (!el.isEmpty()) command.setText(el);
             setVisible(true);
           }
