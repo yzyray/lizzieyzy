@@ -623,10 +623,12 @@ public class ContributeEngine {
       Utils.showMsg(Lizzie.resourceBundle.getString("Contribute.tips.noGameToSave"));
       return;
     }
+    int moveNumber = Lizzie.board.getCurrentMovenumber();
     for (int i = 0; i < contributeGames.size(); i++) {
       saveGame(contributeGames.get(i), i);
     }
     setGameToBoard(currentWatchGame, watchingGameIndex, false);
+    Lizzie.board.goToMoveNumber(moveNumber);
     File file = new File("");
     String courseFile = "";
     try {

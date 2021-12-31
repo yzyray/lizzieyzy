@@ -1798,11 +1798,11 @@ public class Board {
     }
   }
 
-  public int getcurrentmovenumber() {
+  public int getCurrentMovenumber() {
     return history.getCurrentHistoryNode().getData().moveNumber;
   }
 
-  public int getmovenumberinbranch(int index) {
+  public int getMovenumberInBranch(int index) {
     return history.getCurrentHistoryNode().getData().moveNumberList[index];
   }
 

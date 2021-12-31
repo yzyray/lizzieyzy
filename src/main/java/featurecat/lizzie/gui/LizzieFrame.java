@@ -2496,7 +2496,7 @@ public class LizzieFrame extends JFrame {
       SGFParser.loadFromString(tryString);
       Lizzie.board.resetMoveList(tryMoveList);
       Lizzie.board.setMovelistAll();
-      if (Lizzie.board.getcurrentmovenumber() == 0 && Lizzie.leelaz.isPondering())
+      if (Lizzie.board.getCurrentMovenumber() == 0 && Lizzie.leelaz.isPondering())
         Lizzie.leelaz.ponder();
       this.setTitle(titleBeforeTrying);
       if (needRefresh) refresh();
@@ -6160,7 +6160,7 @@ public class LizzieFrame extends JFrame {
     Optional<int[]> boardCoordinates = boardRenderer.convertScreenToCoordinates(x, y);
     if (boardCoordinates.isPresent()) {
       int[] coords = boardCoordinates.get();
-      return Lizzie.board.getmovenumberinbranch(Board.getIndex(coords[0], coords[1]));
+      return Lizzie.board.getMovenumberInBranch(Board.getIndex(coords[0], coords[1]));
     }
     return -1;
   }
@@ -10567,7 +10567,7 @@ public class LizzieFrame extends JFrame {
     ArrayList<TempGameData> data = getSaveGameList();
     data.get(index - 1).name = name;
     data.get(index - 1).time = df.format(new Date());
-    data.get(index - 1).curMoveNumer = Lizzie.board.getcurrentmovenumber();
+    data.get(index - 1).curMoveNumer = Lizzie.board.getCurrentMovenumber();
     data.get(index - 1).moves =
         Lizzie.board.moveListToString(Lizzie.board.getmovelistForSaveLoad());
     saveTempGame(data);
@@ -10593,7 +10593,7 @@ public class LizzieFrame extends JFrame {
     TempGameData newData = new TempGameData();
     newData.name = name;
     newData.time = df.format(new Date());
-    newData.curMoveNumer = Lizzie.board.getcurrentmovenumber();
+    newData.curMoveNumer = Lizzie.board.getCurrentMovenumber();
     newData.moves = Lizzie.board.moveListToString(Lizzie.board.getMoveList());
     data.add(newData);
     saveTempGame(data);
@@ -10618,7 +10618,7 @@ public class LizzieFrame extends JFrame {
     Lizzie.config.saveBoardConfig.put("save-auto-game-index" + index, index == 2 ? -5 : 1);
     Lizzie.config.saveBoardConfig.put("save-auto-game-time" + index, df.format(new Date()));
     Lizzie.config.saveBoardConfig.put(
-        "save-auto-game-move-number" + index, Lizzie.board.getcurrentmovenumber());
+        "save-auto-game-move-number" + index, Lizzie.board.getCurrentMovenumber());
     Lizzie.config.saveBoardConfig.put(
         "save-auto-game-move-list" + index,
         Lizzie.board.moveListToString(Lizzie.board.getmovelistForSaveLoad()));

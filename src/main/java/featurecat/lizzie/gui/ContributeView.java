@@ -51,7 +51,7 @@ public class ContributeView extends JDialog {
   private JTextField txtAutoPlayInterval;
   private JLabel lblGameInfos;
   private String result = "";
-  private JLabel lblCurrentGameResult;
+  private JLabel lblGameResult;
   private JLabel lblGameType;
   private JLabel lblKomi;
   private JLabel lblTip;
@@ -68,7 +68,7 @@ public class ContributeView extends JDialog {
 
   public ContributeView(Window owner) {
     super(owner);
-    setTitle("KataGo跑谱贡献");
+    setTitle(Lizzie.resourceBundle.getString("ContributeView.title")); // ("KataGo跑谱贡献");
     setResizable(false);
     JPanel mainPanel = new JPanel();
     mainPanel.setBorder(new EmptyBorder(0, 0, 0, 0));
@@ -76,10 +76,6 @@ public class ContributeView extends JDialog {
     GridBagLayout gbl_mainPanel = new GridBagLayout();
     gbl_mainPanel.rowWeights = new double[] {1.0, 0.0, 0.0, 0.0, 0.0};
     gbl_mainPanel.columnWeights = new double[] {1.0};
-    //    gbl_mainPanel.columnWidths = new int[] {336, 0};
-    //    gbl_mainPanel.rowHeights = new int[] {37, 37, 0, 37, 0, 0};
-    //    gbl_mainPanel.columnWeights = new double[] {1.0, Double.MIN_VALUE};
-    //    gbl_mainPanel.rowWeights = new double[] {0.0, 0.0, 1.0, 0.0, 1.0, Double.MIN_VALUE};
     mainPanel.setLayout(gbl_mainPanel);
 
     JPanel labelPanel = new JPanel();
@@ -90,9 +86,6 @@ public class ContributeView extends JDialog {
     gbc_panel_1.gridx = 0;
     gbc_panel_1.gridy = 0;
     mainPanel.add(labelPanel, gbc_panel_1);
-
-    //		JPanel gameInfoPanel = new JPanel();
-    //		mainPanel.add(gameInfoPanel);
 
     lblGameInfos = new JFontLabel();
     labelPanel.add(lblGameInfos);
@@ -108,7 +101,8 @@ public class ContributeView extends JDialog {
     gbc_gameControlPanel.gridy = 1;
     mainPanel.add(gameControlPanel, gbc_gameControlPanel);
 
-    JButton btnPrevious = new JFontButton("上一局");
+    JButton btnPrevious =
+        new JFontButton(Lizzie.resourceBundle.getString("ContributeView.btnPrevious")); // ("上一局");
     btnPrevious.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
@@ -119,7 +113,8 @@ public class ContributeView extends JDialog {
         });
     gameControlPanel.add(btnPrevious);
 
-    JButton btnNext = new JFontButton("下一局");
+    JButton btnNext =
+        new JFontButton(Lizzie.resourceBundle.getString("ContributeView.btnNext")); // ("下一局");
     btnNext.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
@@ -130,7 +125,8 @@ public class ContributeView extends JDialog {
         });
     gameControlPanel.add(btnNext);
 
-    JLabel lblGoto = new JFontLabel("跳转");
+    JLabel lblGoto =
+        new JFontLabel(Lizzie.resourceBundle.getString("ContributeView.lblGoto")); // ("跳转");
     gameControlPanel.add(lblGoto);
 
     txtGameIndex = new JFontTextField();
@@ -138,8 +134,9 @@ public class ContributeView extends JDialog {
     txtGameIndex.setColumns(3);
     txtGameIndex.setDocument(new IntDocument());
 
-    JButton btnConfirm = new JFontButton("确定");
-    btnConfirm.addActionListener(
+    JButton btnGotoGame =
+        new JFontButton(Lizzie.resourceBundle.getString("ContributeView.btnGotoGame")); // ("确定");
+    btnGotoGame.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             try {
@@ -151,7 +148,7 @@ public class ContributeView extends JDialog {
             }
           }
         });
-    gameControlPanel.add(btnConfirm);
+    gameControlPanel.add(btnGotoGame);
 
     JPanel playPanel = new JPanel();
     playPanel.setLayout(new FlowLayout(1, 4, 4));
@@ -235,8 +232,9 @@ public class ContributeView extends JDialog {
     txtMoveNumber.setColumns(3);
     txtMoveNumber.setDocument(new IntDocument());
 
-    JButton btnGoto = new JFontButton("跳转");
-    btnGoto.addActionListener(
+    JButton btnGotoMove =
+        new JFontButton(Lizzie.resourceBundle.getString("ContributeView.btnGotoMove")); // ("跳转");
+    btnGotoMove.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent arg0) {
             try {
@@ -246,10 +244,12 @@ public class ContributeView extends JDialog {
             }
           }
         });
-    playPanel.add(btnGoto);
-    btnGoto.setMargin(new Insets(2, 5, 2, 5));
+    playPanel.add(btnGotoMove);
+    btnGotoMove.setMargin(new Insets(2, 5, 2, 5));
 
-    JCheckBox chkAlwaysLastMove = new JFontCheckBox("自动跳转最新一手");
+    JCheckBox chkAlwaysLastMove =
+        new JFontCheckBox(
+            Lizzie.resourceBundle.getString("ContributeView.chkAlwaysLastMove")); // ("自动跳转最新一手");
     playPanel.add(chkAlwaysLastMove);
     chkAlwaysLastMove.addActionListener(
         new ActionListener() {
@@ -271,7 +271,9 @@ public class ContributeView extends JDialog {
     gbc_autoPlayPanel.gridy = 3;
     mainPanel.add(autoPlayPanel, gbc_autoPlayPanel);
 
-    JCheckBox chkAutoPlay = new JFontCheckBox("自动播放");
+    JCheckBox chkAutoPlay =
+        new JFontCheckBox(
+            Lizzie.resourceBundle.getString("ContributeView.chkAutoPlay")); // ("自动播放");
     autoPlayPanel.add(chkAutoPlay);
     chkAutoPlay.addActionListener(
         new ActionListener() {
@@ -283,7 +285,9 @@ public class ContributeView extends JDialog {
         });
     chkAutoPlay.setSelected(Lizzie.config.contributeWatchAutoPlay);
 
-    JLabel lblAutoPlayInterval = new JFontLabel("每手时间(秒)");
+    JLabel lblAutoPlayInterval =
+        new JFontLabel(
+            Lizzie.resourceBundle.getString("ContributeView.lblAutoPlayInterval")); // ("每手时间(秒)");
     autoPlayPanel.add(lblAutoPlayInterval);
 
     txtAutoPlayInterval = new JFontTextField();
@@ -317,8 +321,9 @@ public class ContributeView extends JDialog {
         });
     txtAutoPlayInterval.setText(String.valueOf(Lizzie.config.contributeWatchAutoPlayInterval));
 
-    JCheckBox chkAutoPlayNextGame = new JFontCheckBox("自动播放下一局");
-    chkAutoPlayNextGame.setText("跳转下一局");
+    JCheckBox chkAutoPlayNextGame =
+        new JFontCheckBox(
+            Lizzie.resourceBundle.getString("ContributeView.chkAutoPlayNextGame")); // ("自动播放下一局");
     autoPlayPanel.add(chkAutoPlayNextGame);
     chkAutoPlayNextGame.addActionListener(
         new ActionListener() {
@@ -331,8 +336,9 @@ public class ContributeView extends JDialog {
         });
     chkAutoPlayNextGame.setSelected(Lizzie.config.contributeWatchAutoPlayNextGame);
 
-    JCheckBox chkIgnoreNone19 = new JFontCheckBox("跳过非19路");
-    chkIgnoreNone19.setText("跳过非19x19");
+    JCheckBox chkIgnoreNone19 =
+        new JFontCheckBox(
+            Lizzie.resourceBundle.getString("ContributeView.chkIgnoreNone19")); // ("跳过非19x19");
     autoPlayPanel.add(chkIgnoreNone19);
     chkIgnoreNone19.addActionListener(
         new ActionListener() {
@@ -353,23 +359,34 @@ public class ContributeView extends JDialog {
     gbc_panel.gridy = 4;
     mainPanel.add(panel, gbc_panel);
 
-    lblGameType = new JFontLabel("本局类型: 自对弈");
+    lblGameType =
+        new JFontLabel(
+            Lizzie.resourceBundle.getString("ContributeView.lblGameType")); // ("本局类型:  ");
     panel.add(lblGameType);
 
-    lblKomi = new JFontLabel("贴目: --");
+    lblKomi =
+        new JFontLabel(Lizzie.resourceBundle.getString("ContributeView.lblKomi")); // ("贴目: ");
     panel.add(lblKomi);
 
-    lblCurrentGameResult = new JFontLabel("结果: ");
-    panel.add(lblCurrentGameResult);
+    lblGameResult =
+        new JFontLabel(
+            Lizzie.resourceBundle.getString("ContributeView.lblGameResult")); // ("结果: ");
+    panel.add(lblGameResult);
 
     JButton btnHideShowResult = new JFontButton();
-    btnHideShowResult.setText(Lizzie.config.contributeHideResult ? "显示" : "隐藏");
+    btnHideShowResult.setText(
+        Lizzie.config.contributeHideResult
+            ? Lizzie.resourceBundle.getString("ContributeView.show")
+            : Lizzie.resourceBundle.getString("ContributeView.hide"));
     setResult(result);
     btnHideShowResult.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             Lizzie.config.contributeHideResult = !Lizzie.config.contributeHideResult;
-            btnHideShowResult.setText(Lizzie.config.contributeHideResult ? "显示" : "隐藏");
+            btnHideShowResult.setText(
+                Lizzie.config.contributeHideResult
+                    ? Lizzie.resourceBundle.getString("ContributeView.show")
+                    : Lizzie.resourceBundle.getString("ContributeView.hide"));
             setResult(result);
           }
         });
@@ -381,7 +398,17 @@ public class ContributeView extends JDialog {
     JPanel ruleAndButtonPanel = new JPanel();
     getContentPane().add(ruleAndButtonPanel, BorderLayout.SOUTH);
     txtRules.setText(
-        "胜负判断:\r\n" + "打劫:\r\n" + "允许棋块自杀:\r\n" + "还棋头:\r\n" + "让子贴还(让N子):\r\n" + "收后贴还0.5目:");
+        Lizzie.resourceBundle.getString("ContributeView.rules.scoring")
+            + "\r\n"
+            + Lizzie.resourceBundle.getString("ContributeView.rules.ko")
+            + "\r\n"
+            + Lizzie.resourceBundle.getString("ContributeView.rules.suicide")
+            + "\r\n"
+            + Lizzie.resourceBundle.getString("ContributeView.rules.tax")
+            + "\r\n"
+            + Lizzie.resourceBundle.getString("ContributeView.rules.whiteHandicapBonus")
+            + "\r\n"
+            + Lizzie.resourceBundle.getString("ContributeView.rules.button"));
 
     ruleAndButtonPanel.setLayout(new BorderLayout());
     JPanel rulePanel = new JPanel();
@@ -397,11 +424,17 @@ public class ContributeView extends JDialog {
             Lizzie.config.uiConfig.put("contribute-hide-rules", Lizzie.config.contributeHideRules);
             if (Lizzie.config.contributeHideRules) txtRules.setVisible(false);
             else txtRules.setVisible(true);
-            btnShowHideRules.setText(Lizzie.config.contributeHideRules ? "显示规则" : "隐藏规则");
+            btnShowHideRules.setText(
+                Lizzie.config.contributeHideRules
+                    ? Lizzie.resourceBundle.getString("ContributeView.showRules")
+                    : Lizzie.resourceBundle.getString("ContributeView.hideRules"));
             pack();
           }
         });
-    btnShowHideRules.setText(Lizzie.config.contributeHideRules ? "显示规则" : "隐藏规则");
+    btnShowHideRules.setText(
+        Lizzie.config.contributeHideRules
+            ? Lizzie.resourceBundle.getString("ContributeView.showRules")
+            : Lizzie.resourceBundle.getString("ContributeView.hideRules"));
     if (Lizzie.config.contributeHideRules) txtRules.setVisible(false);
     else txtRules.setVisible(true);
 
@@ -409,7 +442,9 @@ public class ContributeView extends JDialog {
     JPanel buttonPanel = new JPanel();
     ruleAndButtonPanel.add(buttonPanel, BorderLayout.SOUTH);
 
-    JButton btnShutdown = new JFontButton("结束贡献跑谱");
+    JButton btnShutdown =
+        new JFontButton(
+            Lizzie.resourceBundle.getString("ContributeView.btnShutdown")); // "结束跑谱贡献");
     btnShutdown.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
@@ -418,14 +453,16 @@ public class ContributeView extends JDialog {
           }
         });
 
-    JButton btnSaveAll = new JFontButton("保存所有棋谱");
-    btnSaveAll.addActionListener(
+    JButton btnSaveGameRecords =
+        new JFontButton(
+            Lizzie.resourceBundle.getString("ContributeView.btnSaveGameRecords")); // ("保存所有棋谱");
+    btnSaveGameRecords.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             if (Lizzie.frame.contributeEngine != null) Lizzie.frame.contributeEngine.saveAllGames();
           }
         });
-    buttonPanel.add(btnSaveAll);
+    buttonPanel.add(btnSaveGameRecords);
     buttonPanel.add(btnShutdown);
 
     JPanel consolePanel = new JPanel();
@@ -458,8 +495,8 @@ public class ContributeView extends JDialog {
     JScrollPane scrollConsole = new JScrollPane(console);
     JPanel consoleTextPane = new JPanel();
     consoleTextPane.setLayout(new BorderLayout());
-    lblTip = new JFontLabel("New label");
-    lblTip.setText("正在初始化...");
+    lblTip =
+        new JFontLabel(Lizzie.resourceBundle.getString("ContributeView.lblTip")); // ("正在初始化...");
     lblTip.setBorder(new EmptyBorder(0, 4, 2, 0));
     consoleTextPane.add(lblTip, BorderLayout.SOUTH);
     consoleTextPane.add(scrollConsole, BorderLayout.CENTER);
@@ -478,25 +515,33 @@ public class ContributeView extends JDialog {
             Lizzie.config.contributeHideConsole = !Lizzie.config.contributeHideConsole;
             if (Lizzie.config.contributeHideConsole) scrollConsole.setVisible(false);
             else scrollConsole.setVisible(true);
-            btnHideShowConsole.setText(Lizzie.config.contributeHideConsole ? "显示控制台" : "隐藏控制台");
+            btnHideShowConsole.setText(
+                Lizzie.config.contributeHideConsole
+                    ? Lizzie.resourceBundle.getString("ContributeView.showConsole")
+                    : Lizzie.resourceBundle.getString("ContributeView.hideConsole"));
             pack();
             Lizzie.config.uiConfig.put(
                 "contribute-hide-console", Lizzie.config.contributeHideConsole);
           }
         });
 
-    btnHideShowConsole.setText(Lizzie.config.contributeHideConsole ? "显示控制台" : "隐藏控制台");
+    btnHideShowConsole.setText(
+        Lizzie.config.contributeHideConsole
+            ? Lizzie.resourceBundle.getString("ContributeView.showConsole")
+            : Lizzie.resourceBundle.getString("ContributeView.hideConsole"));
     if (Lizzie.config.contributeHideConsole) scrollConsole.setVisible(false);
     else scrollConsole.setVisible(true);
 
-    JButton btnMore = new JFontButton("完整控制台");
-    btnMore.addActionListener(
+    JButton btnFullConsole =
+        new JFontButton(
+            Lizzie.resourceBundle.getString("ContributeView.btnFullConsole")); // "完整控制台");
+    btnFullConsole.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             Lizzie.frame.toggleGtpConsole();
           }
         });
-    consoleButtonPane.add(btnMore, BorderLayout.EAST);
+    consoleButtonPane.add(btnFullConsole, BorderLayout.EAST);
     consolePanel.add(consoleButtonPane, BorderLayout.SOUTH);
 
     executor = Executors.newSingleThreadScheduledExecutor();
@@ -506,7 +551,8 @@ public class ContributeView extends JDialog {
     this.addWindowListener(
         new WindowAdapter() {
           public void windowClosing(WindowEvent e) {
-            Utils.showMsg("请使用结束跑普贡献关闭此窗口");
+            Utils.showMsg(
+                Lizzie.resourceBundle.getString("ContributeView.closeTip")); // ("请使用结束跑普贡献关闭此窗口");
           }
         });
 
@@ -553,17 +599,24 @@ public class ContributeView extends JDialog {
   }
 
   public void setType(String text) {
-    lblGameType.setText("本局类型: " + text);
+    lblGameType.setText(Lizzie.resourceBundle.getString("ContributeView.lblGameType") + text);
   }
 
   public void setKomi(double komi) {
-    lblKomi.setText("贴目: " + String.format(Locale.ENGLISH, "%.1f", komi));
+    lblKomi.setText(
+        Lizzie.resourceBundle.getString("ContributeView.lblKomi")
+            + String.format(Locale.ENGLISH, "%.1f", komi));
   }
 
   public void setResult(String text) {
     result = text;
-    lblCurrentGameResult.setText(
-        "结果: " + (Lizzie.config.contributeHideResult ? "---" : text.length() > 0 ? text : "无"));
+    lblGameResult.setText(
+        Lizzie.resourceBundle.getString("ContributeView.lblGameResult")
+            + (Lizzie.config.contributeHideResult
+                ? "---"
+                : text.length() > 0
+                    ? text
+                    : Lizzie.resourceBundle.getString("ContributeView.lblGameResult.none")));
   }
 
   public void setTip(String text) {
@@ -581,37 +634,50 @@ public class ContributeView extends JDialog {
     String rules = "";
     try {
       if (jsonRules.has("scoring")) {
-        rules += "胜负判断: ";
-        if (jsonRules.getString("scoring").contentEquals("AREA")) rules += "数子";
-        else rules += "数目";
+        rules += Lizzie.resourceBundle.getString("ContributeView.rules.scoring");
+        if (jsonRules.getString("scoring").contentEquals("AREA"))
+          rules += Lizzie.resourceBundle.getString("ContributeView.rules.scoring.area");
+        else rules += Lizzie.resourceBundle.getString("ContributeView.rules.scoring.territory");
       }
       if (jsonRules.has("ko")) {
-        rules += "\r\n打劫: ";
-        if (jsonRules.getString("ko").contentEquals("POSITIONAL")) rules += "严格禁全同";
-        else if (jsonRules.getString("ko").contentEquals("SITUATIONAL")) rules += "同一方落子后禁全同";
-        else if (jsonRules.getString("ko").contentEquals("SIMPLE")) rules += "不禁全同";
+        rules += "\r\n" + Lizzie.resourceBundle.getString("ContributeView.rules.ko");
+        if (jsonRules.getString("ko").contentEquals("POSITIONAL"))
+          rules += Lizzie.resourceBundle.getString("ContributeView.rules.ko.positional");
+        else if (jsonRules.getString("ko").contentEquals("SITUATIONAL"))
+          rules += Lizzie.resourceBundle.getString("ContributeView.rules.ko.situational");
+        else if (jsonRules.getString("ko").contentEquals("SIMPLE"))
+          rules += Lizzie.resourceBundle.getString("ContributeView.rules.ko.simple");
       }
       if (jsonRules.has("suicide")) {
-        rules += "\r\n允许棋块自杀: ";
-        if (jsonRules.getBoolean("suicide")) rules += "是";
-        else rules += "否";
+        rules += "\r\n" + Lizzie.resourceBundle.getString("ContributeView.rules.suicide");
+        if (jsonRules.getBoolean("suicide"))
+          rules += Lizzie.resourceBundle.getString("ContributeView.rules.yes");
+        else rules += Lizzie.resourceBundle.getString("ContributeView.rules.no");
       }
       if (jsonRules.has("tax")) {
-        rules += "\r\n还棋头: ";
-        if (jsonRules.getString("tax").contentEquals("NONE")) rules += "无";
-        else if (jsonRules.getString("tax").contentEquals("ALL")) rules += "仅双活棋块";
-        else if (jsonRules.getString("tax").contentEquals("SEKI")) rules += "所有棋块";
+        rules += "\r\n" + Lizzie.resourceBundle.getString("ContributeView.rules.tax");
+        if (jsonRules.getString("tax").contentEquals("NONE"))
+          rules += Lizzie.resourceBundle.getString("ContributeView.rules.tax.none");
+        else if (jsonRules.getString("tax").contentEquals("ALL"))
+          rules += Lizzie.resourceBundle.getString("ContributeView.rules.tax.all");
+        else if (jsonRules.getString("tax").contentEquals("SEKI"))
+          rules += Lizzie.resourceBundle.getString("ContributeView.rules.tax.seki");
       }
       if (jsonRules.has("whiteHandicapBonus")) {
-        rules += "\r\n让子贴还(让N子): ";
-        if (jsonRules.getString("whiteHandicapBonus").contentEquals("0")) rules += "不贴还";
-        else if (jsonRules.getString("whiteHandicapBonus").contentEquals("N")) rules += "贴还N目";
-        else if (jsonRules.getString("whiteHandicapBonus").contentEquals("N-1")) rules += "贴还N-1目";
+        rules +=
+            "\r\n" + Lizzie.resourceBundle.getString("ContributeView.rules.whiteHandicapBonus");
+        if (jsonRules.getString("whiteHandicapBonus").contentEquals("0"))
+          rules += Lizzie.resourceBundle.getString("ContributeView.rules.whiteHandicapBonus.0");
+        else if (jsonRules.getString("whiteHandicapBonus").contentEquals("N"))
+          rules += Lizzie.resourceBundle.getString("ContributeView.rules.whiteHandicapBonus.N");
+        else if (jsonRules.getString("whiteHandicapBonus").contentEquals("N-1"))
+          rules += Lizzie.resourceBundle.getString("ContributeView.rules.whiteHandicapBonus.N-1");
       }
       if (jsonRules.has("hasButton")) {
-        rules += "\r\n收后贴还0.5目: ";
-        if (jsonRules.getBoolean("hasButton")) rules += "是";
-        else rules += "否";
+        rules += "\r\n" + Lizzie.resourceBundle.getString("ContributeView.rules.button");
+        if (jsonRules.getBoolean("hasButton"))
+          rules += Lizzie.resourceBundle.getString("ContributeView.rules.yes");
+        else rules += Lizzie.resourceBundle.getString("ContributeView.rules.no");
       }
       txtRules.setText(rules);
       pack();
@@ -634,16 +700,28 @@ public class ContributeView extends JDialog {
   private void updateLblGameInfos() {
     lblGameInfos.setText(
         "<html>"
-            + "正在观看第"
+            + Lizzie.resourceBundle.getString("ContributeView.lblGameInfos.watching")
             + "<a color=\"blue\">"
             + watchingGameIndex
             + "/"
             + (finishedGames + playingGames)
             + "</a>"
-            + "局,已完成"
+            + Lizzie.resourceBundle.getString("ContributeView.lblGameInfos.games")
+            + ","
+            + Lizzie.resourceBundle.getString("ContributeView.lblGameInfos.complete")
             + finishedGames
-            + "局"
+            + Lizzie.resourceBundle.getString("ContributeView.lblGameInfos.games")
             + "</html>");
+    //            + "正在观看第"
+    //            + "<a color=\"blue\">"
+    //            + watchingGameIndex
+    //            + "/"
+    //            + (finishedGames + playingGames)
+    //            + "</a>"
+    //            + "局"+","+"已完成"
+    //            + finishedGames
+    //            + "局"
+    //            + "</html>");
   }
 
   private void checkConsole() {
