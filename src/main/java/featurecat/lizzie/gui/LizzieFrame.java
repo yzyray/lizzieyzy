@@ -2355,6 +2355,7 @@ public class LizzieFrame extends JFrame {
     if (Lizzie.leelaz.isPondering()) Lizzie.leelaz.togglePonder();
     configDialog2 = new ConfigDialog2();
     configDialog2.switchTab(index);
+    Utils.changeFontRecursive(configDialog2, Config.sysDefaultFontName);
     configDialog2.setVisible(true);
     if (oriPonder) Lizzie.leelaz.togglePonder();
   }

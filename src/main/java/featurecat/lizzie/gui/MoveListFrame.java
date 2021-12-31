@@ -655,6 +655,13 @@ public class MoveListFrame extends JFrame {
     bottomPanel.addTab(
         Lizzie.resourceBundle.getString("Movelistframe.scoreBigMistake"), bigScoreMistakePanel);
 
+    bottomPanel.addChangeListener(
+        new ChangeListener() {
+          public void stateChanged(ChangeEvent e) {
+            Utils.changeFontRecursive(bottomPanel, Config.sysDefaultFontName);
+          }
+        });
+
     matchPanelAll.setLayout(new BorderLayout());
     matchGraphAll.setLayout(new BorderLayout());
     mistakePanelAll.setLayout(new BorderLayout());
@@ -1856,6 +1863,7 @@ public class MoveListFrame extends JFrame {
             minTable2.repaint();
           }
         });
+    Utils.changeFontRecursive(bottomPanel, Config.sysDefaultFontName);
   }
 
   private void applyChkPeriod() {

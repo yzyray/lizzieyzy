@@ -85,8 +85,8 @@ public class LoadEngine extends JPanel {
     table = new JTable(dataModel);
     selectpanel.setLayout(null);
     winrateFont =
-        new Font(Lizzie.config.uiFontName, Font.PLAIN, Math.max(Config.frameFontSize, 14));
-    headFont = new Font(Lizzie.config.uiFontName, Font.PLAIN, Math.max(Config.frameFontSize, 13));
+        new Font(Config.sysDefaultFontName, Font.PLAIN, Math.max(Config.frameFontSize, 14));
+    headFont = new Font(Config.sysDefaultFontName, Font.PLAIN, Math.max(Config.frameFontSize, 13));
 
     table.getTableHeader().setFont(headFont);
     table.setFont(winrateFont);

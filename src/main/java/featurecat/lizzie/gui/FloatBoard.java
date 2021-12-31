@@ -77,7 +77,6 @@ public class FloatBoard extends JDialog {
   private int tempX, tempY, tempWidth, tempHeight;
   private boolean showPosBtn = false;
 
-  @SuppressWarnings("deprecation")
   public FloatBoard(int x, int y, int width, int height, int boardType, boolean isScaled) {
     tempX = x;
     tempY = y;

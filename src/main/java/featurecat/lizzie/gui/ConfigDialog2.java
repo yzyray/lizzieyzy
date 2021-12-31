@@ -5,6 +5,7 @@ import static java.awt.RenderingHints.VALUE_ANTIALIAS_ON;
 import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
 import static java.lang.Math.max;
 
+import featurecat.lizzie.Config;
 import featurecat.lizzie.ExtraMode;
 import featurecat.lizzie.Lizzie;
 import featurecat.lizzie.gui.LizzieFrame.HtmlKit;
@@ -338,14 +339,14 @@ public class ConfigDialog2 extends JDialog {
                 + "<div align=\"center\"><font style=\"font-weight:plain;font-size:12;\">Java version: "
                 + Lizzie.javaVersionString
                 + "</font></div></html>");
-    lblLizzieName.setFont(new Font("Tahoma", Font.BOLD, 24));
+    lblLizzieName.setFont(new Font(Config.sysDefaultFontName, Font.BOLD, 24));
     LinkLabel lblLizzieInfo =
         new LinkLabel(resourceBundle.getString("LizzieConfig.about.lblLizzieInfo"));
-    lblLizzieInfo.setFont(new Font("Tahoma", Font.PLAIN, 14));
+    lblLizzieInfo.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, 14));
 
     LinkLabel lblOriginTitle =
         new LinkLabel(resourceBundle.getString("LizzieConfig.about.lblOriginTitle"));
-    lblOriginTitle.setFont(new Font("Tahoma", Font.BOLD, 14));
+    lblOriginTitle.setFont(new Font(Config.sysDefaultFontName, Font.BOLD, 14));
 
     LinkLabel lblOriginLizzieInfo =
         new LinkLabel(
@@ -353,7 +354,7 @@ public class ConfigDialog2 extends JDialog {
                 + Lizzie.checkVersion
                 + resourceBundle.getString("LizzieConfig.about.lblOriginLizzieInfo2"));
 
-    lblOriginLizzieInfo.setFont(new Font("Tahoma", Font.PLAIN, 14));
+    lblOriginLizzieInfo.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, 14));
     // 注释这里
     GroupLayout gl = new GroupLayout(aboutTab);
     gl.setHorizontalGroup(
@@ -997,7 +998,7 @@ public class ConfigDialog2 extends JDialog {
         new JLabel(
             resourceBundle.getString(
                 "LizzieConfig.lblViewSettings")); // ("界面面板选项:"); // $NON-NLS-1$
-    lblViewSettings.setFont(new Font(Lizzie.config.uiFontName, Font.BOLD, 14));
+    lblViewSettings.setFont(new Font(Config.sysDefaultFontName, Font.BOLD, 14));
     lblViewSettings.setBounds(10, 2, 408, 23);
     uiTab.add(lblViewSettings);
 
@@ -1006,7 +1007,7 @@ public class ConfigDialog2 extends JDialog {
             resourceBundle.getString(
                 "LizzieConfig.lblSuggestionMoveAndWinrateSettings")); // ("选点与胜率图选项:"); //
     // $NON-NLS-1$
-    lblSuggestionMoveAndWinrateSettings.setFont(new Font(Lizzie.config.uiFontName, Font.BOLD, 14));
+    lblSuggestionMoveAndWinrateSettings.setFont(new Font(Config.sysDefaultFontName, Font.BOLD, 14));
     lblSuggestionMoveAndWinrateSettings.setBounds(10, 206, 395, 23);
     uiTab.add(lblSuggestionMoveAndWinrateSettings);
 
@@ -1014,14 +1015,14 @@ public class ConfigDialog2 extends JDialog {
         new JLabel(
             resourceBundle.getString(
                 "LizzieConfig.lblEngineSettings")); // ("其他选项:"); // $NON-NLS-1$
-    lblOtherSettings.setFont(new Font(Lizzie.config.uiFontName, Font.BOLD, 14));
+    lblOtherSettings.setFont(new Font(Config.sysDefaultFontName, Font.BOLD, 14));
     lblOtherSettings.setBounds(10, 421, 492, 23);
     uiTab.add(lblOtherSettings);
 
     JLabel lblEngineSettings =
         new JLabel(
             resourceBundle.getString("LizzieConfig.lblOtherSettings")); // ("引擎选项:"); // $NON-NLS-1$
-    lblEngineSettings.setFont(new Font(Lizzie.config.uiFontName, Font.BOLD, 14));
+    lblEngineSettings.setFont(new Font(Config.sysDefaultFontName, Font.BOLD, 14));
     lblEngineSettings.setBounds(10, 522, 492, 23);
     uiTab.add(lblEngineSettings);
 
@@ -2763,6 +2764,8 @@ public class ConfigDialog2 extends JDialog {
           };
       pnlBoardPreview.setBounds(530, 11, 200, 200);
       themeTab.add(pnlBoardPreview);
+      Utils.changeFontRecursive(themeTab, Config.sysDefaultFontName);
+
       isLoadedTheme = true;
       javax.swing.Timer timer =
           new javax.swing.Timer(
@@ -2996,8 +2999,8 @@ public class ConfigDialog2 extends JDialog {
                   Lizzie.config.commentFontColor.getGreen(),
                   Lizzie.config.commentFontColor.getBlue())
               + "; font-family:"
-              + Lizzie.config.fontName
-              + ", Consolas, Menlo, Monaco, 'Ubuntu Mono', monospace;"
+              + Config.sysDefaultFontName
+              + ";"
               + (Lizzie.config.commentFontSize > 0
                   ? "font-size:" + Lizzie.config.commentFontSize
                   : "")

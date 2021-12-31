@@ -13,7 +13,9 @@ import featurecat.lizzie.gui.RemoteEngineData;
 import featurecat.lizzie.rules.BoardHistoryNode;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Window;
 import java.io.BufferedWriter;
@@ -852,5 +854,14 @@ public class Utils {
       else result = String.valueOf(round(diff * 10) / 10.0);
       return result;
     } else return String.valueOf(round(score * 10) / 10.0);
+  }
+
+  public static void changeFontRecursive(Container root, String fontName) {
+    for (Component c : root.getComponents()) {
+      c.setFont(new Font(fontName, c.getFont().getStyle(), c.getFont().getSize()));
+      if (c instanceof Container) {
+        changeFontRecursive((Container) c, fontName);
+      }
+    }
   }
 }
