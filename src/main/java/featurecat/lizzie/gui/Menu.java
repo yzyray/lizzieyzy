@@ -5021,6 +5021,7 @@ public class Menu extends JMenuBar {
     contributeMenu.setForeground(Color.BLACK);
     contributeMenu.setFont(baseMenuFont);
     this.add(contributeMenu);
+    contributeMenu.setVisible(Lizzie.config.showContribute);
 
     final JFontMenuItem kataGoDistributedTraining =
         new JFontMenuItem(resourceBundle.getString("Menu.kataGoDistributedTraining"));

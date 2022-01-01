@@ -76,7 +76,7 @@ public class ContributeEngine {
         e.printStackTrace();
       }
       boolean useConfigFile = Lizzie.config.contributeConfigPath.trim().length() > 0;
-      if (useConfigFile) engineCommand += "-config " + Lizzie.config.contributeConfigPath;
+      if (useConfigFile) engineCommand += " -config " + Lizzie.config.contributeConfigPath;
       engineCommand += " -override-config ";
       if (!useConfigFile) engineCommand += "\"serverUrl = https://katagotraining.org/\",";
     }
