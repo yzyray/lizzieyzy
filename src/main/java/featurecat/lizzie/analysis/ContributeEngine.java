@@ -31,7 +31,6 @@ public class ContributeEngine {
   private int changeWatchingGameIndex = -1;
   private Thread watchGameThread;
   private ContributeGameInfo currentWatchGame;
-  private BoardHistoryNode startNode;
 
   private Process process;
   private boolean isNormalEnd = false;
@@ -208,6 +207,7 @@ public class ContributeEngine {
   private void parseLine(String line) {
     // TODO Auto-generated method stub
     if (line.startsWith("{")) {
+      Lizzie.gtpConsole.addLine(line);
       // json game info
       if (getJsonGameInfo(tryToGetJsonString(line), contributeGames, unParseGameInfos)) {
         if (contributeGames != null) {
@@ -220,8 +220,8 @@ public class ContributeEngine {
           if (Lizzie.frame.contributeView != null)
             Lizzie.frame.contributeView.setGames(finishedGames, playingGames);
           if (watchingGameIndex == -1 && contributeGames.size() > 0) {
-            watchingGameIndex = 0;
             currentWatchGame = contributeGames.get(0);
+            watchingGameIndex = 0;
             setGameToBoard(currentWatchGame, watchingGameIndex, false);
             Lizzie.frame.refresh();
             Lizzie.frame.renderVarTree(0, 0, false, false);
@@ -229,7 +229,6 @@ public class ContributeEngine {
           }
         }
       }
-      Lizzie.gtpConsole.addLine(line);
     } else {
       Lizzie.frame.addContributeLine(line, true);
       if (line.contains("Finis")) {
@@ -438,19 +437,24 @@ public class ContributeEngine {
         }
       }
       if (isExistGame) {
-        if (tryToParseJsonGame(currentGame, false, jsonInfo, unParseInfos))
+        if (tryToParseJsonGame(currentGame, false, jsonInfo, unParseInfos, false)) {
           tryToUseUnParseGameInfos(currentGame, unParseInfos);
-        if (currentGame == currentWatchGame) {
-          setGameToBoard(currentGame, watchingGameIndex, false);
-          if (Lizzie.board.getHistory().getCurrentHistoryNode().next().isPresent()
-              && !Lizzie.board.getHistory().getCurrentHistoryNode().next().get().next().isPresent())
-            Lizzie.board.nextMove(true);
+          if (currentGame == currentWatchGame) {
+            setGameToBoard(currentGame, watchingGameIndex, false);
+            if (Lizzie.board.getHistory().getCurrentHistoryNode().next().isPresent()
+                && !Lizzie.board
+                    .getHistory()
+                    .getCurrentHistoryNode()
+                    .next()
+                    .get()
+                    .next()
+                    .isPresent()) Lizzie.board.nextMove(true);
+          }
         }
       } else {
         currentGame = new ContributeGameInfo();
-        if (tryToParseJsonGame(currentGame, true, jsonInfo, unParseInfos))
-          tryToUseUnParseGameInfos(currentGame, unParseInfos);
-        games.add(currentGame);
+        if (tryToParseJsonGame(currentGame, true, jsonInfo, unParseInfos, false))
+          games.add(currentGame);
       }
     } catch (Exception e) {
       e.printStackTrace();
@@ -464,15 +468,23 @@ public class ContributeEngine {
     ContributeUnParseGameInfo unUsedParseInfo = null;
     if (!unParseInfos.isEmpty()) {
       for (ContributeUnParseGameInfo unParseInfo : unParseInfos) {
-        if (unParseInfo.gameId.equals(currentGame.gameId)) {
+        if (unParseInfo.gameId.equals(currentGame.gameId)
+            && !unParseInfo.used
+            && !unParseInfo.skip) {
           unUsedParseInfo = unParseInfo;
           break;
         }
       }
     }
     if (unUsedParseInfo == null) return;
-    if (tryToParseJsonGame(currentGame, false, unUsedParseInfo.gameInfo, unParseInfos)) {
+    if (tryToParseJsonGame(currentGame, false, unUsedParseInfo.gameInfo, unParseInfos, true)) {
+      unUsedParseInfo.used = true;
       unParseInfos.remove(unUsedParseInfo);
+      for (ContributeUnParseGameInfo info : unParseInfos) {
+        if (info.gameId.equals(currentGame.gameId)) info.skip = false;
+      }
+    } else {
+      unUsedParseInfo.skip = true;
       tryToUseUnParseGameInfos(currentGame, unParseInfos);
     }
   }
@@ -481,8 +493,9 @@ public class ContributeEngine {
       ContributeGameInfo currentGame,
       boolean newGame,
       JSONObject jsonInfo,
-      ArrayList<ContributeUnParseGameInfo> unParseInfos) {
-    boolean success = false;
+      ArrayList<ContributeUnParseGameInfo> unParseInfos,
+      boolean fromUnParsedInfo) {
+    boolean success = true;
     // 从jsonInfo中解析已有的一局,更新currentGame,如果isWatching,更新到界面上
     if (newGame) {
       currentGame.gameId = jsonInfo.getString("gameId");
@@ -540,7 +553,7 @@ public class ContributeEngine {
           } else move.hasOwnership = false;
         }
         currentGame.moveList.add(move);
-      } else {
+      } else if (!fromUnParsedInfo) {
         ContributeUnParseGameInfo unParseInfo = new ContributeUnParseGameInfo();
         unParseInfo.gameId = jsonInfo.getString("gameId");
         unParseInfo.gameInfo = jsonInfo;
@@ -554,6 +567,9 @@ public class ContributeEngine {
   private boolean compareMoveList(
       ArrayList<ContributeMoveInfo> list1, ArrayList<ContributeMoveInfo> list2) {
     if (list1 == null && list2 == null) return true;
+    if (list1 == null && list2 != null && list2.isEmpty()) return true;
+    if (list1 != null && list1.isEmpty() && list2 == null) return true;
+    if (list1 != null && list1.isEmpty() && list2 != null && list2.isEmpty()) return true;
     if (list1 == null && list2 != null || list1 != null && list2 == null) return false;
     if (list1.size() != list2.size()) return false;
     for (int i = 0; i < list1.size(); i++) {
@@ -582,8 +598,8 @@ public class ContributeEngine {
       currentWatchGame = game;
       if (Lizzie.frame.contributeView != null)
         Lizzie.frame.contributeView.setWathGameIndex(watchingGameIndex + 1);
-      Lizzie.board.reopen(currentWatchGame.sizeX, currentWatchGame.sizeY);
       Lizzie.board.clear(false);
+      Lizzie.board.reopen(currentWatchGame.sizeX, currentWatchGame.sizeY);
       Lizzie.board.isKataBoard = true;
       if (game.isRatingGame) {
         Lizzie.board.isPkBoard = true;
@@ -611,8 +627,8 @@ public class ContributeEngine {
         setContributeMoveList(currentWatchGame.moveList, !currentWatchGame.complete);
       boolean moved = false;
       while (Lizzie.board.getHistory().getCurrentHistoryNode().getData().getPlayouts() <= 0) {
-        Lizzie.board.nextMove(false);
-        moved = true;
+        if (Lizzie.board.nextMove(false)) moved = true;
+        else break;
       }
       if (moved) {
         Lizzie.frame.redrawTree = true;
@@ -776,24 +792,30 @@ public class ContributeEngine {
     }
   }
 
-  private boolean isContributeGameAndCurrentBoardSame(
-      ContributeGameInfo watchGame, ArrayList<ContributeMoveInfo> remainList) {
-    boolean isSame = true;
-    startNode = Lizzie.board.getHistory().getStart();
-    while (startNode.next().isPresent() && !startNode.getData().lastMove.isPresent())
-      startNode = startNode.next().get();
-    if (watchGame.initMoveList != null && watchGame.initMoveList.size() > 0) {
-      isSame = compareListAndNode(watchGame.initMoveList, startNode, remainList);
-    }
-    if (watchGame.moveList != null && watchGame.moveList.size() > 0) {
-      isSame = compareListAndNode(watchGame.moveList, startNode, remainList);
-    }
-    return isSame;
+  class sameStatus {
+    boolean isSame;
+    BoardHistoryNode startNode;
   }
 
-  private boolean compareListAndNode(
+  private boolean isContributeGameAndCurrentBoardSame(
+      ContributeGameInfo watchGame, ArrayList<ContributeMoveInfo> remainList) {
+    sameStatus status = new sameStatus();
+    status.isSame = true;
+    status.startNode = Lizzie.board.getHistory().getStart();
+    while (status.startNode.next().isPresent() && !status.startNode.getData().lastMove.isPresent())
+      status.startNode = status.startNode.next().get();
+    if (watchGame.initMoveList != null && watchGame.initMoveList.size() > 0) {
+      status = compareListAndNode(watchGame.initMoveList, status, remainList);
+    }
+    if (watchGame.moveList != null && watchGame.moveList.size() > 0) {
+      status = compareListAndNode(watchGame.moveList, status, remainList);
+    }
+    return status.isSame;
+  }
+
+  private sameStatus compareListAndNode(
       ArrayList<ContributeMoveInfo> list,
-      BoardHistoryNode node,
+      sameStatus status,
       ArrayList<ContributeMoveInfo> remainList) {
     boolean started = false;
 
@@ -801,27 +823,31 @@ public class ContributeEngine {
       ContributeMoveInfo move = list.get(i);
       if (started || !move.isPass) {
         started = true;
-        if (node.getData().lastMove.isPresent()) {
-          if (node.getData().lastMove.get()[0] != move.pos[0]
-              || node.getData().lastMove.get()[1] != move.pos[1]) return false;
-          if (node.next().isPresent()) node = node.next().get();
+        if (status.startNode.getData().lastMove.isPresent()) {
+          if (status.startNode.getData().lastMove.get()[0] != move.pos[0]
+              || status.startNode.getData().lastMove.get()[1] != move.pos[1]) {
+            status.isSame = false;
+            return status;
+          }
+          if (status.startNode.next().isPresent()) status.startNode = status.startNode.next().get();
           else {
             getRemainList(list, remainList, i + 1);
-            return true;
+            return status;
           }
 
         } else {
           if (move.isPass) {
-            if (node.next().isPresent()) node = node.next().get();
-            else return true;
+            if (status.startNode.next().isPresent())
+              status.startNode = status.startNode.next().get();
+            else return status;
           } else {
             getRemainList(list, remainList, i + 1);
-            return true;
+            return status;
           }
         }
       }
     }
-    return true;
+    return status;
   }
 
   private void getRemainList(

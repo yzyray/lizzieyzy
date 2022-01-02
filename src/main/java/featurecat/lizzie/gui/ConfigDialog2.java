@@ -3534,8 +3534,10 @@ public class ConfigDialog2 extends JDialog {
   }
 
   private String getFontItemName(JComboBox<String> comboBox) {
+    int index = comboBox.getSelectedIndex();
     String value = comboBox.getSelectedItem().toString();
-    if (value.equals("Lizzie默认")) value = "Lizzie Default";
+    if (index == 0) value = "Lizzie Default";
+    if (index == 1) value = "Dialog.plain";
     return value;
   }
 

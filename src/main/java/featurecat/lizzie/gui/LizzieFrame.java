@@ -4241,6 +4241,8 @@ public class LizzieFrame extends JFrame {
               // Lizzie.resourceBundle.getString("LizzieFrame.prompt.switching");
               //            String switchingText = Lizzie.leelaz.switching() ? switching : "";
               String weightText = "";
+              if (isContributing)
+                weightText = Lizzie.resourceBundle.getString("LizzieFrame.weightText.contributing");
               if (EngineManager.isEmpty)
                 weightText = Lizzie.resourceBundle.getString("LizzieFrame.noEngineText");
               else weightText = Lizzie.leelaz.oriEnginename;
@@ -4679,7 +4681,10 @@ public class LizzieFrame extends JFrame {
                 // =Lizzie.resourceBundle.getString("LizzieFrame.prompt.switching");
                 // String switchingText = Lizzie.leelaz.switching() ? switching : "";
                 String weightText = "";
-                if (EngineManager.isEmpty)
+                if (isContributing)
+                  weightText =
+                      Lizzie.resourceBundle.getString("LizzieFrame.weightText.contributing");
+                else if (EngineManager.isEmpty)
                   weightText = Lizzie.resourceBundle.getString("LizzieFrame.noEngineText");
                 else weightText = Lizzie.leelaz.oriEnginename;
                 String text2 = ponderingText + " " + statusText; // + " " + switchingText;
@@ -4887,6 +4892,9 @@ public class LizzieFrame extends JFrame {
                 // =Lizzie.resourceBundle.getString("LizzieFrame.prompt.switching");
                 // String switchingText = Lizzie.leelaz.switching() ? switching : "";
                 String weightText = "";
+                if (isContributing)
+                  weightText =
+                      Lizzie.resourceBundle.getString("LizzieFrame.weightText.contributing");
                 if (EngineManager.isEmpty)
                   weightText = Lizzie.resourceBundle.getString("LizzieFrame.noEngineText");
                 else weightText = Lizzie.leelaz.oriEnginename;
@@ -7596,7 +7604,7 @@ public class LizzieFrame extends JFrame {
   }
 
   public Color getBlunderNodeColor(BoardHistoryNode node) {
-    if (EngineManager.isEngineGame || Lizzie.board.isPkBoard) {
+    if (EngineManager.isEngineGame || Lizzie.board.isPkBoard || Lizzie.frame.isContributing) {
       if (node.previous().isPresent() && node.previous().get().previous().isPresent()) {
         if (node.previous().get().previous().get().getData().getPlayouts() == 0
             || node.getData().getPlayouts() == 0) return Color.WHITE;

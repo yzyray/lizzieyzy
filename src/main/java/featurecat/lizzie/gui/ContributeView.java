@@ -143,6 +143,7 @@ public class ContributeView extends JDialog {
               int index = Integer.parseInt(txtGameIndex.getText()) - 1;
               if (Lizzie.frame.contributeEngine != null)
                 Lizzie.frame.contributeEngine.setWatchGame(index);
+              txtGameIndex.setText("");
             } catch (NumberFormatException ex) {
               ex.printStackTrace();
             }
@@ -239,6 +240,7 @@ public class ContributeView extends JDialog {
           public void actionPerformed(ActionEvent arg0) {
             try {
               Lizzie.board.goToMoveNumberBeyondBranch(Integer.parseInt(txtMoveNumber.getText()));
+              txtMoveNumber.setText("");
             } catch (Exception e) {
               e.printStackTrace();
             }
@@ -705,9 +707,7 @@ public class ContributeView extends JDialog {
             + watchingGameIndex
             + "/"
             + (finishedGames + playingGames)
-            + "</a>"
-            + Lizzie.resourceBundle.getString("ContributeView.lblGameInfos.games")
-            + ","
+            + "</a> "
             + Lizzie.resourceBundle.getString("ContributeView.lblGameInfos.complete")
             + finishedGames
             + Lizzie.resourceBundle.getString("ContributeView.lblGameInfos.games")
