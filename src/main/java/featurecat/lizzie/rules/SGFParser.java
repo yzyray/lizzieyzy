@@ -2570,7 +2570,7 @@ public class SGFParser {
   private static String parseResult(String value) {
     int tempIndex = value.indexOf("RE[") + 3;
     String temp = value.substring(tempIndex, Math.min(value.length(), tempIndex + 20));
-    return temp.substring(0, temp.lastIndexOf("]"));
+    return temp.substring(0, temp.indexOf("]"));
   }
 
   /**

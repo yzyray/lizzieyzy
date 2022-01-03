@@ -7154,8 +7154,6 @@ public class LizzieFrame extends JFrame {
             String.format(Locale.ENGLISH, "%.1f", winRate)
                 + " "
                 + Utils.getPlayoutsString(Lizzie.board.getHistory().getData().getPlayouts()));
-        //   }
-
         if (Lizzie.board.getHistory().getData().isKataData) {
           double scoreC = Lizzie.board.getHistory().getCurrentHistoryNode().getData().scoreMean;
           if (scoreC != 0) {
@@ -7185,7 +7183,7 @@ public class LizzieFrame extends JFrame {
         BoardData data =
             Lizzie.board.getHistory().getCurrentHistoryNode().previous().get().getData();
         sb.append(
-            String.format(Locale.ENGLISH, "%.1f", data.winrate)
+            String.format(Locale.ENGLISH, "%.1f", 100 - data.winrate)
                 + " "
                 + Utils.getPlayoutsString(data.getPlayouts()));
         if (data.isKataData) {

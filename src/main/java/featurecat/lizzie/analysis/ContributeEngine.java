@@ -220,11 +220,8 @@ public class ContributeEngine {
           if (Lizzie.frame.contributeView != null)
             Lizzie.frame.contributeView.setGames(finishedGames, playingGames);
           if (watchingGameIndex == -1 && contributeGames.size() > 0) {
-            currentWatchGame = contributeGames.get(0);
             watchingGameIndex = 0;
-            setGameToBoard(currentWatchGame, watchingGameIndex, false);
-            Lizzie.frame.refresh();
-            Lizzie.frame.renderVarTree(0, 0, false, false);
+            setGameToBoard(contributeGames.get(0), watchingGameIndex, false);
             startWatchingGameThread();
           }
         }
@@ -521,8 +518,8 @@ public class ContributeEngine {
       currentGame.initMoveList = initStoneList;
     }
     JSONArray historyMoves = jsonInfo.getJSONArray("moves");
+    ArrayList<ContributeMoveInfo> historyMoveList = new ArrayList<ContributeMoveInfo>();
     if (historyMoves.length() > 0) {
-      ArrayList<ContributeMoveInfo> historyMoveList = new ArrayList<ContributeMoveInfo>();
       for (int i = 0; i < historyMoves.length(); i++) {
         ContributeMoveInfo move = new ContributeMoveInfo();
         List<Object> moveInfo = historyMoves.getJSONArray(i).toList();
@@ -531,35 +528,35 @@ public class ContributeEngine {
         move.isPass = move.pos[0] < 0;
         historyMoveList.add(move);
       }
-      if (newGame) {
-        currentGame.moveList = historyMoveList;
+    }
+    if (newGame) {
+      currentGame.moveList = historyMoveList;
+    }
+    if (newGame || (compareMoveList(historyMoveList, currentGame.moveList))) {
+      // 成功,获取最后一手和bestmoves
+      ContributeMoveInfo move = new ContributeMoveInfo();
+      List<Object> lastMove = jsonInfo.getJSONArray("move").toList();
+      move.isBlack = lastMove.get(0).toString().equals("B");
+      move.pos = Board.convertNameToCoordinates(lastMove.get(1).toString(), currentGame.sizeY);
+      move.isPass = move.pos[0] < 0;
+      JSONArray moveInfos = jsonInfo.getJSONArray("moveInfos");
+      move.candidates = Utils.getBestMovesFromJsonArray(moveInfos, false, move.isBlack);
+      if (jsonInfo.has("ownership")) {
+        JSONArray ownershipInfos = jsonInfo.getJSONArray("ownership");
+        ArrayList<Double> ownershipArray =
+            Utils.getOwnershipArrayFromJsonArray(ownershipInfos, move.isBlack);
+        if (ownershipArray != null) {
+          move.hasOwnership = true;
+          move.ownershipArray = ownershipArray;
+        } else move.hasOwnership = false;
       }
-      if (newGame || (compareMoveList(historyMoveList, currentGame.moveList))) {
-        // 成功,获取最后一手和bestmoves
-        ContributeMoveInfo move = new ContributeMoveInfo();
-        List<Object> lastMove = jsonInfo.getJSONArray("move").toList();
-        move.isBlack = lastMove.get(0).toString().equals("B");
-        move.pos = Board.convertNameToCoordinates(lastMove.get(1).toString(), currentGame.sizeY);
-        move.isPass = move.pos[0] < 0;
-        JSONArray moveInfos = jsonInfo.getJSONArray("moveInfos");
-        move.candidates = Utils.getBestMovesFromJsonArray(moveInfos, false, move.isBlack);
-        if (jsonInfo.has("ownership")) {
-          JSONArray ownershipInfos = jsonInfo.getJSONArray("ownership");
-          ArrayList<Double> ownershipArray =
-              Utils.getOwnershipArrayFromJsonArray(ownershipInfos, move.isBlack);
-          if (ownershipArray != null) {
-            move.hasOwnership = true;
-            move.ownershipArray = ownershipArray;
-          } else move.hasOwnership = false;
-        }
-        currentGame.moveList.add(move);
-      } else if (!fromUnParsedInfo) {
-        ContributeUnParseGameInfo unParseInfo = new ContributeUnParseGameInfo();
-        unParseInfo.gameId = jsonInfo.getString("gameId");
-        unParseInfo.gameInfo = jsonInfo;
-        unParseInfos.add(unParseInfo);
-        success = false;
-      }
+      currentGame.moveList.add(move);
+    } else if (!fromUnParsedInfo) {
+      ContributeUnParseGameInfo unParseInfo = new ContributeUnParseGameInfo();
+      unParseInfo.gameId = jsonInfo.getString("gameId");
+      unParseInfo.gameInfo = jsonInfo;
+      unParseInfos.add(unParseInfo);
+      success = false;
     }
     return success;
   }
@@ -591,8 +588,13 @@ public class ContributeEngine {
         && isContributeGameAndCurrentBoardSame(game, remainList)) {
       if (remainList != null && remainList.size() > 0) {
         setContributeMoveList(remainList, !currentWatchGame.complete);
-        Lizzie.frame.redrawTree = true;
-        Lizzie.frame.refresh();
+        if (Lizzie.config.contributeWatchAlwaysLastMove) {
+          Lizzie.frame.lastMove();
+          Lizzie.frame.renderVarTree(0, 0, true, true);
+        } else {
+          Lizzie.frame.redrawTree = true;
+          Lizzie.frame.refresh();
+        }
       }
     } else {
       currentWatchGame = game;
@@ -620,7 +622,7 @@ public class ContributeEngine {
       if (currentWatchGame.complete) {
         Lizzie.board.getHistory().getGameInfo().setResult(currentWatchGame.gameResult);
         setReultToView(currentWatchGame.gameResult);
-      }
+      } else setReultToView("");
       if (currentWatchGame.initMoveList != null && currentWatchGame.initMoveList.size() > 0)
         setContributeMoveList(currentWatchGame.initMoveList, false);
       if (currentWatchGame.moveList != null && currentWatchGame.moveList.size() > 0)
@@ -633,6 +635,18 @@ public class ContributeEngine {
       if (moved) {
         Lizzie.frame.redrawTree = true;
         Lizzie.frame.refresh();
+        Lizzie.frame.renderVarTree(0, 0, false, false);
+        new Thread() {
+          public void run() {
+            try {
+              Thread.sleep(300);
+            } catch (InterruptedException e1) {
+              // TODO Auto-generated catch block
+              e1.printStackTrace();
+            }
+            Lizzie.frame.renderVarTree(0, 0, true, false);
+          }
+        }.start();
       }
       if (!saveGame
           && Lizzie.config.contributeAutoSave
@@ -926,21 +940,7 @@ public class ContributeEngine {
           private void changeGame(int index) {
             // TODO Auto-generated method stub
             setGameToBoard(contributeGames.get(watchingGameIndex), watchingGameIndex, false);
-            if (Lizzie.config.contributeWatchAlwaysLastMove) while (Lizzie.board.nextMove(false)) ;
-            Lizzie.frame.redrawTree = true;
-            Lizzie.frame.refresh();
-
-            new Thread() {
-              public void run() {
-                try {
-                  Thread.sleep(100);
-                } catch (InterruptedException e1) {
-                  // TODO Auto-generated catch block
-                  e1.printStackTrace();
-                }
-                Lizzie.frame.renderVarTree(0, 0, false, true);
-              }
-            }.start();
+            if (Lizzie.config.contributeWatchAlwaysLastMove) Lizzie.frame.lastMove();
           }
         };
     watchGameThread = new Thread(runnable);
@@ -950,5 +950,11 @@ public class ContributeEngine {
   public void setWatchGame(int index) {
     // TODO Auto-generated method stub
     changeWatchingGameIndex = index;
+  }
+
+  public int getGameMaxIndex() {
+    // TODO Auto-generated method stub
+    if (contributeGames == null || contributeGames.size() == 0) return 0;
+    return contributeGames.size() - 1;
   }
 }

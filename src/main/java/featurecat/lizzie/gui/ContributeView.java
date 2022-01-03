@@ -101,6 +101,16 @@ public class ContributeView extends JDialog {
     gbc_gameControlPanel.gridy = 1;
     mainPanel.add(gameControlPanel, gbc_gameControlPanel);
 
+    JButton btnFirstGame = new JButton("|<");
+    btnFirstGame.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            if (Lizzie.frame.contributeEngine != null)
+              Lizzie.frame.contributeEngine.setWatchGame(0);
+          }
+        });
+    gameControlPanel.add(btnFirstGame);
+
     JButton btnPrevious =
         new JFontButton(Lizzie.resourceBundle.getString("ContributeView.btnPrevious")); // ("上一局");
     btnPrevious.addActionListener(
@@ -124,6 +134,17 @@ public class ContributeView extends JDialog {
           }
         });
     gameControlPanel.add(btnNext);
+
+    JButton btnLastGame = new JButton(">|");
+    btnLastGame.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            if (Lizzie.frame.contributeEngine != null)
+              Lizzie.frame.contributeEngine.setWatchGame(
+                  Lizzie.frame.contributeEngine.getGameMaxIndex());
+          }
+        });
+    gameControlPanel.add(btnLastGame);
 
     JLabel lblGoto =
         new JFontLabel(Lizzie.resourceBundle.getString("ContributeView.lblGoto")); // ("跳转");
@@ -259,6 +280,7 @@ public class ContributeView extends JDialog {
             Lizzie.config.contributeWatchAlwaysLastMove = chkAlwaysLastMove.isSelected();
             Lizzie.config.uiConfig.put(
                 "contribute-watch-always-last-move", Lizzie.config.contributeWatchAlwaysLastMove);
+            if (Lizzie.config.contributeWatchAlwaysLastMove) Lizzie.frame.lastMove();
           }
         });
     chkAlwaysLastMove.setSelected(Lizzie.config.contributeWatchAlwaysLastMove);
@@ -707,7 +729,8 @@ public class ContributeView extends JDialog {
             + watchingGameIndex
             + "/"
             + (finishedGames + playingGames)
-            + "</a> "
+            + "</a>"
+            + ","
             + Lizzie.resourceBundle.getString("ContributeView.lblGameInfos.complete")
             + finishedGames
             + Lizzie.resourceBundle.getString("ContributeView.lblGameInfos.games")
