@@ -207,7 +207,7 @@ public class ContributeEngine {
   private void parseLine(String line) {
     // TODO Auto-generated method stub
     if (line.startsWith("{")) {
-      Lizzie.gtpConsole.addLine(line);
+      // Lizzie.gtpConsole.addLine(line);
       // json game info
       if (getJsonGameInfo(tryToGetJsonString(line), contributeGames, unParseGameInfos)) {
         if (contributeGames != null) {

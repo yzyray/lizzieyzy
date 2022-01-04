@@ -3705,8 +3705,8 @@ public class BoardRenderer {
       g.fillOval(
           centerX - stoneRadius, centerY - stoneRadius, 2 * stoneRadius + 1, 2 * stoneRadius + 1);
     }
-    if (stone == Stone.BLACK_CAPTURED) g.setColor(new Color(0, 0, 0, isMouseOver ? 120 : 70));
-    else g.setColor(new Color(255, 255, 255, isMouseOver ? 150 : 95));
+    if (stone == Stone.BLACK_CAPTURED) g.setColor(new Color(0, 0, 0, isMouseOver ? 90 : 70));
+    else g.setColor(new Color(255, 255, 255, isMouseOver ? 120 : 95));
     g.fillOval(
         centerX - stoneRadius, centerY - stoneRadius, 2 * stoneRadius + 1, 2 * stoneRadius + 1);
   }

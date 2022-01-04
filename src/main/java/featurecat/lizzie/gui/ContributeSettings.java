@@ -15,6 +15,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.ToolTipManager;
 import javax.swing.border.EmptyBorder;
@@ -23,7 +24,7 @@ public class ContributeSettings extends JDialog {
   private JTextField txtEnginePath;
   private JTextField txtConfigPath;
   private JTextField txtUserName;
-  private JTextField txtPassword;
+  private JPasswordField txtPassword;
   private JTextField txtGames;
   private JTextField txtCommand;
   private JCheckBox chkUseCommand;
@@ -254,7 +255,7 @@ public class ContributeSettings extends JDialog {
     gbc_lblPassword.gridy = 4;
     mainPanel.add(lblPassword, gbc_lblPassword);
 
-    txtPassword = new JFontTextField();
+    txtPassword = new JPasswordField();
     GridBagConstraints gbc_txtPassword = new GridBagConstraints();
     gbc_txtPassword.fill = GridBagConstraints.BOTH;
     gbc_txtPassword.insets = new Insets(0, 0, 5, 0);
@@ -374,7 +375,7 @@ public class ContributeSettings extends JDialog {
     Lizzie.config.uiConfig.put("contribute-config-path", Lizzie.config.contributeConfigPath);
     Lizzie.config.contributeUserName = this.txtUserName.getText();
     Lizzie.config.uiConfig.put("contribute-user-name", Lizzie.config.contributeUserName);
-    Lizzie.config.contributePassword = this.txtPassword.getText();
+    Lizzie.config.contributePassword = new String(txtPassword.getPassword());
     Lizzie.config.uiConfig.put("contribute-password", Lizzie.config.contributePassword);
     Lizzie.config.contributeBatchGames = this.txtGames.getText();
     Lizzie.config.uiConfig.put("contribute-batch-games", Lizzie.config.contributeBatchGames);

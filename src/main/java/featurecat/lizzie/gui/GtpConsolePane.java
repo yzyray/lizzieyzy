@@ -194,13 +194,15 @@ public class GtpConsolePane extends JDialog {
   }
 
   private void addDocs(DocType doc) {
-    SimpleAttributeSet attrSet = new SimpleAttributeSet();
-    StyleConstants.setForeground(attrSet, doc.contentColor);
-    if (doc.isCommand) {
-      StyleConstants.setFontFamily(attrSet, Lizzie.config.uiFontName);
+    synchronized (console) {
+      SimpleAttributeSet attrSet = new SimpleAttributeSet();
+      StyleConstants.setForeground(attrSet, doc.contentColor);
+      if (doc.isCommand) {
+        StyleConstants.setFontFamily(attrSet, Lizzie.config.uiFontName);
+      }
+      StyleConstants.setFontSize(attrSet, doc.fontSize);
+      insert(doc.content, attrSet);
     }
-    StyleConstants.setFontSize(attrSet, doc.fontSize);
-    insert(doc.content, attrSet);
   }
 
   private void setDocs(String str, Color col, boolean isCommand, int fontSize) {
