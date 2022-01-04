@@ -12405,6 +12405,8 @@ public class LizzieFrame extends JFrame {
       }
     if (contributeEngine != null) contributeEngine.normalQuit();
     Lizzie.engineManager.forceKillAllEngines();
+    Lizzie.leelaz.isLoaded = true;
+    EngineManager.isEmpty = true;
     contributeEngine = new ContributeEngine();
     Lizzie.frame.openContributeView();
     if (Lizzie.config.contributeShowEstimate) {
