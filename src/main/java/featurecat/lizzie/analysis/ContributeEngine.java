@@ -57,6 +57,7 @@ public class ContributeEngine {
   private String timeStamp;
   private int errorTimes;
   private String errorTips = "";
+  private boolean addCacerts = false;
 
   public ContributeEngine() {
     if (Lizzie.config.contributeUseCommand) {
@@ -105,6 +106,15 @@ public class ContributeEngine {
   }
 
   private void startEngine(String engineCommand2) {
+    if (errorTimes > 1 && !addCacerts && !Lizzie.config.contributeUseCommand) {
+      addCacerts = true;
+      engineCommand +=
+          " -cacerts "
+              + new File(Lizzie.config.contributeEnginePath).getParent()
+              + File.separator
+              + "cacert.pem";
+      errorTimes = 0;
+    }
     commands = Utils.splitCommand(engineCommand);
     if (this.useJavaSSH) {
       this.javaSSH = new ContributeSSHController(this, this.ip, this.port);
@@ -129,7 +139,7 @@ public class ContributeEngine {
       }
     } else {
       ProcessBuilder processBuilder = new ProcessBuilder(commands);
-      processBuilder.redirectErrorStream(true);
+      processBuilder.redirectErrorStream(false);
       try {
         process = processBuilder.start();
       } catch (IOException e) {
@@ -147,6 +157,7 @@ public class ContributeEngine {
     executorErr.execute(this::readError);
     isNormalEnd = false;
     clearBoardAndView();
+    setTip(Lizzie.resourceBundle.getString("ContributeView.lblTip"));
   }
 
   private void readError() {
@@ -333,12 +344,10 @@ public class ContributeEngine {
           Lizzie.resourceBundle.getString(
               "Contribute.tips.useOfficialEngineSupportDistributedTraining"); // "请使用支持分布式训练的官方引擎";
     }
-
-    //	      When uploading
-    //	      status 200 for initial query
-    //	      Could not parse serverUrl
-    //	      Did you verify your email address
-    //	      Model file was incompletely downloaded
+    if (line.contains("not find CA certs")) {
+      setTip(Lizzie.resourceBundle.getString("Contribute.tips.noCAcerts"));
+      errorTips = Lizzie.resourceBundle.getString("Contribute.tips.noCAcerts");
+    }
   }
 
   private void clearBoardAndView() {
