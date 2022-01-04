@@ -1095,9 +1095,13 @@ public class BoardRenderer {
               stoneY - squareWidth * 5 / 10,
               squareWidth,
               squareWidth);
-        else
+        else if (Lizzie.config.showKataGoEstimateSmall) {
+          int length = (int) Math.round(squareWidth / 8.0);
+          g.fillRect(stoneX - length, stoneY - length, length * 2, length * 2);
+        } else {
           g.fillRect(
               stoneX - squareWidth / 4, stoneY - squareWidth / 4, squareWidth / 2, squareWidth / 2);
+        }
       }
       if ((estimateList.get(i) < 0 && blackToPlay) || (estimateList.get(i) > 0 && !blackToPlay)) {
         if (!showBigSize)
@@ -1118,9 +1122,13 @@ public class BoardRenderer {
               stoneY - squareWidth * 5 / 10,
               squareWidth,
               squareWidth);
-        else
+        else if (Lizzie.config.showKataGoEstimateSmall) {
+          int length = (int) Math.round(squareWidth / 8.0);
+          g.fillRect(stoneX - length, stoneY - length, length * 2, length * 2);
+        } else {
           g.fillRect(
               stoneX - squareWidth / 4, stoneY - squareWidth / 4, squareWidth / 2, squareWidth / 2);
+        }
       }
     }
     kataEstimateImage = newEstimateImage;
@@ -3688,6 +3696,15 @@ public class BoardRenderer {
 
   private void drawCapturedStone(
       Graphics2D g, int centerX, int centerY, Stone stone, boolean isMouseOver) {
+    if (isMouseOver) {
+      if (isFancyBoard) {
+        g.setPaint(paint);
+      } else {
+        g.setColor(noFancyColor);
+      }
+      g.fillOval(
+          centerX - stoneRadius, centerY - stoneRadius, 2 * stoneRadius + 1, 2 * stoneRadius + 1);
+    }
     if (stone == Stone.BLACK_CAPTURED) g.setColor(new Color(0, 0, 0, isMouseOver ? 120 : 70));
     else g.setColor(new Color(255, 255, 255, isMouseOver ? 150 : 95));
     g.fillOval(

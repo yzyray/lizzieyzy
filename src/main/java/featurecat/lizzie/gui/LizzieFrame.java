@@ -12382,6 +12382,11 @@ public class LizzieFrame extends JFrame {
     }
   }
 
+  private boolean savedIsHiddenKataEstimate;
+  private boolean savedShowKataGoEstimate;
+  private boolean savedShowKataGoEstimateOnMainbord;
+  private boolean savedShowKataGoEstimateOnSubbord;
+
   public void startContributeEngine() {
     if (Lizzie.frame.isContributing) {
       Utils.showMsg(Lizzie.resourceBundle.getString("Contribute.tips.alreadyTraining"));
@@ -12401,12 +12406,32 @@ public class LizzieFrame extends JFrame {
     if (contributeEngine != null) contributeEngine.normalQuit();
     contributeEngine = new ContributeEngine();
     Lizzie.frame.openContributeView();
+    if (Lizzie.config.contributeShowEstimate) {
+      savedIsHiddenKataEstimate = Lizzie.config.isHiddenKataEstimate;
+      savedShowKataGoEstimate = Lizzie.config.showKataGoEstimate;
+      savedShowKataGoEstimateOnMainbord = Lizzie.config.showKataGoEstimateOnMainbord;
+      savedShowKataGoEstimateOnSubbord = Lizzie.config.showKataGoEstimateOnSubbord;
+
+      Lizzie.config.isHiddenKataEstimate = false;
+      Lizzie.config.showKataGoEstimate = true;
+      if (!Lizzie.config.showKataGoEstimateOnMainbord
+          && !Lizzie.config.showKataGoEstimateOnSubbord) {
+        Lizzie.config.showKataGoEstimateOnMainbord = true;
+        Lizzie.config.showKataGoEstimateOnSubbord = true;
+      } else if (!Lizzie.config.showKataGoEstimateOnMainbord && !Lizzie.config.showSubBoard) {
+        Lizzie.config.showKataGoEstimateOnMainbord = true;
+      }
+    }
   }
 
   public void closeContributeEngine() {
     if (contributeEngine != null) {
       contributeEngine.normalQuit();
     }
+    Lizzie.config.isHiddenKataEstimate = savedIsHiddenKataEstimate;
+    Lizzie.config.showKataGoEstimate = savedShowKataGoEstimate;
+    Lizzie.config.showKataGoEstimateOnMainbord = savedShowKataGoEstimateOnMainbord;
+    Lizzie.config.showKataGoEstimateOnSubbord = savedShowKataGoEstimateOnSubbord;
   }
 
   public void openContributeView() {

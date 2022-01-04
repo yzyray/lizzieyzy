@@ -498,13 +498,15 @@ public class Config {
 
   public boolean showKataGoEstimateBySize = false;
   public boolean showKataGoEstimateBigBelow = false;
-  public boolean showKataGoEstimateNormal = true;
+  public boolean showKataGoEstimateNormal = false;
   public boolean showKataGoEstimateNotOnlive = false;
+  public boolean showKataGoEstimateSmall = true;
 
   public boolean showPureEstimateBySize = false;
   public boolean showPureEstimateBigBelow = true;
   public boolean showPureEstimateNormal = false;
   public boolean showPureEstimateNotOnlive = false;
+  public boolean showPureEstimateSmall = false;
 
   public boolean useJavaLooks = false;
   public boolean shouldWidenCheckBox = false;
@@ -939,15 +941,17 @@ public class Config {
                 + "estimate.cfg");
     estimateThreshold = uiConfig.optDouble("estimate-threshold", 0.4);
 
-    showKataGoEstimateNormal = uiConfig.optBoolean("show-katago-estimate-normal", true);
+    showKataGoEstimateNormal = uiConfig.optBoolean("show-katago-estimate-normal", false);
     showKataGoEstimateBySize = uiConfig.optBoolean("show-katago-estimate-by-size", false);
     showKataGoEstimateBigBelow = uiConfig.optBoolean("show-katago-estimate-big-below", false);
     showKataGoEstimateNotOnlive = uiConfig.optBoolean("show-katago-estimate-not-on-live", false);
+    showKataGoEstimateSmall = uiConfig.optBoolean("show-katago-estimate-small", true);
 
     showPureEstimateNormal = uiConfig.optBoolean("show-pure-estimate-normal", false);
     showPureEstimateBySize = uiConfig.optBoolean("show-pure-estimate-by-size", false);
     showPureEstimateBigBelow = uiConfig.optBoolean("show-pure-estimate-big-below", true);
     showPureEstimateNotOnlive = uiConfig.optBoolean("show-pure-estimate-not-on-live", false);
+    showPureEstimateSmall = uiConfig.optBoolean("show-pure-estimate-small", false);
 
     useJavaLooks = uiConfig.optBoolean("use-java-looks", !OS.isWindows());
     showNextMoveBlunder = uiConfig.optBoolean("show-next-move-blunder", true);
@@ -2509,11 +2513,13 @@ public class Config {
     uiConfig.put("show-katago-estimate-by-size", showKataGoEstimateBySize);
     uiConfig.put("show-katago-estimate-big-below", showKataGoEstimateBigBelow);
     uiConfig.put("show-katago-estimate-not-on-live", showKataGoEstimateNotOnlive);
+    uiConfig.put("show-katago-estimate-small", showKataGoEstimateSmall);
 
     uiConfig.put("show-pure-estimate-normal", showPureEstimateNormal);
     uiConfig.put("show-pure-estimate-by-size", showPureEstimateBySize);
     uiConfig.put("show-pure-estimate-big-below", showPureEstimateBigBelow);
     uiConfig.put("show-pure-estimate-not-on-live", showPureEstimateNotOnlive);
+    uiConfig.put("show-pure-estimate-small", showPureEstimateSmall);
   }
 
   public void setSuggestionInfoOrdr(int winrateOrder, int playoutsOrder, int scoreLeadOrder) {

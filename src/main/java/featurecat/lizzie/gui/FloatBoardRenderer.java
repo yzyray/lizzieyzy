@@ -517,9 +517,13 @@ public class FloatBoardRenderer {
               stoneY - squareWidth * 5 / 10,
               squareWidth,
               squareWidth);
-        else
+        else if (Lizzie.config.showKataGoEstimateSmall) {
+          int length = (int) Math.round(squareWidth / 8.0);
+          g.fillRect(stoneX - length, stoneY - length, length * 2, length * 2);
+        } else {
           g.fillRect(
               stoneX - squareWidth / 4, stoneY - squareWidth / 4, squareWidth / 2, squareWidth / 2);
+        }
       }
       if ((estimateList.get(i) < 0 && blackToPlay) || (estimateList.get(i) > 0 && !blackToPlay)) {
         if (!showBigSize)
@@ -540,9 +544,13 @@ public class FloatBoardRenderer {
               stoneY - squareWidth * 5 / 10,
               squareWidth,
               squareWidth);
-        else
+        else if (Lizzie.config.showKataGoEstimateSmall) {
+          int length = (int) Math.round(squareWidth / 8.0);
+          g.fillRect(stoneX - length, stoneY - length, length * 2, length * 2);
+        } else {
           g.fillRect(
               stoneX - squareWidth / 4, stoneY - squareWidth / 4, squareWidth / 2, squareWidth / 2);
+        }
       }
     }
     kataEstimateImage = newEstimateImage;
