@@ -335,7 +335,7 @@ public class ConfigDialog2 extends JDialog {
     aboutTab = new PanelWithToolTips();
     LinkLabel lblLizzieName =
         new LinkLabel(
-            "<html><div align=\"center\"><b>Lizzie Yzy 2.4.6.1</b></div>"
+            "<html><div align=\"center\"><b>Lizzie Yzy 2.4.7</b></div>"
                 + "<div align=\"center\"><font style=\"font-weight:plain;font-size:12;\">Java version: "
                 + Lizzie.javaVersionString
                 + "</font></div></html>");
@@ -2004,8 +2004,6 @@ public class ConfigDialog2 extends JDialog {
                                     + "theme"
                                     + File.separator
                                     + cmbThemes.getSelectedItem().toString()))) {
-                          Utils.showMsg(
-                              resourceBundle.getString("ConfigDialog2.deleteThemeSuccess"));
                           setVisible(false);
                           Lizzie.frame.openConfigDialog2(1);
                         } else
