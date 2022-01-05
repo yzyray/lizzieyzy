@@ -791,6 +791,7 @@ public class Utils {
       copy("/assets/readboard_java/" + javaReadBoardName, "readboard_java");
       copy("/assets/readboard_java/help.docx", "readboard_java");
       copy("/assets/readboard_java/help_en.docx", "readboard_java");
+      copy("/assets/readboard_java/help_jp.docx", "readboard_java");
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();

@@ -52,7 +52,7 @@ public class ReadBoard {
   private boolean isSyncing = false;
   // private long startTime;
   private boolean javaReadBoard = false;
-  private String javaReadBoardName = "readboard-1.5.6-shaded.jar";
+  private String javaReadBoardName = "readboard-1.5.7-shaded.jar";
   private boolean waitSocket = true;
   public boolean lastMovePlayByLizzie = false;
   private boolean hideFloadBoardBeforePlace = false;
