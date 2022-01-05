@@ -188,7 +188,7 @@ public class ContributeEngine {
       }
       // this line will be reached when engine shuts down
       if (this.useJavaSSH) javaSSHClosed = true;
-      System.out.println("estimate process ended.");
+      System.out.println("contribute process ended.");
       // Do no exit for switching weights
       // System.exit(-1);
     } catch (IOException e) {
