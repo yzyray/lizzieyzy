@@ -505,8 +505,8 @@ public class ContributeEngine {
     // 从jsonInfo中解析已有的一局,更新currentGame,如果isWatching,更新到界面上
     if (newGame) {
       currentGame.gameId = jsonInfo.getString("gameId");
-      currentGame.blackPlayer = jsonInfo.getString("blackPlayer");
-      currentGame.whitePlayer = jsonInfo.getString("whitePlayer");
+      currentGame.blackPlayer = getModelName(jsonInfo.getString("blackPlayer"));
+      currentGame.whitePlayer = getModelName(jsonInfo.getString("whitePlayer"));
       currentGame.sizeX = jsonInfo.getInt("boardXSize");
       currentGame.sizeY = jsonInfo.getInt("boardYSize");
       currentGame.rules = jsonInfo.getJSONObject("rules");
@@ -568,6 +568,18 @@ public class ContributeEngine {
       success = false;
     }
     return success;
+  }
+
+  private String getModelName(String string) {
+    // TODO Auto-generated method stub
+    String reulst = string;
+    try {
+      if (string.contains("-")) reulst = string.substring(string.indexOf("-") + 1);
+      if (reulst.contains("-d")) reulst = reulst.substring(0, reulst.indexOf("-d"));
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return reulst;
   }
 
   private boolean compareMoveList(
