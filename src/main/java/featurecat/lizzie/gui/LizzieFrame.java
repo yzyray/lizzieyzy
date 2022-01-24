@@ -303,8 +303,8 @@ public class LizzieFrame extends JFrame {
   private int blunderTableColum0Width;
   private int blunderTableColum2Width;
   public int blunderTableColum3Width;
-  javax.swing.Timer listTabletimer;
-  javax.swing.Timer blunderTableTimer;
+  javax.swing.Timer tableTimer;
+  // javax.swing.Timer blunderTableTimer;
   private TableModel listDataModel;
   private boolean scoreColumnIsHidden = false;
   private boolean scoreIsHiddenInBlunderTable = false;
@@ -843,29 +843,22 @@ public class LizzieFrame extends JFrame {
           }
         });
 
-    listTabletimer =
+    tableTimer =
         new javax.swing.Timer(
             100,
             new ActionListener() {
               public void actionPerformed(ActionEvent evt) {
-                if (!Lizzie.board.getHistory().getData().bestMoves.isEmpty()) {
-                  if (scoreColumnIsHidden && Lizzie.board.getHistory().getData().isKataData)
-                    resumColumn(5, listTable, listTableColum5Width);
-                  if (!scoreColumnIsHidden && !Lizzie.board.getHistory().getData().isKataData) {
-                    listTableColum5Width = listTable.getColumnModel().getColumn(5).getWidth();
-                    hiddenColumn(5, listTable);
+                if (listTable.isVisible()) {
+                  if (!Lizzie.board.getHistory().getData().bestMoves.isEmpty()) {
+                    if (scoreColumnIsHidden && Lizzie.board.getHistory().getData().isKataData)
+                      resumColumn(5, listTable, listTableColum5Width);
+                    if (!scoreColumnIsHidden && !Lizzie.board.getHistory().getData().isKataData) {
+                      listTableColum5Width = listTable.getColumnModel().getColumn(5).getWidth();
+                      hiddenColumn(5, listTable);
+                    }
                   }
+                  listTable.revalidate();
                 }
-                listTable.revalidate();
-              }
-            });
-    listTabletimer.start();
-
-    blunderTableTimer =
-        new javax.swing.Timer(
-            150,
-            new ActionListener() {
-              public void actionPerformed(ActionEvent evt) {
                 if (Lizzie.config.isShowingBlunderTabel) {
                   if (Lizzie.leelaz.isLoaded()) {
                     if (Lizzie.board.isKataBoard || Lizzie.leelaz.isKatago || Lizzie.leelaz.isSai) {
@@ -889,7 +882,7 @@ public class LizzieFrame extends JFrame {
                 }
               }
             });
-    blunderTableTimer.start();
+    tableTimer.start();
     setJMenuBar(menu);
     if (Lizzie.config.isDoubleEngineMode()) {
       boardRenderer2 = new BoardRenderer(false);
@@ -8718,7 +8711,8 @@ public class LizzieFrame extends JFrame {
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
-    String url = courseFile + File.separator + "readme.pdf";
+    String url =
+        courseFile + File.separator + Lizzie.resourceBundle.getString("Menu.introduction.fileName");
     bowser(url, Lizzie.resourceBundle.getString("LizzieFrame.introduction"), false);
   }
 

@@ -39,7 +39,7 @@ public class LoadEngine extends JPanel {
   Font headFont;
   Font winrateFont;
   static JDialog engjf;
-  Timer timer;
+  // Timer timer;
   int sortnum = 3;
   public static int selectedorder = -1;
   boolean issorted = false;

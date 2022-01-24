@@ -1335,16 +1335,13 @@ public class SGFParser {
     while (node.previous().isPresent()) {
       node = node.previous().get();
       NodeInfo nodeInfo = node.nodeInfoMain;
-      if (node.getData().moveNumber <= Lizzie.config.matchAiLastMove
-          && (node.getData().moveNumber + 1) > Lizzie.config.matchAiFirstMove) {
-        if (nodeInfo.analyzed) {
-          if (node.getData().blackToPlay && isBlack) {
-            matchValue = matchValue + nodeInfo.percentsMatch;
-            analyzed++;
-          } else if (!node.getData().blackToPlay && !isBlack) {
-            matchValue = matchValue + nodeInfo.percentsMatch;
-            analyzed++;
-          }
+      if (nodeInfo.analyzed) {
+        if (node.getData().blackToPlay && isBlack) {
+          matchValue = matchValue + nodeInfo.percentsMatch;
+          analyzed++;
+        } else if (!node.getData().blackToPlay && !isBlack) {
+          matchValue = matchValue + nodeInfo.percentsMatch;
+          analyzed++;
         }
       }
     }

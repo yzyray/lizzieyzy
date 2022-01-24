@@ -261,6 +261,7 @@ public class MoveListFrame extends JFrame {
         new WindowAdapter() {
           public void windowClosing(WindowEvent e) {
             Lizzie.frame.toggleBadMoves();
+            if (timer != null) timer.stop();
           }
         });
 
@@ -1268,7 +1269,6 @@ public class MoveListFrame extends JFrame {
             Lizzie.config.analyzeUpdateIntervalCentisec * 20,
             new ActionListener() {
               public void actionPerformed(ActionEvent evt) {
-                if (!isVisible()) return;
                 refreshCount = refreshCount + 1;
                 if (refreshCount > 9) {
                   refreshCount = 0;

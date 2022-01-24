@@ -1640,9 +1640,10 @@ public class Leelaz {
           }
           if (Lizzie.frame.bothSync) {
             if (!Lizzie.config.readBoardPonder) nameCmd();
+            else ponder();
           } else if (!Lizzie.config.playponder) {
             nameCmd();
-          }
+          } else ponder();
         }
       }
     }
@@ -2687,7 +2688,7 @@ public class Leelaz {
         outputStream.write((command + "\n").getBytes());
         outputStream.flush();
       } catch (Exception e) {
-        // e.printStackTrace();
+        //  e.printStackTrace();
       }
       if (Lizzie.engineManager.isEngineGame()) {
         Lizzie.gtpConsole.addCommandForEngineGame(
@@ -2769,6 +2770,8 @@ public class Leelaz {
       currentTotalPlayouts = 0;
       if (Lizzie.frame.isPlayingAgainstLeelaz) this.canGetSummaryInfo = true;
       //				bestMovesPrevious = new ArrayList<>();
+      if (Lizzie.frame.isAnaPlayingAgainstLeelaz && Lizzie.frame.playerIsBlack == blackToPlay)
+        return;
       if ((stopByLimit || isPondering) && !Lizzie.frame.isPlayingAgainstLeelaz)
         if (Lizzie.config.isAutoAna
             || ((Lizzie.config.analyzeBlack && color == Stone.WHITE)

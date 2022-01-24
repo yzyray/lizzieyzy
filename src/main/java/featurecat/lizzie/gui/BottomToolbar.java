@@ -3366,9 +3366,7 @@ public class BottomToolbar extends JPanel {
     if (threadAnalyzeDiffNode != null) threadAnalyzeDiffNode.interrupt();
     Lizzie.frame.isAutoAnalyzingDiffNode = false;
     chkAutoAnalyse.setSelected(true);
-    Lizzie.config.autoAnaStartMove = Utils.parseTextToInt(txtFirstAnaMove, 0);
-    if (Lizzie.config.autoAnaStartMove > 0)
-      Lizzie.config.autoAnaStartMove = Lizzie.config.autoAnaStartMove - 1;
+    Lizzie.config.autoAnaStartMove = Utils.parseTextToInt(txtFirstAnaMove, -1);
     Lizzie.config.autoAnaEndMove = Utils.parseTextToInt(txtLastAnaMove, -1);
     Lizzie.config.isAutoAna = true;
     Lizzie.leelaz.autoAnalysed = false;
@@ -3395,9 +3393,11 @@ public class BottomToolbar extends JPanel {
     }
     Lizzie.config.anaBlack = chkAnaBlack.isSelected();
     Lizzie.config.anaWhite = chkAnaWhite.isSelected();
-    if (Lizzie.config.autoAnaStartMove >= 0)
+    if (Lizzie.config.autoAnaStartMove >= 0) {
+      if (Lizzie.config.autoAnaStartMove > 0)
+        Lizzie.config.autoAnaStartMove = Lizzie.config.autoAnaStartMove - 1;
       Lizzie.board.goToMoveNumber(Lizzie.config.autoAnaStartMove);
-    else if (Lizzie.config.analyzeAllBranch
+    } else if (Lizzie.config.analyzeAllBranch
         && !Lizzie.board.getHistory().getCurrentHistoryNode().isMainTrunk()) {
       Lizzie.board.goToMoveNumber(0);
     }

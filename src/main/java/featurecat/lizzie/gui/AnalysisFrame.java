@@ -39,7 +39,6 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 import org.json.JSONArray;
 
-@SuppressWarnings("serial")
 public class AnalysisFrame extends JFrame {
   private final ResourceBundle resourceBundle = Lizzie.resourceBundle;;
   TableModel dataModel;
@@ -73,6 +72,7 @@ public class AnalysisFrame extends JFrame {
         new WindowAdapter() {
           public void windowClosing(WindowEvent e) {
             Lizzie.frame.toggleBestMoves();
+            if (timer != null) timer.stop();
           }
         });
 

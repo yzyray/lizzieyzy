@@ -72,8 +72,8 @@ public class SocketLoggin {
       th.start();
       while ((str = br.readLine()) != null) {
         recievedServer = true;
-        System.out.println(str);
-        Lizzie.gtpConsole.addLine(str);
+        // System.out.println(str);
+        // Lizzie.gtpConsole.addLine(str);
         if (str.startsWith("success")) {
           successInfo = str;
           success = true;

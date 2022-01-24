@@ -40,7 +40,6 @@ public class ChooseMoreEngine extends JPanel {
   Font winrateFont;
   static JDialog engch;
   static int engineMenuIndex;
-  Timer timer;
   int sortnum = 3;
   public static int selectedorder = -1;
   boolean issorted = false;

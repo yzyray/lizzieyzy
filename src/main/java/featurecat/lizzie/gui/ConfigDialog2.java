@@ -37,6 +37,8 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -84,7 +86,6 @@ import javax.swing.ListCellRenderer;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -116,6 +117,7 @@ public class ConfigDialog2 extends JDialog {
   private PanelWithToolTips aboutTab;
   private JButton okButton;
 
+  javax.swing.Timer timer;
   // UI Tab
   private JFormattedTextField txtMaxAnalyzeTime;
   private JFormattedTextField txtMaxGameThinkingTime;
@@ -189,7 +191,7 @@ public class ConfigDialog2 extends JDialog {
   // public JTextPane tpGtpConsoleStyle;
 
   // Theme Tab
-  private boolean isLoadedTheme = false;
+  // private boolean isLoadedTheme = false;
   private JComboBox<String> cmbThemes;
   private JSpinner spnWinrateStrokeWidth;
   private JSpinner spnMinimumBlunderBarWidth;
@@ -283,7 +285,7 @@ public class ConfigDialog2 extends JDialog {
     setTitle(resourceBundle.getString("LizzieConfig.title.config"));
     setModalityType(ModalityType.APPLICATION_MODAL);
     // setType(Type.POPUP);
-    setBounds(100, 100, 890, 834);
+    // setBounds(100, 100, 890, 834);
     Lizzie.setFrameSize(this, 890, 825);
     try {
       setIconImage(ImageIO.read(getClass().getResourceAsStream("/assets/logo.png")));
@@ -1927,11 +1929,846 @@ public class ConfigDialog2 extends JDialog {
     if (Lizzie.config.noRefreshOnSub) chkNoRefreshSub.setSelected(true);
     if (Lizzie.config.enableLizzieCache) chkLizzieCache.setSelected(true);
 
-    new ComsWorker(this).execute();
+    tabbedPane.addChangeListener(
+        new ChangeListener() {
+          public void stateChanged(ChangeEvent e) {
+            loadThemeTab();
+          }
+        });
+    loadThemeTab();
+    //  new ComsWorker(this).execute();
     setBoardSize();
     setShowMoveNumber();
     setShowWinrateSide();
     setLocationRelativeTo(Lizzie.frame);
+    addWindowListener(
+        new WindowAdapter() {
+          public void windowClosing(WindowEvent e) {
+            if (timer != null) timer.stop();
+          }
+        });
+  }
+
+  private void loadThemeTab() {
+    if (tabbedPane.getSelectedIndex() != 1) return;
+    // TODO Auto-generated method stub
+    File themeFolder = new File(Theme.pathPrefix);
+    File[] themes =
+        themeFolder.listFiles(
+            new FileFilter() {
+              public boolean accept(File f) {
+                return f.isDirectory() && !".".equals(f.getName());
+              }
+            });
+    List<String> themeList =
+        themes == null
+            ? new ArrayList<String>()
+            : Arrays.asList(themes).stream().map(t -> t.getName()).collect(Collectors.toList());
+    themeList.add(0, resourceBundle.getString("LizzieConfig.title.defaultTheme"));
+
+    JLabel lblThemes = new JLabel(resourceBundle.getString("LizzieConfig.title.theme"));
+    lblThemes.setBounds(10, 11, 163, 20);
+    themeTab.add(lblThemes);
+
+    JButton btnDeleteTheme = new JButton(resourceBundle.getString("ConfigDialog2.deleteTheme"));
+    btnDeleteTheme.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            SwingUtilities.invokeLater(
+                new Runnable() {
+                  public void run() {
+                    int ret =
+                        JOptionPane.showConfirmDialog(
+                            Lizzie.frame.configDialog2,
+                            resourceBundle.getString("ConfigDialog2.deleteThemeWarning")
+                                + "\'"
+                                + cmbThemes.getSelectedItem().toString()
+                                + "\'"
+                                + " ?",
+                            resourceBundle.getString("LizzieFrame.warning"),
+                            JOptionPane.OK_CANCEL_OPTION);
+                    if (ret == JOptionPane.YES_NO_OPTION) {
+                      String currentRealPath = "";
+                      File file = new File("");
+                      try {
+                        currentRealPath = file.getCanonicalPath();
+                      } catch (IOException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                      }
+                      if (Utils.deleteDir(
+                          new File(
+                              currentRealPath
+                                  + File.separator
+                                  + "theme"
+                                  + File.separator
+                                  + cmbThemes.getSelectedItem().toString()))) {
+                        setVisible(false);
+                        Lizzie.frame.openConfigDialog2(1);
+                      } else
+                        Utils.showMsg(resourceBundle.getString("ConfigDialog2.deleteThemeFailed"));
+                    }
+                  }
+                });
+          }
+        });
+    btnDeleteTheme.setMargin(new Insets(0, 0, 0, 0));
+    btnDeleteTheme.setBounds(435, 11, 50, 20);
+    themeTab.add(btnDeleteTheme);
+
+    cmbThemes = new JComboBox<String>(themeList.toArray(new String[0]));
+    cmbThemes.addItemListener(
+        new ItemListener() {
+          public void itemStateChanged(ItemEvent e) {
+            readThemeValues();
+            if (cmbThemes.getSelectedIndex() == 0) btnDeleteTheme.setEnabled(false);
+            else btnDeleteTheme.setEnabled(true);
+          }
+        });
+    cmbThemes.setBounds(175, 11, 199, 20);
+    themeTab.add(cmbThemes);
+
+    JButton btnAddTheme = new JButton(resourceBundle.getString("ConfigDialog2.addTheme"));
+    btnAddTheme.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            SwingUtilities.invokeLater(
+                new Runnable() {
+                  public void run() {
+                    String themeName =
+                        JOptionPane.showInputDialog(
+                            Lizzie.frame.configDialog2,
+                            null,
+                            resourceBundle.getString("ConfigDialog2.inputThemeNameTitle"),
+                            JOptionPane.INFORMATION_MESSAGE);
+                    if (themeName != null) {
+                      for (String name : themeList) {
+                        if (themeName.toLowerCase().equals(name.toLowerCase())) {
+                          Utils.showMsg(
+                              resourceBundle.getString("ConfigDialog2.duplicateThemeName"));
+                          return;
+                        }
+                      }
+                      Utils.addNewThemeAs(themeName);
+                      setVisible(false);
+                      Lizzie.frame.openConfigDialog2(1);
+                    }
+                  }
+                });
+          }
+        });
+    btnAddTheme.setMargin(new Insets(0, 0, 0, 0));
+    btnAddTheme.setBounds(385, 11, 50, 20);
+    themeTab.add(btnAddTheme);
+
+    JLabel lblWinrateStrokeWidth =
+        new JLabel(resourceBundle.getString("LizzieConfig.title.winrateStrokeWidth"));
+    lblWinrateStrokeWidth.setBounds(10, 44, 163, 16);
+    themeTab.add(lblWinrateStrokeWidth);
+    spnWinrateStrokeWidth = new JSpinner();
+    spnWinrateStrokeWidth.setModel(new SpinnerNumberModel(1.7, 0.1, 10, 0.1));
+    spnWinrateStrokeWidth.setBounds(175, 42, 69, 20);
+    themeTab.add(spnWinrateStrokeWidth);
+
+    JLabel lblMinimumBlunderBarWidth =
+        new JLabel(resourceBundle.getString("LizzieConfig.title.minimumBlunderBarWidth"));
+    lblMinimumBlunderBarWidth.setBounds(10, 74, 163, 16);
+    themeTab.add(lblMinimumBlunderBarWidth);
+    spnMinimumBlunderBarWidth = new JSpinner();
+    spnMinimumBlunderBarWidth.setModel(new SpinnerNumberModel(1, 1, 10, 1));
+    spnMinimumBlunderBarWidth.setBounds(175, 72, 69, 20);
+    themeTab.add(spnMinimumBlunderBarWidth);
+    spnShadowSize = new JSpinner();
+    spnShadowSize.setModel(new SpinnerNumberModel(50, 1, 150, 1));
+    spnShadowSize.setBounds(175, 102, 69, 20);
+    themeTab.add(spnShadowSize);
+
+    fontList =
+        Arrays.asList(
+                GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames())
+            .stream()
+            .collect(Collectors.toList());
+    // fontList.add(0, " ");
+    fontList.add(0, resourceBundle.getString("FontList.systemDefault"));
+    fontList.add(0, resourceBundle.getString("FontList.lizzieDefault"));
+    String fonts[] = fontList.toArray(new String[0]);
+
+    JLabel lblFontName = new JLabel(resourceBundle.getString("LizzieConfig.title.fontName"));
+    lblFontName.setBounds(10, 134, 163, 16);
+    themeTab.add(lblFontName);
+    cmbFontName = new JComboBox<String>(fonts);
+    cmbFontName.setMaximumRowCount(16);
+    cmbFontName.setBounds(175, 133, 200, 20);
+    cmbFontName.setRenderer(new FontComboBoxRenderer<Object>());
+    cmbFontName.addItemListener(
+        new ItemListener() {
+          public void itemStateChanged(ItemEvent e) {
+            String fontName = (String) e.getItem();
+            if (fontName.equals("Lizzie默认") || fontName.equals("Lizzie Default"))
+              cmbFontName.setFont(LizzieFrame.uiFont);
+            else
+              cmbFontName.setFont(
+                  new Font(fontName, Font.PLAIN, cmbUiFontName.getFont().getSize()));
+          }
+        });
+    themeTab.add(cmbFontName);
+
+    JLabel lblUiFontName = new JLabel(resourceBundle.getString("LizzieConfig.title.uiFontName"));
+    lblUiFontName.setBounds(10, 164, 163, 16);
+    themeTab.add(lblUiFontName);
+    cmbUiFontName = new JComboBox<String>(fonts);
+    cmbUiFontName.setMaximumRowCount(16);
+    cmbUiFontName.setBounds(175, 163, 200, 20);
+    cmbUiFontName.setRenderer(new UiFontComboBoxRenderer<Object>());
+    cmbUiFontName.addItemListener(
+        new ItemListener() {
+          public void itemStateChanged(ItemEvent e) {
+            cmbUiFontName.setFont(
+                new Font((String) e.getItem(), Font.PLAIN, cmbFontName.getFont().getSize()));
+          }
+        });
+    themeTab.add(cmbUiFontName);
+
+    JLabel lblWinrateFontName =
+        new JLabel(resourceBundle.getString("LizzieConfig.title.winrateFontName"));
+    lblWinrateFontName.setBounds(10, 194, 163, 16);
+    themeTab.add(lblWinrateFontName);
+    cmbWinrateFontName = new JComboBox<String>(fonts);
+    cmbWinrateFontName.setMaximumRowCount(16);
+    cmbWinrateFontName.setBounds(175, 193, 200, 20);
+    cmbWinrateFontName.setRenderer(new UiFontComboBoxRenderer<Object>());
+    cmbWinrateFontName.addItemListener(
+        new ItemListener() {
+          public void itemStateChanged(ItemEvent e) {
+            String fontName = (String) e.getItem();
+            if (fontName.equals("Lizzie默认") || fontName.equals("Lizzie Default"))
+              cmbWinrateFontName.setFont(LizzieFrame.uiFont);
+            else
+              cmbWinrateFontName.setFont(
+                  new Font(fontName, Font.PLAIN, cmbUiFontName.getFont().getSize()));
+          }
+        });
+    themeTab.add(cmbWinrateFontName);
+
+    JLabel lblBackgroundPath =
+        new JLabel(resourceBundle.getString("LizzieConfig.title.backgroundPath"));
+    lblBackgroundPath.setHorizontalAlignment(SwingConstants.LEFT);
+    lblBackgroundPath.setBounds(175, 226, 163, 16);
+    themeTab.add(lblBackgroundPath);
+    txtBackgroundPath = new JTextField();
+    txtBackgroundPath.setText((String) null);
+    txtBackgroundPath.setColumns(10);
+    txtBackgroundPath.setBounds(336, 225, 421, 20);
+    themeTab.add(txtBackgroundPath);
+
+    JLabel lblBoardPath = new JLabel(resourceBundle.getString("LizzieConfig.title.boardPath"));
+    lblBoardPath.setHorizontalAlignment(SwingConstants.LEFT);
+    lblBoardPath.setBounds(175, 256, 163, 16);
+    themeTab.add(lblBoardPath);
+    txtBoardPath = new JTextField();
+    txtBoardPath.setText((String) null);
+    txtBoardPath.setColumns(10);
+    txtBoardPath.setBounds(336, 255, 421, 20);
+    themeTab.add(txtBoardPath);
+
+    JLabel lblBlackStonePath =
+        new JLabel(resourceBundle.getString("LizzieConfig.title.blackStonePath"));
+    lblBlackStonePath.setHorizontalAlignment(SwingConstants.LEFT);
+    lblBlackStonePath.setBounds(175, 286, 163, 16);
+    themeTab.add(lblBlackStonePath);
+    txtBlackStonePath = new JTextField();
+    txtBlackStonePath.setText((String) null);
+    txtBlackStonePath.setColumns(10);
+    txtBlackStonePath.setBounds(336, 285, 421, 20);
+    themeTab.add(txtBlackStonePath);
+
+    JLabel lblWhiteStonePath =
+        new JLabel(resourceBundle.getString("LizzieConfig.title.whiteStonePath"));
+    lblWhiteStonePath.setHorizontalAlignment(SwingConstants.LEFT);
+    lblWhiteStonePath.setBounds(175, 316, 163, 16);
+    themeTab.add(lblWhiteStonePath);
+    txtWhiteStonePath = new JTextField();
+    txtWhiteStonePath.setText((String) null);
+    txtWhiteStonePath.setColumns(10);
+    txtWhiteStonePath.setBounds(336, 315, 421, 20);
+    themeTab.add(txtWhiteStonePath);
+
+    JLabel lblWinrateLineColorTitle =
+        new JLabel(resourceBundle.getString("LizzieConfig.title.winrateLineColor"));
+    lblWinrateLineColorTitle.setHorizontalAlignment(SwingConstants.LEFT);
+    lblWinrateLineColorTitle.setBounds(10, 345, 163, 16);
+    themeTab.add(lblWinrateLineColorTitle);
+    lblWinrateLineColor = new ColorLabel(this, true);
+    lblWinrateLineColor.setBounds(175, 350, 167, 9);
+    themeTab.add(lblWinrateLineColor);
+
+    JLabel lblWinrateMissLineColorTitle =
+        new JLabel(resourceBundle.getString("LizzieConfig.title.winrateMissLineColor"));
+    lblWinrateMissLineColorTitle.setHorizontalAlignment(SwingConstants.LEFT);
+    lblWinrateMissLineColorTitle.setBounds(10, 370, 163, 16);
+    themeTab.add(lblWinrateMissLineColorTitle);
+    lblWinrateMissLineColor = new ColorLabel(this, true);
+    lblWinrateMissLineColor.setBounds(175, 375, 167, 9);
+    themeTab.add(lblWinrateMissLineColor);
+
+    JLabel lblBlunderBarColorTitle =
+        new JLabel(resourceBundle.getString("LizzieConfig.title.blunderBarColor"));
+    lblBlunderBarColorTitle.setHorizontalAlignment(SwingConstants.LEFT);
+    lblBlunderBarColorTitle.setBounds(10, 395, 163, 16);
+    themeTab.add(lblBlunderBarColorTitle);
+    lblBlunderBarColor = new ColorLabel(this, true);
+    lblBlunderBarColor.setBounds(175, 400, 167, 9);
+    themeTab.add(lblBlunderBarColor);
+
+    JLabel lblScoreMeanLineColorTitle =
+        new JLabel(resourceBundle.getString("LizzieConfig.title.scoreMeanLineColor"));
+    lblScoreMeanLineColorTitle.setHorizontalAlignment(SwingConstants.LEFT);
+    lblScoreMeanLineColorTitle.setBounds(10, 420, 163, 16);
+    themeTab.add(lblScoreMeanLineColorTitle);
+    lblScoreMeanLineColor = new ColorLabel(this, true);
+    lblScoreMeanLineColor.setBounds(175, 425, 167, 9);
+    themeTab.add(lblScoreMeanLineColor);
+
+    JLabel lblCommentBackgroundColorTitle =
+        new JLabel(resourceBundle.getString("LizzieConfig.title.commentBackgroundColor"));
+    lblCommentBackgroundColorTitle.setHorizontalAlignment(SwingConstants.LEFT);
+    lblCommentBackgroundColorTitle.setBounds(370, 345, 148, 16);
+    themeTab.add(lblCommentBackgroundColorTitle);
+    lblCommentBackgroundColor = new ColorLabel(this, true);
+    lblCommentBackgroundColor.setBounds(529, 342, 22, 22);
+    themeTab.add(lblCommentBackgroundColor);
+
+    JLabel lblCommentFontColorTitle =
+        new JLabel(resourceBundle.getString("LizzieConfig.title.commentFontColor"));
+    lblCommentFontColorTitle.setHorizontalAlignment(SwingConstants.LEFT);
+    lblCommentFontColorTitle.setBounds(370, 375, 148, 16);
+    themeTab.add(lblCommentFontColorTitle);
+    lblCommentFontColor = new ColorLabel(this, true);
+    lblCommentFontColor.setBounds(529, 372, 22, 22);
+    themeTab.add(lblCommentFontColor);
+
+    // JLabel lblVarPanelTitile = new JLabel("分支面板背景");
+    // lblVarPanelTitile.setHorizontalAlignment(SwingConstants.LEFT);
+    // lblVarPanelTitile.setBounds(370, 465, 148, 16);
+    //  themeTab.add(lblVarPanelTitile);
+    //  lblVarPanelColor = new ColorLabel(owner);
+    //   lblVarPanelColor.setBounds(529, 462, 22, 22);
+    // themeTab.add(lblVarPanelColor);
+
+    JLabel labelBestMoveColor =
+        new JLabel(resourceBundle.getString("ConfigDialog2.lblBestMoveColor")); // ("第一选点颜色");
+    labelBestMoveColor.setHorizontalAlignment(SwingConstants.LEFT);
+    labelBestMoveColor.setBounds(370, 435, 148, 16);
+    themeTab.add(labelBestMoveColor);
+    lblBestMoveColor = new ColorLabel(this, true);
+    lblBestMoveColor.setBounds(529, 432, 22, 22);
+    themeTab.add(lblBestMoveColor);
+
+    NumberFormat nf = NumberFormat.getIntegerInstance();
+    JLabel lblBackgroundFilter =
+        new JLabel(resourceBundle.getString("ConfigDialog2.lblBackgroundFilter")); // ("面板背景模糊程度");
+    lblBackgroundFilter.setHorizontalAlignment(SwingConstants.LEFT);
+    lblBackgroundFilter.setBounds(370, 465, 148, 16);
+    themeTab.add(lblBackgroundFilter);
+    txtBackgroundFilter =
+        new JFormattedTextField(
+            new InternationalFormatter(nf) {
+              protected DocumentFilter getDocumentFilter() {
+                return filter;
+              }
+
+              private DocumentFilter filter = new DigitOnlyFilter();
+            });
+    txtBackgroundFilter.setBounds(529, 463, 52, 24);
+    themeTab.add(txtBackgroundFilter);
+    //      JButton applyBackgroundFilter = new JButton("应用");
+    //      applyBackgroundFilter.addActionListener(
+    //          new ActionListener() {
+    //            public void actionPerformed(ActionEvent e) {
+    //              Lizzie.frame.testFilter(txtFieldIntValue(txtBackgroundFilter));
+    //            }
+    //          });
+    //      applyBackgroundFilter.setBounds(588, 463, 60, 24);
+    //      themeTab.add(applyBackgroundFilter);
+
+    JLabel lblCommentFontSize =
+        new JLabel(resourceBundle.getString("LizzieConfig.title.commentFontSize"));
+    lblCommentFontSize.setHorizontalAlignment(SwingConstants.LEFT);
+    lblCommentFontSize.setBounds(370, 405, 148, 16);
+    themeTab.add(lblCommentFontSize);
+    txtCommentFontSize =
+        new JFormattedTextField(
+            new InternationalFormatter(nf) {
+              protected DocumentFilter getDocumentFilter() {
+                return filter;
+              }
+
+              private DocumentFilter filter = new DigitOnlyFilter();
+            });
+    txtCommentFontSize.setBounds(529, 403, 52, 24);
+    themeTab.add(txtCommentFontSize);
+
+    JLabel lblStoneIndicatorType =
+        new JLabel(resourceBundle.getString("LizzieConfig.title.stoneIndicatorType"));
+    lblStoneIndicatorType.setBounds(10, 442, 163, 16);
+    themeTab.add(lblStoneIndicatorType);
+
+    rdoStoneIndicatorCircle =
+        new JRadioButton(resourceBundle.getString("ConfigDialog2.circle")); // ("圆圈");
+    rdoStoneIndicatorCircle.setBounds(170, 439, 52, 23);
+    themeTab.add(rdoStoneIndicatorCircle);
+
+    rdoStoneIndicatorDelta =
+        new JRadioButton(resourceBundle.getString("ConfigDialog2.triangle")); // ("三角");
+    rdoStoneIndicatorDelta.setBounds(220, 439, 52, 23);
+    themeTab.add(rdoStoneIndicatorDelta);
+
+    rdoStoneIndicatorSolid =
+        new JRadioButton(resourceBundle.getString("ConfigDialog2.solid")); // ("实心");
+    rdoStoneIndicatorSolid.setBounds(270, 439, 52, 23);
+    themeTab.add(rdoStoneIndicatorSolid);
+    rdoStoneIndicatorNo =
+        new JRadioButton(resourceBundle.getString("ConfigDialog2.empty")); // ("无");
+    rdoStoneIndicatorNo.setBounds(320, 439, 46, 23);
+    themeTab.add(rdoStoneIndicatorNo);
+
+    ButtonGroup stoneIndicatorTypeGroup = new ButtonGroup();
+    stoneIndicatorTypeGroup.add(rdoStoneIndicatorDelta);
+    stoneIndicatorTypeGroup.add(rdoStoneIndicatorCircle);
+    stoneIndicatorTypeGroup.add(rdoStoneIndicatorSolid);
+    stoneIndicatorTypeGroup.add(rdoStoneIndicatorNo);
+
+    JLabel lblShowCommentNodeColor =
+        new JLabel(resourceBundle.getString("LizzieConfig.title.showCommentNodeColor"));
+    lblShowCommentNodeColor.setBounds(10, 465, 163, 16);
+    themeTab.add(lblShowCommentNodeColor);
+    chkShowCommentNodeColor = new JCheckBox("");
+    chkShowCommentNodeColor.setBounds(170, 462, 33, 23);
+    themeTab.add(chkShowCommentNodeColor);
+
+    JLabel lblCommentNodeColorTitle =
+        new JLabel(resourceBundle.getString("LizzieConfig.title.commentNodeColor"));
+    lblCommentNodeColorTitle.setHorizontalAlignment(SwingConstants.LEFT);
+    lblCommentNodeColorTitle.setBounds(210, 465, 138, 16);
+    themeTab.add(lblCommentNodeColorTitle);
+    lblCommentNodeColor = new ColorLabel(this, true);
+    lblCommentNodeColor.setBounds(Lizzie.config.isChinese ? 311 : 341, 462, 22, 22);
+    themeTab.add(lblCommentNodeColor);
+
+    JLabel lblBlunderNodes =
+        new JLabel(resourceBundle.getString("LizzieConfig.title.blunderNodes"));
+    lblBlunderNodes.setHorizontalAlignment(SwingConstants.LEFT);
+    lblBlunderNodes.setBounds(10, 497, 163, 16);
+    themeTab.add(lblBlunderNodes);
+    tblBlunderNodes = new JTable();
+    columsBlunderNodes =
+        new String[] {
+          resourceBundle.getString("LizzieConfig.title.blunderThresholds"),
+          resourceBundle.getString("LizzieConfig.title.blunderColor")
+        };
+    JScrollPane pnlScrollBlunderNodes = new JScrollPane();
+    pnlScrollBlunderNodes.setViewportView(tblBlunderNodes);
+    pnlScrollBlunderNodes.setBounds(175, 497, 299, 108);
+    themeTab.add(pnlScrollBlunderNodes);
+
+    JButton btnAdd = new JButton(resourceBundle.getString("LizzieConfig.button.add"));
+    btnAdd.setBounds(80, 517, 89, 23);
+    btnAdd.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            ((BlunderNodeTableModel) tblBlunderNodes.getModel()).addRow(null, Color.WHITE);
+          }
+        });
+    themeTab.add(btnAdd);
+
+    JButton btnRemove = new JButton(resourceBundle.getString("LizzieConfig.button.remove"));
+    btnRemove.setBounds(80, 547, 89, 23);
+    btnRemove.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            ((BlunderNodeTableModel) tblBlunderNodes.getModel())
+                .removeRow(tblBlunderNodes.getSelectedRow());
+          }
+        });
+    themeTab.add(btnRemove);
+
+    JButton btnReset = new JButton(resourceBundle.getString("LizzieConfig.button.reset"));
+    btnReset.setBounds(80, 577, 89, 23);
+    btnReset.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            saveConfig();
+            LizzieFrame.menu.refreshDoubleMoveInfoStatus();
+            LizzieFrame.menu.refreshLimitStatus(false);
+            Lizzie.frame.resetCommentComponent();
+            applyChange();
+            Lizzie.config.resetBlunderColor();
+            setVisible(false);
+            Lizzie.frame.openConfigDialog2(1);
+          }
+        });
+    themeTab.add(btnReset);
+
+    chkUseScoreDiff = new JCheckBox(resourceBundle.getString("LizzieConfig.chkUseScoreDiff"));
+    chkUseScoreDiff.setBounds(172, 612, 235, 23);
+    themeTab.add(chkUseScoreDiff);
+
+    txtPercentScoreDiff = new JTextField();
+    txtPercentScoreDiff.setDocument(new DoubleDocument());
+    txtPercentScoreDiff.setBounds(407, 612, 30, 24);
+    themeTab.add(txtPercentScoreDiff);
+
+    chkUseScoreDiff.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            txtPercentScoreDiff.setEnabled(chkUseScoreDiff.isSelected());
+          }
+        });
+
+    JLabel lblPercentScoreDiff =
+        new JLabel(resourceBundle.getString("LizzieConfig.lblUseScoreDiffPercent"));
+    lblPercentScoreDiff.setBounds(440, 612, 250, 24);
+    themeTab.add(lblPercentScoreDiff);
+
+    btnBackgroundPath = new JButton("...");
+    btnBackgroundPath.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            String ip = getImagePath();
+            if (!ip.isEmpty()) {
+              txtBackgroundPath.setText(ip);
+              pnlBoardPreview.repaint();
+            }
+          }
+        });
+    btnBackgroundPath.setBounds(759, 223, 40, 26);
+    themeTab.add(btnBackgroundPath);
+
+    btnBoardPath = new JButton("...");
+    btnBoardPath.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            String ip = getImagePath();
+            if (!ip.isEmpty()) {
+              txtBoardPath.setText(ip);
+              pnlBoardPreview.repaint();
+            }
+          }
+        });
+    btnBoardPath.setBounds(759, 253, 40, 26);
+    themeTab.add(btnBoardPath);
+
+    btnBlackStonePath = new JButton("...");
+    btnBlackStonePath.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            String ip = getImagePath();
+            if (!ip.isEmpty()) {
+              txtBlackStonePath.setText(ip);
+              pnlBoardPreview.repaint();
+            }
+          }
+        });
+    btnBlackStonePath.setBounds(759, 283, 40, 26);
+    themeTab.add(btnBlackStonePath);
+
+    btnWhiteStonePath = new JButton("...");
+    btnWhiteStonePath.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            String ip = getImagePath();
+            if (!ip.isEmpty()) {
+              txtWhiteStonePath.setText(ip);
+              pnlBoardPreview.repaint();
+            }
+          }
+        });
+    btnWhiteStonePath.setBounds(759, 313, 40, 26);
+    themeTab.add(btnWhiteStonePath);
+
+    cmbThemes.setSelectedItem(
+        Lizzie.config.uiConfig.optString(
+            "theme", resourceBundle.getString("LizzieConfig.title.defaultTheme")));
+    if (cmbThemes.getSelectedIndex() == 0) btnDeleteTheme.setEnabled(false);
+    else btnDeleteTheme.setEnabled(true);
+
+    chkShowStoneShaow = new JCheckBox(resourceBundle.getString("LizzieConfig.title.shadowSize"));
+    chkShowStoneShaow.setBounds(6, 101, 131, 23);
+    themeTab.add(chkShowStoneShaow);
+    chkShowStoneShaow.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            spnShadowSize.setEnabled(chkShowStoneShaow.isSelected());
+          }
+        });
+
+    lblPureBackgroundColor = new ColorLabel(this, false);
+    lblPureBackgroundColor.setBounds(Lizzie.config.isChinese ? 86 : 126, 223, 22, 22);
+    lblPureBackgroundColor.setColor(Color.BLACK);
+    themeTab.add(lblPureBackgroundColor);
+    chkPureBackground =
+        new JCheckBox(resourceBundle.getString("LizzieConfig.title.chkPureBackground"));
+    chkPureBackground.setBounds(6, 223, Lizzie.config.isChinese ? 80 : 120, 23);
+    themeTab.add(chkPureBackground);
+    chkPureBackground.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            if (cmbThemes.getSelectedIndex() > 0) {
+              btnBackgroundPath.setEnabled(!chkPureBackground.isSelected());
+              txtBackgroundPath.setEnabled(!chkPureBackground.isSelected());
+            }
+            txtBackgroundFilter.setEnabled(!chkPureBackground.isSelected());
+          }
+        });
+
+    lblPureBoardColor = new ColorLabel(this, false);
+    lblPureBoardColor.setBounds(Lizzie.config.isChinese ? 86 : 126, 253, 22, 22);
+    lblPureBoardColor.setColor(Color.BLACK);
+    themeTab.add(lblPureBoardColor);
+
+    chkPureBoard = new JCheckBox(resourceBundle.getString("LizzieConfig.title.chkPureBoard"));
+    chkPureBoard.setBounds(6, 253, Lizzie.config.isChinese ? 80 : 120, 23);
+    themeTab.add(chkPureBoard);
+    chkPureBoard.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            if (cmbThemes.getSelectedIndex() > 0) {
+              btnBoardPath.setEnabled(!chkPureBoard.isSelected());
+              txtBoardPath.setEnabled(!chkPureBoard.isSelected());
+            }
+          }
+        });
+
+    chkPureStone = new JCheckBox(resourceBundle.getString("LizzieConfig.title.chkPureStone"));
+    chkPureStone.setBounds(6, 283, 103, 23);
+    themeTab.add(chkPureStone);
+    chkPureStone.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            if (cmbThemes.getSelectedIndex() > 0) {
+              btnBlackStonePath.setEnabled(!chkPureStone.isSelected());
+              btnWhiteStonePath.setEnabled(!chkPureStone.isSelected());
+              txtBlackStonePath.setEnabled(!chkPureStone.isSelected());
+              txtWhiteStonePath.setEnabled(!chkPureStone.isSelected());
+            }
+          }
+        });
+
+    readThemeValues();
+
+    pnlBoardPreview =
+        new JPanel() {
+          @Override
+          protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            if (tabbedPane.getSelectedIndex() != 1) return;
+            if (g instanceof Graphics2D) {
+              int width = getWidth();
+              int height = getHeight();
+              Graphics2D bsGraphics = (Graphics2D) g;
+              Paint originalPaint = bsGraphics.getPaint();
+              bsGraphics.setRenderingHint(
+                  RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+              bsGraphics.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
+
+              BufferedImage backgroundImage = null;
+              try {
+                if (cmbThemes.getSelectedIndex() <= 0) {
+                  backgroundImage =
+                      ImageIO.read(getClass().getResourceAsStream(txtBackgroundPath.getText()));
+                } else {
+                  backgroundImage =
+                      ImageIO.read(
+                          new File(theme == null ? "" : theme.path + txtBackgroundPath.getText()));
+                }
+                TexturePaint paint =
+                    new TexturePaint(
+                        backgroundImage,
+                        new Rectangle(
+                            0, 0, backgroundImage.getWidth(), backgroundImage.getHeight()));
+                if (chkPureBackground.isSelected()) g.setColor(lblPureBackgroundColor.getColor());
+                else bsGraphics.setPaint(paint);
+                int drawWidth = max(backgroundImage.getWidth(), width);
+                int drawHeight = max(backgroundImage.getHeight(), height);
+                bsGraphics.fill(new Rectangle(0, 0, drawWidth, drawHeight));
+                bsGraphics.setPaint(originalPaint);
+              } catch (IOException e0) {
+              }
+              BufferedImage boardImage = null;
+              try {
+                if (cmbThemes.getSelectedIndex() <= 0) {
+                  boardImage = ImageIO.read(getClass().getResourceAsStream(txtBoardPath.getText()));
+                } else {
+                  boardImage =
+                      ImageIO.read(
+                          new File(theme == null ? "" : theme.path + txtBoardPath.getText()));
+                }
+                TexturePaint paint =
+                    new TexturePaint(
+                        boardImage,
+                        new Rectangle(0, 0, boardImage.getWidth(), boardImage.getHeight()));
+                if (chkPureBoard.isSelected()) g.setColor(lblPureBoardColor.getColor());
+                else bsGraphics.setPaint(paint);
+                int drawWidth = max(boardImage.getWidth(), width);
+                int drawHeight = max(boardImage.getHeight(), height);
+                bsGraphics.fill(new Rectangle(30, 30, drawWidth, drawHeight));
+                bsGraphics.setPaint(originalPaint);
+              } catch (IOException e0) {
+              }
+              // Draw the lines
+              int x = 60;
+              int y = 60;
+              int squareLength = 30;
+              int stoneRadius = squareLength < 4 ? 1 : squareLength / 2 - 1;
+              int size = stoneRadius * 2 + 1;
+              double r = stoneRadius * (int) spnShadowSize.getValue() / 100;
+              int shadowSize = (int) (r * 0.2) == 0 ? 1 : (int) (r * 0.2);
+              int fartherShadowSize = (int) (r * 0.17) == 0 ? 1 : (int) (r * 0.17);
+              int stoneX = x + squareLength * 2;
+              int stoneY = y + squareLength * 3;
+
+              g.setColor(Color.BLACK);
+              for (int i = 0; i < Board.boardWidth; i++) {
+                g.drawLine(x, y + squareLength * i, height, y + squareLength * i);
+              }
+              for (int i = 0; i < Board.boardHeight; i++) {
+                g.drawLine(x + squareLength * i, y, x + squareLength * i, width);
+              }
+
+              BufferedImage blackStoneImage = null;
+              try {
+                if (cmbThemes.getSelectedIndex() <= 0) {
+                  blackStoneImage =
+                      ImageIO.read(getClass().getResourceAsStream(txtBlackStonePath.getText()));
+                } else {
+                  blackStoneImage =
+                      ImageIO.read(
+                          new File(theme == null ? "" : theme.path + txtBlackStonePath.getText()));
+                }
+                BufferedImage stoneImage = new BufferedImage(size, size, TYPE_INT_ARGB);
+                if (chkShowStoneShaow.isSelected()) {
+                  RadialGradientPaint TOP_GRADIENT_PAINT =
+                      new RadialGradientPaint(
+                          new Point2D.Float(stoneX, stoneY),
+                          stoneRadius + shadowSize,
+                          new float[] {0.3f, 1.0f},
+                          new Color[] {new Color(50, 50, 50, 150), new Color(0, 0, 0, 0)});
+                  RadialGradientPaint LOWER_RIGHT_GRADIENT_PAINT =
+                      new RadialGradientPaint(
+                          new Point2D.Float(stoneX + shadowSize, stoneY + shadowSize),
+                          stoneRadius + fartherShadowSize,
+                          new float[] {0.6f, 1.0f},
+                          new Color[] {new Color(0, 0, 0, 140), new Color(0, 0, 0, 0)});
+                  originalPaint = bsGraphics.getPaint();
+
+                  bsGraphics.setPaint(TOP_GRADIENT_PAINT);
+                  bsGraphics.fillOval(
+                      stoneX - stoneRadius - shadowSize,
+                      stoneY - stoneRadius - shadowSize,
+                      2 * (stoneRadius + shadowSize) + 1,
+                      2 * (stoneRadius + shadowSize) + 1);
+                  bsGraphics.setPaint(LOWER_RIGHT_GRADIENT_PAINT);
+                  bsGraphics.fillOval(
+                      stoneX + shadowSize - stoneRadius - fartherShadowSize,
+                      stoneY + shadowSize - stoneRadius - fartherShadowSize,
+                      2 * (stoneRadius + fartherShadowSize) + 1,
+                      2 * (stoneRadius + fartherShadowSize) + 1);
+                  bsGraphics.setPaint(originalPaint);
+                }
+                if (chkPureStone.isSelected()) {
+                  drawStoneSimple(bsGraphics, stoneX, stoneY, true, stoneRadius);
+                } else {
+                  Image img = blackStoneImage;
+                  Graphics2D g2 = stoneImage.createGraphics();
+                  g2.setRenderingHint(
+                      RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+                  g2.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
+                  g2.drawImage(
+                      img.getScaledInstance(size, size, java.awt.Image.SCALE_SMOOTH), 0, 0, null);
+                  g2.dispose();
+                  bsGraphics.drawImage(
+                      stoneImage, stoneX - stoneRadius, stoneY - stoneRadius, null);
+                }
+              } catch (IOException e0) {
+              }
+
+              stoneX = x + squareLength * 1;
+              stoneY = y + squareLength * 2;
+
+              BufferedImage whiteStoneImage = null;
+              try {
+                if (cmbThemes.getSelectedIndex() <= 0) {
+                  whiteStoneImage =
+                      ImageIO.read(getClass().getResourceAsStream(txtWhiteStonePath.getText()));
+                } else {
+                  whiteStoneImage =
+                      ImageIO.read(
+                          new File(theme == null ? "" : theme.path + txtWhiteStonePath.getText()));
+                }
+                BufferedImage stoneImage = new BufferedImage(size, size, TYPE_INT_ARGB);
+                if (chkShowStoneShaow.isSelected()) {
+                  RadialGradientPaint TOP_GRADIENT_PAINT =
+                      new RadialGradientPaint(
+                          new Point2D.Float(stoneX, stoneY),
+                          stoneRadius + shadowSize,
+                          new float[] {0.3f, 1.0f},
+                          new Color[] {new Color(50, 50, 50, 150), new Color(0, 0, 0, 0)});
+                  RadialGradientPaint LOWER_RIGHT_GRADIENT_PAINT =
+                      new RadialGradientPaint(
+                          new Point2D.Float(stoneX + shadowSize, stoneY + shadowSize),
+                          stoneRadius + fartherShadowSize,
+                          new float[] {0.6f, 1.0f},
+                          new Color[] {new Color(0, 0, 0, 140), new Color(0, 0, 0, 0)});
+                  originalPaint = bsGraphics.getPaint();
+
+                  bsGraphics.setPaint(TOP_GRADIENT_PAINT);
+                  bsGraphics.fillOval(
+                      stoneX - stoneRadius - shadowSize,
+                      stoneY - stoneRadius - shadowSize,
+                      2 * (stoneRadius + shadowSize) + 1,
+                      2 * (stoneRadius + shadowSize) + 1);
+                  bsGraphics.setPaint(LOWER_RIGHT_GRADIENT_PAINT);
+                  bsGraphics.fillOval(
+                      stoneX + shadowSize - stoneRadius - fartherShadowSize,
+                      stoneY + shadowSize - stoneRadius - fartherShadowSize,
+                      2 * (stoneRadius + fartherShadowSize) + 1,
+                      2 * (stoneRadius + fartherShadowSize) + 1);
+                  bsGraphics.setPaint(originalPaint);
+                }
+                if (chkPureStone.isSelected()) {
+                  drawStoneSimple(bsGraphics, stoneX, stoneY, false, stoneRadius);
+                } else {
+                  Image img = whiteStoneImage;
+                  Graphics2D g2 = stoneImage.createGraphics();
+                  g2.setRenderingHint(
+                      RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+                  g2.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
+                  g2.drawImage(
+                      img.getScaledInstance(size, size, java.awt.Image.SCALE_SMOOTH), 0, 0, null);
+                  g2.dispose();
+                  bsGraphics.drawImage(
+                      stoneImage, stoneX - stoneRadius, stoneY - stoneRadius, null);
+                }
+              } catch (IOException e0) {
+              }
+            }
+          }
+        };
+    pnlBoardPreview.setBounds(530, 11, 200, 200);
+    themeTab.add(pnlBoardPreview);
+    Utils.changeFontRecursive(themeTab, Config.sysDefaultFontName);
+    timer =
+        new javax.swing.Timer(
+            100,
+            new ActionListener() {
+              public void actionPerformed(ActionEvent evt) {
+                if (tabbedPane.getSelectedIndex() == 1) {
+                  pnlBoardPreview.repaint();
+                  tabbedPane.repaint();
+                }
+              }
+            });
+    timer.start();
   }
 
   public void setChkSuggestionInfo() {
@@ -1941,851 +2778,28 @@ public class ConfigDialog2 extends JDialog {
     chkShowScoremeanInSuggestion.setSelected(Lizzie.config.showScoremeanInSuggestion);
   }
 
-  class ComsWorker extends SwingWorker<Void, Integer> {
-
-    private JDialog owner;
-
-    public ComsWorker(JDialog owner) {
-      this.owner = owner;
-    }
-
-    @Override
-    protected Void doInBackground() throws Exception {
-
-      isLoadedTheme = false;
-      File themeFolder = new File(Theme.pathPrefix);
-      File[] themes =
-          themeFolder.listFiles(
-              new FileFilter() {
-                public boolean accept(File f) {
-                  return f.isDirectory() && !".".equals(f.getName());
-                }
-              });
-      List<String> themeList =
-          themes == null
-              ? new ArrayList<String>()
-              : Arrays.asList(themes).stream().map(t -> t.getName()).collect(Collectors.toList());
-      themeList.add(0, resourceBundle.getString("LizzieConfig.title.defaultTheme"));
-
-      JLabel lblThemes = new JLabel(resourceBundle.getString("LizzieConfig.title.theme"));
-      lblThemes.setBounds(10, 11, 163, 20);
-      themeTab.add(lblThemes);
-
-      JButton btnDeleteTheme = new JButton(resourceBundle.getString("ConfigDialog2.deleteTheme"));
-      btnDeleteTheme.addActionListener(
-          new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-              SwingUtilities.invokeLater(
-                  new Runnable() {
-                    public void run() {
-                      int ret =
-                          JOptionPane.showConfirmDialog(
-                              Lizzie.frame.configDialog2,
-                              resourceBundle.getString("ConfigDialog2.deleteThemeWarning")
-                                  + "\'"
-                                  + cmbThemes.getSelectedItem().toString()
-                                  + "\'"
-                                  + " ?",
-                              resourceBundle.getString("LizzieFrame.warning"),
-                              JOptionPane.OK_CANCEL_OPTION);
-                      if (ret == JOptionPane.YES_NO_OPTION) {
-                        String currentRealPath = "";
-                        File file = new File("");
-                        try {
-                          currentRealPath = file.getCanonicalPath();
-                        } catch (IOException e) {
-                          // TODO Auto-generated catch block
-                          e.printStackTrace();
-                        }
-                        if (Utils.deleteDir(
-                            new File(
-                                currentRealPath
-                                    + File.separator
-                                    + "theme"
-                                    + File.separator
-                                    + cmbThemes.getSelectedItem().toString()))) {
-                          setVisible(false);
-                          Lizzie.frame.openConfigDialog2(1);
-                        } else
-                          Utils.showMsg(
-                              resourceBundle.getString("ConfigDialog2.deleteThemeFailed"));
-                      }
-                    }
-                  });
-            }
-          });
-      btnDeleteTheme.setMargin(new Insets(0, 0, 0, 0));
-      btnDeleteTheme.setBounds(435, 11, 50, 20);
-      themeTab.add(btnDeleteTheme);
-
-      cmbThemes = new JComboBox<String>(themeList.toArray(new String[0]));
-      cmbThemes.addItemListener(
-          new ItemListener() {
-            public void itemStateChanged(ItemEvent e) {
-              if (isLoadedTheme) readThemeValues();
-              if (cmbThemes.getSelectedIndex() == 0) btnDeleteTheme.setEnabled(false);
-              else btnDeleteTheme.setEnabled(true);
-            }
-          });
-      cmbThemes.setBounds(175, 11, 199, 20);
-      themeTab.add(cmbThemes);
-
-      JButton btnAddTheme = new JButton(resourceBundle.getString("ConfigDialog2.addTheme"));
-      btnAddTheme.addActionListener(
-          new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-              SwingUtilities.invokeLater(
-                  new Runnable() {
-                    public void run() {
-                      String themeName =
-                          JOptionPane.showInputDialog(
-                              Lizzie.frame.configDialog2,
-                              null,
-                              resourceBundle.getString("ConfigDialog2.inputThemeNameTitle"),
-                              JOptionPane.INFORMATION_MESSAGE);
-                      if (themeName != null) {
-                        for (String name : themeList) {
-                          if (themeName.toLowerCase().equals(name.toLowerCase())) {
-                            Utils.showMsg(
-                                resourceBundle.getString("ConfigDialog2.duplicateThemeName"));
-                            return;
-                          }
-                        }
-                        Utils.addNewThemeAs(themeName);
-                        setVisible(false);
-                        Lizzie.frame.openConfigDialog2(1);
-                      }
-                    }
-                  });
-            }
-          });
-      btnAddTheme.setMargin(new Insets(0, 0, 0, 0));
-      btnAddTheme.setBounds(385, 11, 50, 20);
-      themeTab.add(btnAddTheme);
-
-      JLabel lblWinrateStrokeWidth =
-          new JLabel(resourceBundle.getString("LizzieConfig.title.winrateStrokeWidth"));
-      lblWinrateStrokeWidth.setBounds(10, 44, 163, 16);
-      themeTab.add(lblWinrateStrokeWidth);
-      spnWinrateStrokeWidth = new JSpinner();
-      spnWinrateStrokeWidth.setModel(new SpinnerNumberModel(1.7, 0.1, 10, 0.1));
-      spnWinrateStrokeWidth.setBounds(175, 42, 69, 20);
-      themeTab.add(spnWinrateStrokeWidth);
-
-      JLabel lblMinimumBlunderBarWidth =
-          new JLabel(resourceBundle.getString("LizzieConfig.title.minimumBlunderBarWidth"));
-      lblMinimumBlunderBarWidth.setBounds(10, 74, 163, 16);
-      themeTab.add(lblMinimumBlunderBarWidth);
-      spnMinimumBlunderBarWidth = new JSpinner();
-      spnMinimumBlunderBarWidth.setModel(new SpinnerNumberModel(1, 1, 10, 1));
-      spnMinimumBlunderBarWidth.setBounds(175, 72, 69, 20);
-      themeTab.add(spnMinimumBlunderBarWidth);
-      spnShadowSize = new JSpinner();
-      spnShadowSize.setModel(new SpinnerNumberModel(50, 1, 150, 1));
-      spnShadowSize.setBounds(175, 102, 69, 20);
-      themeTab.add(spnShadowSize);
-
-      fontList =
-          Arrays.asList(
-                  GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames())
-              .stream()
-              .collect(Collectors.toList());
-      // fontList.add(0, " ");
-      fontList.add(0, resourceBundle.getString("FontList.systemDefault"));
-      fontList.add(0, resourceBundle.getString("FontList.lizzieDefault"));
-      String fonts[] = fontList.toArray(new String[0]);
-
-      JLabel lblFontName = new JLabel(resourceBundle.getString("LizzieConfig.title.fontName"));
-      lblFontName.setBounds(10, 134, 163, 16);
-      themeTab.add(lblFontName);
-      cmbFontName = new JComboBox<String>(fonts);
-      cmbFontName.setMaximumRowCount(16);
-      cmbFontName.setBounds(175, 133, 200, 20);
-      cmbFontName.setRenderer(new FontComboBoxRenderer<Object>());
-      cmbFontName.addItemListener(
-          new ItemListener() {
-            public void itemStateChanged(ItemEvent e) {
-              String fontName = (String) e.getItem();
-              if (fontName.equals("Lizzie默认") || fontName.equals("Lizzie Default"))
-                cmbFontName.setFont(LizzieFrame.uiFont);
-              else
-                cmbFontName.setFont(
-                    new Font(fontName, Font.PLAIN, cmbUiFontName.getFont().getSize()));
-            }
-          });
-      themeTab.add(cmbFontName);
-
-      JLabel lblUiFontName = new JLabel(resourceBundle.getString("LizzieConfig.title.uiFontName"));
-      lblUiFontName.setBounds(10, 164, 163, 16);
-      themeTab.add(lblUiFontName);
-      cmbUiFontName = new JComboBox<String>(fonts);
-      cmbUiFontName.setMaximumRowCount(16);
-      cmbUiFontName.setBounds(175, 163, 200, 20);
-      cmbUiFontName.setRenderer(new UiFontComboBoxRenderer<Object>());
-      cmbUiFontName.addItemListener(
-          new ItemListener() {
-            public void itemStateChanged(ItemEvent e) {
-              cmbUiFontName.setFont(
-                  new Font((String) e.getItem(), Font.PLAIN, cmbFontName.getFont().getSize()));
-            }
-          });
-      themeTab.add(cmbUiFontName);
-
-      JLabel lblWinrateFontName =
-          new JLabel(resourceBundle.getString("LizzieConfig.title.winrateFontName"));
-      lblWinrateFontName.setBounds(10, 194, 163, 16);
-      themeTab.add(lblWinrateFontName);
-      cmbWinrateFontName = new JComboBox<String>(fonts);
-      cmbWinrateFontName.setMaximumRowCount(16);
-      cmbWinrateFontName.setBounds(175, 193, 200, 20);
-      cmbWinrateFontName.setRenderer(new UiFontComboBoxRenderer<Object>());
-      cmbWinrateFontName.addItemListener(
-          new ItemListener() {
-            public void itemStateChanged(ItemEvent e) {
-              String fontName = (String) e.getItem();
-              if (fontName.equals("Lizzie默认") || fontName.equals("Lizzie Default"))
-                cmbWinrateFontName.setFont(LizzieFrame.uiFont);
-              else
-                cmbWinrateFontName.setFont(
-                    new Font(fontName, Font.PLAIN, cmbUiFontName.getFont().getSize()));
-            }
-          });
-      themeTab.add(cmbWinrateFontName);
-
-      JLabel lblBackgroundPath =
-          new JLabel(resourceBundle.getString("LizzieConfig.title.backgroundPath"));
-      lblBackgroundPath.setHorizontalAlignment(SwingConstants.LEFT);
-      lblBackgroundPath.setBounds(175, 226, 163, 16);
-      themeTab.add(lblBackgroundPath);
-      txtBackgroundPath = new JTextField();
-      txtBackgroundPath.setText((String) null);
-      txtBackgroundPath.setColumns(10);
-      txtBackgroundPath.setBounds(336, 225, 421, 20);
-      themeTab.add(txtBackgroundPath);
-
-      JLabel lblBoardPath = new JLabel(resourceBundle.getString("LizzieConfig.title.boardPath"));
-      lblBoardPath.setHorizontalAlignment(SwingConstants.LEFT);
-      lblBoardPath.setBounds(175, 256, 163, 16);
-      themeTab.add(lblBoardPath);
-      txtBoardPath = new JTextField();
-      txtBoardPath.setText((String) null);
-      txtBoardPath.setColumns(10);
-      txtBoardPath.setBounds(336, 255, 421, 20);
-      themeTab.add(txtBoardPath);
-
-      JLabel lblBlackStonePath =
-          new JLabel(resourceBundle.getString("LizzieConfig.title.blackStonePath"));
-      lblBlackStonePath.setHorizontalAlignment(SwingConstants.LEFT);
-      lblBlackStonePath.setBounds(175, 286, 163, 16);
-      themeTab.add(lblBlackStonePath);
-      txtBlackStonePath = new JTextField();
-      txtBlackStonePath.setText((String) null);
-      txtBlackStonePath.setColumns(10);
-      txtBlackStonePath.setBounds(336, 285, 421, 20);
-      themeTab.add(txtBlackStonePath);
-
-      JLabel lblWhiteStonePath =
-          new JLabel(resourceBundle.getString("LizzieConfig.title.whiteStonePath"));
-      lblWhiteStonePath.setHorizontalAlignment(SwingConstants.LEFT);
-      lblWhiteStonePath.setBounds(175, 316, 163, 16);
-      themeTab.add(lblWhiteStonePath);
-      txtWhiteStonePath = new JTextField();
-      txtWhiteStonePath.setText((String) null);
-      txtWhiteStonePath.setColumns(10);
-      txtWhiteStonePath.setBounds(336, 315, 421, 20);
-      themeTab.add(txtWhiteStonePath);
-
-      JLabel lblWinrateLineColorTitle =
-          new JLabel(resourceBundle.getString("LizzieConfig.title.winrateLineColor"));
-      lblWinrateLineColorTitle.setHorizontalAlignment(SwingConstants.LEFT);
-      lblWinrateLineColorTitle.setBounds(10, 345, 163, 16);
-      themeTab.add(lblWinrateLineColorTitle);
-      lblWinrateLineColor = new ColorLabel(owner, true);
-      lblWinrateLineColor.setBounds(175, 350, 167, 9);
-      themeTab.add(lblWinrateLineColor);
-
-      JLabel lblWinrateMissLineColorTitle =
-          new JLabel(resourceBundle.getString("LizzieConfig.title.winrateMissLineColor"));
-      lblWinrateMissLineColorTitle.setHorizontalAlignment(SwingConstants.LEFT);
-      lblWinrateMissLineColorTitle.setBounds(10, 370, 163, 16);
-      themeTab.add(lblWinrateMissLineColorTitle);
-      lblWinrateMissLineColor = new ColorLabel(owner, true);
-      lblWinrateMissLineColor.setBounds(175, 375, 167, 9);
-      themeTab.add(lblWinrateMissLineColor);
-
-      JLabel lblBlunderBarColorTitle =
-          new JLabel(resourceBundle.getString("LizzieConfig.title.blunderBarColor"));
-      lblBlunderBarColorTitle.setHorizontalAlignment(SwingConstants.LEFT);
-      lblBlunderBarColorTitle.setBounds(10, 395, 163, 16);
-      themeTab.add(lblBlunderBarColorTitle);
-      lblBlunderBarColor = new ColorLabel(owner, true);
-      lblBlunderBarColor.setBounds(175, 400, 167, 9);
-      themeTab.add(lblBlunderBarColor);
-
-      JLabel lblScoreMeanLineColorTitle =
-          new JLabel(resourceBundle.getString("LizzieConfig.title.scoreMeanLineColor"));
-      lblScoreMeanLineColorTitle.setHorizontalAlignment(SwingConstants.LEFT);
-      lblScoreMeanLineColorTitle.setBounds(10, 420, 163, 16);
-      themeTab.add(lblScoreMeanLineColorTitle);
-      lblScoreMeanLineColor = new ColorLabel(owner, true);
-      lblScoreMeanLineColor.setBounds(175, 425, 167, 9);
-      themeTab.add(lblScoreMeanLineColor);
-
-      JLabel lblCommentBackgroundColorTitle =
-          new JLabel(resourceBundle.getString("LizzieConfig.title.commentBackgroundColor"));
-      lblCommentBackgroundColorTitle.setHorizontalAlignment(SwingConstants.LEFT);
-      lblCommentBackgroundColorTitle.setBounds(370, 345, 148, 16);
-      themeTab.add(lblCommentBackgroundColorTitle);
-      lblCommentBackgroundColor = new ColorLabel(owner, true);
-      lblCommentBackgroundColor.setBounds(529, 342, 22, 22);
-      themeTab.add(lblCommentBackgroundColor);
-
-      JLabel lblCommentFontColorTitle =
-          new JLabel(resourceBundle.getString("LizzieConfig.title.commentFontColor"));
-      lblCommentFontColorTitle.setHorizontalAlignment(SwingConstants.LEFT);
-      lblCommentFontColorTitle.setBounds(370, 375, 148, 16);
-      themeTab.add(lblCommentFontColorTitle);
-      lblCommentFontColor = new ColorLabel(owner, true);
-      lblCommentFontColor.setBounds(529, 372, 22, 22);
-      themeTab.add(lblCommentFontColor);
-
-      // JLabel lblVarPanelTitile = new JLabel("分支面板背景");
-      // lblVarPanelTitile.setHorizontalAlignment(SwingConstants.LEFT);
-      // lblVarPanelTitile.setBounds(370, 465, 148, 16);
-      //  themeTab.add(lblVarPanelTitile);
-      //  lblVarPanelColor = new ColorLabel(owner);
-      //   lblVarPanelColor.setBounds(529, 462, 22, 22);
-      // themeTab.add(lblVarPanelColor);
-
-      JLabel labelBestMoveColor =
-          new JLabel(resourceBundle.getString("ConfigDialog2.lblBestMoveColor")); // ("第一选点颜色");
-      labelBestMoveColor.setHorizontalAlignment(SwingConstants.LEFT);
-      labelBestMoveColor.setBounds(370, 435, 148, 16);
-      themeTab.add(labelBestMoveColor);
-      lblBestMoveColor = new ColorLabel(owner, true);
-      lblBestMoveColor.setBounds(529, 432, 22, 22);
-      themeTab.add(lblBestMoveColor);
-
-      NumberFormat nf = NumberFormat.getIntegerInstance();
-      JLabel lblBackgroundFilter =
-          new JLabel(
-              resourceBundle.getString("ConfigDialog2.lblBackgroundFilter")); // ("面板背景模糊程度");
-      lblBackgroundFilter.setHorizontalAlignment(SwingConstants.LEFT);
-      lblBackgroundFilter.setBounds(370, 465, 148, 16);
-      themeTab.add(lblBackgroundFilter);
-      txtBackgroundFilter =
-          new JFormattedTextField(
-              new InternationalFormatter(nf) {
-                protected DocumentFilter getDocumentFilter() {
-                  return filter;
-                }
-
-                private DocumentFilter filter = new DigitOnlyFilter();
-              });
-      txtBackgroundFilter.setBounds(529, 463, 52, 24);
-      themeTab.add(txtBackgroundFilter);
-      //      JButton applyBackgroundFilter = new JButton("应用");
-      //      applyBackgroundFilter.addActionListener(
-      //          new ActionListener() {
-      //            public void actionPerformed(ActionEvent e) {
-      //              Lizzie.frame.testFilter(txtFieldIntValue(txtBackgroundFilter));
-      //            }
-      //          });
-      //      applyBackgroundFilter.setBounds(588, 463, 60, 24);
-      //      themeTab.add(applyBackgroundFilter);
-
-      JLabel lblCommentFontSize =
-          new JLabel(resourceBundle.getString("LizzieConfig.title.commentFontSize"));
-      lblCommentFontSize.setHorizontalAlignment(SwingConstants.LEFT);
-      lblCommentFontSize.setBounds(370, 405, 148, 16);
-      themeTab.add(lblCommentFontSize);
-      txtCommentFontSize =
-          new JFormattedTextField(
-              new InternationalFormatter(nf) {
-                protected DocumentFilter getDocumentFilter() {
-                  return filter;
-                }
-
-                private DocumentFilter filter = new DigitOnlyFilter();
-              });
-      txtCommentFontSize.setBounds(529, 403, 52, 24);
-      themeTab.add(txtCommentFontSize);
-
-      JLabel lblStoneIndicatorType =
-          new JLabel(resourceBundle.getString("LizzieConfig.title.stoneIndicatorType"));
-      lblStoneIndicatorType.setBounds(10, 442, 163, 16);
-      themeTab.add(lblStoneIndicatorType);
-
-      rdoStoneIndicatorCircle =
-          new JRadioButton(resourceBundle.getString("ConfigDialog2.circle")); // ("圆圈");
-      rdoStoneIndicatorCircle.setBounds(170, 439, 52, 23);
-      themeTab.add(rdoStoneIndicatorCircle);
-
-      rdoStoneIndicatorDelta =
-          new JRadioButton(resourceBundle.getString("ConfigDialog2.triangle")); // ("三角");
-      rdoStoneIndicatorDelta.setBounds(220, 439, 52, 23);
-      themeTab.add(rdoStoneIndicatorDelta);
-
-      rdoStoneIndicatorSolid =
-          new JRadioButton(resourceBundle.getString("ConfigDialog2.solid")); // ("实心");
-      rdoStoneIndicatorSolid.setBounds(270, 439, 52, 23);
-      themeTab.add(rdoStoneIndicatorSolid);
-      rdoStoneIndicatorNo =
-          new JRadioButton(resourceBundle.getString("ConfigDialog2.empty")); // ("无");
-      rdoStoneIndicatorNo.setBounds(320, 439, 46, 23);
-      themeTab.add(rdoStoneIndicatorNo);
-
-      ButtonGroup stoneIndicatorTypeGroup = new ButtonGroup();
-      stoneIndicatorTypeGroup.add(rdoStoneIndicatorDelta);
-      stoneIndicatorTypeGroup.add(rdoStoneIndicatorCircle);
-      stoneIndicatorTypeGroup.add(rdoStoneIndicatorSolid);
-      stoneIndicatorTypeGroup.add(rdoStoneIndicatorNo);
-
-      JLabel lblShowCommentNodeColor =
-          new JLabel(resourceBundle.getString("LizzieConfig.title.showCommentNodeColor"));
-      lblShowCommentNodeColor.setBounds(10, 465, 163, 16);
-      themeTab.add(lblShowCommentNodeColor);
-      chkShowCommentNodeColor = new JCheckBox("");
-      chkShowCommentNodeColor.setBounds(170, 462, 33, 23);
-      themeTab.add(chkShowCommentNodeColor);
-
-      JLabel lblCommentNodeColorTitle =
-          new JLabel(resourceBundle.getString("LizzieConfig.title.commentNodeColor"));
-      lblCommentNodeColorTitle.setHorizontalAlignment(SwingConstants.LEFT);
-      lblCommentNodeColorTitle.setBounds(210, 465, 138, 16);
-      themeTab.add(lblCommentNodeColorTitle);
-      lblCommentNodeColor = new ColorLabel(owner, true);
-      lblCommentNodeColor.setBounds(Lizzie.config.isChinese ? 311 : 341, 462, 22, 22);
-      themeTab.add(lblCommentNodeColor);
-
-      JLabel lblBlunderNodes =
-          new JLabel(resourceBundle.getString("LizzieConfig.title.blunderNodes"));
-      lblBlunderNodes.setHorizontalAlignment(SwingConstants.LEFT);
-      lblBlunderNodes.setBounds(10, 497, 163, 16);
-      themeTab.add(lblBlunderNodes);
-      tblBlunderNodes = new JTable();
-      columsBlunderNodes =
-          new String[] {
-            resourceBundle.getString("LizzieConfig.title.blunderThresholds"),
-            resourceBundle.getString("LizzieConfig.title.blunderColor")
-          };
-      JScrollPane pnlScrollBlunderNodes = new JScrollPane();
-      pnlScrollBlunderNodes.setViewportView(tblBlunderNodes);
-      pnlScrollBlunderNodes.setBounds(175, 497, 299, 108);
-      themeTab.add(pnlScrollBlunderNodes);
-
-      JButton btnAdd = new JButton(resourceBundle.getString("LizzieConfig.button.add"));
-      btnAdd.setBounds(80, 517, 89, 23);
-      btnAdd.addActionListener(
-          new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-              ((BlunderNodeTableModel) tblBlunderNodes.getModel()).addRow(null, Color.WHITE);
-            }
-          });
-      themeTab.add(btnAdd);
-
-      JButton btnRemove = new JButton(resourceBundle.getString("LizzieConfig.button.remove"));
-      btnRemove.setBounds(80, 547, 89, 23);
-      btnRemove.addActionListener(
-          new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-              ((BlunderNodeTableModel) tblBlunderNodes.getModel())
-                  .removeRow(tblBlunderNodes.getSelectedRow());
-            }
-          });
-      themeTab.add(btnRemove);
-
-      JButton btnReset = new JButton(resourceBundle.getString("LizzieConfig.button.reset"));
-      btnReset.setBounds(80, 577, 89, 23);
-      btnReset.addActionListener(
-          new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-              saveConfig();
-              LizzieFrame.menu.refreshDoubleMoveInfoStatus();
-              LizzieFrame.menu.refreshLimitStatus(false);
-              Lizzie.frame.resetCommentComponent();
-              applyChange();
-              Lizzie.config.resetBlunderColor();
-              setVisible(false);
-              Lizzie.frame.openConfigDialog2(1);
-            }
-          });
-      themeTab.add(btnReset);
-
-      chkUseScoreDiff = new JCheckBox(resourceBundle.getString("LizzieConfig.chkUseScoreDiff"));
-      chkUseScoreDiff.setBounds(172, 612, 235, 23);
-      themeTab.add(chkUseScoreDiff);
-
-      txtPercentScoreDiff = new JTextField();
-      txtPercentScoreDiff.setDocument(new DoubleDocument());
-      txtPercentScoreDiff.setBounds(407, 612, 30, 24);
-      themeTab.add(txtPercentScoreDiff);
-
-      chkUseScoreDiff.addActionListener(
-          new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-              txtPercentScoreDiff.setEnabled(chkUseScoreDiff.isSelected());
-            }
-          });
-
-      JLabel lblPercentScoreDiff =
-          new JLabel(resourceBundle.getString("LizzieConfig.lblUseScoreDiffPercent"));
-      lblPercentScoreDiff.setBounds(440, 612, 250, 24);
-      themeTab.add(lblPercentScoreDiff);
-
-      btnBackgroundPath = new JButton("...");
-      btnBackgroundPath.addActionListener(
-          new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-              String ip = getImagePath();
-              if (!ip.isEmpty()) {
-                txtBackgroundPath.setText(ip);
-                pnlBoardPreview.repaint();
-              }
-            }
-          });
-      btnBackgroundPath.setBounds(759, 223, 40, 26);
-      themeTab.add(btnBackgroundPath);
-
-      btnBoardPath = new JButton("...");
-      btnBoardPath.addActionListener(
-          new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-              String ip = getImagePath();
-              if (!ip.isEmpty()) {
-                txtBoardPath.setText(ip);
-                pnlBoardPreview.repaint();
-              }
-            }
-          });
-      btnBoardPath.setBounds(759, 253, 40, 26);
-      themeTab.add(btnBoardPath);
-
-      btnBlackStonePath = new JButton("...");
-      btnBlackStonePath.addActionListener(
-          new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-              String ip = getImagePath();
-              if (!ip.isEmpty()) {
-                txtBlackStonePath.setText(ip);
-                pnlBoardPreview.repaint();
-              }
-            }
-          });
-      btnBlackStonePath.setBounds(759, 283, 40, 26);
-      themeTab.add(btnBlackStonePath);
-
-      btnWhiteStonePath = new JButton("...");
-      btnWhiteStonePath.addActionListener(
-          new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-              String ip = getImagePath();
-              if (!ip.isEmpty()) {
-                txtWhiteStonePath.setText(ip);
-                pnlBoardPreview.repaint();
-              }
-            }
-          });
-      btnWhiteStonePath.setBounds(759, 313, 40, 26);
-      themeTab.add(btnWhiteStonePath);
-
-      cmbThemes.setSelectedItem(
-          Lizzie.config.uiConfig.optString(
-              "theme", resourceBundle.getString("LizzieConfig.title.defaultTheme")));
-      if (cmbThemes.getSelectedIndex() == 0) btnDeleteTheme.setEnabled(false);
-      else btnDeleteTheme.setEnabled(true);
-
-      chkShowStoneShaow = new JCheckBox(resourceBundle.getString("LizzieConfig.title.shadowSize"));
-      chkShowStoneShaow.setBounds(6, 101, 131, 23);
-      themeTab.add(chkShowStoneShaow);
-      chkShowStoneShaow.addActionListener(
-          new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-              spnShadowSize.setEnabled(chkShowStoneShaow.isSelected());
-            }
-          });
-
-      lblPureBackgroundColor = new ColorLabel(owner, false);
-      lblPureBackgroundColor.setBounds(Lizzie.config.isChinese ? 86 : 126, 223, 22, 22);
-      lblPureBackgroundColor.setColor(Color.BLACK);
-      themeTab.add(lblPureBackgroundColor);
-      chkPureBackground =
-          new JCheckBox(resourceBundle.getString("LizzieConfig.title.chkPureBackground"));
-      chkPureBackground.setBounds(6, 223, Lizzie.config.isChinese ? 80 : 120, 23);
-      themeTab.add(chkPureBackground);
-      chkPureBackground.addActionListener(
-          new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-              if (cmbThemes.getSelectedIndex() > 0) {
-                btnBackgroundPath.setEnabled(!chkPureBackground.isSelected());
-                txtBackgroundPath.setEnabled(!chkPureBackground.isSelected());
-              }
-              txtBackgroundFilter.setEnabled(!chkPureBackground.isSelected());
-            }
-          });
-
-      lblPureBoardColor = new ColorLabel(owner, false);
-      lblPureBoardColor.setBounds(Lizzie.config.isChinese ? 86 : 126, 253, 22, 22);
-      lblPureBoardColor.setColor(Color.BLACK);
-      themeTab.add(lblPureBoardColor);
-
-      chkPureBoard = new JCheckBox(resourceBundle.getString("LizzieConfig.title.chkPureBoard"));
-      chkPureBoard.setBounds(6, 253, Lizzie.config.isChinese ? 80 : 120, 23);
-      themeTab.add(chkPureBoard);
-      chkPureBoard.addActionListener(
-          new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-              if (cmbThemes.getSelectedIndex() > 0) {
-                btnBoardPath.setEnabled(!chkPureBoard.isSelected());
-                txtBoardPath.setEnabled(!chkPureBoard.isSelected());
-              }
-            }
-          });
-
-      chkPureStone = new JCheckBox(resourceBundle.getString("LizzieConfig.title.chkPureStone"));
-      chkPureStone.setBounds(6, 283, 103, 23);
-      themeTab.add(chkPureStone);
-      chkPureStone.addActionListener(
-          new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-              if (cmbThemes.getSelectedIndex() > 0) {
-                btnBlackStonePath.setEnabled(!chkPureStone.isSelected());
-                btnWhiteStonePath.setEnabled(!chkPureStone.isSelected());
-                txtBlackStonePath.setEnabled(!chkPureStone.isSelected());
-                txtWhiteStonePath.setEnabled(!chkPureStone.isSelected());
-              }
-            }
-          });
-
-      readThemeValues();
-
-      pnlBoardPreview =
-          new JPanel() {
-            @Override
-            protected void paintComponent(Graphics g) {
-              super.paintComponent(g);
-              if (g instanceof Graphics2D) {
-                int width = getWidth();
-                int height = getHeight();
-                Graphics2D bsGraphics = (Graphics2D) g;
-                Paint originalPaint = bsGraphics.getPaint();
-                bsGraphics.setRenderingHint(
-                    RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-                bsGraphics.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
-
-                BufferedImage backgroundImage = null;
-                try {
-                  if (cmbThemes.getSelectedIndex() <= 0) {
-                    backgroundImage =
-                        ImageIO.read(getClass().getResourceAsStream(txtBackgroundPath.getText()));
-                  } else {
-                    backgroundImage =
-                        ImageIO.read(
-                            new File(
-                                theme == null ? "" : theme.path + txtBackgroundPath.getText()));
-                  }
-                  TexturePaint paint =
-                      new TexturePaint(
-                          backgroundImage,
-                          new Rectangle(
-                              0, 0, backgroundImage.getWidth(), backgroundImage.getHeight()));
-                  if (chkPureBackground.isSelected()) g.setColor(lblPureBackgroundColor.getColor());
-                  else bsGraphics.setPaint(paint);
-                  int drawWidth = max(backgroundImage.getWidth(), width);
-                  int drawHeight = max(backgroundImage.getHeight(), height);
-                  bsGraphics.fill(new Rectangle(0, 0, drawWidth, drawHeight));
-                  bsGraphics.setPaint(originalPaint);
-                } catch (IOException e0) {
-                }
-                BufferedImage boardImage = null;
-                try {
-                  if (cmbThemes.getSelectedIndex() <= 0) {
-                    boardImage =
-                        ImageIO.read(getClass().getResourceAsStream(txtBoardPath.getText()));
-                  } else {
-                    boardImage =
-                        ImageIO.read(
-                            new File(theme == null ? "" : theme.path + txtBoardPath.getText()));
-                  }
-                  TexturePaint paint =
-                      new TexturePaint(
-                          boardImage,
-                          new Rectangle(0, 0, boardImage.getWidth(), boardImage.getHeight()));
-                  if (chkPureBoard.isSelected()) g.setColor(lblPureBoardColor.getColor());
-                  else bsGraphics.setPaint(paint);
-                  int drawWidth = max(boardImage.getWidth(), width);
-                  int drawHeight = max(boardImage.getHeight(), height);
-                  bsGraphics.fill(new Rectangle(30, 30, drawWidth, drawHeight));
-                  bsGraphics.setPaint(originalPaint);
-                } catch (IOException e0) {
-                }
-                // Draw the lines
-                int x = 60;
-                int y = 60;
-                int squareLength = 30;
-                int stoneRadius = squareLength < 4 ? 1 : squareLength / 2 - 1;
-                int size = stoneRadius * 2 + 1;
-                double r = stoneRadius * (int) spnShadowSize.getValue() / 100;
-                int shadowSize = (int) (r * 0.2) == 0 ? 1 : (int) (r * 0.2);
-                int fartherShadowSize = (int) (r * 0.17) == 0 ? 1 : (int) (r * 0.17);
-                int stoneX = x + squareLength * 2;
-                int stoneY = y + squareLength * 3;
-
-                g.setColor(Color.BLACK);
-                for (int i = 0; i < Board.boardWidth; i++) {
-                  g.drawLine(x, y + squareLength * i, height, y + squareLength * i);
-                }
-                for (int i = 0; i < Board.boardHeight; i++) {
-                  g.drawLine(x + squareLength * i, y, x + squareLength * i, width);
-                }
-
-                BufferedImage blackStoneImage = null;
-                try {
-                  if (cmbThemes.getSelectedIndex() <= 0) {
-                    blackStoneImage =
-                        ImageIO.read(getClass().getResourceAsStream(txtBlackStonePath.getText()));
-                  } else {
-                    blackStoneImage =
-                        ImageIO.read(
-                            new File(
-                                theme == null ? "" : theme.path + txtBlackStonePath.getText()));
-                  }
-                  BufferedImage stoneImage = new BufferedImage(size, size, TYPE_INT_ARGB);
-                  if (chkShowStoneShaow.isSelected()) {
-                    RadialGradientPaint TOP_GRADIENT_PAINT =
-                        new RadialGradientPaint(
-                            new Point2D.Float(stoneX, stoneY),
-                            stoneRadius + shadowSize,
-                            new float[] {0.3f, 1.0f},
-                            new Color[] {new Color(50, 50, 50, 150), new Color(0, 0, 0, 0)});
-                    RadialGradientPaint LOWER_RIGHT_GRADIENT_PAINT =
-                        new RadialGradientPaint(
-                            new Point2D.Float(stoneX + shadowSize, stoneY + shadowSize),
-                            stoneRadius + fartherShadowSize,
-                            new float[] {0.6f, 1.0f},
-                            new Color[] {new Color(0, 0, 0, 140), new Color(0, 0, 0, 0)});
-                    originalPaint = bsGraphics.getPaint();
-
-                    bsGraphics.setPaint(TOP_GRADIENT_PAINT);
-                    bsGraphics.fillOval(
-                        stoneX - stoneRadius - shadowSize,
-                        stoneY - stoneRadius - shadowSize,
-                        2 * (stoneRadius + shadowSize) + 1,
-                        2 * (stoneRadius + shadowSize) + 1);
-                    bsGraphics.setPaint(LOWER_RIGHT_GRADIENT_PAINT);
-                    bsGraphics.fillOval(
-                        stoneX + shadowSize - stoneRadius - fartherShadowSize,
-                        stoneY + shadowSize - stoneRadius - fartherShadowSize,
-                        2 * (stoneRadius + fartherShadowSize) + 1,
-                        2 * (stoneRadius + fartherShadowSize) + 1);
-                    bsGraphics.setPaint(originalPaint);
-                  }
-                  if (chkPureStone.isSelected()) {
-                    drawStoneSimple(bsGraphics, stoneX, stoneY, true, stoneRadius);
-                  } else {
-                    Image img = blackStoneImage;
-                    Graphics2D g2 = stoneImage.createGraphics();
-                    g2.setRenderingHint(
-                        RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-                    g2.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
-                    g2.drawImage(
-                        img.getScaledInstance(size, size, java.awt.Image.SCALE_SMOOTH), 0, 0, null);
-                    g2.dispose();
-                    bsGraphics.drawImage(
-                        stoneImage, stoneX - stoneRadius, stoneY - stoneRadius, null);
-                  }
-                } catch (IOException e0) {
-                }
-
-                stoneX = x + squareLength * 1;
-                stoneY = y + squareLength * 2;
-
-                BufferedImage whiteStoneImage = null;
-                try {
-                  if (cmbThemes.getSelectedIndex() <= 0) {
-                    whiteStoneImage =
-                        ImageIO.read(getClass().getResourceAsStream(txtWhiteStonePath.getText()));
-                  } else {
-                    whiteStoneImage =
-                        ImageIO.read(
-                            new File(
-                                theme == null ? "" : theme.path + txtWhiteStonePath.getText()));
-                  }
-                  BufferedImage stoneImage = new BufferedImage(size, size, TYPE_INT_ARGB);
-                  if (chkShowStoneShaow.isSelected()) {
-                    RadialGradientPaint TOP_GRADIENT_PAINT =
-                        new RadialGradientPaint(
-                            new Point2D.Float(stoneX, stoneY),
-                            stoneRadius + shadowSize,
-                            new float[] {0.3f, 1.0f},
-                            new Color[] {new Color(50, 50, 50, 150), new Color(0, 0, 0, 0)});
-                    RadialGradientPaint LOWER_RIGHT_GRADIENT_PAINT =
-                        new RadialGradientPaint(
-                            new Point2D.Float(stoneX + shadowSize, stoneY + shadowSize),
-                            stoneRadius + fartherShadowSize,
-                            new float[] {0.6f, 1.0f},
-                            new Color[] {new Color(0, 0, 0, 140), new Color(0, 0, 0, 0)});
-                    originalPaint = bsGraphics.getPaint();
-
-                    bsGraphics.setPaint(TOP_GRADIENT_PAINT);
-                    bsGraphics.fillOval(
-                        stoneX - stoneRadius - shadowSize,
-                        stoneY - stoneRadius - shadowSize,
-                        2 * (stoneRadius + shadowSize) + 1,
-                        2 * (stoneRadius + shadowSize) + 1);
-                    bsGraphics.setPaint(LOWER_RIGHT_GRADIENT_PAINT);
-                    bsGraphics.fillOval(
-                        stoneX + shadowSize - stoneRadius - fartherShadowSize,
-                        stoneY + shadowSize - stoneRadius - fartherShadowSize,
-                        2 * (stoneRadius + fartherShadowSize) + 1,
-                        2 * (stoneRadius + fartherShadowSize) + 1);
-                    bsGraphics.setPaint(originalPaint);
-                  }
-                  if (chkPureStone.isSelected()) {
-                    drawStoneSimple(bsGraphics, stoneX, stoneY, false, stoneRadius);
-                  } else {
-                    Image img = whiteStoneImage;
-                    Graphics2D g2 = stoneImage.createGraphics();
-                    g2.setRenderingHint(
-                        RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-                    g2.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
-                    g2.drawImage(
-                        img.getScaledInstance(size, size, java.awt.Image.SCALE_SMOOTH), 0, 0, null);
-                    g2.dispose();
-                    bsGraphics.drawImage(
-                        stoneImage, stoneX - stoneRadius, stoneY - stoneRadius, null);
-                  }
-                } catch (IOException e0) {
-                }
-              }
-            }
-          };
-      pnlBoardPreview.setBounds(530, 11, 200, 200);
-      themeTab.add(pnlBoardPreview);
-      Utils.changeFontRecursive(themeTab, Config.sysDefaultFontName);
-
-      isLoadedTheme = true;
-      javax.swing.Timer timer =
-          new javax.swing.Timer(
-              100,
-              new ActionListener() {
-                public void actionPerformed(ActionEvent evt) {
-                  pnlBoardPreview.repaint();
-                  if (tabbedPane.getSelectedIndex() == 1) tabbedPane.repaint();
-                  // table.validate();
-                  // table.updateUI();
-                }
-              });
-      timer.start();
-      return null;
-    }
-
-    //  @Override
-    // protected void done() {
-    // okButton.setEnabled(true);
-    //  pnlBoardPreview.repaint();
-    // }
-  }
+  //  class ComsWorker extends SwingWorker<Void, Integer> {
+  //
+  //    private JDialog owner;
+  //
+  //    public ComsWorker(JDialog owner) {
+  //      this.owner = owner;
+  //    }
+  //
+  //    @Override
+  //    protected Void doInBackground() throws Exception {
+
+  //  isLoadedTheme = false;
+
+  //  return null;
+  // }
+
+  //  @Override
+  // protected void done() {
+  // okButton.setEnabled(true);
+  //  pnlBoardPreview.repaint();
+  // }
+  // }
 
   private void drawStoneSimple(
       Graphics2D g, int centerX, int centerY, boolean isBlack, int stoneRadius) {
@@ -4003,5 +4017,6 @@ public class ConfigDialog2 extends JDialog {
 
   public void switchTab(int index) {
     tabbedPane.setSelectedIndex(index);
+    loadThemeTab();
   }
 }

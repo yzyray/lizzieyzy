@@ -36,7 +36,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
-import javax.swing.Timer;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
@@ -54,7 +53,7 @@ public class MoreEngines extends JPanel {
   Font winrateFont;
   static boolean needUpdateEngine = false;
   static JDialog engjf;
-  Timer timer;
+  // Timer timer;
   int sortnum = 3;
   public static int selectedorder = -1;
   boolean issorted = false;

@@ -104,6 +104,7 @@ public class Lizzie {
     AwareScaled awareScaled = new AwareScaled();
     awareScaled.setVisible(true);
     setLookAndFeel();
+    ToolTipManager.sharedInstance().setDismissDelay(99999);
     String hostName = InetAddress.getLocalHost().getHostName();
     if (config.firstTimeLoad || !hostName.equals(config.hostName)) {
       if (!config.hostName.equals("")) config.deletePersist(false);

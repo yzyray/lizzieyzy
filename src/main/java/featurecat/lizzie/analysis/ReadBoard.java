@@ -18,8 +18,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import org.jdesktop.swingx.util.OS;
@@ -710,15 +708,17 @@ public class ReadBoard {
     if (firstSync) {
       firstSync = false;
       Lizzie.board.previousMove(true);
-      Timer timer = new Timer();
-      timer.schedule(
-          new TimerTask() {
-            public void run() {
-              Lizzie.frame.lastMove();
-              this.cancel();
-            }
-          },
-          100);
+      new Thread() {
+        public void run() {
+          try {
+            Thread.sleep(500);
+          } catch (InterruptedException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+          }
+          Lizzie.frame.lastMove();
+        }
+      }.start();
     }
     if (Lizzie.frame.isPlayingAgainstLeelaz && needGenmove) {
       if (!Lizzie.board.getHistory().isBlacksTurn() && Lizzie.frame.playerIsBlack) {

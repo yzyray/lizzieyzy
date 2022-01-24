@@ -156,7 +156,6 @@ public class ContributeEngine {
     executorErr = Executors.newSingleThreadScheduledExecutor();
     executorErr.execute(this::readError);
     isNormalEnd = false;
-    clearBoardAndView();
     setTip(Lizzie.resourceBundle.getString("ContributeView.lblTip"));
   }
 
@@ -348,10 +347,6 @@ public class ContributeEngine {
       setTip(Lizzie.resourceBundle.getString("Contribute.tips.noCAcerts"));
       errorTips = Lizzie.resourceBundle.getString("Contribute.tips.noCAcerts");
     }
-  }
-
-  private void clearBoardAndView() {
-    Lizzie.board.clear(false);
   }
 
   private void setTip(String text) {

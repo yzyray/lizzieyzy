@@ -1712,7 +1712,7 @@ public class EngineManager {
       }
       engineList.add(e);
     }
-    if (!loadLeelaz) {
+    if (!loadLeelaz && preIndex >= 0) {
       switchEngine(preIndex, true);
     }
 

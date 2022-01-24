@@ -657,24 +657,35 @@ public class Config {
         System.exit(1);
       }
     }
+    try {
+      FileInputStream fp = new FileInputStream(file);
+      InputStreamReader reader = new InputStreamReader(fp, "utf-8");
 
-    FileInputStream fp = new FileInputStream(file);
-    InputStreamReader reader = new InputStreamReader(fp, "utf-8");
+      JSONObject mergedcfg = new JSONObject(new JSONTokener(reader));
+      boolean modified = mergeDefaults(mergedcfg, defaultCfg);
+      fp.close();
 
-    JSONObject mergedcfg = new JSONObject(new JSONTokener(reader));
-    boolean modified = mergeDefaults(mergedcfg, defaultCfg);
+      // Validate and correct settings
+      //    if (needValidation && validateAndCorrectSettings(mergedcfg)) {
+      //      modified = true;
+      //    }
+      if (needValidation) checkEmptyBlunderThresholds(mergedcfg);
+      if (modified) {
+        writeConfig(mergedcfg, file);
+      }
+      return mergedcfg;
+    } catch (JSONException e) {
+      e.printStackTrace();
+      System.err.printf("Creating config file %s\n", fileName);
 
-    fp.close();
-
-    // Validate and correct settings
-    //    if (needValidation && validateAndCorrectSettings(mergedcfg)) {
-    //      modified = true;
-    //    }
-    if (needValidation) checkEmptyBlunderThresholds(mergedcfg);
-    if (modified) {
-      writeConfig(mergedcfg, file);
+      try {
+        writeConfig(defaultCfg, file);
+      } catch (JSONException es) {
+        es.printStackTrace();
+        System.exit(1);
+      }
+      return defaultCfg;
     }
-    return mergedcfg;
   }
 
   private JSONObject loadAndMergeConfig(
