@@ -2541,7 +2541,10 @@ public class Board {
         // Will delete more than one move, ask for confirmation
         int ret =
             JOptionPane.showConfirmDialog(
-                Lizzie.frame, "这个操作将会清空后续所有步数和分支", "删除", JOptionPane.OK_CANCEL_OPTION);
+                Lizzie.frame,
+                Lizzie.resourceBundle.getString("LizzieFrame.deleteMoves"),
+                Lizzie.resourceBundle.getString("LizzieFrame.delete"),
+                JOptionPane.OK_CANCEL_OPTION);
         if (ret != JOptionPane.OK_OPTION) {
           return;
         }
