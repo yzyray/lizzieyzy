@@ -2222,13 +2222,6 @@ public class LizzieFrame extends JFrame {
     if (forEngineGame) mainPanel.addKeyListener(gtpShortKey);
   }
 
-  /** Clears related status from empty board. */
-  public void clear() {
-    if (winrateGraph != null) {
-      winrateGraph.clear();
-    }
-  }
-
   public void openOnlineDialog() {
     if (onlineDialog == null) {
       onlineDialog = new OnlineDialog(this);

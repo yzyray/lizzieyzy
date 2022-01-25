@@ -18,7 +18,7 @@ public class WinrateGraph {
   public BoardHistoryNode mouseOverNode;
   // private int numMovesOfPlayed = 0;
   public int mode = 0;
-  public double maxcoreMean = 30.0;
+  private double maxScoreLead = Lizzie.config.initialMaxScoreLead;
   private boolean largeEnough = false;
   private BoardHistoryNode forkNode = null;
   private int scoreAjustMove = -10;
@@ -879,8 +879,7 @@ public class WinrateGraph {
       //      numMoves = this.numMovesOfPlayed;
       //    }
       if (EngineManager.isEngineGame || Lizzie.board.isPkBoard) {
-        maxcoreMean = 15;
-        setMaxScoreMean(node);
+        setMaxScoreLead(node);
         if (EngineManager.isEngineGame
                 && (Lizzie.engineManager.engineList.get(
                             EngineManager.engineGameInfo.whiteEngineIndex)
@@ -930,11 +929,11 @@ public class WinrateGraph {
                       posx + ((lastOkMove) * width / numMoves),
                       posy
                           + height / 2
-                          - (int) (convertcoreMean(lastscoreMean) * height / 2 / maxcoreMean),
+                          - (int) (convertScoreLead(lastscoreMean) * height / 2 / maxScoreLead),
                       posx + ((movenum) * width / numMoves),
                       posy
                           + height / 2
-                          - (int) (convertcoreMean(curscoreMean) * height / 2 / maxcoreMean));
+                          - (int) (convertScoreLead(curscoreMean) * height / 2 / maxScoreLead));
                   g.setStroke(previousStroke);
                 }
               }
@@ -961,18 +960,18 @@ public class WinrateGraph {
                 posx + ((lastOkMove) * width / numMoves),
                 posy
                     + height / 2
-                    - (int) (convertcoreMean(lastscoreMean) * height / 2 / maxcoreMean),
+                    - (int) (convertScoreLead(lastscoreMean) * height / 2 / maxScoreLead),
                 posx + ((movenum) * width / numMoves),
                 posy
                     + height / 2
-                    - (int) (convertcoreMean(lastscoreMean) * height / 2 / maxcoreMean));
+                    - (int) (convertScoreLead(lastscoreMean) * height / 2 / maxScoreLead));
             g.setStroke(previousStroke);
           }
           if (curmovenum > 0) {
             g.setColor(Color.YELLOW);
             Font f = new Font(Config.sysDefaultFontName, Font.BOLD, largeEnough ? 14 : 13);
             g.setFont(f);
-            double scoreHeight = convertcoreMean(drawcurscoreMean) * height / 2 / maxcoreMean;
+            double scoreHeight = convertScoreLead(drawcurscoreMean) * height / 2 / maxScoreLead;
 
             String scoreString = String.format(Locale.ENGLISH, "%.1f", drawcurscoreMean);
             int stringWidth = g.getFontMetrics().stringWidth(scoreString);
@@ -1032,11 +1031,11 @@ public class WinrateGraph {
                       posx + ((lastOkMove) * width / numMoves),
                       posy
                           + height / 2
-                          - (int) (convertcoreMean(lastscoreMean) * height / 2 / maxcoreMean),
+                          - (int) (convertScoreLead(lastscoreMean) * height / 2 / maxScoreLead),
                       posx + ((movenum) * width / numMoves),
                       posy
                           + height / 2
-                          - (int) (convertcoreMean(curscoreMean) * height / 2 / maxcoreMean));
+                          - (int) (convertScoreLead(curscoreMean) * height / 2 / maxScoreLead));
                   g.setStroke(previousStroke);
                 }
               }
@@ -1063,18 +1062,18 @@ public class WinrateGraph {
                 posx + ((lastOkMove) * width / numMoves),
                 posy
                     + height / 2
-                    - (int) (convertcoreMean(lastscoreMean) * height / 2 / maxcoreMean),
+                    - (int) (convertScoreLead(lastscoreMean) * height / 2 / maxScoreLead),
                 posx + ((movenum) * width / numMoves),
                 posy
                     + height / 2
-                    - (int) (convertcoreMean(lastscoreMean) * height / 2 / maxcoreMean));
+                    - (int) (convertScoreLead(lastscoreMean) * height / 2 / maxScoreLead));
             g.setStroke(previousStroke);
           }
           if (curmovenum > 0) {
             g.setColor(Color.YELLOW);
             Font f = new Font(Config.sysDefaultFontName, Font.BOLD, largeEnough ? 14 : 13);
             g.setFont(f);
-            double scoreHeight = convertcoreMean(drawcurscoreMean) * height / 2 / maxcoreMean;
+            double scoreHeight = convertScoreLead(drawcurscoreMean) * height / 2 / maxScoreLead;
 
             String scoreString = String.format(Locale.ENGLISH, "%.1f", drawcurscoreMean);
             int stringWidth = g.getFontMetrics().stringWidth(scoreString);
@@ -1086,8 +1085,7 @@ public class WinrateGraph {
           }
         }
       } else if (Lizzie.leelaz.isSai || Lizzie.leelaz.isKatago || Lizzie.board.isKataBoard) {
-        maxcoreMean = 30;
-        setMaxScoreMean(node);
+        setMaxScoreLead(node);
         double lastscoreMean = -500;
         while (node.previous().isPresent()) {
           if (node.getData().getPlayouts() > 0) {
@@ -1127,11 +1125,11 @@ public class WinrateGraph {
                     posx + (lastOkMove * width / numMoves),
                     posy
                         + height / 2
-                        - (int) (convertcoreMean(lastscoreMean) * height / 2 / maxcoreMean),
+                        - (int) (convertScoreLead(lastscoreMean) * height / 2 / maxScoreLead),
                     posx + (movenum * width / numMoves),
                     posy
                         + height / 2
-                        - (int) (convertcoreMean(curscoreMean) * height / 2 / maxcoreMean));
+                        - (int) (convertScoreLead(curscoreMean) * height / 2 / maxScoreLead));
                 g.setStroke(previousStroke);
               }
             }
@@ -1186,7 +1184,7 @@ public class WinrateGraph {
       g.setColor(Color.YELLOW);
       Font f = new Font(Config.sysDefaultFontName, Font.BOLD, largeEnough ? 15 : 14);
       g.setFont(f);
-      double scoreHeight = convertcoreMean(drawmSoreMean) * height / 2 / maxcoreMean;
+      double scoreHeight = convertScoreLead(drawmSoreMean) * height / 2 / maxScoreLead;
       int mScoreHeight = posy + height / 2 - (int) scoreHeight - 3;
       int oriScoreHeight = mScoreHeight;
       int fontHeigt = g.getFontMetrics().getAscent() - g.getFontMetrics().getDescent();
@@ -1242,7 +1240,7 @@ public class WinrateGraph {
       g.setColor(Color.YELLOW);
       Font f = new Font(Config.sysDefaultFontName, Font.BOLD, largeEnough ? 15 : 14);
       g.setFont(f);
-      double scoreHeight = convertcoreMean(drawCurSoreMean) * height / 2 / maxcoreMean;
+      double scoreHeight = convertScoreLead(drawCurSoreMean) * height / 2 / maxScoreLead;
       int cScoreHeight = posy + height / 2 - (int) scoreHeight - 3;
       int oriScoreHeight = cScoreHeight;
       int fontHeigt = g.getFontMetrics().getAscent() - g.getFontMetrics().getDescent();
@@ -1292,34 +1290,21 @@ public class WinrateGraph {
     params[4] = numMoves;
   }
 
-  private double convertcoreMean(double coreMean) {
-
-    if (coreMean > maxcoreMean) return maxcoreMean;
-    if (coreMean < 0 && Math.abs(coreMean) > maxcoreMean) return -maxcoreMean;
+  private double convertScoreLead(double coreMean) {
+    if (coreMean > maxScoreLead) return maxScoreLead;
+    if (coreMean < 0 && Math.abs(coreMean) > maxScoreLead) return -maxScoreLead;
     return coreMean;
   }
 
-  //  private double convertWinrate(double winrate) {
-  //    double maxHandicap = 10;
-  //    if (Lizzie.config.handicapInsteadOfWinrate) {
-  //      double handicap = Lizzie.leelaz.winrateToHandicap(winrate);
-  //      // handicap == + maxHandicap => r == 1.0
-  //      // handicap == - maxHandicap => r == 0.0
-  //      double r = 0.5 + handicap / (2 * maxHandicap);
-  //      return Math.max(0, Math.min(r, 1)) * 100;
-  //    } else {
-  //      return winrate;
-  //    }
-  //  }
-
-  public void setMaxScoreMean(BoardHistoryNode lastMove) {
+  private void setMaxScoreLead(BoardHistoryNode lastMove) {
+    resetMaxScoreLead();
     while (lastMove.previous().isPresent()) {
       Double scoreMean = Math.abs(lastMove.getData().scoreMean);
-      if (scoreMean > maxcoreMean) maxcoreMean = scoreMean;
+      if (scoreMean > maxScoreLead) maxScoreLead = scoreMean;
       lastMove = lastMove.previous().get();
     }
     Double scoreMean = Math.abs(lastMove.getData().scoreMean);
-    if (scoreMean > maxcoreMean) maxcoreMean = scoreMean;
+    if (scoreMean > maxScoreLead) maxScoreLead = scoreMean;
   }
 
   public void setMouseOverNode(BoardHistoryNode node) {
@@ -1353,8 +1338,8 @@ public class WinrateGraph {
     }
   }
 
-  /** Clears winrate status from empty board. */
-  public void clear() {
-    // this.numMovesOfPlayed = 0;
+  public void resetMaxScoreLead() {
+    maxScoreLead = Lizzie.config.initialMaxScoreLead;
+    ;
   }
 }

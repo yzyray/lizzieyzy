@@ -1865,7 +1865,7 @@ public class FloatBoardRenderer {
                 }
               }
               String winrateText = String.format(Locale.ENGLISH, "%.1f", roundedWinrate);
-              String scoreLeadText = String.format(Locale.ENGLISH, "%.1f", score);
+              String scoreLeadText = Utils.convertScoreToString(score, maxScoreMean);
               if (Lizzie.config.useDefaultInfoRowOrder
                   || Lizzie.config.suggestionInfoWinrate < Lizzie.config.suggestionInfoScoreLead) {
                 if (shouldShowMaxColorWinrate) g.setColor(maxColor);
@@ -1946,7 +1946,7 @@ public class FloatBoardRenderer {
                 }
               }
               String playoutsText = Utils.getPlayoutsString(move.playouts);
-              String scoreLeadText = String.format(Locale.ENGLISH, "%.1f", score);
+              String scoreLeadText = Utils.convertScoreToString(score, maxScoreMean);
               if (Lizzie.config.useDefaultInfoRowOrder
                   || Lizzie.config.suggestionInfoPlayouts < Lizzie.config.suggestionInfoScoreLead) {
                 if (shouldShowMaxColorPlayouts) g.setColor(maxColor);

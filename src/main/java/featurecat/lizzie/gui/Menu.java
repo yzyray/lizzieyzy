@@ -23,6 +23,7 @@ import java.net.URI;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import javax.imageio.ImageIO;
@@ -1359,6 +1360,41 @@ public class Menu extends JMenuBar {
           }
         });
     winrate.add(showMouseOverWinrateGraph);
+
+    final JFontMenuItem initialMaxScoreLead =
+        new JFontMenuItem(resourceBundle.getString("Menu.initialMaxScoreLead"));
+    initialMaxScoreLead.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            SwingUtilities.invokeLater(
+                new Runnable() {
+                  public void run() {
+                    String result =
+                        JOptionPane.showInputDialog(
+                            Lizzie.frame,
+                            resourceBundle.getString("Menu.initialMaxScoreLead.message")
+                                + String.format(
+                                    Locale.ENGLISH, "%.1f", Lizzie.config.initialMaxScoreLead),
+                            resourceBundle.getString("Menu.initialMaxScoreLead.title"),
+                            JOptionPane.INFORMATION_MESSAGE);
+                    if (result != null)
+                      try {
+                        double value = Math.abs(Double.parseDouble(result));
+                        Lizzie.config.initialMaxScoreLead = value;
+                        Lizzie.config.uiConfig.put(
+                            "initial-max-score-lead", Lizzie.config.initialMaxScoreLead);
+                        LizzieFrame.winrateGraph.resetMaxScoreLead();
+                        Lizzie.frame.refresh();
+                      } catch (NumberFormatException ex) {
+                        Utils.showMsg(resourceBundle.getString("Menu.inputDoubleTip"));
+                        return;
+                      }
+                  }
+                });
+          }
+        });
+    winrate.add(initialMaxScoreLead);
 
     final JFontMenuItem setReplayInterval =
         new JFontMenuItem(

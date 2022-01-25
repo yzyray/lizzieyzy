@@ -637,8 +637,9 @@ public class Config {
   public boolean contributeHideResult = false;
   public boolean contributeHideConsole = false;
   public boolean contributeHideRules = false;
-
   public boolean showContribute = true;
+
+  public double initialMaxScoreLead = 15;
 
   private JSONObject loadAndMergeSaveBoardConfig(
       JSONObject defaultCfg, String fileName, boolean needValidation) throws IOException {
@@ -1379,6 +1380,7 @@ public class Config {
     contributeHideRules = uiConfig.optBoolean("contribute-hide-rules", false);
     showContribute = uiConfig.optBoolean("show-Contribute", true);
 
+    initialMaxScoreLead = uiConfig.optDouble("initial-max-score-lead", 15.0);
     chkDymPDA = uiConfig.optBoolean("chk-dym-pda", false);
     chkStaticPDA = uiConfig.optBoolean("chk-static-pda", false);
     chkAutoPDA = uiConfig.optBoolean("chk-auto-pda", false);

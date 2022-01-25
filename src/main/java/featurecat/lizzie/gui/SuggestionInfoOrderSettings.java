@@ -873,7 +873,7 @@ public class SuggestionInfoOrderSettings extends JDialog {
           }
         }
         String winrateText = String.format(Locale.ENGLISH, "%.1f", roundedWinrate);
-        String scoreLeadText = String.format(Locale.ENGLISH, "%.1f", score);
+        String scoreLeadText = Utils.convertScoreToString(score, 5.0);
         if (currerentUseDefaultInfoRowOrder
             || currentSuggestionInfoWinrate < currentSuggestionInfoScoreLead) {
           if (shouldShowMaxColorWinrate) g.setColor(maxColor);
@@ -953,7 +953,7 @@ public class SuggestionInfoOrderSettings extends JDialog {
           }
         }
         String playoutsText = Utils.getPlayoutsString(move.playouts);
-        String scoreLeadText = String.format(Locale.ENGLISH, "%.1f", score);
+        String scoreLeadText = Utils.convertScoreToString(score, 5.0);
         if (currerentUseDefaultInfoRowOrder
             || currentSuggestionInfoPlayouts < currentSuggestionInfoScoreLead) {
           if (shouldShowMaxColorPlayouts) g.setColor(maxColor);

@@ -391,7 +391,7 @@ public class EngineManager {
     }
 
     Lizzie.frame.removeInput(true);
-    LizzieFrame.winrateGraph.maxcoreMean = 15;
+    LizzieFrame.winrateGraph.resetMaxScoreLead();
     Lizzie.frame.isPlayingAgainstLeelaz = false;
     Lizzie.frame.isAnaPlayingAgainstLeelaz = false;
 

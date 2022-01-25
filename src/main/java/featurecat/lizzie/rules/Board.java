@@ -2720,8 +2720,7 @@ public class Board {
   //	    initializeForPk();
   //	  }
   public void clear(boolean isEngineGame) {
-    if (isEngineGame) LizzieFrame.winrateGraph.maxcoreMean = 15;
-    else LizzieFrame.winrateGraph.maxcoreMean = 30;
+    LizzieFrame.winrateGraph.resetMaxScoreLead();
     if (Lizzie.frame.readBoard != null) {
       Lizzie.frame.readBoard.firstSync = true;
     }
@@ -2762,7 +2761,7 @@ public class Board {
       Lizzie.frame.readBoard.firstSync = true;
     }
     Lizzie.frame.resetTitle();
-    LizzieFrame.winrateGraph.maxcoreMean = 30;
+    LizzieFrame.winrateGraph.resetMaxScoreLead();
     hasStartStone = false;
     startStonelist = new ArrayList<Movelist>();
     movelistwr.clear();
