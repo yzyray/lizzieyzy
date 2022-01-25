@@ -30,8 +30,10 @@ import java.util.stream.Stream;
 import javax.swing.*;
 
 public class Board {
-  public static int boardHeight = 19;
-  public static int boardWidth = 19;
+  public static int boardHeight = 11;
+  public static int boardWidth = 15;
+  public static int hexHeight = 5;
+  public static int hexWidth = 5;
   public int insertoricurrentMoveNumber = 0;
   public ArrayList<Integer> insertorimove = new ArrayList<Integer>();
   public ArrayList<Boolean> insertoriisblack = new ArrayList<Boolean>();
@@ -70,6 +72,10 @@ public class Board {
   private boolean neverPassedInGame = true;
 
   public Board() {
+    hexHeight = Lizzie.config.otherSizeHeight;
+    hexWidth = Lizzie.config.otherSizeWidth;
+    boardWidth = 2 * hexWidth + hexHeight;
+    boardHeight = 2 * hexHeight + 1;
     initialize(false);
   }
 
@@ -627,15 +633,19 @@ public class Board {
    * @param size
    */
   public void reopen(int width, int height) {
-    width = (width >= 2) ? width : 19;
-    height = (height >= 2) ? height : 19;
-
-    if (width != boardWidth || height != boardHeight) {
+    if (width != hexWidth || height != hexHeight) {
+      int expandX = 2 * width + height;
+      int expandY = 2 * height + 1;
+      Lizzie.board.saveHexWH(width, height);
+      width = expandX;
+      height = expandY;
+      width = (width >= 2) ? width : 19;
+      height = (height >= 2) ? height : 19;
       boardWidth = width;
       boardHeight = height;
       Zobrist.init();
       clear(false);
-      Lizzie.leelaz.boardSize(boardWidth, boardHeight);
+      Lizzie.leelaz.boardSize(hexWidth, hexHeight);
       Lizzie.leelaz.ponder();
       forceRefresh = true;
       forceRefresh2 = true;
@@ -4224,5 +4234,10 @@ public class Board {
     }
     if (blackStones > 1) return true;
     else return false;
+  }
+
+  public void saveHexWH(int widthNumber, int heightNumber) {
+    hexHeight = heightNumber;
+    hexWidth = widthNumber;
   }
 }

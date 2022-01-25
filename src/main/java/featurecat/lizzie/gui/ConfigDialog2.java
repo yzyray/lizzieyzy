@@ -3197,8 +3197,8 @@ public class ConfigDialog2 extends JDialog {
         rdoBoardSizeOther.setSelected(true);
         txtBoardWidth.setEnabled(true);
         txtBoardHeight.setEnabled(true);
-        Lizzie.config.otherSizeWidth = width;
-        Lizzie.config.otherSizeHeight = height;
+        Lizzie.config.otherSizeWidth = Board.hexWidth;
+        Lizzie.config.otherSizeHeight = Board.hexHeight;
         break;
     }
     txtBoardWidth.setText(String.valueOf(Lizzie.config.otherSizeWidth));
@@ -4005,9 +4005,11 @@ public class ConfigDialog2 extends JDialog {
       Lizzie.config.uiConfig.putOpt(
           "show-scoremean-in-suggestion", Lizzie.config.showScoremeanInSuggestion);
       // Lizzie.config.uiConfig.put("gtp-console-style", tpGtpConsoleStyle.getText());
-      Lizzie.config.uiConfig.put("theme", cmbThemes.getSelectedItem());
-      writeThemeValues();
-      Lizzie.config.readThemeVaule(false);
+      if (cmbThemes != null) {
+        Lizzie.config.uiConfig.put("theme", cmbThemes.getSelectedItem());
+        writeThemeValues();
+        Lizzie.config.readThemeVaule(false);
+      }
       Lizzie.config.save();
     } catch (IOException e) {
       e.printStackTrace();

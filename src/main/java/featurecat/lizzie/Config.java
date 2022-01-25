@@ -579,8 +579,8 @@ public class Config {
   public boolean readBoardPonder = false;
   public boolean readBoardGetFocus = true;
 
-  public int otherSizeWidth = 21;
-  public int otherSizeHeight = 21;
+  public int otherSizeWidth = 5;
+  public int otherSizeHeight = 5;
 
   public boolean stopAtEmptyBoard = false;
 
@@ -1343,8 +1343,8 @@ public class Config {
     directlyWithBestMove = uiConfig.optBoolean("directly-with-best-move", false);
     delayShowCandidates = uiConfig.optBoolean("delay-show-candidates", false);
     delayCandidatesSeconds = uiConfig.optDouble("delay-candidates-seconds", 10.0);
-    otherSizeWidth = uiConfig.optInt("other-size-width", 21);
-    otherSizeHeight = uiConfig.optInt("other-size-height", 21);
+    otherSizeWidth = uiConfig.optInt("other-size-width", 5);
+    otherSizeHeight = uiConfig.optInt("other-size-height", 5);
     useFoxStyleCoords = uiConfig.optBoolean("use-fox-style-coords", false);
     useNumCoordsFromTop = uiConfig.optBoolean("use-num-coords-from-top", false);
     useNumCoordsFromBottom = uiConfig.optBoolean("use-num-coords-from-bottom", false);
