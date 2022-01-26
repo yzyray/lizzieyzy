@@ -4240,4 +4240,15 @@ public class Board {
     hexHeight = heightNumber;
     hexWidth = widthNumber;
   }
+
+  public boolean convertHexCoords(int x, int y) {
+    // TODO Auto-generated method stub
+    int y0, x0;
+    if (y % 2 == 0) return false;
+    y0 = (y - 1) / 2;
+    if ((x - y0) % 2 == 0) return false;
+    x0 = (x - y0 - 1) / 2;
+    if (x0 < 0 || y0 < 0 || x0 >= hexWidth || y0 >= hexHeight) return false;
+    return true;
+  }
 }

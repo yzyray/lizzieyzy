@@ -6096,6 +6096,7 @@ public class LizzieFrame extends JFrame {
     if (boardCoordinates.isPresent()) {
       if (Lizzie.frame.isContributing) return;
       int[] coords = boardCoordinates.get();
+      if (!Lizzie.board.convertHexCoords(coords[0], coords[1])) return;
       if (Lizzie.frame.bothSync) {
         if (blackorwhite == 0) Lizzie.board.place(coords[0], coords[1]);
         if (blackorwhite == 1) Lizzie.board.place(coords[0], coords[1], Stone.BLACK);

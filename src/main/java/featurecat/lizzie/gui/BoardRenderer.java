@@ -898,7 +898,7 @@ public class BoardRenderer {
                   scaledMarginWidth + squareWidth * i,
                   boardHeight - scaledMarginHeight * 4 / 10,
                   LizzieFrame.uiFont,
-                  String.valueOf(i / 2 - 1),
+                  String.valueOf((i - Board.hexHeight) / 2 + 1),
                   stoneRadius * 4 / 5,
                   stoneRadius);
           }
@@ -2908,13 +2908,14 @@ public class BoardRenderer {
               }
               boolean shouldShowMaxColorScoreLead =
                   canShowMaxColor && move.scoreMean == maxScoreMean;
+              String scoreLeadText = Utils.convertScoreToString(score, maxScoreMean);
               if (shouldShowMaxColorScoreLead) g.setColor(maxColor);
               drawString(
                   g,
                   suggestionX,
                   suggestionY,
                   LizzieFrame.winrateFont,
-                  String.format(Locale.ENGLISH, "%.1f", score),
+                  scoreLeadText,
                   stoneRadius,
                   stoneRadius * 1.7);
               if (shouldShowMaxColorScoreLead) g.setColor(oriColor);

@@ -1055,13 +1055,14 @@ public class SuggestionInfoOrderSettings extends JDialog {
           }
         }
         boolean shouldShowMaxColorScoreLead = canShowMaxColor && move.scoreMean == maxScoreMean;
+        String scoreLeadText = Utils.convertScoreToString(score, 5.0);
         if (shouldShowMaxColorScoreLead) g.setColor(maxColor);
         drawString(
             g,
             suggestionX,
             suggestionY,
             LizzieFrame.winrateFont,
-            String.format(Locale.ENGLISH, "%.1f", score),
+            scoreLeadText,
             stoneRadius,
             stoneRadius * 1.7);
         if (shouldShowMaxColorScoreLead) g.setColor(oriColor);
