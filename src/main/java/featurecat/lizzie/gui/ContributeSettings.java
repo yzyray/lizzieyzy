@@ -49,8 +49,11 @@ public class ContributeSettings extends JDialog {
         Lizzie.resourceBundle.getString(
             "ContributeSettings.engineTip"); // "请务必使用官方KataGo引擎,否则无法跑谱贡献";
     String gamesTip =
-        Lizzie.resourceBundle.getString(
-            "ContributeSettings.gamesTip"); // "同时进行多盘对局以增加GPU/CPU利用率,设置为default_gtp.cfg中numSearchThreads的数值即可";
+        Lizzie.resourceBundle.getString("ContributeSettings.gamesTip")
+            + (OS.isWindows()
+                ? ""
+                : Lizzie.resourceBundle.getString(
+                    "ContributeSettings.gamesTip2")); // "同时进行多盘对局以增加GPU/CPU利用率,设置为default_gtp.cfg中numSearchThreads的数值即可";
     String configTip =
         Lizzie.resourceBundle.getString(
             "ContributeSettings.configTip"); // "可配置使用的显卡数量等,不同于普通的分析引擎配置文件,默认名字为contribute_example.cfg";
