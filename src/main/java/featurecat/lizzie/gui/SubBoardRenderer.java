@@ -840,7 +840,9 @@ public class SubBoardRenderer {
             this.displayedBranchLength > 0 ? displayedBranchLength : 199,
             true,
             variationBlackToPlay,
-            stonesTemp);
+            stonesTemp,
+            false,
+            null);
     //    mouseOverCoords = suggestedMove.get().coordinate;
     branchOpt = Optional.of(branch);
     variationOpt = Optional.of(variation);

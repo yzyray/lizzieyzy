@@ -24,7 +24,9 @@ public class Branch {
       int length,
       boolean fromSubboard,
       boolean blackToPlay,
-      Stone[] stonesTemp) {
+      Stone[] stonesTemp,
+      boolean forMouseOnStone,
+      BoardData forMouseOnStoneData) {
     int[] moveNumberList = new int[Board.boardWidth * Board.boardHeight];
     isNewStone = new boolean[Board.boardWidth * Board.boardHeight];
     pvVisitsList = new int[Board.boardWidth * Board.boardHeight];
@@ -33,49 +35,28 @@ public class Branch {
     double winrate = 0.0;
     int playouts = 0;
     //  branchLength = variation.size();
-    if (fromSubboard) {
+    if (forMouseOnStone) {
       this.data =
           new BoardData(
-              stonesTemp.clone(), // stonesTemp
-              board.getLastMove(),
-              board.getData().lastMoveColor,
-              blackToPlay,
-              board.getData().zobrist.clone(),
+              forMouseOnStoneData.stones.clone(),
+              forMouseOnStoneData.lastMove,
+              forMouseOnStoneData.lastMoveColor,
+              forMouseOnStoneData.blackToPlay,
+              forMouseOnStoneData.zobrist.clone(),
               moveNumber,
               moveNumberList,
-              board.getData().blackCaptures,
-              board.getData().whiteCaptures,
+              forMouseOnStoneData.blackCaptures,
+              forMouseOnStoneData.whiteCaptures,
               winrate,
               playouts);
     } else {
-      if (stonesTemp != null)
+      if (fromSubboard) {
         this.data =
             new BoardData(
-                stonesTemp.clone(),
-                board.getHistory().getCurrentHistoryNode().previous().get().getData().lastMove,
-                board.getHistory().getCurrentHistoryNode().previous().get().getData().lastMoveColor,
-                board.getHistory().getCurrentHistoryNode().previous().get().getData().blackToPlay,
-                board
-                    .getHistory()
-                    .getCurrentHistoryNode()
-                    .previous()
-                    .get()
-                    .getData()
-                    .zobrist
-                    .clone(),
-                moveNumber,
-                moveNumberList,
-                board.getHistory().getCurrentHistoryNode().previous().get().getData().blackCaptures,
-                board.getHistory().getCurrentHistoryNode().previous().get().getData().whiteCaptures,
-                winrate,
-                playouts);
-      else
-        this.data =
-            new BoardData(
-                board.getStones().clone(),
+                stonesTemp.clone(), // stonesTemp
                 board.getLastMove(),
                 board.getData().lastMoveColor,
-                board.getData().blackToPlay,
+                blackToPlay,
                 board.getData().zobrist.clone(),
                 moveNumber,
                 moveNumberList,
@@ -83,8 +64,62 @@ public class Branch {
                 board.getData().whiteCaptures,
                 winrate,
                 playouts);
+      } else {
+        if (stonesTemp != null)
+          this.data =
+              new BoardData(
+                  stonesTemp.clone(),
+                  board.getHistory().getCurrentHistoryNode().previous().get().getData().lastMove,
+                  board
+                      .getHistory()
+                      .getCurrentHistoryNode()
+                      .previous()
+                      .get()
+                      .getData()
+                      .lastMoveColor,
+                  board.getHistory().getCurrentHistoryNode().previous().get().getData().blackToPlay,
+                  board
+                      .getHistory()
+                      .getCurrentHistoryNode()
+                      .previous()
+                      .get()
+                      .getData()
+                      .zobrist
+                      .clone(),
+                  moveNumber,
+                  moveNumberList,
+                  board
+                      .getHistory()
+                      .getCurrentHistoryNode()
+                      .previous()
+                      .get()
+                      .getData()
+                      .blackCaptures,
+                  board
+                      .getHistory()
+                      .getCurrentHistoryNode()
+                      .previous()
+                      .get()
+                      .getData()
+                      .whiteCaptures,
+                  winrate,
+                  playouts);
+        else
+          this.data =
+              new BoardData(
+                  board.getStones().clone(),
+                  board.getLastMove(),
+                  board.getData().lastMoveColor,
+                  board.getData().blackToPlay,
+                  board.getData().zobrist.clone(),
+                  moveNumber,
+                  moveNumberList,
+                  board.getData().blackCaptures,
+                  board.getData().whiteCaptures,
+                  winrate,
+                  playouts);
+      }
     }
-
     for (int i = 0; i < variation.size() && i < length; i++) {
       Optional<int[]> coordOpt = Board.asCoordinates(variation.get(i));
       if (!coordOpt.isPresent() || !Board.isValid(coordOpt.get()[0], coordOpt.get()[1])) {

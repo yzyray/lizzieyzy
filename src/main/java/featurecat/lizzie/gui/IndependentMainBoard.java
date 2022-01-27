@@ -425,6 +425,7 @@ public class IndependentMainBoard extends JFrame {
             btnClose.setVisible(false);
             lockUnlock.setVisible(false);
             topUntop.setVisible(false);
+            Lizzie.board.clearPressStoneInfo(null);
             if (!Lizzie.frame.isShowingRightMenu) {
               mouseOverCoordinate = LizzieFrame.outOfBoundCoordinate;
               isMouseOver = false;
@@ -507,10 +508,12 @@ public class IndependentMainBoard extends JFrame {
             if (tempDrag) DraggedDragged(Utils.zoomOut(e.getX()), Utils.zoomOut(e.getY()));
             else {
               if (Input.selectMode) {
+                Lizzie.board.clearPressStoneInfo(null);
                 return;
               }
               if (Lizzie.frame.RightClickMenu.isVisible()
                   || Lizzie.frame.RightClickMenu2.isVisible()) {
+                Lizzie.board.clearPressStoneInfo(null);
                 return;
               }
               if (Draggedmode
@@ -520,7 +523,7 @@ public class IndependentMainBoard extends JFrame {
                   && !Lizzie.frame.isAnaPlayingAgainstLeelaz
                   && Lizzie.config.allowDrag) {
                 DraggedMoved(x, y);
-
+                Lizzie.board.clearPressStoneInfo(null);
                 return;
               }
               boolean needRepaint = false;
@@ -578,10 +581,10 @@ public class IndependentMainBoard extends JFrame {
                 if (Lizzie.frame.shouldShowRect()) {
                   isShowingRect = true;
                   needRepaint = true;
-
                   boardRenderer.drawmoveblock(
-                      coords.get()[0], coords.get()[1], Lizzie.board.getHistory().isBlacksTurn());
+                      curCoords[0], curCoords[1], Lizzie.board.getHistory().isBlacksTurn());
                 }
+                Lizzie.board.clearPressStoneInfo(curCoords);
               } else {
                 if (isMouseOver) {
                   mouseOverCoordinate = LizzieFrame.outOfBoundCoordinate;
@@ -597,6 +600,7 @@ public class IndependentMainBoard extends JFrame {
                     isShowingRect = false;
                   }
                 }
+                Lizzie.board.clearPressStoneInfo(null);
               }
               if (needRepaint) refresh();
 
@@ -775,6 +779,9 @@ public class IndependentMainBoard extends JFrame {
     boardCoordinates = boardRenderer.convertScreenToCoordinates(x, y);
     if (boardCoordinates.isPresent()) {
       int[] coords = boardCoordinates.get();
+      if (Lizzie.board.hasStoneAt(coords)) {
+        Lizzie.board.setPressStoneInfo(coords);
+      }
       if (Lizzie.frame.bothSync) {
         if (Lizzie.frame.blackorwhite == 0) Lizzie.board.place(coords[0], coords[1]);
         if (Lizzie.frame.blackorwhite == 1) Lizzie.board.place(coords[0], coords[1], Stone.BLACK);
@@ -850,7 +857,6 @@ public class IndependentMainBoard extends JFrame {
       Optional<int[]> boardCoordinates = boardRenderer.convertScreenToCoordinates(x, y);
       if (boardCoordinates.isPresent()) {
         int[] coords = boardCoordinates.get();
-
         boardRenderer.drawmovestone(coords[0], coords[1], draggedstone);
         refresh();
       }

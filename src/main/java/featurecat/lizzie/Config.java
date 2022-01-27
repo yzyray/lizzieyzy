@@ -35,7 +35,7 @@ public class Config {
   public boolean showCaptured = true;
   // public boolean handicapInsteadOfWinrate = false;
   //  public boolean showDynamicKomi = false;
-  public double replayBranchIntervalSeconds = 0.9;
+  public double replayBranchIntervalSeconds = 0.5;
   public boolean showCoordinates = true;
   public boolean colorByWinrateInsteadOfVisits = false;
   // public boolean showlcbwinrate = false;
@@ -641,6 +641,7 @@ public class Config {
   public boolean contributeUseSlowShutdown = true;
 
   public double initialMaxScoreLead = 15;
+  public boolean enableClickReview = true;
 
   private JSONObject loadAndMergeSaveBoardConfig(
       JSONObject defaultCfg, String fileName, boolean needValidation) throws IOException {
@@ -1134,7 +1135,7 @@ public class Config {
     suggestionsalwaysontop = uiConfig.optBoolean("suggestions-always-ontop", false);
     appendWinrateToComment = uiConfig.optBoolean("append-winrate-to-comment", true);
     showCoordinates = uiConfig.optBoolean("show-coordinates", true);
-    replayBranchIntervalSeconds = uiConfig.optDouble("replay-branch-interval-seconds", 0.9);
+    replayBranchIntervalSeconds = uiConfig.optDouble("replay-branch-interval-seconds", 0.5);
     colorByWinrateInsteadOfVisits = uiConfig.optBoolean("color-by-winrate-instead-of-visits");
     boardPositionProportion = uiConfig.optInt("board-postion-proportion", 4);
     showPvVisits = uiConfig.optBoolean("show-pv-visits", false);
@@ -1382,6 +1383,7 @@ public class Config {
     showContribute = uiConfig.optBoolean("show-Contribute", true);
     contributeUseSlowShutdown = uiConfig.optBoolean("contribute-use-slow-shutdown", true);
 
+    enableClickReview = uiConfig.optBoolean("enable-click-review", true);
     initialMaxScoreLead = uiConfig.optDouble("initial-max-score-lead", 15.0);
     chkDymPDA = uiConfig.optBoolean("chk-dym-pda", false);
     chkStaticPDA = uiConfig.optBoolean("chk-static-pda", false);

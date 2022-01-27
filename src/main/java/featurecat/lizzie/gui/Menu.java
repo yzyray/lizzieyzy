@@ -598,6 +598,17 @@ public class Menu extends JMenuBar {
         });
     nextMoveHint.add(minPlayoutsForNextMove);
 
+    final JFontCheckBoxMenuItem allowClickReview =
+        new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.allowClickReview"));
+    allowClickReview.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.config.enableClickReview = !Lizzie.config.enableClickReview;
+            Lizzie.config.uiConfig.put("enable-click-review", Lizzie.config.enableClickReview);
+          }
+        });
+    viewMenu.add(allowClickReview);
+
     final JFontMenuItem deletePersistFile =
         new JFontMenuItem(resourceBundle.getString("Menu.deletePersistFile")); // ("重置界面位置");
     deletePersistFile.addActionListener(
@@ -609,7 +620,6 @@ public class Menu extends JMenuBar {
           }
         });
     viewMenu.add(deletePersistFile);
-
     viewMenu.addSeparator();
 
     final JFontCheckBoxMenuItem noMoveNum =
@@ -2316,8 +2326,9 @@ public class Menu extends JMenuBar {
 
     viewMenu.addMenuListener(
         new MenuListener() {
-
           public void menuSelected(MenuEvent e) {
+            if (Lizzie.config.enableClickReview) allowClickReview.setState(true);
+            else allowClickReview.setState(false);
             if (Lizzie.config.ignoreOutOfWidth) ignoreOutOfWidth.setState(true);
             else ignoreOutOfWidth.setState(false);
             if (Lizzie.config.showScrollVariation) {

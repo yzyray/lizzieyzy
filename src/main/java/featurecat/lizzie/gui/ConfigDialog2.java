@@ -231,8 +231,9 @@ public class ConfigDialog2 extends JDialog {
   private JCheckBox chkShowTitleWr;
   private JCheckBox chkAlwaysGtp;
   private JCheckBox chkNoCapture;
-  private JCheckBox chkEnableDoubCli;
+  private JCheckBox chkEnableDoubClick;
   private JCheckBox chkEnableDragStone;
+  private JCheckBox chkEnableClickReview;
   private JCheckBox chkNoRefreshSub;
   private JCheckBox chkLizzieCache;
 
@@ -1314,14 +1315,23 @@ public class ConfigDialog2 extends JDialog {
     lblEnableDoubleClickFindMove.setBounds(312, 641, 207, 15);
     uiTab.add(lblEnableDoubleClickFindMove);
 
+    chkEnableDoubClick = new JCheckBox();
+    chkEnableDoubClick.setBounds(Lizzie.config.isChinese ? 400 : 446, 638, 23, 23);
+    uiTab.add(chkEnableDoubClick);
+
+    JLabel lblEnableClickReview =
+        new JLabel(resourceBundle.getString("LizzieConfig.lblEnableClickReview"));
+    lblEnableClickReview.setBounds(471, 641, 207, 15);
+    uiTab.add(lblEnableClickReview);
+
+    chkEnableClickReview = new JCheckBox();
+    chkEnableClickReview.setBounds(Lizzie.config.isChinese ? 560 : 582, 638, 23, 23);
+    uiTab.add(chkEnableClickReview);
+
     JLabel lblEnableDragStone =
         new JLabel(resourceBundle.getString("LizzieConfig.lblEnableDragStone")); // ("启用拖拽棋子功能");
     lblEnableDragStone.setBounds(608, 641, 86, 15);
     uiTab.add(lblEnableDragStone);
-
-    chkEnableDoubCli = new JCheckBox(); // $NON-NLS-1$
-    chkEnableDoubCli.setBounds(532, 638, 26, 23);
-    uiTab.add(chkEnableDoubCli);
 
     chkEnableDragStone = new JCheckBox();
     chkEnableDragStone.setBounds(685, 638, 26, 23);
@@ -1924,8 +1934,9 @@ public class ConfigDialog2 extends JDialog {
     else txtAdvanceTime.setEditable(false);
     if (Lizzie.config.noCapture) chkNoCapture.setSelected(true);
 
-    if (Lizzie.config.allowDoubleClick) chkEnableDoubCli.setSelected(true);
+    if (Lizzie.config.allowDoubleClick) chkEnableDoubClick.setSelected(true);
     if (Lizzie.config.allowDrag) chkEnableDragStone.setSelected(true);
+    if (Lizzie.config.enableClickReview) chkEnableClickReview.setSelected(true);
     if (Lizzie.config.noRefreshOnSub) chkNoRefreshSub.setSelected(true);
     if (Lizzie.config.enableLizzieCache) chkLizzieCache.setSelected(true);
 
@@ -3801,10 +3812,12 @@ public class ConfigDialog2 extends JDialog {
       Lizzie.config.uiConfig.put("show-right-menu", Lizzie.config.showRightMenu);
       Lizzie.config.enableLizzieCache = chkLizzieCache.isSelected();
       Lizzie.config.leelazConfig.put("enable-lizzie-cache", Lizzie.config.enableLizzieCache);
-      Lizzie.config.allowDoubleClick = chkEnableDoubCli.isSelected();
+      Lizzie.config.allowDoubleClick = chkEnableDoubClick.isSelected();
       Lizzie.config.uiConfig.put("allow-double-click", Lizzie.config.allowDoubleClick);
       Lizzie.config.allowDrag = chkEnableDragStone.isSelected();
       Lizzie.config.uiConfig.put("allow-drag", Lizzie.config.allowDrag);
+      Lizzie.config.enableClickReview = chkEnableClickReview.isSelected();
+      Lizzie.config.uiConfig.put("enable-click-review", Lizzie.config.enableClickReview);
       Lizzie.config.noRefreshOnSub = chkNoRefreshSub.isSelected();
       Lizzie.config.uiConfig.put("no-refresh-on-sub", Lizzie.config.noRefreshOnSub);
 

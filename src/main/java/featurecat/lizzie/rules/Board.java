@@ -69,6 +69,11 @@ public class Board {
   public boolean isExtremlySmallBoard = false;
   private boolean neverPassedInGame = true;
 
+  public boolean isMouseOnStone = false;
+  private boolean preMouseOnStone = false;
+  public BoardHistoryNode mouseOnNode;
+  public int[] mouseOnStoneCoords = LizzieFrame.outOfBoundCoordinate;
+
   public Board() {
     initialize(false);
   }
@@ -1575,11 +1580,11 @@ public class Board {
       Lizzie.frame.estimateResults.iscounted = false;
       Lizzie.frame.isCounting = false;
     }
-    updateWinrate();
-    if (EngineManager.isEngineGame) SGFParser.appendTime();
     synchronized (this) {
       if (!isValid(x, y) || (history.getStones()[getIndex(x, y)] != Stone.EMPTY && !newBranch))
         return;
+      updateWinrate();
+      if (EngineManager.isEngineGame) SGFParser.appendTime();
       // modifyStart();
       if (!forSync
           && !Lizzie.frame.bothSync
@@ -4224,5 +4229,94 @@ public class Board {
     }
     if (blackStones > 1) return true;
     else return false;
+  }
+
+  public boolean hasStoneAt(int[] coords) {
+    if (history.getStones()[getIndex(coords[0], coords[1])] != Stone.EMPTY) return true;
+    return false;
+  }
+
+  public void clearPressStoneInfo(int[] coords) {
+    if (preMouseOnStone) {
+      if (coords == null
+          || coords[0] != mouseOnStoneCoords[0]
+          || coords[1] != mouseOnStoneCoords[1]) {
+        isMouseOnStone = false;
+        preMouseOnStone = false;
+        mouseOnStoneCoords = LizzieFrame.outOfBoundCoordinate;
+        if (reviewThread != null) reviewThread.interrupt();
+        Lizzie.frame.refresh();
+      }
+    }
+  }
+
+  public void setPressStoneInfo(int[] coords) {
+    if (!Lizzie.config.enableClickReview) {
+      return;
+    }
+    isMouseOnStone = false;
+    preMouseOnStone = true;
+    mouseOnStoneCoords = coords;
+    mouseOnNode = null;
+    Runnable runnable =
+        new Runnable() {
+          public void run() {
+            try {
+              Thread.sleep(50);
+            } catch (InterruptedException e) {
+              // TODO Auto-generated catch block
+              e.printStackTrace();
+            }
+            if (preMouseOnStone) {
+              isMouseOnStone = true;
+              BoardHistoryNode node = getHistory().getCurrentHistoryNode();
+              while (node.previous().isPresent()) {
+                if (node.getData().lastMove.isPresent()) {
+                  if (node.getData().lastMove.get()[0] == mouseOnStoneCoords[0]
+                      && node.getData().lastMove.get()[1] == mouseOnStoneCoords[1]) {
+                    mouseOnNode = node;
+                    break;
+                  }
+                }
+                node = node.previous().get();
+              }
+              if (mouseOnNode != null) {
+                isMouseOnStone = true;
+                startReviewThread();
+              } else {
+                isMouseOnStone = false;
+                mouseOnStoneCoords = LizzieFrame.outOfBoundCoordinate;
+              }
+            }
+          }
+        };
+    Thread thread = new Thread(runnable);
+    thread.start();
+  }
+
+  private Thread reviewThread;
+  public int reviewLength;
+
+  private void startReviewThread() {
+    int secs = (int) (Lizzie.config.replayBranchIntervalSeconds * 1000);
+    if (reviewThread != null) reviewThread.interrupt();
+    Runnable runnable =
+        new Runnable() {
+          public void run() {
+            reviewLength = 1;
+            Lizzie.frame.refresh();
+            while (isMouseOnStone) {
+              try {
+                Thread.sleep(secs);
+              } catch (InterruptedException e) {
+                return;
+              }
+              reviewLength++;
+              Lizzie.frame.refresh();
+            }
+          }
+        };
+    reviewThread = new Thread(runnable);
+    reviewThread.start();
   }
 }

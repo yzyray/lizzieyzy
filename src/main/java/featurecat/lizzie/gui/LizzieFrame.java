@@ -6096,6 +6096,9 @@ public class LizzieFrame extends JFrame {
     if (boardCoordinates.isPresent()) {
       if (Lizzie.frame.isContributing) return;
       int[] coords = boardCoordinates.get();
+      if (Lizzie.board.hasStoneAt(coords)) {
+        Lizzie.board.setPressStoneInfo(coords);
+      }
       if (Lizzie.frame.bothSync) {
         if (blackorwhite == 0) Lizzie.board.place(coords[0], coords[1]);
         if (blackorwhite == 1) Lizzie.board.place(coords[0], coords[1], Stone.BLACK);
@@ -6353,6 +6356,7 @@ public class LizzieFrame extends JFrame {
         boardRenderer2.removeblock();
       }
     }
+    Lizzie.board.clearPressStoneInfo(null);
     if (needRepaint) refresh();
   }
 
@@ -6416,17 +6420,17 @@ public class LizzieFrame extends JFrame {
     return false;
   }
 
-  public void onMouseMoved(int x, int y) {
+  public boolean onMouseMoved(int x, int y) {
     if (Lizzie.config.showMouseOverWinrateGraph
         && Lizzie.config.showWinrateGraph
-        && processMouseMoveOnWinrateGraph(x, y)) return;
+        && processMouseMoveOnWinrateGraph(x, y)) return false;
     if (Lizzie.config.showMouseOverWinrateGraph
         && Lizzie.config.showWinrateGraph
         && winrateGraph.mouseOverNode != null) {
       winrateGraph.clearMouseOverNode();
       this.redrawWinratePaneOnly = true;
       repaint();
-      return;
+      return false;
     }
     boolean needRepaint = false;
     curSuggestionMoveOrderByNumber = -1;
@@ -6434,7 +6438,7 @@ public class LizzieFrame extends JFrame {
       mainPanel.requestFocus();
     }
     if (RightClickMenu.isVisible() || RightClickMenu2.isVisible()) {
-      return;
+      return false;
     }
     //    if (isshowrightmenu) {
     //      isshowrightmenu = false;
@@ -6447,7 +6451,7 @@ public class LizzieFrame extends JFrame {
           clearMoved();
         }
         if (!isMouseOnSub && (!Lizzie.leelaz.isPondering() || EngineManager.isEmpty)) repaint();
-        return;
+        return false;
       } else {
         if (isMouseOnSub) {
           if ((!Lizzie.leelaz.isPondering() || EngineManager.isEmpty)) needRepaint = true;
@@ -6468,12 +6472,14 @@ public class LizzieFrame extends JFrame {
       }
     }
     if (clickOrder != -1) {
-      return;
+      return false;
     }
     // mouseOverCoordinate = outOfBoundCoordinate;
     Optional<int[]> coords = boardRenderer.convertScreenToCoordinates(x, y);
-    if (coords.isPresent()) {
+    boolean inBoard = coords.isPresent();
+    if (inBoard) {
       int[] curCoords = coords.get();
+      Lizzie.board.clearPressStoneInfo(curCoords);
       boolean isCoordsChanged = false;
       if (mouseOverCoordinate[0] != curCoords[0] || mouseOverCoordinate[1] != curCoords[1]) {
         isCoordsChanged = true;
@@ -6543,18 +6549,19 @@ public class LizzieFrame extends JFrame {
           Optional<int[]> coords2 = boardRenderer2.convertScreenToCoordinates(x, y);
           if (coords2.isPresent()) {
             boardRenderer2.drawmoveblock(
-                coords.get()[0], coords.get()[1], Lizzie.board.getHistory().isBlacksTurn());
+                curCoords[0], curCoords[1], Lizzie.board.getHistory().isBlacksTurn());
           } else
             boardRenderer.drawmoveblock(
-                coords.get()[0], coords.get()[1], Lizzie.board.getHistory().isBlacksTurn());
+                curCoords[0], curCoords[1], Lizzie.board.getHistory().isBlacksTurn());
         } else
           boardRenderer.drawmoveblock(
-              coords.get()[0], coords.get()[1], Lizzie.board.getHistory().isBlacksTurn());
+              curCoords[0], curCoords[1], Lizzie.board.getHistory().isBlacksTurn());
       } else if (Lizzie.frame.isAnaPlayingAgainstLeelaz || Lizzie.frame.isPlayingAgainstLeelaz)
         boardRenderer.removeblock();
       if (Lizzie.config.isDoubleEngineMode()) {
         boardRenderer2.removeblock();
       }
+
     } else {
       mouseOverCoordinate = outOfBoundCoordinate;
       if (isMouseOver) {
@@ -6576,6 +6583,7 @@ public class LizzieFrame extends JFrame {
       }
     }
     if (needRepaint) refresh();
+    return inBoard;
   }
 
   public void clearMoved() {

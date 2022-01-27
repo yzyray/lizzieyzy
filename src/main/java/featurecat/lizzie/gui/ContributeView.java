@@ -318,7 +318,7 @@ public class ContributeView extends JDialog {
 
     txtAutoPlayInterval = new JFontTextField();
     autoPlayPanel.add(txtAutoPlayInterval);
-    txtAutoPlayInterval.setColumns(5);
+    txtAutoPlayInterval.setColumns(3);
     txtAutoPlayInterval.setDocument(new DoubleDocument());
     Document dtTxtAutoPlayInterval = txtAutoPlayInterval.getDocument();
     dtTxtAutoPlayInterval.addDocumentListener(

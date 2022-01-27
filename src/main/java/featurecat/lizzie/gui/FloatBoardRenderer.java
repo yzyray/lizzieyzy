@@ -780,6 +780,8 @@ public class FloatBoardRenderer {
             this.displayedBranchLength > 0 ? displayedBranchLength : 199,
             false,
             false,
+            null,
+            false,
             null);
     mouseOverCoords = suggestedMove.get().coordinate;
     branchOpt = Optional.of(branch);
