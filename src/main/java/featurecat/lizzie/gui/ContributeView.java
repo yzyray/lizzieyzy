@@ -65,6 +65,8 @@ public class ContributeView extends JDialog {
   private int checkCount = 0;
   private int scrollLength = 0;
   private ScheduledExecutorService executor;
+  private JButton btnSlowShutdown;
+  private JButton btnForceShutdown;
 
   public ContributeView(Window owner) {
     super(owner);
@@ -466,17 +468,6 @@ public class ContributeView extends JDialog {
     JPanel buttonPanel = new JPanel();
     ruleAndButtonPanel.add(buttonPanel, BorderLayout.SOUTH);
 
-    JButton btnShutdown =
-        new JFontButton(
-            Lizzie.resourceBundle.getString("ContributeView.btnShutdown")); // "结束跑谱贡献");
-    btnShutdown.addActionListener(
-        new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            if (Lizzie.frame.contributeEngine != null) Lizzie.frame.contributeEngine.normalQuit();
-            setVisible(false);
-          }
-        });
-
     JButton btnSaveGameRecords =
         new JFontButton(
             Lizzie.resourceBundle.getString("ContributeView.btnSaveGameRecords")); // ("保存所有棋谱");
@@ -487,7 +478,35 @@ public class ContributeView extends JDialog {
           }
         });
     buttonPanel.add(btnSaveGameRecords);
-    buttonPanel.add(btnShutdown);
+
+    btnSlowShutdown =
+        new JButton(Lizzie.resourceBundle.getString("ContributeView.btnSlowShutdown"));
+    btnSlowShutdown.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            if (Lizzie.frame.contributeEngine != null) Lizzie.frame.contributeEngine.slowQuit();
+          }
+        });
+
+    btnSlowShutdown.setToolTipText(
+        Lizzie.resourceBundle.getString("ContributeView.btnSlowShutdownTip"));
+
+    btnForceShutdown =
+        new JFontButton(
+            Lizzie.resourceBundle.getString(
+                "ContributeView.btnShutdown")); // "结束跑谱贡献");btnForceShutdown
+    btnForceShutdown.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            if (Lizzie.frame.contributeEngine != null) Lizzie.frame.contributeEngine.normalQuit();
+            setVisible(false);
+          }
+        });
+    if (Lizzie.frame.contributeEngine != null)
+      setSlowShutdownButton(Lizzie.frame.contributeEngine.canSlowClose());
+
+    buttonPanel.add(btnSlowShutdown);
+    buttonPanel.add(btnForceShutdown);
 
     JPanel consolePanel = new JPanel();
     consolePanel.setLayout(new BorderLayout());
@@ -620,6 +639,19 @@ public class ContributeView extends JDialog {
           screenWidth - width,
           Math.min(frameY + boardY + boardLenght / 2 - height * 2 / 3, screenHeight - height));
     setVisible(true);
+  }
+
+  public void setSlowShutdownButton(boolean set) {
+    // TODO Auto-generated method stub
+    if (set) {
+      btnSlowShutdown.setVisible(true);
+      btnForceShutdown.setText(Lizzie.resourceBundle.getString("ContributeView.btnForceShutdown"));
+      btnForceShutdown.setToolTipText(
+          Lizzie.resourceBundle.getString("ContributeView.btnForceShutdownTip"));
+    } else {
+      btnSlowShutdown.setVisible(false);
+      btnForceShutdown.setText(Lizzie.resourceBundle.getString("ContributeView.btnShutdown"));
+    }
   }
 
   public void setType(String text) {

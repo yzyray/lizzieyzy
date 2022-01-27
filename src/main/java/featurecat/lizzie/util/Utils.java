@@ -726,8 +726,7 @@ public class Utils {
         Paths.get(
             currentRealPath
                 + File.separator
-                + newFolderName
-                + File.separator
+                + (newFolderName.length() == 0 ? "" : (newFolderName + File.separator))
                 + path.substring(path.lastIndexOf("/") + 1));
     Path parent = dist.getParent();
     if (parent != null) {
@@ -802,6 +801,15 @@ public class Utils {
     // TODO Auto-generated method stub
     try {
       copy("/assets/foxReq/foxRequestQ.jar", "foxReq");
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
+
+  public static void copySubProcessHandler() {
+    try {
+      copy("/assets/subProcessHandler/SubProcessHandler.exe", "");
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();

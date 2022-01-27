@@ -3,13 +3,17 @@ package featurecat.lizzie.gui;
 import featurecat.lizzie.Lizzie;
 import featurecat.lizzie.util.Utils;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.net.URI;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
@@ -19,6 +23,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.ToolTipManager;
 import javax.swing.border.EmptyBorder;
+import org.jdesktop.swingx.util.OS;
 
 public class ContributeSettings extends JDialog {
   private JTextField txtEnginePath;
@@ -31,6 +36,7 @@ public class ContributeSettings extends JDialog {
   private JCheckBox chkRemote;
   private JCheckBox chkShowOwnerShip;
   private JCheckBox chkAutoSave;
+  private JCheckBox chkSlowShutdown;
   private JButton btnRemoteSetting;
   private JDialog thisDialog = this;
 
@@ -56,16 +62,17 @@ public class ContributeSettings extends JDialog {
             "ContributeSettings.autoSaveTip"); // "自动保存观看过且已对局结束的棋谱,保存到LizzieYzy目录内\"ContributeGames\"文件夹中";
     String customCommandTip =
         Lizzie.resourceBundle.getString("ContributeSettings.customCommandTip");
+    String slowShutdownTip = Lizzie.resourceBundle.getString("ContributeSettings.slowShutdownTip");
 
     JPanel mainPanel = new JPanel();
     mainPanel.setBorder(new EmptyBorder(2, 0, 0, 5));
     getContentPane().add(mainPanel, BorderLayout.CENTER);
     GridBagLayout gbl_mainPanel = new GridBagLayout();
     gbl_mainPanel.columnWidths = new int[] {217, 217, 0};
-    gbl_mainPanel.rowHeights = new int[] {41, 41, 0, 41, 41, 41, 41, 0, 0};
+    gbl_mainPanel.rowHeights = new int[] {41, 41, 0, 41, 41, 41, 41, 0, 0, 0};
     gbl_mainPanel.columnWeights = new double[] {1.0, 1.0, Double.MIN_VALUE};
     gbl_mainPanel.rowWeights =
-        new double[] {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, Double.MIN_VALUE};
+        new double[] {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, Double.MIN_VALUE};
     mainPanel.setLayout(gbl_mainPanel);
 
     JPanel engineFilePanel = new JPanel();
@@ -312,7 +319,7 @@ public class ContributeSettings extends JDialog {
 
     JPanel panel_2 = new JPanel();
     GridBagConstraints gbc_panel_2 = new GridBagConstraints();
-    gbc_panel_2.insets = new Insets(0, 0, 0, 5);
+    gbc_panel_2.insets = new Insets(0, 0, 5, 5);
     gbc_panel_2.fill = GridBagConstraints.BOTH;
     gbc_panel_2.gridx = 0;
     gbc_panel_2.gridy = 7;
@@ -327,10 +334,51 @@ public class ContributeSettings extends JDialog {
     chkAutoSave = new JFontCheckBox();
     chkAutoSave.setToolTipText(autoSaveTip);
     GridBagConstraints gbc_chkAutoSave = new GridBagConstraints();
+    gbc_chkAutoSave.insets = new Insets(0, 0, 5, 0);
     gbc_chkAutoSave.anchor = GridBagConstraints.WEST;
     gbc_chkAutoSave.gridx = 1;
     gbc_chkAutoSave.gridy = 7;
     mainPanel.add(chkAutoSave, gbc_chkAutoSave);
+
+    JPanel panel_3 = new JPanel();
+    GridBagConstraints gbc_panel_3 = new GridBagConstraints();
+    gbc_panel_3.insets = new Insets(0, 0, 0, 5);
+    gbc_panel_3.fill = GridBagConstraints.BOTH;
+    gbc_panel_3.gridx = 0;
+    gbc_panel_3.gridy = 8;
+    if (OS.isWindows()) mainPanel.add(panel_3, gbc_panel_3);
+
+    JFontLabel lblEnableSlowShutdown =
+        new JFontLabel(Lizzie.resourceBundle.getString("ContributeSettings.lblEnableSlowShutdown"));
+    panel_3.add(lblEnableSlowShutdown);
+    lblEnableSlowShutdown.setToolTipText(slowShutdownTip);
+
+    ImageIcon iconAbout = new ImageIcon();
+    try {
+      iconAbout.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/settings.png")));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    JButton btnAboutSlowShutdown = new JButton(iconAbout);
+    btnAboutSlowShutdown.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            Utils.showMsg(Lizzie.resourceBundle.getString("ContributeSettings.aboutSlowShutdown"));
+          }
+        });
+    btnAboutSlowShutdown.setPreferredSize(new Dimension(20, 20));
+    panel_3.add(btnAboutSlowShutdown);
+
+    chkSlowShutdown = new JFontCheckBox();
+    chkSlowShutdown.setSelected(Lizzie.config.contributeUseSlowShutdown);
+    chkSlowShutdown.setToolTipText(slowShutdownTip);
+
+    GridBagConstraints gbc_chckbxNewCheckBox = new GridBagConstraints();
+    gbc_chckbxNewCheckBox.anchor = GridBagConstraints.WEST;
+    gbc_chckbxNewCheckBox.gridx = 1;
+    gbc_chckbxNewCheckBox.gridy = 8;
+    if (OS.isWindows()) mainPanel.add(chkSlowShutdown, gbc_chckbxNewCheckBox);
     chkAutoSave.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
@@ -387,5 +435,8 @@ public class ContributeSettings extends JDialog {
     Lizzie.config.uiConfig.put("contribute-command", Lizzie.config.contributeCommand);
     Lizzie.config.contributeAutoSave = this.chkAutoSave.isSelected();
     Lizzie.config.uiConfig.put("contribute-auto-save", Lizzie.config.contributeAutoSave);
+    Lizzie.config.contributeUseSlowShutdown = this.chkSlowShutdown.isSelected();
+    Lizzie.config.uiConfig.put(
+        "contribute-use-slow-shutdown", Lizzie.config.contributeUseSlowShutdown);
   }
 }

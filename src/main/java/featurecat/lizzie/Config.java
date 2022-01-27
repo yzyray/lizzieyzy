@@ -638,6 +638,7 @@ public class Config {
   public boolean contributeHideConsole = false;
   public boolean contributeHideRules = false;
   public boolean showContribute = true;
+  public boolean contributeUseSlowShutdown = true;
 
   public double initialMaxScoreLead = 15;
 
@@ -1379,6 +1380,7 @@ public class Config {
     contributeHideConsole = uiConfig.optBoolean("contribute-hide-console", false);
     contributeHideRules = uiConfig.optBoolean("contribute-hide-rules", false);
     showContribute = uiConfig.optBoolean("show-Contribute", true);
+    contributeUseSlowShutdown = uiConfig.optBoolean("contribute-use-slow-shutdown", true);
 
     initialMaxScoreLead = uiConfig.optDouble("initial-max-score-lead", 15.0);
     chkDymPDA = uiConfig.optBoolean("chk-dym-pda", false);
