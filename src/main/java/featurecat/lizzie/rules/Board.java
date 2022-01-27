@@ -4274,7 +4274,7 @@ public class Board {
                 if (node.getData().lastMove.isPresent()) {
                   if (node.getData().lastMove.get()[0] == mouseOnStoneCoords[0]
                       && node.getData().lastMove.get()[1] == mouseOnStoneCoords[1]) {
-                    mouseOnNode = node;
+                    mouseOnNode = node.previous().get();
                     break;
                   }
                 }

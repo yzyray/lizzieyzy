@@ -1334,7 +1334,11 @@ public class BoardRenderer {
   }
 
   private void drawBranchForMouseOnStone(BoardData data, Stone[] boardStones) {
-    if (data.bestMoves == null || data.bestMoves.size() <= 0) return;
+    if (data.bestMoves == null || data.bestMoves.size() <= 0) {
+      branchStonesImage = emptyImage;
+      branchStonesShadowImage = emptyImage;
+      return;
+    }
     Branch branch =
         new Branch(
             Lizzie.board,
@@ -1741,10 +1745,8 @@ public class BoardRenderer {
 
   private void renderMouseOnStoneImage(Graphics2D g) {
     g.drawImage(cachedStonesShadowImage, x, y, null);
-    g.drawImage(cachedStonesImage, x, y, null);
-    if (Lizzie.board.mouseOnNode.getData().bestMoves == null
-        || Lizzie.board.mouseOnNode.getData().bestMoves.size() <= 0) return;
     g.drawImage(branchStonesShadowImage, x, y, null);
+    g.drawImage(cachedStonesImage, x, y, null);
     g.drawImage(branchStonesImage, x, y, null);
   }
   /** Render the shadows and stones in correct background-foreground order */
