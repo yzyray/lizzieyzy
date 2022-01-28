@@ -15,7 +15,6 @@ import featurecat.lizzie.util.Utils;
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -391,8 +390,6 @@ public class Board {
         BoardHistoryNode cur = stack.pop();
         if (cur.getData().getPlayouts() > 0) {
           cur.getData().isChanged = true;
-          cur.nodeInfo.changed = true;
-          cur.nodeInfoMain.changed = true;
         }
         if (cur.numberOfChildren() >= 1) {
           for (int i = cur.numberOfChildren() - 1; i >= 0; i--)
@@ -466,16 +463,7 @@ public class Board {
     stack.push(node);
     while (!stack.isEmpty()) {
       BoardHistoryNode cur = stack.pop();
-      if (cur.getData().getPlayouts() > 0) {
-        cur.nodeInfo.changed = true;
-        cur.nodeInfoMain.changed = true;
-      }
-      if (Lizzie.config.isDoubleEngineMode()) {
-        if (cur.getData().getPlayouts2() > 0) {
-          cur.nodeInfo2.changed = true;
-          cur.nodeInfoMain2.changed = true;
-        }
-      }
+      if (Lizzie.config.isDoubleEngineMode()) {}
       if (cur.numberOfChildren() >= 1) {
         for (int i = cur.numberOfChildren() - 1; i >= 0; i--)
           stack.push(cur.getVariations().get(i));
@@ -504,8 +492,6 @@ public class Board {
       BoardHistoryNode cur = stack.pop();
       if (cur.getData().getPlayouts2() > 0) {
         cur.getData().isChanged2 = true;
-        cur.nodeInfo2.changed = true;
-        cur.nodeInfoMain2.changed = true;
       }
       if (cur.numberOfChildren() >= 1) {
         for (int i = cur.numberOfChildren() - 1; i >= 0; i--)
@@ -2687,7 +2673,6 @@ public class Board {
 
   public void copyNodeInfoToMain(BoardHistoryNode node) {
     node.nodeInfoMain.analyzed = node.nodeInfo.analyzed;
-    node.nodeInfoMain.changed = node.nodeInfo.changed;
     node.nodeInfoMain.coords = node.nodeInfo.coords;
     node.nodeInfoMain.moveNum = node.nodeInfo.moveNum;
     node.nodeInfoMain.isBlack = node.nodeInfo.isBlack;
@@ -3124,16 +3109,11 @@ public class Board {
     BoardHistoryNode previousNode = node.previous().get();
     int movenumer = node.getData().moveNumber;
     int playouts = node.getData().getPlayouts();
-    if ((playouts > previousNode.nodeInfo.playouts
-            || node.previous().get().getData().getPlayouts()
-                > previousNode.nodeInfo.previousPlayouts
-            || previousNode.nodeInfo.changed
-            || (previousNode.nodeInfo.nextNode != null && previousNode.nodeInfo.nextNode != node))
-        && previousNode.getData().winrate >= 0) {
-      if (previousNode.nodeInfo.changed) {
-        previousNode.nodeInfo.changed = false;
-      }
-
+    if (((playouts != previousNode.nodeInfo.playouts
+                || node.previous().get().getData().getPlayouts()
+                    != previousNode.nodeInfo.previousPlayouts)
+            && previousNode.getData().winrate >= 0)
+        || previousNode.getData().playoutsChanged) {
       double winrateDiff = lastWinrateDiff(node);
       if (Lizzie.board.isPkBoard && playouts > 0) {
         if (node.isMainTrunk() && node.previous().get().isMainTrunk()) {
@@ -3152,7 +3132,6 @@ public class Board {
             previousNode.nodeInfo.playouts = playouts;
             previousNode.nodeInfo.moveNum = movenumer;
             previousNode.nodeInfo.previousPlayouts = previousplayouts;
-            previousNode.nodeInfo.nextNode = node;
             if (node.getData().isKataData) {
               node.nodeInfo.scoreMeanDiff = lastScoreMeanDiff(node);
               previousNode.nodeInfo.scoreLead = node.getData().scoreMean;
@@ -3162,17 +3141,16 @@ public class Board {
         }
       } else {
         if (node.getData().lastMove != null && node.getData().lastMove.isPresent()) {
-          Map<String, Object> matchAiMap =
+          MatchAiInfo info =
               isMatchAi(node, Lizzie.config.matchAiMoves, Lizzie.config.matchAiPercentsPlayouts);
-          double percentsMatch =
-              Double.parseDouble(matchAiMap.getOrDefault("percents", "0").toString());
-          boolean isBest = Boolean.parseBoolean(matchAiMap.getOrDefault("best", false).toString());
-          boolean isMatchAi = Boolean.parseBoolean(matchAiMap.get("match").toString());
-
+          double percentsMatch = info.precents;
+          boolean isBest = info.isBest;
+          boolean isMatchAi = info.isMatch;
+          node.getData().lastMoveMatchCandidteNo = info.matchCandidteNo;
           int[] coords = node.getData().lastMove.get();
-
           boolean isblack = !node.getData().blackToPlay;
           int previousplayouts = 0;
+
           previousplayouts = previousNode.getData().getPlayouts();
           previousNode.nodeInfo.analyzed = previousplayouts > 0 && playouts > 0;
           previousNode.nodeInfo.analyzedMatchValue = previousplayouts > 0;
@@ -3192,7 +3170,6 @@ public class Board {
           previousNode.nodeInfo.previousPlayouts = previousplayouts;
           previousNode.nodeInfo.isMatchAi = isMatchAi;
           previousNode.nodeInfo.percentsMatch = percentsMatch;
-          previousNode.nodeInfo.nextNode = node;
           if (node.isMainTrunk() && node.previous().get().isMainTrunk()) {
             previousNode.nodeInfoMain.analyzed = previousplayouts > 0 && playouts > 0;
             previousNode.nodeInfoMain.analyzedMatchValue = previousplayouts > 0;
@@ -3215,6 +3192,7 @@ public class Board {
           }
         }
       }
+      previousNode.getData().playoutsChanged = false;
     }
   }
 
@@ -3225,15 +3203,10 @@ public class Board {
     BoardHistoryNode previousNode = node.previous().get();
     int movenumer = node.getData().moveNumber;
     int playouts = node.getData().getPlayouts2();
-    if ((playouts > previousNode.nodeInfo2.playouts
+    if ((playouts != previousNode.nodeInfo2.playouts
             || node.previous().get().getData().getPlayouts2()
-                > previousNode.nodeInfo2.previousPlayouts
-            || previousNode.nodeInfo2.changed
-            || (previousNode.nodeInfo2.nextNode != null && previousNode.nodeInfo2.nextNode != node))
+                != previousNode.nodeInfo2.previousPlayouts)
         && previousNode.getData().winrate2 >= 0) {
-      if (previousNode.nodeInfo2.changed) {
-        previousNode.nodeInfo2.changed = false;
-      }
       double winrateDiff = lastWinrateDiff2(node);
       if (Lizzie.board.isPkBoard) {
         if (node.getData().lastMove.isPresent()
@@ -3251,7 +3224,6 @@ public class Board {
           previousNode.nodeInfo2.playouts = playouts;
           previousNode.nodeInfo2.moveNum = movenumer;
           previousNode.nodeInfo2.previousPlayouts = previousplayouts;
-          previousNode.nodeInfo2.nextNode = node;
           if (node.getData().isKataData2) {
             previousNode.nodeInfo2.scoreMeanDiff = lastScoreMeanDiff2(node);
             previousNode.nodeInfo2.scoreLead = node.getData().scoreMean2;
@@ -3259,12 +3231,11 @@ public class Board {
         }
       } else {
         if (node.getData().lastMove != null && node.getData().lastMove.isPresent()) {
-          Map<String, Object> matchAiMap =
+          MatchAiInfo info =
               isMatchAi2(node, Lizzie.config.matchAiMoves, Lizzie.config.matchAiPercentsPlayouts);
-          double percentsMatch =
-              Double.parseDouble(matchAiMap.getOrDefault("percents", "0").toString());
-          boolean isBest = Boolean.parseBoolean(matchAiMap.getOrDefault("best", false).toString());
-          boolean isMatchAi = Boolean.parseBoolean(matchAiMap.get("match").toString());
+          double percentsMatch = info.precents;
+          boolean isBest = info.isBest;
+          boolean isMatchAi = info.isMatch;
           int[] coords = node.getData().lastMove.get();
           boolean isblack = !node.getData().blackToPlay;
           int previousplayouts = 0;
@@ -3287,7 +3258,6 @@ public class Board {
           previousNode.nodeInfo2.previousPlayouts = previousplayouts;
           previousNode.nodeInfo2.isMatchAi = isMatchAi;
           previousNode.nodeInfo2.percentsMatch = percentsMatch;
-          previousNode.nodeInfo2.nextNode = node;
 
           if (node.isMainTrunk()) {
             previousNode.nodeInfoMain2.analyzed = previousplayouts > 0 && playouts > 0;
@@ -3323,15 +3293,20 @@ public class Board {
     updateMovelist(nextnextNode);
   }
 
-  private Map<String, Object> isMatchAi(
-      BoardHistoryNode node, int bestNums, double percentPlayouts) {
+  class MatchAiInfo {
+    boolean isBest;
+    double precents;
+    int matchCandidteNo;
+    boolean isMatch;
+  }
+
+  private MatchAiInfo isMatchAi(BoardHistoryNode node, int bestNums, double percentPlayouts) {
     BoardData preNodeData = node.previous().get().getData();
-    Map<String, Object> map = new HashMap<String, Object>();
+    MatchAiInfo info = new MatchAiInfo();
     boolean hasPut = false;
     if (preNodeData.bestMoves.isEmpty()) {
-      map.put("match", false);
+      info.isMatch = false;
       hasPut = true;
-      // return false;
     }
     double maxPlayouts = 0;
     for (MoveData move : preNodeData.bestMoves) {
@@ -3348,27 +3323,27 @@ public class Board {
           if (c[0] == lastMoveCoords[0] && c[1] == lastMoveCoords[1]) {
             if ((preNodeData.bestMoves.get(i).playouts / maxPlayouts) * 100 >= percentPlayouts
                 && i < bestNums) {
-              if (i == 0) map.put("best", true);
-              map.put("match", true);
+              if (i == 0) info.isBest = true;
+              info.isMatch = true;
               hasPut = true;
             }
-            if (i == 0) map.put("percents", 1);
-            else map.put("percents", preNodeData.bestMoves.get(i).playouts / maxPlayouts);
+            if (i == 0) info.precents = 1;
+            else info.precents = preNodeData.bestMoves.get(i).playouts / maxPlayouts;
+            info.matchCandidteNo = i + 1;
           }
         }
       }
     }
-    if (!hasPut) map.put("match", false);
-    return map;
+    if (!hasPut) info.isMatch = false;
+    return info;
   }
 
-  private Map<String, Object> isMatchAi2(
-      BoardHistoryNode node, int bestNums, double percentPlayouts) {
+  private MatchAiInfo isMatchAi2(BoardHistoryNode node, int bestNums, double percentPlayouts) {
     BoardData preNodeData = node.previous().get().getData();
-    Map<String, Object> map = new HashMap<String, Object>();
+    MatchAiInfo info = new MatchAiInfo();
     boolean hasPut = false;
     if (preNodeData.bestMoves2.isEmpty()) {
-      map.put("match", false);
+      info.isMatch = false;
       hasPut = true;
       // return false;
     }
@@ -3387,18 +3362,18 @@ public class Board {
           if (c[0] == lastMoveCoords[0] && c[1] == lastMoveCoords[1]) {
             if ((preNodeData.bestMoves2.get(i).playouts / maxPlayouts) * 100 >= percentPlayouts
                 && i < bestNums) {
-              if (i == 0) map.put("best", true);
-              map.put("match", true);
+              if (i == 0) info.isBest = true;
+              info.isMatch = true;
               hasPut = true;
             }
-            if (i == 0) map.put("percents", 1);
-            else map.put("percents", preNodeData.bestMoves2.get(i).playouts / maxPlayouts);
+            if (i == 0) info.precents = 1;
+            else info.precents = preNodeData.bestMoves2.get(i).playouts / maxPlayouts;
           }
         }
       }
     }
-    if (!hasPut) map.put("match", false);
-    return map;
+    if (!hasPut) info.isMatch = false;
+    return info;
   }
 
   public void updateIsBest(BoardHistoryNode node) {

@@ -1487,18 +1487,20 @@ public class LizzieFrame extends JFrame {
         new Runnable() {
           @Override
           public void run() {
+            boolean notPondering =
+                Lizzie.leelaz == null || EngineManager.isEmpty || !Lizzie.leelaz.isPondering();
+            try {
+              autosaveMaybe();
+              updateMoveList(notPondering);
+            } catch (Exception e) {
+              e.printStackTrace();
+            }
             if (!isDrawVisitsInTitle) {
               visitsString = "";
-              try {
-                autosaveMaybe();
-                updateMoveListMaybe();
-              } catch (Exception e) {
-                e.printStackTrace();
-              }
               updateTitle();
               return;
             }
-            if (Lizzie.leelaz == null || EngineManager.isEmpty || !Lizzie.leelaz.isPondering()) {
+            if (notPondering) {
               updateTitle();
               return;
             }
@@ -1520,8 +1522,6 @@ public class LizzieFrame extends JFrame {
                 visitsTemp[visitsCount].node = Lizzie.board.getHistory().getCurrentHistoryNode();
                 visitsTemp[visitsCount].Playouts = totalPlayouts;
               }
-              autosaveMaybe();
-              updateMoveListMaybe();
             } catch (Exception e) {
               e.printStackTrace();
             }
@@ -5007,8 +5007,12 @@ public class LizzieFrame extends JFrame {
     appendComment();
   }
 
-  private void updateMoveListMaybe() {
-    Lizzie.board.updateMovelist(Lizzie.board.getHistory().getCurrentHistoryNode());
+  private void updateMoveList(boolean notPondering) {
+    if (notPondering) {
+      int lastMoveCandidateNo = Lizzie.board.getData().lastMoveMatchCandidteNo;
+      Lizzie.board.updateMovelist(Lizzie.board.getHistory().getCurrentHistoryNode());
+      if (Lizzie.board.getData().lastMoveMatchCandidteNo != lastMoveCandidateNo) refresh();
+    } else Lizzie.board.updateMovelist(Lizzie.board.getHistory().getCurrentHistoryNode());
   }
 
   private Graphics2D createBackground(int width, int hight) {
@@ -5526,11 +5530,12 @@ public class LizzieFrame extends JFrame {
     } else {
       double wr = validLastWinrate ? 100 - lastWR - curWR : 0;
       double score = validLastWinrate ? (-lastScore) - curScore : 0;
-      text =
-          text
-              + " "
-              + Lizzie.resourceBundle.getString("LizzieFrame.display.lastMove")
-              + ((wr > 0 ? "+" : "-") + String.format(Locale.ENGLISH, "%.1f%%", Math.abs(wr)));
+      text = text + " " + Lizzie.resourceBundle.getString("LizzieFrame.display.lastMove");
+      int lastNo = Lizzie.board.getData().lastMoveMatchCandidteNo;
+      if (lastNo > 0) {
+        text += "(#" + lastNo + ")";
+      }
+      text += ": " + ((wr > 0 ? "+" : "-") + String.format(Locale.ENGLISH, "%.1f%%", Math.abs(wr)));
       if (isKataStyle && !EngineManager.isEngineGame) {
         text =
             text
@@ -5538,6 +5543,7 @@ public class LizzieFrame extends JFrame {
                 + ((score > 0 ? "+" : "-") + String.format(Locale.ENGLISH, "%.1f", Math.abs(score)))
                 + Lizzie.resourceBundle.getString("LizzieFrame.pts"); // + "目";
       }
+
       drawString(
           g,
           posX,
