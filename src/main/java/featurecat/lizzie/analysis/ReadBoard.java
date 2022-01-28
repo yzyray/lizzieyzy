@@ -506,18 +506,18 @@ public class ReadBoard {
           if (Lizzie.frame.floatBoard == null) {
             Lizzie.frame.floatBoard =
                 new FloatBoard(
-                    Math.round(Integer.parseInt(params[1]) * factor) + 1,
-                    Math.round(Integer.parseInt(params[2]) * factor) + 1,
-                    Math.round(Integer.parseInt(params[3]) * factor) + 1,
-                    Math.round(Integer.parseInt(params[4]) * factor) + 1,
+                    (int) Math.ceil(Integer.parseInt(params[1]) * factor),
+                    (int) Math.ceil(Integer.parseInt(params[2]) * factor),
+                    (int) Math.ceil(Integer.parseInt(params[3]) * factor),
+                    (int) Math.ceil(Integer.parseInt(params[4]) * factor),
                     Integer.parseInt(param[2]),
                     true);
           } else {
             Lizzie.frame.floatBoard.setPos(
-                Math.round(Integer.parseInt(params[1]) * factor) + 1,
-                Math.round(Integer.parseInt(params[2]) * factor) + 1,
-                Math.round(Integer.parseInt(params[3]) * factor) + 1,
-                Math.round(Integer.parseInt(params[4]) * factor) + 1,
+                (int) Math.ceil(Integer.parseInt(params[1]) * factor),
+                (int) Math.ceil(Integer.parseInt(params[2]) * factor),
+                (int) Math.ceil(Integer.parseInt(params[3]) * factor),
+                (int) Math.ceil(Integer.parseInt(params[4]) * factor),
                 Integer.parseInt(param[2]));
           }
         } else {
