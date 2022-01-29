@@ -598,17 +598,6 @@ public class Menu extends JMenuBar {
         });
     nextMoveHint.add(minPlayoutsForNextMove);
 
-    final JFontCheckBoxMenuItem allowClickReview =
-        new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.allowClickReview"));
-    allowClickReview.addActionListener(
-        new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            Lizzie.config.enableClickReview = !Lizzie.config.enableClickReview;
-            Lizzie.config.uiConfig.put("enable-click-review", Lizzie.config.enableClickReview);
-          }
-        });
-    viewMenu.add(allowClickReview);
-
     final JFontMenuItem deletePersistFile =
         new JFontMenuItem(resourceBundle.getString("Menu.deletePersistFile")); // ("重置界面位置");
     deletePersistFile.addActionListener(
@@ -2327,8 +2316,6 @@ public class Menu extends JMenuBar {
     viewMenu.addMenuListener(
         new MenuListener() {
           public void menuSelected(MenuEvent e) {
-            if (Lizzie.config.enableClickReview) allowClickReview.setState(true);
-            else allowClickReview.setState(false);
             if (Lizzie.config.ignoreOutOfWidth) ignoreOutOfWidth.setState(true);
             else ignoreOutOfWidth.setState(false);
             if (Lizzie.config.showScrollVariation) {
@@ -3455,6 +3442,17 @@ public class Menu extends JMenuBar {
         });
     editMenu.add(allowDrag);
 
+    final JFontCheckBoxMenuItem allowClickReview =
+        new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.allowClickReview"));
+    allowClickReview.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.config.enableClickReview = !Lizzie.config.enableClickReview;
+            Lizzie.config.uiConfig.put("enable-click-review", Lizzie.config.enableClickReview);
+          }
+        });
+    editMenu.add(allowClickReview);
+
     editMenu.addSeparator();
 
     final JFontCheckBoxMenuItem insertBlack =
@@ -3661,6 +3659,8 @@ public class Menu extends JMenuBar {
             else allowDrag.setState(false);
             if (Lizzie.config.allowDoubleClick) allowDoubleClick.setState(true);
             else allowDoubleClick.setState(false);
+            if (Lizzie.config.enableClickReview) allowClickReview.setState(true);
+            else allowClickReview.setState(false);
             if (featurecat.lizzie.gui.Input.insert == 0) {
               insertBlack.setState(false);
               insertWhite.setState(false);
