@@ -62,7 +62,7 @@ Add some new features on Lizzie's basis:`Hawk Eye`,`Flash Analyze`,`Batch Analyz
 
 `Double Engine Mode`: Support load two engins and analyze synchronously,convenient for comparison.
 
-`Visualized KataGo Distributed Training`: Visualized official KataGo training,all games(playing or completed) can be reviewed.
+`Visualized KataGo Distributed Training`: Visualized official KataGo training,all games(playing or completed) can be watched.
 
 ##
 
