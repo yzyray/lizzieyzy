@@ -2683,6 +2683,9 @@ public class Leelaz {
   private void sendCommandToLeelaz(String command) {
     if (command.startsWith("fixed_handicap")
         || (isKatago && command.startsWith("place_free_handicap"))) isSettingHandicap = true;
+    if (command.startsWith("benchmark")) {
+      currentCmdNum++;
+    }
     if (outputStream != null) {
       try {
         outputStream.write((command + "\n").getBytes());
