@@ -31,7 +31,7 @@ public class ReadBoard {
   // private long startSyncTime = 0;
 
   public boolean isLoaded = false;
-  private int version = 220104;
+  private int version = 220129;
   private String engineCommand;
   public String currentEnginename = "";
   private int port = -1;
@@ -50,7 +50,7 @@ public class ReadBoard {
   private boolean isSyncing = false;
   // private long startTime;
   private boolean javaReadBoard = false;
-  private String javaReadBoardName = "readboard-1.5.7-shaded.jar";
+  private String javaReadBoardName = "readboard-1.5.8-shaded.jar";
   private boolean waitSocket = true;
   public boolean lastMovePlayByLizzie = false;
   private boolean hideFloadBoardBeforePlace = false;
