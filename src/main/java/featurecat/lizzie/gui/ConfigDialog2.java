@@ -2497,12 +2497,6 @@ public class ConfigDialog2 extends JDialog {
     btnWhiteStonePath.setBounds(759, 313, 40, 26);
     themeTab.add(btnWhiteStonePath);
 
-    cmbThemes.setSelectedItem(
-        Lizzie.config.uiConfig.optString(
-            "theme", resourceBundle.getString("LizzieConfig.title.defaultTheme")));
-    if (cmbThemes.getSelectedIndex() == 0) btnDeleteTheme.setEnabled(false);
-    else btnDeleteTheme.setEnabled(true);
-
     chkShowStoneShaow = new JCheckBox(resourceBundle.getString("LizzieConfig.title.shadowSize"));
     chkShowStoneShaow.setBounds(6, 101, 131, 23);
     themeTab.add(chkShowStoneShaow);
@@ -2768,6 +2762,12 @@ public class ConfigDialog2 extends JDialog {
     pnlBoardPreview.setBounds(530, 11, 200, 200);
     themeTab.add(pnlBoardPreview);
     Utils.changeFontRecursive(themeTab, Config.sysDefaultFontName);
+
+    cmbThemes.setSelectedItem(
+        Lizzie.config.uiConfig.optString(
+            "theme", resourceBundle.getString("LizzieConfig.title.defaultTheme")));
+    if (cmbThemes.getSelectedIndex() == 0) btnDeleteTheme.setEnabled(false);
+    else btnDeleteTheme.setEnabled(true);
     timer =
         new javax.swing.Timer(
             100,
@@ -4031,7 +4031,7 @@ public class ConfigDialog2 extends JDialog {
   }
 
   public void switchTab(int index) {
+    if (index == 1) loadThemeTab();
     tabbedPane.setSelectedIndex(index);
-    loadThemeTab();
   }
 }
