@@ -967,7 +967,7 @@ public class Leelaz {
         if (params[1].toLowerCase().startsWith("sai")) this.isSai = true;
         //				if (params[1].startsWith("KataGoYm"))
         //					sendCommandToLeelazWithOutLog("lizzie_use");
-        if (params[1].startsWith("KataGo")) {
+        if (params[1].toLowerCase().startsWith("kata")) {
           canAddPlayer = true;
           if (params[1].startsWith("KataGoPda")) {
             isKatagoCustom = true;
@@ -1430,7 +1430,7 @@ public class Leelaz {
           }
           //						if (params[1].startsWith("KataGoYm"))
           //							sendCommandToLeelazWithOutLog("lizzie_use");
-          if (params[1].startsWith("KataGo")) {
+          if (params[1].toLowerCase().startsWith("kata")) {
             canAddPlayer = true;
             if (Lizzie.config.firstLoadKataGo) {
               Lizzie.config.firstLoadKataGo = false;
@@ -1488,6 +1488,8 @@ public class Leelaz {
               else LizzieFrame.menu.changeEngineIcon(currentEngineN, 2);
             }
           } else {
+            isLoaded = true;
+            isTuning = false;
             isKatago = false;
             setLeelaSaiEnginePara();
           }
