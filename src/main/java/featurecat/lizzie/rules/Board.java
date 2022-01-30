@@ -2222,6 +2222,7 @@ public class Board {
         }
         history.next();
         updateIsBest();
+        clearPressStoneInfo(null);
         if (needRefresh) {
           clearAfterMove();
           Lizzie.frame.refresh();
@@ -2803,6 +2804,7 @@ public class Board {
           Lizzie.frame.refresh();
         }
         updateMovelistNext(Lizzie.board.getHistory().getCurrentHistoryNode());
+        clearPressStoneInfo(null);
         return true;
       }
       modifyEnd();
