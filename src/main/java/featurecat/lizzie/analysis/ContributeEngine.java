@@ -253,14 +253,7 @@ public class ContributeEngine {
       // json game info
       if (getJsonGameInfo(tryToGetJsonString(line), contributeGames, unParseGameInfos)) {
         if (contributeGames != null) {
-          int finishedGames = 0;
-          int playingGames = 0;
-          for (ContributeGameInfo game : contributeGames) { // 已完成10局,正在进行5局,共15局,正在观看第3局
-            if (game.complete) finishedGames++;
-            else playingGames++;
-          }
-          if (Lizzie.frame.contributeView != null)
-            Lizzie.frame.contributeView.setGames(finishedGames, playingGames);
+          setViewGames();
           if (watchingGameIndex == -1 && contributeGames.size() > 0) {
             watchingGameIndex = 0;
             setGameToBoard(contributeGames.get(0), watchingGameIndex, false);
@@ -296,11 +289,23 @@ public class ContributeEngine {
                 }
               }
             }
+            setViewGames();
           }
         }
       }
       parseTips(line);
     }
+  }
+
+  private void setViewGames() {
+    int finishedGames = 0;
+    int playingGames = 0;
+    for (ContributeGameInfo game : contributeGames) {
+      if (game.complete) finishedGames++;
+      else playingGames++;
+    }
+    if (Lizzie.frame.contributeView != null)
+      Lizzie.frame.contributeView.setGames(finishedGames, playingGames);
   }
 
   private void parseTips(String line) {
