@@ -8,6 +8,7 @@ import me.friwi.jcefmaven.*;
 import org.cef.CefApp;
 import org.cef.CefApp.CefAppState;
 import org.cef.CefClient;
+import org.cef.CefSettings.LogSeverity;
 import org.cef.browser.CefBrowser;
 import org.cef.browser.CefFrame;
 import org.cef.browser.CefMessageRouter;
@@ -23,7 +24,6 @@ public class BrowserFrame extends JFrame {
   private final CefBrowser browser_;
   private final Component browerUI_;
   private boolean browserFocus_ = true;
-
   /**
    * To display a simple browser window, it suffices completely to create an instance of the class
    * CefBrowser and to assign its UI component to your application (e.g. to your content pane). But
@@ -36,6 +36,7 @@ public class BrowserFrame extends JFrame {
     CefAppBuilder builder = new CefAppBuilder();
     // windowless_rendering_enabled must be set to false if not wanted.
     builder.getCefSettings().windowless_rendering_enabled = useOSR;
+    builder.getCefSettings().log_severity = LogSeverity.LOGSEVERITY_DISABLE;
     // USE builder.setAppHandler INSTEAD OF CefApp.addAppHandler!
     // Fixes compatibility issues with MacOSX
     builder.setAppHandler(
@@ -61,7 +62,6 @@ public class BrowserFrame extends JFrame {
     //     runs. This method is thread-safe and will always return a valid app
     //     instance.
     cefApp_ = builder.build();
-
     // (2) JCEF can handle one to many browser instances simultaneous. These
     //     browser instances are logically grouped together by an instance of
     //     the class CefClient. In your application you can create one to many
@@ -104,7 +104,7 @@ public class BrowserFrame extends JFrame {
     //     user presses the "ENTER" key within the address field.
     //     If this happens, the entered value is passed to the CefBrowser
     //     instance to be loaded as URL.
-    address_ = new JTextField(startURL, 100);
+    address_ = new JTextField(startURL);
     address_.addActionListener(
         new ActionListener() {
           @Override
@@ -151,7 +151,7 @@ public class BrowserFrame extends JFrame {
           }
         });
 
-    //以下为处理无法打开新链接的问题
+    // 以下为处理无法打开新链接的问题
     client_.addLifeSpanHandler(
         new CefLifeSpanHandlerAdapter() {
 
@@ -167,10 +167,35 @@ public class BrowserFrame extends JFrame {
 
     // (6) All UI components are assigned to the default content pane of this
     //     JFrame and afterwards the frame is made visible to the user.
-    getContentPane().add(address_, BorderLayout.NORTH);
-    getContentPane().add(browerUI_, BorderLayout.CENTER);
+    JToolBar toolbar = new JToolBar();
+    toolbar.setBorderPainted(false);
+    toolbar.setFloatable(false);
+    // toolbarPanel.setLayout(new BorderLayout(0, 0));
+    toolbar.add(new JButton("前进"));
+    toolbar.add(new JButton("前进"));
+    toolbar.add(address_);
+    toolbar.add(new JButton("前进"));
+    toolbar.add(new JButton("前进"));
+    JPanel view = new JPanel();
+    view.setLayout(null);
+    view.add(browerUI_);
+
+    view.addComponentListener(
+        new ComponentAdapter() {
+          @Override
+          public void componentResized(ComponentEvent e) {
+            view.revalidate();
+            browerUI_.setBounds(0, 0, view.getWidth(), view.getHeight());
+          }
+        });
+
+    getContentPane()
+        .add(toolbar, BorderLayout.PAGE_START); // .add(toolbarPanel, BorderLayout.NORTH);
+    getContentPane().add(view, BorderLayout.CENTER);
+    getRootPane().setBorder(BorderFactory.createEmptyBorder());
     pack();
     setSize(800, 600);
+    setLocation(100, 100);
     setVisible(true);
 
     // (7) To take care of shutting down CEF accordingly, it's important to call
@@ -180,7 +205,7 @@ public class BrowserFrame extends JFrame {
         new WindowAdapter() {
           @Override
           public void windowClosing(WindowEvent e) {
-            CefApp.getInstance().dispose();
+            // CefApp.getInstance().dispose();
             dispose();
           }
         });

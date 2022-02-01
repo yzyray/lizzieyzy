@@ -331,10 +331,10 @@ public class OnlineDialog extends JDialog {
 
   private void error(boolean e) {
     if (!this.isVisible() && OnlineDialog.fromBrowser) return;
- //   if (!isStoped && (Lizzie.frame.browser == null || Lizzie.frame.browser.isDisposed())) {
-      lblError.setVisible(e);
-      setVisible(true);
-   // }
+    //   if (!isStoped && (Lizzie.frame.browser == null || Lizzie.frame.browser.isDisposed())) {
+    lblError.setVisible(e);
+    setVisible(true);
+    // }
   }
 
   private int checkUrl() {

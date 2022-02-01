@@ -128,6 +128,11 @@
 			<artifactId>jcefmaven</artifactId>
 			<version>95.7.14.2</version>
 		</dependency>	
+			<dependency>
+			<groupId>me.friwi</groupId>
+			<artifactId>jcef-natives-windows-amd64</artifactId>
+			<version>jcef-a51ff7f+cef-95.7.14+g9f72f35+chromium-95.0.4638.69</version>
+		</dependency>
 
 		<dependency>
     		<groupId>ch.ethz.ganymed</groupId>
