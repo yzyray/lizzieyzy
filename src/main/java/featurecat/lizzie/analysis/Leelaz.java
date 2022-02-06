@@ -2781,7 +2781,7 @@ public class Leelaz {
       currentTotalPlayouts = 0;
       if (Lizzie.frame.isPlayingAgainstLeelaz) this.canGetSummaryInfo = true;
       //				bestMovesPrevious = new ArrayList<>();
-      if (Lizzie.frame.isAnaPlayingAgainstLeelaz && Lizzie.frame.playerIsBlack == blackToPlay)
+      if (Lizzie.frame.isAnaPlayingAgainstLeelaz&&!Lizzie.frame.bothSync && Lizzie.frame.playerIsBlack == blackToPlay)
         return;
       if ((stopByLimit || isPondering) && !Lizzie.frame.isPlayingAgainstLeelaz)
         if (Lizzie.config.isAutoAna
