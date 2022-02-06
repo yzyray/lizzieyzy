@@ -778,15 +778,19 @@ public class Leelaz {
           return;
         }
         if (this.isZen) {
-          if (bestMoves != null && !bestMoves.isEmpty()) {
-            Lizzie.board
-                .getData()
-                .tryToSetBestMoves(
-                    bestMoves,
-                    bestMovesEnginename,
-                    true,
-                    currentTotalPlayouts = MoveData.getPlayouts(bestMoves));
-            bestMoves = new ArrayList<>();
+          synchronized (bestMoves) {
+            try {
+              if (bestMoves != null && !bestMoves.isEmpty()) {
+                currentTotalPlayouts = MoveData.getPlayouts(bestMoves);
+                Lizzie.board
+                    .getData()
+                    .tryToSetBestMoves(bestMoves, bestMovesEnginename, true, currentTotalPlayouts);
+                this.bestMoves = new ArrayList<>();
+              }
+            } catch (Exception e) {
+              this.bestMoves = new ArrayList<>();
+              e.printStackTrace();
+            }
           }
         }
         if (params[1].contains("resign")) {
@@ -963,7 +967,7 @@ public class Leelaz {
         if (params[1].toLowerCase().startsWith("sai")) this.isSai = true;
         //				if (params[1].startsWith("KataGoYm"))
         //					sendCommandToLeelazWithOutLog("lizzie_use");
-        if (params[1].startsWith("KataGo")) {
+        if (params[1].toLowerCase().startsWith("kata")) {
           canAddPlayer = true;
           if (params[1].startsWith("KataGoPda")) {
             isKatagoCustom = true;
@@ -1426,7 +1430,7 @@ public class Leelaz {
           }
           //						if (params[1].startsWith("KataGoYm"))
           //							sendCommandToLeelazWithOutLog("lizzie_use");
-          if (params[1].startsWith("KataGo")) {
+          if (params[1].toLowerCase().startsWith("kata")) {
             canAddPlayer = true;
             if (Lizzie.config.firstLoadKataGo) {
               Lizzie.config.firstLoadKataGo = false;
@@ -1484,6 +1488,8 @@ public class Leelaz {
               else LizzieFrame.menu.changeEngineIcon(currentEngineN, 2);
             }
           } else {
+            isLoaded = true;
+            isTuning = false;
             isKatago = false;
             setLeelaSaiEnginePara();
           }
@@ -2068,14 +2074,16 @@ public class Leelaz {
       }
       if (EngineManager.isEngineGame && EngineManager.engineGameInfo.isGenmove) {
         if (line.contains("->")) {
-          try {
-            MoveData mv = MoveData.fromSummaryZen(line);
-            if (mv != null) {
-              mv.order = bestMoves.size();
-              bestMoves.add(mv);
+          synchronized (bestMoves) {
+            try {
+              MoveData mv = MoveData.fromSummaryZen(line);
+              if (mv != null) {
+                mv.order = bestMoves.size();
+                bestMoves.add(mv);
+              }
+            } catch (Exception ex) {
+              Lizzie.gtpConsole.addLine("genmovepk summary err");
             }
-          } catch (Exception ex) {
-            Lizzie.gtpConsole.addLine("genmovepk summary err");
           }
         }
       }
