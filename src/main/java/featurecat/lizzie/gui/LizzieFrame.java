@@ -8660,7 +8660,7 @@ public class LizzieFrame extends JFrame {
     Toolkit.getDefaultToolkit().getSystemClipboard().setContents(trans, null);
   }
 
-  private void syncOnline(String url) {
+  public void syncOnline(String url) {
     if (onlineDialog == null) onlineDialog = new OnlineDialog(this);
     else {
       try {
@@ -8722,7 +8722,7 @@ public class LizzieFrame extends JFrame {
 
   public void bowser(String url, String title, boolean toolbar /*yike*/) {
     try {
-      new BrowserFrame(url, false, false);
+      new BrowserFrame(url);
     } catch (UnsupportedPlatformException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();

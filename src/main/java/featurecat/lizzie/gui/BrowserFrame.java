@@ -1,8 +1,10 @@
 package featurecat.lizzie.gui;
 
+import featurecat.lizzie.Lizzie;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import me.friwi.jcefmaven.*;
 import org.cef.CefApp;
@@ -24,18 +26,19 @@ public class BrowserFrame extends JFrame {
   private final CefBrowser browser_;
   private final Component browerUI_;
   private boolean browserFocus_ = true;
+  private JToolBar toolbar;
   /**
    * To display a simple browser window, it suffices completely to create an instance of the class
    * CefBrowser and to assign its UI component to your application (e.g. to your content pane). But
    * to be more verbose, this CTOR keeps an instance of each object on the way to the browser UI.
    */
-  public BrowserFrame(String startURL, boolean useOSR, boolean isTransparent)
+  public BrowserFrame(String startURL)
       throws UnsupportedPlatformException, CefInitializationException, IOException,
           InterruptedException {
     // (0) Initialize CEF using the maven loader
     CefAppBuilder builder = new CefAppBuilder();
     // windowless_rendering_enabled must be set to false if not wanted.
-    builder.getCefSettings().windowless_rendering_enabled = useOSR;
+    builder.getCefSettings().windowless_rendering_enabled = false;
     builder.getCefSettings().log_severity = LogSeverity.LOGSEVERITY_DISABLE;
     // USE builder.setAppHandler INSTEAD OF CefApp.addAppHandler!
     // Fixes compatibility issues with MacOSX
@@ -44,7 +47,7 @@ public class BrowserFrame extends JFrame {
           @Override
           public void stateHasChanged(org.cef.CefApp.CefAppState state) {
             // Shutdown the app if the native CEF part is terminated
-            if (state == CefAppState.TERMINATED) System.exit(0);
+            if (state == CefAppState.TERMINATED) setVisible(false);
           }
         });
 
@@ -94,7 +97,7 @@ public class BrowserFrame extends JFrame {
     //     by calling the method "getUIComponent()" on the instance of CefBrowser.
     //     The UI component is inherited from a java.awt.Component and therefore
     //     it can be embedded into any AWT UI.
-    browser_ = client_.createBrowser(startURL, useOSR, isTransparent);
+    browser_ = client_.createBrowser(startURL, false, false);
     browerUI_ = browser_.getUIComponent();
 
     // (5) For this minimal browser, we need only a text field to enter an URL
@@ -110,6 +113,17 @@ public class BrowserFrame extends JFrame {
           @Override
           public void actionPerformed(ActionEvent e) {
             browser_.loadURL(address_.getText());
+          }
+        });
+
+    address_.addKeyListener(
+        new KeyAdapter() {
+          public void keyPressed(KeyEvent e) {
+            if (e.getKeyChar() == KeyEvent.VK_ENTER) // 按回车键执行相应操作;
+            {
+              browser_.loadURL(address_.getText());
+              Lizzie.frame.syncOnline(address_.getText());
+            }
           }
         });
 
@@ -158,7 +172,9 @@ public class BrowserFrame extends JFrame {
           @Override
           public boolean onBeforePopup(
               CefBrowser browser, CefFrame frame, String target_url, String target_frame_name) {
-            System.out.println(target_url);
+            if (!browser.getURL().equals(target_url)) {
+              Lizzie.frame.syncOnline(target_url);
+            }
             browser_.loadURL(target_url);
             // 返回true表示取消弹出窗口
             return true;
@@ -167,15 +183,57 @@ public class BrowserFrame extends JFrame {
 
     // (6) All UI components are assigned to the default content pane of this
     //     JFrame and afterwards the frame is made visible to the user.
-    JToolBar toolbar = new JToolBar();
+    toolbar = new JToolBar();
     toolbar.setBorderPainted(false);
     toolbar.setFloatable(false);
     // toolbarPanel.setLayout(new BorderLayout(0, 0));
-    toolbar.add(new JButton("前进"));
-    toolbar.add(new JButton("前进"));
+
+    ImageIcon iconLeft = new ImageIcon();
+    try {
+      iconLeft.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/left.png")));
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    JButton back = new JButton(iconLeft);
+    back.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            if (browser_.canGoBack()) browser_.goBack();
+          }
+        });
+    back.setFocusable(false);
+
+    JButton load = new JButton(Lizzie.resourceBundle.getString("LizzieFrame.onLoad")); // ("加载");
+    load.setFocusable(false);
+    load.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            // TBD未完成
+            browser_.loadURL(address_.getText());
+            Lizzie.frame.syncOnline(address_.getText());
+          }
+        });
+
+    JButton stop =
+        new JButton(Lizzie.resourceBundle.getString("LizzieFrame.stopSync")); // ("停止同步");
+    stop.setFocusable(false);
+    stop.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            // TBD
+            if (LizzieFrame.onlineDialog != null) {
+              LizzieFrame.onlineDialog.stopSync();
+            }
+          }
+        });
+    toolbar.add(back);
     toolbar.add(address_);
-    toolbar.add(new JButton("前进"));
-    toolbar.add(new JButton("前进"));
+    toolbar.add(load);
+    toolbar.add(stop);
+
     JPanel view = new JPanel();
     view.setLayout(null);
     view.add(browerUI_);
@@ -194,8 +252,8 @@ public class BrowserFrame extends JFrame {
     getContentPane().add(view, BorderLayout.CENTER);
     getRootPane().setBorder(BorderFactory.createEmptyBorder());
     pack();
-    setSize(800, 600);
-    setLocation(100, 100);
+    setSize(Lizzie.frame.bowserWidth, Lizzie.frame.bowserHeight);
+    setLocation(Lizzie.frame.bowserX, Lizzie.frame.bowserY);
     setVisible(true);
 
     // (7) To take care of shutting down CEF accordingly, it's important to call
@@ -205,9 +263,19 @@ public class BrowserFrame extends JFrame {
         new WindowAdapter() {
           @Override
           public void windowClosing(WindowEvent e) {
-            // CefApp.getInstance().dispose();
-            dispose();
+            Lizzie.frame.bowserX = getX();
+            Lizzie.frame.bowserY = getY();
+            Lizzie.frame.bowserWidth = getWidth();
+            Lizzie.frame.bowserHeight = getHeight();
+            setVisible(false);
           }
         });
+  }
+
+  public void openURL(String url, boolean yike) {
+    // TODO Auto-generated method stub
+    browser_.loadURL(url);
+    toolbar.setVisible(yike);
+    setVisible(true);
   }
 }
