@@ -643,6 +643,7 @@ public class Config {
   public double initialMaxScoreLead = 15;
   public boolean enableClickReview = false;
   public boolean contributeDisableRatingMatches = false;
+  public boolean contributeViewAlwaysTop = true;
 
   private JSONObject loadAndMergeSaveBoardConfig(
       JSONObject defaultCfg, String fileName, boolean needValidation) throws IOException {
@@ -1387,6 +1388,7 @@ public class Config {
     enableClickReview = uiConfig.optBoolean("enable-click-review", false);
     contributeDisableRatingMatches =
         uiConfig.optBoolean("contribute-disable-rating-matches", false);
+    contributeViewAlwaysTop = uiConfig.optBoolean("contribute-always-top", true);
     initialMaxScoreLead = uiConfig.optDouble("initial-max-score-lead", 15.0);
     chkDymPDA = uiConfig.optBoolean("chk-dym-pda", false);
     chkStaticPDA = uiConfig.optBoolean("chk-static-pda", false);

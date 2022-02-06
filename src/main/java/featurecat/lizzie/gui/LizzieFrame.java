@@ -12187,7 +12187,7 @@ public class LizzieFrame extends JFrame {
       contributeView.setVisible(false);
       contributeView.dispose();
     }
-    contributeView = new ContributeView(this);
+    contributeView = new ContributeView();
   }
 
   public void openContributeSettings() {

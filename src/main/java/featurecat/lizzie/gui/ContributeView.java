@@ -14,7 +14,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -25,9 +24,10 @@ import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -46,7 +46,7 @@ import javax.swing.text.StyleConstants;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class ContributeView extends JDialog {
+public class ContributeView extends JFrame {
   private JTextField txtGameIndex;
   private JTextField txtAutoPlayInterval;
   private JLabel lblGameInfos;
@@ -67,14 +67,18 @@ public class ContributeView extends JDialog {
   private ScheduledExecutorService executor;
   private JButton btnSlowShutdown;
   private JButton btnForceShutdown;
-  private JButton  btnCloseView;
-  private boolean exitedAfterSignal=false;
+  private JButton btnCloseView;
+  private boolean exitedAfterSignal = false;
 
-  public ContributeView(Window owner) {
-    super(owner);
-    exitedAfterSignal=false;
+  public ContributeView() {
+    exitedAfterSignal = false;
     setTitle(Lizzie.resourceBundle.getString("ContributeView.title")); // ("KataGo跑谱贡献");
     setResizable(false);
+    try {
+      setIconImage(ImageIO.read(getClass().getResourceAsStream("/assets/logo.png")));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
     JPanel mainPanel = new JPanel();
     mainPanel.setBorder(new EmptyBorder(0, 0, 0, 0));
     getContentPane().add(mainPanel, BorderLayout.CENTER);
@@ -424,6 +428,7 @@ public class ContributeView extends JDialog {
     btnHideShowResult.setMargin(new Insets(1, 7, 1, 7));
 
     txtRules = new JTextPane();
+    txtRules.setEditable(false);
     JPanel ruleAndButtonPanel = new JPanel();
     getContentPane().add(ruleAndButtonPanel, BorderLayout.SOUTH);
     txtRules.setText(
@@ -510,14 +515,14 @@ public class ContributeView extends JDialog {
 
     buttonPanel.add(btnSlowShutdown);
     buttonPanel.add(btnForceShutdown);
-    
-     btnCloseView = new JFontButton(Lizzie.resourceBundle.getString(
-             "ContributeView.btnCloseView"));
-     btnCloseView.addActionListener(new ActionListener() {
-     	public void actionPerformed(ActionEvent arg0) {
-     		setVisible(false);
-     	}
-     });
+
+    btnCloseView = new JFontButton(Lizzie.resourceBundle.getString("ContributeView.btnCloseView"));
+    btnCloseView.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent arg0) {
+            setVisible(false);
+          }
+        });
     buttonPanel.add(btnCloseView);
     btnCloseView.setVisible(false);
 
@@ -587,18 +592,34 @@ public class ContributeView extends JDialog {
             : Lizzie.resourceBundle.getString("ContributeView.hideConsole"));
     if (Lizzie.config.contributeHideConsole) scrollConsole.setVisible(false);
     else scrollConsole.setVisible(true);
+    consolePanel.add(consoleButtonPane, BorderLayout.SOUTH);
+
+    JPanel panel_1 = new JPanel();
+    panel_1.setLayout(new FlowLayout(0, 0, 0));
+    consoleButtonPane.add(panel_1, BorderLayout.EAST);
 
     JButton btnFullConsole =
         new JFontButton(
             Lizzie.resourceBundle.getString("ContributeView.btnFullConsole")); // "完整控制台");
+    panel_1.add(btnFullConsole);
+
+    JCheckBox chkAlwaysTop = new JCheckBox("总在最前");
+    panel_1.add(chkAlwaysTop);
+    chkAlwaysTop.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.config.contributeViewAlwaysTop = !Lizzie.config.contributeViewAlwaysTop;
+            Lizzie.config.uiConfig.put(
+                "contribute-always-top", Lizzie.config.contributeViewAlwaysTop);
+            setAlwaysOnTop(Lizzie.config.contributeViewAlwaysTop);
+          }
+        });
     btnFullConsole.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             Lizzie.frame.toggleGtpConsole();
           }
         });
-    consoleButtonPane.add(btnFullConsole, BorderLayout.EAST);
-    consolePanel.add(consoleButtonPane, BorderLayout.SOUTH);
 
     executor = Executors.newSingleThreadScheduledExecutor();
     executor.execute(this::read);
@@ -606,12 +627,12 @@ public class ContributeView extends JDialog {
     this.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
     this.addWindowListener(
         new WindowAdapter() {
-          public void windowClosing(WindowEvent e) {            
-            if(exitedAfterSignal)
-            	setVisible(false);
+          public void windowClosing(WindowEvent e) {
+            if (exitedAfterSignal) setVisible(false);
             else
-            	Utils.showMsg(
-                        Lizzie.resourceBundle.getString("ContributeView.closeTip")); // ("请使用结束跑普贡献关闭此窗口");
+              Utils.showMsg(
+                  Lizzie.resourceBundle.getString(
+                      "ContributeView.closeTip")); // ("请使用结束跑普贡献关闭此窗口");
           }
         });
 
@@ -881,11 +902,11 @@ public class ContributeView extends JDialog {
     }
   }
 
-public void exitedAfterSignal() {
-	// TODO Auto-generated method stub
-	btnSlowShutdown.setVisible(false);
-	btnForceShutdown.setVisible(false);
-	btnCloseView.setVisible(true);
-	exitedAfterSignal=true;
-}
+  public void exitedAfterSignal() {
+    // TODO Auto-generated method stub
+    btnSlowShutdown.setVisible(false);
+    btnForceShutdown.setVisible(false);
+    btnCloseView.setVisible(true);
+    exitedAfterSignal = true;
+  }
 }

@@ -3287,6 +3287,7 @@ public class BoardRenderer {
         if (move.coordinate.equals(coordsName)) {
           if (move.order > 0
               && move.playouts < Lizzie.config.minPlayoutsForNextMove
+              && Lizzie.board.getHistory().getCurrentHistoryNode().next().isPresent()
               && Lizzie.board
                       .getHistory()
                       .getCurrentHistoryNode()

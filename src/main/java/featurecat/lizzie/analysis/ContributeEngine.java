@@ -67,7 +67,7 @@ public class ContributeEngine {
       engineCommand = Lizzie.config.contributeCommand;
       if (!engineCommand.contains("-override")) engineCommand += " -override-config ";
       if (!engineCommand.contains(" -config")) {
-        engineCommand += " \"serverUrl = https://katagotraining.org/\",";
+        engineCommand += " \"serverUrl=https://katagotraining.org/\",";
       }
     } else {
       engineCommand = Lizzie.config.contributeEnginePath + " contribute";
@@ -936,9 +936,12 @@ public class ContributeEngine {
           if (move.isPass) {
             if (status.startNode.next().isPresent())
               status.startNode = status.startNode.next().get();
-            else return status;
+            else {
+              getRemainList(list, remainList, i + 1);
+              return status;
+            }
           } else {
-            getRemainList(list, remainList, i + 1);
+            status.isSame = false;
             return status;
           }
         }

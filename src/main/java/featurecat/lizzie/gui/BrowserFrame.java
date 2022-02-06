@@ -39,6 +39,11 @@ public class BrowserFrame extends JFrame {
     // (0) Initialize CEF using the maven loader
     this.isYike = yike;
     this.setTitle(title);
+    try {
+      setIconImage(ImageIO.read(getClass().getResourceAsStream("/assets/logo.png")));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
     CefAppBuilder builder = new CefAppBuilder();
     // windowless_rendering_enabled must be set to false if not wanted.
     builder.getCefSettings().windowless_rendering_enabled = false;
