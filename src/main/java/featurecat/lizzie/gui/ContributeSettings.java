@@ -344,6 +344,7 @@ public class ContributeSettings extends JDialog {
     gbc_chkNoRaingMatches.gridy = 7;
     mainPanel.add(chkNoRaingMatches, gbc_chkNoRaingMatches);
     chkNoRaingMatches.setToolTipText(noRatingMatchesTip);
+    chkNoRaingMatches.setSelected(Lizzie.config.contributeDisableRatingMatches);
 
     JPanel panel_2 = new JPanel();
     GridBagConstraints gbc_panel_2 = new GridBagConstraints();

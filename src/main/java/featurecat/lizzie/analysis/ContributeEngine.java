@@ -390,7 +390,7 @@ public class ContributeEngine {
     }
     if (line.contains("Exited cleanly after signal")) {
       Utils.showMsg(Lizzie.resourceBundle.getString("Contribute.tips.exitedAfterSignal"));
-      if (Lizzie.frame.contributeView != null) Lizzie.frame.contributeView.setVisible(false);
+      if (Lizzie.frame.contributeView != null) Lizzie.frame.contributeView.exitedAfterSignal();
     }
   }
 

@@ -67,9 +67,12 @@ public class ContributeView extends JDialog {
   private ScheduledExecutorService executor;
   private JButton btnSlowShutdown;
   private JButton btnForceShutdown;
+  private JButton  btnCloseView;
+  private boolean exitedAfterSignal=false;
 
   public ContributeView(Window owner) {
     super(owner);
+    exitedAfterSignal=false;
     setTitle(Lizzie.resourceBundle.getString("ContributeView.title")); // ("KataGo跑谱贡献");
     setResizable(false);
     JPanel mainPanel = new JPanel();
@@ -507,6 +510,16 @@ public class ContributeView extends JDialog {
 
     buttonPanel.add(btnSlowShutdown);
     buttonPanel.add(btnForceShutdown);
+    
+     btnCloseView = new JFontButton(Lizzie.resourceBundle.getString(
+             "ContributeView.btnCloseView"));
+     btnCloseView.addActionListener(new ActionListener() {
+     	public void actionPerformed(ActionEvent arg0) {
+     		setVisible(false);
+     	}
+     });
+    buttonPanel.add(btnCloseView);
+    btnCloseView.setVisible(false);
 
     JPanel consolePanel = new JPanel();
     consolePanel.setLayout(new BorderLayout());
@@ -593,9 +606,12 @@ public class ContributeView extends JDialog {
     this.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
     this.addWindowListener(
         new WindowAdapter() {
-          public void windowClosing(WindowEvent e) {
-            Utils.showMsg(
-                Lizzie.resourceBundle.getString("ContributeView.closeTip")); // ("请使用结束跑普贡献关闭此窗口");
+          public void windowClosing(WindowEvent e) {            
+            if(exitedAfterSignal)
+            	setVisible(false);
+            else
+            	Utils.showMsg(
+                        Lizzie.resourceBundle.getString("ContributeView.closeTip")); // ("请使用结束跑普贡献关闭此窗口");
           }
         });
 
@@ -864,4 +880,12 @@ public class ContributeView extends JDialog {
       }
     }
   }
+
+public void exitedAfterSignal() {
+	// TODO Auto-generated method stub
+	btnSlowShutdown.setVisible(false);
+	btnForceShutdown.setVisible(false);
+	btnCloseView.setVisible(true);
+	exitedAfterSignal=true;
+}
 }
