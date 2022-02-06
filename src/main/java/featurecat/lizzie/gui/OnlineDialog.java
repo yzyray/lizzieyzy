@@ -331,7 +331,8 @@ public class OnlineDialog extends JDialog {
 
   private void error(boolean e) {
     if (!this.isVisible() && OnlineDialog.fromBrowser) return;
-    if (!isStoped && (Lizzie.frame.browser == null || Lizzie.frame.browser.isDisposed())) {
+    if (!isStoped
+        && (Lizzie.frame.browserFrame == null || !Lizzie.frame.browserFrame.isVisible())) {
       lblError.setVisible(e);
       setVisible(true);
     }

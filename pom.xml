@@ -122,23 +122,17 @@
 			<artifactId>json</artifactId>
 			<version>20180130</version>
 		</dependency>
-	
-	 	<dependency>
-  			<groupId>com.teamdev.jxbrowser</groupId>
-  			<artifactId>license</artifactId>
-  			<version>6.21</version>
-		</dependency>
 		
 		<dependency>
-	  		<groupId>com.teamdev.jxbrowser</groupId>
-	    	<artifactId>jxbrowser</artifactId>
-	      	<version>6.21</version>
-	 	</dependency>
-
- 		<dependency>
-  			<groupId>com.teamdev.jxbrowser</groupId>
-  			<artifactId>jxbrowser-win64</artifactId>
-  			<version>6.21</version>
+			<groupId>me.friwi</groupId>
+			<artifactId>jcefmaven</artifactId>
+			<version>95.7.14.4</version>
+		</dependency>
+			
+		<dependency>
+  			<groupId>me.friwi</groupId>
+  			<artifactId>jcef-natives-windows-amd64</artifactId>
+  			<version>jcef-a51ff7f+cef-95.7.14+g9f72f35+chromium-95.0.4638.69</version>
 		</dependency>
 
 		<dependency>

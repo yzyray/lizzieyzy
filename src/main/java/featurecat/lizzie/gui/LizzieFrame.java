@@ -6,11 +6,6 @@ import static java.lang.Math.max;
 import static java.lang.Math.min;
 
 import com.jhlabs.image.GaussianFilter;
-import com.teamdev.jxbrowser.chromium.Browser;
-import com.teamdev.jxbrowser.chromium.PopupContainer;
-import com.teamdev.jxbrowser.chromium.PopupHandler;
-import com.teamdev.jxbrowser.chromium.PopupParams;
-import com.teamdev.jxbrowser.chromium.swing.BrowserView;
 import featurecat.lizzie.Config;
 import featurecat.lizzie.ExtraMode;
 import featurecat.lizzie.Lizzie;
@@ -82,6 +77,8 @@ import javax.swing.table.TableModel;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
+import me.friwi.jcefmaven.CefInitializationException;
+import me.friwi.jcefmaven.UnsupportedPlatformException;
 import org.jdesktop.swingx.util.OS;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -379,10 +376,10 @@ public class LizzieFrame extends JFrame {
   ArrayList<Movelist> tryMoveList;
   String tryString;
   String titleBeforeTrying;
-  public Browser browser;
-  JFrame frame;
-  ArrayList<String> urlList;
-  int urlIndex;
+  public BrowserFrame browserFrame;
+  //  JFrame frame;
+  //  ArrayList<String> urlList;
+  //  int urlIndex;
   public static OnlineDialog onlineDialog;
   // public int mode1;
 
@@ -7292,7 +7289,7 @@ public class LizzieFrame extends JFrame {
   }
 
   public boolean resetMovelistFrameandAnalysisFrame() {
-    boolean hadSetFrame = false;
+    boolean setFrame = false;
     if (Lizzie.config.uiConfig.optBoolean("show-suggestions-frame", false)) {
       if (analysisFrame == null) toggleBestMoves();
       else {
@@ -7304,7 +7301,7 @@ public class LizzieFrame extends JFrame {
               }
             });
       }
-      hadSetFrame = true;
+      setFrame = true;
     } else if (analysisFrame != null && analysisFrame.isVisible()) {
       SwingUtilities.invokeLater(
           new Runnable() {
@@ -7313,7 +7310,7 @@ public class LizzieFrame extends JFrame {
               toggleBestMoves();
             }
           });
-      hadSetFrame = true;
+      setFrame = true;
     }
     if (Lizzie.config.uiConfig.optBoolean("show-badmoves-frame", false)) {
       if (moveListFrame == null) toggleBadMoves();
@@ -7326,7 +7323,7 @@ public class LizzieFrame extends JFrame {
               }
             });
       }
-      hadSetFrame = true;
+      setFrame = true;
     } else if (moveListFrame != null && moveListFrame.isVisible()) {
       SwingUtilities.invokeLater(
           new Runnable() {
@@ -7335,9 +7332,9 @@ public class LizzieFrame extends JFrame {
               toggleBestMoves();
             }
           });
-      hadSetFrame = true;
+      setFrame = true;
     }
-    return hadSetFrame;
+    return setFrame;
   }
 
   /**
@@ -7423,7 +7420,12 @@ public class LizzieFrame extends JFrame {
 
   public void setCommentPaneOrArea(boolean isArea) {
     isCommentArea = isArea;
-    setCommentComponet();
+    SwingUtilities.invokeLater(
+        new Thread() {
+          public void run() {
+            setCommentComponet();
+          }
+        });
   }
 
   public void resetCommentComponent() {
@@ -8663,7 +8665,7 @@ public class LizzieFrame extends JFrame {
     Toolkit.getDefaultToolkit().getSystemClipboard().setContents(trans, null);
   }
 
-  private void syncOnline(String url) {
+  public void syncOnline(String url) {
     if (onlineDialog == null) onlineDialog = new OnlineDialog(this);
     else {
       try {
@@ -8674,39 +8676,6 @@ public class LizzieFrame extends JFrame {
 
     onlineDialog.applyChangeWeb(url);
     syncLiveBoardStat();
-    //    if (onlineDialog != null) {
-    //      onlineDialog.dispose();
-    //    }
-    //    if (isSyncing && System.currentTimeMillis() - startSyncTime < 2000) {
-    //      if (firstIsSyncing) firstIsSyncing = false;
-    //      else return;
-    //      Timer timer = new Timer();
-    //      timer.schedule(
-    //          new TimerTask() {
-    //            public void run() {
-    //              //    onlineDialog = new OnlineDialog();
-    //              onlineDialog.applyChangeWeb(url);
-    //              startSyncTime = System.currentTimeMillis();
-    //              isSyncing = false;
-    //              firstIsSyncing = true;
-    //              this.cancel();
-    //            }
-    //          },
-    //          2000);
-    //      return;
-    //    }
-    //
-    //    if (System.currentTimeMillis() - startSyncTime < 1000) {
-    //      isSyncing = true;
-    //      // onlineDialog = new OnlineDialog();
-    //      onlineDialog.applyChangeWeb(url);
-    //      startSyncTime = System.currentTimeMillis();
-    //      return;
-    //    }
-    //    isSyncing = false;
-    //    //  onlineDialog = new OnlineDialog();
-    //    onlineDialog.applyChangeWeb(url);
-    //       startSyncTime = System.currentTimeMillis();
   }
 
   public void openHelp() {
@@ -8723,245 +8692,20 @@ public class LizzieFrame extends JFrame {
     bowser(url, Lizzie.resourceBundle.getString("LizzieFrame.introduction"), false);
   }
 
-  public void bowser(String url, String title, boolean toolbar) {
-    JTextField thisUrl = new JTextField();
-    JToolBar toolBar = new JToolBar(Lizzie.resourceBundle.getString("LizzieFrame.url")); // ("地址栏");
-    urlList = new ArrayList<String>();
-    urlList.add(url);
-    urlIndex = 0;
-    if (browser != null && !browser.isDisposed()) {
-      browser.loadURL(url);
-      frame.setTitle(title);
-      frame.setVisible(true);
-      return;
+  public void bowser(String url, String title, boolean isYike) {
+    if (browserFrame == null) {
+      try {
+        browserFrame = new BrowserFrame(url, title, isYike);
+      } catch (UnsupportedPlatformException
+          | CefInitializationException
+          | IOException
+          | InterruptedException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
     } else {
-      browser = new Browser();
-      browser.loadURL(url);
+      browserFrame.openURL(url, title, isYike);
     }
-    browser.setPopupHandler(
-        new PopupHandler() {
-          @Override
-          public PopupContainer handlePopup(PopupParams popupParams) {
-            // browser.loadURL(popupParams.getURL());
-            //  thisUrl.setText(popupParams.getURL());
-            Runnable runnable =
-                new Runnable() {
-                  public void run() {
-                    if (Lizzie.config.openHtmlOnLive) {
-                      browser.loadURL(popupParams.getURL());
-                      thisUrl.setText(popupParams.getURL());
-                      urlList.add(popupParams.getURL());
-                      urlIndex = urlList.size() - 1;
-                    }
-                    syncOnline(popupParams.getURL());
-                  }
-                };
-            Thread thread = new Thread(runnable);
-            thread.start();
-
-            return null;
-          }
-        });
-    BrowserView view = new BrowserView(browser);
-    JPanel viewPanel = new JPanel();
-    viewPanel.setLayout(null);
-    viewPanel.add(view);
-    frame = new JFrame();
-
-    frame.setSize(bowserWidth, bowserHeight);
-    frame.setTitle(title);
-    frame.add(viewPanel, BorderLayout.CENTER);
-    frame.setLocation(bowserX, bowserY);
-    frame.setVisible(true);
-
-    frame.addWindowListener(
-        new WindowAdapter() {
-          public void windowClosing(WindowEvent e) {
-            if (toolbar) {
-              bowserX = frame.getX();
-              bowserY = frame.getY();
-              bowserWidth = frame.getWidth();
-              bowserHeight = frame.getHeight();
-            }
-            frame.setVisible(false);
-            frame.dispose();
-            browser.dispose();
-          }
-        });
-
-    viewPanel.addComponentListener(
-        new ComponentAdapter() {
-          @Override
-          public void componentResized(ComponentEvent e) {
-            viewPanel.revalidate();
-            view.setBounds(
-                0,
-                toolbar ? (int) (toolBar.getHeight() * (Lizzie.sysScaleFactor - 1)) : 0,
-                (int) Math.ceil((viewPanel.getWidth() * Lizzie.sysScaleFactor)),
-                (int) Math.ceil((viewPanel.getHeight() * Lizzie.sysScaleFactor)));
-            viewPanel.revalidate();
-          }
-        });
-    if (toolbar) {
-      frame.addComponentListener(
-          new ComponentAdapter() {
-            @Override
-            public void componentResized(ComponentEvent e) {
-              bowserWidth = frame.getWidth();
-              bowserHeight = frame.getHeight();
-            }
-
-            public void componentMoved(ComponentEvent e) {
-              bowserX = frame.getX();
-              bowserY = frame.getY();
-            }
-          });
-    }
-    thisUrl.setText(url);
-    try {
-      frame.setIconImage(ImageIO.read(MoveListFrame.class.getResourceAsStream("/assets/logo.png")));
-    } catch (IOException e1) {
-      // TODO Auto-generated catch block
-      e1.printStackTrace();
-    }
-
-    ImageIcon iconLeft = new ImageIcon();
-    try {
-      iconLeft.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/left.png")));
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-    ImageIcon iconRight = new ImageIcon();
-    try {
-      iconRight.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/right.png")));
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-
-    thisUrl.addKeyListener(
-        new KeyAdapter() {
-          public void keyPressed(KeyEvent e) {
-            if (e.getKeyChar() == KeyEvent.VK_ENTER) // 按回车键执行相应操作;
-            {
-              browser.loadURL(thisUrl.getText());
-              if (!thisUrl.getText().equals(url)) {
-                syncOnline(thisUrl.getText());
-              }
-            }
-          }
-        });
-    JButton backward = new JButton(iconLeft);
-    backward.setFocusable(false);
-    backward.addActionListener(
-        new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            if (urlIndex > 0) {
-              urlIndex = urlIndex - 1;
-              browser.loadURL(urlList.get(urlIndex));
-              thisUrl.setText(urlList.get(urlIndex));
-              if (urlList.get(urlIndex) != url) {
-                syncOnline(urlList.get(urlIndex));
-              }
-            }
-          }
-        });
-
-    JButton forward = new JButton(iconRight);
-    forward.setFocusable(false);
-    forward.addActionListener(
-        new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            // TBD未完成
-            if (urlIndex < urlList.size() - 1) {
-              urlIndex = urlIndex + 1;
-              browser.loadURL(urlList.get(urlIndex));
-              thisUrl.setText(urlList.get(urlIndex));
-              if (urlList.get(urlIndex) != url) {
-                syncOnline(urlList.get(urlIndex));
-              }
-            }
-          }
-        });
-    JButton refresh = new JButton(Lizzie.resourceBundle.getString("LizzieFrame.refresh")); // "刷新");
-    refresh.setFocusable(false);
-    refresh.addActionListener(
-        new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            // TBD未完成
-            browser.loadURL(browser.getURL());
-            thisUrl.setText(browser.getURL());
-            if (!browser.getURL().equals(url)) {
-              syncOnline(browser.getURL());
-            }
-          }
-        });
-    JButton load = new JButton(Lizzie.resourceBundle.getString("LizzieFrame.onLoad")); // ("加载");
-    load.setFocusable(false);
-    load.addActionListener(
-        new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            // TBD未完成
-            browser.loadURL(thisUrl.getText());
-            if (!thisUrl.getText().equals(url)) {
-              syncOnline(thisUrl.getText());
-            }
-          }
-        });
-
-    JButton back =
-        new JButton(Lizzie.resourceBundle.getString("LizzieFrame.backToHall")); // ("返回大厅");
-    back.setFocusable(false);
-    back.addActionListener(
-        new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            // TBD未完成
-            browser.loadURL(url);
-            thisUrl.setText(url);
-          }
-        });
-    JButton stop =
-        new JButton(Lizzie.resourceBundle.getString("LizzieFrame.stopSync")); // ("停止同步");
-    stop.setFocusable(false);
-    stop.addActionListener(
-        new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            // TBD
-            if (onlineDialog != null) {
-              onlineDialog.stopSync();
-            }
-          }
-        });
-    toolBar.setBorderPainted(false);
-    toolBar.add(backward);
-    toolBar.add(forward);
-    toolBar.add(back);
-
-    toolBar.add(thisUrl);
-    toolBar.add(load);
-    toolBar.addSeparator();
-    toolBar.add(refresh);
-    toolBar.addSeparator();
-    toolBar.add(stop);
-
-    view.requestFocus();
-    if (toolbar) frame.add(toolBar, BorderLayout.PAGE_START);
-    else frame.setExtendedState(Frame.MAXIMIZED_BOTH);
-    view.setBounds(
-        0,
-        0,
-        (int) (viewPanel.getWidth() * Lizzie.sysScaleFactor),
-        (int) (viewPanel.getHeight() * Lizzie.sysScaleFactor));
-    toolBar.setVisible(false);
-    toolBar.setVisible(true);
-    //  frame.add(back);
   }
 
   public void syncLiveBoardStat() {
