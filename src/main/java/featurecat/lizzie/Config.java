@@ -641,7 +641,8 @@ public class Config {
   public boolean contributeUseSlowShutdown = true;
 
   public double initialMaxScoreLead = 15;
-  public boolean enableClickReview = true;
+  public boolean enableClickReview = false;
+  public boolean contributeDisableRatingMatches = false;
 
   private JSONObject loadAndMergeSaveBoardConfig(
       JSONObject defaultCfg, String fileName, boolean needValidation) throws IOException {
@@ -1383,7 +1384,9 @@ public class Config {
     showContribute = uiConfig.optBoolean("show-Contribute", true);
     contributeUseSlowShutdown = uiConfig.optBoolean("contribute-use-slow-shutdown", true);
 
-    enableClickReview = uiConfig.optBoolean("enable-click-review", true);
+    enableClickReview = uiConfig.optBoolean("enable-click-review", false);
+    contributeDisableRatingMatches =
+        uiConfig.optBoolean("contribute-disable-rating-matches", false);
     initialMaxScoreLead = uiConfig.optDouble("initial-max-score-lead", 15.0);
     chkDymPDA = uiConfig.optBoolean("chk-dym-pda", false);
     chkStaticPDA = uiConfig.optBoolean("chk-static-pda", false);

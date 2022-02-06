@@ -88,6 +88,7 @@ public class ContributeEngine {
     engineCommand += "\"maxSimultaneousGames=" + Lizzie.config.contributeBatchGames + "\",";
     engineCommand +=
         "\"includeOwnership=" + (Lizzie.config.contributeShowEstimate ? "true" : "false") + "\",";
+    if (Lizzie.config.contributeDisableRatingMatches) engineCommand += "\"maxRatingMatches=0\",";
     engineCommand += "\"logGamesAsJson=true\"";
     RemoteEngineData remoteData = Utils.getContributeRemoteEngineData();
     // this.useJavaSSH = remoteData.useJavaSSH;

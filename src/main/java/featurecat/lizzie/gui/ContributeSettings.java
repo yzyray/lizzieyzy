@@ -36,6 +36,7 @@ public class ContributeSettings extends JDialog {
   private JCheckBox chkRemote;
   private JCheckBox chkShowOwnerShip;
   private JCheckBox chkAutoSave;
+  private JCheckBox chkNoRaingMatches;
   private JCheckBox chkSlowShutdown;
   private JButton btnRemoteSetting;
   private JDialog thisDialog = this;
@@ -66,16 +67,18 @@ public class ContributeSettings extends JDialog {
     String customCommandTip =
         Lizzie.resourceBundle.getString("ContributeSettings.customCommandTip");
     String slowShutdownTip = Lizzie.resourceBundle.getString("ContributeSettings.slowShutdownTip");
+    String noRatingMatchesTip =
+        Lizzie.resourceBundle.getString("ContributeSettings.noRatingMatchesTip");
 
     JPanel mainPanel = new JPanel();
     mainPanel.setBorder(new EmptyBorder(2, 0, 0, 5));
     getContentPane().add(mainPanel, BorderLayout.CENTER);
     GridBagLayout gbl_mainPanel = new GridBagLayout();
     gbl_mainPanel.columnWidths = new int[] {217, 217, 0};
-    gbl_mainPanel.rowHeights = new int[] {41, 41, 0, 41, 41, 41, 41, 0, 0, 0};
+    gbl_mainPanel.rowHeights = new int[] {41, 41, 0, 41, 41, 41, 41, 0, 0, 0, 0};
     gbl_mainPanel.columnWeights = new double[] {1.0, 1.0, Double.MIN_VALUE};
     gbl_mainPanel.rowWeights =
-        new double[] {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, Double.MIN_VALUE};
+        new double[] {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, Double.MIN_VALUE};
     mainPanel.setLayout(gbl_mainPanel);
 
     JPanel engineFilePanel = new JPanel();
@@ -320,12 +323,34 @@ public class ContributeSettings extends JDialog {
     chkShowOwnerShip.setToolTipText(ownerShipTip);
     chkShowOwnerShip.setSelected(Lizzie.config.contributeShowEstimate);
 
+    JPanel panel_4 = new JPanel();
+    GridBagConstraints gbc_panel_4 = new GridBagConstraints();
+    gbc_panel_4.insets = new Insets(0, 0, 5, 5);
+    gbc_panel_4.fill = GridBagConstraints.BOTH;
+    gbc_panel_4.gridx = 0;
+    gbc_panel_4.gridy = 7;
+    mainPanel.add(panel_4, gbc_panel_4);
+
+    JLabel lblChkNoRatingMatches =
+        new JFontLabel(Lizzie.resourceBundle.getString("ContributeSettings.lblChkNoRatingMatches"));
+    panel_4.add(lblChkNoRatingMatches);
+    lblChkNoRatingMatches.setToolTipText(noRatingMatchesTip);
+
+    chkNoRaingMatches = new JCheckBox();
+    GridBagConstraints gbc_chkNoRaingMatches = new GridBagConstraints();
+    gbc_chkNoRaingMatches.anchor = GridBagConstraints.WEST;
+    gbc_chkNoRaingMatches.insets = new Insets(0, 0, 5, 0);
+    gbc_chkNoRaingMatches.gridx = 1;
+    gbc_chkNoRaingMatches.gridy = 7;
+    mainPanel.add(chkNoRaingMatches, gbc_chkNoRaingMatches);
+    chkNoRaingMatches.setToolTipText(noRatingMatchesTip);
+
     JPanel panel_2 = new JPanel();
     GridBagConstraints gbc_panel_2 = new GridBagConstraints();
     gbc_panel_2.insets = new Insets(0, 0, 5, 5);
     gbc_panel_2.fill = GridBagConstraints.BOTH;
     gbc_panel_2.gridx = 0;
-    gbc_panel_2.gridy = 7;
+    gbc_panel_2.gridy = 8;
     mainPanel.add(panel_2, gbc_panel_2);
 
     JLabel lblAutoSave =
@@ -340,15 +365,21 @@ public class ContributeSettings extends JDialog {
     gbc_chkAutoSave.insets = new Insets(0, 0, 5, 0);
     gbc_chkAutoSave.anchor = GridBagConstraints.WEST;
     gbc_chkAutoSave.gridx = 1;
-    gbc_chkAutoSave.gridy = 7;
+    gbc_chkAutoSave.gridy = 8;
     mainPanel.add(chkAutoSave, gbc_chkAutoSave);
+    chkAutoSave.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            if (chkAutoSave.isSelected()) Utils.showMsg(autoSaveTip);
+          }
+        });
 
     JPanel panel_3 = new JPanel();
     GridBagConstraints gbc_panel_3 = new GridBagConstraints();
     gbc_panel_3.insets = new Insets(0, 0, 0, 5);
     gbc_panel_3.fill = GridBagConstraints.BOTH;
     gbc_panel_3.gridx = 0;
-    gbc_panel_3.gridy = 8;
+    gbc_panel_3.gridy = 9;
     if (OS.isWindows()) mainPanel.add(panel_3, gbc_panel_3);
 
     JFontLabel lblEnableSlowShutdown =
@@ -380,14 +411,8 @@ public class ContributeSettings extends JDialog {
     GridBagConstraints gbc_chckbxNewCheckBox = new GridBagConstraints();
     gbc_chckbxNewCheckBox.anchor = GridBagConstraints.WEST;
     gbc_chckbxNewCheckBox.gridx = 1;
-    gbc_chckbxNewCheckBox.gridy = 8;
+    gbc_chckbxNewCheckBox.gridy = 9;
     if (OS.isWindows()) mainPanel.add(chkSlowShutdown, gbc_chckbxNewCheckBox);
-    chkAutoSave.addActionListener(
-        new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            if (chkAutoSave.isSelected()) Utils.showMsg(autoSaveTip);
-          }
-        });
 
     JPanel buttonPanel = new JPanel();
     getContentPane().add(buttonPanel, BorderLayout.SOUTH);
@@ -441,5 +466,8 @@ public class ContributeSettings extends JDialog {
     Lizzie.config.contributeUseSlowShutdown = this.chkSlowShutdown.isSelected();
     Lizzie.config.uiConfig.put(
         "contribute-use-slow-shutdown", Lizzie.config.contributeUseSlowShutdown);
+    Lizzie.config.contributeDisableRatingMatches = chkNoRaingMatches.isSelected();
+    Lizzie.config.uiConfig.put(
+        "contribute-disable-rating-matches", Lizzie.config.contributeDisableRatingMatches);
   }
 }
