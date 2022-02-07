@@ -400,6 +400,7 @@ public class MoveListFrame extends JFrame {
 
     lossPanel.addTab(Lizzie.resourceBundle.getString("Movelistframe.scoreLoss"), scoreLossPanel);
     lossPanel.addTab(Lizzie.resourceBundle.getString("Movelistframe.winLoss"), winLossPanel);
+    lossPanel.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
 
     if (Lizzie.config.lossPanelSelectWinrate || !isKatago) lossPanel.setSelectedIndex(1);
     else lossPanel.setSelectedIndex(0);

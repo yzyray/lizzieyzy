@@ -103,8 +103,6 @@ public class Lizzie {
 
     AwareScaled awareScaled = new AwareScaled();
     awareScaled.setVisible(true);
-    setLookAndFeel();
-    ToolTipManager.sharedInstance().setDismissDelay(99999);
     String hostName = InetAddress.getLocalHost().getHostName();
     if (config.firstTimeLoad || !hostName.equals(config.hostName)) {
       if (!config.hostName.equals("")) config.deletePersist(false);
@@ -159,6 +157,7 @@ public class Lizzie {
     config.shareLabel3 =
         config.uiConfig.optString(
             "share-label-3", resourceBundle.getString("ShareFrame.shareLabel3"));
+    setLookAndFeel();
     if (Lizzie.config.uiConfig.optBoolean("autoload-default", false)) {
       start(-1, true);
     } else if (Lizzie.config.uiConfig.optBoolean("autoload-last", false)) {
@@ -298,6 +297,7 @@ public class Lizzie {
   }
 
   public static void setLookAndFeel() {
+    ToolTipManager.sharedInstance().setDismissDelay(99999);
     try {
       if (System.getProperty("os.name").contains("Mac")) {
         if (config.useJavaLooks)
@@ -358,7 +358,10 @@ public class Lizzie {
     while (keys.hasMoreElements()) {
       Object key = keys.nextElement();
       Object value = UIManager.get(key);
-      if (value instanceof javax.swing.plaf.FontUIResource) UIManager.put(key, f);
+      if (value instanceof javax.swing.plaf.FontUIResource) {
+        System.out.println(key);
+        UIManager.put(key, f);
+      }
     }
   }
 

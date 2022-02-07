@@ -603,7 +603,8 @@ public class ContributeView extends JFrame {
             Lizzie.resourceBundle.getString("ContributeView.btnFullConsole")); // "完整控制台");
     panel_1.add(btnFullConsole);
 
-    JCheckBox chkAlwaysTop = new JCheckBox("总在最前");
+    JCheckBox chkAlwaysTop =
+        new JCheckBox(Lizzie.resourceBundle.getString("ContributeView.chkAlwaysTop"));
     panel_1.add(chkAlwaysTop);
     chkAlwaysTop.addActionListener(
         new ActionListener() {
