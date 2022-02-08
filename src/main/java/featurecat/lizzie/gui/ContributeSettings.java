@@ -362,6 +362,7 @@ public class ContributeSettings extends JDialog {
 
     chkAutoSave = new JFontCheckBox();
     chkAutoSave.setToolTipText(autoSaveTip);
+    chkAutoSave.setSelected(Lizzie.config.contributeAutoSave);
     GridBagConstraints gbc_chkAutoSave = new GridBagConstraints();
     gbc_chkAutoSave.insets = new Insets(0, 0, 5, 0);
     gbc_chkAutoSave.anchor = GridBagConstraints.WEST;
