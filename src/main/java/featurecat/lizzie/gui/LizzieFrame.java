@@ -8694,15 +8694,19 @@ public class LizzieFrame extends JFrame {
 
   public void bowser(String url, String title, boolean isYike) {
     if (browserFrame == null) {
-      try {
-        browserFrame = new BrowserFrame(url, title, isYike);
-      } catch (UnsupportedPlatformException
-          | CefInitializationException
-          | IOException
-          | InterruptedException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
+      new Thread() {
+        public void run() {
+          try {
+            browserFrame = new BrowserFrame(url, title, isYike);
+          } catch (UnsupportedPlatformException
+              | CefInitializationException
+              | IOException
+              | InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
+        }
+      }.start();
     } else {
       browserFrame.openURL(url, title, isYike);
     }
