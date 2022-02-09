@@ -2978,6 +2978,7 @@ public class LizzieFrame extends JFrame {
     // Lizzie.leelaz.isSettingHandicap=true;
     boolean isHandicapGame = gameInfo.getHandicap() != 0;
     Lizzie.frame.allowPlaceStone = false;
+    Lizzie.frame.isPlayingAgainstLeelaz = true;
     Runnable syncBoard =
         new Runnable() {
           public void run() {

@@ -1384,13 +1384,15 @@ public class Leelaz {
               togglePonder();
               return;
             }
-
-            if (params[1].startsWith("pass")) {
+            if (params[1].toLowerCase().startsWith("pass")) {
               Lizzie.board.pass();
               LizzieFrame.menu.toggleEngineMenuStatus(false, false);
             } else {
-              Lizzie.board.place(params[1]);
-              LizzieFrame.menu.toggleEngineMenuStatus(false, false);
+              Optional<int[]> coords = Board.asCoordinates(params[1]);
+              if (coords.isPresent()) {
+                Lizzie.board.place(coords.get()[0], coords.get()[1]);
+                LizzieFrame.menu.toggleEngineMenuStatus(false, false);
+              }
             }
             if (Lizzie.frame.isAutocounting) {
               String command =
