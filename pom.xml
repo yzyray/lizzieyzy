@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
-    <groupId>featurecat</groupId>
+	<groupId>featurecat</groupId>
 	<artifactId>lizzie</artifactId>
 	<version>yzy2.4.7</version>
 
-    <properties>
-        <!-- Prevent warning: "[WARNING] Using platform encoding (UTF-8 actually) to copy filtered resources, i.e. build is platform dependent!"-->
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-    
+	<properties>
+		<!-- Prevent warning: "[WARNING] Using platform encoding (UTF-8 actually) 
+			to copy filtered resources, i.e. build is platform dependent!" -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -23,7 +24,7 @@
 					<source>1.8</source>
 					<target>1.8</target>
 					<compilerArgs>
-						<arg>-Xlint:all</arg>					
+						<arg>-Xlint:all</arg>
 					</compilerArgs>
 				</configuration>
 			</plugin>
@@ -78,11 +79,12 @@
 					</execution>
 				</executions>
 			</plugin>
-			
+
 		</plugins>
 		<pluginManagement>
 			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
@@ -114,7 +116,8 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-	<dependencies>	
+
+	<dependencies>
 
 		<!-- https://mvnrepository.com/artifact/org.json/json -->
 		<dependency>
@@ -122,30 +125,32 @@
 			<artifactId>json</artifactId>
 			<version>20180130</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>me.friwi</groupId>
 			<artifactId>jcefmaven</artifactId>
 			<version>95.7.14.4</version>
 		</dependency>
-			
+
 		<dependency>
-  			<groupId>me.friwi</groupId>
-  			<artifactId>jcef-natives-windows-amd64</artifactId>
-  			<version>jcef-a51ff7f+cef-95.7.14+g9f72f35+chromium-95.0.4638.69</version>
+			<groupId>me.friwi</groupId>
+			<artifactId>jcef-natives-windows-amd64</artifactId>
+			<version>jcef-a51ff7f+cef-95.7.14+g9f72f35+chromium-95.0.4638.69</version>
 		</dependency>
 
 		<dependency>
-    		<groupId>ch.ethz.ganymed</groupId>
-    		<artifactId>ganymed-ssh2</artifactId>
-    		<version>build210</version>
+			<groupId>ch.ethz.ganymed</groupId>
+			<artifactId>ganymed-ssh2</artifactId>
+			<version>build210</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.swinglabs.swingx/swingx-core -->
 		<dependency>
-			<groupId>com.swingxdate</groupId>
-			<artifactId>swingxcore</artifactId>
-			<version>1.6.2</version>
+			<groupId>org.swinglabs.swingx</groupId>
+			<artifactId>swingx-core</artifactId>
+			<version>1.6.4</version>
 		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/junit/junit -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -167,23 +172,23 @@
 			<artifactId>filters</artifactId>
 			<version>2.0.235</version>
 		</dependency>
+
 		<dependency>
-            <groupId>org.java-websocket</groupId>
-            <artifactId>Java-WebSocket</artifactId>
-            <version>1.5.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>1.7.25</version>
-        </dependency>     
-        
-        <dependency>
-            <groupId>io.socket</groupId>
-            <artifactId>socket.io-client</artifactId>
-            <version>1.0.0</version>
-        </dependency>
- 
-        
+			<groupId>org.java-websocket</groupId>
+			<artifactId>Java-WebSocket</artifactId>
+			<version>1.5.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>1.7.25</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.socket</groupId>
+			<artifactId>socket.io-client</artifactId>
+			<version>1.0.0</version>
+		</dependency>
+
 	</dependencies>
 </project>
