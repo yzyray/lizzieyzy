@@ -420,7 +420,7 @@ public class Lizzie {
       config.persist();
       config.save();
     } catch (Exception e) {
-      Utils.showMsg(resourceBundle.getString("Lizzie.save.error") + e.getLocalizedMessage());
+      Utils.showMsgModal(resourceBundle.getString("Lizzie.save.error") + e.getLocalizedMessage());
       e.printStackTrace();
       config.deletePersist(false);
     }

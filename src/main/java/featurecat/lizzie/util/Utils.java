@@ -489,7 +489,6 @@ public class Utils {
         new HtmlMessage(Lizzie.resourceBundle.getString("Message.title"), message, null);
     if (Lizzie.frame != null) htmlMessage.setLocationRelativeTo(Lizzie.frame);
     htmlMessage.setVisible(true);
-    //  msg.setVisible(true);
   }
 
   public static void showMsg(String message, Window owner) {
@@ -500,7 +499,11 @@ public class Utils {
   public static void showMsgNoModal(String message) {
     Message msg = new Message();
     msg.setMessageNoModal(message);
-    //  msg.setVisible(true);
+  }
+
+  public static void showMsgModal(String message) {
+    Message msg = new Message();
+    msg.setMessage(message);
   }
 
   public static void showMsgNoModalForTime(String message, int seconds) {
