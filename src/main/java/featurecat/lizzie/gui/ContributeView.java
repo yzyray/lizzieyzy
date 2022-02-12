@@ -68,6 +68,7 @@ public class ContributeView extends JFrame {
   private JButton btnSlowShutdown;
   private JButton btnForceShutdown;
   private JButton btnCloseView;
+  private JCheckBox chkIgnoreNone19;
   private boolean exitedAfterSignal = false;
 
   public ContributeView() {
@@ -362,6 +363,7 @@ public class ContributeView extends JFrame {
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             Lizzie.config.contributeWatchAutoPlayNextGame = chkAutoPlayNextGame.isSelected();
+            chkIgnoreNone19.setEnabled(chkAutoPlayNextGame.isSelected());
             Lizzie.config.uiConfig.put(
                 "contribute-watch-auto-play-next-game",
                 Lizzie.config.contributeWatchAutoPlayNextGame);
@@ -369,7 +371,7 @@ public class ContributeView extends JFrame {
         });
     chkAutoPlayNextGame.setSelected(Lizzie.config.contributeWatchAutoPlayNextGame);
 
-    JCheckBox chkIgnoreNone19 =
+    chkIgnoreNone19 =
         new JFontCheckBox(
             Lizzie.resourceBundle.getString("ContributeView.chkIgnoreNone19")); // ("跳过非19x19");
     autoPlayPanel.add(chkIgnoreNone19);
@@ -382,6 +384,7 @@ public class ContributeView extends JFrame {
           }
         });
     chkIgnoreNone19.setSelected(Lizzie.config.contributeWatchSkipNone19);
+    chkIgnoreNone19.setEnabled(chkAutoPlayNextGame.isSelected());
 
     JPanel panel = new JPanel();
     panel.setLayout(new FlowLayout(1, 10, 2));
