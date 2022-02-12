@@ -418,11 +418,29 @@ public class Lizzie {
     }
     try {
       config.persist();
+    } catch (Exception e) {
+      Utils.showMsgModal(
+          "<html>"
+              + resourceBundle.getString("Lizzie.save.error")
+              + e.getLocalizedMessage()
+              + "<br />"
+              + resourceBundle.getString("Lizzie.save.path")
+              + config.getPersistFilePath()
+              + "</html>");
+      e.printStackTrace();
+    }
+    try {
       config.save();
     } catch (Exception e) {
-      Utils.showMsgModal(resourceBundle.getString("Lizzie.save.error") + e.getLocalizedMessage());
+      Utils.showMsgModal(
+          "<html>"
+              + resourceBundle.getString("Lizzie.save.error")
+              + e.getLocalizedMessage()
+              + "<br />"
+              + resourceBundle.getString("Lizzie.save.path")
+              + config.getConfigFilePath()
+              + "</html>");
       e.printStackTrace();
-      config.deletePersist(false);
     }
     try {
       frame.closeContributeEngine();

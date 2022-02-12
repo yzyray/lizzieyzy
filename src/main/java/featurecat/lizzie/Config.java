@@ -2481,6 +2481,14 @@ public class Config {
     writeConfig(this.persisted, new File(persistFilename));
   }
 
+  public String getPersistFilePath() {
+    return new File(persistFilename).getAbsolutePath();
+  }
+
+  public String getConfigFilePath() {
+    return new File(configFilename).getAbsolutePath();
+  }
+
   public void deletePersist(boolean showMsg) {
     if (!showMsg && !new File(persistFilename).exists()) return;
     new File(persistFilename).delete();

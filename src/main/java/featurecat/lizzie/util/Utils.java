@@ -502,8 +502,11 @@ public class Utils {
   }
 
   public static void showMsgModal(String message) {
-    Message msg = new Message();
-    msg.setMessage(message);
+    HtmlMessage htmlMessage =
+        new HtmlMessage(Lizzie.resourceBundle.getString("Message.title"), message, null);
+    if (Lizzie.frame != null) htmlMessage.setLocationRelativeTo(Lizzie.frame);
+    htmlMessage.setModal(true);
+    htmlMessage.setVisible(true);
   }
 
   public static void showMsgNoModalForTime(String message, int seconds) {
