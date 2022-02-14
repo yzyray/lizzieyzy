@@ -9351,6 +9351,7 @@ public class LizzieFrame extends JFrame {
         clearKataEstimate();
       }
       Lizzie.leelaz.ponder();
+      Lizzie.frame.refresh();
     } else {
       if (Lizzie.frame.isCounting) {
         clearKataEstimate();

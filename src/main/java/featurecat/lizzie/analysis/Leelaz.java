@@ -627,6 +627,13 @@ public class Leelaz {
   }
 
   public List<MoveData> parseInfoKatago(String line) {
+    boolean hasOwnership = false;
+    String[] lineInfo = null;
+    if (line.contains("ownership")) {
+      hasOwnership = true;
+      lineInfo = line.split("ownership");
+      line = lineInfo[0];
+    }
     List<MoveData> bestMoves = new ArrayList<>();
     String[] variations = line.split(" info ");
     // int k = (Lizzie.config.limitMaxSuggestion > 0&&!Lizzie.config.showNoSuggCircle ?
@@ -642,9 +649,8 @@ public class Leelaz {
     currentTotalPlayouts = MoveData.getPlayouts(bestMoves);
     ArrayList<Double> estimateArray = new ArrayList<Double>();
     if (Lizzie.config.showKataGoEstimate) {
-      if (line.contains("ownership")) {
-        String[] params = line.trim().split("ownership");
-        String[] params2 = params[1].trim().split(" ");
+      if (hasOwnership && lineInfo != null && lineInfo.length > 1) {
+        String[] params2 = lineInfo[1].trim().split(" ");
         for (int i = 0; i < params2.length; i++) estimateArray.add(Double.parseDouble(params2[i]));
       }
     } else estimateArray = null;

@@ -411,6 +411,8 @@ public class BoardData {
       if (i < bestMoves.size())
         sb.append(" info "); // this order is just because of how the MoveData info parser works
     }
+    if (estimateArray != null && !estimateArray.isEmpty()) {}
+
     return sb.toString();
   }
 

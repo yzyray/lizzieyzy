@@ -221,7 +221,7 @@ public class SGFParser {
       Lizzie.board.getData().isKataData = true;
       if (line1.length >= 5) {
         double scoreStdev = Double.parseDouble(line1[4]);
-        Lizzie.board.getData().scoreStdev = scoreStdev;
+        if (scoreStdev > 0) Lizzie.board.getData().scoreStdev = scoreStdev;
       }
       if (line1.length >= 6) {
         double pda = Double.parseDouble(line1[5]);
@@ -495,7 +495,7 @@ public class SGFParser {
                 Lizzie.board.getData().isKataData = true;
                 if (line1.length >= 5) {
                   double scoreStdev = Double.parseDouble(line1[4]);
-                  Lizzie.board.getData().scoreStdev = scoreStdev;
+                  if (scoreStdev > 0) Lizzie.board.getData().scoreStdev = scoreStdev;
                 }
                 if (line1.length >= 6) {
                   double pda = Double.parseDouble(line1[5]);
@@ -542,7 +542,7 @@ public class SGFParser {
                 Lizzie.board.getData().isKataData2 = true;
                 if (line1.length >= 5) {
                   double scoreStdev = Double.parseDouble(line1[4]);
-                  Lizzie.board.getData().scoreStdev2 = scoreStdev;
+                  if (scoreStdev > 0) Lizzie.board.getData().scoreStdev2 = scoreStdev;
                 }
                 if (line1.length >= 6) {
                   double pda = Double.parseDouble(line1[5]);
@@ -584,7 +584,7 @@ public class SGFParser {
                 Lizzie.board.getData().isKataData = true;
                 if (line1.length >= 5) {
                   double scoreStdev = Double.parseDouble(line1[4]);
-                  Lizzie.board.getData().scoreStdev = scoreStdev;
+                  if (scoreStdev > 0) Lizzie.board.getData().scoreStdev = scoreStdev;
                 }
                 if (line1.length >= 6) {
                   double pda = Double.parseDouble(line1[5]);
@@ -621,7 +621,7 @@ public class SGFParser {
                   Lizzie.board.getData().isKataData2 = true;
                   if (line1.length >= 5) {
                     double scoreStdev = Double.parseDouble(line1[4]);
-                    Lizzie.board.getData().scoreStdev2 = scoreStdev;
+                    if (scoreStdev > 0) Lizzie.board.getData().scoreStdev2 = scoreStdev;
                   }
                   if (line1.length >= 6) {
                     double pda = Double.parseDouble(line1[5]);
@@ -2353,34 +2353,47 @@ public class SGFParser {
     curWinrate = String.format(Locale.ENGLISH, "%.1f", 100 - curWR);
 
     if (data.isKataData) {
-      if (data.pda != 0) {
-        String wf = "%s %s %s %s %s %s\n%s";
-        return String.format(
-            wf,
-            data.engineName,
-            curWinrate,
-            playouts,
-            String.format(Locale.ENGLISH, "%.1f", data.scoreMean),
-            String.format(Locale.ENGLISH, "%.1f", data.scoreStdev),
-            data.pda,
-            data.bestMovesToString());
-      } else {
-        String wf = "%s %s %s %s %s\n%s";
-        return String.format(
-            wf,
-            data.engineName,
-            curWinrate,
-            playouts,
-            String.format(Locale.ENGLISH, "%.1f", data.scoreMean),
-            String.format(Locale.ENGLISH, "%.1f", data.scoreStdev),
-            data.bestMovesToString());
+      boolean hasOwnership = false;
+      String ownership = " ownership";
+      if (data.estimateArray != null && !data.estimateArray.isEmpty()) {
+        for (Double value : data.estimateArray) {
+          ownership += " " + value;
+        }
+        hasOwnership = true;
       }
+      String wf = "%s %s %s %s %s %s\n%s";
+      if (data.pda != 0) {
+        wf =
+            String.format(
+                wf,
+                data.engineName,
+                curWinrate,
+                playouts,
+                String.format(Locale.ENGLISH, "%.1f", data.scoreMean),
+                String.format(Locale.ENGLISH, "%.1f", data.scoreStdev),
+                data.pda,
+                data.bestMovesToString());
+      } else {
+        wf = "%s %s %s %s %s\n%s";
+        wf =
+            String.format(
+                wf,
+                data.engineName,
+                curWinrate,
+                playouts,
+                String.format(Locale.ENGLISH, "%.1f", data.scoreMean),
+                String.format(Locale.ENGLISH, "%.1f", data.scoreStdev),
+                data.bestMovesToString());
+      }
+      if (hasOwnership) {
+        wf += ownership;
+      }
+      return wf;
     }
 
     String wf = "%s %s %s\n%s";
 
-    return String.format(
-        wf, data.engineName.replaceAll(" ", ""), curWinrate, playouts, data.bestMovesToString());
+    return String.format(wf, data.engineName, curWinrate, playouts, data.bestMovesToString());
   }
 
   private static String formatNodeData2(BoardHistoryNode node) {
@@ -2794,7 +2807,7 @@ public class SGFParser {
                         .replaceAll("m", "000000")
                         .replaceAll("[^0-9]", ""));
             if (numPlayouts > 0 && !line2.isEmpty()) {
-              Lizzie.board.getData().bestMoves = Lizzie.leelaz.parseInfo(line2);
+              Lizzie.board.getData().bestMoves = parseInfofromfile(line2);
             }
           } else if (tag.equals("AB") || tag.equals("AW")) {
             int[] move = convertSgfPosToCoord(tagContent);
@@ -3202,6 +3215,13 @@ public class SGFParser {
   }
 
   private static List<MoveData> parseInfofromfile(String line) {
+    boolean hasOwnership = false;
+    String[] lineInfo = null;
+    if (line.contains("ownership")) {
+      hasOwnership = true;
+      lineInfo = line.split("ownership");
+      line = lineInfo[0];
+    }
     List<MoveData> bestMoves = new ArrayList<>();
     String[] variations = line.split(" info ");
     int k =
@@ -3215,10 +3235,20 @@ public class SGFParser {
         if (k < 1) break;
       }
     }
+    ArrayList<Double> estimateArray = new ArrayList<Double>();
+    if (hasOwnership && lineInfo != null && lineInfo.length > 1) {
+      String[] params2 = lineInfo[1].trim().split(" ");
+      for (int i = 0; i < params2.length; i++) estimateArray.add(Double.parseDouble(params2[i]));
+    } else estimateArray = null;
     Lizzie.board
         .getData()
         .tryToSetBestMoves(
-            bestMoves, Lizzie.board.getData().engineName, false, MoveData.getPlayouts(bestMoves));
+            bestMoves,
+            Lizzie.board.getData().engineName,
+            false,
+            MoveData.getPlayouts(bestMoves),
+            estimateArray);
+
     return bestMoves;
   }
 
