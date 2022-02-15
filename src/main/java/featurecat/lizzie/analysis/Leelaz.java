@@ -799,7 +799,7 @@ public class Leelaz {
             }
           }
         }
-        if (params[1].contains("resign")) {
+        if (params[1].toLowerCase().contains("resign")) {
           pkMoveTime = System.currentTimeMillis() - pkMoveStartTime;
           pkMoveTimeGame = pkMoveTimeGame + pkMoveTime;
 
@@ -1256,7 +1256,7 @@ public class Leelaz {
         }
         if (Lizzie.frame.isPlayingAgainstLeelaz && isResponseUpToDate()) {
           if (params.length > 1) {
-            if (params[1].startsWith("resign")) {
+            if (params[1].toLowerCase().startsWith("resign")) {
               if (Lizzie.frame.playerIsBlack) {
 
                 if (msg == null || !msg.isVisible()) {
