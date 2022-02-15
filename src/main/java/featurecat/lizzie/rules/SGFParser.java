@@ -230,7 +230,7 @@ public class SGFParser {
       }
     }
     if (numPlayouts > 0 && !line2.isEmpty()) {
-      parseInfofromfile(line2);
+      parseInfofromfile(line2, Lizzie.board.getData().scoreStdev);
     }
     islzloaded = false;
   }
@@ -504,7 +504,7 @@ public class SGFParser {
                 }
               }
               if (numPlayouts > 0 && !line2.isEmpty()) {
-                parseInfofromfile(line2);
+                parseInfofromfile(line2, Lizzie.board.getData().scoreStdev);
               }
             }
           } else if (tag.equals("LZ2")) {
@@ -551,7 +551,7 @@ public class SGFParser {
                 }
               }
               if (numPlayouts > 0 && !line2.isEmpty()) {
-                parseInfofromfile2(line2);
+                parseInfofromfile2(line2, Lizzie.board.getData().scoreStdev2);
               }
             }
           } else if (tag.equals("LZOP")) {
@@ -593,7 +593,7 @@ public class SGFParser {
                 }
               }
               if (numPlayouts > 0 && !line2.isEmpty()) {
-                parseInfofromfile(line2);
+                parseInfofromfile(line2, Lizzie.board.getData().scoreStdev);
               }
             }
           } else if (tag.equals("LZOP2")) {
@@ -630,7 +630,7 @@ public class SGFParser {
                   }
                 }
                 if (numPlayouts > 0 && !line2.isEmpty()) {
-                  parseInfofromfile2(line2);
+                  parseInfofromfile2(line2, Lizzie.board.getData().scoreStdev2);
                 }
               }
             }
@@ -1582,12 +1582,8 @@ public class SGFParser {
                 + ")\n"
                 + Lizzie.resourceBundle.getString("SGFParse.komi")
                 + " %s";
-        double scoreStdev = 0;
-        try {
-          if (!data.bestMoves.isEmpty()) scoreStdev = node.getData().bestMoves.get(0).scoreStdev;
-        } catch (Exception ex) {
-          ex.printStackTrace();
-        }
+        double scoreStdev = node.getData().scoreStdev;
+
         nc =
             String.format(
                 wf,
@@ -1836,12 +1832,7 @@ public class SGFParser {
                 + ")\n"
                 + Lizzie.resourceBundle.getString("SGFParse.komi")
                 + " %s";
-        double scoreStdev = 0;
-        try {
-          if (!data.bestMoves.isEmpty()) scoreStdev = node.getData().bestMoves.get(0).scoreStdev;
-        } catch (Exception ex) {
-          ex.printStackTrace();
-        }
+        double scoreStdev = node.getData().scoreStdev;
         nc =
             String.format(
                 wf,
@@ -1977,12 +1968,7 @@ public class SGFParser {
                 + ")\n"
                 + Lizzie.resourceBundle.getString("SGFParse.komi")
                 + " %s";
-        double scoreStdev = 0;
-        try {
-          if (!data.bestMoves.isEmpty()) scoreStdev = node.getData().bestMoves.get(0).scoreStdev;
-        } catch (Exception ex) {
-          ex.printStackTrace();
-        }
+        double scoreStdev = node.getData().scoreStdev;
         nc =
             String.format(
                 wf,
@@ -2215,12 +2201,7 @@ public class SGFParser {
                 + ")\n"
                 + Lizzie.resourceBundle.getString("SGFParse.komi")
                 + " %s";
-        double scoreStdev = 0;
-        try {
-          if (!data.bestMoves2.isEmpty()) scoreStdev = data.bestMoves2.get(0).scoreStdev;
-        } catch (Exception ex) {
-          ex.printStackTrace();
-        }
+        double scoreStdev = node.getData().scoreStdev2;
         nc =
             String.format(
                 wf,
@@ -2414,28 +2395,42 @@ public class SGFParser {
     curWinrate = String.format(Locale.ENGLISH, "%.1f", 100 - curWR);
 
     if (data.isKataData2) {
-      if (data.pda != 0) {
-        String wf = "%s %s %s %s %s %s\n%s";
-        return String.format(
-            wf,
-            data.engineName2,
-            curWinrate,
-            playouts,
-            String.format(Locale.ENGLISH, "%.1f", data.scoreMean2),
-            String.format(Locale.ENGLISH, "%.1f", data.scoreStdev2),
-            data.pda2,
-            data.bestMovesToString2());
-      } else {
-        String wf = "%s %s %s %s %s\n%s";
-        return String.format(
-            wf,
-            data.engineName2,
-            curWinrate,
-            playouts,
-            String.format(Locale.ENGLISH, "%.1f", data.scoreMean2),
-            String.format(Locale.ENGLISH, "%.1f", data.scoreStdev2),
-            data.bestMovesToString2());
+      boolean hasOwnership = false;
+      String ownership = " ownership";
+      if (data.estimateArray2 != null && !data.estimateArray2.isEmpty()) {
+        for (Double value : data.estimateArray2) {
+          ownership += " " + value;
+        }
+        hasOwnership = true;
       }
+      String wf = "%s %s %s %s %s %s\n%s";
+      if (data.pda != 0) {
+        wf =
+            String.format(
+                wf,
+                data.engineName2,
+                curWinrate,
+                playouts,
+                String.format(Locale.ENGLISH, "%.1f", data.scoreMean2),
+                String.format(Locale.ENGLISH, "%.1f", data.scoreStdev2),
+                data.pda,
+                data.bestMovesToString2());
+      } else {
+        wf = "%s %s %s %s %s\n%s";
+        wf =
+            String.format(
+                wf,
+                data.engineName2,
+                curWinrate,
+                playouts,
+                String.format(Locale.ENGLISH, "%.1f", data.scoreMean2),
+                String.format(Locale.ENGLISH, "%.1f", data.scoreStdev2),
+                data.bestMovesToString2());
+      }
+      if (hasOwnership) {
+        wf += ownership;
+      }
+      return wf;
     }
 
     String wf = "%s %s %s\n%s";
@@ -2807,7 +2802,7 @@ public class SGFParser {
                         .replaceAll("m", "000000")
                         .replaceAll("[^0-9]", ""));
             if (numPlayouts > 0 && !line2.isEmpty()) {
-              Lizzie.board.getData().bestMoves = parseInfofromfile(line2);
+              Lizzie.board.getData().bestMoves = parseInfofromfile(line2, 0);
             }
           } else if (tag.equals("AB") || tag.equals("AW")) {
             int[] move = convertSgfPosToCoord(tagContent);
@@ -3214,7 +3209,7 @@ public class SGFParser {
     return asCoord(cor);
   }
 
-  private static List<MoveData> parseInfofromfile(String line) {
+  private static List<MoveData> parseInfofromfile(String line, double stdev) {
     boolean hasOwnership = false;
     String[] lineInfo = null;
     if (line.contains("ownership")) {
@@ -3235,10 +3230,17 @@ public class SGFParser {
         if (k < 1) break;
       }
     }
+    if (bestMoves.size() > 0) bestMoves.get(0).scoreStdev = stdev;
     ArrayList<Double> estimateArray = new ArrayList<Double>();
     if (hasOwnership && lineInfo != null && lineInfo.length > 1) {
       String[] params2 = lineInfo[1].trim().split(" ");
-      for (int i = 0; i < params2.length; i++) estimateArray.add(Double.parseDouble(params2[i]));
+      for (int i = 0; i < params2.length; i++) {
+        try {
+          estimateArray.add(Double.parseDouble(params2[i]));
+        } catch (NumberFormatException e) {
+          break;
+        }
+      }
     } else estimateArray = null;
     Lizzie.board
         .getData()
@@ -3252,7 +3254,14 @@ public class SGFParser {
     return bestMoves;
   }
 
-  private static List<MoveData> parseInfofromfile2(String line) {
+  private static List<MoveData> parseInfofromfile2(String line, double stdev) {
+    boolean hasOwnership = false;
+    String[] lineInfo = null;
+    if (line.contains("ownership")) {
+      hasOwnership = true;
+      lineInfo = line.split("ownership");
+      line = lineInfo[0];
+    }
     List<MoveData> bestMoves = new ArrayList<>();
     String[] variations = line.split(" info ");
     // int k =
@@ -3264,10 +3273,26 @@ public class SGFParser {
         // if (k < 1) break;
       }
     }
+    if (bestMoves.size() > 0) bestMoves.get(0).scoreStdev = stdev;
+    ArrayList<Double> estimateArray = new ArrayList<Double>();
+    if (hasOwnership && lineInfo != null && lineInfo.length > 1) {
+      String[] params2 = lineInfo[1].trim().split(" ");
+      for (int i = 0; i < params2.length; i++) {
+        try {
+          estimateArray.add(Double.parseDouble(params2[i]));
+        } catch (NumberFormatException e) {
+          break;
+        }
+      }
+    } else estimateArray = null;
     Lizzie.board
         .getData()
         .tryToSetBestMoves2(
-            bestMoves, Lizzie.board.getData().engineName2, false, MoveData.getPlayouts(bestMoves));
+            bestMoves,
+            Lizzie.board.getData().engineName2,
+            false,
+            MoveData.getPlayouts(bestMoves),
+            estimateArray);
     return bestMoves;
   }
 
