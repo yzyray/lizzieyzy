@@ -34,6 +34,7 @@ public class ScoreResult extends JDialog {
   private JPanel dialogPane = new JPanel();
   private JPanel contentPanel = new JPanel();
   private JPanel buttonBar = new JPanel();
+  private JFontLabel lblRule = new JFontLabel("");
   private JFontLabel blackScore =
       new JFontLabel(Lizzie.resourceBundle.getString("ScoreResult.lblBlackScore"));
   private JFontLabel whiteScore =
@@ -135,16 +136,17 @@ public class ScoreResult extends JDialog {
   }
 
   private void initContentPanel() {
-    GridLayout gridLayout = new GridLayout(4, 1, 4, 4);
+    GridLayout gridLayout = new GridLayout(5, 1, 4, 4);
     contentPanel.setLayout(gridLayout);
     JLabel hint = new JFontLabel(Lizzie.resourceBundle.getString("ScoreResult.hint"));
     hint.setForeground(Color.BLUE);
+    setLblRule();
     contentPanel.add(hint);
+    contentPanel.add(lblRule);
     contentPanel.add(blackScore);
     contentPanel.add(whiteScore);
     scoreResult.setOpaque(true);
     contentPanel.add(scoreResult);
-
     dialogPane.add(contentPanel, BorderLayout.CENTER);
   }
 
@@ -339,5 +341,12 @@ public class ScoreResult extends JDialog {
       scoreResult.setBackground(Color.WHITE);
       scoreResult.setForeground(Color.BLACK);
     }
+    setLblRule();
+  }
+
+  private void setLblRule() {
+    if (Lizzie.config.useTerritoryInScore)
+      lblRule.setText(Lizzie.resourceBundle.getString("ScoreResult.lblUseTerritoryScoring"));
+    else lblRule.setText(Lizzie.resourceBundle.getString("ScoreResult.lblUseAreaScoring"));
   }
 }

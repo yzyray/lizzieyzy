@@ -1696,12 +1696,15 @@ public class BottomToolbar extends JPanel {
         });
 
     chkenginePkTime = new JCheckBox();
+    chkenginePkTime.setSelected(true);
     lblenginePkTime = new JLabel("时间(秒) 黑");
     lblenginePkTimeWhite = new JLabel("白");
     txtenginePkTime = new JTextField();
     txtenginePkTime.setDocument(new IntDocument());
+    txtenginePkTime.setText("2");
     txtenginePkTimeWhite = new JTextField();
     txtenginePkTimeWhite.setDocument(new IntDocument());
+    txtenginePkTimeWhite.setText("2");
     enginePkPanel.add(chkenginePkTime);
     enginePkPanel.add(lblenginePkTime);
     enginePkPanel.add(txtenginePkTime);
@@ -2057,7 +2060,7 @@ public class BottomToolbar extends JPanel {
 
       if (pos.getInt(19) > 0) {
         this.txtenginePkTime.setText(String.valueOf(pos.getInt(19)));
-      }
+      } else this.txtenginePkTime.setText("");
 
       if (pos.getInt(20) > 0) {
         this.txtenginePkPlayputs.setText(String.valueOf(pos.getInt(20)));
@@ -2112,7 +2115,7 @@ public class BottomToolbar extends JPanel {
       checkGameMaxMove = pos.getBoolean(37);
       if (pos.getInt(38) > 0) {
         txtenginePkTimeWhite.setText(String.valueOf(pos.getInt(38)));
-      }
+      } else this.txtenginePkTimeWhite.setText("");
       if (pos.getInt(39) > 0) {
         this.chkAutoSub.setSelected(true);
       }

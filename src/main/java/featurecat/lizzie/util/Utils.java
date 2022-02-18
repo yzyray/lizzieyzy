@@ -488,6 +488,7 @@ public class Utils {
     HtmlMessage htmlMessage =
         new HtmlMessage(Lizzie.resourceBundle.getString("Message.title"), message, null);
     if (Lizzie.frame != null) htmlMessage.setLocationRelativeTo(Lizzie.frame);
+    htmlMessage.setModal(true);
     htmlMessage.setVisible(true);
   }
 
