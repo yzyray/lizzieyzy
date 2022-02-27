@@ -1637,6 +1637,7 @@ public class Board {
         }
         //  modifyEnd(false);
         clearAfterMove();
+        Lizzie.frame.refresh();
         return;
       }
       // load a copy of the data at the current node of history

@@ -23,6 +23,7 @@ public class RightClickMenu2 extends JPopupMenu {
   private JFontMenuItem previousMove;
   private JFontMenuItem moveStone;
   private JFontMenuItem findStone;
+  private JFontMenuItem review;
   private final ResourceBundle resourceBundle = Lizzie.resourceBundle;
   private boolean isFromIndependent;
 
@@ -94,9 +95,12 @@ public class RightClickMenu2 extends JPopupMenu {
     previousMove = new JFontMenuItem(resourceBundle.getString("RightClickMenu.previousMove"));
     previousMove.setIcon(iconBack);
     moveStone = new JFontMenuItem(resourceBundle.getString("RightClickMenu2.moveStone"));
+    review = new JFontMenuItem(resourceBundle.getString("RightClickMenu2.review"));
     this.add(moveStone);
     this.add(switchone);
     this.add(deleteone);
+    this.addSeparator();
+    this.add(review);
     this.addSeparator();
     this.add(previousMove);
     this.add(findStone);
@@ -138,6 +142,16 @@ public class RightClickMenu2 extends JPopupMenu {
           public void actionPerformed(ActionEvent e) {
             if (isFromIndependent) Lizzie.frame.independentMainBoard.setDragStartInfo(coords, true);
             else Lizzie.frame.setDragStartInfo(coords, true);
+          }
+        });
+
+    review.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            if (Lizzie.board.hasStoneAt(coords)) {
+              Lizzie.board.setPressStoneInfo(coords);
+            }
           }
         });
   }
