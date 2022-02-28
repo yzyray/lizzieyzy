@@ -18,8 +18,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.Stack;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import org.jdesktop.swingx.util.OS;
@@ -40,10 +40,12 @@ public class AnalysisEngine {
   private ScheduledExecutorService executorErr;
   private List<String> commands;
   private boolean isPreLoad;
-  private HashMap<Integer, List<MoveData>> resultMap = new HashMap<Integer, List<MoveData>>();
-  private int analyzeNumberCount;
-  private BoardHistoryNode startAnalyzeNode;
-  private int startAnalyzeNumber;
+  // private HashMap<Integer, List<MoveData>> resultMap = new HashMap<Integer, List<MoveData>>();
+  private HashMap<Integer, BoardHistoryNode> analyzeMap = new HashMap<Integer, BoardHistoryNode>();
+  private int globalID;
+  private int resultCount;
+  // private int analyzeNumberCount;
+  // private BoardHistoryNode startAnalyzeNode;
   public WaitForAnalysis waitFrame;
 
   public boolean useJavaSSH = false;
@@ -106,7 +108,6 @@ public class AnalysisEngine {
         isLoaded = true;
       } catch (IOException e) {
         // TODO Auto-generated catch block
-        // System.out.println(e.getLocalizedMessage());
         showErrMsg(
             resourceBundle.getString("Leelaz.engineFailed") + ": " + e.getLocalizedMessage());
         process = null;
@@ -177,7 +178,7 @@ public class AnalysisEngine {
       }
       // this line will be reached when engine shuts down
       if (this.useJavaSSH) javaSSHClosed = true;
-      System.out.println("estimate process ended.");
+      System.out.println("Flash analyze process ended.");
       // Do no exit for switching weights
       // System.exit(-1);
     } catch (IOException e) {
@@ -196,7 +197,11 @@ public class AnalysisEngine {
   private void parseLine(String line) {
     synchronized (this) {
       if (line.startsWith("{")) {
-        parseResult(line);
+        try {
+          parseResult(line);
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
       } else Lizzie.gtpConsole.addLine(line);
     }
   }
@@ -204,60 +209,41 @@ public class AnalysisEngine {
   public void parseResult(String line) {
     JSONObject result;
     result = new JSONObject(line);
-    int turnNumber = result.getInt("turnNumber");
     JSONArray moveInfos = result.getJSONArray("moveInfos");
-    resultMap.put(turnNumber, Utils.getBestMovesFromJsonArray(moveInfos, true, true));
-    waitFrame.setProgress(resultMap.size(), analyzeNumberCount);
-    tryToSetResult();
+    int id = Integer.parseInt(result.getString("id"));
+    BoardHistoryNode node = analyzeMap.get(id);
+    List<MoveData> moves = Utils.getBestMovesFromJsonArray(moveInfos, true, true);
+    node.getData()
+        .tryToSetBestMoves(
+            moves,
+            resourceBundle.getString("AnalysisEngine.flashAnalyze"),
+            false,
+            MoveData.getPlayouts(moves));
+
+    node.getData().comment = SGFParser.formatComment(node);
+    resultCount++;
+    waitFrame.setProgress(resultCount, analyzeMap.size());
+    if (resultCount == analyzeMap.size()) setResult();
   }
 
-  private void tryToSetResult() {
-    if (resultMap.size() == analyzeNumberCount) {
-      Lizzie.board.clearPkBoardStat();
-      Lizzie.board.isKataBoard = true;
-      boolean oriEnableLizzieCache = Lizzie.config.enableLizzieCache;
-      if (Lizzie.config.analysisAlwaysOverride) {
-        Lizzie.config.enableLizzieCache = false;
-      }
-      int moveNumber = startAnalyzeNumber;
-      int times = 0;
-      while (times < resultMap.size() && startAnalyzeNode.next().isPresent()) {
-        List<MoveData> moves = resultMap.get(moveNumber);
-        startAnalyzeNode
-            .getData()
-            .tryToSetBestMoves(
-                moves,
-                resourceBundle.getString("AnalysisEngine.flashAnalyze"),
-                false,
-                MoveData.getPlayouts(moves));
-        times++;
-        startAnalyzeNode.getData().comment = SGFParser.formatComment(startAnalyzeNode);
-        moveNumber++;
-        startAnalyzeNode = startAnalyzeNode.next().get();
-      }
-      if (times < resultMap.size()) {
-        List<MoveData> moves = resultMap.get(moveNumber);
-        startAnalyzeNode
-            .getData()
-            .tryToSetBestMoves(
-                moves,
-                resourceBundle.getString("AnalysisEngine.flashAnalyze"),
-                false,
-                MoveData.getPlayouts(moves));
-        startAnalyzeNode.getData().comment = SGFParser.formatComment(startAnalyzeNode);
-      }
-      Lizzie.board.setMovelistAll();
-      if (Lizzie.board.getHistory().getCurrentHistoryNode() == Lizzie.board.getHistory().getStart())
-        Lizzie.board.nextMove(true);
-      Lizzie.frame.refresh();
-      if (Lizzie.config.analysisAutoQuit && !Lizzie.frame.isBatchAna) {
-        normalQuit();
-      }
-      if (Lizzie.config.analysisAlwaysOverride)
-        Lizzie.config.enableLizzieCache = oriEnableLizzieCache;
-      if (shouldRePonder && !Lizzie.leelaz.isPondering()) Lizzie.leelaz.togglePonder();
-      Lizzie.frame.renderVarTree(0, 0, false, false);
+  private void setResult() {
+    Lizzie.board.clearPkBoardStat();
+    Lizzie.board.isKataBoard = true;
+    boolean oriEnableLizzieCache = Lizzie.config.enableLizzieCache;
+    if (Lizzie.config.analysisAlwaysOverride) {
+      Lizzie.config.enableLizzieCache = false;
     }
+    Lizzie.board.setMovelistAll();
+    if (Lizzie.board.getHistory().getCurrentHistoryNode() == Lizzie.board.getHistory().getStart())
+      Lizzie.board.nextMove(true);
+    Lizzie.frame.refresh();
+    if (Lizzie.config.analysisAutoQuit && !Lizzie.frame.isBatchAna) {
+      normalQuit();
+    }
+    if (Lizzie.config.analysisAlwaysOverride)
+      Lizzie.config.enableLizzieCache = oriEnableLizzieCache;
+    if (shouldRePonder && !Lizzie.leelaz.isPondering()) Lizzie.leelaz.togglePonder();
+    Lizzie.frame.renderVarTree(0, 0, false, false);
   }
 
   public void normalQuit() {
@@ -267,22 +253,86 @@ public class AnalysisEngine {
     else this.process.destroyForcibly();
   }
 
-  public void sendRequest(int startMove, int endMove) {
+  public void startRequestAllBranches() {
     if (!isLoaded) return;
-    resultMap.clear();
+    analyzeMap.clear();
+    globalID = 1;
+    resultCount = 0;
     if (Lizzie.leelaz.isPondering()) {
       Lizzie.leelaz.togglePonder();
       shouldRePonder = true;
     } else shouldRePonder = false;
-    JSONObject testRequest = new JSONObject();
-    boolean isEmptyGame = false;
+    BoardHistoryNode node = Lizzie.board.getHistory().getStart();
+    Stack<BoardHistoryNode> stack = new Stack<>();
+    stack.push(node);
+    while (!stack.isEmpty()) {
+      BoardHistoryNode cur = stack.pop();
+      sendRequest(cur);
+      if (cur.numberOfChildren() >= 1) {
+        for (int i = cur.numberOfChildren() - 1; i >= 0; i--)
+          stack.push(cur.getVariations().get(i));
+      }
+    }
+    if (analyzeMap.size() > 0) {
+      waitFrame = new WaitForAnalysis();
+      if (Lizzie.config.analysisEnginePreLoad) waitFrame.setProgress(0, analyzeMap.size());
+      waitFrame.setLocationRelativeTo(Lizzie.frame != null ? Lizzie.frame : null);
+      waitFrame.setVisible(true);
+    } else if (Lizzie.frame.isBatchAnalysisMode) {
+      Lizzie.frame.flashAutoAnaSaveAndLoad();
+    }
+  }
+
+  public void startRequest(int startMove, int endMove) {
+    if (!isLoaded) return;
+    analyzeMap.clear();
+    globalID = 1;
+    resultCount = 0;
+    if (Lizzie.leelaz.isPondering()) {
+      Lizzie.leelaz.togglePonder();
+      shouldRePonder = true;
+    } else shouldRePonder = false;
+    BoardHistoryNode node = Lizzie.board.getHistory().getStart();
+    while (!node.getData().lastMove.isPresent() && node.next().isPresent()) {
+      node = node.next().get();
+    }
+    int moveNum = 1;
+    boolean startAnalyze = false;
+    if (startMove < 0 || startMove == 1) {
+      startAnalyze = true;
+    }
+    while (node.next().isPresent()) {
+      if (startAnalyze) sendRequest(node);
+      moveNum++;
+      node = node.next().get();
+      if (moveNum == startMove) {
+        startAnalyze = true;
+      }
+      if (moveNum == endMove) {
+        startAnalyze = false;
+        break;
+      }
+    }
+    if (startAnalyze) sendRequest(node);
+    if (analyzeMap.size() > 0) {
+      waitFrame = new WaitForAnalysis();
+      if (Lizzie.config.analysisEnginePreLoad) waitFrame.setProgress(0, analyzeMap.size());
+      waitFrame.setLocationRelativeTo(Lizzie.frame != null ? Lizzie.frame : null);
+      waitFrame.setVisible(true);
+    } else if (Lizzie.frame.isBatchAnalysisMode) {
+      Lizzie.frame.flashAutoAnaSaveAndLoad();
+    }
+  }
+
+  public void sendRequest(BoardHistoryNode analyzeNode) {
+    JSONObject request = new JSONObject();
     int maxVisits =
         Lizzie.frame.isBatchAnalysisMode
             ? Math.max(2, Lizzie.config.batchAnalysisPlayouts)
             : Lizzie.config.analysisMaxVisits + 1;
-    testRequest.put("id", "mainTrunk");
-    testRequest.put("maxVisits", maxVisits);
-    testRequest.put("includePVVisits", Lizzie.config.showPvVisits);
+    request.put("id", String.valueOf(globalID));
+    request.put("maxVisits", maxVisits);
+    request.put("includePVVisits", Lizzie.config.showPvVisits);
     if (Lizzie.board.hasStartStone) {
       ArrayList<String[]> initialStoneList = new ArrayList<String[]>();
       for (Movelist mv : Lizzie.board.startStonelist) {
@@ -295,100 +345,52 @@ public class AnalysisEngine {
           }
         }
       }
-      testRequest.put("initialStones", initialStoneList);
+      request.put("initialStones", initialStoneList);
     }
     JSONObject ruleSettings;
     if (!Lizzie.config.analysisUseCurrentRules) {
       if (!Lizzie.config.analysisSpecificRules.equals("")) {
         ruleSettings = new JSONObject(Lizzie.config.analysisSpecificRules);
-        testRequest.put("rules", ruleSettings);
-      } else testRequest.put("rules", "tromp-taylor");
+        request.put("rules", ruleSettings);
+      } else request.put("rules", "tromp-taylor");
     } else if (!Lizzie.config.currentKataGoRules.equals("")) {
       ruleSettings = new JSONObject(new String(Lizzie.config.currentKataGoRules.substring(2)));
-      testRequest.put("rules", ruleSettings);
+      request.put("rules", ruleSettings);
     } else if (Lizzie.config.autoLoadKataRules && !Lizzie.config.kataRules.equals("")) {
       ruleSettings = new JSONObject(Lizzie.config.kataRules);
-      testRequest.put("rules", ruleSettings);
-    } else testRequest.put("rules", "tromp-taylor");
-    testRequest.put("komi", Lizzie.board.getHistory().getGameInfo().getKomi());
-    testRequest.put("boardXSize", Board.boardWidth);
-    testRequest.put("boardYSize", Board.boardHeight);
-    // analyzeTurns
-    // moves
+      request.put("rules", ruleSettings);
+    } else request.put("rules", "tromp-taylor");
+    request.put("komi", Lizzie.board.getHistory().getGameInfo().getKomi());
+    request.put("boardXSize", Board.boardWidth);
+    request.put("boardYSize", Board.boardHeight);
     ArrayList<Integer> moveTurns = new ArrayList<Integer>();
     ArrayList<String[]> moveList = new ArrayList<String[]>();
-    // while (nextMove()) ;
-    Optional<int[]> passStep = Optional.empty();
-    BoardHistoryNode node = Lizzie.board.getHistory().getStart();
-    while (!node.getData().lastMove.isPresent() && node.next().isPresent()) {
-      node = node.next().get();
-    }
-    int moveNum = 1;
-    boolean startCountAnalyzeTurns = false;
-    if (startMove < 0 || startMove == 1) {
-      startAnalyzeNode = node;
-      startAnalyzeNumber = 1;
-      startCountAnalyzeTurns = true;
-    }
-    while (node.next().isPresent()) {
-      Optional<int[]> move = node.getData().lastMove;
-      if (move == passStep) {
+    BoardHistoryNode node = analyzeNode;
+    while (node.previous().isPresent()) {
+      if (node.getData().lastMove.isPresent()) {
+        int[] move = node.getData().lastMove.get();
+        if (node.getData().lastMoveColor.isBlack())
+          moveList.add(new String[] {"B", Board.convertCoordinatesToName(move[0], move[1])});
+        else moveList.add(new String[] {"W", Board.convertCoordinatesToName(move[0], move[1])});
+      } else {
         if (node.getData().lastMoveColor.isBlack()) moveList.add(new String[] {"B", "pass"});
         else moveList.add(new String[] {"W", "pass"});
-      } else {
-        if (node.getData().lastMoveColor.isBlack())
-          moveList.add(
-              new String[] {"B", Board.convertCoordinatesToName(move.get()[0], move.get()[1])});
-        else
-          moveList.add(
-              new String[] {"W", Board.convertCoordinatesToName(move.get()[0], move.get()[1])});
       }
-      if (startCountAnalyzeTurns) moveTurns.add(moveNum);
-      moveNum++;
-      node = node.next().get();
-      if (moveNum == startMove) {
-        startAnalyzeNode = node;
-        startAnalyzeNumber = moveNum;
-        startCountAnalyzeTurns = true;
-      }
-      if (moveNum == endMove) {
-        startCountAnalyzeTurns = false;
-        break;
-      }
+      node = node.previous().get();
     }
-
-    Optional<int[]> move = node.getData().lastMove;
-    if (move == passStep) {
-      if (moveList.isEmpty()) isEmptyGame = true;
-      if (node.getData().lastMoveColor.isBlack()) moveList.add(new String[] {"B", "pass"});
-      else moveList.add(new String[] {"W", "pass"});
-    } else {
-      if (node.getData().lastMoveColor.isBlack())
-        moveList.add(
-            new String[] {"B", Board.convertCoordinatesToName(move.get()[0], move.get()[1])});
-      else
-        moveList.add(
-            new String[] {"W", Board.convertCoordinatesToName(move.get()[0], move.get()[1])});
+    ArrayList<String[]> moveList2 = new ArrayList<String[]>();
+    for (int i = moveList.size() - 1; i >= 0; i--) {
+      moveList2.add(moveList.get(i));
     }
-    if (moveList.isEmpty()) isEmptyGame = true;
-    // if (endMove > 0 && moveNum-2 > endMove) startCountAnalyzeTurns = false;
-    // if (startCountAnalyzeTurns)
-    moveTurns.add(moveNum);
-    testRequest.put("moves", moveList);
-    testRequest.put("analyzeTurns", moveTurns);
+    moveTurns.add(moveList2.size());
+    request.put("moves", moveList2);
+    request.put("analyzeTurns", moveTurns);
     JSONObject overrideSettings = new JSONObject();
     overrideSettings.put("reportAnalysisWinratesAs", "SIDETOMOVE");
-    testRequest.put("overrideSettings", overrideSettings);
-    if (!isEmptyGame) {
-      analyzeNumberCount = moveTurns.size();
-      sendCommand(testRequest.toString());
-      waitFrame = new WaitForAnalysis();
-      if (Lizzie.config.analysisEnginePreLoad) waitFrame.setProgress(0, analyzeNumberCount);
-      waitFrame.setLocationRelativeTo(Lizzie.frame != null ? Lizzie.frame : null);
-      waitFrame.setVisible(true);
-    } else if (Lizzie.frame.isBatchAnalysisMode) {
-      Lizzie.frame.flashAutoAnaSaveAndLoad();
-    }
+    request.put("overrideSettings", overrideSettings);
+    sendCommand(request.toString());
+    analyzeMap.put(globalID, analyzeNode);
+    globalID++;
   }
 
   public void shutdown() {

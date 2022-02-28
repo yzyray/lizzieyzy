@@ -3075,6 +3075,7 @@ public class Menu extends JMenuBar {
 
     final JFontMenuItem stopAutoAnalyze =
         new JFontMenuItem(resourceBundle.getString("Menu.stopAutoAnalyze")); // ("停止自动(批量)分析");
+    analyzeMenu.addSeparator();
     analyzeMenu.add(stopAutoAnalyze);
     stopAutoAnalyze.addActionListener(
         new ActionListener() {
@@ -3101,7 +3102,7 @@ public class Menu extends JMenuBar {
     flashAnalyzeAllGame.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            Lizzie.frame.flashAnalyzeGame(true);
+            Lizzie.frame.flashAnalyzeGame(true, false);
           }
         });
 
@@ -3114,6 +3115,17 @@ public class Menu extends JMenuBar {
             Lizzie.frame.flashAnalyzePart();
           }
         });
+
+    final JFontMenuItem flashAnalyzeAllBranches =
+        new JFontMenuItem(resourceBundle.getString("Menu.flashAnalyzeAllBranches"));
+    analyzeMenu.add(flashAnalyzeAllBranches);
+    flashAnalyzeAllBranches.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.frame.flashAnalyzeGame(false, true);
+          }
+        });
+
     final JFontMenuItem flashAnalyzeSettings =
         new JFontMenuItem(resourceBundle.getString("Menu.flashAnalyzeSettings")); //
     analyzeMenu.add(flashAnalyzeSettings);
@@ -7430,7 +7442,7 @@ public class Menu extends JMenuBar {
       flashAnalyzeAllGame.addActionListener(
           new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-              Lizzie.frame.flashAnalyzeGame(true);
+              Lizzie.frame.flashAnalyzeGame(true, false);
             }
           });
 
@@ -7441,6 +7453,15 @@ public class Menu extends JMenuBar {
             @Override
             public void actionPerformed(ActionEvent e) {
               Lizzie.frame.flashAnalyzePart();
+            }
+          });
+
+      final JFontMenuItem flashAnalyzeAllBranches =
+          new JFontMenuItem(resourceBundle.getString("Menu.flashAnalyzeAllBranches"));
+      flashAnalyzeAllBranches.addActionListener(
+          new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              Lizzie.frame.flashAnalyzeGame(false, true);
             }
           });
 
@@ -7455,6 +7476,7 @@ public class Menu extends JMenuBar {
 
       flashAnalyzePopup.add(flashAnalyzeAllGame);
       flashAnalyzePopup.add(flashAnalyzePartGame);
+      flashAnalyzePopup.add(flashAnalyzeAllBranches);
       flashAnalyzePopup.add(flashAnalyzeSettings);
 
       JFontButton btnFlashAnalyze = new JFontButton(flash);
@@ -7531,6 +7553,7 @@ public class Menu extends JMenuBar {
 
         final JFontMenuItem stopAutoAnalyze =
             new JFontMenuItem(resourceBundle.getString("Menu.stopAutoAnalyze")); // ("停止自动(批量)分析");
+        autoAnalyzePopup.addSeparator();
         autoAnalyzePopup.add(stopAutoAnalyze);
         stopAutoAnalyze.addActionListener(
             new ActionListener() {

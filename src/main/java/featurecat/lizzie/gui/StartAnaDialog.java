@@ -40,6 +40,7 @@ public class StartAnaDialog extends JDialog {
   private JFontButton stopButton = new JFontButton();
   private JFontCheckBox chkAnalyzeAllBracnh; //
   private JTextField txtAnalysisPlayouts;
+  private JCheckBox chkAllBranches;
   private boolean cancelled = true;
   private JCheckBox chkUseDiff;
   private boolean isAnalysisMode = false;
@@ -89,7 +90,7 @@ public class StartAnaDialog extends JDialog {
 
   private void initContentPanel() {
     GridLayout gridLayout =
-        new GridLayout(isAnalysisMode ? 3 : Lizzie.frame.isBatchAna ? 9 : 10, 2, 4, 4);
+        new GridLayout(isAnalysisMode ? 4 : Lizzie.frame.isBatchAna ? 9 : 10, 2, 4, 4);
     contentPanel.setLayout(gridLayout);
 
     //  checkBoxPlayerIsBlack =
@@ -124,6 +125,11 @@ public class StartAnaDialog extends JDialog {
               Lizzie.resourceBundle.getString(
                   "StartAnaDialog.totalVisitsPerMove"))); // ("每手总计算量"));
       contentPanel.add(txtAnalysisPlayouts);
+      chkAllBranches = new JCheckBox();
+      contentPanel.add(
+          new JFontLabel(
+              Lizzie.resourceBundle.getString("StartAnaDialog.chkAllBranches"))); // ("每手总计算量"));
+      contentPanel.add(chkAllBranches);
     } else {
       contentPanel.add(
           new JFontLabel(
@@ -323,7 +329,7 @@ public class StartAnaDialog extends JDialog {
           Utils.parseTextToInt(txtAnalysisPlayouts, Lizzie.config.batchAnalysisPlayouts);
       Lizzie.config.uiConfig.put("batch-analysis-playouts", Lizzie.config.batchAnalysisPlayouts);
       Lizzie.frame.flashAnalyzeGameBatch(
-          LizzieFrame.toolbar.firstMove, LizzieFrame.toolbar.lastMove);
+          LizzieFrame.toolbar.firstMove, LizzieFrame.toolbar.lastMove, chkAllBranches.isSelected());
     } else {
       Lizzie.config.autoAnaDiffEnable = chkUseDiff.isSelected();
       Lizzie.config.uiConfig.put("auto-ana-diff-enable", Lizzie.config.autoAnaDiffEnable);

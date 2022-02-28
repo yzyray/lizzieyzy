@@ -571,13 +571,14 @@ public class BottomToolbar extends JPanel {
         });
 
     JPopupMenu flashAnalyzePopup = new JPopupMenu();
+
     final JFontMenuItem flashAnalyzeAllGame =
         new JFontMenuItem(resourceBundle.getString("Menu.flashAnalyzeAllGame"));
     flashAnalyzePopup.add(flashAnalyzeAllGame);
     flashAnalyzeAllGame.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            Lizzie.frame.flashAnalyzeGame(true);
+            Lizzie.frame.flashAnalyzeGame(true, false);
           }
         });
 
@@ -590,6 +591,17 @@ public class BottomToolbar extends JPanel {
             Lizzie.frame.flashAnalyzePart();
           }
         });
+
+    final JFontMenuItem flashAnalyzeAllBranches =
+        new JFontMenuItem(resourceBundle.getString("Menu.flashAnalyzeAllBranches"));
+    flashAnalyzePopup.add(flashAnalyzeAllBranches);
+    flashAnalyzeAllBranches.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.frame.flashAnalyzeGame(false, true);
+          }
+        });
+
     final JFontMenuItem flashAnalyzeSettings =
         new JFontMenuItem(resourceBundle.getString("Menu.flashAnalyzeSettings"));
     flashAnalyzePopup.add(flashAnalyzeSettings);
@@ -848,6 +860,7 @@ public class BottomToolbar extends JPanel {
 
     final JFontMenuItem stopAutoAnalyze =
         new JFontMenuItem(resourceBundle.getString("Menu.stopAutoAnalyze")); // ("停止自动(批量)分析");
+    autoAnalyzePopup.addSeparator();
     autoAnalyzePopup.add(stopAutoAnalyze);
     stopAutoAnalyze.addActionListener(
         new ActionListener() {

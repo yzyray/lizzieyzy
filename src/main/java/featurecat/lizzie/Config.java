@@ -437,6 +437,7 @@ public class Config {
   public String analysisSpecificRules = "";
 
   public boolean analysisRecentIsPartGame = false;
+  public boolean analysisRecentIsAllBranches = false;
   public boolean showScoreLeadLine = true;
   public boolean showMouseOverWinrateGraph = true;
   public boolean isChinese;

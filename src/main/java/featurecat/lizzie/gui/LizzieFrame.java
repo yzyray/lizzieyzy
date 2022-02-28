@@ -11334,7 +11334,7 @@ public class LizzieFrame extends JFrame {
     }
   }
 
-  public void flashAnalyzeGameBatch(int firstMove, int lastMove) {
+  public void flashAnalyzeGameBatch(int firstMove, int lastMove, boolean isAllBranches) {
     // TODO Auto-generated method stub
     Lizzie.config.analysisStartMove = firstMove;
     Lizzie.config.analysisEndMove = lastMove;
@@ -11342,74 +11342,85 @@ public class LizzieFrame extends JFrame {
     if (analysisTable != null) {
       analysisTable.resetAnalysisMode();
     }
-    flashAnalyzeGame(true);
+    flashAnalyzeGame(false, isAllBranches);
   }
 
   public void flashAutoAnaSaveAndLoad() {
-    if (Lizzie.leelaz.autoAnalysed) SGFParser.appendAiScoreBlunder();
-    String name = Lizzie.frame.Batchfiles.get(Lizzie.frame.BatchAnaNum).getName();
-    String path = Lizzie.frame.Batchfiles.get(Lizzie.frame.BatchAnaNum).getParent();
-    String df = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-    String prefix = name.substring(name.lastIndexOf("."));
-    int num = prefix.length();
-    String fileOtherName = name.substring(0, name.length() - num);
-    String filename =
-        path
-            + File.separator
-            + fileOtherName
-            + "_"
-            + Lizzie.resourceBundle.getString("Leelaz.analyzed")
-            + "_"
-            + df
-            + ".sgf";
-    File autoSaveFile = new File(filename);
-    try {
-      SGFParser.save(Lizzie.board, autoSaveFile.getPath());
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-    if (Lizzie.frame.Batchfiles.size() > (Lizzie.frame.BatchAnaNum + 1)) {
-      double komi = Lizzie.board.getHistory().getGameInfo().getKomi();
-      toolbar.loadAutoBatchFile();
-      Lizzie.leelaz.komi(komi);
-      flashAnalyzeGameBatch(LizzieFrame.toolbar.firstMove, LizzieFrame.toolbar.lastMove);
-    } else {
-      isBatchAna = false;
-      isBatchAnalysisMode = false;
-      toolbar.chkAnaAutoSave.setEnabled(true);
-      //	isSaving = false;
-      Batchfiles = new ArrayList<File>();
-      BatchAnaNum = 0;
-      if (Lizzie.frame.analysisTable != null && Lizzie.frame.analysisTable.frame.isVisible()) {
-        Lizzie.frame.analysisTable.refreshTable();
+    if (Lizzie.frame.Batchfiles.size() > (Lizzie.frame.BatchAnaNum)) {
+      if (Lizzie.leelaz.autoAnalysed) SGFParser.appendAiScoreBlunder();
+      String name = Lizzie.frame.Batchfiles.get(Lizzie.frame.BatchAnaNum).getName();
+      String path = Lizzie.frame.Batchfiles.get(Lizzie.frame.BatchAnaNum).getParent();
+      String df = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+      String prefix = name.substring(name.lastIndexOf("."));
+      int num = prefix.length();
+      String fileOtherName = name.substring(0, name.length() - num);
+      String filename =
+          path
+              + File.separator
+              + fileOtherName
+              + "_"
+              + Lizzie.resourceBundle.getString("Leelaz.analyzed")
+              + "_"
+              + df
+              + ".sgf";
+      File autoSaveFile = new File(filename);
+      try {
+        SGFParser.save(Lizzie.board, autoSaveFile.getPath());
+      } catch (IOException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
       }
-      Utils.showMsg(Lizzie.resourceBundle.getString("Leelaz.batchAutoAnalyzeComplete"));
-      if (Lizzie.config.analysisAutoQuit) {
-        analysisEngine.normalQuit();
+      analysisEngine.waitFrame.setVisible(false);
+      if (Lizzie.frame.Batchfiles.size() > (Lizzie.frame.BatchAnaNum + 1)) {
+        double komi = Lizzie.board.getHistory().getGameInfo().getKomi();
+        toolbar.loadAutoBatchFile();
+        Lizzie.leelaz.komi(komi);
+        flashAnalyzeGameBatch(
+            LizzieFrame.toolbar.firstMove,
+            LizzieFrame.toolbar.lastMove,
+            Lizzie.config.analysisRecentIsAllBranches);
+      } else {
+        isBatchAna = false;
+        isBatchAnalysisMode = false;
+        toolbar.chkAnaAutoSave.setEnabled(true);
+        //	isSaving = false;
+        Batchfiles = new ArrayList<File>();
+        BatchAnaNum = 0;
+        if (Lizzie.frame.analysisTable != null && Lizzie.frame.analysisTable.frame.isVisible()) {
+          Lizzie.frame.analysisTable.refreshTable();
+        }
+        Utils.showMsg(Lizzie.resourceBundle.getString("Leelaz.batchAutoAnalyzeComplete"));
+        if (Lizzie.config.analysisAutoQuit) {
+          analysisEngine.normalQuit();
+        }
       }
     }
   }
 
-  public void flashAnalyzeGame(boolean isAllGame) {
+  public void flashAnalyzeGame(boolean isAllGame, boolean isAllBranches) {
     Lizzie.config.analysisRecentIsPartGame = isAllGame;
+    Lizzie.config.analysisRecentIsAllBranches = isAllBranches;
     if (analysisEngine == null
         || analysisEngine.useJavaSSH && analysisEngine.javaSSHClosed
         || (!analysisEngine.useJavaSSH
             && (analysisEngine.process == null || !analysisEngine.process.isAlive()))) {
       try {
         analysisEngine = new AnalysisEngine(false);
-        analysisEngine.sendRequest(
-            isAllGame ? -1 : Lizzie.config.analysisStartMove,
-            isAllGame ? -1 : Lizzie.config.analysisEndMove);
+        if (isAllBranches) analysisEngine.startRequestAllBranches();
+        else
+          analysisEngine.startRequest(
+              isAllGame ? -1 : Lizzie.config.analysisStartMove,
+              isAllGame ? -1 : Lizzie.config.analysisEndMove);
       } catch (IOException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();
       }
     } else {
-      analysisEngine.sendRequest(
-          isAllGame ? -1 : Lizzie.config.analysisStartMove,
-          isAllGame ? -1 : Lizzie.config.analysisEndMove);
+      if (isAllBranches) analysisEngine.startRequestAllBranches();
+      else
+        analysisEngine.startRequest(
+            isAllGame ? -1 : Lizzie.config.analysisStartMove,
+            isAllGame ? -1 : Lizzie.config.analysisEndMove);
     }
   }
 

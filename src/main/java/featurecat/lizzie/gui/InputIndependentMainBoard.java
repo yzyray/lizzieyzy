@@ -459,7 +459,7 @@ public class InputIndependentMainBoard implements KeyListener {
           Lizzie.frame.shareSGF();
         } else {
           if (e.isControlDown()) {
-            Lizzie.frame.flashAnalyzeGame(true);
+            Lizzie.frame.flashAnalyzeGame(true, false);
           } else {
             Lizzie.frame.moveToMainTrunk();
           }
