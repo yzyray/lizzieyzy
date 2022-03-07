@@ -1880,8 +1880,8 @@ public class EngineManager {
     newEng.doublePass = false;
     newEng.resigned = false;
     newEng.isResigning = false;
-    newEng.width = Board.boardWidth;
-    newEng.height = Board.boardHeight;
+    newEng.width = Board.hexWidth;
+    newEng.height = Board.hexHeight;
     newEng.pkMoveTimeGame = 0;
     newEng.notPondering();
     newEng.clearBestMoves();
@@ -1948,8 +1948,8 @@ public class EngineManager {
     Leelaz newEng = engineList.get(index);
     newEng.isLoaded = false;
     newEng.played = false;
-    newEng.width = Board.boardWidth;
-    newEng.height = Board.boardHeight;
+    newEng.width = Board.hexWidth;
+    newEng.height = Board.hexHeight;
     newEng.komi = (float) Lizzie.board.getHistory().getGameInfo().getKomi();
     // if (!newEng.isStarted()) {
     try {

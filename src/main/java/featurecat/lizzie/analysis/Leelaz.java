@@ -1966,8 +1966,7 @@ public class Leelaz {
     else sendCommand("boardsize " + width);
     this.width = width;
     this.height = height;
-    if (!EngineManager.isEngineGame && !EngineManager.isPreEngineGame)
-      Lizzie.board.reopen(width, height);
+    Lizzie.board.reopen(width, height);
     if (firstLoad) {
       Lizzie.board.getHistory().getGameInfo().setKomi(komi);
       Lizzie.board.getHistory().getGameInfo();
