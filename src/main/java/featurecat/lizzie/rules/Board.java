@@ -1479,6 +1479,7 @@ public class Board {
             && Lizzie.frame.playerIsBlack != getData().blackToPlay)
           Lizzie.leelaz.genmove((history.isBlacksTurn() ? "b" : "w"));
         clearAfterMove();
+        Lizzie.frame.refresh();
         return;
       }
 
@@ -1655,6 +1656,7 @@ public class Board {
         }
         //  modifyEnd(false);
         clearAfterMove();
+        Lizzie.frame.refresh();
         return;
       }
       // load a copy of the data at the current node of history

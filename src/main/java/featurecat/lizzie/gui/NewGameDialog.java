@@ -803,7 +803,7 @@ public class NewGameDialog extends JDialog {
         Utils.showMsg(resourceBundle.getString("NewAnaGameDialog.noEngineHint"));
         return;
       }
-      Lizzie.frame.isPlayingAgainstLeelaz = true;
+      Lizzie.frame.isPlayingAgainstLeelaz = false;
       if (EngineManager.currentEngineNo != engine.getSelectedIndex())
         Lizzie.engineManager.switchEngine(engine.getSelectedIndex(), true);
       double komi = 7.5;

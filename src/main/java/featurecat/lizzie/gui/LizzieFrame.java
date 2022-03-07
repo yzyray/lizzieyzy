@@ -2981,6 +2981,7 @@ public class LizzieFrame extends JFrame {
     // Lizzie.leelaz.isSettingHandicap=true;
     boolean isHandicapGame = gameInfo.getHandicap() != 0;
     Lizzie.frame.allowPlaceStone = false;
+    Lizzie.frame.isPlayingAgainstLeelaz = true;
     Runnable syncBoard =
         new Runnable() {
           public void run() {
@@ -12252,12 +12253,13 @@ public class LizzieFrame extends JFrame {
     if (subBoardRenderer4 != null) subBoardRenderer4.boardWidth = 1;
   }
 
-  public void addNotify() {
-    // needless?
-    // https://stackoverflow.com/questions/3435994/buffers-have-not-been-created-whilst-creating-buffers
-    super.addNotify();
-    createBufferStrategy(2);
-  }
+  //  public void addNotify() {
+  //    // needless?
+  //    //
+  // https://stackoverflow.com/questions/3435994/buffers-have-not-been-created-whilst-creating-buffers
+  //    super.addNotify();
+  //    createBufferStrategy(2);
+  //  }
 
   public void hideCandidates() {
     if (Lizzie.config.showBlackCandidates || Lizzie.config.showWhiteCandidates) {
