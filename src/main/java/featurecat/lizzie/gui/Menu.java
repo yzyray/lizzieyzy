@@ -2106,24 +2106,6 @@ public class Menu extends JMenuBar {
         });
     kataEstimate.addSeparator();
 
-    final JFontCheckBoxMenuItem kataEstimateByTransparentSmall =
-        new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.kataEstimateByTransparentSmall"));
-    kataEstimate.add(kataEstimateByTransparentSmall);
-    kataEstimateByTransparentSmall.addActionListener(
-        new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            Lizzie.config.showKataGoEstimateNormal = false;
-            Lizzie.config.showKataGoEstimateBySize = false;
-            Lizzie.config.showKataGoEstimateBigBelow = false;
-            Lizzie.config.showKataGoEstimateNotOnlive = false;
-            Lizzie.config.showKataGoEstimateSmall = true;
-            if (Lizzie.leelaz.isKatago && !Lizzie.config.showKataGoEstimate)
-              Lizzie.frame.toggleShowKataEstimate();
-            Lizzie.config.saveKataEstimateConfigs();
-          }
-        });
-
     final JFontCheckBoxMenuItem kataEstimateByTransparent =
         new JFontCheckBoxMenuItem(
             resourceBundle.getString(
@@ -2158,6 +2140,24 @@ public class Menu extends JMenuBar {
             Lizzie.config.showKataGoEstimateBigBelow = false;
             Lizzie.config.showKataGoEstimateNotOnlive = true;
             Lizzie.config.showKataGoEstimateSmall = false;
+            if (Lizzie.leelaz.isKatago && !Lizzie.config.showKataGoEstimate)
+              Lizzie.frame.toggleShowKataEstimate();
+            Lizzie.config.saveKataEstimateConfigs();
+          }
+        });
+
+    final JFontCheckBoxMenuItem kataEstimateByTransparentSmall =
+        new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.kataEstimateByTransparentSmall"));
+    kataEstimate.add(kataEstimateByTransparentSmall);
+    kataEstimateByTransparentSmall.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.config.showKataGoEstimateNormal = false;
+            Lizzie.config.showKataGoEstimateBySize = false;
+            Lizzie.config.showKataGoEstimateBigBelow = false;
+            Lizzie.config.showKataGoEstimateNotOnlive = false;
+            Lizzie.config.showKataGoEstimateSmall = true;
             if (Lizzie.leelaz.isKatago && !Lizzie.config.showKataGoEstimate)
               Lizzie.frame.toggleShowKataEstimate();
             Lizzie.config.saveKataEstimateConfigs();

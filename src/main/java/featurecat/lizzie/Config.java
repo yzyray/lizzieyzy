@@ -501,7 +501,7 @@ public class Config {
   public boolean showKataGoEstimateBigBelow = false;
   public boolean showKataGoEstimateNormal = false;
   public boolean showKataGoEstimateNotOnlive = false;
-  public boolean showKataGoEstimateSmall = true;
+  public boolean showKataGoEstimateSmall = false;
 
   public boolean showPureEstimateBySize = false;
   public boolean showPureEstimateBigBelow = true;
@@ -964,7 +964,7 @@ public class Config {
     showKataGoEstimateBySize = uiConfig.optBoolean("show-katago-estimate-by-size", false);
     showKataGoEstimateBigBelow = uiConfig.optBoolean("show-katago-estimate-big-below", false);
     showKataGoEstimateNotOnlive = uiConfig.optBoolean("show-katago-estimate-not-on-live", false);
-    showKataGoEstimateSmall = uiConfig.optBoolean("show-katago-estimate-small", true);
+    showKataGoEstimateSmall = uiConfig.optBoolean("show-katago-estimate-small", false);
 
     showPureEstimateNormal = uiConfig.optBoolean("show-pure-estimate-normal", false);
     showPureEstimateBySize = uiConfig.optBoolean("show-pure-estimate-by-size", false);
