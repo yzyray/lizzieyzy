@@ -31,7 +31,7 @@ import javax.swing.*;
 
 public class Board {
   public static int boardHeight = 11;
-  public static int boardWidth = 15;
+  public static int boardWidth = 11;
   public static int hexHeight = 5;
   public static int hexWidth = 5;
   public int insertoricurrentMoveNumber = 0;

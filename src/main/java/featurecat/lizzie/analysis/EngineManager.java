@@ -1664,8 +1664,8 @@ public class EngineManager {
       if (!loadLeelaz && engineDt.name.equals(currentEngineName)) {
         loadLeelaz = true;
         if (e.oriWidth != Board.boardWidth || e.oriHeight != Board.boardHeight) {
-          Board.boardWidth = e.oriWidth;
-          Board.boardHeight = e.oriHeight;
+          Board.hexWidth = e.oriWidth;
+          Board.hexHeight = e.oriHeight;
           Zobrist.init();
           Lizzie.board.clear(false);
         }
