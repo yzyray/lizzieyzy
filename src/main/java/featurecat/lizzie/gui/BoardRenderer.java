@@ -887,7 +887,7 @@ public class BoardRenderer {
                   scaledMarginWidth + squareWidth * i,
                   scaledMarginHeight * 4 / 10,
                   LizzieFrame.uiFont,
-                  String.valueOf((i + 1) / 2),
+                  Board.asName((i - 1) / 2),
                   stoneRadius * 4 / 5,
                   stoneRadius);
           }
@@ -898,7 +898,7 @@ public class BoardRenderer {
                   scaledMarginWidth + squareWidth * i,
                   boardHeight - scaledMarginHeight * 4 / 10,
                   LizzieFrame.uiFont,
-                  String.valueOf((i - Board.hexHeight) / 2 + 1),
+                  Board.asName((i - Board.hexHeight) / 2),
                   stoneRadius * 4 / 5,
                   stoneRadius);
           }

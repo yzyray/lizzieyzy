@@ -287,7 +287,7 @@ public class Config {
 
   public boolean enginePkPonder = false;
   public boolean alwaysGtp = true;
-  public boolean noCapture = false;
+  public boolean noCapture = true;
 
   public boolean chkPkStartNum = false;
   public int pkStartNum = 0;
@@ -1352,7 +1352,7 @@ public class Config {
     ignoreOutOfWidth = uiConfig.optBoolean("ignore-out-of-width", false);
     enginePkPonder = uiConfig.optBoolean("engine-pk-ponder", false);
     alwaysGtp = uiConfig.optBoolean("always-gtp", true);
-    noCapture = uiConfig.optBoolean("no-capture", false);
+    // noCapture = uiConfig.optBoolean("no-capture", false);
     showrect = uiConfig.optInt("show-move-rect", 1);
     winrateAlwaysBlack = uiConfig.optBoolean("win-rate-always-black", false);
     showScoreAsDiff = uiConfig.optBoolean("show-score-as-diff", false);

@@ -205,8 +205,7 @@ public class Board {
         Lizzie.config.useIinCoordsName || Lizzie.config.useFoxStyleCoords
             ? alphabetWithI
             : alphabet;
-    if (boardWidth
-        > (Lizzie.config.useIinCoordsName || Lizzie.config.useFoxStyleCoords ? 26 : 25)) {
+    if (hexWidth > (Lizzie.config.useIinCoordsName || Lizzie.config.useFoxStyleCoords ? 26 : 25)) {
       return String.valueOf(c + 1);
     }
     StringBuilder name = new StringBuilder();

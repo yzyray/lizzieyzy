@@ -82,8 +82,8 @@ public class EngineManager {
       if (i == index || loadDefault && engineDt.isDefault) {
         if (engineDt.isDefault) index = engineDt.index;
         if (e.oriWidth != 19 || e.oriHeight != 19) {
-          Board.boardWidth = e.oriWidth;
-          Board.boardHeight = e.oriHeight;
+          Board.hexWidth = e.oriWidth;
+          Board.hexHeight = e.oriHeight;
           Zobrist.init();
           Lizzie.board.clear(false);
         }
