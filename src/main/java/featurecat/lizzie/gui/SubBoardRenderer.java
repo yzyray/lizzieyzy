@@ -804,7 +804,10 @@ public class SubBoardRenderer {
     // RenderingHints.VALUE_RENDER_QUALITY);
 
     Optional<MoveData> suggestedMove = getBestMove();
-
+    if (Lizzie.config.useMovesOwnership && Lizzie.leelaz.supportMovesOwnership) {
+      ArrayList<Double> array = getEstimateArray();
+      if (array != null) estimateArray = array;
+    }
     if (!suggestedMove.isPresent()) {
       g.setColor(new Color(0, 0, 0, 255));
       g.setFont(new Font(Config.sysDefaultFontName, Font.BOLD, stoneRadius * 3 / 2));
@@ -937,6 +940,15 @@ public class SubBoardRenderer {
       return Optional.of(bestMoves.get(bestmovesNum));
     }
     return Optional.empty();
+  }
+
+  private ArrayList<Double> getEstimateArray() {
+    if (!bestMoves.isEmpty()) {
+      if (bestMoves.size() < subOrder + 1) return null;
+      if (bestMoves.size() < this.bestmovesNum + 1) bestmovesNum = bestMoves.size() - 1;
+      return bestMoves.get(bestmovesNum).movesEstimateArray;
+    }
+    return null;
   }
 
   /** Render the shadows and stones in correct background-foreground order */

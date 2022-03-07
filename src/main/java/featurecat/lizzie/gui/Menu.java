@@ -2303,6 +2303,18 @@ public class Menu extends JMenuBar {
 
     kataEstimate.addSeparator();
 
+    final JFontCheckBoxMenuItem useMovesOwnership =
+        new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.useMovesOwnership"));
+    kataEstimate.add(useMovesOwnership);
+    useMovesOwnership.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.config.useMovesOwnership = !Lizzie.config.useMovesOwnership;
+            Lizzie.config.uiConfig.put("use-moves-ownership", Lizzie.config.useMovesOwnership);
+          }
+        });
+
     final JFontCheckBoxMenuItem useKataEstimateShortcut =
         new JFontCheckBoxMenuItem(
             resourceBundle.getString("Menu.useKataEstimateShortcut")); // ("使用Kata评估快捷键(大键盘点)");
@@ -2312,7 +2324,6 @@ public class Menu extends JMenuBar {
           @Override
           public void actionPerformed(ActionEvent e) {
             Lizzie.config.useShortcutKataEstimate = !Lizzie.config.useShortcutKataEstimate;
-
             Lizzie.config.uiConfig.put(
                 "shortcut-kata-estimate", Lizzie.config.useShortcutKataEstimate);
           }
@@ -2346,6 +2357,8 @@ public class Menu extends JMenuBar {
               nextMoveHintSimple.setState(false);
               nextMoveHintInformation.setState(false);
             }
+            if (Lizzie.config.useMovesOwnership) useMovesOwnership.setSelected(true);
+            else useMovesOwnership.setSelected(false);
             if (Lizzie.config.useShortcutKataEstimate) useKataEstimateShortcut.setSelected(true);
             else useKataEstimateShortcut.setState(false);
             if (Lizzie.config.saveKataEstimateStatus) kataEstimateSaveState.setSelected(true);

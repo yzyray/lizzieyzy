@@ -31,6 +31,7 @@ public class MoveData {
   public boolean lastTimeUnlimited;
   public long lastTimeUnlimitedTime;
   public boolean isSymmetry = false;
+  public ArrayList<Double> movesEstimateArray;
 
   public MoveData() {}
 
@@ -195,26 +196,44 @@ public class MoveData {
     for (int i = 0; i < data.length; i++) {
       String key = data[i];
       if (key.equals("pv")) {
-        int pvVisitsPos = -1;
+        int otherPos = data.length;
+        int ownerShipPos = data.length;
+        for (int s = i + 1; s < data.length; s++) {
+          String subKey = data[s];
+          if (subKey.equals("movesOwnership")) {
+            otherPos = s;
+            ownerShipPos = s;
+            result.movesEstimateArray = new ArrayList<Double>();
+            try {
+              for (int o = ownerShipPos + 1; o < data.length; o++) {
+                double value = Double.parseDouble(data[o]);
+                result.movesEstimateArray.add(value);
+              }
+            } catch (NumberFormatException err) {
+              err.printStackTrace();
+            }
+            break;
+          }
+        }
+
         for (int s = i + 1; s < data.length; s++) {
           String subKey = data[s];
           if (subKey.equals("pvVisits")) {
-            pvVisitsPos = s;
+            otherPos = s;
             result.pvVisits = new ArrayList<>(Arrays.asList(data));
-            result.pvVisits = result.pvVisits.subList(s + 1, data.length);
+            result.pvVisits = result.pvVisits.subList(s + 1, ownerShipPos);
             break;
           }
         }
         // Read variation to the end of line
         result.variation = new ArrayList<>(Arrays.asList(data));
-        int length = pvVisitsPos > -1 ? pvVisitsPos : data.length;
         result.variation =
             result.variation.subList(
                 i + 1,
                 (Lizzie.config.limitBranchLength > 0
-                        && length - i - 1 > Lizzie.config.limitBranchLength)
+                        && otherPos - i - 1 > Lizzie.config.limitBranchLength)
                     ? i + 1 + Lizzie.config.limitBranchLength
-                    : length);
+                    : otherPos);
         if (result.pvVisits != null) {
           if (result.pvVisits.size() > result.variation.size())
             result.pvVisits = result.pvVisits.subList(0, result.variation.size());

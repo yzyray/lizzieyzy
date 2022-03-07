@@ -646,6 +646,8 @@ public class Config {
   public boolean contributeDisableRatingMatches = false;
   public boolean contributeViewAlwaysTop = true;
 
+  public boolean useMovesOwnership = true;
+
   private JSONObject loadAndMergeSaveBoardConfig(
       JSONObject defaultCfg, String fileName, boolean needValidation) throws IOException {
     File file = new File(fileName);
@@ -1361,6 +1363,7 @@ public class Config {
     showrect = uiConfig.optInt("show-move-rect", 1);
     winrateAlwaysBlack = uiConfig.optBoolean("win-rate-always-black", false);
     showScoreAsDiff = uiConfig.optBoolean("show-score-as-diff", false);
+    useMovesOwnership = uiConfig.optBoolean("use-moves-ownership", true);
 
     // chkPkStartNum = uiConfig.optBoolean("chkpk-start-num", false);
     // pkStartNum = uiConfig.optInt("pk-start-num", 1);

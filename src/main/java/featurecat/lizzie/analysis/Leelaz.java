@@ -217,6 +217,7 @@ public class Leelaz {
   private boolean startGetCommandList = false;
   private boolean endGetCommandList = false;
   private int currentTotalPlayouts;
+  public boolean supportMovesOwnership = false;
   // private int refreshNumber=0;
   // private boolean isEstimating=true;
   /**
@@ -268,25 +269,6 @@ public class Leelaz {
     //			this.isScreen = true;
     //			}
   }
-  //	public void updateCommand(String engineCommand) {
-  //		this.engineCommand = engineCommand;
-  //		if (engineCommand.toLowerCase().contains("override-version")) {
-  //			this.isKatago = true;
-  //		}
-  //		if (engineCommand.toLowerCase().contains("zen")) {
-  //			this.isZen = true;
-  //		}
-  //		if (engineCommand.toLowerCase().contains("ssh")) {
-  //			this.isSSH = true;
-  //		}
-  //	}
-
-  //	private String formateSaveString (String filename)
-  //	{
-  //		filename=filename.replaceAll("[/\\\\:*?|]", ".");
-  //		filename=filename.replaceAll("[\"<>]", "'");
-  //		return filename;
-  //	}
 
   public String getEngineName(int index) {
     if (index < 0) return Lizzie.resourceBundle.getString("Menu.noEngine");
@@ -310,6 +292,7 @@ public class Leelaz {
     canAddPlayer = false;
     currentEngineN = index;
     canRestoreDymPda = false;
+    supportMovesOwnership = false;
     commands = Utils.splitCommand(engineCommand);
     pda = 0;
     // Get weight name
@@ -949,73 +932,127 @@ public class Leelaz {
           return;
         }
       }
-      if (isCheckingName) {
-        pkMoveStartTime = System.currentTimeMillis();
-        isCheckingName = false;
-        // isReadyForGenmoveGame =true;
-        isKataGoPda = false;
-        if (params[1].toLowerCase().startsWith("zen")) this.isZen = true;
-        if (params[1].toLowerCase().startsWith("llzero")) {
-          this.noLcb = true;
-          this.isLeela = true;
-          canAddPlayer = true;
-        }
-        if (params[1].toLowerCase().startsWith("leela")
-            && params.length > 2
-            && params[2].toLowerCase().startsWith("zero")) {
-          this.isLeela = true;
-          canAddPlayer = true;
-        }
-        if (params[1].equals("Leela") && params.length == 2) {
-          isLeela0110 = true;
-          isLoaded = true;
-        }
-        if (params[1].toLowerCase().startsWith("sai")) this.isSai = true;
-        //				if (params[1].startsWith("KataGoYm"))
-        //					sendCommandToLeelazWithOutLog("lizzie_use");
-        if (params[1].toLowerCase().startsWith("kata")) {
-          canAddPlayer = true;
-          if (params[1].startsWith("KataGoPda")) {
-            isKatagoCustom = true;
-            isCheckingPda = true;
-            isKataGoPda = true;
-            sendCommand("getpda");
-            sendCommand("getdympdacap");
-            Runnable runnable =
-                new Runnable() {
-                  public void run() {
-                    try {
-                      Thread.sleep(5000);
-                    } catch (InterruptedException e) {
-                      // TODO Auto-generated catch block
-                      e.printStackTrace();
-                    }
-                    isCheckingPda = false;
-                  }
-                };
-            Thread thread = new Thread(runnable);
-            thread.start();
-          }
-          setKataEnginePara();
-          if (Lizzie.config.autoLoadKataRules)
-            sendCommand("kata-set-rules " + Lizzie.config.kataRules);
-          getParameterScadule(true);
-          this.isKatago = true;
-          if (params[1].startsWith("KataGoCustom")) isKatagoCustom = true;
-          this.version = 17;
-          isCheckingVersion = false;
+      checkNameAndVersion(params);
 
-          if (this.currentEngineN == EngineManager.currentEngineNo) {
-            Lizzie.config.leelaversion = version;
-          }
-          //	isLoaded = true;
-          // Lizzie.frame.menu.showWRNandPDA(true);
-        } else {
-          isKatago = false;
-          setLeelaSaiEnginePara();
-          // Lizzie.frame.menu.showWRNandPDA(false);
+    } else if (line.startsWith("?")) {
+      isCommandLine = true;
+    }
+
+    if (Lizzie.gtpConsole.isVisible() || Lizzie.config.alwaysGtp)
+      Lizzie.gtpConsole.addLine(line + "\n");
+    else if (line.startsWith("PDA:")) {
+      parsePDALine(line);
+    }
+  }
+
+  private void checkNameAndVersion(String[] params) {
+    // TODO Auto-generated method stub
+    if (isCheckingName) {
+      noAnalyze = false;
+      isCheckingName = false;
+      isKataGoPda = false;
+      pkMoveStartTime = System.currentTimeMillis();
+      if (params[1].toLowerCase().startsWith("golaxy")) requireResponseBeforeSend = true;
+      else requireResponseBeforeSend = false;
+      if (params[1].toLowerCase().startsWith("zen")) this.isZen = true;
+      if (params[1].toLowerCase().startsWith("llzero")) {
+        this.noLcb = true;
+        canAddPlayer = true;
+      }
+      if (params[1].toLowerCase().startsWith("sai")) this.isSai = true;
+      if (params[1].toLowerCase().startsWith("leela")
+          && params.length > 2
+          && params[2].toLowerCase().startsWith("zero")) {
+        this.isLeela = true;
+        canAddPlayer = true;
+      }
+      if (params[1].equals("Leela") && params.length == 2) {
+        isLeela0110 = true;
+        isLoaded = true;
+      }
+      //						if (params[1].startsWith("KataGoYm"))
+      //							sendCommandToLeelazWithOutLog("lizzie_use");
+      if (params[1].toLowerCase().startsWith("kata")) {
+        canAddPlayer = true;
+        if (Lizzie.config.firstLoadKataGo) {
+          Lizzie.config.firstLoadKataGo = false;
+          SwingUtilities.invokeLater(
+              new Runnable() {
+                public void run() {
+                  Utils.showHtmlMessage(
+                      Lizzie.resourceBundle.getString("Message.title"),
+                      Lizzie.resourceBundle.getString("Leelaz.kataGoPerformance"),
+                      Lizzie.frame);
+                }
+              });
+          Lizzie.config.uiConfig.put("first-load-katago", Lizzie.config.firstLoadKataGo);
         }
-      } else if (isCheckingVersion && !isKatago && !isLeela0110) {
+        if (params[1].startsWith("KataGoPda")) {
+          isKatagoCustom = true;
+          isCheckingPda = true;
+          isKataGoPda = true;
+          sendCommand("getpda");
+          sendCommand("getdympdacap");
+          Runnable runnable =
+              new Runnable() {
+                public void run() {
+                  try {
+                    Thread.sleep(5000);
+                  } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                  }
+                  isCheckingPda = false;
+                }
+              };
+          Thread thread = new Thread(runnable);
+          thread.start();
+        }
+        setKataEnginePara();
+        if (Lizzie.config.autoLoadKataRules)
+          sendCommand("kata-set-rules " + Lizzie.config.kataRules);
+        getParameterScadule(true);
+        this.isKatago = true;
+        if (params[1].startsWith("KataGoCustom")) isKatagoCustom = true;
+        this.version = 17;
+
+        if (this.currentEngineN == EngineManager.currentEngineNo) {
+          Lizzie.config.leelaversion = version;
+        }
+        isLoaded = true;
+        isTuning = false;
+        if (Lizzie.leelaz2 != null && this == Lizzie.leelaz2) {
+          if (currentEngineN > 20) LizzieFrame.menu.changeEngineIcon2(20, 2);
+          else LizzieFrame.menu.changeEngineIcon2(currentEngineN, 2);
+        } else {
+          if (currentEngineN > 20) LizzieFrame.menu.changeEngineIcon(20, 2);
+          else LizzieFrame.menu.changeEngineIcon(currentEngineN, 2);
+        }
+      } else {
+        isLoaded = true;
+        isTuning = false;
+        isKatago = false;
+        setLeelaSaiEnginePara();
+      }
+      if (params[1].toLowerCase().startsWith("katajigo")) {
+        this.isKatago = true;
+        this.noAnalyze = true;
+      }
+    } else if (isCheckingVersion && !isLeela0110) {
+      if (isKatago) {
+        String[] ver = params[1].split("\\.");
+        if (ver.length >= 2) {
+          try {
+            if (Integer.parseInt(ver[0]) > 1 || Integer.parseInt(ver[1]) > 10) {
+              supportMovesOwnership = true;
+            }
+          } catch (Exception ex) {
+            ex.printStackTrace();
+            supportMovesOwnership = false;
+          }
+        }
+        isCheckingVersion = false;
+      } else {
         String[] ver = params[1].split("\\.");
         try {
           int minor = Integer.parseInt(ver[1]);
@@ -1032,16 +1069,18 @@ public class Leelaz {
           version = 17;
         }
         isCheckingVersion = false;
-        //	isLoaded = true;
-      }
-    } else if (line.startsWith("?")) {
-      isCommandLine = true;
-    }
+        isLoaded = true;
+        isTuning = false;
+        // Lizzie.initializeAfterVersionCheck();
+        if (Lizzie.leelaz2 != null && this == Lizzie.leelaz2) {
+          if (currentEngineN > 20) LizzieFrame.menu.changeEngineIcon2(20, 2);
+          else LizzieFrame.menu.changeEngineIcon2(currentEngineN, 2);
 
-    if (Lizzie.gtpConsole.isVisible() || Lizzie.config.alwaysGtp)
-      Lizzie.gtpConsole.addLine(line + "\n");
-    else if (line.startsWith("PDA:")) {
-      parsePDALine(line);
+        } else {
+          if (currentEngineN > 20) LizzieFrame.menu.changeEngineIcon(20, 2);
+          else LizzieFrame.menu.changeEngineIcon(currentEngineN, 2);
+        }
+      }
     }
   }
 
@@ -1412,128 +1451,7 @@ public class Leelaz {
             isInputCommand = false;
           }
         }
-
-        if (isCheckingName) {
-          noAnalyze = false;
-          isCheckingName = false;
-          isKataGoPda = false;
-          pkMoveStartTime = System.currentTimeMillis();
-          if (params[1].toLowerCase().startsWith("golaxy")) requireResponseBeforeSend = true;
-          else requireResponseBeforeSend = false;
-          if (params[1].toLowerCase().startsWith("zen")) this.isZen = true;
-          if (params[1].toLowerCase().startsWith("llzero")) {
-            this.noLcb = true;
-            canAddPlayer = true;
-          }
-          if (params[1].toLowerCase().startsWith("sai")) this.isSai = true;
-          if (params[1].toLowerCase().startsWith("leela")
-              && params.length > 2
-              && params[2].toLowerCase().startsWith("zero")) {
-            this.isLeela = true;
-            canAddPlayer = true;
-          }
-          if (params[1].equals("Leela") && params.length == 2) {
-            isLeela0110 = true;
-            isLoaded = true;
-          }
-          //						if (params[1].startsWith("KataGoYm"))
-          //							sendCommandToLeelazWithOutLog("lizzie_use");
-          if (params[1].toLowerCase().startsWith("kata")) {
-            canAddPlayer = true;
-            if (Lizzie.config.firstLoadKataGo) {
-              Lizzie.config.firstLoadKataGo = false;
-              SwingUtilities.invokeLater(
-                  new Runnable() {
-                    public void run() {
-                      Utils.showHtmlMessage(
-                          Lizzie.resourceBundle.getString("Message.title"),
-                          Lizzie.resourceBundle.getString("Leelaz.kataGoPerformance"),
-                          Lizzie.frame);
-                    }
-                  });
-              Lizzie.config.uiConfig.put("first-load-katago", Lizzie.config.firstLoadKataGo);
-            }
-            if (params[1].startsWith("KataGoPda")) {
-              isKatagoCustom = true;
-              isCheckingPda = true;
-              isKataGoPda = true;
-              sendCommand("getpda");
-              sendCommand("getdympdacap");
-              Runnable runnable =
-                  new Runnable() {
-                    public void run() {
-                      try {
-                        Thread.sleep(5000);
-                      } catch (InterruptedException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                      }
-                      isCheckingPda = false;
-                    }
-                  };
-              Thread thread = new Thread(runnable);
-              thread.start();
-            }
-            setKataEnginePara();
-            if (Lizzie.config.autoLoadKataRules)
-              sendCommand("kata-set-rules " + Lizzie.config.kataRules);
-            getParameterScadule(true);
-            this.isKatago = true;
-            if (params[1].startsWith("KataGoCustom")) isKatagoCustom = true;
-            this.version = 17;
-            isCheckingVersion = false;
-
-            if (this.currentEngineN == EngineManager.currentEngineNo) {
-              Lizzie.config.leelaversion = version;
-            }
-            isLoaded = true;
-            isTuning = false;
-            if (Lizzie.leelaz2 != null && this == Lizzie.leelaz2) {
-              if (currentEngineN > 20) LizzieFrame.menu.changeEngineIcon2(20, 2);
-              else LizzieFrame.menu.changeEngineIcon2(currentEngineN, 2);
-            } else {
-              if (currentEngineN > 20) LizzieFrame.menu.changeEngineIcon(20, 2);
-              else LizzieFrame.menu.changeEngineIcon(currentEngineN, 2);
-            }
-          } else {
-            isLoaded = true;
-            isTuning = false;
-            isKatago = false;
-            setLeelaSaiEnginePara();
-          }
-          if (params[1].toLowerCase().startsWith("katajigo")) {
-            this.isKatago = true;
-            this.noAnalyze = true;
-          }
-        } else if (isCheckingVersion && !isKatago && !isLeela0110) {
-          String[] ver = params[1].split("\\.");
-          try {
-            int minor = Integer.parseInt(ver[1]);
-            // Gtp support added in version 15
-            version = minor;
-            if (version == 15) canAddPlayer = false;
-          } catch (Exception ex) {
-            version = 17;
-          }
-          if (this.currentEngineN == EngineManager.currentEngineNo) {
-            Lizzie.config.leelaversion = version;
-          }
-          if (version == 7) {
-            version = 17;
-          }
-          isCheckingVersion = false;
-          isLoaded = true;
-          isTuning = false;
-          // Lizzie.initializeAfterVersionCheck();
-          if (Lizzie.leelaz2 != null && this == Lizzie.leelaz2) {
-            if (currentEngineN > 20) LizzieFrame.menu.changeEngineIcon2(20, 2);
-            else LizzieFrame.menu.changeEngineIcon2(currentEngineN, 2);
-
-          } else {
-            if (currentEngineN > 20) LizzieFrame.menu.changeEngineIcon(20, 2);
-            else LizzieFrame.menu.changeEngineIcon(currentEngineN, 2);
-          }
-        }
+        checkNameAndVersion(params);
       } else if (line.startsWith("?")) {
         isCommandLine = true;
       }
@@ -2876,15 +2794,20 @@ public class Leelaz {
     return true;
   }
 
+  public String addKataTag() {
+    return (Lizzie.config.showKataGoEstimate ? " ownership true" : "")
+        + (Lizzie.config.showPvVisits ? " pvVisits true" : "")
+        + (Lizzie.config.showKataGoEstimate
+                && supportMovesOwnership
+                && Lizzie.config.useMovesOwnership
+            ? " movesOwnership true"
+            : "");
+  }
+
   public void genmove(String color) {
     String command =
         (this.isKatago
-            ? ("kata-genmove_analyze "
-                + color
-                + " "
-                + getInterval()
-                + (Lizzie.config.showKataGoEstimate ? " ownership true" : "")
-                + (Lizzie.config.showPvVisits ? " pvVisits true" : ""))
+            ? ("kata-genmove_analyze " + color + " " + getInterval() + addKataTag())
             : (this.isSai || this.isLeela
                 ? ("lz-genmove_analyze " + color + " " + getInterval())
                 : ("genmove " + color)));
@@ -2922,12 +2845,7 @@ public class Leelaz {
     }
     String command =
         (this.isKatago
-            ? ("kata-genmove_analyze "
-                + color
-                + " "
-                + getIntervalForGenmovePk()
-                + (Lizzie.config.showKataGoEstimate ? " ownership true" : "")
-                + (Lizzie.config.showPvVisits ? " pvVisits true" : ""))
+            ? ("kata-genmove_analyze " + color + " " + getIntervalForGenmovePk() + addKataTag())
             : (this.isSai || this.isLeela
                 ? ("lz-genmove_analyze " + color + " " + getInterval())
                 : ("genmove " + color)));
@@ -3042,11 +2960,7 @@ public class Leelaz {
                 untilMove <= 0 ? 1 : untilMove);
     sendCommand(
         String.format(
-            (isKatago
-                ? "kata-analyze %s%d %s"
-                    + (Lizzie.config.showKataGoEstimate ? " ownership true" : "")
-                    + (Lizzie.config.showPvVisits ? " pvVisits true" : "")
-                : "lz-analyze %s%d %s"),
+            (isKatago ? "kata-analyze %s%d %s" + addKataTag() : "lz-analyze %s%d %s"),
             maybeAddPlayer(addPlayer, blackToPlay),
             getInterval(),
             parameters));
@@ -3062,11 +2976,7 @@ public class Leelaz {
     }
     sendCommand(
         String.format(
-            (isKatago
-                ? "kata-analyze %s%d %s"
-                    + (Lizzie.config.showKataGoEstimate ? " ownership true" : "")
-                    + (Lizzie.config.showPvVisits ? " pvVisits true" : "")
-                : "lz-analyze %s%d %s"),
+            (isKatago ? "kata-analyze %s%d %s" + addKataTag() : "lz-analyze %s%d %s"),
             maybeAddPlayer(),
             getInterval(),
             parameters));
@@ -3126,8 +3036,7 @@ public class Leelaz {
             "kata-analyze "
                 + maybeAddPlayer(addPlayer, blackToPlay)
                 + getInterval()
-                + (Lizzie.config.showKataGoEstimate ? " ownership true" : "")
-                + (Lizzie.config.showPvVisits ? " pvVisits true" : ""));
+                + addKataTag());
       } else {
         sendCommand("lz-analyze " + maybeAddPlayer(addPlayer, blackToPlay) + getInterval());
       }
@@ -3165,14 +3074,8 @@ public class Leelaz {
     }
     if (this.isKatago) {
       if (Lizzie.config.showKataGoEstimate)
-        sendCommand(
-            "kata-analyze "
-                + getInterval()
-                + (Lizzie.config.showPvVisits ? " pvVisits true" : "")
-                + " ownership true");
-      else
-        sendCommand(
-            "kata-analyze " + getInterval() + (Lizzie.config.showPvVisits ? " pvVisits true" : ""));
+        sendCommand("kata-analyze " + getInterval() + addKataTag() + " ownership true");
+      else sendCommand("kata-analyze " + getInterval() + addKataTag());
     } else {
       sendCommand("lz-analyze " + getInterval());
     } // until it responds to this, incoming

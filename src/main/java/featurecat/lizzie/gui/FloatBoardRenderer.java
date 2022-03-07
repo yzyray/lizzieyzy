@@ -518,7 +518,7 @@ public class FloatBoardRenderer {
               squareWidth,
               squareWidth);
         else if (Lizzie.config.showKataGoEstimateSmall) {
-          int length = (int) Math.round(squareWidth / 8.0);
+          int length = (int) Math.round(squareWidth / 6.0);
           g.fillRect(stoneX - length, stoneY - length, length * 2, length * 2);
         } else {
           g.fillRect(
@@ -724,6 +724,10 @@ public class FloatBoardRenderer {
             && mouseOverTempNode == Lizzie.board.getHistory().getMainEnd()
             && mouseOverTemp.coordinate.equals(suggestedMove.get().coordinate);
     mouseOverTemp = suggestedMove.get();
+    if (Lizzie.config.useMovesOwnership && Lizzie.leelaz.supportMovesOwnership) {
+      ArrayList<Double> array = mouseOverTemp.movesEstimateArray;
+      if (array != null) estimateArray = array;
+    }
     mouseOverTempNode = Lizzie.board.getHistory().getMainEnd();
     int maxPlayouts = 0;
     for (MoveData move : bestMoves) {
