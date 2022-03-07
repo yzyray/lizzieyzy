@@ -48,7 +48,7 @@ public class Config {
   // public boolean scoreMeanWinrateGraphBoard = false;
   public boolean showKataGoEstimate = false;
   // public boolean allowDrageDoubleClick = true;
-  public boolean showKataGoEstimateOnSubbord = false;
+  public boolean showKataGoEstimateOnSubbord = true;
   public boolean showKataGoEstimateOnMainbord = true;
   public boolean showSuggestionOrder = true;
   public boolean showSuggestionMaxRed = true;
@@ -1076,7 +1076,7 @@ public class Config {
     mySaveTime = uiConfig.optInt("my-save-time", 3);
     myByoyomiSeconds = uiConfig.optInt("my-byoyomo-seconds", 4);
     myByoyomiTimes = uiConfig.optInt("my-byoyomo-times", 2);
-    showKataGoEstimateOnSubbord = uiConfig.optBoolean("show-katago-estimate-onsubbord", false);
+    showKataGoEstimateOnSubbord = uiConfig.optBoolean("show-katago-estimate-onsubbord", true);
     showKataGoEstimateOnMainbord = uiConfig.optBoolean("show-katago-estimate-onmainboard", true);
     if (!showKataGoEstimateOnMainbord && !showKataGoEstimateOnSubbord && showKataGoEstimate)
       isHiddenKataEstimate = true;
