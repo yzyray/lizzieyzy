@@ -655,19 +655,18 @@ public class Board {
   }
 
   public void reopenOnlyBoard(int width, int height) {
-    width = (width >= 2) ? width : 19;
-    height = (height >= 2) ? height : 19;
-
-    if (width != boardWidth || height != boardHeight) {
+    if (width != hexWidth || height != hexHeight) {
+      int expandX = 2 * width + height;
+      int expandY = 2 * height + 1;
+      Lizzie.board.saveHexWH(width, height);
+      width = expandX;
+      height = expandY;
+      width = (width >= 2) ? width : 19;
+      height = (height >= 2) ? height : 19;
       boardWidth = width;
       boardHeight = height;
       Zobrist.init();
       clear(false);
-      //  Lizzie.leelaz.boardSize(boardWidth, boardHeight);
-      //  Lizzie.leelaz.ponder();
-      //  Lizzie.leelaz.setResponseUpToDate();
-      forceRefresh = true;
-      forceRefresh2 = true;
     }
   }
 

@@ -148,10 +148,11 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.swingxdate</groupId>
-			<artifactId>swingxcore</artifactId>
-			<version>1.6.2</version>
+			<groupId>org.swinglabs.swingx</groupId>
+			<artifactId>swingx-core</artifactId>
+			<version>1.6.4</version>
 		</dependency>
+		
 		<!-- https://mvnrepository.com/artifact/junit/junit -->
 		<dependency>
 			<groupId>junit</groupId>
