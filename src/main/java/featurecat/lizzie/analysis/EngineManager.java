@@ -716,8 +716,9 @@ public class EngineManager {
 
     Lizzie.frame.hasEnginePkTitile = true;
     Lizzie.frame.enginePkTitile =
-        resourceBundle.getString("EngineGameInfo.titleScore") //  " 比分 "
-            + engineGameInfo.getFirstEngineWins()
+        //        resourceBundle.getString("EngineGameInfo.titleScore") //  " 比分 "
+        //            +
+        engineGameInfo.getFirstEngineWins()
             + ":"
             + engineGameInfo.getSecondEngineWins()
             + " "
