@@ -266,6 +266,7 @@ public class LizzieFrame extends JFrame {
   private ScheduledExecutorService showPlayouts = Executors.newScheduledThreadPool(1);
   // private ScheduledExecutorService updateTitleSchedual = Executors.newScheduledThreadPool(1);
   private String visitsString = "";
+  private long visitsStringTime;
   private int visitsCount = 4;
   private VisitsTemp[] visitsTemp = new VisitsTemp[visitsCount];
   // private long lastPlayouts0 = 0;
@@ -1511,8 +1512,10 @@ public class LizzieFrame extends JFrame {
                   visitsString =
                       String.format(
                           " %d " + Lizzie.resourceBundle.getString("LizzieFrame.speedUnit"), speed);
+                  visitsStringTime = System.currentTimeMillis();
                 }
-              }
+              } else if (System.currentTimeMillis() - visitsStringTime > 5000)
+                visitsString = " - " + Lizzie.resourceBundle.getString("LizzieFrame.speedUnit");
               visitsCount++;
               if (visitsCount > 3) visitsCount = 0;
               if (totalPlayouts > 0) {
