@@ -213,12 +213,23 @@ public class AnalysisEngine {
     int id = Integer.parseInt(result.getString("id"));
     BoardHistoryNode node = analyzeMap.get(id);
     List<MoveData> moves = Utils.getBestMovesFromJsonArray(moveInfos, true, true);
-    node.getData()
-        .tryToSetBestMoves(
-            moves,
-            resourceBundle.getString("AnalysisEngine.flashAnalyze"),
-            false,
-            MoveData.getPlayouts(moves));
+    if (result.has("ownership")) {
+      JSONArray ownership = result.getJSONArray("ownership");
+      List<Object> list = ownership.toList();
+      node.getData()
+          .tryToSetBestMoves(
+              moves,
+              resourceBundle.getString("AnalysisEngine.flashAnalyze"),
+              false,
+              MoveData.getPlayouts(moves),
+              (ArrayList<Double>) (List) list);
+    } else
+      node.getData()
+          .tryToSetBestMoves(
+              moves,
+              resourceBundle.getString("AnalysisEngine.flashAnalyze"),
+              false,
+              MoveData.getPlayouts(moves));
 
     node.getData().comment = SGFParser.formatComment(node);
     resultCount++;
@@ -333,6 +344,10 @@ public class AnalysisEngine {
     request.put("id", String.valueOf(globalID));
     request.put("maxVisits", maxVisits);
     request.put("includePVVisits", Lizzie.config.showPvVisits);
+    request.put("includeOwnership", Lizzie.config.showKataGoEstimate);
+    request.put(
+        "includeMovesOwnership",
+        Lizzie.config.showKataGoEstimate && Lizzie.config.useMovesOwnership);
     if (Lizzie.board.hasStartStone) {
       ArrayList<String[]> initialStoneList = new ArrayList<String[]>();
       for (Movelist mv : Lizzie.board.startStonelist) {

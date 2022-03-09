@@ -845,6 +845,11 @@ public class Utils {
         mv.winrate = 100 - mv.winrate;
         mv.scoreMean = -mv.scoreMean;
       }
+      if (moveInfo.has("ownership")) {
+        JSONArray ownership = moveInfo.getJSONArray("ownership");
+        List<Object> list = ownership.toList();
+        mv.movesEstimateArray = (ArrayList<Double>) (List) list;
+      }
       JSONArray pv = moveInfo.getJSONArray("pv");
       List<Object> list = pv.toList();
       mv.variation = (List<String>) (List) list;

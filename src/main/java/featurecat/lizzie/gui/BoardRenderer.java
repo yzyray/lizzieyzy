@@ -1484,7 +1484,7 @@ public class BoardRenderer {
             && mouseOverTempNode == Lizzie.board.getHistory().getCurrentHistoryNode()
             && mouseOverTemp.coordinate.equals(suggestedMove.get().coordinate);
     mouseOverTemp = suggestedMove.get();
-    if (Lizzie.config.useMovesOwnership && Lizzie.leelaz.supportMovesOwnership) {
+    if (Lizzie.config.useMovesOwnership) {
       ArrayList<Double> array = mouseOverTemp.movesEstimateArray;
       if (array != null) estimateArray = array;
     }

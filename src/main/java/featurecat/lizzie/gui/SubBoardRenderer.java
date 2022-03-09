@@ -804,7 +804,7 @@ public class SubBoardRenderer {
     // RenderingHints.VALUE_RENDER_QUALITY);
 
     Optional<MoveData> suggestedMove = getBestMove();
-    if (Lizzie.config.useMovesOwnership && Lizzie.leelaz.supportMovesOwnership) {
+    if (Lizzie.config.useMovesOwnership) {
       ArrayList<Double> array = getEstimateArray();
       if (array != null) estimateArray = array;
     }
