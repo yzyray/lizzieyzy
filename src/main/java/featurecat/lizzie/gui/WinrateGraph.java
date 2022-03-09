@@ -972,14 +972,18 @@ public class WinrateGraph {
             Font f = new Font(Config.sysDefaultFontName, Font.BOLD, largeEnough ? 14 : 13);
             g.setFont(f);
             double scoreHeight = convertScoreLead(drawcurscoreMean) * height / 2 / maxScoreLead;
-
+            int mScoreHeight = posy + height / 2 - (int) scoreHeight - 3;
+            int fontHeigt = g.getFontMetrics().getAscent() - g.getFontMetrics().getDescent();
+            int up = origParams[1] + fontHeigt;
+            int down = origParams[1] + origParams[3];
+            mScoreHeight = Math.max(up, mScoreHeight);
+            mScoreHeight = Math.min(down, mScoreHeight);
             String scoreString = String.format(Locale.ENGLISH, "%.1f", drawcurscoreMean);
             int stringWidth = g.getFontMetrics().stringWidth(scoreString);
             int x = posx + (curmovenum * width / numMoves) - stringWidth / 2;
             x = Math.max(x, origParams[0]);
             x = Math.min(x, origParams[0] + origParams[2] - stringWidth);
-            g.drawString(scoreString, x, posy + height / 2 - (int) scoreHeight - 3);
-            //   + (scoreHeight / (height / 2) < -0.9 ? 0 : 5) * DOT_RADIUS);
+            g.drawString(scoreString, x, mScoreHeight);
           }
         } else if (EngineManager.isEngineGame
                 && (Lizzie.engineManager.engineList.get(
@@ -1074,14 +1078,18 @@ public class WinrateGraph {
             Font f = new Font(Config.sysDefaultFontName, Font.BOLD, largeEnough ? 14 : 13);
             g.setFont(f);
             double scoreHeight = convertScoreLead(drawcurscoreMean) * height / 2 / maxScoreLead;
-
+            int mScoreHeight = posy + height / 2 - (int) scoreHeight - 3;
+            int fontHeigt = g.getFontMetrics().getAscent() - g.getFontMetrics().getDescent();
+            int up = origParams[1] + fontHeigt;
+            int down = origParams[1] + origParams[3];
+            mScoreHeight = Math.max(up, mScoreHeight);
+            mScoreHeight = Math.min(down, mScoreHeight);
             String scoreString = String.format(Locale.ENGLISH, "%.1f", drawcurscoreMean);
             int stringWidth = g.getFontMetrics().stringWidth(scoreString);
             int x = posx + (curmovenum * width / numMoves) - stringWidth / 2;
             x = Math.max(x, origParams[0]);
             x = Math.min(x, origParams[0] + origParams[2] - stringWidth);
-            g.drawString(scoreString, x, posy + height / 2 - (int) scoreHeight - 3);
-            //   + (scoreHeight / (height / 2) < -0.9 ? 0 : 5) * DOT_RADIUS);
+            g.drawString(scoreString, x, mScoreHeight);
           }
         }
       } else if (Lizzie.leelaz.isSai || Lizzie.leelaz.isKatago || Lizzie.board.isKataBoard) {
