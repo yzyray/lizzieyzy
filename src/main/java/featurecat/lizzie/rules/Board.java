@@ -3075,17 +3075,21 @@ public class Board {
   }
 
   public void setMovelistAll() {
-    BoardHistoryNode node = Lizzie.board.getHistory().getStart();
-    Stack<BoardHistoryNode> stack = new Stack<>();
-    stack.push(node);
-    while (!stack.isEmpty()) {
-      BoardHistoryNode cur = stack.pop();
-      updateMovelist(cur);
-      if (cur.numberOfChildren() >= 1) {
-        for (int i = cur.numberOfChildren() - 1; i >= 0; i--)
-          stack.push(cur.getVariations().get(i));
+    new Thread() {
+      public void run() {
+        BoardHistoryNode node = Lizzie.board.getHistory().getStart();
+        Stack<BoardHistoryNode> stack = new Stack<>();
+        stack.push(node);
+        while (!stack.isEmpty()) {
+          BoardHistoryNode cur = stack.pop();
+          updateMovelist(cur);
+          if (cur.numberOfChildren() >= 1) {
+            for (int i = cur.numberOfChildren() - 1; i >= 0; i--)
+              stack.push(cur.getVariations().get(i));
+          }
+        }
       }
-    }
+    }.start();
   }
 
   public void setMovelistAll2() {
