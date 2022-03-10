@@ -652,6 +652,7 @@ public class Config {
       JSONObject defaultCfg, String fileName, boolean needValidation) throws IOException {
     File file = new File(fileName);
     File dir = new File("save");
+    if (!dir.isDirectory()) dir.delete();
     if (!dir.exists()) {
       dir.mkdirs();
     }
