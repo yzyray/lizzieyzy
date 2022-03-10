@@ -463,7 +463,12 @@ public class Board {
     stack.push(node);
     while (!stack.isEmpty()) {
       BoardHistoryNode cur = stack.pop();
-      if (Lizzie.config.isDoubleEngineMode()) {}
+      cur.nodeInfo = new NodeInfo();
+      cur.nodeInfoMain = new NodeInfo();
+      if (Lizzie.config.isDoubleEngineMode()) {
+        cur.nodeInfo2 = new NodeInfo();
+        cur.nodeInfoMain2 = new NodeInfo();
+      }
       if (cur.numberOfChildren() >= 1) {
         for (int i = cur.numberOfChildren() - 1; i >= 0; i--)
           stack.push(cur.getVariations().get(i));
@@ -3070,36 +3075,31 @@ public class Board {
   }
 
   public void setMovelistAll() {
-    Runnable runnable =
-        new Runnable() {
-          public void run() {
-            BoardHistoryNode node = Lizzie.board.getHistory().getStart();
-            updateMovelist(node);
-            while (node.next().isPresent()) {
-              node = node.next().get();
-              updateMovelist(node);
-              updateIsBest(node);
-            }
-          }
-        };
-    Thread thread = new Thread(runnable);
-    thread.start();
+    BoardHistoryNode node = Lizzie.board.getHistory().getStart();
+    Stack<BoardHistoryNode> stack = new Stack<>();
+    stack.push(node);
+    while (!stack.isEmpty()) {
+      BoardHistoryNode cur = stack.pop();
+      updateMovelist(cur);
+      if (cur.numberOfChildren() >= 1) {
+        for (int i = cur.numberOfChildren() - 1; i >= 0; i--)
+          stack.push(cur.getVariations().get(i));
+      }
+    }
   }
 
   public void setMovelistAll2() {
-    Runnable runnable =
-        new Runnable() {
-          public void run() {
-            BoardHistoryNode node = Lizzie.board.getHistory().getStart();
-            updateMovelist2(node);
-            while (node.next().isPresent()) {
-              node = node.next().get();
-              updateMovelist2(node);
-            }
-          }
-        };
-    Thread thread = new Thread(runnable);
-    thread.start();
+    BoardHistoryNode node = Lizzie.board.getHistory().getStart();
+    Stack<BoardHistoryNode> stack = new Stack<>();
+    stack.push(node);
+    while (!stack.isEmpty()) {
+      BoardHistoryNode cur = stack.pop();
+      updateMovelist2(cur);
+      if (cur.numberOfChildren() >= 1) {
+        for (int i = cur.numberOfChildren() - 1; i >= 0; i--)
+          stack.push(cur.getVariations().get(i));
+      }
+    }
   }
 
   public void updateMovelist(BoardHistoryNode node) {

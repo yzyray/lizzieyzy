@@ -480,7 +480,7 @@ public class WinrateGraph {
             // g.setColor(Color.BLACK);
             else g.setColor(Lizzie.config.winrateMissLineColor);
 
-            if (lastOkMove > 0 && Math.abs(movenum - lastOkMove) < 25) {
+            if (lastOkMove > 0 && lastOkMove - movenum < 25) {
               if (Lizzie.config.showBlunderBar && canDrawBlunderBar) {
                 gBlunder.setColor(Lizzie.config.blunderBarColor);
                 double lastMoveRate = lastWr - wr;

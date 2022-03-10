@@ -5302,7 +5302,7 @@ public class MoveListFrame extends JFrame {
         int playouts = isMainEngine ? node.getData().getPlayouts() : node.getData().getPlayouts2();
         switch (selectedIndex) {
           case 0:
-            if (playouts >= 0) {
+            if (playouts > 0) {
               if (wr < 0) {
                 wr = 100 - lastWr;
               } else if (!node.getData().blackToPlay) {
@@ -5328,8 +5328,13 @@ public class MoveListFrame extends JFrame {
                       posx + ((movenum) * width / numMoves),
                       posx + ((movenum) * width / numMoves)
                     };
+                    double convertWinrate;
+                    if (lastOkMove - movenum > 1)
+                      convertWinrate =
+                          convertWinrate(wr + ((lastWr - wr) / (lastOkMove - movenum)));
+                    else convertWinrate = convertWinrate(lastWr);
                     int[] yPoints = {
-                      posy + height - (int) (convertWinrate(lastWr) * height / 100),
+                      posy + height - (int) (convertWinrate * height / 100),
                       origParams[3],
                       origParams[3],
                       posy + height - (int) (convertWinrate(wr) * height / 100)
@@ -5359,8 +5364,13 @@ public class MoveListFrame extends JFrame {
                       posx + ((movenum) * width / numMoves),
                       posx + ((movenum) * width / numMoves)
                     };
+                    double convertWinrate;
+                    if (lastOkMove - movenum > 1)
+                      convertWinrate =
+                          convertWinrate(wr + ((lastWr - wr) / (lastOkMove - movenum)));
+                    else convertWinrate = convertWinrate(lastWr);
                     int[] yPoints = {
-                      posy + height - (int) (convertWinrate(lastWr) * height / 100),
+                      posy + height - (int) (convertWinrate * height / 100),
                       0,
                       0,
                       posy + height - (int) (convertWinrate(wr) * height / 100)
@@ -5397,7 +5407,7 @@ public class MoveListFrame extends JFrame {
                 } else {
                   g.setColor(Color.ORANGE);
                   int lostMoves = lastOkMove - movenum;
-                  if (Math.abs(movenum - lastOkMove) < 35)
+                  if (lastOkMove - movenum < 35)
                     g.drawLine(
                         posx + (lastOkMove * width / numMoves),
                         posy + height - (int) (convertWinrate(lastWr) * height / 100),
