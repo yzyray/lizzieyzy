@@ -102,6 +102,7 @@ public class MoveListFrame extends JFrame {
   JButton settings;
   JLabel lblMatchConfig2;
   JLabel lblMatchConfig3;
+  JLabel lblMatchConfig4;
 
   ImageIcon iconUp;
   ImageIcon iconDown;
@@ -110,6 +111,8 @@ public class MoveListFrame extends JFrame {
   private JPanel statisticsPanel;
   private JPanel statisticsGraph;
   private JPanel keyPanel;
+  private JPanel keyPanel_tooltip1;
+  private JPanel keyPanel_tooltip2;
   private JTabbedPane lossPanel;
   private JPanel winLossPanel;
   private JPanel scoreLossPanel;
@@ -362,6 +365,12 @@ public class MoveListFrame extends JFrame {
     minTablePanel.add(tablePanelMin1);
     minTablePanel.add(tablePanelMin2);
 
+    keyPanel_tooltip1 = new JPanel();
+    keyPanel_tooltip1.setToolTipText(
+        Lizzie.resourceBundle.getString("Movelistframe.keyPanel.accuracy.tip"));
+    keyPanel_tooltip2 = new JPanel();
+    keyPanel_tooltip2.setToolTipText(
+        Lizzie.resourceBundle.getString("Movelistframe.keyPanel.match.tip"));
     keyPanel =
         new JPanel(true) {
           @Override
@@ -373,6 +382,10 @@ public class MoveListFrame extends JFrame {
             g0.dispose();
           }
         };
+    keyPanel.setLayout(null);
+    keyPanel.add(keyPanel_tooltip1);
+    keyPanel.add(keyPanel_tooltip2);
+
     lossPanel = new JTabbedPane();
 
     winLossPanel =
@@ -899,6 +912,8 @@ public class MoveListFrame extends JFrame {
         });
 
     lblMatchConfig3 = new JLabel("%");
+    lblMatchConfig4 =
+        new JLabel(Lizzie.resourceBundle.getString("Movelistframe.accuracyAndMatch.tip"));
 
     Document dtSuggestionMoves = suggestionMoves.getDocument();
     dtSuggestionMoves.addDocumentListener(
@@ -937,12 +952,14 @@ public class MoveListFrame extends JFrame {
       lblMatchConfig2.setBounds(110, 40, 250, 20);
       percentPlayouts.setBounds(258, 43, 40, 16);
       lblMatchConfig3.setBounds(299, 40, 15, 20);
+      lblMatchConfig4.setBounds(320, 40, 500, 20);
     } else {
       lblMatchConfig1.setBounds(5, 40, 166, 20);
       suggestionMoves.setBounds(123, 43, 25, 16);
       lblMatchConfig2.setBounds(150, 40, 250, 20);
       percentPlayouts.setBounds(363, 43, 40, 16);
       lblMatchConfig3.setBounds(405, 40, 15, 20);
+      lblMatchConfig4.setBounds(426, 40, 500, 20);
     }
 
     lblDiffConfig1 =
@@ -6448,52 +6465,60 @@ public class MoveListFrame extends JFrame {
     int valueStartXMiddle = startX + valueWidth;
     int valueRowHeight = (int) ((availableHeight - titleHeight - heightGap) / 5);
     g.setColor(Color.BLACK);
+    int x1 = (int) (valueStartXMiddle + availableWidth * 0.2 * 0.05);
+    int y1 = valueStartY + valueRowHeight / 4;
+    double stringW = availableWidth * 0.2 * 0.9;
+    double stringH = valueRowHeight / 2;
     Font font =
         drawStringMid(
             g,
-            (int) (valueStartXMiddle + availableWidth * 0.2 * 0.05),
-            valueStartY + valueRowHeight / 4,
+            x1,
+            y1,
             LizzieFrame.uiFont,
             Font.PLAIN,
             Lizzie.resourceBundle.getString("Movelistframe.keyPanel.accuracy"),
-            availableWidth * 0.2 * 0.9,
-            valueRowHeight / 2);
+            stringW,
+            stringH);
+    keyPanel_tooltip1.setBounds(0, y1, width, (int) stringH);
+
     drawStringMid(
         g,
-        (int) (valueStartXMiddle + availableWidth * 0.2 * 0.05),
-        valueStartY + valueRowHeight + valueRowHeight / 4,
+        x1,
+        y1 + valueRowHeight,
         LizzieFrame.uiFont,
         Font.PLAIN,
         Lizzie.resourceBundle.getString("Movelistframe.keyPanel.match"),
-        availableWidth * 0.2 * 0.9,
-        valueRowHeight / 2);
+        stringW,
+        stringH);
+    keyPanel_tooltip2.setBounds(0, y1 + valueRowHeight, width, (int) stringH);
+
     drawStringMid(
         g,
-        (int) (valueStartXMiddle + availableWidth * 0.2 * 0.05),
-        valueStartY + valueRowHeight * 2 + valueRowHeight / 4,
+        x1,
+        y1 + valueRowHeight * 2,
         LizzieFrame.uiFont,
         Font.PLAIN,
         Lizzie.resourceBundle.getString("Movelistframe.keyPanel.matchBestMove"),
-        availableWidth * 0.2 * 0.9,
-        valueRowHeight / 2);
+        stringW,
+        stringH);
     drawStringMid(
         g,
-        (int) (valueStartXMiddle + availableWidth * 0.2 * 0.05),
-        valueStartY + valueRowHeight * 3 + valueRowHeight / 4,
+        x1,
+        y1 + valueRowHeight * 3,
         LizzieFrame.uiFont,
         Font.PLAIN,
         Lizzie.resourceBundle.getString("Movelistframe.keyPanel.avgScoreLoss"),
-        availableWidth * 0.2 * 0.9,
-        valueRowHeight / 2);
+        stringW,
+        stringH);
     drawStringMid(
         g,
-        (int) (valueStartXMiddle + availableWidth * 0.2 * 0.05),
-        valueStartY + valueRowHeight * 4 + valueRowHeight / 4,
+        x1,
+        y1 + valueRowHeight * 4,
         LizzieFrame.uiFont,
         Font.PLAIN,
         Lizzie.resourceBundle.getString("Movelistframe.keyPanel.avgWinLoss"),
-        availableWidth * 0.2 * 0.9,
-        valueRowHeight / 2);
+        stringW,
+        stringH);
 
     int blackAnalyzedCount = 0;
     int blackMatchCount = 0;
@@ -7000,6 +7025,7 @@ public class MoveListFrame extends JFrame {
     if (selectedIndex == 4) {
       matchPanelmin.add(detail);
       matchPanelmin.add(settings);
+      matchPanelmin.add(lblMatchConfig4);
     } else {
       if (selectedIndex == 2 || selectedIndex == 3 || selectedIndex == 5 || selectedIndex == 6) {
         matchPanelmin.add(lblDiffConfig1);
@@ -7025,6 +7051,7 @@ public class MoveListFrame extends JFrame {
         matchPanelmin.add(suggestionMoves);
         matchPanelmin.add(percentPlayouts);
         matchPanelmin.add(lblMatchConfig3);
+        matchPanelmin.add(lblMatchConfig4);
       }
     }
     if (selectedIndex == 0) {
@@ -7034,27 +7061,31 @@ public class MoveListFrame extends JFrame {
         lblMatchConfig2.setBounds(110, 40, 250, 20);
         percentPlayouts.setBounds(258, 43, 40, 16);
         lblMatchConfig3.setBounds(299, 40, 15, 20);
+        lblMatchConfig4.setBounds(320, 40, 500, 20);
       } else {
         lblMatchConfig1.setBounds(5, 40, 166, 20);
         suggestionMoves.setBounds(123, 43, 25, 16);
         lblMatchConfig2.setBounds(150, 40, 250, 20);
         percentPlayouts.setBounds(363, 43, 40, 16);
         lblMatchConfig3.setBounds(405, 40, 15, 20);
+        lblMatchConfig4.setBounds(435, 40, 500, 20);
       }
     }
-    if (selectedIndex == 1) {
+    if (selectedIndex == 1 || selectedIndex == 4) {
       if (Lizzie.config.isChinese) {
         lblMatchConfig1.setBounds(0, 0, 0, 0);
         suggestionMoves.setBounds(0, 0, 0, 0);
         lblMatchConfig2.setBounds(0, 0, 0, 0);
         percentPlayouts.setBounds(0, 0, 0, 0);
         lblMatchConfig3.setBounds(0, 0, 0, 0);
+        lblMatchConfig4.setBounds(5, 40, 500, 20);
       } else {
         lblMatchConfig1.setBounds(0, 0, 0, 0);
         suggestionMoves.setBounds(0, 0, 0, 0);
         lblMatchConfig2.setBounds(0, 0, 0, 0);
         percentPlayouts.setBounds(0, 0, 0, 0);
         lblMatchConfig3.setBounds(0, 0, 0, 0);
+        lblMatchConfig4.setBounds(5, 40, 500, 20);
       }
     }
   }
