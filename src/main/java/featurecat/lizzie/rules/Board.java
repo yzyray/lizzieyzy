@@ -632,9 +632,12 @@ public class Board {
    * @param size
    */
   public void reopen(int width, int height) {
-    if (width != hexWidth || height != hexHeight) {
-      int expandX = 2 * width + height;
-      int expandY = 2 * height + 1;
+    int expandX = 2 * width + height;
+    int expandY = 2 * height + 1;
+    if (width != hexWidth
+        || height != hexHeight
+        || boardWidth != expandX
+        || boardHeight != expandY) {
       Lizzie.board.saveHexWH(width, height);
       width = expandX;
       height = expandY;
@@ -654,9 +657,12 @@ public class Board {
   }
 
   public void reopenOnlyBoard(int width, int height) {
-    if (width != hexWidth || height != hexHeight) {
-      int expandX = 2 * width + height;
-      int expandY = 2 * height + 1;
+    int expandX = 2 * width + height;
+    int expandY = 2 * height + 1;
+    if (width != hexWidth
+        || height != hexHeight
+        || boardWidth != expandX
+        || boardHeight != expandY) {
       Lizzie.board.saveHexWH(width, height);
       width = expandX;
       height = expandY;
