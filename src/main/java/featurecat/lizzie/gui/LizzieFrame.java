@@ -8071,7 +8071,10 @@ public class LizzieFrame extends JFrame {
   }
 
   public void addSuggestionAsBranch() {
-    boardRenderer.addSuggestionAsBranch();
+    if (!Lizzie.board.getHistory().getCurrentHistoryNode().isMainTrunk()
+        && !Lizzie.board.getHistory().getCurrentHistoryNode().next().isPresent())
+      Lizzie.frame.playCurrentVariation();
+    else boardRenderer.addSuggestionAsBranch();
     if (Lizzie.leelaz.isPondering()) Lizzie.leelaz.ponder();
   }
 
