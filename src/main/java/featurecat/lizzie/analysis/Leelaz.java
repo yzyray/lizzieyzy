@@ -354,18 +354,35 @@ public class Leelaz {
     endGetCommandList = false;
     // sendCommand("turnon");
     if (!isSSH) {
-      sendCommand("name");
-      sendCommand("version");
-      sendCommand("list_commands");
-      if (!(Lizzie.frame.isPlayingAgainstLeelaz || Lizzie.frame.isAnaPlayingAgainstLeelaz))
-        sendCommand("komi " + komi);
-      boardSize(width, height);
-      if (initialCommand != null && !initialCommand.equals("")) {
-        String[] initialCommands = initialCommand.trim().split(";");
-        for (String command : initialCommands) {
-          sendCommand(command);
-        }
-      }
+      Runnable runnable =
+          new Runnable() {
+            public void run() {
+              int times = 0;
+              while (outputStream == null && times < 10) {
+                try {
+                  times++;
+                  Thread.sleep(100);
+                } catch (InterruptedException e) {
+                  // TODO Auto-generated catch block
+                  e.printStackTrace();
+                }
+              }
+              sendCommand("name");
+              sendCommand("version");
+              sendCommand("list_commands");
+              if (!(Lizzie.frame.isPlayingAgainstLeelaz || Lizzie.frame.isAnaPlayingAgainstLeelaz))
+                sendCommand("komi " + komi);
+              boardSize(width, height);
+              if (initialCommand != null && !initialCommand.equals("")) {
+                String[] initialCommands = initialCommand.trim().split(";");
+                for (String command : initialCommands) {
+                  sendCommand(command);
+                }
+              }
+            }
+          };
+      Thread thread = new Thread(runnable);
+      thread.start();
     }
     if (this == Lizzie.leelaz) Lizzie.board.getHistory().getGameInfo().setKomi(komi);
     if (isSSH) {

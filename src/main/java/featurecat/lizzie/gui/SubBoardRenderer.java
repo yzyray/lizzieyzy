@@ -38,6 +38,7 @@ public class SubBoardRenderer {
 
   public int x, y;
   public int boardWidth, boardHeight;
+  private int boardWSize, boardHSize;
   private JSONObject uiPersist;
   private int scaledMarginWidth, availableWidth, squareWidth, stoneRadius;
   private int scaledMarginHeight, availableHeight, squareHeight;
@@ -1459,9 +1460,14 @@ public class SubBoardRenderer {
    * @param boardLength the boardLength of the board
    */
   public void setBoardLength(int boardWidth, int boardHeight) {
-    if (this.boardWidth != boardWidth || this.boardHeight != boardHeight) {
+    if (this.boardWidth != boardWidth
+        || this.boardHeight != boardHeight
+        || boardWSize != Board.boardWidth
+        || boardHSize != Board.boardHeight) {
       this.boardWidth = boardWidth;
       this.boardHeight = boardHeight;
+      boardWSize = Board.boardWidth;
+      boardHSize = Board.boardHeight;
       setupSizeParameters();
     }
   }

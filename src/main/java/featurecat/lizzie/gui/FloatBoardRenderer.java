@@ -37,6 +37,7 @@ public class FloatBoardRenderer {
   public int boardType = -1;
   private int x, y;
   public int boardWidth = 1, boardHeight = 1;
+  private int boardWSize, boardHSize;
   // private int shadowRadius;
   // public boolean emptyName = true;
   public boolean changedName = false;
@@ -2568,9 +2569,14 @@ public class FloatBoardRenderer {
    * @param boardLength the boardLength of the board
    */
   public void setBoardLength(int boardWidth, int boardHeight) {
-    if (this.boardWidth != boardWidth || this.boardHeight != boardHeight) {
+    if (this.boardWidth != boardWidth
+        || this.boardHeight != boardHeight
+        || boardWSize != Board.boardWidth
+        || boardHSize != Board.boardHeight) {
       this.boardWidth = boardWidth;
       this.boardHeight = boardHeight;
+      boardWSize = Board.boardWidth;
+      boardHSize = Board.boardHeight;
       setupSizeParameters();
     }
   }

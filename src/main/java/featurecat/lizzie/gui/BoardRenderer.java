@@ -50,6 +50,7 @@ public class BoardRenderer {
 
   private int x, y;
   public int boardWidth = 1, boardHeight = 1;
+  private int boardWSize, boardHSize;
   public boolean emptyName = true;
   public boolean changedName = false;
   private boolean cachedShowCoords = false;
@@ -4196,9 +4197,14 @@ public class BoardRenderer {
    */
   public void setBoardLength(int boardWidth, int boardHeight) {
     boolean isBigMargin = isBigMargin();
-    if (this.boardWidth != boardWidth || this.boardHeight != boardHeight) {
+    if (this.boardWidth != boardWidth
+        || this.boardHeight != boardHeight
+        || boardWSize != Board.boardWidth
+        || boardHSize != Board.boardHeight) {
       this.boardWidth = boardWidth;
       this.boardHeight = boardHeight;
+      boardWSize = Board.boardWidth;
+      boardHSize = Board.boardHeight;
       setupSizeParameters(isBigMargin);
     } else if (isBigMargin != cachedIsBigMargin) {
       cachedIsBigMargin = isBigMargin;
