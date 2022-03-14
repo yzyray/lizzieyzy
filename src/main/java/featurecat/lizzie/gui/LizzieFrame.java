@@ -5492,12 +5492,13 @@ public class LizzieFrame extends JFrame {
         scoreStdev = Lizzie.leelaz.scoreStdev;
       } // +"目差:""复杂度:"
 
-      text =
-          text
-              + (Lizzie.config.showKataGoScoreLeadWithKomi
+      text +=
+          (Lizzie.config.showKataGoScoreLeadWithKomi
                   ? Lizzie.resourceBundle.getString("LizzieFrame.scoreLeadWithKomi")
                   : Lizzie.resourceBundle.getString("LizzieFrame.scoreLeadJustScore"))
               + String.format(Locale.ENGLISH, "%.1f", scoreLead);
+      if (Lizzie.config.isThinkingMode() || Lizzie.config.isFourSubMode())
+        text += " (±" + String.format(Locale.ENGLISH, "%.1f", curData.scoreStdev) + ")";
       if (EngineManager.isEngineGame && !Lizzie.leelaz.isSai)
         text =
             text
@@ -5538,9 +5539,8 @@ public class LizzieFrame extends JFrame {
       }
       text += ": " + ((wr > 0 ? "+" : "-") + String.format(Locale.ENGLISH, "%.1f%%", Math.abs(wr)));
       if (isKataStyle && !EngineManager.isEngineGame) {
-        text =
-            text
-                + " "
+        text +=
+            " "
                 + ((score > 0 ? "+" : "-") + String.format(Locale.ENGLISH, "%.1f", Math.abs(score)))
                 + Lizzie.resourceBundle.getString("LizzieFrame.pts"); // + "目";
       }
