@@ -61,6 +61,7 @@ public class ContributeEngine {
   private boolean addCacerts = false;
   private boolean useProcessHandler = false;
   private boolean isSlowQuiting = false;
+  private boolean getVersion = false;
 
   public ContributeEngine() {
     if (Lizzie.config.contributeUseCommand) {
@@ -111,6 +112,7 @@ public class ContributeEngine {
 
   private void startEngine() {
     hasEternalTip = false;
+    getVersion = false;
     if (errorTimes > 1 && !addCacerts && !Lizzie.config.contributeUseCommand) {
       addCacerts = true;
       engineCommand +=
@@ -135,7 +137,7 @@ public class ContributeEngine {
       }
       if (loginStatus) {
         this.inputStream = new BufferedReader(new InputStreamReader(this.javaSSH.getStdout()));
-        //    this.outputStream = new BufferedOutputStream(this.javaSSH.getStdin());
+        this.outputStream = new BufferedOutputStream(this.javaSSH.getStdin());
         this.errorStream = new BufferedReader(new InputStreamReader(this.javaSSH.getSterr()));
         javaSSHClosed = false;
       } else {
@@ -249,6 +251,32 @@ public class ContributeEngine {
 
   private void parseLine(String line) {
     // TODO Auto-generated method stub
+    // 2022-03-14 09:00:41+0800: KataGo v1.10.0
+    if (!getVersion && line.contains("KataGo")) {
+      String params[] = line.split(" ");
+      if (params.length == 4 && params[3].startsWith("v")) {
+        String version[] = params[3].split("\\.");
+        if (version.length == 3) {
+          try {
+            int ver = Integer.parseInt(version[1]);
+            if (ver < 10) {
+              Utils.showMsg(
+                  Lizzie.resourceBundle.getString("Contribute.version.outOfDate")
+                      + " ("
+                      + params[3]
+                      + "), "
+                      + Lizzie.resourceBundle.getString("Contribute.version.outOfDate2"));
+              normalQuit();
+              if (Lizzie.frame.contributeView != null)
+                Lizzie.frame.contributeView.setVisible(false);
+            }
+          } catch (NumberFormatException e) {
+            e.printStackTrace();
+          }
+          getVersion = true;
+        }
+      }
+    }
     if (line.startsWith("{")) {
       // Lizzie.gtpConsole.addLine(line);
       // json game info

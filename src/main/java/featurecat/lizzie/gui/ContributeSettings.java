@@ -175,7 +175,7 @@ public class ContributeSettings extends JDialog {
           public void actionPerformed(ActionEvent e) {
             boolean useCommand = chkUseCommand.isSelected();
             chkRemote.setEnabled(useCommand);
-            btnRemoteSetting.setEnabled(useCommand);
+            btnRemoteSetting.setEnabled(chkRemote.isSelected());
             txtCommand.setEnabled(useCommand);
             txtEnginePath.setEnabled(!useCommand);
             txtConfigPath.setEnabled(!useCommand);
@@ -184,11 +184,18 @@ public class ContributeSettings extends JDialog {
           }
         });
 
-    chkRemote = new JFontCheckBox("远程SSH");
+    chkRemote = new JFontCheckBox(Lizzie.resourceBundle.getString("ContributeSettings.chkRemote"));
     chkRemote.setSelected(Utils.getContributeRemoteEngineData().useJavaSSH);
-    //   panel_1.add(chkRemote);
+    chkRemote.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            btnRemoteSetting.setEnabled(chkRemote.isSelected());
+          }
+        });
+    panel_1.add(chkRemote);
 
-    btnRemoteSetting = new JFontButton("设置");
+    btnRemoteSetting =
+        new JFontButton(Lizzie.resourceBundle.getString("ContributeSettings.btnRemoteSetting"));
     btnRemoteSetting.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
@@ -197,7 +204,7 @@ public class ContributeSettings extends JDialog {
             remoteEngineSettings.setVisible(true);
           }
         });
-    // panel_1.add(btnRemoteSetting);
+    panel_1.add(btnRemoteSetting);
 
     txtCommand = new JFontTextField();
     GridBagConstraints gbc_txtCommand = new GridBagConstraints();
@@ -212,7 +219,7 @@ public class ContributeSettings extends JDialog {
 
     chkUseCommand.setSelected(Lizzie.config.contributeUseCommand);
     chkRemote.setEnabled(Lizzie.config.contributeUseCommand);
-    btnRemoteSetting.setEnabled(Lizzie.config.contributeUseCommand);
+    btnRemoteSetting.setEnabled(Utils.getContributeRemoteEngineData().useJavaSSH);
     txtCommand.setEnabled(Lizzie.config.contributeUseCommand);
     txtEnginePath.setEnabled(!Lizzie.config.contributeUseCommand);
     txtConfigPath.setEnabled(!Lizzie.config.contributeUseCommand);
