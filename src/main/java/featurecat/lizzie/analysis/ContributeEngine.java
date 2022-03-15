@@ -728,6 +728,11 @@ public class ContributeEngine {
           .getGameInfo()
           .setPlayerWhite(currentWatchGame.whitePlayer.replaceAll(" ", ""));
       Lizzie.board.getHistory().getGameInfo().setKomi(currentWatchGame.komi);
+      Lizzie.board.getHistory().getStart().getData().comment =
+          Utils.getRuleString(currentWatchGame.rules)
+              + "\r\n"
+              + Lizzie.resourceBundle.getString("ContributeView.lblKomi")
+              + currentWatchGame.komi;
       setTypeAndKomiToView(currentWatchGame.isRatingGame, currentWatchGame.komi);
       setRulesToView(currentWatchGame.rules);
       if (currentWatchGame.complete) {

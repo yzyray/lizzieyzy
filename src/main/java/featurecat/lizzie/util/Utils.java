@@ -43,6 +43,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.TableModel;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Utils {
@@ -53,6 +54,61 @@ public class Utils {
   public static String iv2 = "s6st73f49adc4c5d";
   private static int msemaphoretryroom = 1;
   private static boolean alertedNoByoyomiSoundFile = false;
+
+  public static String getRuleString(JSONObject jsonRules) {
+    String rules = "";
+    try {
+      if (jsonRules.has("scoring")) {
+        rules += Lizzie.resourceBundle.getString("ContributeView.rules.scoring");
+        if (jsonRules.getString("scoring").contentEquals("AREA"))
+          rules += Lizzie.resourceBundle.getString("ContributeView.rules.scoring.area");
+        else rules += Lizzie.resourceBundle.getString("ContributeView.rules.scoring.territory");
+      }
+      if (jsonRules.has("ko")) {
+        rules += "\r\n" + Lizzie.resourceBundle.getString("ContributeView.rules.ko");
+        if (jsonRules.getString("ko").contentEquals("POSITIONAL"))
+          rules += Lizzie.resourceBundle.getString("ContributeView.rules.ko.positional");
+        else if (jsonRules.getString("ko").contentEquals("SITUATIONAL"))
+          rules += Lizzie.resourceBundle.getString("ContributeView.rules.ko.situational");
+        else if (jsonRules.getString("ko").contentEquals("SIMPLE"))
+          rules += Lizzie.resourceBundle.getString("ContributeView.rules.ko.simple");
+      }
+      if (jsonRules.has("suicide")) {
+        rules += "\r\n" + Lizzie.resourceBundle.getString("ContributeView.rules.suicide");
+        if (jsonRules.getBoolean("suicide"))
+          rules += Lizzie.resourceBundle.getString("ContributeView.rules.yes");
+        else rules += Lizzie.resourceBundle.getString("ContributeView.rules.no");
+      }
+      if (jsonRules.has("tax")) {
+        rules += "\r\n" + Lizzie.resourceBundle.getString("ContributeView.rules.tax");
+        if (jsonRules.getString("tax").contentEquals("NONE"))
+          rules += Lizzie.resourceBundle.getString("ContributeView.rules.tax.none");
+        else if (jsonRules.getString("tax").contentEquals("ALL"))
+          rules += Lizzie.resourceBundle.getString("ContributeView.rules.tax.all");
+        else if (jsonRules.getString("tax").contentEquals("SEKI"))
+          rules += Lizzie.resourceBundle.getString("ContributeView.rules.tax.seki");
+      }
+      if (jsonRules.has("whiteHandicapBonus")) {
+        rules +=
+            "\r\n" + Lizzie.resourceBundle.getString("ContributeView.rules.whiteHandicapBonus");
+        if (jsonRules.getString("whiteHandicapBonus").contentEquals("0"))
+          rules += Lizzie.resourceBundle.getString("ContributeView.rules.whiteHandicapBonus.0");
+        else if (jsonRules.getString("whiteHandicapBonus").contentEquals("N"))
+          rules += Lizzie.resourceBundle.getString("ContributeView.rules.whiteHandicapBonus.N");
+        else if (jsonRules.getString("whiteHandicapBonus").contentEquals("N-1"))
+          rules += Lizzie.resourceBundle.getString("ContributeView.rules.whiteHandicapBonus.N-1");
+      }
+      if (jsonRules.has("hasButton")) {
+        rules += "\r\n" + Lizzie.resourceBundle.getString("ContributeView.rules.button");
+        if (jsonRules.getBoolean("hasButton"))
+          rules += Lizzie.resourceBundle.getString("ContributeView.rules.yes");
+        else rules += Lizzie.resourceBundle.getString("ContributeView.rules.no");
+      }
+    } catch (JSONException e) {
+      e.printStackTrace();
+    }
+    return rules;
+  }
 
   public static Color getNoneAlphaColor(Color alphaColor) {
     return new Color(alphaColor.getRed(), alphaColor.getGreen(), alphaColor.getBlue());

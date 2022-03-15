@@ -977,9 +977,10 @@ public class Leelaz {
         canAddPlayer = true;
       }
       if (params[1].toLowerCase().startsWith("sai")) this.isSai = true;
-      if (params[1].toLowerCase().startsWith("leela")
-          && params.length > 2
-          && params[2].toLowerCase().startsWith("zero")) {
+      if ((params[1].toLowerCase().startsWith("leela")
+              && params.length > 2
+              && params[2].toLowerCase().startsWith("zero"))
+          || params[1].toLowerCase().startsWith("pachi")) {
         this.isLeela = true;
         canAddPlayer = true;
       }
