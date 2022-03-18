@@ -77,11 +77,20 @@ public class BrowserFrame extends JFrame {
     //     instance.
     if (!Lizzie.config.browserInitiazed)
       Lizzie.frame.browserInitializing = new BrowserInitializing(Lizzie.frame);
-    Lizzie.frame.browserInitializing.setVisible(true);
+    new Thread() {
+      public void run() {
+        try {
+          Thread.sleep(500);
+          if (!Lizzie.config.browserInitiazed) Lizzie.frame.browserInitializing.setVisible(true);
+        } catch (InterruptedException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
+      }
+    }.start();
     cefApp_ = builder.build();
+    Lizzie.config.browserInitiazed = true;
     Lizzie.frame.browserInitializing.setVisible(false);
-    Lizzie.config.uiConfig.put("browser-initiazed", true);
-    Lizzie.config.save();
     if (Lizzie.config.logConsoleToFile) {
       PrintStream oldErrorPrintStream = System.err;
       FileOutputStream bosError =

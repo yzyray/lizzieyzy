@@ -1366,8 +1366,6 @@ public class Config {
     winrateAlwaysBlack = uiConfig.optBoolean("win-rate-always-black", false);
     showScoreAsDiff = uiConfig.optBoolean("show-score-as-diff", false);
     useMovesOwnership = uiConfig.optBoolean("use-moves-ownership", true);
-    browserInitiazed = uiConfig.optBoolean("browser-initiazed", false);
-
     // chkPkStartNum = uiConfig.optBoolean("chkpk-start-num", false);
     // pkStartNum = uiConfig.optInt("pk-start-num", 1);
     contributeEnginePath = uiConfig.optString("contribute-engine-path", "");

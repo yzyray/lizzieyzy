@@ -15,6 +15,7 @@ import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.io.PrintStream;
 import java.io.Reader;
+import java.nio.charset.Charset;
 import javax.swing.BorderFactory;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -45,7 +46,7 @@ public class BrowserInitializing extends JDialog {
     this.add(scrollPane, BorderLayout.CENTER);
     PrintStream printStream;
     try {
-      printStream = new PrintStream(new MyOutputStream(msg), true, "UTF-8");
+      printStream = new PrintStream(new MyOutputStream(msg), true, Charset.defaultCharset().name());
       System.setErr(printStream);
     } catch (Exception e) {
       // TODO Auto-generated catch block
@@ -64,7 +65,7 @@ class MyOutputStream extends OutputStream {
 
   public MyOutputStream(JFontTextArea text) throws IOException {
     PipedInputStream in = new PipedInputStream(out);
-    reader = new InputStreamReader(in, "UTF-8");
+    reader = new InputStreamReader(in, Charset.defaultCharset());
     this.msg = text;
   }
 
