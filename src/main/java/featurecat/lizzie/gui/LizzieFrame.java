@@ -378,6 +378,7 @@ public class LizzieFrame extends JFrame {
   String tryString;
   String titleBeforeTrying;
   public BrowserFrame browserFrame;
+  public BrowserInitializing browserInitializing;
   //  JFrame frame;
   //  ArrayList<String> urlList;
   //  int urlIndex;
@@ -8701,6 +8702,10 @@ public class LizzieFrame extends JFrame {
 
   public void bowser(String url, String title, boolean isYike) {
     if (browserFrame == null) {
+      if (!Lizzie.config.browserInitiazed && browserInitializing != null) {
+        browserInitializing.setVisible(true);
+        return;
+      }
       new Thread() {
         public void run() {
           try {

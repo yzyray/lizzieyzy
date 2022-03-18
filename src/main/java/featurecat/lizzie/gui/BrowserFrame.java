@@ -1,9 +1,12 @@
 package featurecat.lizzie.gui;
 
 import featurecat.lizzie.Lizzie;
+import featurecat.lizzie.util.MultiOutputStream;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import me.friwi.jcefmaven.*;
@@ -20,11 +23,11 @@ import org.cef.handler.CefLifeSpanHandlerAdapter;
 
 public class BrowserFrame extends JFrame {
   private static final long serialVersionUID = -5570653778104813836L;
-  private final JTextField address_;
-  private final CefApp cefApp_;
-  private final CefClient client_;
-  private final CefBrowser browser_;
-  private final Component browerUI_;
+  private JTextField address_;
+  private CefApp cefApp_;
+  private CefClient client_;
+  private CefBrowser browser_;
+  private Component browerUI_;
   private boolean browserFocus_ = true;
   private JToolBar toolbar;
   private boolean isYike;
@@ -72,7 +75,21 @@ public class BrowserFrame extends JFrame {
     //     build the CefApp on first run and fetch the instance on all consecutive
     //     runs. This method is thread-safe and will always return a valid app
     //     instance.
+    if (!Lizzie.config.browserInitiazed)
+      Lizzie.frame.browserInitializing = new BrowserInitializing(Lizzie.frame);
+    Lizzie.frame.browserInitializing.setVisible(true);
     cefApp_ = builder.build();
+    Lizzie.frame.browserInitializing.setVisible(false);
+    Lizzie.config.uiConfig.put("browser-initiazed", true);
+    Lizzie.config.save();
+    if (Lizzie.config.logConsoleToFile) {
+      PrintStream oldErrorPrintStream = System.err;
+      FileOutputStream bosError =
+          new FileOutputStream("LastErrorLogs_" + Lizzie.lizzieVersion + ".txt", true);
+      MultiOutputStream multiError =
+          new MultiOutputStream(new PrintStream(bosError), oldErrorPrintStream);
+      System.setErr(new PrintStream(multiError));
+    }
     // (2) JCEF can handle one to many browser instances simultaneous. These
     //     browser instances are logically grouped together by an instance of
     //     the class CefClient. In your application you can create one to many

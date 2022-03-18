@@ -132,11 +132,15 @@
 			<version>95.7.14.4</version>
 		</dependency>
 
-		<dependency>
-			<groupId>me.friwi</groupId>
-			<artifactId>jcef-natives-windows-amd64</artifactId>
-			<version>jcef-a51ff7f+cef-95.7.14+g9f72f35+chromium-95.0.4638.69</version>
-		</dependency>
+		<!-- <dependency> <groupId>me.friwi</groupId> <artifactId>jcef-natives-windows-amd64</artifactId> 
+			<version>jcef-a51ff7f+cef-95.7.14+g9f72f35+chromium-95.0.4638.69</version> 
+			</dependency> <dependency> <groupId>me.friwi</groupId> <artifactId>jcef-natives-linux-amd64</artifactId> 
+			<version>jcef-a51ff7f+cef-95.7.14+g9f72f35+chromium-95.0.4638.69</version> 
+			</dependency> <dependency> <groupId>me.friwi</groupId> <artifactId>jcef-natives-macosx-amd64</artifactId> 
+			<version>jcef-a51ff7f+cef-95.7.14+g9f72f35+chromium-95.0.4638.69</version> 
+			</dependency> <dependency> <groupId>me.friwi</groupId> <artifactId>jcef-natives-windows-i386</artifactId> 
+			<version>jcef-a51ff7f+cef-95.7.14+g9f72f35+chromium-95.0.4638.69</version> 
+			</dependency> -->
 
 		<dependency>
 			<groupId>ch.ethz.ganymed</groupId>
