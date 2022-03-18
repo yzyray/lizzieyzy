@@ -324,15 +324,15 @@ public class BrowserFrame extends JFrame {
 
   public void openURL(String url, String title, boolean yike) {
     // TODO Auto-generated method stub
+    browser_.loadURL(url);
     SwingUtilities.invokeLater(
         new Runnable() {
           public void run() {
             isYike = yike;
-            browser_.loadURL(url);
             setTitle(title);
+            setVisible(true);
             toolbar.setVisible(isYike);
             setFrameSize();
-            setVisible(true);
           }
         });
   }
