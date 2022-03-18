@@ -23,11 +23,11 @@ import org.cef.handler.CefLifeSpanHandlerAdapter;
 
 public class BrowserFrame extends JFrame {
   private static final long serialVersionUID = -5570653778104813836L;
-  private JTextField address_;
-  private CefApp cefApp_;
-  private CefClient client_;
-  private CefBrowser browser_;
-  private Component browerUI_;
+  private final JTextField address_;
+  private final CefApp cefApp_;
+  private final CefClient client_;
+  private final CefBrowser browser_;
+  private final Component browerUI_;
   private boolean browserFocus_ = true;
   private JToolBar toolbar;
   private boolean isYike;
@@ -82,6 +82,7 @@ public class BrowserFrame extends JFrame {
         try {
           Thread.sleep(500);
           if (!Lizzie.config.browserInitiazed) Lizzie.frame.browserInitializing.setVisible(true);
+          else Lizzie.frame.browserInitializing.dispose();
         } catch (InterruptedException e) {
           // TODO Auto-generated catch block
           e.printStackTrace();
@@ -90,7 +91,10 @@ public class BrowserFrame extends JFrame {
     }.start();
     cefApp_ = builder.build();
     Lizzie.config.browserInitiazed = true;
-    Lizzie.frame.browserInitializing.setVisible(false);
+    if (Lizzie.frame.browserInitializing != null && Lizzie.frame.browserInitializing.isVisible()) {
+      Lizzie.frame.browserInitializing.setVisible(false);
+      Lizzie.frame.browserInitializing.dispose();
+    }
     if (Lizzie.config.logConsoleToFile) {
       PrintStream oldErrorPrintStream = System.err;
       FileOutputStream bosError =
@@ -283,6 +287,7 @@ public class BrowserFrame extends JFrame {
 
     getContentPane()
         .add(toolbar, BorderLayout.PAGE_START); // .add(toolbarPanel, BorderLayout.NORTH);
+    toolbar.setVisible(isYike);
     getContentPane().add(view, BorderLayout.CENTER);
     getRootPane().setBorder(BorderFactory.createEmptyBorder());
     pack();
@@ -319,11 +324,16 @@ public class BrowserFrame extends JFrame {
 
   public void openURL(String url, String title, boolean yike) {
     // TODO Auto-generated method stub
-    browser_.loadURL(url);
-    isYike = yike;
-    setTitle(title);
-    toolbar.setVisible(this.isYike);
-    setFrameSize();
-    setVisible(true);
+    SwingUtilities.invokeLater(
+        new Runnable() {
+          public void run() {
+            isYike = yike;
+            browser_.loadURL(url);
+            setTitle(title);
+            toolbar.setVisible(isYike);
+            setFrameSize();
+            setVisible(true);
+          }
+        });
   }
 }
