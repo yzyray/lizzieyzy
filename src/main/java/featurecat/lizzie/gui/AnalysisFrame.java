@@ -110,7 +110,7 @@ public class AnalysisFrame extends JFrame {
         new JPanel(true) {
           @Override
           protected void paintComponent(Graphics g) {
-            // super.paintComponent(g);
+            super.paintComponent(g);
             paintBottomPanel(g, bottomPanel.getWidth(), bottomPanel.getHeight());
           }
         };

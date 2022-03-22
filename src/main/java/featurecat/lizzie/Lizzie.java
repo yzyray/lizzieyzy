@@ -55,6 +55,7 @@ public class Lizzie {
 
   /** Launches the game window, and runs the game. */
   public static void main(String[] args) throws IOException {
+    System.setProperty("sun.java2d.opengl", "True");
     mainArgs = args;
     config = new Config();
     try {
@@ -366,7 +367,7 @@ public class Lizzie {
 
   public static void initializeAfterVersionCheck(boolean isEngineGame, Leelaz engine) {
     engine.canRestoreDymPda = true;
-    if (engineManager.isEngineGame()) {
+    if (EngineManager.isEngineGame()) {
       if (engineManager.engineList.get(EngineManager.engineGameInfo.firstEngineIndex).isKataGoPda
           || engineManager.engineList.get(EngineManager.engineGameInfo.secondEngineIndex)
               .isKataGoPda) LizzieFrame.menu.showPda(true);

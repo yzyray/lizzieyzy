@@ -39,7 +39,7 @@ public class BrowserInitializing extends JDialog {
     msg.setBorder(BorderFactory.createEmptyBorder());
     msg.setEditable(false);
     msg.setBackground(Color.BLACK);
-    msg.setForeground(Color.RED);
+    msg.setForeground(Color.GREEN);
     JScrollPane scrollPane = new JScrollPane();
     scrollPane.setBorder(new EmptyBorder(2, 2, 2, 2));
     scrollPane.setViewportView(msg);

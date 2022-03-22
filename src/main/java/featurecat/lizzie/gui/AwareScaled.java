@@ -12,10 +12,10 @@ public class AwareScaled extends JDialog {
   public AwareScaled() {
     this.setUndecorated(true);
     JPanel mainPanel =
-        new JPanel(true) {
+        new JPanel() {
           @Override
-          protected void paintComponent(Graphics g) {
-            //  super.paintComponent(g);
+          public void paint(Graphics g) {
+            super.paintComponent(g);
             final Graphics2D g0 = (Graphics2D) g;
             final AffineTransform t = g0.getTransform();
             final double scaling = t.getScaleX(); // Assuming square pixels :P

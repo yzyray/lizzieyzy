@@ -142,7 +142,7 @@ public class LizzieFrame extends JFrame {
     Lizzie.resourceBundle.getString("LizzieFrame.commands.keyE"),
   };
   private static final String DEFAULT_TITLE = Lizzie.resourceBundle.getString("LizzieFrame.title");
-  private JPanel basePanel;
+  private JLayeredPane basePanel;
   public static BoardRenderer boardRenderer;
   public static BoardRenderer boardRenderer2;
   public static SubBoardRenderer subBoardRenderer;
@@ -541,10 +541,10 @@ public class LizzieFrame extends JFrame {
           }
         };
     mainPanel =
-        new JPanel(true) {
+        new JPanel() {
           @Override
-          protected void paintComponent(Graphics g) {
-            //  super.paintComponent(g);
+          public void paint(Graphics g) {
+            super.paintComponent(g);
             //        	  final Graphics2D g1 = (Graphics2D) g;
             //        	  final AffineTransform t = g1.getTransform();
             //        	  t.setToScale(1, 1);
@@ -598,9 +598,9 @@ public class LizzieFrame extends JFrame {
     tempGamePanelAll.add(tempGameScrollPanel);
 
     varTreePane =
-        new JPanel(true) {
+        new JPanel() {
           @Override
-          protected void paintComponent(Graphics g) {
+          public void paint(Graphics g) {
             if (cachedVarImage2 != null && Lizzie.config.showVariationGraph) {
               if (Config.isScaled) {
                 Graphics2D g1 = (Graphics2D) g;
@@ -1546,22 +1546,22 @@ public class LizzieFrame extends JFrame {
     mainPanel.addMouseMotionListener(input);
     toolbar.addMouseWheelListener(input);
     addInput(false);
-    basePanel = new JPanel(false);
+    basePanel = new JLayeredPane();
     if (Lizzie.config.usePureBackground) {
       basePanel.setBackground(Lizzie.config.pureBackgroundColor);
     } else basePanel.setBackground(Color.GRAY);
     getContentPane().add(basePanel);
     basePanel.setLayout(null);
-    basePanel.add(commentBlunderControlPane);
-    basePanel.add(tempGamePanelAll);
-    basePanel.add(varTreeScrollPane);
-    basePanel.add(listScrollpane);
-    basePanel.add(blunderContentPane);
-    basePanel.add(commentEditPane);
-    basePanel.add(commentScrollPane);
-    basePanel.add(topPanel);
-    basePanel.add(toolbar);
-    basePanel.add(mainPanel);
+    basePanel.add(commentBlunderControlPane, new Integer(10));
+    basePanel.add(tempGamePanelAll, new Integer(9));
+    basePanel.add(varTreeScrollPane, new Integer(8));
+    basePanel.add(listScrollpane, new Integer(7));
+    basePanel.add(blunderContentPane, new Integer(6));
+    basePanel.add(commentEditPane, new Integer(5));
+    basePanel.add(commentScrollPane, new Integer(4));
+    basePanel.add(topPanel, new Integer(3));
+    basePanel.add(toolbar, new Integer(2));
+    basePanel.add(mainPanel, new Integer(1));
     mainPanel.setVisible(false);
     commentScrollPane.setVisible(false);
     blunderContentPane.setVisible(false);

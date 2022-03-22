@@ -103,9 +103,9 @@ public class IndependentMainBoard extends JFrame {
     boardRenderer = new BoardRenderer(true);
     allPanel = new JLayeredPane();
     mainPanel =
-        new JPanel(true) {
+        new JPanel() {
           @Override
-          protected void paintComponent(Graphics g) {
+          public void paint(Graphics g) {
             super.paintComponent(g);
             if (Config.isScaled) {
               Graphics2D g1 = (Graphics2D) g;

@@ -372,9 +372,10 @@ public class MoveListFrame extends JFrame {
     keyPanel_tooltip2.setToolTipText(
         Lizzie.resourceBundle.getString("Movelistframe.keyPanel.match.tip"));
     keyPanel =
-        new JPanel(true) {
+        new JPanel() {
           @Override
-          protected void paintComponent(Graphics g) {
+          public void paint(Graphics g) {
+            super.paintComponent(g);
             Graphics2D g0 = (Graphics2D) g;
             g0.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
             g0.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -389,9 +390,10 @@ public class MoveListFrame extends JFrame {
     lossPanel = new JTabbedPane();
 
     winLossPanel =
-        new JPanel(true) {
+        new JPanel() {
           @Override
-          protected void paintComponent(Graphics g) {
+          public void paint(Graphics g) {
+            super.paintComponent(g);
             Graphics2D g0 = (Graphics2D) g;
             g0.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
             g0.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -400,9 +402,10 @@ public class MoveListFrame extends JFrame {
           }
         };
     scoreLossPanel =
-        new JPanel(true) {
+        new JPanel() {
           @Override
-          protected void paintComponent(Graphics g) {
+          public void paint(Graphics g) {
+            super.paintComponent(g);
             Graphics2D g0 = (Graphics2D) g;
             g0.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
             g0.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -593,9 +596,10 @@ public class MoveListFrame extends JFrame {
     add(topPanel, BorderLayout.CENTER);
 
     matchPanel =
-        new JPanel(true) {
+        new JPanel() {
           @Override
-          protected void paintComponent(Graphics g) {
+          public void paint(Graphics g) {
+            super.paintComponent(g);
             Graphics2D g0 = (Graphics2D) g;
             g0.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
             g0.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
