@@ -639,7 +639,7 @@ public class Config {
   public boolean contributeHideConsole = false;
   public boolean contributeHideRules = false;
   public boolean showContribute = true;
-  public boolean contributeUseSlowShutdown = true;
+  // public boolean contributeUseSlowShutdown = true;
 
   public double initialMaxScoreLead = 15;
   public boolean enableClickReview = false;
@@ -1388,7 +1388,7 @@ public class Config {
     contributeHideConsole = uiConfig.optBoolean("contribute-hide-console", false);
     contributeHideRules = uiConfig.optBoolean("contribute-hide-rules", false);
     showContribute = uiConfig.optBoolean("show-Contribute", true);
-    contributeUseSlowShutdown = uiConfig.optBoolean("contribute-use-slow-shutdown", true);
+    // contributeUseSlowShutdown = uiConfig.optBoolean("contribute-use-slow-shutdown", true);
 
     enableClickReview = uiConfig.optBoolean("enable-click-review", false);
     contributeDisableRatingMatches =

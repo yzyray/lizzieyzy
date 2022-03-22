@@ -64,6 +64,7 @@ public class ContributeView extends JFrame {
   private int checkCount = 0;
   private int scrollLength = 0;
   private ScheduledExecutorService executor;
+  private JButton btnPauseResume;
   private JButton btnSlowShutdown;
   private JButton btnForceShutdown;
   private JButton btnCloseView;
@@ -98,6 +99,17 @@ public class ContributeView extends JFrame {
 
     lblGameInfos = new JFontLabel();
     labelPanel.add(lblGameInfos);
+
+    JButton btnSaveGameRecords =
+        new JFontButton(
+            Lizzie.resourceBundle.getString("ContributeView.btnSaveGameRecords")); // ("保存所有棋谱");
+    labelPanel.add(btnSaveGameRecords);
+    btnSaveGameRecords.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            if (Lizzie.frame.contributeEngine != null) Lizzie.frame.contributeEngine.saveAllGames();
+          }
+        });
     updateLblGameInfos();
 
     JPanel gameControlPanel = new JPanel();
@@ -478,19 +490,8 @@ public class ContributeView extends JFrame {
     JPanel buttonPanel = new JPanel();
     ruleAndButtonPanel.add(buttonPanel, BorderLayout.SOUTH);
 
-    JButton btnSaveGameRecords =
-        new JFontButton(
-            Lizzie.resourceBundle.getString("ContributeView.btnSaveGameRecords")); // ("保存所有棋谱");
-    btnSaveGameRecords.addActionListener(
-        new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            if (Lizzie.frame.contributeEngine != null) Lizzie.frame.contributeEngine.saveAllGames();
-          }
-        });
-    buttonPanel.add(btnSaveGameRecords);
-
     btnSlowShutdown =
-        new JButton(Lizzie.resourceBundle.getString("ContributeView.btnSlowShutdown"));
+        new JFontButton(Lizzie.resourceBundle.getString("ContributeView.btnSlowShutdown"));
     btnSlowShutdown.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
@@ -504,7 +505,7 @@ public class ContributeView extends JFrame {
     btnForceShutdown =
         new JFontButton(
             Lizzie.resourceBundle.getString(
-                "ContributeView.btnShutdown")); // "结束跑谱贡献");btnForceShutdown
+                "ContributeView.btnForceShutdown")); // "结束跑谱贡献");btnForceShutdown
     btnForceShutdown.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
@@ -512,9 +513,21 @@ public class ContributeView extends JFrame {
             setVisible(false);
           }
         });
-    if (Lizzie.frame.contributeEngine != null)
-      setSlowShutdownButton(Lizzie.frame.contributeEngine.canSlowClose());
+    btnForceShutdown.setToolTipText(
+        Lizzie.resourceBundle.getString("ContributeView.btnForceShutdownTip"));
+    //    if (Lizzie.frame.contributeEngine != null)
+    //      setSlowShutdownButton(Lizzie.frame.contributeEngine.canSlowClose());
 
+    btnPauseResume = new JFontButton(Lizzie.resourceBundle.getString("ContributeView.btnPause"));
+    btnPauseResume.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            if (Lizzie.frame.contributeEngine != null)
+              Lizzie.frame.contributeEngine.pauseAndResume();
+          }
+        });
+
+    buttonPanel.add(btnPauseResume);
     buttonPanel.add(btnSlowShutdown);
     buttonPanel.add(btnForceShutdown);
 
@@ -681,18 +694,19 @@ public class ContributeView extends JFrame {
     setVisible(true);
   }
 
-  public void setSlowShutdownButton(boolean set) {
-    // TODO Auto-generated method stub
-    if (set) {
-      btnSlowShutdown.setVisible(true);
-      btnForceShutdown.setText(Lizzie.resourceBundle.getString("ContributeView.btnForceShutdown"));
-      btnForceShutdown.setToolTipText(
-          Lizzie.resourceBundle.getString("ContributeView.btnForceShutdownTip"));
-    } else {
-      btnSlowShutdown.setVisible(false);
-      btnForceShutdown.setText(Lizzie.resourceBundle.getString("ContributeView.btnShutdown"));
-    }
-  }
+  //  public void setSlowShutdownButton(boolean set) {
+  //    // TODO Auto-generated method stub
+  //    if (set) {
+  //      btnSlowShutdown.setVisible(true);
+  //
+  // btnForceShutdown.setText(Lizzie.resourceBundle.getString("ContributeView.btnForceShutdown"));
+  //      btnForceShutdown.setToolTipText(
+  //          Lizzie.resourceBundle.getString("ContributeView.btnForceShutdownTip"));
+  //    } else {
+  //      btnSlowShutdown.setVisible(false);
+  //      btnForceShutdown.setText(Lizzie.resourceBundle.getString("ContributeView.btnShutdown"));
+  //    }
+  //  }
 
   public void setType(String text) {
     lblGameType.setText(Lizzie.resourceBundle.getString("ContributeView.lblGameType") + text);
@@ -766,6 +780,13 @@ public class ContributeView extends JFrame {
     //            + finishedGames
     //            + "局"
     //            + "</html>");
+  }
+
+  public void setBtnPauseResume(boolean paused) {
+    btnPauseResume.setText(
+        paused
+            ? Lizzie.resourceBundle.getString("ContributeView.btnResume")
+            : Lizzie.resourceBundle.getString("ContributeView.btnPause"));
   }
 
   private void checkConsole() {
