@@ -55,7 +55,6 @@ public class Lizzie {
 
   /** Launches the game window, and runs the game. */
   public static void main(String[] args) throws IOException {
-    System.setProperty("sun.java2d.opengl", "True");
     mainArgs = args;
     config = new Config();
     try {
