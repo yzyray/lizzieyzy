@@ -91,6 +91,7 @@ public class Lizzie {
     // -Dsun.java2d.win.uiScaleX=120dpi -Dsun.java2d.win.uiScaleY=120dpi
     //  System.out.println(System.getProperty("sun.java2d.win.uiScaleX"));
     // System.setProperty("sun.java2d.uiScale.enabled", "false");
+    // -Dsun.java2d.uiScale=1.0
     javaVersionString = System.getProperty("java.version");
     try {
       javaVersion =
@@ -315,12 +316,10 @@ public class Lizzie {
           new FontUIResource(
               new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize)));
       if (config.useJavaLooks) {
-        String lookAndFeel = UIManager.getCrossPlatformLookAndFeelClassName();
-        UIManager.setLookAndFeel(lookAndFeel);
+        UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
       } else {
         // String lookAndFeel = "com.sun.java.swing.plaf.windows.WindowsClassicLookAndFeel";
-        String lookAndFeel = UIManager.getSystemLookAndFeelClassName();
-        UIManager.setLookAndFeel(lookAndFeel);
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
       }
     } catch (IllegalAccessException e) {
       e.printStackTrace();

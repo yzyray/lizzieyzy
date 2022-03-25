@@ -57,7 +57,7 @@ public class MoveData {
     //        (Lizzie.config.leelaversion >= 17 && Lizzie.config.showlcbwinrate &&
     // !Lizzie.leelaz.noLcb);
     // Todo: Proper tag parsing in case gtp protocol is extended(?)/changed
-    for (int i = 0; i < data.length; i++) {
+    for (int i = 0; i < data.length - 1; i++) {
       String key = data[i];
       if (key.equals("pv")) {
         // Read variation to the end of line
@@ -130,7 +130,7 @@ public class MoveData {
     //        (Lizzie.config.leelaversion >= 17 && Lizzie.config.showlcbwinrate &&
     // !Lizzie.leelaz.noLcb);
     // Todo: Proper tag parsing in case gtp protocol is extended(?)/changed
-    for (int i = 0; i < data.length; i++) {
+    for (int i = 0; i < data.length - 1; i++) {
       String key = data[i];
       if (key.equals("pv")) {
         // Read variation to the end of line
@@ -193,7 +193,7 @@ public class MoveData {
     //        (Lizzie.config.leelaversion >= 17 && Lizzie.config.showlcbwinrate &&
     // !Lizzie.leelaz.noLcb);
     // Todo: Proper tag parsing in case gtp protocol is extended(?)/changed
-    for (int i = 0; i < data.length; i++) {
+    for (int i = 0; i < data.length - 1; i++) {
       String key = data[i];
       if (key.equals("pv")) {
         int otherPos = data.length;
@@ -292,7 +292,7 @@ public class MoveData {
     String[] data = line.trim().split(" ");
 
     // Todo: Proper tag parsing in case gtp protocol is extended(?)/changed
-    for (int i = 0; i < data.length; i++) {
+    for (int i = 0; i < data.length - 1; i++) {
       String key = data[i];
       //      if (key.equals("pv")) {
       //        // Read variation to the end of line

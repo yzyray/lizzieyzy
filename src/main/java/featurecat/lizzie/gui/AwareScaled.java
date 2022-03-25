@@ -14,8 +14,7 @@ public class AwareScaled extends JDialog {
     JPanel mainPanel =
         new JPanel() {
           @Override
-          public void paint(Graphics g) {
-            super.paintComponent(g);
+          public void paintComponent(Graphics g) {
             final Graphics2D g0 = (Graphics2D) g;
             final AffineTransform t = g0.getTransform();
             final double scaling = t.getScaleX(); // Assuming square pixels :P
@@ -24,6 +23,7 @@ public class AwareScaled extends JDialog {
               Lizzie.javaScaleFactor = (float) scaling;
             }
             this.setVisible(false);
+            dispose();
           }
         };
     getContentPane().add(mainPanel);

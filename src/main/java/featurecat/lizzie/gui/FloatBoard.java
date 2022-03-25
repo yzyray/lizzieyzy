@@ -108,8 +108,7 @@ public class FloatBoard extends JDialog {
     mainPanel =
         new JPanel() {
           @Override
-          public void paint(Graphics g) {
-            super.paintComponent(g);
+          public void paintComponent(Graphics g) {
             ((Graphics2D) g).setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
             if (Config.isScaled) {
               Graphics2D g1 = (Graphics2D) g;

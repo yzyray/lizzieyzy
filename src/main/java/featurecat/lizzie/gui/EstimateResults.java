@@ -289,6 +289,7 @@ public class EstimateResults extends JDialog {
     //  }
   }
 
+  @Override
   public void paint(Graphics g) // 画图对象
       {
     int width = getWidth();

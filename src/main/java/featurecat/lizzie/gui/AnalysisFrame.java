@@ -107,10 +107,9 @@ public class AnalysisFrame extends JFrame {
     topPanel.add(scrollpane);
 
     bottomPanel =
-        new JPanel(true) {
+        new JPanel() {
           @Override
-          protected void paintComponent(Graphics g) {
-            super.paintComponent(g);
+          public void paintComponent(Graphics g) {
             paintBottomPanel(g, bottomPanel.getWidth(), bottomPanel.getHeight());
           }
         };
@@ -611,8 +610,8 @@ public class AnalysisFrame extends JFrame {
       }
     }
 
+    @Override
     public void paintComponent(Graphics g) {
-
       if (isPlayoutPercents) {
         Graphics2D g2 = (Graphics2D) g;
         g2.setColor(Color.LIGHT_GRAY);

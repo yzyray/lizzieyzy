@@ -542,8 +542,7 @@ public class Utils {
     //  Message msg = new Message();
     //    msg.setMessage(message);
     HtmlMessage htmlMessage =
-        new HtmlMessage(Lizzie.resourceBundle.getString("Message.title"), message, null);
-    if (Lizzie.frame != null) htmlMessage.setLocationRelativeTo(Lizzie.frame);
+        new HtmlMessage(Lizzie.resourceBundle.getString("Message.title"), message, Lizzie.frame);
     htmlMessage.setModal(true);
     htmlMessage.setVisible(true);
   }
@@ -560,8 +559,7 @@ public class Utils {
 
   public static void showMsgModal(String message) {
     HtmlMessage htmlMessage =
-        new HtmlMessage(Lizzie.resourceBundle.getString("Message.title"), message, null);
-    if (Lizzie.frame != null) htmlMessage.setLocationRelativeTo(Lizzie.frame);
+        new HtmlMessage(Lizzie.resourceBundle.getString("Message.title"), message, Lizzie.frame);
     htmlMessage.setModal(true);
     htmlMessage.setVisible(true);
   }
@@ -864,15 +862,6 @@ public class Utils {
     // TODO Auto-generated method stub
     try {
       copy("/assets/foxReq/foxRequestQ.jar", "foxReq");
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-  }
-
-  public static void copySubProcessHandler() {
-    try {
-      copy("/assets/subProcessHandler/SubProcessHandler.exe", "");
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();

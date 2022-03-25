@@ -13,7 +13,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.event.*;
@@ -9987,14 +9986,13 @@ public class Menu extends JMenuBar {
   }
 
   @Override
-  protected void paintComponent(Graphics g) {
+  public void paintComponent(Graphics g) {
     super.paintComponent(g);
     if (!Lizzie.config.useJavaLooks
         && OS.isWindows()
         && (Boolean) Toolkit.getDefaultToolkit().getDesktopProperty("win.xpstyle.themeActive")) {
-      Graphics2D g2d = (Graphics2D) g;
-      g2d.setColor(new Color(232, 232, 232));
-      g2d.fillRect(0, 0, getWidth(), getHeight());
+      g.setColor(new Color(232, 232, 232));
+      g.fillRect(0, 0, getWidth(), getHeight());
     }
   }
 
@@ -10024,7 +10022,7 @@ public class Menu extends JMenuBar {
   }
 
   private boolean isEngineGame() {
-    return Lizzie.engineManager != null && Lizzie.engineManager.isEngineGame();
+    return Lizzie.engineManager != null && EngineManager.isEngineGame();
   }
 
   public void setChkShowBlack(boolean show) {

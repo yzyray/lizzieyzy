@@ -2564,8 +2564,7 @@ public class ConfigDialog2 extends JDialog {
     pnlBoardPreview =
         new JPanel() {
           @Override
-          protected void paintComponent(Graphics g) {
-            super.paintComponent(g);
+          public void paintComponent(Graphics g) {
             if (tabbedPane.getSelectedIndex() != 1) return;
             if (g instanceof Graphics2D) {
               int width = getWidth();

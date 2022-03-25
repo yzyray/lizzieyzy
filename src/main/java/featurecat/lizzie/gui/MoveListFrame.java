@@ -374,8 +374,7 @@ public class MoveListFrame extends JFrame {
     keyPanel =
         new JPanel() {
           @Override
-          public void paint(Graphics g) {
-            super.paintComponent(g);
+          public void paintComponent(Graphics g) {
             Graphics2D g0 = (Graphics2D) g;
             g0.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
             g0.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -392,8 +391,7 @@ public class MoveListFrame extends JFrame {
     winLossPanel =
         new JPanel() {
           @Override
-          public void paint(Graphics g) {
-            super.paintComponent(g);
+          public void paintComponent(Graphics g) {
             Graphics2D g0 = (Graphics2D) g;
             g0.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
             g0.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -404,8 +402,7 @@ public class MoveListFrame extends JFrame {
     scoreLossPanel =
         new JPanel() {
           @Override
-          public void paint(Graphics g) {
-            super.paintComponent(g);
+          public void paintComponent(Graphics g) {
             Graphics2D g0 = (Graphics2D) g;
             g0.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
             g0.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -598,8 +595,7 @@ public class MoveListFrame extends JFrame {
     matchPanel =
         new JPanel() {
           @Override
-          public void paint(Graphics g) {
-            super.paintComponent(g);
+          public void paintComponent(Graphics g) {
             Graphics2D g0 = (Graphics2D) g;
             g0.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
             g0.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
@@ -612,7 +608,7 @@ public class MoveListFrame extends JFrame {
     matchPanelmin =
         new PanelWithToolTips() {
           @Override
-          protected void paintComponent(Graphics g) {
+          public void paintComponent(Graphics g) {
             Graphics2D g0 = (Graphics2D) g;
             g0.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g0.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);

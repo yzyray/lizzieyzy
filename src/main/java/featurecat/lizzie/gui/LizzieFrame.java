@@ -493,7 +493,7 @@ public class LizzieFrame extends JFrame {
 
   /** Creates a window */
   public LizzieFrame() {
-    super(DEFAULT_TITLE);
+    setTitle(DEFAULT_TITLE);
     boardRenderer = new BoardRenderer(false);
     subBoardRenderer = new SubBoardRenderer(false);
     variationTree = new VariationTree();
@@ -543,8 +543,7 @@ public class LizzieFrame extends JFrame {
     mainPanel =
         new JPanel() {
           @Override
-          public void paint(Graphics g) {
-            super.paintComponent(g);
+          public void paintComponent(Graphics g) {
             //        	  final Graphics2D g1 = (Graphics2D) g;
             //        	  final AffineTransform t = g1.getTransform();
             //        	  t.setToScale(1, 1);
@@ -600,7 +599,7 @@ public class LizzieFrame extends JFrame {
     varTreePane =
         new JPanel() {
           @Override
-          public void paint(Graphics g) {
+          public void paintComponent(Graphics g) {
             if (cachedVarImage2 != null && Lizzie.config.showVariationGraph) {
               if (Config.isScaled) {
                 Graphics2D g1 = (Graphics2D) g;
@@ -4575,7 +4574,6 @@ public class LizzieFrame extends JFrame {
                 subBoardY = tempy;
                 subBoardLength = Math.min(tempw, temph);
               }
-              // super.paintComponents(g0);
             }
 
             // initialize
@@ -4983,7 +4981,7 @@ public class LizzieFrame extends JFrame {
   public void refresh() {
     // 分开各部分刷新,1代表来自info move的刷新
     redrawWinratePaneOnly = false;
-    basePanel.repaint();
+    repaint();
     if (independentSubBoard != null && independentSubBoard.isVisible())
       independentSubBoard.refresh();
     if (independentMainBoard != null && independentMainBoard.isVisible())
@@ -4998,7 +4996,7 @@ public class LizzieFrame extends JFrame {
     switch (mode) {
       case 1:
         refreshFromInfo = true;
-        basePanel.repaint();
+        repaint();
       default:
     }
     if (independentSubBoard != null && independentSubBoard.isVisible())
@@ -9542,15 +9540,18 @@ public class LizzieFrame extends JFrame {
             int width = getWidth() - getInsets().left - getInsets().right;
             if (Lizzie.config.showTopToolBar) {
               if (Lizzie.config.autoWrapToolBar) {
-                topPanel.setBounds(0, 0, width, Config.menuHeight);
+                topPanel.setBounds(
+                    0, 0, width, Config.menuHeight + (Lizzie.config.useJavaLooks ? 1 : 0));
                 int curHeight = topPanel.getPreferredSize().height + 8;
                 topPanelHeight = Config.menuHeight;
                 if (curHeight / Config.menuHeight > 1) {
                   topPanelHeight = (curHeight / Config.menuHeight) * Config.menuHeight;
-                  topPanel.setBounds(0, 0, width, topPanelHeight);
+                  topPanel.setBounds(
+                      0, 0, width, topPanelHeight + (Lizzie.config.useJavaLooks ? 1 : 0));
                 }
               } else {
-                topPanel.setBounds(0, 0, 9999, Config.menuHeight);
+                topPanel.setBounds(
+                    0, 0, 9999, Config.menuHeight + (Lizzie.config.useJavaLooks ? 1 : 0));
                 topPanelHeight = Config.menuHeight;
               }
             } else {
@@ -10045,6 +10046,7 @@ public class LizzieFrame extends JFrame {
       }
     }
 
+    @Override
     public void paintComponent(Graphics g) {
       if (isPlayoutPercents) {
         Graphics2D g2 = (Graphics2D) g;
@@ -12091,7 +12093,11 @@ public class LizzieFrame extends JFrame {
           try {
             processClockHelper =
                 Runtime.getRuntime()
-                    .exec(java64Path + " -jar clockHelper" + File.separator + javaReadBoardName);
+                    .exec(
+                        java64Path
+                            + " -Dsun.java2d.opengl=true -jar clockHelper"
+                            + File.separator
+                            + javaReadBoardName);
             success = true;
           } catch (Exception e) {
             success = false;
@@ -12105,7 +12111,11 @@ public class LizzieFrame extends JFrame {
             try {
               processClockHelper =
                   Runtime.getRuntime()
-                      .exec(java32 + " -jar clockHelper" + File.separator + javaReadBoardName);
+                      .exec(
+                          java32
+                              + " -Dsun.java2d.opengl=true -jar clockHelper"
+                              + File.separator
+                              + javaReadBoardName);
               success = true;
             } catch (Exception e) {
               success = false;
@@ -12116,11 +12126,18 @@ public class LizzieFrame extends JFrame {
         if (!success) {
           processClockHelper =
               Runtime.getRuntime()
-                  .exec("java -jar clockHelper" + File.separator + javaReadBoardName);
+                  .exec(
+                      "java -Dsun.java2d.opengl=true -jar clockHelper"
+                          + File.separator
+                          + javaReadBoardName);
         }
       } else {
         processClockHelper =
-            Runtime.getRuntime().exec("java -jar clockHelper" + File.separator + javaReadBoardName);
+            Runtime.getRuntime()
+                .exec(
+                    "java -Dsun.java2d.opengl=true -jar clockHelper"
+                        + File.separator
+                        + javaReadBoardName);
       }
     } catch (Exception e) {
       Utils.showMsg(e.getLocalizedMessage());
