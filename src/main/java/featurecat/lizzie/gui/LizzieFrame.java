@@ -7152,10 +7152,8 @@ public class LizzieFrame extends JFrame {
         double winRateC = Lizzie.board.getHistory().getData().winrate;
         if (!Lizzie.board.getHistory().isBlacksTurn()) winRateC = 100 - winRateC;
         winRate = winRateC > -100 && winRateC < 100 ? winRateC : winRate;
-        sb.append(
-            String.format(Locale.ENGLISH, "%.1f", winRate)
-                + " "
-                + Utils.getPlayoutsString(Lizzie.board.getHistory().getData().getPlayouts()));
+
+        sb.append(String.format(Locale.ENGLISH, "%.1f", winRate));
         if (Lizzie.board.getHistory().getData().isKataData) {
           double scoreC = Lizzie.board.getHistory().getCurrentHistoryNode().getData().scoreMean;
           if (scoreC != 0) {
@@ -7171,6 +7169,7 @@ public class LizzieFrame extends JFrame {
           }
           sb.append(" " + String.format(Locale.ENGLISH, "%.1f", score));
         }
+        sb.append(" " + Utils.getPlayoutsString(Lizzie.board.getHistory().getData().getPlayouts()));
         sb.append("] ");
       } else if (Lizzie.board.getHistory().getCurrentHistoryNode().previous().isPresent()
           && Lizzie.board
@@ -7185,12 +7184,15 @@ public class LizzieFrame extends JFrame {
         BoardData data =
             Lizzie.board.getHistory().getCurrentHistoryNode().previous().get().getData();
         sb.append(
-            String.format(Locale.ENGLISH, "%.1f", 100 - data.winrate)
-                + " "
-                + Utils.getPlayoutsString(data.getPlayouts()));
+            String.format(
+                Locale.ENGLISH, "%.1f", data.blackToPlay ? data.winrate : 100 - data.winrate));
         if (data.isKataData) {
-          sb.append(" " + String.format(Locale.ENGLISH, "%.1f", data.scoreMean));
+          sb.append(
+              " "
+                  + String.format(
+                      Locale.ENGLISH, "%.1f", data.blackToPlay ? data.scoreMean : -data.scoreMean));
         }
+        sb.append(" " + Utils.getPlayoutsString(data.getPlayouts()));
         sb.append("] ");
       } else if (isPlayingAgainstLeelaz || isAnaPlayingAgainstLeelaz) {
         sb.append("[ ---   ---   --- ] ");

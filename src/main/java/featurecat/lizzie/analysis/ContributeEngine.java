@@ -63,7 +63,7 @@ public class ContributeEngine {
   private boolean isSlowQuiting = false;
   private boolean getVersion = false;
 
-  private boolean paused = false;
+  public boolean paused = false;
   private long lastPauseResumeTime;
 
   public ContributeEngine() {
@@ -423,20 +423,25 @@ public class ContributeEngine {
     if (line.contains("Exited cleanly after signal") || line.contains("All cleaned up, quitting")) {
       isNormalEnd = true;
       Utils.showMsg(Lizzie.resourceBundle.getString("Contribute.tips.exitedAfterSignal"));
+      Menu.engineMenu.setText(Lizzie.resourceBundle.getString("Menu.noEngine"));
       if (Lizzie.frame.contributeView != null) Lizzie.frame.contributeView.exitedAfterSignal();
     }
     if (line.contains("Pausing contribute")) {
-      setTip(Lizzie.resourceBundle.getString("Contribute.tips.PauseHaveSent"));
+      setTip(Lizzie.resourceBundle.getString("Contribute.tips.PauseHaveSent"), true);
     }
     if (line.contains("Resuming contribute")) {
-      setTip(Lizzie.resourceBundle.getString("Contribute.tips.ResumeHaveSent"));
+      setTip(Lizzie.resourceBundle.getString("Contribute.tips.ResumeHaveSent"), true);
     }
   }
 
   private boolean hasEternalTip = false;
 
   private void setTip(String text) {
-    if (hasEternalTip) return;
+    setTip(text, false);
+  }
+
+  private void setTip(String text, boolean isPauseAndResume) {
+    if (hasEternalTip && !isPauseAndResume) return;
     if (Lizzie.frame.contributeView != null) Lizzie.frame.contributeView.setTip(text);
   }
 
@@ -487,12 +492,7 @@ public class ContributeEngine {
     //  }
   }
 
-  public void pauseAndResume() {
-    if (System.currentTimeMillis() - lastPauseResumeTime < 2000) {
-      Utils.showMsg(Lizzie.resourceBundle.getString("Contribute.pauseResumeTooFrequently"));
-      return;
-    }
-    lastPauseResumeTime = System.currentTimeMillis();
+  public void togglePause() {
     if (paused) {
       try {
         outputStream.write(("resume" + "\n").getBytes());
@@ -513,7 +513,17 @@ public class ContributeEngine {
       Lizzie.frame.isContributing = false;
       Menu.engineMenu.setText(Lizzie.resourceBundle.getString("Menu.noEngine"));
     }
+
     if (Lizzie.frame.contributeView != null) Lizzie.frame.contributeView.setBtnPauseResume(paused);
+  }
+
+  public void pauseAndResume() {
+    if (System.currentTimeMillis() - lastPauseResumeTime < 2000) {
+      Utils.showMsg(Lizzie.resourceBundle.getString("Contribute.pauseResumeTooFrequently"));
+      return;
+    }
+    lastPauseResumeTime = System.currentTimeMillis();
+    togglePause();
   }
 
   public void normalQuit() {

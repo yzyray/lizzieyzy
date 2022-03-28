@@ -495,7 +495,10 @@ public class ContributeView extends JFrame {
     btnSlowShutdown.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            if (Lizzie.frame.contributeEngine != null) Lizzie.frame.contributeEngine.slowQuit();
+            if (Lizzie.frame.contributeEngine != null) {
+              if (Lizzie.frame.contributeEngine.paused) Lizzie.frame.contributeEngine.togglePause();
+              Lizzie.frame.contributeEngine.slowQuit();
+            }
           }
         });
 
