@@ -365,9 +365,13 @@ public class ReadBoard {
     }
     if (line.startsWith("both")) {
       Lizzie.frame.bothSync = true;
+      if (Lizzie.frame.floatBoard != null && Lizzie.frame.floatBoard.isVisible())
+        Lizzie.frame.floatBoard.setEditButton();
     }
     if (line.startsWith("noboth")) {
       Lizzie.frame.bothSync = false;
+      if (Lizzie.frame.floatBoard != null && Lizzie.frame.floatBoard.isVisible())
+        Lizzie.frame.floatBoard.setEditButton();
     }
     if (line.startsWith("stopAutoPlay")) {
       LizzieFrame.toolbar.chkAutoPlay.setSelected(false);

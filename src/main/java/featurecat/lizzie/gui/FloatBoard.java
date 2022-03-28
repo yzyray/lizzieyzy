@@ -79,7 +79,7 @@ public class FloatBoard extends JDialog {
   private int extraX, extraY;
   private int tempX, tempY, tempWidth, tempHeight;
   private boolean showPosBtn = false;
-  private boolean editMode = false;
+  public boolean editMode = false;
 
   public FloatBoard(int x, int y, int width, int height, int boardType, boolean isScaled) {
     tempX = x;
@@ -261,6 +261,7 @@ public class FloatBoard extends JDialog {
     btnEdit.setFocusable(false);
     btnEdit.setPreferredSize(new Dimension(16, 16));
 
+    setEditButton();
     setButton();
 
     allPanel = new JLayeredPane();
@@ -425,7 +426,7 @@ public class FloatBoard extends JDialog {
         });
   }
 
-  private void changeEetEditMode() {
+  public void changeEetEditMode() {
     editMode = !editMode;
     if (editMode) btnEdit.setIcon(noEdit);
     else btnEdit.setIcon(edit);
@@ -681,6 +682,11 @@ public class FloatBoard extends JDialog {
     if (Lizzie.config.showSuggestionVariations)
       return mouseOverCoordinate[0] == x && mouseOverCoordinate[1] == y;
     else return false;
+  }
+
+  public void setEditButton() {
+    if (Lizzie.frame.bothSync) btnEdit.setVisible(false);
+    else btnEdit.setVisible(true);
   }
 
   private void setButton() {

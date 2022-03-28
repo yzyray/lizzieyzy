@@ -2461,6 +2461,8 @@ public class LizzieFrame extends JFrame {
 
   public void tryPlay(boolean needRefresh) {
     if (EngineManager.isEngineGame || EngineManager.isPreEngineGame) return;
+    if (floatBoard != null && floatBoard.isVisible() && floatBoard.editMode)
+      floatBoard.changeEetEditMode();
     if (!isTrying) {
       isTrying = true;
       try {
