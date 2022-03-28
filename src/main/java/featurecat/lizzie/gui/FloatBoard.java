@@ -61,6 +61,8 @@ public class FloatBoard extends JDialog {
   private ImageIcon left;
   private ImageIcon right;
   private ImageIcon position;
+  private ImageIcon noEdit;
+  private ImageIcon edit;
   private JButton btnStopGo;
   private JButton btnHideShow;
   private JButton btnLeft;
@@ -68,6 +70,7 @@ public class FloatBoard extends JDialog {
   private JButton btnUp;
   private JButton btnDown;
   private JButton btnShowPos;
+  private JButton btnEdit;
   private int posX, posY, posWidth, posHeight;
   public boolean hideSuggestion = false;
   private int boardType; // 0=野狐 1=YC 2=新浪 >2其他
@@ -76,6 +79,7 @@ public class FloatBoard extends JDialog {
   private int extraX, extraY;
   private int tempX, tempY, tempWidth, tempHeight;
   private boolean showPosBtn = false;
+  private boolean editMode = false;
 
   public FloatBoard(int x, int y, int width, int height, int boardType, boolean isScaled) {
     tempX = x;
@@ -131,6 +135,8 @@ public class FloatBoard extends JDialog {
     left = new ImageIcon();
     right = new ImageIcon();
     position = new ImageIcon();
+    noEdit = new ImageIcon();
+    edit = new ImageIcon();
     try {
       toStop.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/tostop.png")));
       toPlay.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/toplay.png")));
@@ -141,6 +147,12 @@ public class FloatBoard extends JDialog {
       left.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/leftFloat.png")));
       right.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/rightFloat.png")));
       position.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/pos.png")));
+      noEdit.setImage(
+          ImageIO.read(getClass().getResourceAsStream("/assets/noEdit.png"))
+              .getScaledInstance(16, 16, java.awt.Image.SCALE_SMOOTH));
+      edit.setImage(
+          ImageIO.read(getClass().getResourceAsStream("/assets/edit.png"))
+              .getScaledInstance(16, 16, java.awt.Image.SCALE_SMOOTH));
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -171,16 +183,6 @@ public class FloatBoard extends JDialog {
     btnHideShow.setVisible(true);
     btnStopGo.setPreferredSize(new Dimension(16, 16));
     btnHideShow.setPreferredSize(new Dimension(16, 16));
-    btnStopGo.setBounds(
-        getWidth() - 20 - Utils.zoomIn(Utils.zoomIn(20)),
-        getHeight() - 18 - Utils.zoomIn(Utils.zoomIn(20)),
-        19,
-        19);
-    btnHideShow.setBounds(
-        getWidth() - 40 - Utils.zoomIn(Utils.zoomIn(20)),
-        getHeight() - 18 - Utils.zoomIn(Utils.zoomIn(20)),
-        19,
-        19);
 
     btnLeft = new JButton(left);
     btnLeft.setContentAreaFilled(false);
@@ -247,6 +249,19 @@ public class FloatBoard extends JDialog {
     btnShowPos.setFocusable(false);
     btnShowPos.setPreferredSize(new Dimension(16, 16));
 
+    btnEdit = new JButton(edit);
+    btnEdit.setContentAreaFilled(false);
+    btnEdit.setMargin(new Insets(0, 0, 0, 0));
+    btnEdit.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            changeEetEditMode();
+            repaint();
+          }
+        });
+    btnEdit.setFocusable(false);
+    btnEdit.setPreferredSize(new Dimension(16, 16));
+
     setButton();
 
     allPanel = new JLayeredPane();
@@ -259,6 +274,7 @@ public class FloatBoard extends JDialog {
     allPanel.add(btnDown, new Integer(200));
     allPanel.add(btnHideShow, new Integer(200));
     allPanel.add(btnStopGo, new Integer(200));
+    allPanel.add(btnEdit, new Integer(200));
     allPanel.add(mainPanel, new Integer(100));
 
     this.setUndecorated(true);
@@ -334,11 +350,15 @@ public class FloatBoard extends JDialog {
             if (e.getWheelRotation() > 0) {
               if (boardRenderer.isShowingBranch()) {
                 doBranch(1);
-              } else boardRenderer.incrementDisplayedBranchLength(1);
+              } else if (editMode) {
+                Lizzie.board.nextMove(true);
+              }
             } else if (e.getWheelRotation() < 0) {
               if (boardRenderer.isShowingBranch()) {
                 doBranch(-1);
-              } else boardRenderer.incrementDisplayedBranchLength(-1);
+              } else if (editMode) {
+                Lizzie.board.previousMove(true);
+              }
             }
             refreshByLis();
           }
@@ -403,6 +423,15 @@ public class FloatBoard extends JDialog {
             if (needRepaint) refreshByLis();
           }
         });
+  }
+
+  private void changeEetEditMode() {
+    editMode = !editMode;
+    if (editMode) btnEdit.setIcon(noEdit);
+    else btnEdit.setIcon(edit);
+    Lizzie.frame.readBoard.editMode = editMode;
+    boardRenderer.editMode = editMode;
+    if (!editMode) Lizzie.board.moveToAnyPosition(Lizzie.board.getHistory().getMainEnd());
   }
 
   private void toggleHide() {
@@ -477,11 +506,11 @@ public class FloatBoard extends JDialog {
   }
 
   public void refresh() {
-    mainPanel.repaint();
+    repaint();
   }
 
   private void refreshByLis() {
-    mainPanel.repaint();
+    repaint();
   }
 
   public void replayBranch() {
@@ -635,7 +664,7 @@ public class FloatBoard extends JDialog {
     if (boardCoordinates.isPresent()) {
       // 增加判断是否为插入模式
       int[] coords = boardCoordinates.get();
-      if (Lizzie.frame.bothSync) {
+      if (Lizzie.frame.bothSync || editMode) {
         Lizzie.board.place(coords[0], coords[1]);
       }
     }
@@ -694,6 +723,11 @@ public class FloatBoard extends JDialog {
           getHeight() - 72 - Utils.zoomIn(Utils.zoomIn(20)),
           19,
           19);
+      btnEdit.setBounds(
+          getWidth() - 100 - Utils.zoomIn(Utils.zoomIn(20)),
+          getHeight() - 18 - Utils.zoomIn(Utils.zoomIn(20)),
+          19,
+          19);
     } else {
       btnLeft.setVisible(false);
       btnRight.setVisible(false);
@@ -711,6 +745,11 @@ public class FloatBoard extends JDialog {
           19);
       btnHideShow.setBounds(
           getWidth() - 40 - Utils.zoomIn(Utils.zoomIn(20)),
+          getHeight() - 18 - Utils.zoomIn(Utils.zoomIn(20)),
+          19,
+          19);
+      btnEdit.setBounds(
+          getWidth() - 60 - Utils.zoomIn(Utils.zoomIn(20)),
           getHeight() - 18 - Utils.zoomIn(Utils.zoomIn(20)),
           19,
           19);

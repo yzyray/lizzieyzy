@@ -5535,7 +5535,7 @@ public class LizzieFrame extends JFrame {
       int lastNo = Lizzie.board.getData().lastMoveMatchCandidteNo;
       if (lastNo > 0) {
         text += "(#" + lastNo + ")";
-      }
+      } else text += "(#  )";
       text += ": " + ((wr > 0 ? "+" : "-") + String.format(Locale.ENGLISH, "%.1f%%", Math.abs(wr)));
       if (isKataStyle && !EngineManager.isEngineGame) {
         text +=

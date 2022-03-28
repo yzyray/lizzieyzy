@@ -363,6 +363,11 @@ public class BoardHistoryList {
     return e;
   }
 
+  public BoardHistoryNode getCurOrMainEnd(boolean editMode) {
+    if (editMode) return getCurrentHistoryNode();
+    else return getMainEnd();
+  }
+
   public BoardHistoryNode getMainEndWithPass() {
     BoardHistoryNode e = head;
     while (e.previous().isPresent()) {

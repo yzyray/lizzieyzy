@@ -55,6 +55,7 @@ public class ReadBoard {
   public boolean lastMovePlayByLizzie = false;
   private boolean hideFloadBoardBeforePlace = false;
   private boolean hideFromPlace = false;
+  public boolean editMode = false;
 
   public ReadBoard(boolean usePipe, boolean isJavaReadBoard) throws Exception {
     this.usePipe = usePipe;
@@ -694,10 +695,10 @@ public class ReadBoard {
           && Lizzie.board.getHistory().getCurrentHistoryNode().previous().isPresent()
           && node != node2) {
         Lizzie.board.moveToAnyPosition(node);
-        Lizzie.frame.renderVarTree(0, 0, false, false);
       }
     }
-
+    if (editMode) Lizzie.board.moveToAnyPosition(node);
+    if (played) Lizzie.frame.renderVarTree(0, 0, false, false);
     if (needReSync && !isSecondTime) {
       Lizzie.board.clear(false);
       syncBoardStones(true);
