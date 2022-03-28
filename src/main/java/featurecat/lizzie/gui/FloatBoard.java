@@ -256,7 +256,6 @@ public class FloatBoard extends JDialog {
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             changeEetEditMode();
-            repaint();
           }
         });
     btnEdit.setFocusable(false);
@@ -292,6 +291,7 @@ public class FloatBoard extends JDialog {
                 Lizzie.frame.countstones(true);
               }
             }
+            if (e.getKeyCode() == KeyEvent.VK_V) changeEetEditMode();
             if (e.getKeyCode() == KeyEvent.VK_PERIOD)
               if (Lizzie.config.useShortcutKataEstimate) Lizzie.frame.toggleShowKataEstimate();
             if (e.getKeyCode() == KeyEvent.VK_H) Lizzie.leelaz.toggleHeatmap(false);
@@ -432,6 +432,8 @@ public class FloatBoard extends JDialog {
     Lizzie.frame.readBoard.editMode = editMode;
     boardRenderer.editMode = editMode;
     if (!editMode) Lizzie.board.moveToAnyPosition(Lizzie.board.getHistory().getMainEnd());
+    mouseOverCoordinate = LizzieFrame.outOfBoundCoordinate;
+    repaint();
   }
 
   private void toggleHide() {
