@@ -2968,6 +2968,8 @@ public class FloatBoardRenderer {
               Math.max(boardWidth > 560 ? 2f : 1f, Math.min(3.2f, (float) availableWidth / 481f)));
       BasicStroke normalStroke =
           new BasicStroke(Math.max(1f, Math.min(1.7f, (float) availableWidth / 1110f)));
+      int totalHeight = scaledMarginHeight + squareHeight * (Board.boardHeight - 1);
+      int totalWidth = scaledMarginWidth + squareWidth * (Board.boardWidth - 1);
       for (int i = 0; i < Board.boardHeight; i++) {
         // g.setStroke(new BasicStroke(stoneRadius / 15f));
         if (i == 0 || i == Board.boardHeight - 1) {
@@ -2975,14 +2977,14 @@ public class FloatBoardRenderer {
           g.drawLine(
               scaledMarginWidth,
               scaledMarginHeight + squareHeight * i,
-              scaledMarginWidth + availableWidth - 1,
+              totalWidth,
               scaledMarginHeight + squareHeight * i);
         } else {
           g.setStroke(normalStroke);
           g.drawLine(
               scaledMarginWidth,
               scaledMarginHeight + squareHeight * i,
-              scaledMarginWidth + availableWidth - 1,
+              totalWidth,
               scaledMarginHeight + squareHeight * i);
         }
       }
@@ -2994,14 +2996,14 @@ public class FloatBoardRenderer {
               scaledMarginWidth + squareWidth * i,
               scaledMarginHeight,
               scaledMarginWidth + squareWidth * i,
-              scaledMarginHeight + availableHeight - 1);
+              totalHeight);
         } else {
           g.setStroke(normalStroke);
           g.drawLine(
               scaledMarginWidth + squareWidth * i,
               scaledMarginHeight,
               scaledMarginWidth + squareWidth * i,
-              scaledMarginHeight + availableHeight - 1);
+              totalHeight);
         }
       }
 
