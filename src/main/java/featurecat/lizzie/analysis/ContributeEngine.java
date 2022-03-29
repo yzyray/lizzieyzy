@@ -262,8 +262,9 @@ public class ContributeEngine {
         String version[] = params[3].split("\\.");
         if (version.length == 3) {
           try {
-            int ver = Integer.parseInt(version[1]);
-            if (ver < 11) {
+            int ver1 = Integer.parseInt(version[0].substring(1));
+            int ver2 = Integer.parseInt(version[1]);
+            if (ver1 <= 1 && ver2 < 11) {
               Utils.showMsg(
                   Lizzie.resourceBundle.getString("Contribute.version.outOfDate")
                       + " ("
