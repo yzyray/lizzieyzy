@@ -12099,7 +12099,7 @@ public class LizzieFrame extends JFrame {
                 Runtime.getRuntime()
                     .exec(
                         java64Path
-                            + " -Dsun.java2d.opengl=true -jar clockHelper"
+                            + " -jar clockHelper"
                             + File.separator
                             + javaReadBoardName);
             success = true;
@@ -12117,7 +12117,7 @@ public class LizzieFrame extends JFrame {
                   Runtime.getRuntime()
                       .exec(
                           java32
-                              + " -Dsun.java2d.opengl=true -jar clockHelper"
+                              + " -jar clockHelper"
                               + File.separator
                               + javaReadBoardName);
               success = true;
@@ -12131,7 +12131,7 @@ public class LizzieFrame extends JFrame {
           processClockHelper =
               Runtime.getRuntime()
                   .exec(
-                      "java -Dsun.java2d.opengl=true -jar clockHelper"
+                      "java -jar clockHelper"
                           + File.separator
                           + javaReadBoardName);
         }
@@ -12139,7 +12139,7 @@ public class LizzieFrame extends JFrame {
         processClockHelper =
             Runtime.getRuntime()
                 .exec(
-                    "java -Dsun.java2d.opengl=true -jar clockHelper"
+                    "java -jar clockHelper"
                         + File.separator
                         + javaReadBoardName);
       }
