@@ -622,7 +622,7 @@ public class Input implements MouseListener, KeyListener, MouseWheelListener, Mo
           } else {
             Tsumego tsumego = new Tsumego();
             tsumego.getCoverSideAndIndex();
-            tsumego.buildCoverWall();
+            tsumego.buildCoverWall(true, true);
             Lizzie.frame.moveToMainTrunk();
           }
         }

@@ -12,7 +12,6 @@ public class Tsumego {
   private int bottomIndex;
   private Stone side;
   private Stone otherSide;
-  private static final int NO_NEED = -1;
 
   public Stone getCoverSideAndIndex() {
     Stone[] stones = Lizzie.board.getStones();
@@ -73,13 +72,13 @@ public class Tsumego {
     if (blackCount >= whiteCount) side = Stone.BLACK;
     else side = Stone.WHITE;
     if (leftIndex - wallGap > 0) this.leftIndex = leftIndex - wallGap;
-    else this.leftIndex = NO_NEED;
+    else this.leftIndex = -1;
     if (rightIndex + wallGap < Board.boardWidth - 1) this.rightIndex = rightIndex + wallGap;
-    else this.topIndex = NO_NEED;
+    else this.rightIndex = Board.boardWidth;
     if (topIndex - wallGap > 0) this.topIndex = topIndex - wallGap;
-    else this.topIndex = NO_NEED;
+    else this.topIndex = -1;
     if (bottomtIndex + wallGap < Board.boardHeight - 1) this.bottomIndex = bottomtIndex + wallGap;
-    else this.bottomIndex = NO_NEED;
+    else this.bottomIndex = Board.boardHeight;
     if (side == Stone.BLACK) otherSide = Stone.WHITE;
     else otherSide = Stone.BLACK;
     return side;
@@ -92,6 +91,7 @@ public class Tsumego {
       int y,
       Stone color,
       List<extraMoveForTsumego> extraStones) {
+    if (stones[Board.getIndex(x, y)] != Stone.EMPTY) return;
     stones[Board.getIndex(x, y)] = color;
     zobrist.toggleStone(x, y, color);
     extraMoveForTsumego stone = new extraMoveForTsumego();
@@ -101,7 +101,11 @@ public class Tsumego {
     extraStones.add(stone);
   }
 
-  public void buildCoverWall() {
+  public void buildCoverWall(boolean addKoThreatBlack, boolean addKoThreatWhite) {
+    if (rightIndex == Board.boardWidth
+        && leftIndex == -1
+        && topIndex == -1
+        && bottomIndex == Board.boardHeight) return;
     List<extraMoveForTsumego> extraStones = new ArrayList<extraMoveForTsumego>();
     Zobrist zobrist = Lizzie.board.getHistory().getZobrist();
     Stone[] curStones = Lizzie.board.getStones();
@@ -166,6 +170,8 @@ public class Tsumego {
       minIndex = 4;
     }
     int halfAreaWithKomi = (int) Math.ceil((Board.boardHeight * Board.boardWidth) / 2.0 + 4.0);
+    boolean noRoomForSideKo = false;
+    boolean noRoomForOtherSideKo = false;
     switch (minIndex) {
       case 1:
         if (minArea <= halfAreaWithKomi) {
@@ -207,7 +213,69 @@ public class Tsumego {
             }
           }
         } else {
-
+          boolean topMin = false;
+          int topRoom = topIndex;
+          int bottomRoom = Board.boardHeight - bottomIndex - 1;
+          if (topRoom >= bottomRoom) topMin = true;
+          if (side == Stone.BLACK && addKoThreatBlack || side == Stone.WHITE && addKoThreatWhite) {
+            if (rightIndex < 4) {
+              noRoomForSideKo = true;
+            } else if (topRoom < 2 && bottomRoom >= 2) {
+              topMin = false;
+            } else if (topRoom >= 2 && bottomRoom < 2) {
+              topMin = true;
+            }
+          }
+          // 确定好用哪一边填充,topMin
+          if (topMin) {
+            for (int x = 0; x < Board.boardWidth; x++) {
+              for (int y = 0; y < Board.boardHeight; y++) {
+                if (x < rightIndex) {
+                  if (y < topIndex) {
+                    if ((y + x) % 2 == 0) addStone(stones, zobrist, x, y, side, extraStones);
+                  }
+                }
+                if (x == rightIndex) {
+                  if (y < topIndex) addStone(stones, zobrist, x, y, side, extraStones);
+                }
+                if (x <= rightIndex) {
+                  if (y == bottomIndex + 1) addStone(stones, zobrist, x, y, otherSide, extraStones);
+                  if (y > bottomIndex + 1)
+                    if ((y + x) % 2 == 0) addStone(stones, zobrist, x, y, otherSide, extraStones);
+                }
+                if (x == rightIndex + 1) {
+                  addStone(stones, zobrist, x, y, otherSide, extraStones);
+                }
+                if (x > rightIndex + 1) {
+                  if ((y + x) % 2 == 0) addStone(stones, zobrist, x, y, otherSide, extraStones);
+                }
+              }
+            }
+          } else {
+            for (int x = 0; x < Board.boardWidth; x++) {
+              for (int y = 0; y < Board.boardHeight; y++) {
+                if (x < rightIndex) {
+                  if (y > bottomIndex) {
+                    if ((y + x) % 2 == 0) addStone(stones, zobrist, x, y, side, extraStones);
+                  }
+                }
+                if (x == rightIndex) {
+                  if (y > bottomIndex) addStone(stones, zobrist, x, y, side, extraStones);
+                }
+                if (x <= rightIndex) {
+                  if (y == topIndex - 1) addStone(stones, zobrist, x, y, otherSide, extraStones);
+                  if (y < topIndex - 1)
+                    if ((y + x) % 2 == 0) addStone(stones, zobrist, x, y, otherSide, extraStones);
+                }
+                if (x == rightIndex + 1) {
+                  addStone(stones, zobrist, x, y, otherSide, extraStones);
+                }
+                if (x > rightIndex + 1) {
+                  if ((y + x) % 2 == 0) addStone(stones, zobrist, x, y, otherSide, extraStones);
+                }
+              }
+            }
+          }
         }
         break;
       case 2:
