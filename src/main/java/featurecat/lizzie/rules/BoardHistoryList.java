@@ -100,9 +100,12 @@ public class BoardHistoryList {
   }
 
   public void addOrGoto(BoardData data, boolean newBranch, boolean changeMove) {
-    head = head.addOrGoto(data, newBranch, changeMove);
+    head = head.addOrGoto(data, newBranch, changeMove, false);
   }
 
+  public void addOrGoto(BoardData data, boolean newBranch, boolean changeMove, boolean tsumego) {
+    head = head.addOrGoto(data, newBranch, changeMove, tsumego);
+  }
   /**
    * moves the pointer to the left, returns the data stored there
    *

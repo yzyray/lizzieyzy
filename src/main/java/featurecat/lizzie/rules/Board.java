@@ -1860,6 +1860,37 @@ public class Board {
     history.setGameInfo(oldHistory.getGameInfo());
   }
 
+  public void flattenWithCondition(
+      Stone[] stones, Zobrist zobrist, boolean blackToPlay, List<extraMoveForTsumego> extraStones) {
+    Lizzie.frame.flattenBoard();
+    //	    Stone[] stones = history.getStones();
+    //	    boolean blackToPlay = history.isBlacksTurn();
+    BoardData state =
+        new BoardData(
+            stones,
+            Optional.empty(),
+            Stone.EMPTY,
+            blackToPlay,
+            zobrist,
+            0,
+            new int[boardWidth * boardHeight],
+            0,
+            0,
+            0.0,
+            0);
+    history.addOrGoto(state, false, false, true);
+    if (extraStones != null && extraStones.size() > 0) {
+      for (extraMoveForTsumego stone : extraStones) addExtraStoneNow(stone.x, stone.y, stone.color);
+    }
+  }
+
+  private void addExtraStoneNow(int x, int y, Stone color) {
+    if (color != null) {
+      history.getCurrentHistoryNode().addExtraStones(x, y, color == Stone.BLACK);
+      Lizzie.leelaz.playMove(color, convertCoordinatesToName(x, y));
+    }
+  }
+
   /**
    * Removes a chain if it has no liberties
    *

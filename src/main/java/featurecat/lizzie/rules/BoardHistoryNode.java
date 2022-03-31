@@ -122,7 +122,7 @@ public class BoardHistoryNode {
   }
 
   public BoardHistoryNode addOrGoto(BoardData data, boolean newBranch) {
-    return addOrGoto(data, newBranch, false);
+    return addOrGoto(data, newBranch, false, false);
   }
 
   /**
@@ -165,7 +165,8 @@ public class BoardHistoryNode {
     }
   }
 
-  public BoardHistoryNode addOrGoto(BoardData data, boolean newBranch, boolean changeMove) {
+  public BoardHistoryNode addOrGoto(
+      BoardData data, boolean newBranch, boolean changeMove, boolean tsumego) {
     if (!Lizzie.board.isLoadingFile && Lizzie.leelaz != null && !EngineManager.isEngineGame) {
       Lizzie.leelaz.clearBestMoves();
     }
@@ -197,7 +198,7 @@ public class BoardHistoryNode {
       }
     }
 
-    if (!this.previous.isPresent()) {
+    if (!this.previous.isPresent() && !tsumego) {
       data.moveMNNumber = 1;
     }
     if (Lizzie.config.newMoveNumberInBranch && !variations.isEmpty() && !changeMove) {
