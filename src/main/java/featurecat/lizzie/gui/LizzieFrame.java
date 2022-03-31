@@ -12097,11 +12097,7 @@ public class LizzieFrame extends JFrame {
           try {
             processClockHelper =
                 Runtime.getRuntime()
-                    .exec(
-                        java64Path
-                            + " -jar clockHelper"
-                            + File.separator
-                            + javaReadBoardName);
+                    .exec(java64Path + " -jar clockHelper" + File.separator + javaReadBoardName);
             success = true;
           } catch (Exception e) {
             success = false;
@@ -12115,11 +12111,7 @@ public class LizzieFrame extends JFrame {
             try {
               processClockHelper =
                   Runtime.getRuntime()
-                      .exec(
-                          java32
-                              + " -jar clockHelper"
-                              + File.separator
-                              + javaReadBoardName);
+                      .exec(java32 + " -jar clockHelper" + File.separator + javaReadBoardName);
               success = true;
             } catch (Exception e) {
               success = false;
@@ -12130,18 +12122,11 @@ public class LizzieFrame extends JFrame {
         if (!success) {
           processClockHelper =
               Runtime.getRuntime()
-                  .exec(
-                      "java -jar clockHelper"
-                          + File.separator
-                          + javaReadBoardName);
+                  .exec("java -jar clockHelper" + File.separator + javaReadBoardName);
         }
       } else {
         processClockHelper =
-            Runtime.getRuntime()
-                .exec(
-                    "java -jar clockHelper"
-                        + File.separator
-                        + javaReadBoardName);
+            Runtime.getRuntime().exec("java -jar clockHelper" + File.separator + javaReadBoardName);
       }
     } catch (Exception e) {
       Utils.showMsg(e.getLocalizedMessage());
