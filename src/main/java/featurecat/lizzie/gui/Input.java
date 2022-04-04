@@ -4,7 +4,6 @@ import static java.awt.event.KeyEvent.*;
 
 import featurecat.lizzie.Lizzie;
 import featurecat.lizzie.analysis.EngineManager;
-import featurecat.lizzie.rules.Tsumego;
 import featurecat.lizzie.util.Utils;
 import java.awt.event.*;
 import javax.swing.SwingUtilities;
@@ -620,9 +619,7 @@ public class Input implements MouseListener, KeyListener, MouseWheelListener, Mo
           if (e.isControlDown()) {
             Lizzie.frame.flashAnalyzeGame(true, false);
           } else {
-            Tsumego tsumego = new Tsumego();
-            tsumego.getCoverSideAndIndex();
-            tsumego.buildCoverWall(true, true);
+            Lizzie.frame.testTsumego();
             Lizzie.frame.moveToMainTrunk();
           }
         }

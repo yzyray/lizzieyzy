@@ -2547,18 +2547,6 @@ public class BoardRenderer {
             Color oriColor = g.getColor();
             if (showScoreLead && showPlayouts && showWinrate) {
               double score = move.scoreMean;
-              if (Lizzie.board.getHistory().isBlacksTurn()) {
-                if (Lizzie.config.showKataGoScoreLeadWithKomi) {
-                  score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
-                }
-              } else {
-                if (Lizzie.config.showKataGoScoreLeadWithKomi) {
-                  score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
-                }
-                if (Lizzie.config.winrateAlwaysBlack) {
-                  score = -score;
-                }
-              }
               boolean shouldShowMaxColorWinrate = canShowMaxColor && hasMaxWinrate;
               boolean shouldShowMaxColorPlayouts = canShowMaxColor && move.playouts == maxPlayouts;
               boolean shouldShowMaxColorScoreLead =
@@ -2751,18 +2739,6 @@ public class BoardRenderer {
               boolean shouldShowMaxColorScoreLead =
                   canShowMaxColor && move.scoreMean == maxScoreMean;
               double score = move.scoreMean;
-              if (Lizzie.board.getHistory().isBlacksTurn()) {
-                if (Lizzie.config.showKataGoScoreLeadWithKomi) {
-                  score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
-                }
-              } else {
-                if (Lizzie.config.showKataGoScoreLeadWithKomi) {
-                  score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
-                }
-                if (Lizzie.config.winrateAlwaysBlack) {
-                  score = -score;
-                }
-              }
               String winrateText = String.format(Locale.ENGLISH, "%.1f", roundedWinrate);
               String scoreLeadText = Utils.convertScoreToString(score, maxScoreMean);
               if (Lizzie.config.useDefaultInfoRowOrder
@@ -2832,18 +2808,6 @@ public class BoardRenderer {
               boolean shouldShowMaxColorScoreLead =
                   canShowMaxColor && move.scoreMean == maxScoreMean;
               double score = move.scoreMean;
-              if (Lizzie.board.getHistory().isBlacksTurn()) {
-                if (Lizzie.config.showKataGoScoreLeadWithKomi) {
-                  score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
-                }
-              } else {
-                if (Lizzie.config.showKataGoScoreLeadWithKomi) {
-                  score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
-                }
-                if (Lizzie.config.winrateAlwaysBlack) {
-                  score = -score;
-                }
-              }
               String playoutsText = Utils.getPlayoutsString(move.playouts);
               String scoreLeadText = Utils.convertScoreToString(score, maxScoreMean);
               if (Lizzie.config.useDefaultInfoRowOrder
@@ -2932,18 +2896,6 @@ public class BoardRenderer {
               if (shouldShowMaxColorPlayouts) g.setColor(oriColor);
             } else if (showScoreLead) {
               double score = move.scoreMean;
-              if (Lizzie.board.getHistory().isBlacksTurn()) {
-                if (Lizzie.config.showKataGoScoreLeadWithKomi) {
-                  score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
-                }
-              } else {
-                if (Lizzie.config.showKataGoScoreLeadWithKomi) {
-                  score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
-                }
-                if (Lizzie.config.winrateAlwaysBlack) {
-                  score = -score;
-                }
-              }
               boolean shouldShowMaxColorScoreLead =
                   canShowMaxColor && move.scoreMean == maxScoreMean;
               String scoreLeadText = Utils.convertScoreToString(score, maxScoreMean);
@@ -3201,7 +3153,8 @@ public class BoardRenderer {
                                   moveY,
                                   100 - nextMoveData.winrate,
                                   -nextMoveData.scoreMean,
-                                  false);
+                                  false,
+                                  thisMoveData.scoreMean);
                               hasFillCircle = true;
                             } else if (winrateDiff >= 1.5 || scoreDiff >= 1) {
                               g.setColor(new Color(220, 150, 30));
@@ -3212,7 +3165,8 @@ public class BoardRenderer {
                                   moveY,
                                   100 - nextMoveData.winrate,
                                   -nextMoveData.scoreMean,
-                                  false);
+                                  false,
+                                  thisMoveData.scoreMean);
                               hasFillCircle = true;
                             } else {
                               g.setColor(new Color(0, 220, 0));
@@ -3223,7 +3177,8 @@ public class BoardRenderer {
                                   moveY,
                                   100 - nextMoveData.winrate,
                                   -nextMoveData.scoreMean,
-                                  true);
+                                  true,
+                                  thisMoveData.scoreMean);
                               hasFillCircle = true;
                             }
                           } else {
@@ -3403,7 +3358,8 @@ public class BoardRenderer {
       int moveY,
       double winrate,
       double score,
-      boolean isGoodMove) {
+      boolean isGoodMove,
+      double curMaxScore) {
     // TODO Auto-generated method stub
     fillCircle(g, moveX, moveY, stoneRadius + 1);
     g.setStroke(new BasicStroke(Math.max(stoneRadius / 7f, 2f)));
@@ -3413,21 +3369,9 @@ public class BoardRenderer {
     else g.setColor(Color.WHITE);
     if (Lizzie.config.winrateAlwaysBlack && !Lizzie.board.getData().blackToPlay)
       winrate = 100 - winrate;
-    if (Lizzie.board.getHistory().isBlacksTurn()) {
-      if (Lizzie.config.showKataGoScoreLeadWithKomi) {
-        score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
-      }
-    } else {
-      if (Lizzie.config.showKataGoScoreLeadWithKomi) {
-        score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
-      }
-      if (Lizzie.config.winrateAlwaysBlack) {
-        score = -score;
-      }
-    }
     if (Lizzie.config.showWinrateInSuggestion && Lizzie.config.showScoremeanInSuggestion) {
       nextBlunderWinrate = String.format(Locale.ENGLISH, "%.1f", winrate);
-      nextBlunderScore = String.format(Locale.ENGLISH, "%.1f", score);
+      nextBlunderScore = Utils.convertScoreToString(score, curMaxScore);
       showBlunderWinrate = true;
       showBlunderScore = true;
       if (Lizzie.config.suggestionInfoWinrate <= Lizzie.config.suggestionInfoScoreLead) {

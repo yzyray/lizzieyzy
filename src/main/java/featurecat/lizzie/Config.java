@@ -627,6 +627,7 @@ public class Config {
   public String contributeBatchGames = "6";
   public boolean contributeShowEstimate = false;
   public boolean contributeUseCommand = false;
+  public boolean contributeUsePureCommand = false;
   public String contributeCommand = "";
   public boolean contributeAutoSave = false;
 
@@ -1375,6 +1376,7 @@ public class Config {
     contributeBatchGames = uiConfig.optString("contribute-batch-games", "6");
     contributeShowEstimate = uiConfig.optBoolean("contribute-show-estimate", false);
     contributeUseCommand = uiConfig.optBoolean("contribute-use-command", false);
+    contributeUsePureCommand = uiConfig.optBoolean("contribute-use-pure-command", false);
     contributeCommand = uiConfig.optString("contribute-command", "");
     contributeAutoSave = uiConfig.optBoolean("contribute-auto-save", false);
     contributeWatchSkipNone19 = uiConfig.optBoolean("contribute-watch-skip-none-19", false);

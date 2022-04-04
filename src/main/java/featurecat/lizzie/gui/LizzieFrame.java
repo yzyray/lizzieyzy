@@ -28,6 +28,7 @@ import featurecat.lizzie.rules.Movelist;
 import featurecat.lizzie.rules.NodeInfo;
 import featurecat.lizzie.rules.SGFParser;
 import featurecat.lizzie.rules.Stone;
+import featurecat.lizzie.rules.Tsumego;
 import featurecat.lizzie.util.Utils;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
@@ -12220,5 +12221,19 @@ public class LizzieFrame extends JFrame {
   public void openContributeSettings() {
     ContributeSettings contributeSettings = new ContributeSettings(this);
     contributeSettings.setVisible(true);
+  }
+
+  public void testTsumego() {
+    // TODO Auto-generated method stub
+    Tsumego tsumego = new Tsumego();
+    tsumego.getCoverSideAndIndex();
+    tsumego.buildCoverWall(true, true);
+    //    SwingUtilities.invokeLater(
+    //        new Runnable() {
+    //          public void run() {
+    //            CaptureTsumego captureTsumego = new CaptureTsumego();
+    //            captureTsumego.start();
+    //          }
+    //        });
   }
 }

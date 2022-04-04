@@ -33,6 +33,7 @@ public class ContributeSettings extends JDialog {
   private JCheckBox chkShowOwnerShip;
   private JCheckBox chkAutoSave;
   private JCheckBox chkNoRaingMatches;
+  private JCheckBox chkIgnoreSettings;
   // private JCheckBox chkSlowShutdown;
   private JButton btnRemoteSetting;
   private JDialog thisDialog = this;
@@ -62,7 +63,8 @@ public class ContributeSettings extends JDialog {
             "ContributeSettings.autoSaveTip"); // "自动保存观看过且已对局结束的棋谱,保存到LizzieYzy目录内\"ContributeGames\"文件夹中";
     String customCommandTip =
         Lizzie.resourceBundle.getString("ContributeSettings.customCommandTip");
-    String slowShutdownTip = Lizzie.resourceBundle.getString("ContributeSettings.slowShutdownTip");
+    // String slowShutdownTip =
+    // Lizzie.resourceBundle.getString("ContributeSettings.slowShutdownTip");
     String noRatingMatchesTip =
         Lizzie.resourceBundle.getString("ContributeSettings.noRatingMatchesTip");
 
@@ -71,10 +73,10 @@ public class ContributeSettings extends JDialog {
     getContentPane().add(mainPanel, BorderLayout.CENTER);
     GridBagLayout gbl_mainPanel = new GridBagLayout();
     gbl_mainPanel.columnWidths = new int[] {217, 217, 0};
-    gbl_mainPanel.rowHeights = new int[] {41, 41, 0, 41, 41, 41, 41, 0, 0, 0};
+    gbl_mainPanel.rowHeights = new int[] {41, 41, 0, 0, 41, 0, 41, 41, 41, 0, 0, 0};
     gbl_mainPanel.columnWeights = new double[] {1.0, 1.0, Double.MIN_VALUE};
     gbl_mainPanel.rowWeights =
-        new double[] {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, Double.MIN_VALUE};
+        new double[] {1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, Double.MIN_VALUE};
     mainPanel.setLayout(gbl_mainPanel);
 
     JPanel engineFilePanel = new JPanel();
@@ -173,10 +175,12 @@ public class ContributeSettings extends JDialog {
             chkRemote.setEnabled(useCommand);
             btnRemoteSetting.setEnabled(chkRemote.isSelected());
             txtCommand.setEnabled(useCommand);
+            chkIgnoreSettings.setEnabled(useCommand);
             txtEnginePath.setEnabled(!useCommand);
             txtConfigPath.setEnabled(!useCommand);
             btnScanEngine.setEnabled(!useCommand);
             btnScanConfig.setEnabled(!useCommand);
+            setAferSets(chkUseCommand.isSelected() && chkIgnoreSettings.isSelected());
           }
         });
 
@@ -222,12 +226,32 @@ public class ContributeSettings extends JDialog {
     btnScanEngine.setEnabled(!Lizzie.config.contributeUseCommand);
     btnScanConfig.setEnabled(!Lizzie.config.contributeUseCommand);
 
+    chkIgnoreSettings =
+        new JFontCheckBox(
+            Lizzie.resourceBundle.getString(
+                "ContributeSettings.chkIgnoreSettings")); // "无视后续设置完全遵循自定义命令行"
+    GridBagConstraints gbc_chckbxNewCheckBox = new GridBagConstraints();
+    gbc_chckbxNewCheckBox.insets = new Insets(0, 0, 5, 5);
+    gbc_chckbxNewCheckBox.gridx = 0;
+    gbc_chckbxNewCheckBox.gridy = 3;
+    mainPanel.add(chkIgnoreSettings, gbc_chckbxNewCheckBox);
+
+    chkIgnoreSettings.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            boolean ignore = chkIgnoreSettings.isSelected();
+            setAferSets(ignore);
+          }
+        });
+    chkIgnoreSettings.setEnabled(Lizzie.config.contributeUseCommand);
+    chkIgnoreSettings.setSelected(Lizzie.config.contributeUsePureCommand);
+
     JPanel panel = new JPanel();
     GridBagConstraints gbc_panel = new GridBagConstraints();
     gbc_panel.fill = GridBagConstraints.VERTICAL;
     gbc_panel.insets = new Insets(0, 0, 5, 5);
     gbc_panel.gridx = 0;
-    gbc_panel.gridy = 3;
+    gbc_panel.gridy = 4;
     mainPanel.add(panel, gbc_panel);
 
     JLabel lblUserName =
@@ -256,7 +280,7 @@ public class ContributeSettings extends JDialog {
     gbc_txtUserName.fill = GridBagConstraints.BOTH;
     gbc_txtUserName.insets = new Insets(0, 0, 5, 0);
     gbc_txtUserName.gridx = 1;
-    gbc_txtUserName.gridy = 3;
+    gbc_txtUserName.gridy = 4;
     mainPanel.add(txtUserName, gbc_txtUserName);
     txtUserName.setColumns(10);
     txtUserName.setText(Lizzie.config.contributeUserName);
@@ -268,7 +292,7 @@ public class ContributeSettings extends JDialog {
     gbc_lblPassword.fill = GridBagConstraints.VERTICAL;
     gbc_lblPassword.insets = new Insets(0, 0, 5, 5);
     gbc_lblPassword.gridx = 0;
-    gbc_lblPassword.gridy = 4;
+    gbc_lblPassword.gridy = 6;
     mainPanel.add(lblPassword, gbc_lblPassword);
 
     txtPassword = new JPasswordField();
@@ -276,7 +300,7 @@ public class ContributeSettings extends JDialog {
     gbc_txtPassword.fill = GridBagConstraints.BOTH;
     gbc_txtPassword.insets = new Insets(0, 0, 5, 0);
     gbc_txtPassword.gridx = 1;
-    gbc_txtPassword.gridy = 4;
+    gbc_txtPassword.gridy = 6;
     mainPanel.add(txtPassword, gbc_txtPassword);
     txtPassword.setColumns(10);
     txtPassword.setText(Lizzie.config.contributePassword);
@@ -289,7 +313,7 @@ public class ContributeSettings extends JDialog {
     gbc_lblGames.fill = GridBagConstraints.VERTICAL;
     gbc_lblGames.insets = new Insets(0, 0, 5, 5);
     gbc_lblGames.gridx = 0;
-    gbc_lblGames.gridy = 5;
+    gbc_lblGames.gridy = 7;
     mainPanel.add(lblSimultaneousGames, gbc_lblGames);
     lblSimultaneousGames.setToolTipText(gamesTip);
 
@@ -298,7 +322,7 @@ public class ContributeSettings extends JDialog {
     gbc_txtGames.fill = GridBagConstraints.BOTH;
     gbc_txtGames.insets = new Insets(0, 0, 5, 0);
     gbc_txtGames.gridx = 1;
-    gbc_txtGames.gridy = 5;
+    gbc_txtGames.gridy = 7;
     mainPanel.add(txtGames, gbc_txtGames);
     txtGames.setColumns(10);
     txtGames.setToolTipText(gamesTip);
@@ -312,7 +336,7 @@ public class ContributeSettings extends JDialog {
     gbc_lblShowOwnerShip.fill = GridBagConstraints.VERTICAL;
     gbc_lblShowOwnerShip.insets = new Insets(0, 0, 5, 5);
     gbc_lblShowOwnerShip.gridx = 0;
-    gbc_lblShowOwnerShip.gridy = 6;
+    gbc_lblShowOwnerShip.gridy = 8;
     mainPanel.add(lblShowOwnerShip, gbc_lblShowOwnerShip);
     lblShowOwnerShip.setToolTipText(ownerShipTip);
 
@@ -321,7 +345,7 @@ public class ContributeSettings extends JDialog {
     gbc_chkShowOwnerShip.insets = new Insets(0, 0, 5, 0);
     gbc_chkShowOwnerShip.fill = GridBagConstraints.BOTH;
     gbc_chkShowOwnerShip.gridx = 1;
-    gbc_chkShowOwnerShip.gridy = 6;
+    gbc_chkShowOwnerShip.gridy = 8;
     mainPanel.add(chkShowOwnerShip, gbc_chkShowOwnerShip);
     chkShowOwnerShip.setToolTipText(ownerShipTip);
     chkShowOwnerShip.setSelected(Lizzie.config.contributeShowEstimate);
@@ -331,7 +355,7 @@ public class ContributeSettings extends JDialog {
     gbc_panel_4.insets = new Insets(0, 0, 5, 5);
     gbc_panel_4.fill = GridBagConstraints.BOTH;
     gbc_panel_4.gridx = 0;
-    gbc_panel_4.gridy = 7;
+    gbc_panel_4.gridy = 9;
     mainPanel.add(panel_4, gbc_panel_4);
 
     JLabel lblChkNoRatingMatches =
@@ -344,7 +368,7 @@ public class ContributeSettings extends JDialog {
     gbc_chkNoRaingMatches.anchor = GridBagConstraints.WEST;
     gbc_chkNoRaingMatches.insets = new Insets(0, 0, 5, 0);
     gbc_chkNoRaingMatches.gridx = 1;
-    gbc_chkNoRaingMatches.gridy = 7;
+    gbc_chkNoRaingMatches.gridy = 9;
     mainPanel.add(chkNoRaingMatches, gbc_chkNoRaingMatches);
     chkNoRaingMatches.setToolTipText(noRatingMatchesTip);
     chkNoRaingMatches.setSelected(Lizzie.config.contributeDisableRatingMatches);
@@ -354,7 +378,7 @@ public class ContributeSettings extends JDialog {
     gbc_panel_2.insets = new Insets(0, 0, 0, 5);
     gbc_panel_2.fill = GridBagConstraints.BOTH;
     gbc_panel_2.gridx = 0;
-    gbc_panel_2.gridy = 8;
+    gbc_panel_2.gridy = 10;
     mainPanel.add(panel_2, gbc_panel_2);
 
     JLabel lblAutoSave =
@@ -369,7 +393,7 @@ public class ContributeSettings extends JDialog {
     GridBagConstraints gbc_chkAutoSave = new GridBagConstraints();
     gbc_chkAutoSave.anchor = GridBagConstraints.WEST;
     gbc_chkAutoSave.gridx = 1;
-    gbc_chkAutoSave.gridy = 8;
+    gbc_chkAutoSave.gridy = 10;
     mainPanel.add(chkAutoSave, gbc_chkAutoSave);
     chkAutoSave.addActionListener(
         new ActionListener() {
@@ -447,8 +471,18 @@ public class ContributeSettings extends JDialog {
           }
         });
     buttonPanel.add(btnStart);
+    setAferSets(Lizzie.config.contributeUseCommand && Lizzie.config.contributeUsePureCommand);
     pack();
     setLocationRelativeTo(owner);
+  }
+
+  private void setAferSets(boolean ignore) {
+    // TODO Auto-generated method stub
+    txtUserName.setEnabled(!ignore);
+    txtPassword.setEnabled(!ignore);
+    txtGames.setEnabled(!ignore);
+    chkShowOwnerShip.setEnabled(!ignore);
+    chkNoRaingMatches.setEnabled(!ignore);
   }
 
   private void saveConfig() {
@@ -466,6 +500,9 @@ public class ContributeSettings extends JDialog {
     Lizzie.config.uiConfig.put("contribute-show-estimate", Lizzie.config.contributeShowEstimate);
     Lizzie.config.contributeUseCommand = this.chkUseCommand.isSelected();
     Lizzie.config.uiConfig.put("contribute-use-command", Lizzie.config.contributeUseCommand);
+    Lizzie.config.contributeUsePureCommand = this.chkIgnoreSettings.isSelected();
+    Lizzie.config.uiConfig.put(
+        "contribute-use-pure-command", Lizzie.config.contributeUsePureCommand);
     Lizzie.config.contributeCommand = this.txtCommand.getText();
     Lizzie.config.uiConfig.put("contribute-command", Lizzie.config.contributeCommand);
     Lizzie.config.contributeAutoSave = this.chkAutoSave.isSelected();

@@ -2062,8 +2062,8 @@ public class EngineManager {
       }
       if (isMain) Lizzie.leelaz = newEng;
       else Lizzie.leelaz2 = newEng;
-      // boolean changedKomi = Lizzie.board.getHistory().getGameInfo().changedKomi;
-      if (!isMain) {
+      boolean changedKomi = Lizzie.board.getHistory().getGameInfo().changedKomi;
+      if (!isMain || changedKomi) {
         newEng.komi = (float) Lizzie.board.getHistory().getGameInfo().getKomi();
       } else newEng.komi = newEng.orikomi;
       if (!newEng.isStarted()) {

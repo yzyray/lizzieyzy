@@ -936,7 +936,19 @@ public class Utils {
       else if (diff < 0) result = "-" + String.valueOf(round(Math.abs(diff) * 10) / 10.0);
       else result = String.valueOf(round(diff * 10) / 10.0);
       return result;
-    } else return String.valueOf(round(score * 10) / 10.0);
+    } else if (Lizzie.board.getHistory().isBlacksTurn()) {
+      if (Lizzie.config.showKataGoScoreLeadWithKomi) {
+        score += Lizzie.board.getHistory().getGameInfo().getKomi();
+      }
+    } else {
+      if (Lizzie.config.showKataGoScoreLeadWithKomi) {
+        score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
+      }
+      if (Lizzie.config.winrateAlwaysBlack) {
+        score = -score;
+      }
+    }
+    return String.valueOf(round(score * 10) / 10.0);
   }
 
   public static void changeFontRecursive(Container root, String fontName) {
