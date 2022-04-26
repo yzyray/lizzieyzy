@@ -315,6 +315,7 @@ public class Config {
   public boolean showEditbar = true;
   public boolean showForceMenu = true;
   public boolean showRuleMenu = true;
+  public boolean showTsumeGoMenu = true;
   public boolean showParamMenu = true;
   public boolean showGobanMenu = true;
   public boolean showSaveLoadMenu = true;
@@ -649,6 +650,10 @@ public class Config {
 
   public boolean useMovesOwnership = true;
   public boolean browserInitiazed = false;
+
+  public int tesumeGoToPlay = 1; // 1=继承,2=黑,3=白
+  public int tesumeGoAttaker = 1; // 1=自动检测,2=黑,3=白
+  public int tesumeGoKoThreat = 1; // 1=双方,2=进攻,3=防守,4=无
 
   private JSONObject loadAndMergeSaveBoardConfig(
       JSONObject defaultCfg, String fileName, boolean needValidation) throws IOException {
@@ -1131,6 +1136,7 @@ public class Config {
     showEditbar = uiConfig.optBoolean("show-edit-bar", true);
     showForceMenu = uiConfig.optBoolean("show-force-menu", true);
     showRuleMenu = uiConfig.optBoolean("show-rule-menu", true);
+    showTsumeGoMenu = uiConfig.optBoolean("show-tsume-go-menu", true);
     showParamMenu = uiConfig.optBoolean("show-param-menu", true);
     showGobanMenu = uiConfig.optBoolean("show-goban-menu", true);
     showSaveLoadMenu = uiConfig.optBoolean("show-saveload-menu", true);
@@ -1391,6 +1397,9 @@ public class Config {
     contributeHideRules = uiConfig.optBoolean("contribute-hide-rules", false);
     showContribute = uiConfig.optBoolean("show-Contribute", true);
     // contributeUseSlowShutdown = uiConfig.optBoolean("contribute-use-slow-shutdown", true);
+    tesumeGoToPlay = uiConfig.optInt("tesume-go-to-play", 1);
+    tesumeGoAttaker = uiConfig.optInt("tesume-go-attaker", 1);
+    tesumeGoKoThreat = uiConfig.optInt("tesume-go-ko-threat", 1);
 
     enableClickReview = uiConfig.optBoolean("enable-click-review", false);
     contributeDisableRatingMatches =

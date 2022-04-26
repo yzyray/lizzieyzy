@@ -834,6 +834,16 @@ public class Utils {
       e.printStackTrace();
     }
   }
+  
+  public static void copyCaptureTsumeGo() {
+	    // TODO Auto-generated method stub
+	    try {
+	      copy("/assets/captureTsumeGo/CaptureTsumeGo.jar", "captureTsumeGo");
+	    } catch (IOException e) {
+	      // TODO Auto-generated catch block
+	      e.printStackTrace();
+	    }
+	  }
 
   public static void copyClockHelper() {
     // TODO Auto-generated method stub

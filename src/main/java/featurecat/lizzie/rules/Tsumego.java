@@ -14,7 +14,7 @@ public class Tsumego {
   private Stone side;
   private Stone otherSide;
 
-  public Stone getCoverSideAndIndex() {
+  public Stone getCoverSideAndIndex(boolean forceSide, boolean forceBlack) {
     Stone[] stones = Lizzie.board.getStones();
     int whiteCount = 0, blackCount = 0;
     int leftIndex = Board.boardWidth - 1,
@@ -106,12 +106,19 @@ public class Tsumego {
         if (blackBottom > whiteBottom) blackCoverCount--;
         break;
     }
-    if (blackCoverCount < whiteCoverCount) {
-      side = Stone.WHITE;
-    } else if (blackCoverCount > whiteCoverCount) {
-      side = Stone.BLACK;
-    } else if (blackCount >= whiteCount) side = Stone.BLACK;
-    else side = Stone.WHITE;
+
+    if (forceSide) {
+      if (forceBlack) side = Stone.BLACK;
+      else side = Stone.WHITE;
+    } else {
+      if (blackCoverCount < whiteCoverCount) {
+        side = Stone.WHITE;
+      } else if (blackCoverCount > whiteCoverCount) {
+        side = Stone.BLACK;
+      } else if (blackCount >= whiteCount) side = Stone.BLACK;
+      else side = Stone.WHITE;
+    }
+
     if (leftIndex - wallGap > 0) this.leftIndex = leftIndex - wallGap;
     else this.leftIndex = -1;
     if (rightIndex + wallGap < Board.boardWidth - 1) this.rightIndex = rightIndex + wallGap;
@@ -142,7 +149,11 @@ public class Tsumego {
     extraStones.add(stone);
   }
 
-  public void buildCoverWall(boolean addKoThreatSide, boolean addKoThreatOtherSide) {
+  public void buildCoverWall(
+      boolean addKoThreatSide,
+      boolean addKoThreatOtherSide,
+      boolean forceToPlay,
+      boolean blackToPlay) {
     double komi = 7.5;
     if (rightIndex == Board.boardWidth
         && leftIndex == -1
@@ -1152,7 +1163,9 @@ public class Tsumego {
       Utils.showMsg("没有布置 [" + (this.side == Stone.BLACK ? "黑方" : "白方") + "] 劫财的空间");
     if (noRoomForSideKo)
       Utils.showMsg("没有布置 [" + (this.side == Stone.BLACK ? "白方" : "黑方") + "] 劫财的空间");
-    Lizzie.board.flattenWithCondition(stones, zobrist, side == Stone.BLACK, extraStones, komi);
+    boolean isBlackTurn = Lizzie.board.getHistory().isBlacksTurn();
+    if (forceToPlay) isBlackTurn = blackToPlay;
+    Lizzie.board.flattenWithCondition(stones, zobrist, isBlackTurn, extraStones, komi);
   }
 
   private void removeAndAddStone(

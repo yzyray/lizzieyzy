@@ -10,6 +10,7 @@ import featurecat.lizzie.Config;
 import featurecat.lizzie.ExtraMode;
 import featurecat.lizzie.Lizzie;
 import featurecat.lizzie.analysis.AnalysisEngine;
+import featurecat.lizzie.analysis.CaptureTsumeGo;
 import featurecat.lizzie.analysis.ContributeEngine;
 import featurecat.lizzie.analysis.EngineManager;
 import featurecat.lizzie.analysis.GameInfo;
@@ -28,7 +29,6 @@ import featurecat.lizzie.rules.Movelist;
 import featurecat.lizzie.rules.NodeInfo;
 import featurecat.lizzie.rules.SGFParser;
 import featurecat.lizzie.rules.Stone;
-import featurecat.lizzie.rules.Tsumego;
 import featurecat.lizzie.util.Utils;
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
@@ -542,7 +542,7 @@ public class LizzieFrame extends JFrame {
           }
         };
     mainPanel =
-        new JPanel() {
+        new JPanel(true) {
           @Override
           public void paintComponent(Graphics g) {
             //        	  final Graphics2D g1 = (Graphics2D) g;
@@ -12223,17 +12223,12 @@ public class LizzieFrame extends JFrame {
     contributeSettings.setVisible(true);
   }
 
-  public void testTsumego() {
-    // TODO Auto-generated method stub
-    Tsumego tsumego = new Tsumego();
-    tsumego.getCoverSideAndIndex();
-    tsumego.buildCoverWall(true, true);
-    //    SwingUtilities.invokeLater(
-    //        new Runnable() {
-    //          public void run() {
-    //            CaptureTsumego captureTsumego = new CaptureTsumego();
-    //            captureTsumego.start();
-    //          }
-    //        });
-  }
+  public void openTsumego() {
+    TsumeGoFrame tsumeGoFrame = new TsumeGoFrame(this);
+    tsumeGoFrame.setVisible(true);
+  } 
+
+public void startCaptureTsumeGo() {
+	CaptureTsumeGo captureTsumeGo=new CaptureTsumeGo();
+}
 }

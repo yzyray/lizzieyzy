@@ -111,7 +111,7 @@ public class BoardHistoryList {
    *
    * @return data of previous node, Optional.empty if there is no previous node
    */
-  public Optional<BoardData> previous() {
+  public synchronized Optional<BoardData> previous() {
     head.undoExtraStones();
     if (!head.previous().isPresent()) return Optional.empty();
     else head = head.previous().get();

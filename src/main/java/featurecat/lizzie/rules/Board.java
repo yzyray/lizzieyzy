@@ -2431,7 +2431,12 @@ public class Board {
    * @return the list of candidate nodes
    */
   private List<BoardHistoryNode> branchCandidates(BoardHistoryNode node) {
-    int targetDepth = node.getData().moveNumber;
+    BoardHistoryNode calcDepthNode = node;
+    int targetDepth = 0;
+    while (calcDepthNode.previous().isPresent()) {
+      targetDepth++;
+      calcDepthNode = calcDepthNode.previous().get();
+    }
     Stream<BoardHistoryNode> nodes = singletonList(history.root()).stream();
     for (int i = 0; i < targetDepth; i++) {
       nodes = nodes.flatMap(n -> n.getVariations().stream());

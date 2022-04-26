@@ -286,15 +286,15 @@ public class Lizzie {
                 e.printStackTrace();
               }
             }
-            if (config.autoCheckVersion) {
-              String date = new SimpleDateFormat("yyyyMMdd").format(new Date());
-              if (!config.autoCheckDate.equals(date)) {
-                SocketCheckVersion socketCheckVersion = new SocketCheckVersion();
-                socketCheckVersion.SocketCheckVersion(true);
-              }
-            }
           }
         });
+    if (config.autoCheckVersion) {
+      String date = new SimpleDateFormat("yyyyMMdd").format(new Date());
+      if (!config.autoCheckDate.equals(date)) {
+        SocketCheckVersion socketCheckVersion = new SocketCheckVersion();
+        socketCheckVersion.SocketCheckVersion(true);
+      }
+    }
   }
 
   public static void setLookAndFeel() {

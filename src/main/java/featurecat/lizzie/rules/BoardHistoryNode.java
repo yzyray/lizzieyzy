@@ -179,7 +179,7 @@ public class BoardHistoryNode {
     if (!newBranch && nextDummy) {
       changeMove = true;
     }
-    if (!newBranch) {
+    if (!newBranch && !tsumego) {
       for (int i = 0; i < variations.size(); i++) {
         if (variations.get(i).data.zobrist.equals(data.zobrist)) {
           // if (i != 0) {
