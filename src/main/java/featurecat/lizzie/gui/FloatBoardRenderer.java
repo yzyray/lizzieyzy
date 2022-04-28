@@ -1667,18 +1667,6 @@ public class FloatBoardRenderer {
             Color oriColor = g.getColor();
             if (showScoreLead && showPlayouts && showWinrate) {
               double score = move.scoreMean;
-              if (Lizzie.board.getHistory().isBlacksTurn()) {
-                if (Lizzie.config.showKataGoScoreLeadWithKomi) {
-                  score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
-                }
-              } else {
-                if (Lizzie.config.showKataGoScoreLeadWithKomi) {
-                  score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
-                }
-                if (Lizzie.config.winrateAlwaysBlack) {
-                  score = -score;
-                }
-              }
               boolean shouldShowMaxColorWinrate = canShowMaxColor && hasMaxWinrate;
               boolean shouldShowMaxColorPlayouts = canShowMaxColor && move.playouts == maxPlayouts;
               boolean shouldShowMaxColorScoreLead =
@@ -1883,18 +1871,6 @@ public class FloatBoardRenderer {
               boolean shouldShowMaxColorScoreLead =
                   canShowMaxColor && move.scoreMean == maxScoreMean;
               double score = move.scoreMean;
-              if (Lizzie.board.getHistory().isBlacksTurn()) {
-                if (Lizzie.config.showKataGoScoreLeadWithKomi) {
-                  score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
-                }
-              } else {
-                if (Lizzie.config.showKataGoScoreLeadWithKomi) {
-                  score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
-                }
-                if (Lizzie.config.winrateAlwaysBlack) {
-                  score = -score;
-                }
-              }
               String winrateText = String.format(Locale.ENGLISH, "%.1f", roundedWinrate);
               String scoreLeadText = Utils.convertScoreToString(score, maxScoreMean);
               if (Lizzie.config.useDefaultInfoRowOrder
@@ -1964,18 +1940,6 @@ public class FloatBoardRenderer {
               boolean shouldShowMaxColorScoreLead =
                   canShowMaxColor && move.scoreMean == maxScoreMean;
               double score = move.scoreMean;
-              if (Lizzie.board.getHistory().isBlacksTurn()) {
-                if (Lizzie.config.showKataGoScoreLeadWithKomi) {
-                  score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
-                }
-              } else {
-                if (Lizzie.config.showKataGoScoreLeadWithKomi) {
-                  score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
-                }
-                if (Lizzie.config.winrateAlwaysBlack) {
-                  score = -score;
-                }
-              }
               String playoutsText = Utils.getPlayoutsString(move.playouts);
               String scoreLeadText = Utils.convertScoreToString(score, maxScoreMean);
               if (Lizzie.config.useDefaultInfoRowOrder
@@ -2075,18 +2039,6 @@ public class FloatBoardRenderer {
               if (shouldShowMaxColorPlayouts) g.setColor(oriColor);
             } else if (showScoreLead) {
               double score = move.scoreMean;
-              if (Lizzie.board.getHistory().isBlacksTurn()) {
-                if (Lizzie.config.showKataGoScoreLeadWithKomi) {
-                  score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
-                }
-              } else {
-                if (Lizzie.config.showKataGoScoreLeadWithKomi) {
-                  score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
-                }
-                if (Lizzie.config.winrateAlwaysBlack) {
-                  score = -score;
-                }
-              }
               boolean shouldShowMaxColorScoreLead =
                   canShowMaxColor && move.scoreMean == maxScoreMean;
               String scoreLeadText = Utils.convertScoreToString(score, maxScoreMean);

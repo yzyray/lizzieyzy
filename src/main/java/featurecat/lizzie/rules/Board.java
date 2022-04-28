@@ -1860,6 +1860,70 @@ public class Board {
     history.setGameInfo(oldHistory.getGameInfo());
   }
 
+  public void flattenWithCondition(
+      Stone[] stones,
+      Zobrist zobrist,
+      boolean blackToPlay,
+      List<extraMoveForTsumego> extraStones,
+      double komi) {
+    // 变成一步 extrastones 或者直接不flatten?
+    //	    Stone[] stones = history.getStones();
+    //	    boolean blackToPlay = history.isBlacksTurn();
+    BoardData state =
+        new BoardData(
+            stones,
+            Optional.empty(),
+            Stone.EMPTY,
+            blackToPlay,
+            zobrist,
+            0,
+            new int[boardWidth * boardHeight],
+            0,
+            0,
+            0.0,
+            0);
+    history.addOrGoto(state, false, false, true);
+    if (extraStones != null && extraStones.size() > 0) {
+      for (extraMoveForTsumego stone : extraStones) addExtraStoneNow(stone.x, stone.y, stone.color);
+    }
+    history.getGameInfo().setKomi(komi);
+    history.getGameInfo().changeKomi();
+    Lizzie.leelaz.sendCommand("komi " + komi);
+    Lizzie.leelaz.ponder();
+  }
+
+  public void flattenWithCondition(
+      Stone[] stones, Zobrist zobrist, boolean blackToPlay, List<extraMoveForTsumego> extraStones) {
+    // 变成一步 extrastones 或者直接不flatten?
+    //	    Stone[] stones = history.getStones();
+    //	    boolean blackToPlay = history.isBlacksTurn();
+    BoardData state =
+        new BoardData(
+            stones,
+            Optional.empty(),
+            Stone.EMPTY,
+            blackToPlay,
+            zobrist,
+            0,
+            new int[boardWidth * boardHeight],
+            0,
+            0,
+            0.0,
+            0);
+    history.addOrGoto(state, false, false, true);
+    if (extraStones != null && extraStones.size() > 0) {
+      for (extraMoveForTsumego stone : extraStones) addExtraStoneNow(stone.x, stone.y, stone.color);
+    }
+    Lizzie.leelaz.ponder();
+  }
+
+  private void addExtraStoneNow(int x, int y, Stone color) {
+    if (color != null) {
+      history.getCurrentHistoryNode().addExtraStones(x, y, color == Stone.BLACK);
+      Lizzie.leelaz.playMove(color, convertCoordinatesToName(x, y));
+    }
+  }
+
   /**
    * Removes a chain if it has no liberties
    *
@@ -2392,7 +2456,12 @@ public class Board {
    * @return the list of candidate nodes
    */
   private List<BoardHistoryNode> branchCandidates(BoardHistoryNode node) {
-    int targetDepth = node.getData().moveNumber;
+    BoardHistoryNode calcDepthNode = node;
+    int targetDepth = 0;
+    while (calcDepthNode.previous().isPresent()) {
+      targetDepth++;
+      calcDepthNode = calcDepthNode.previous().get();
+    }
     Stream<BoardHistoryNode> nodes = singletonList(history.root()).stream();
     for (int i = 0; i < targetDepth; i++) {
       nodes = nodes.flatMap(n -> n.getVariations().stream());
@@ -2565,11 +2634,11 @@ public class Board {
         Lizzie.board.clearNodeInfo(Lizzie.board.getHistory().getStart());
         Lizzie.board.setMovelistAll();
       } else {
-        deleteMoveNoHintAfter();
-        // clear(false); // Clear the board if we're at the top
+        clear(false); // Clear the board if we're at the top
         if (Lizzie.leelaz.isPondering()) Lizzie.leelaz.ponder();
       }
     }
+    Lizzie.frame.redrawTree = true;
     // LizzieFrame.forceRecreate = true;
   }
 
@@ -2599,6 +2668,7 @@ public class Board {
         if (Lizzie.leelaz.isPondering()) Lizzie.leelaz.ponder();
       }
     }
+    Lizzie.frame.redrawTree = true;
     // LizzieFrame.forceRecreate = true;
   }
 
@@ -2627,6 +2697,7 @@ public class Board {
         if (Lizzie.leelaz.isPondering()) Lizzie.leelaz.ponder();
       }
     }
+    Lizzie.frame.redrawTree = true;
     // LizzieFrame.forceRecreate = true;
   }
 
@@ -2794,7 +2865,7 @@ public class Board {
         updateIsBest(history.getCurrentHistoryNode().next().get());
       if (!history.getLastMove().isPresent()) isPass = true;
       if (history.getPrevious().isPresent()) {
-        if (!Lizzie.board.isLoadingFile) {
+        if (history.getData().lastMoveColor != Stone.EMPTY && !Lizzie.board.isLoadingFile) {
           boolean nopass = false;
           if (!Lizzie.leelaz.isKatago || Lizzie.leelaz.isSai) {
             if (isPass

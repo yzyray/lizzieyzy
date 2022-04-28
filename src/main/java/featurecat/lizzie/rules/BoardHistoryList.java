@@ -100,15 +100,18 @@ public class BoardHistoryList {
   }
 
   public void addOrGoto(BoardData data, boolean newBranch, boolean changeMove) {
-    head = head.addOrGoto(data, newBranch, changeMove);
+    head = head.addOrGoto(data, newBranch, changeMove, false);
   }
 
+  public void addOrGoto(BoardData data, boolean newBranch, boolean changeMove, boolean tsumego) {
+    head = head.addOrGoto(data, newBranch, changeMove, tsumego);
+  }
   /**
    * moves the pointer to the left, returns the data stored there
    *
    * @return data of previous node, Optional.empty if there is no previous node
    */
-  public Optional<BoardData> previous() {
+  public synchronized Optional<BoardData> previous() {
     head.undoExtraStones();
     if (!head.previous().isPresent()) return Optional.empty();
     else head = head.previous().get();
@@ -128,7 +131,7 @@ public class BoardHistoryList {
     return next(false);
   }
 
-  public Optional<BoardData> next(boolean includeDummay) {
+  public synchronized Optional<BoardData> next(boolean includeDummay) {
     Optional<BoardHistoryNode> n = head.next(includeDummay);
     // n.ifPresent(x -> head = x);
     if (n.isPresent()) {

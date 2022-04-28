@@ -10,6 +10,7 @@ import featurecat.lizzie.Config;
 import featurecat.lizzie.ExtraMode;
 import featurecat.lizzie.Lizzie;
 import featurecat.lizzie.analysis.AnalysisEngine;
+import featurecat.lizzie.analysis.CaptureTsumeGo;
 import featurecat.lizzie.analysis.ContributeEngine;
 import featurecat.lizzie.analysis.EngineManager;
 import featurecat.lizzie.analysis.GameInfo;
@@ -491,6 +492,9 @@ public class LizzieFrame extends JFrame {
   public ContributeView contributeView;
   public boolean isShowingContributeGame = false;
 
+  private TsumeGoFrame tsumeGoFrame;
+  private CaptureTsumeGoFrame captureTsumeGoFrame;
+
   /** Creates a window */
   public LizzieFrame() {
     setTitle(DEFAULT_TITLE);
@@ -541,7 +545,7 @@ public class LizzieFrame extends JFrame {
           }
         };
     mainPanel =
-        new JPanel() {
+        new JPanel(true) {
           @Override
           public void paintComponent(Graphics g) {
             //        	  final Graphics2D g1 = (Graphics2D) g;
@@ -12097,11 +12101,7 @@ public class LizzieFrame extends JFrame {
           try {
             processClockHelper =
                 Runtime.getRuntime()
-                    .exec(
-                        java64Path
-                            + " -jar clockHelper"
-                            + File.separator
-                            + javaReadBoardName);
+                    .exec(java64Path + " -jar clockHelper" + File.separator + javaReadBoardName);
             success = true;
           } catch (Exception e) {
             success = false;
@@ -12115,11 +12115,7 @@ public class LizzieFrame extends JFrame {
             try {
               processClockHelper =
                   Runtime.getRuntime()
-                      .exec(
-                          java32
-                              + " -jar clockHelper"
-                              + File.separator
-                              + javaReadBoardName);
+                      .exec(java32 + " -jar clockHelper" + File.separator + javaReadBoardName);
               success = true;
             } catch (Exception e) {
               success = false;
@@ -12130,18 +12126,11 @@ public class LizzieFrame extends JFrame {
         if (!success) {
           processClockHelper =
               Runtime.getRuntime()
-                  .exec(
-                      "java -jar clockHelper"
-                          + File.separator
-                          + javaReadBoardName);
+                  .exec("java -jar clockHelper" + File.separator + javaReadBoardName);
         }
       } else {
         processClockHelper =
-            Runtime.getRuntime()
-                .exec(
-                    "java -jar clockHelper"
-                        + File.separator
-                        + javaReadBoardName);
+            Runtime.getRuntime().exec("java -jar clockHelper" + File.separator + javaReadBoardName);
       }
     } catch (Exception e) {
       Utils.showMsg(e.getLocalizedMessage());
@@ -12235,5 +12224,29 @@ public class LizzieFrame extends JFrame {
   public void openContributeSettings() {
     ContributeSettings contributeSettings = new ContributeSettings(this);
     contributeSettings.setVisible(true);
+  }
+
+  public void openTsumego() {
+    if (tsumeGoFrame != null && tsumeGoFrame.isVisible()) {
+      tsumeGoFrame.setVisible(false);
+      tsumeGoFrame.dispose();
+    }
+    tsumeGoFrame = new TsumeGoFrame(this);
+    tsumeGoFrame.setVisible(true);
+  }
+
+  public void startCaptureTsumeGo() {
+    setExtendedState(JFrame.ICONIFIED);
+    if (captureTsumeGoFrame != null && captureTsumeGoFrame.isVisible())
+      captureTsumeGoFrame.setVisible(false);
+    new CaptureTsumeGo();
+  }
+
+  public void openCaptureTsumego() {
+    if (captureTsumeGoFrame != null && captureTsumeGoFrame.isVisible()) {
+      captureTsumeGoFrame.setVisible(false);
+    }
+    captureTsumeGoFrame = new CaptureTsumeGoFrame();
+    captureTsumeGoFrame.setVisible(true);
   }
 }

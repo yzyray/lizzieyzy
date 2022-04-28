@@ -21,12 +21,12 @@ public class EngineGameInfo {
 
   public int firstEngineWinAsBlack;
   public int firstEngineWinAsWhite;
-  public int firstEngineTotlePlayouts;
+  public long firstEngineTotlePlayouts;
   public int firstEngineTotleTime;
 
   public int secondEngineWinAsBlack;
   public int secondEngineWinAsWhite;
-  public int secondEngineTotlePlayouts;
+  public long secondEngineTotlePlayouts;
   public int secondEngineTotleTime;
 
   public int timeBlack;

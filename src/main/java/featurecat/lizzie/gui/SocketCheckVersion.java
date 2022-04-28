@@ -130,7 +130,7 @@ public class SocketCheckVersion {
     } finally {
       if (socket != null)
         try {
-          System.out.println("checkversion complete....");
+          // System.out.println("checkversion complete....");
           // Lizzie.gtpConsole.addLine("checkversion complete...." + "\n");
           br.close();
           pw.close();

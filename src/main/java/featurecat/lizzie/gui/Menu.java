@@ -130,6 +130,8 @@ public class Menu extends JMenuBar {
   SetKomi setkomi;
   public SetKataPDA setPda;
   JFontButton more2;
+
+  JFontButton tsumeGo;
   JFontButton setRules;
   JFontButton setLzSaiParam;
   JFontButton setBoardSize;
@@ -160,6 +162,17 @@ public class Menu extends JMenuBar {
     fileMenu.setForeground(Color.BLACK);
     // fileMenu.setFont(headFont);
     this.add(fileMenu);
+
+    final JFontMenuItem newBoard = new JFontMenuItem(resourceBundle.getString("Menu.newBoard"));
+    newBoard.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.board.clear(false);
+          }
+        });
+    fileMenu.add(newBoard);
+
     final JFontMenuItem open =
         new JFontMenuItem(resourceBundle.getString("Menu.open")); // ("打开棋谱(O)");
     open.addActionListener(
@@ -3044,6 +3057,27 @@ public class Menu extends JMenuBar {
           }
         });
     analyzeMenu.add(hawkEye2);
+
+    final JFontMenuItem tsumeGoMenu = new JFontMenuItem(resourceBundle.getString("Menu.tsumeGo"));
+    tsumeGoMenu.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.frame.openTsumego();
+          }
+        });
+    analyzeMenu.add(tsumeGoMenu);
+
+    final JFontMenuItem captureTsumeGo =
+        new JFontMenuItem(resourceBundle.getString("Menu.captureTsumeGo"));
+    captureTsumeGo.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.frame.openCaptureTsumego();
+          }
+        });
+    analyzeMenu.add(captureTsumeGo);
     analyzeMenu.addSeparator();
 
     final JFontMenuItem autoAnalyze =
@@ -3409,7 +3443,7 @@ public class Menu extends JMenuBar {
     addBlack.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            featurecat.lizzie.gui.Input.insert = 0;
+            Input.insert = 0;
             Lizzie.frame.blackorwhite = 1;
             black.setIcon(iconblack2);
             white.setIcon(iconwhite);
@@ -3424,7 +3458,7 @@ public class Menu extends JMenuBar {
     addWhite.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            featurecat.lizzie.gui.Input.insert = 0;
+            Input.insert = 0;
             Lizzie.frame.blackorwhite = 2;
             black.setIcon(iconblack);
             white.setIcon(iconwhite2);
@@ -3439,7 +3473,7 @@ public class Menu extends JMenuBar {
     alternatelyMoves.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            featurecat.lizzie.gui.Input.insert = 0;
+            Input.insert = 0;
             Lizzie.frame.blackorwhite = 0;
             black.setIcon(iconblack);
             white.setIcon(iconwhite);
@@ -4329,6 +4363,19 @@ public class Menu extends JMenuBar {
           }
         });
 
+    final JFontCheckBoxMenuItem showTsumeGoMenu =
+        new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.showTsumeGoMenu"));
+    customTopToolBar.add(showTsumeGoMenu);
+
+    showTsumeGoMenu.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.config.showTsumeGoMenu = !Lizzie.config.showTsumeGoMenu;
+            Lizzie.config.uiConfig.put("show-tsume-go-menu", Lizzie.config.showTsumeGoMenu);
+            setKomiPanelExtra();
+          }
+        });
+
     final JFontCheckBoxMenuItem showParamMenu =
         new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.showParamMenu")); // 参数按钮
     customTopToolBar.add(showParamMenu);
@@ -4378,6 +4425,8 @@ public class Menu extends JMenuBar {
             else allowAvoidTools.setSelected(false);
             if (Lizzie.config.showRuleMenu) showRuleMenu.setSelected(true);
             else showRuleMenu.setSelected(false);
+            if (Lizzie.config.showTsumeGoMenu) showTsumeGoMenu.setSelected(true);
+            else showTsumeGoMenu.setSelected(false);
             if (Lizzie.config.showParamMenu) showParamMenu.setSelected(true);
             else showParamMenu.setSelected(false);
             if (Lizzie.config.showGobanMenu) showGobanMenu.setSelected(true);
@@ -5697,12 +5746,22 @@ public class Menu extends JMenuBar {
             }
           }
         });
+
     setRules = new JFontButton(resourceBundle.getString("Menu.rulesBtn"));
     setRules.setFocusable(false);
     setRules.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             Lizzie.frame.setRules();
+          }
+        });
+
+    tsumeGo = new JFontButton(resourceBundle.getString("Menu.tsumeGoBtn"));
+    tsumeGo.setFocusable(false);
+    tsumeGo.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.frame.openTsumego();
           }
         });
 
@@ -6260,6 +6319,7 @@ public class Menu extends JMenuBar {
     komiPanel.add(txtWRN);
     komiPanel.add(chkWRN);
     komiPanel.add(lblWRN);
+    tsumeGo.setMargin(new Insets(0, 0, 0, 0));
     setRules.setMargin(new Insets(0, 0, 0, 0));
     setLzSaiParam.setMargin(new Insets(0, 0, 0, 0));
     setBoardSize.setMargin(new Insets(0, 0, 0, 0));
@@ -6578,7 +6638,7 @@ public class Menu extends JMenuBar {
     black.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            featurecat.lizzie.gui.Input.insert = 0;
+            Input.insert = 0;
             if (Lizzie.frame.blackorwhite != 1) {
               Lizzie.frame.blackorwhite = 1;
               black.setIcon(iconblack2);
@@ -6602,7 +6662,7 @@ public class Menu extends JMenuBar {
     white.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            featurecat.lizzie.gui.Input.insert = 0;
+            Input.insert = 0;
             if (Lizzie.frame.blackorwhite != 2) {
               Lizzie.frame.blackorwhite = 2;
               black.setIcon(iconblack);
@@ -6628,7 +6688,7 @@ public class Menu extends JMenuBar {
         new ActionListener() {
 
           public void actionPerformed(ActionEvent e) {
-            featurecat.lizzie.gui.Input.insert = 0;
+            Input.insert = 0;
             if (blackwhite.getIcon() == iconbh) {
               Lizzie.frame.blackorwhite = 0;
               black.setIcon(iconblack);
@@ -7297,6 +7357,7 @@ public class Menu extends JMenuBar {
     if (Lizzie.config.showBasicBtn) {
       rankMarkOn = new ImageIcon();
       rankMarkOff = new ImageIcon();
+      ImageIcon iconNewFile = new ImageIcon();
       ImageIcon iconOpen = new ImageIcon();
       ImageIcon iconSave = new ImageIcon();
       ImageIcon iconAnalyze = new ImageIcon();
@@ -7321,6 +7382,10 @@ public class Menu extends JMenuBar {
       ImageIcon clear = new ImageIcon();
       ImageIcon flash = new ImageIcon();
       try {
+        iconNewFile.setImage(
+            ImageIO.read(getClass().getResourceAsStream("/assets/newFile.png"))
+                .getScaledInstance(
+                    Config.menuIconSize, Config.menuIconSize, java.awt.Image.SCALE_SMOOTH));
         flash.setImage(
             ImageIO.read(getClass().getResourceAsStream("/assets/flash.png"))
                 .getScaledInstance(
@@ -7425,6 +7490,19 @@ public class Menu extends JMenuBar {
         // TODO Auto-generated catch block
         e.printStackTrace();
       }
+
+      JFontButton btnNewFile = new JFontButton(iconNewFile);
+      btnNewFile.setFocusable(false);
+      btnNewFile.setPreferredSize(new Dimension(Config.menuHeight, Config.menuHeight));
+      btnNewFile.setToolTipText(
+          resourceBundle.getString("Menu.btnNewFile.toolTipText")); // "打开棋谱(O)");
+      btnNewFile.addActionListener(
+          new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              Lizzie.board.clear(false);
+              Lizzie.frame.refresh();
+            }
+          });
 
       JFontButton btnOpen = new JFontButton(iconOpen);
       btnOpen.setFocusable(false);
@@ -7777,6 +7855,7 @@ public class Menu extends JMenuBar {
           });
 
       // Lizzie.frame.topPanel.addSeparator();
+      Lizzie.frame.topPanel.add(btnNewFile);
       Lizzie.frame.topPanel.add(btnOpen);
       Lizzie.frame.topPanel.add(btnSave);
       Lizzie.frame.topPanel.add(btnFlashAnalyze);
@@ -9060,6 +9139,7 @@ public class Menu extends JMenuBar {
         Lizzie.frame.topPanel.add(chkShowScore);
       }
     }
+    tsumeGo.setMargin(new Insets(0, 0, 1, 0));
     setRules.setMargin(new Insets(0, 0, 1, 0));
     setLzSaiParam.setMargin(new Insets(0, 0, 1, 0));
     setBoardSize.setMargin(new Insets(0, 0, 1, 0));
@@ -9072,6 +9152,10 @@ public class Menu extends JMenuBar {
     if (Lizzie.config.showRuleMenu) {
       setRules.setVisible(true);
       Lizzie.frame.topPanel.add(setRules);
+    }
+    if (Lizzie.config.showTsumeGoMenu) {
+      tsumeGo.setVisible(true);
+      Lizzie.frame.topPanel.add(tsumeGo);
     }
     if (Lizzie.config.showParamMenu) {
       setLzSaiParam.setVisible(true);
@@ -9358,135 +9442,41 @@ public class Menu extends JMenuBar {
               }
             }
             JPanel btnPanel = new JPanel(null);
-            int pos = 0;
             if (Lizzie.config.showRuleMenu
                 || Lizzie.config.showParamMenu
                 || Lizzie.config.showGobanMenu
                 || Lizzie.config.showSaveLoadMenu) toolPanel.addSeparator();
             toolPanel.add(setRules);
+            toolPanel.add(tsumeGo);
             toolPanel.add(setLzSaiParam);
             toolPanel.add(setBoardSize);
             toolPanel.add(saveLoad);
+            int pos = 0;
             if (Lizzie.config.showRuleMenu) {
-              setRules.setBounds(
-                  pos,
-                  Lizzie.config.isFrameFontSmall()
-                      ? 0
-                      : (Lizzie.config.isFrameFontMiddle() ? 0 : 2),
-                  Lizzie.config.isFrameFontSmall()
-                      ? 40
-                      : (Lizzie.config.isFrameFontMiddle()
-                          ? 46
-                          : (Lizzie.config.isChinese ? 52 : 55)),
-                  Lizzie.config.isFrameFontSmall()
-                      ? 20
-                      : (Lizzie.config.isFrameFontMiddle() ? 23 : 26));
+              pos = setButtonSize(setRules, pos);
               setRules.setVisible(true);
               btnPanel.add(setRules);
-              pos +=
-                  Lizzie.config.isFrameFontSmall()
-                      ? 40
-                      : (Lizzie.config.isFrameFontMiddle()
-                          ? 46
-                          : (Lizzie.config.isChinese ? 52 : 55));
             } else setRules.setVisible(false);
+            if (Lizzie.config.showTsumeGoMenu) {
+              pos = setButtonSize(tsumeGo, pos);
+              tsumeGo.setVisible(true);
+              btnPanel.add(tsumeGo);
+            } else tsumeGo.setVisible(false);
             if (Lizzie.config.showParamMenu) {
-              if (Lizzie.config.isChinese) {
-                setLzSaiParam.setBounds(
-                    pos,
-                    Lizzie.config.isFrameFontSmall()
-                        ? 0
-                        : (Lizzie.config.isFrameFontMiddle() ? 0 : 2),
-                    Lizzie.config.isFrameFontSmall()
-                        ? 40
-                        : (Lizzie.config.isFrameFontMiddle() ? 46 : 52),
-                    Lizzie.config.isFrameFontSmall()
-                        ? 20
-                        : (Lizzie.config.isFrameFontMiddle() ? 23 : 26));
-                pos +=
-                    Lizzie.config.isFrameFontSmall()
-                        ? 40
-                        : (Lizzie.config.isFrameFontMiddle() ? 46 : 52);
-              } else {
-                setLzSaiParam.setBounds(
-                    pos,
-                    Lizzie.config.isFrameFontSmall()
-                        ? 0
-                        : (Lizzie.config.isFrameFontMiddle() ? 0 : 2),
-                    Lizzie.config.isFrameFontSmall()
-                        ? 48
-                        : (Lizzie.config.isFrameFontMiddle() ? 62 : 75),
-                    Lizzie.config.isFrameFontSmall()
-                        ? 20
-                        : (Lizzie.config.isFrameFontMiddle() ? 23 : 26));
-                pos +=
-                    Lizzie.config.isFrameFontSmall()
-                        ? 48
-                        : (Lizzie.config.isFrameFontMiddle() ? 62 : 75);
-              }
+              pos = setButtonSize(setLzSaiParam, pos);
               setLzSaiParam.setVisible(true);
               btnPanel.add(setLzSaiParam);
 
             } else setLzSaiParam.setVisible(false);
             if (Lizzie.config.showGobanMenu) {
-              if (Lizzie.config.isChinese) {
-                setBoardSize.setBounds(
-                    pos,
-                    Lizzie.config.isFrameFontSmall()
-                        ? 0
-                        : (Lizzie.config.isFrameFontMiddle() ? 0 : 2),
-                    Lizzie.config.isFrameFontSmall()
-                        ? 40
-                        : (Lizzie.config.isFrameFontMiddle() ? 46 : 52),
-                    Lizzie.config.isFrameFontSmall()
-                        ? 20
-                        : (Lizzie.config.isFrameFontMiddle() ? 23 : 26));
-                pos +=
-                    Lizzie.config.isFrameFontSmall()
-                        ? 40
-                        : (Lizzie.config.isFrameFontMiddle() ? 46 : 52);
-              } else {
-                setBoardSize.setBounds(
-                    pos,
-                    Lizzie.config.isFrameFontSmall()
-                        ? 0
-                        : (Lizzie.config.isFrameFontMiddle() ? 0 : 2),
-                    Lizzie.config.isFrameFontSmall()
-                        ? 45
-                        : (Lizzie.config.isFrameFontMiddle() ? 55 : 65),
-                    Lizzie.config.isFrameFontSmall()
-                        ? 20
-                        : (Lizzie.config.isFrameFontMiddle() ? 23 : 26));
-                pos +=
-                    Lizzie.config.isFrameFontSmall()
-                        ? 45
-                        : (Lizzie.config.isFrameFontMiddle() ? 55 : 65);
-              }
+              pos = setButtonSize(setBoardSize, pos);
               setBoardSize.setVisible(true);
               btnPanel.add(setBoardSize);
             } else setBoardSize.setVisible(false);
             if (Lizzie.config.showSaveLoadMenu) {
-              saveLoad.setBounds(
-                  pos,
-                  Lizzie.config.isFrameFontSmall()
-                      ? 0
-                      : (Lizzie.config.isFrameFontMiddle() ? 0 : 2),
-                  Lizzie.config.isFrameFontSmall()
-                      ? 40
-                      : (Lizzie.config.isFrameFontMiddle()
-                          ? 46
-                          : (Lizzie.config.isChinese ? 52 : 55)),
-                  Lizzie.config.isFrameFontSmall()
-                      ? 20
-                      : (Lizzie.config.isFrameFontMiddle() ? 23 : 26));
+              pos = setButtonSize(saveLoad, pos);
               saveLoad.setVisible(true);
               btnPanel.add(saveLoad);
-              pos +=
-                  Lizzie.config.isFrameFontSmall()
-                      ? 40
-                      : (Lizzie.config.isFrameFontMiddle()
-                          ? 46
-                          : (Lizzie.config.isChinese ? 52 : 55));
             } else saveLoad.setVisible(false);
             toolPanel.add(btnPanel);
             komiPanel.add(toolPanel);
@@ -9537,6 +9527,16 @@ public class Menu extends JMenuBar {
             }
           }
         });
+  }
+
+  private int setButtonSize(JButton button, int startPos) {
+    int length = button.getFontMetrics(button.getFont()).stringWidth(button.getText()) + 13;
+    button.setBounds(
+        startPos,
+        1,
+        length,
+        Lizzie.config.isFrameFontSmall() ? 19 : (Lizzie.config.isFrameFontMiddle() ? 23 : 26));
+    return startPos + length;
   }
 
   public void toggleDoubleMenuGameStatus() {
@@ -9823,18 +9823,6 @@ public class Menu extends JMenuBar {
         });
   }
 
-  public void toggleShowRule(boolean show) {
-    this.setRules.setVisible(show);
-  }
-
-  public void toggleShowLzSaiParam(boolean show) {
-    this.setLzSaiParam.setVisible(show);
-  }
-
-  public void toggleShowSetBoardSize(boolean show) {
-    this.setBoardSize.setVisible(show);
-  }
-
   public void toggleShowDoubleMenuButton(boolean show) {
     this.btnDoubleMenu.setVisible(show);
   }
@@ -9994,6 +9982,14 @@ public class Menu extends JMenuBar {
       g.setColor(new Color(232, 232, 232));
       g.fillRect(0, 0, getWidth(), getHeight());
     }
+  }
+
+  public void clearInsert() {
+    Input.insert = 0;
+    Lizzie.frame.blackorwhite = 0;
+    black.setIcon(iconblack);
+    white.setIcon(iconwhite);
+    blackwhite.setIcon(iconbh);
   }
 
   public void setWrnText(double wrn) {

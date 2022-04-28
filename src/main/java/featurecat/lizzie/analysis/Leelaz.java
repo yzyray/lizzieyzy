@@ -2716,8 +2716,9 @@ public class Leelaz {
           colorString = "W";
           break;
         default:
-          throw new IllegalArgumentException(
-              "The stone color must be B or W, but was " + color.toString());
+          return;
+          //          throw new IllegalArgumentException(
+          //              "The stone color must be B or W, but was " + color.toString());
       }
 
       sendCommand("play " + colorString + " " + move);
@@ -2752,8 +2753,9 @@ public class Leelaz {
           colorString = "W";
           break;
         default:
-          throw new IllegalArgumentException(
-              "The stone color must be B or W, but was " + color.toString());
+          return;
+          //          throw new IllegalArgumentException(
+          //              "The stone color must be B or W, but was " + color.toString());
       }
       sendCommand("play " + colorString + " " + move);
       // Lizzie.frame.subBoardRenderer.reverseBestmoves = true;

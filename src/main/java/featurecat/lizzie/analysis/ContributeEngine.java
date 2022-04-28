@@ -69,9 +69,11 @@ public class ContributeEngine {
   public ContributeEngine() {
     if (Lizzie.config.contributeUseCommand) {
       engineCommand = Lizzie.config.contributeCommand;
-      if (!engineCommand.contains("-override")) engineCommand += " -override-config ";
-      if (!engineCommand.contains(" -config")) {
-        engineCommand += " \"serverUrl=https://katagotraining.org/\",";
+      if (!Lizzie.config.contributeUsePureCommand) {
+        if (!engineCommand.contains("-override")) engineCommand += " -override-config ";
+        if (!engineCommand.contains(" -config")) {
+          engineCommand += " \"serverUrl=https://katagotraining.org/\",";
+        }
       }
     } else {
       engineCommand = Lizzie.config.contributeEnginePath + " contribute";
@@ -87,13 +89,16 @@ public class ContributeEngine {
       engineCommand += " -override-config ";
       if (!useConfigFile) engineCommand += "\"serverUrl=https://katagotraining.org/\",";
     }
-    engineCommand += "\"username=" + Lizzie.config.contributeUserName + "\",";
-    engineCommand += "\"password=" + Lizzie.config.contributePassword + "\",";
-    engineCommand += "\"maxSimultaneousGames=" + Lizzie.config.contributeBatchGames + "\",";
-    engineCommand +=
-        "\"includeOwnership=" + (Lizzie.config.contributeShowEstimate ? "true" : "false") + "\",";
-    if (Lizzie.config.contributeDisableRatingMatches) engineCommand += "\"maxRatingMatches=0\",";
-    engineCommand += "\"logGamesAsJson=true\"";
+
+    if (!Lizzie.config.contributeUseCommand || !Lizzie.config.contributeUsePureCommand) {
+      engineCommand += "\"username=" + Lizzie.config.contributeUserName + "\",";
+      engineCommand += "\"password=" + Lizzie.config.contributePassword + "\",";
+      engineCommand += "\"maxSimultaneousGames=" + Lizzie.config.contributeBatchGames + "\",";
+      engineCommand +=
+          "\"includeOwnership=" + (Lizzie.config.contributeShowEstimate ? "true" : "false") + "\",";
+      if (Lizzie.config.contributeDisableRatingMatches) engineCommand += "\"maxRatingMatches=0\",";
+      engineCommand += "\"logGamesAsJson=true\"";
+    }
     RemoteEngineData remoteData = Utils.getContributeRemoteEngineData();
     this.useJavaSSH = Lizzie.config.contributeUseCommand && remoteData.useJavaSSH;
     this.ip = remoteData.ip;
@@ -117,14 +122,16 @@ public class ContributeEngine {
     hasEternalTip = false;
     getVersion = false;
     paused = false;
-    if (errorTimes > 1 && !addCacerts && !Lizzie.config.contributeUseCommand) {
-      addCacerts = true;
-      engineCommand +=
-          " -cacerts "
-              + new File(Lizzie.config.contributeEnginePath).getParent()
-              + File.separator
-              + "cacert.pem";
-      errorTimes = 0;
+    if (!Lizzie.config.contributeUseCommand || !Lizzie.config.contributeUsePureCommand) {
+      if (errorTimes > 1 && !addCacerts && !Lizzie.config.contributeUseCommand) {
+        addCacerts = true;
+        engineCommand +=
+            " -cacerts "
+                + new File(Lizzie.config.contributeEnginePath).getParent()
+                + File.separator
+                + "cacert.pem";
+        errorTimes = 0;
+      }
     }
     commands = Utils.splitCommand(engineCommand);
     if (this.useJavaSSH) {

@@ -421,10 +421,9 @@ public class InputIndependentMainBoard implements KeyListener {
           Lizzie.config.toggleShowCommentNodeColor();
         } else if (e.isAltDown()) {
           Lizzie.config.toggleShowComment();
-        }
-        //        else if (e.isShiftDown()) {
-        //                }
-        else {
+        } else if (e.isShiftDown()) {
+          Lizzie.frame.startCaptureTsumeGo();
+        } else {
           Lizzie.frame.togglePolicy();
         }
         break;

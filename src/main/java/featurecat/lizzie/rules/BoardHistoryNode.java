@@ -41,7 +41,7 @@ public class BoardHistoryNode {
     variations.clear();
   }
 
-  public void addExtraStones(int x, int y, boolean isBlack) {
+  public synchronized void addExtraStones(int x, int y, boolean isBlack) {
     if (extraStones == null) extraStones = new ArrayList<ExtraStones>();
     ExtraStones stone = new ExtraStones();
     stone.x = x;
@@ -50,7 +50,7 @@ public class BoardHistoryNode {
     extraStones.add(stone);
   }
 
-  public void undoExtraStones() {
+  public synchronized void undoExtraStones() {
     if (extraStones == null || Lizzie.board.isLoadingFile) return;
     for (ExtraStones stone : extraStones) {
       Lizzie.leelaz.undo(true, Lizzie.board.getHistory().getPrevious().get().blackToPlay);
@@ -122,7 +122,7 @@ public class BoardHistoryNode {
   }
 
   public BoardHistoryNode addOrGoto(BoardData data, boolean newBranch) {
-    return addOrGoto(data, newBranch, false);
+    return addOrGoto(data, newBranch, false, false);
   }
 
   /**
@@ -165,7 +165,8 @@ public class BoardHistoryNode {
     }
   }
 
-  public BoardHistoryNode addOrGoto(BoardData data, boolean newBranch, boolean changeMove) {
+  public BoardHistoryNode addOrGoto(
+      BoardData data, boolean newBranch, boolean changeMove, boolean tsumego) {
     if (!Lizzie.board.isLoadingFile && Lizzie.leelaz != null && !EngineManager.isEngineGame) {
       Lizzie.leelaz.clearBestMoves();
     }
@@ -178,7 +179,7 @@ public class BoardHistoryNode {
     if (!newBranch && nextDummy) {
       changeMove = true;
     }
-    if (!newBranch) {
+    if (!newBranch && !tsumego) {
       for (int i = 0; i < variations.size(); i++) {
         if (variations.get(i).data.zobrist.equals(data.zobrist)) {
           // if (i != 0) {
@@ -197,7 +198,7 @@ public class BoardHistoryNode {
       }
     }
 
-    if (!this.previous.isPresent()) {
+    if (!this.previous.isPresent() && !tsumego) {
       data.moveMNNumber = 1;
     }
     if (Lizzie.config.newMoveNumberInBranch && !variations.isEmpty() && !changeMove) {
@@ -224,7 +225,7 @@ public class BoardHistoryNode {
 
     } else {
       // Add node
-      if (variations.size() == 0) {
+      if (variations.size() == 0 && !tsumego) {
         if (this.data.blackToPlay != node.getData().lastMoveColor.isBlack()) {
           this.data.blackToPlay = node.getData().lastMoveColor.isBlack();
         }
