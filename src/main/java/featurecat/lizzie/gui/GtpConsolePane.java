@@ -388,6 +388,9 @@ public class GtpConsolePane extends JDialog {
               false,
               Config.frameFontSize);
         }
+      } else if ("showboard".equals(commandToLower)) {
+        Lizzie.leelaz.sendCommand(command);
+        if (Lizzie.leelaz.isPondering()) Lizzie.leelaz.ponder();
       } else if ("clear_board".equals(commandToLower)) {
         Lizzie.board.clear(false);
         Lizzie.frame.refresh();
