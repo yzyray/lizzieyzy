@@ -60,7 +60,12 @@ public class CaptureTsumeGo {
           try {
             process =
                 Runtime.getRuntime()
-                    .exec(java64Path + " -jar captureTsumeGo" + File.separator + jarName + params);
+                    .exec(
+                        java64Path
+                            + " -Dsun.java2d.uiScale=1.0 -jar captureTsumeGo"
+                            + File.separator
+                            + jarName
+                            + params);
             success = true;
           } catch (Exception e) {
             success = false;
@@ -74,7 +79,12 @@ public class CaptureTsumeGo {
             try {
               process =
                   Runtime.getRuntime()
-                      .exec(java32 + " -jar captureTsumeGo" + File.separator + jarName + params);
+                      .exec(
+                          java32
+                              + " -Dsun.java2d.uiScale=1.0 -jar captureTsumeGo"
+                              + File.separator
+                              + jarName
+                              + params);
               success = true;
             } catch (Exception e) {
               success = false;
@@ -85,13 +95,21 @@ public class CaptureTsumeGo {
         if (!success) {
           process =
               Runtime.getRuntime()
-                  .exec("java -jar captureTsumeGo" + File.separator + jarName + params);
+                  .exec(
+                      "java -Dsun.java2d.uiScale=1.0 -jar captureTsumeGo"
+                          + File.separator
+                          + jarName
+                          + params);
           success = true;
         }
       } else {
         process =
             Runtime.getRuntime()
-                .exec("java -jar captureTsumeGo" + File.separator + jarName + params);
+                .exec(
+                    "java -Dsun.java2d.uiScale=1.0 -jar captureTsumeGo"
+                        + File.separator
+                        + jarName
+                        + params);
         success = true;
       }
     } catch (Exception e) {

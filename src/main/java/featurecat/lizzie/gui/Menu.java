@@ -3058,8 +3058,7 @@ public class Menu extends JMenuBar {
         });
     analyzeMenu.add(hawkEye2);
 
-    final JFontMenuItem tsumeGoMenu =
-        new JFontMenuItem(resourceBundle.getString("Menu.tsumeGo")); // ("超级鹰眼(T)");
+    final JFontMenuItem tsumeGoMenu = new JFontMenuItem(resourceBundle.getString("Menu.tsumeGo"));
     tsumeGoMenu.addActionListener(
         new ActionListener() {
           @Override
@@ -3068,6 +3067,17 @@ public class Menu extends JMenuBar {
           }
         });
     analyzeMenu.add(tsumeGoMenu);
+
+    final JFontMenuItem captureTsumeGo =
+        new JFontMenuItem(resourceBundle.getString("Menu.captureTsumeGo"));
+    captureTsumeGo.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.frame.openCaptureTsumego();
+          }
+        });
+    analyzeMenu.add(captureTsumeGo);
     analyzeMenu.addSeparator();
 
     final JFontMenuItem autoAnalyze =

@@ -41,7 +41,7 @@ public class BoardHistoryNode {
     variations.clear();
   }
 
-  public void addExtraStones(int x, int y, boolean isBlack) {
+  public synchronized void addExtraStones(int x, int y, boolean isBlack) {
     if (extraStones == null) extraStones = new ArrayList<ExtraStones>();
     ExtraStones stone = new ExtraStones();
     stone.x = x;
@@ -50,7 +50,7 @@ public class BoardHistoryNode {
     extraStones.add(stone);
   }
 
-  public void undoExtraStones() {
+  public synchronized void undoExtraStones() {
     if (extraStones == null || Lizzie.board.isLoadingFile) return;
     for (ExtraStones stone : extraStones) {
       Lizzie.leelaz.undo(true, Lizzie.board.getHistory().getPrevious().get().blackToPlay);

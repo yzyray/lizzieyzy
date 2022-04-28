@@ -92,7 +92,6 @@ public class CaptureTsumeGoFrame extends JFrame {
           public void keyPressed(KeyEvent e) {
             if (e.getKeyCode() == KeyEvent.VK_T) {
               if (e.isShiftDown()) {
-                setVisible(false);
                 Lizzie.frame.startCaptureTsumeGo();
               }
             }

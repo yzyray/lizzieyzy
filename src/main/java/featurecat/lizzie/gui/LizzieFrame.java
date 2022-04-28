@@ -491,7 +491,9 @@ public class LizzieFrame extends JFrame {
   public boolean isContributing = false;
   public ContributeView contributeView;
   public boolean isShowingContributeGame = false;
+
   private TsumeGoFrame tsumeGoFrame;
+  private CaptureTsumeGoFrame captureTsumeGoFrame;
 
   /** Creates a window */
   public LizzieFrame() {
@@ -12235,11 +12237,16 @@ public class LizzieFrame extends JFrame {
 
   public void startCaptureTsumeGo() {
     setExtendedState(JFrame.ICONIFIED);
+    if (captureTsumeGoFrame != null && captureTsumeGoFrame.isVisible())
+      captureTsumeGoFrame.setVisible(false);
     new CaptureTsumeGo();
   }
 
   public void openCaptureTsumego() {
-    CaptureTsumeGoFrame captureTsumeGoFrame = new CaptureTsumeGoFrame();
+    if (captureTsumeGoFrame != null && captureTsumeGoFrame.isVisible()) {
+      captureTsumeGoFrame.setVisible(false);
+    }
+    captureTsumeGoFrame = new CaptureTsumeGoFrame();
     captureTsumeGoFrame.setVisible(true);
   }
 }
