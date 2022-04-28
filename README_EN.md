@@ -29,4 +29,4 @@ Add some new features on Lizzie's basis: **Hawk Eye, Flash Analyze, Batch Analyz
 
 #
  * Instruction for use: https://github.com/yzyray/lizzieyzy/blob/main/readme_en.pdf (If you are reading under translate to Japanese or Korean,please go to original link, translated link will not work)
- * Other jar and exe source code links: [foxRequestQ.jar](https://github.com/yzyray/FoxRequest) [InVisibleFrame.jar](https://github.com/yzyray/testbuffer) [SubProcessHandler.exe](https://github.com/yzyray/SubProcessHandler)
+ * Other jar source code links: [foxRequestQ.jar](https://github.com/yzyray/FoxRequest) [InVisibleFrame.jar](https://github.com/yzyray/testbuffer) [CaptureTsumeGo.jar](https://github.com/yzyray/captureTsumeGo/blob/main/README.md)
