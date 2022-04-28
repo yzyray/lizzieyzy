@@ -132,23 +132,6 @@ public class Tsumego {
     return side;
   }
 
-  private void addStone(
-      Stone[] stones,
-      Zobrist zobrist,
-      int x,
-      int y,
-      Stone color,
-      List<extraMoveForTsumego> extraStones) {
-    if (stones[Board.getIndex(x, y)] != Stone.EMPTY) return;
-    stones[Board.getIndex(x, y)] = color;
-    zobrist.toggleStone(x, y, color);
-    extraMoveForTsumego stone = new extraMoveForTsumego();
-    stone.x = x;
-    stone.y = y;
-    stone.color = color;
-    extraStones.add(stone);
-  }
-
   public void buildCoverWall(
       boolean addKoThreatSide,
       boolean addKoThreatOtherSide,
@@ -172,14 +155,14 @@ public class Tsumego {
         boolean placed = false;
         if (i == leftIndex || i == rightIndex) {
           if (j >= topIndex && j <= bottomIndex) {
-            addStone(stones, zobrist, i, j, side, extraStones);
+            Utils.addStone(stones, zobrist, i, j, side, extraStones);
             placed = true;
           }
         }
         if (!placed) {
           if (j == topIndex || j == bottomIndex) {
             if (i >= leftIndex && i <= rightIndex) {
-              addStone(stones, zobrist, i, j, side, extraStones);
+              Utils.addStone(stones, zobrist, i, j, side, extraStones);
             }
           }
         }
@@ -237,32 +220,34 @@ public class Tsumego {
               if (x < leftSideIndex) {
                 if (x <= rightIndex && x >= leftIndex) {
                   if (y < topIndex || y > bottomIndex) {
-                    if ((y + x) % 2 == 0) addStone(stones, zobrist, x, y, side, extraStones);
+                    if ((y + x) % 2 == 0) Utils.addStone(stones, zobrist, x, y, side, extraStones);
                   }
                 } else {
-                  if ((y + x) % 2 == 0) addStone(stones, zobrist, x, y, side, extraStones);
+                  if ((y + x) % 2 == 0) Utils.addStone(stones, zobrist, x, y, side, extraStones);
                 }
               }
               if (x == leftSideIndex) {
-                addStone(stones, zobrist, x, y, side, extraStones);
+                Utils.addStone(stones, zobrist, x, y, side, extraStones);
               }
               if (remainStones > 0) {
                 if (x == leftSideIndex + 1) {
-                  if (y < remainStones) addStone(stones, zobrist, x, y, side, extraStones);
-                  else addStone(stones, zobrist, x, y, otherSide, extraStones);
+                  if (y < remainStones) Utils.addStone(stones, zobrist, x, y, side, extraStones);
+                  else Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                 }
                 if (x == leftSideIndex + 2) {
-                  addStone(stones, zobrist, x, y, otherSide, extraStones);
+                  Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                 }
                 if (x > leftSideIndex + 2) {
-                  if ((y + x) % 2 == 0) addStone(stones, zobrist, x, y, otherSide, extraStones);
+                  if ((y + x) % 2 == 0)
+                    Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                 }
               } else {
                 if (x == leftSideIndex + 1) {
-                  addStone(stones, zobrist, x, y, otherSide, extraStones);
+                  Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                 }
                 if (x > leftSideIndex + 1) {
-                  if ((y + x) % 2 == 0) addStone(stones, zobrist, x, y, otherSide, extraStones);
+                  if ((y + x) % 2 == 0)
+                    Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                 }
               }
             }
@@ -346,23 +331,27 @@ public class Tsumego {
               for (int y = 0; y < Board.boardHeight; y++) {
                 if (x < rightIndex) {
                   if (y < topIndex || (x < leftIndex && y <= bottomIndex)) {
-                    if (y == bottomIndex) addStone(stones, zobrist, x, y, side, extraStones);
-                    else if ((y + x) % 2 == 0) addStone(stones, zobrist, x, y, side, extraStones);
+                    if (y == bottomIndex) Utils.addStone(stones, zobrist, x, y, side, extraStones);
+                    else if ((y + x) % 2 == 0)
+                      Utils.addStone(stones, zobrist, x, y, side, extraStones);
                   }
                 }
                 if (x == rightIndex) {
-                  if (y < topIndex) addStone(stones, zobrist, x, y, side, extraStones);
+                  if (y < topIndex) Utils.addStone(stones, zobrist, x, y, side, extraStones);
                 }
                 if (x <= rightIndex) {
-                  if (y == bottomIndex + 1) addStone(stones, zobrist, x, y, otherSide, extraStones);
+                  if (y == bottomIndex + 1)
+                    Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                   if (y > bottomIndex + 1)
-                    if ((y + x) % 2 == 0) addStone(stones, zobrist, x, y, otherSide, extraStones);
+                    if ((y + x) % 2 == 0)
+                      Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                 }
                 if (x == rightIndex + 1) {
-                  addStone(stones, zobrist, x, y, otherSide, extraStones);
+                  Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                 }
                 if (x > rightIndex + 1) {
-                  if ((y + x) % 2 == 0) addStone(stones, zobrist, x, y, otherSide, extraStones);
+                  if ((y + x) % 2 == 0)
+                    Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                 }
               }
             }
@@ -394,23 +383,27 @@ public class Tsumego {
               for (int y = 0; y < Board.boardHeight; y++) {
                 if (x < rightIndex) {
                   if (y > bottomIndex || (x < leftIndex && y >= topIndex)) {
-                    if (y == topIndex) addStone(stones, zobrist, x, y, side, extraStones);
-                    else if ((y + x) % 2 == 0) addStone(stones, zobrist, x, y, side, extraStones);
+                    if (y == topIndex) Utils.addStone(stones, zobrist, x, y, side, extraStones);
+                    else if ((y + x) % 2 == 0)
+                      Utils.addStone(stones, zobrist, x, y, side, extraStones);
                   }
                 }
                 if (x == rightIndex) {
-                  if (y > bottomIndex) addStone(stones, zobrist, x, y, side, extraStones);
+                  if (y > bottomIndex) Utils.addStone(stones, zobrist, x, y, side, extraStones);
                 }
                 if (x <= rightIndex) {
-                  if (y == topIndex - 1) addStone(stones, zobrist, x, y, otherSide, extraStones);
+                  if (y == topIndex - 1)
+                    Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                   if (y < topIndex - 1)
-                    if ((y + x) % 2 == 0) addStone(stones, zobrist, x, y, otherSide, extraStones);
+                    if ((y + x) % 2 == 0)
+                      Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                 }
                 if (x == rightIndex + 1) {
-                  addStone(stones, zobrist, x, y, otherSide, extraStones);
+                  Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                 }
                 if (x > rightIndex + 1) {
-                  if ((y + x) % 2 == 0) addStone(stones, zobrist, x, y, otherSide, extraStones);
+                  if ((y + x) % 2 == 0)
+                    Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                 }
               }
             }
@@ -467,32 +460,34 @@ public class Tsumego {
               if (x > rightSideIndex) {
                 if (x >= leftIndex && x <= rightIndex) {
                   if (y < topIndex || y > bottomIndex) {
-                    if ((y + x) % 2 == 0) addStone(stones, zobrist, x, y, side, extraStones);
+                    if ((y + x) % 2 == 0) Utils.addStone(stones, zobrist, x, y, side, extraStones);
                   }
                 } else {
-                  if ((y + x) % 2 == 0) addStone(stones, zobrist, x, y, side, extraStones);
+                  if ((y + x) % 2 == 0) Utils.addStone(stones, zobrist, x, y, side, extraStones);
                 }
               }
               if (x == rightSideIndex) {
-                addStone(stones, zobrist, x, y, side, extraStones);
+                Utils.addStone(stones, zobrist, x, y, side, extraStones);
               }
               if (remainStones > 0) {
                 if (x == rightSideIndex - 1) {
-                  if (y < remainStones) addStone(stones, zobrist, x, y, side, extraStones);
-                  else addStone(stones, zobrist, x, y, otherSide, extraStones);
+                  if (y < remainStones) Utils.addStone(stones, zobrist, x, y, side, extraStones);
+                  else Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                 }
                 if (x == rightSideIndex - 2) {
-                  addStone(stones, zobrist, x, y, otherSide, extraStones);
+                  Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                 }
                 if (x < rightSideIndex) {
-                  if ((y + x) % 2 == 0) addStone(stones, zobrist, x, y, otherSide, extraStones);
+                  if ((y + x) % 2 == 0)
+                    Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                 }
               } else {
                 if (x == rightSideIndex - 1) {
-                  addStone(stones, zobrist, x, y, otherSide, extraStones);
+                  Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                 }
                 if (x > rightSideIndex - 1) {
-                  if ((y + x) % 2 == 0) addStone(stones, zobrist, x, y, otherSide, extraStones);
+                  if ((y + x) % 2 == 0)
+                    Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                 }
               }
             }
@@ -578,23 +573,27 @@ public class Tsumego {
               for (int y = 0; y < Board.boardHeight; y++) {
                 if (x > leftIndex) {
                   if (y < topIndex || (x > rightIndex && y <= bottomIndex)) {
-                    if (y == bottomIndex) addStone(stones, zobrist, x, y, side, extraStones);
-                    else if ((y + x) % 2 == 0) addStone(stones, zobrist, x, y, side, extraStones);
+                    if (y == bottomIndex) Utils.addStone(stones, zobrist, x, y, side, extraStones);
+                    else if ((y + x) % 2 == 0)
+                      Utils.addStone(stones, zobrist, x, y, side, extraStones);
                   }
                 }
                 if (x == leftIndex) {
-                  if (y < topIndex) addStone(stones, zobrist, x, y, side, extraStones);
+                  if (y < topIndex) Utils.addStone(stones, zobrist, x, y, side, extraStones);
                 }
                 if (x >= leftIndex) {
-                  if (y == bottomIndex + 1) addStone(stones, zobrist, x, y, otherSide, extraStones);
+                  if (y == bottomIndex + 1)
+                    Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                   if (y > bottomIndex + 1)
-                    if ((y + x) % 2 == 0) addStone(stones, zobrist, x, y, otherSide, extraStones);
+                    if ((y + x) % 2 == 0)
+                      Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                 }
                 if (x == leftIndex - 1) {
-                  addStone(stones, zobrist, x, y, otherSide, extraStones);
+                  Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                 }
                 if (x < leftIndex - 1) {
-                  if ((y + x) % 2 == 0) addStone(stones, zobrist, x, y, otherSide, extraStones);
+                  if ((y + x) % 2 == 0)
+                    Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                 }
               }
             }
@@ -628,23 +627,27 @@ public class Tsumego {
               for (int y = 0; y < Board.boardHeight; y++) {
                 if (x > leftIndex) {
                   if (y > bottomIndex || (x > rightIndex && y >= topIndex)) {
-                    if (y == topIndex) addStone(stones, zobrist, x, y, side, extraStones);
-                    else if ((y + x) % 2 == 0) addStone(stones, zobrist, x, y, side, extraStones);
+                    if (y == topIndex) Utils.addStone(stones, zobrist, x, y, side, extraStones);
+                    else if ((y + x) % 2 == 0)
+                      Utils.addStone(stones, zobrist, x, y, side, extraStones);
                   }
                 }
                 if (x == leftIndex) {
-                  if (y > bottomIndex) addStone(stones, zobrist, x, y, side, extraStones);
+                  if (y > bottomIndex) Utils.addStone(stones, zobrist, x, y, side, extraStones);
                 }
                 if (x >= leftIndex) {
-                  if (y == topIndex - 1) addStone(stones, zobrist, x, y, otherSide, extraStones);
+                  if (y == topIndex - 1)
+                    Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                   if (y < topIndex - 1)
-                    if ((y + x) % 2 == 0) addStone(stones, zobrist, x, y, otherSide, extraStones);
+                    if ((y + x) % 2 == 0)
+                      Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                 }
                 if (x == leftIndex - 1) {
-                  addStone(stones, zobrist, x, y, otherSide, extraStones);
+                  Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                 }
                 if (x < leftIndex - 1) {
-                  if ((y + x) % 2 == 0) addStone(stones, zobrist, x, y, otherSide, extraStones);
+                  if ((y + x) % 2 == 0)
+                    Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                 }
               }
             }
@@ -699,32 +702,34 @@ public class Tsumego {
               if (y < topSideIndex) {
                 if (y <= bottomIndex) {
                   if (x < leftIndex || x > rightIndex || y < topIndex) {
-                    if ((y + x) % 2 == 0) addStone(stones, zobrist, x, y, side, extraStones);
+                    if ((y + x) % 2 == 0) Utils.addStone(stones, zobrist, x, y, side, extraStones);
                   }
                 } else {
-                  if ((y + x) % 2 == 0) addStone(stones, zobrist, x, y, side, extraStones);
+                  if ((y + x) % 2 == 0) Utils.addStone(stones, zobrist, x, y, side, extraStones);
                 }
               }
               if (y == topSideIndex) {
-                addStone(stones, zobrist, x, y, side, extraStones);
+                Utils.addStone(stones, zobrist, x, y, side, extraStones);
               }
               if (remainStones > 0) {
                 if (y == topSideIndex + 1) {
-                  if (x < remainStones) addStone(stones, zobrist, x, y, side, extraStones);
-                  else addStone(stones, zobrist, x, y, otherSide, extraStones);
+                  if (x < remainStones) Utils.addStone(stones, zobrist, x, y, side, extraStones);
+                  else Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                 }
                 if (y == topSideIndex + 2) {
-                  addStone(stones, zobrist, x, y, otherSide, extraStones);
+                  Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                 }
                 if (y > topSideIndex + 2) {
-                  if ((y + x) % 2 == 0) addStone(stones, zobrist, x, y, otherSide, extraStones);
+                  if ((y + x) % 2 == 0)
+                    Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                 }
               } else {
                 if (y == topSideIndex + 1) {
-                  addStone(stones, zobrist, x, y, otherSide, extraStones);
+                  Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                 }
                 if (y > topSideIndex + 1) {
-                  if ((y + x) % 2 == 0) addStone(stones, zobrist, x, y, otherSide, extraStones);
+                  if ((y + x) % 2 == 0)
+                    Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                 }
               }
             }
@@ -809,23 +814,27 @@ public class Tsumego {
               for (int y = 0; y < Board.boardHeight; y++) {
                 if (y < bottomIndex) {
                   if (x < leftIndex || (x <= rightIndex && y < topIndex)) {
-                    if (x == rightIndex) addStone(stones, zobrist, x, y, side, extraStones);
-                    else if ((y + x) % 2 == 0) addStone(stones, zobrist, x, y, side, extraStones);
+                    if (x == rightIndex) Utils.addStone(stones, zobrist, x, y, side, extraStones);
+                    else if ((y + x) % 2 == 0)
+                      Utils.addStone(stones, zobrist, x, y, side, extraStones);
                   }
                 }
                 if (y == bottomIndex) {
-                  if (x < leftIndex) addStone(stones, zobrist, x, y, side, extraStones);
+                  if (x < leftIndex) Utils.addStone(stones, zobrist, x, y, side, extraStones);
                 }
                 if (y <= bottomIndex) {
-                  if (x == rightIndex + 1) addStone(stones, zobrist, x, y, otherSide, extraStones);
+                  if (x == rightIndex + 1)
+                    Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                   if (x > rightIndex + 1)
-                    if ((y + x) % 2 == 0) addStone(stones, zobrist, x, y, otherSide, extraStones);
+                    if ((y + x) % 2 == 0)
+                      Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                 }
                 if (y == bottomIndex + 1) {
-                  addStone(stones, zobrist, x, y, otherSide, extraStones);
+                  Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                 }
                 if (y > bottomIndex + 1) {
-                  if ((y + x) % 2 == 0) addStone(stones, zobrist, x, y, otherSide, extraStones);
+                  if ((y + x) % 2 == 0)
+                    Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                 }
               }
             }
@@ -856,22 +865,26 @@ public class Tsumego {
             for (int x = 0; x < Board.boardWidth; x++) {
               for (int y = 0; y < Board.boardHeight; y++) {
                 if ((x > rightIndex && y < bottomIndex) || (x >= leftIndex && y < topIndex)) {
-                  if (x == leftIndex) addStone(stones, zobrist, x, y, side, extraStones);
-                  else if ((y + x) % 2 == 0) addStone(stones, zobrist, x, y, side, extraStones);
+                  if (x == leftIndex) Utils.addStone(stones, zobrist, x, y, side, extraStones);
+                  else if ((y + x) % 2 == 0)
+                    Utils.addStone(stones, zobrist, x, y, side, extraStones);
                 }
                 if (y == bottomIndex) {
-                  if (x > rightIndex) addStone(stones, zobrist, x, y, side, extraStones);
+                  if (x > rightIndex) Utils.addStone(stones, zobrist, x, y, side, extraStones);
                 }
                 if (y <= bottomIndex) {
-                  if (x == leftIndex - 1) addStone(stones, zobrist, x, y, otherSide, extraStones);
+                  if (x == leftIndex - 1)
+                    Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                   if (x < leftIndex - 1)
-                    if ((y + x) % 2 == 0) addStone(stones, zobrist, x, y, otherSide, extraStones);
+                    if ((y + x) % 2 == 0)
+                      Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                 }
                 if (y == bottomIndex + 1) {
-                  addStone(stones, zobrist, x, y, otherSide, extraStones);
+                  Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                 }
                 if (y > bottomIndex + 1) {
-                  if ((y + x) % 2 == 0) addStone(stones, zobrist, x, y, otherSide, extraStones);
+                  if ((y + x) % 2 == 0)
+                    Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                 }
               }
             }
@@ -928,32 +941,34 @@ public class Tsumego {
               if (y > bottomSideIndex) {
                 if (y >= topIndex && y <= bottomIndex) {
                   if (x < leftIndex || x > rightIndex) {
-                    if ((y + x) % 2 == 0) addStone(stones, zobrist, x, y, side, extraStones);
+                    if ((y + x) % 2 == 0) Utils.addStone(stones, zobrist, x, y, side, extraStones);
                   }
                 } else {
-                  if ((y + x) % 2 == 0) addStone(stones, zobrist, x, y, side, extraStones);
+                  if ((y + x) % 2 == 0) Utils.addStone(stones, zobrist, x, y, side, extraStones);
                 }
               }
               if (y == bottomSideIndex) {
-                addStone(stones, zobrist, x, y, side, extraStones);
+                Utils.addStone(stones, zobrist, x, y, side, extraStones);
               }
               if (remainStones > 0) {
                 if (y == bottomSideIndex - 1) {
-                  if (x < remainStones) addStone(stones, zobrist, x, y, side, extraStones);
-                  else addStone(stones, zobrist, x, y, otherSide, extraStones);
+                  if (x < remainStones) Utils.addStone(stones, zobrist, x, y, side, extraStones);
+                  else Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                 }
                 if (y == bottomSideIndex - 2) {
-                  addStone(stones, zobrist, x, y, otherSide, extraStones);
+                  Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                 }
                 if (y < bottomSideIndex - 2) {
-                  if ((y + x) % 2 == 0) addStone(stones, zobrist, x, y, otherSide, extraStones);
+                  if ((y + x) % 2 == 0)
+                    Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                 }
               } else {
                 if (y == bottomSideIndex - 1) {
-                  addStone(stones, zobrist, x, y, otherSide, extraStones);
+                  Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                 }
                 if (y < bottomSideIndex - 1) {
-                  if ((y + x) % 2 == 0) addStone(stones, zobrist, x, y, otherSide, extraStones);
+                  if ((y + x) % 2 == 0)
+                    Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                 }
               }
             }
@@ -1039,23 +1054,27 @@ public class Tsumego {
               for (int y = 0; y < Board.boardHeight; y++) {
                 if (y > topIndex) {
                   if (x < leftIndex || (y >= bottomIndex && x <= rightIndex)) {
-                    if (x == rightIndex) addStone(stones, zobrist, x, y, side, extraStones);
-                    else if ((y + x) % 2 == 0) addStone(stones, zobrist, x, y, side, extraStones);
+                    if (x == rightIndex) Utils.addStone(stones, zobrist, x, y, side, extraStones);
+                    else if ((y + x) % 2 == 0)
+                      Utils.addStone(stones, zobrist, x, y, side, extraStones);
                   }
                 }
                 if (y == topIndex) {
-                  if (x < leftIndex) addStone(stones, zobrist, x, y, side, extraStones);
+                  if (x < leftIndex) Utils.addStone(stones, zobrist, x, y, side, extraStones);
                 }
                 if (y >= topIndex) {
-                  if (x == rightIndex + 1) addStone(stones, zobrist, x, y, otherSide, extraStones);
+                  if (x == rightIndex + 1)
+                    Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                   if (x > rightIndex + 1)
-                    if ((y + x) % 2 == 0) addStone(stones, zobrist, x, y, otherSide, extraStones);
+                    if ((y + x) % 2 == 0)
+                      Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                 }
                 if (y == topIndex - 1) {
-                  addStone(stones, zobrist, x, y, otherSide, extraStones);
+                  Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                 }
                 if (y < topIndex - 1) {
-                  if ((y + x) % 2 == 0) addStone(stones, zobrist, x, y, otherSide, extraStones);
+                  if ((y + x) % 2 == 0)
+                    Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                 }
               }
             }
@@ -1089,23 +1108,27 @@ public class Tsumego {
               for (int y = 0; y < Board.boardHeight; y++) {
                 if (y > topIndex) {
                   if (x > rightIndex || (y >= bottomIndex && x >= leftIndex)) {
-                    if (x == leftIndex) addStone(stones, zobrist, x, y, side, extraStones);
-                    else if ((y + x) % 2 == 0) addStone(stones, zobrist, x, y, side, extraStones);
+                    if (x == leftIndex) Utils.addStone(stones, zobrist, x, y, side, extraStones);
+                    else if ((y + x) % 2 == 0)
+                      Utils.addStone(stones, zobrist, x, y, side, extraStones);
                   }
                 }
                 if (y == topIndex) {
-                  if (x > rightIndex) addStone(stones, zobrist, x, y, side, extraStones);
+                  if (x > rightIndex) Utils.addStone(stones, zobrist, x, y, side, extraStones);
                 }
                 if (y >= topIndex) {
-                  if (x == leftIndex - 1) addStone(stones, zobrist, x, y, otherSide, extraStones);
+                  if (x == leftIndex - 1)
+                    Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                   if (x < leftIndex - 1)
-                    if ((y + x) % 2 == 0) addStone(stones, zobrist, x, y, otherSide, extraStones);
+                    if ((y + x) % 2 == 0)
+                      Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                 }
                 if (y == topIndex - 1) {
-                  addStone(stones, zobrist, x, y, otherSide, extraStones);
+                  Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                 }
                 if (y < topIndex - 1) {
-                  if ((y + x) % 2 == 0) addStone(stones, zobrist, x, y, otherSide, extraStones);
+                  if ((y + x) % 2 == 0)
+                    Utils.addStone(stones, zobrist, x, y, otherSide, extraStones);
                 }
               }
             }

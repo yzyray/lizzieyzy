@@ -1892,6 +1892,31 @@ public class Board {
     Lizzie.leelaz.ponder();
   }
 
+  public void flattenWithCondition(
+      Stone[] stones, Zobrist zobrist, boolean blackToPlay, List<extraMoveForTsumego> extraStones) {
+    // 变成一步 extrastones 或者直接不flatten?
+    //	    Stone[] stones = history.getStones();
+    //	    boolean blackToPlay = history.isBlacksTurn();
+    BoardData state =
+        new BoardData(
+            stones,
+            Optional.empty(),
+            Stone.EMPTY,
+            blackToPlay,
+            zobrist,
+            0,
+            new int[boardWidth * boardHeight],
+            0,
+            0,
+            0.0,
+            0);
+    history.addOrGoto(state, false, false, true);
+    if (extraStones != null && extraStones.size() > 0) {
+      for (extraMoveForTsumego stone : extraStones) addExtraStoneNow(stone.x, stone.y, stone.color);
+    }
+    Lizzie.leelaz.ponder();
+  }
+
   private void addExtraStoneNow(int x, int y, Stone color) {
     if (color != null) {
       history.getCurrentHistoryNode().addExtraStones(x, y, color == Stone.BLACK);

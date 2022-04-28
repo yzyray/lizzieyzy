@@ -651,9 +651,15 @@ public class Config {
   public boolean useMovesOwnership = true;
   public boolean browserInitiazed = false;
 
-  public int tesumeGoToPlay = 1; // 1=继承,2=黑,3=白
-  public int tesumeGoAttaker = 1; // 1=自动检测,2=黑,3=白
-  public int tesumeGoKoThreat = 1; // 1=双方,2=进攻,3=防守,4=无
+  public int tsumeGoToPlay = 1; // 1=继承,2=黑,3=白
+  public int tsumeGoAttaker = 1; // 1=自动检测,2=黑,3=白
+  public int tsumeGoKoThreat = 1; // 1=双方,2=进攻,3=防守,4=无
+
+  public int captureBlackOffset = 120;
+  public int captureBlackPercent = 25;
+  public int captureWhiteOffset = 120;
+  public int captureWhitePercent = 15;
+  public int captureGrayOffset = 80;
 
   private JSONObject loadAndMergeSaveBoardConfig(
       JSONObject defaultCfg, String fileName, boolean needValidation) throws IOException {
@@ -1397,9 +1403,15 @@ public class Config {
     contributeHideRules = uiConfig.optBoolean("contribute-hide-rules", false);
     showContribute = uiConfig.optBoolean("show-Contribute", true);
     // contributeUseSlowShutdown = uiConfig.optBoolean("contribute-use-slow-shutdown", true);
-    tesumeGoToPlay = uiConfig.optInt("tesume-go-to-play", 1);
-    tesumeGoAttaker = uiConfig.optInt("tesume-go-attaker", 1);
-    tesumeGoKoThreat = uiConfig.optInt("tesume-go-ko-threat", 1);
+    tsumeGoToPlay = uiConfig.optInt("tsume-go-to-play", 1);
+    tsumeGoAttaker = uiConfig.optInt("tsume-go-attaker", 1);
+    tsumeGoKoThreat = uiConfig.optInt("tsume-go-ko-threat", 1);
+
+    captureBlackOffset = uiConfig.optInt("capture-black-offset", 120);
+    captureBlackPercent = uiConfig.optInt("capture-black-percent", 25);
+    captureWhiteOffset = uiConfig.optInt("capture-white-offset", 120);
+    captureWhitePercent = uiConfig.optInt("capture-white-percent", 15);
+    captureGrayOffset = uiConfig.optInt("capture-gray-percent", 80);
 
     enableClickReview = uiConfig.optBoolean("enable-click-review", false);
     contributeDisableRatingMatches =

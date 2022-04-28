@@ -1,7 +1,7 @@
 package featurecat.lizzie.rules;
 
 public class extraMoveForTsumego {
-  int x;
-  int y;
-  Stone color;
+  public int x;
+  public int y;
+  public Stone color;
 }

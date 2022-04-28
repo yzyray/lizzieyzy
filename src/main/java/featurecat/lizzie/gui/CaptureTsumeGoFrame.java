@@ -1,9 +1,12 @@
 package featurecat.lizzie.gui;
 
+import featurecat.lizzie.Lizzie;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -12,8 +15,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
-
-import featurecat.lizzie.Lizzie;
 
 public class CaptureTsumeGoFrame extends JFrame {
   public CaptureTsumeGoFrame() {
@@ -36,7 +37,8 @@ public class CaptureTsumeGoFrame extends JFrame {
     JLabel capture2 = new JLabel();
     contentPane.add(capture2);
 
-    JFontLabel lblStep3 = new JFontLabel("<html>步骤3:<br /><br />&nbsp&nbsp移动鼠标至蓝色方格准确覆盖整个死活题,<br />左键点击完成抓取</html>");
+    JFontLabel lblStep3 =
+        new JFontLabel("<html>步骤3:<br /><br />&nbsp&nbsp移动鼠标至蓝色方格准确覆盖整个死活题,<br />左键点击完成抓取</html>");
     contentPane.add(lblStep3);
 
     JLabel capture3 = new JLabel();
@@ -51,18 +53,21 @@ public class CaptureTsumeGoFrame extends JFrame {
     btnStart.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            setExtendedState(JFrame.ICONIFIED);
+            setVisible(false);
             Lizzie.frame.startCaptureTsumeGo();
           }
         });
+    btnStart.setFocusable(false);
     buttonPane.add(btnStart, BorderLayout.EAST);
 
     JFontButton btnSettings = new JFontButton("参数设置");
-    btnSettings.addActionListener(new ActionListener() {
-    	public void actionPerformed(ActionEvent e) {
-    		
-    	}
-    });
+    btnSettings.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            openTsumegoSettings();
+          }
+        });
+
     btnSettings.setFocusable(false);
     buttonPane.add(btnSettings, BorderLayout.WEST);
 
@@ -82,6 +87,17 @@ public class CaptureTsumeGoFrame extends JFrame {
       e1.printStackTrace();
     }
 
+    addKeyListener(
+        new KeyAdapter() {
+          public void keyPressed(KeyEvent e) {
+            if (e.getKeyCode() == KeyEvent.VK_T) {
+              if (e.isShiftDown()) {
+                setVisible(false);
+                Lizzie.frame.startCaptureTsumeGo();
+              }
+            }
+          }
+        });
     pack();
     setAlwaysOnTop(true);
     try {
@@ -90,5 +106,10 @@ public class CaptureTsumeGoFrame extends JFrame {
       e.printStackTrace();
     }
     setLocation(20, 20);
+  }
+
+  private void openTsumegoSettings() {
+    CaptureTsumeGoSettings captureTsumeGoSettings = new CaptureTsumeGoSettings(this);
+    captureTsumeGoSettings.setVisible(true);
   }
 }

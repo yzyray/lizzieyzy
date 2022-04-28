@@ -131,7 +131,7 @@ public class BoardHistoryList {
     return next(false);
   }
 
-  public Optional<BoardData> next(boolean includeDummay) {
+  public synchronized Optional<BoardData> next(boolean includeDummay) {
     Optional<BoardHistoryNode> n = head.next(includeDummay);
     // n.ifPresent(x -> head = x);
     if (n.isPresent()) {

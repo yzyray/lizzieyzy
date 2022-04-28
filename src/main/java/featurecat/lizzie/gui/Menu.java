@@ -9976,6 +9976,7 @@ public class Menu extends JMenuBar {
 
   public void clearInsert() {
     Input.insert = 0;
+    Lizzie.frame.blackorwhite = 0;
     black.setIcon(iconblack);
     white.setIcon(iconwhite);
     blackwhite.setIcon(iconbh);

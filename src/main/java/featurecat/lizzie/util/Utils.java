@@ -10,7 +10,11 @@ import featurecat.lizzie.gui.HtmlMessage;
 import featurecat.lizzie.gui.LizzieFrame;
 import featurecat.lizzie.gui.Message;
 import featurecat.lizzie.gui.RemoteEngineData;
+import featurecat.lizzie.rules.Board;
 import featurecat.lizzie.rules.BoardHistoryNode;
+import featurecat.lizzie.rules.Stone;
+import featurecat.lizzie.rules.Zobrist;
+import featurecat.lizzie.rules.extraMoveForTsumego;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
@@ -54,6 +58,23 @@ public class Utils {
   public static String iv2 = "s6st73f49adc4c5d";
   private static int msemaphoretryroom = 1;
   private static boolean alertedNoByoyomiSoundFile = false;
+
+  public static void addStone(
+      Stone[] stones,
+      Zobrist zobrist,
+      int x,
+      int y,
+      Stone color,
+      List<extraMoveForTsumego> extraStones) {
+    if (stones[Board.getIndex(x, y)] != Stone.EMPTY) return;
+    stones[Board.getIndex(x, y)] = color;
+    zobrist.toggleStone(x, y, color);
+    extraMoveForTsumego stone = new extraMoveForTsumego();
+    stone.x = x;
+    stone.y = y;
+    stone.color = color;
+    extraStones.add(stone);
+  }
 
   public static String getRuleString(JSONObject jsonRules) {
     String rules = "";
@@ -834,16 +855,16 @@ public class Utils {
       e.printStackTrace();
     }
   }
-  
+
   public static void copyCaptureTsumeGo() {
-	    // TODO Auto-generated method stub
-	    try {
-	      copy("/assets/captureTsumeGo/CaptureTsumeGo.jar", "captureTsumeGo");
-	    } catch (IOException e) {
-	      // TODO Auto-generated catch block
-	      e.printStackTrace();
-	    }
-	  }
+    // TODO Auto-generated method stub
+    try {
+      copy("/assets/captureTsumeGo/CaptureTsumeGo.jar", "captureTsumeGo");
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
 
   public static void copyClockHelper() {
     // TODO Auto-generated method stub

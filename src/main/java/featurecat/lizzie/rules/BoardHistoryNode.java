@@ -225,7 +225,7 @@ public class BoardHistoryNode {
 
     } else {
       // Add node
-      if (variations.size() == 0) {
+      if (variations.size() == 0 && !tsumego) {
         if (this.data.blackToPlay != node.getData().lastMoveColor.isBlack()) {
           this.data.blackToPlay = node.getData().lastMoveColor.isBlack();
         }
