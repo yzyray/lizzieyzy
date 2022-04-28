@@ -18,27 +18,28 @@ import javax.swing.border.EmptyBorder;
 
 public class CaptureTsumeGoFrame extends JFrame {
   public CaptureTsumeGoFrame() {
-    setTitle("抓取死活题");
+    setTitle(Lizzie.resourceBundle.getString("CaptureTsumeGoFrame.title"));
     JPanel contentPane = new JPanel();
     getContentPane().add(contentPane, BorderLayout.CENTER);
     contentPane.setBorder(new EmptyBorder(6, 15, 8, 15));
     contentPane.setLayout(new GridLayout(3, 2, 5, 5));
 
-    JFontLabel lblStep1 = new JFontLabel("<html>步骤1:<br /><br />&nbsp&nbsp左键点击起始交叉点(0,0)</html>");
+    JFontLabel lblStep1 =
+        new JFontLabel(Lizzie.resourceBundle.getString("CaptureTsumeGoFrame.lblStep1"));
     contentPane.add(lblStep1);
 
     JLabel capture1 = new JLabel();
     contentPane.add(capture1);
 
     JFontLabel lblStep2 =
-        new JFontLabel("<html>步骤2:<br /><br />&nbsp&nbsp左键点击第一个方格的交叉点(1,1)</html>");
+        new JFontLabel(Lizzie.resourceBundle.getString("CaptureTsumeGoFrame.lblStep2"));
     contentPane.add(lblStep2);
 
     JLabel capture2 = new JLabel();
     contentPane.add(capture2);
 
     JFontLabel lblStep3 =
-        new JFontLabel("<html>步骤3:<br /><br />&nbsp&nbsp移动鼠标至蓝色方格准确覆盖整个死活题,<br />左键点击完成抓取</html>");
+        new JFontLabel(Lizzie.resourceBundle.getString("CaptureTsumeGoFrame.lblStep3"));
     contentPane.add(lblStep3);
 
     JLabel capture3 = new JLabel();
@@ -49,7 +50,8 @@ public class CaptureTsumeGoFrame extends JFrame {
     getContentPane().add(buttonPane, BorderLayout.SOUTH);
     buttonPane.setLayout(new BorderLayout(0, 0));
 
-    JFontButton btnStart = new JFontButton("开始抓取(Shift+T)");
+    JFontButton btnStart =
+        new JFontButton(Lizzie.resourceBundle.getString("CaptureTsumeGoFrame.btnStart"));
     btnStart.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
@@ -60,7 +62,8 @@ public class CaptureTsumeGoFrame extends JFrame {
     btnStart.setFocusable(false);
     buttonPane.add(btnStart, BorderLayout.EAST);
 
-    JFontButton btnSettings = new JFontButton("参数设置");
+    JFontButton btnSettings =
+        new JFontButton(Lizzie.resourceBundle.getString("CaptureTsumeGoFrame.btnSettings"));
     btnSettings.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
@@ -71,9 +74,9 @@ public class CaptureTsumeGoFrame extends JFrame {
     btnSettings.setFocusable(false);
     buttonPane.add(btnSettings, BorderLayout.WEST);
 
-    JLabel lblNewLabel = new JLabel("注: 点击失误可按ESC取消");
-    lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-    buttonPane.add(lblNewLabel, BorderLayout.CENTER);
+    JLabel lblTip = new JLabel(Lizzie.resourceBundle.getString("CaptureTsumeGoFrame.lblTip"));
+    lblTip.setHorizontalAlignment(SwingConstants.CENTER);
+    buttonPane.add(lblTip, BorderLayout.CENTER);
 
     try {
       capture1.setIcon(

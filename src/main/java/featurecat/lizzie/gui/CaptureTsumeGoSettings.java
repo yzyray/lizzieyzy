@@ -22,7 +22,7 @@ public class CaptureTsumeGoSettings extends JDialog {
 
   public CaptureTsumeGoSettings(Window owner) {
     super(owner);
-    setTitle("参数设置");
+    setTitle(Lizzie.resourceBundle.getString("CaptureTsumeGoSettings.title"));
     setResizable(false);
 
     JPanel contentPane = new JPanel();
@@ -36,7 +36,8 @@ public class CaptureTsumeGoSettings extends JDialog {
 
     contentPane.setLayout(new GridLayout(3, 4, 5, 5));
 
-    JLabel lblBlackOffset = new JLabel("黑最大偏色(0-255):");
+    JLabel lblBlackOffset =
+        new JLabel(Lizzie.resourceBundle.getString("CaptureTsumeGoSettings.lblBlackOffset"));
     contentPane.add(lblBlackOffset);
 
     txtBlackOffset = new JTextField();
@@ -44,7 +45,8 @@ public class CaptureTsumeGoSettings extends JDialog {
     txtBlackOffset.setColumns(5);
     txtBlackOffset.setDocument(new IntDocument());
 
-    JLabel lblWhiteOffset = new JLabel("白最大偏色(0-255):");
+    JLabel lblWhiteOffset =
+        new JLabel(Lizzie.resourceBundle.getString("CaptureTsumeGoSettings.lblWhiteOffset"));
     contentPane.add(lblWhiteOffset);
 
     txtWhiteOffset = new JTextField();
@@ -52,7 +54,8 @@ public class CaptureTsumeGoSettings extends JDialog {
     txtWhiteOffset.setColumns(5);
     txtWhiteOffset.setDocument(new IntDocument());
 
-    JLabel lblBlackPercent = new JLabel("黑最低占比(0-100):");
+    JLabel lblBlackPercent =
+        new JLabel(Lizzie.resourceBundle.getString("CaptureTsumeGoSettings.lblBlackPercent"));
     contentPane.add(lblBlackPercent);
 
     txtBlackPercent = new JTextField();
@@ -60,7 +63,8 @@ public class CaptureTsumeGoSettings extends JDialog {
     txtBlackPercent.setColumns(5);
     txtBlackPercent.setDocument(new IntDocument());
 
-    JLabel lblWhitePercent = new JLabel("白最低占比(0-100):");
+    JLabel lblWhitePercent =
+        new JLabel(Lizzie.resourceBundle.getString("CaptureTsumeGoSettings.lblWhitePercent"));
     contentPane.add(lblWhitePercent);
 
     txtWhitePercent = new JTextField();
@@ -68,7 +72,8 @@ public class CaptureTsumeGoSettings extends JDialog {
     txtWhitePercent.setColumns(5);
     txtWhitePercent.setDocument(new IntDocument());
 
-    JLabel lblGrayOffset = new JLabel("最大灰度偏色(0-255):");
+    JLabel lblGrayOffset =
+        new JLabel(Lizzie.resourceBundle.getString("CaptureTsumeGoSettings.lblGrayOffset"));
     contentPane.add(lblGrayOffset);
 
     txtGrayOffset = new JTextField();
@@ -82,7 +87,8 @@ public class CaptureTsumeGoSettings extends JDialog {
     txtWhitePercent.setText(String.valueOf(Lizzie.config.captureWhitePercent));
     txtGrayOffset.setText(String.valueOf(Lizzie.config.captureGrayOffset));
 
-    JFontButton btnConfirm = new JFontButton("确定");
+    JFontButton btnConfirm =
+        new JFontButton(Lizzie.resourceBundle.getString("CaptureTsumeGoSettings.btnConfirm"));
     btnConfirm.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
@@ -92,7 +98,8 @@ public class CaptureTsumeGoSettings extends JDialog {
         });
     buttonPane.add(btnConfirm);
 
-    JFontButton btnCancel = new JFontButton("取消");
+    JFontButton btnCancel =
+        new JFontButton(Lizzie.resourceBundle.getString("CaptureTsumeGoSettings.btnCancel"));
     btnCancel.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent arg0) {

@@ -18,7 +18,7 @@ import javax.swing.border.EmptyBorder;
 public class TsumeGoFrame extends JDialog {
   public TsumeGoFrame(Window owner) {
     super(owner);
-    setTitle("死活题");
+    setTitle(Lizzie.resourceBundle.getString("TsumeGoFrame.title"));
     setResizable(false);
     JPanel contentPane = new JPanel();
     contentPane.setBorder(new EmptyBorder(6, 15, 12, 15));
@@ -27,7 +27,8 @@ public class TsumeGoFrame extends JDialog {
     getContentPane().add(contentPane, BorderLayout.CENTER);
     getContentPane().add(buttonPane, BorderLayout.SOUTH);
     buttonPane.setLayout(new BorderLayout(0, 0));
-    JFontButton btnCapture = new JFontButton("屏幕抓取");
+    JFontButton btnCapture =
+        new JFontButton(Lizzie.resourceBundle.getString("TsumeGoFrame.btnCapture"));
     btnCapture.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
@@ -42,11 +43,13 @@ public class TsumeGoFrame extends JDialog {
     panel.setBorder(new EmptyBorder(0, 0, 0, 0));
     buttonPane.add(panel, BorderLayout.EAST);
 
-    JFontButton btnConfirm = new JFontButton("确定");
+    JFontButton btnConfirm =
+        new JFontButton(Lizzie.resourceBundle.getString("TsumeGoFrame.btnConfirm"));
     btnConfirm.setFocusable(false);
     panel.add(btnConfirm);
 
-    JFontButton btnCancel = new JFontButton("取消");
+    JFontButton btnCancel =
+        new JFontButton(Lizzie.resourceBundle.getString("TsumeGoFrame.btnCancel"));
     btnCancel.setFocusable(false);
     btnCancel.addActionListener(
         new ActionListener() {
@@ -58,63 +61,76 @@ public class TsumeGoFrame extends JDialog {
     panel.add(btnCancel);
     contentPane.setLayout(new GridLayout(3, 5, 8, 15));
 
-    JFontLabel lblToPlay = new JFontLabel("先手方");
+    JFontLabel lblToPlay =
+        new JFontLabel(Lizzie.resourceBundle.getString("TsumeGoFrame.lblToPlay"));
     contentPane.add(lblToPlay);
 
-    JFontRadioButton rdoExtend = new JFontRadioButton("继承");
-    rdoExtend.setFocusable(false);
-    contentPane.add(rdoExtend);
+    JFontRadioButton rdoKeepOn =
+        new JFontRadioButton(Lizzie.resourceBundle.getString("TsumeGoFrame.rdoKeepOn"));
+    rdoKeepOn.setFocusable(false);
+    contentPane.add(rdoKeepOn);
 
-    JFontRadioButton rdoBlackToPlay = new JFontRadioButton("黑先");
+    JFontRadioButton rdoBlackToPlay =
+        new JFontRadioButton(Lizzie.resourceBundle.getString("TsumeGoFrame.rdoBlackToPlay"));
     rdoBlackToPlay.setFocusable(false);
     contentPane.add(rdoBlackToPlay);
 
-    JFontRadioButton rdoWhiteToPlay = new JFontRadioButton("白先");
+    JFontRadioButton rdoWhiteToPlay =
+        new JFontRadioButton(Lizzie.resourceBundle.getString("TsumeGoFrame.rdoWhiteToPlay"));
     rdoWhiteToPlay.setFocusable(false);
     contentPane.add(rdoWhiteToPlay);
 
     Box box1 = Box.createVerticalBox();
     contentPane.add(box1);
 
-    JFontLabel lblAttacker = new JFontLabel("进攻方");
+    JFontLabel lblAttacker =
+        new JFontLabel(Lizzie.resourceBundle.getString("TsumeGoFrame.lblAttacker"));
     contentPane.add(lblAttacker);
 
-    JFontRadioButton rdoAutoDetect = new JFontRadioButton("自动检测");
+    JFontRadioButton rdoAutoDetect =
+        new JFontRadioButton(Lizzie.resourceBundle.getString("TsumeGoFrame.rdoAutoDetect"));
     rdoAutoDetect.setFocusable(false);
     contentPane.add(rdoAutoDetect);
 
-    JFontRadioButton rdoBlackAttack = new JFontRadioButton("黑方");
+    JFontRadioButton rdoBlackAttack =
+        new JFontRadioButton(Lizzie.resourceBundle.getString("TsumeGoFrame.rdoBlackAttack"));
     rdoBlackAttack.setFocusable(false);
     contentPane.add(rdoBlackAttack);
 
-    JFontRadioButton rdoWhiteAttack = new JFontRadioButton("白方");
+    JFontRadioButton rdoWhiteAttack =
+        new JFontRadioButton(Lizzie.resourceBundle.getString("TsumeGoFrame.rdoWhiteAttack"));
     rdoWhiteAttack.setFocusable(false);
     contentPane.add(rdoWhiteAttack);
 
     Box box2 = Box.createVerticalBox();
     contentPane.add(box2);
 
-    JFontLabel lblKoThreat = new JFontLabel("添加劫财");
+    JFontLabel lblKoThreat =
+        new JFontLabel(Lizzie.resourceBundle.getString("TsumeGoFrame.lblKoThreat"));
     contentPane.add(lblKoThreat);
 
-    JFontRadioButton rdoKoBoth = new JFontRadioButton("双方");
+    JFontRadioButton rdoKoBoth =
+        new JFontRadioButton(Lizzie.resourceBundle.getString("TsumeGoFrame.rdoKoBoth"));
     contentPane.add(rdoKoBoth);
     rdoKoBoth.setFocusable(false);
 
-    JFontRadioButton rdoKoAttacker = new JFontRadioButton("进攻方");
+    JFontRadioButton rdoKoAttacker =
+        new JFontRadioButton(Lizzie.resourceBundle.getString("TsumeGoFrame.rdoKoAttacker"));
     contentPane.add(rdoKoAttacker);
     rdoKoAttacker.setFocusable(false);
 
-    JFontRadioButton rdoKoDefender = new JFontRadioButton("防守方");
+    JFontRadioButton rdoKoDefender =
+        new JFontRadioButton(Lizzie.resourceBundle.getString("TsumeGoFrame.rdoKoDefender"));
     contentPane.add(rdoKoDefender);
     rdoKoDefender.setFocusable(false);
 
-    JFontRadioButton rdoKoNone = new JFontRadioButton("无");
+    JFontRadioButton rdoKoNone =
+        new JFontRadioButton(Lizzie.resourceBundle.getString("TsumeGoFrame.rdoKoNone"));
     contentPane.add(rdoKoNone);
     rdoKoNone.setFocusable(false);
 
     ButtonGroup group1 = new ButtonGroup();
-    group1.add(rdoExtend);
+    group1.add(rdoKeepOn);
     group1.add(rdoBlackToPlay);
     group1.add(rdoWhiteToPlay);
 
@@ -129,7 +145,7 @@ public class TsumeGoFrame extends JDialog {
     group3.add(rdoKoDefender);
     group3.add(rdoKoNone);
 
-    if (Lizzie.config.tsumeGoToPlay == 1) rdoExtend.setSelected(true);
+    if (Lizzie.config.tsumeGoToPlay == 1) rdoKeepOn.setSelected(true);
     else if (Lizzie.config.tsumeGoToPlay == 2) rdoBlackToPlay.setSelected(true);
     else if (Lizzie.config.tsumeGoToPlay == 3) rdoWhiteToPlay.setSelected(true);
 
@@ -145,7 +161,7 @@ public class TsumeGoFrame extends JDialog {
     btnConfirm.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            if (rdoExtend.isSelected()) Lizzie.config.tsumeGoToPlay = 1;
+            if (rdoKeepOn.isSelected()) Lizzie.config.tsumeGoToPlay = 1;
             else if (rdoBlackToPlay.isSelected()) Lizzie.config.tsumeGoToPlay = 2;
             else if (rdoWhiteToPlay.isSelected()) Lizzie.config.tsumeGoToPlay = 3;
 

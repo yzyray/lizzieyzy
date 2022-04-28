@@ -1183,9 +1183,23 @@ public class Tsumego {
     komi = Math.max(-150, komi);
     // add ko threat
     if (noRoomForOtherSideKo)
-      Utils.showMsg("没有布置 [" + (this.side == Stone.BLACK ? "黑方" : "白方") + "] 劫财的空间");
+      Utils.showMsg(
+          Lizzie.resourceBundle.getString("Tsumego.noRoomForKoThreat1")
+              + " ["
+              + (this.side == Stone.BLACK
+                  ? Lizzie.resourceBundle.getString("Tsumego.noRoomForKoThreat.black")
+                  : Lizzie.resourceBundle.getString("Tsumego.noRoomForKoThreat.white"))
+              + "] "
+              + Lizzie.resourceBundle.getString("Tsumego.noRoomForKoThreat2"));
     if (noRoomForSideKo)
-      Utils.showMsg("没有布置 [" + (this.side == Stone.BLACK ? "白方" : "黑方") + "] 劫财的空间");
+      Utils.showMsg(
+          Lizzie.resourceBundle.getString("Tsumego.noRoomForKoThreat1")
+              + " ["
+              + (this.side == Stone.BLACK
+                  ? Lizzie.resourceBundle.getString("Tsumego.noRoomForKoThreat.white")
+                  : Lizzie.resourceBundle.getString("Tsumego.noRoomForKoThreat.black"))
+              + "] "
+              + Lizzie.resourceBundle.getString("Tsumego.noRoomForKoThreat2"));
     boolean isBlackTurn = Lizzie.board.getHistory().isBlacksTurn();
     if (forceToPlay) isBlackTurn = blackToPlay;
     Lizzie.board.flattenWithCondition(stones, zobrist, isBlackTurn, extraStones, komi);
