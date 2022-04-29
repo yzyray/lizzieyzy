@@ -2291,6 +2291,7 @@ public class Board {
           Lizzie.leelaz.playMove(data.get().lastMoveColor, "pass", true, data.get().blackToPlay);
         }
         history.next();
+        history.getCurrentHistoryNode().placeExtraStones();
         updateIsBest();
         clearPressStoneInfo(null);
         if (needRefresh) {
@@ -2875,6 +2876,7 @@ public class Board {
           if (!nopass) Lizzie.leelaz.undo(true, history.getPrevious().get().blackToPlay);
           else modifyEnd();
         }
+        history.getCurrentHistoryNode().undoExtraStones();
         history.previous();
         if (needRefresh) {
           clearAfterMove();
