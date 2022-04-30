@@ -6,7 +6,7 @@
 
 	<groupId>featurecat</groupId>
 	<artifactId>lizzie</artifactId>
-	<version>yzy2.4.8</version>
+	<version>yzy2.4.9</version>
 
 	<properties>
 		<!-- Prevent warning: "[WARNING] Using platform encoding (UTF-8 actually) 
