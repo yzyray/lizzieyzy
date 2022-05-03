@@ -63,6 +63,7 @@ public class FloatBoardRenderer {
   private Branch branch;
 
   private int cachedBoardWidth = 0, cachedBoardHeight = 0;
+  private int cachedBoardWidth2 = 0, cachedBoardHeight2 = 0;
   private BufferedImage cachedStonesImage = emptyImage;
   private BufferedImage cachedStonesImagedraged = emptyImage;
   private BufferedImage blockimage = emptyImage;
@@ -190,19 +191,21 @@ public class FloatBoardRenderer {
 
   /** Calculate good values for boardLength, scaledMargin, availableLength, and squareLength */
   public void setupSizeParameters() {
-    int boardWidth0 = boardWidth;
-    int boardHeight0 = boardHeight;
+    float boardWidth0 = boardWidth;
+    float boardHeight0 = boardHeight;
 
-    int[] calculatedPixelMargins = calculatePixelMargins();
-    boardWidth = calculatedPixelMargins[0];
-    scaledMarginWidth = calculatedPixelMargins[1];
-    availableWidth = calculatedPixelMargins[2];
-    boardHeight = calculatedPixelMargins[3];
-    scaledMarginHeight = calculatedPixelMargins[4];
-    availableHeight = calculatedPixelMargins[5];
+    squareWidth = Math.round(boardWidth0 / (Board.boardWidth));
+    squareHeight = Math.round(boardHeight0 / (Board.boardHeight));
+    //   int[] calculatedPixelMargins = calculatePixelMargins();
+    boardWidth = squareWidth * Board.boardWidth;
+    boardHeight = squareHeight * Board.boardHeight;
+    availableWidth = squareWidth * (Board.boardWidth - 1);
+    availableHeight = squareHeight * (Board.boardHeight - 1);
 
-    squareWidth = calculateSquareWidth(availableWidth);
-    squareHeight = calculateSquareHeight(availableHeight);
+    scaledMarginWidth = squareWidth / 2;
+    scaledMarginHeight = squareHeight / 2;
+    // squareWidth = calculateSquareWidth(availableWidth);
+    // squareHeight = calculateSquareHeight(availableHeight);
     if (squareWidth > squareHeight) {
       squareWidth = squareHeight;
       int newWidth = squareWidth * (Board.boardWidth - 1) + 1;
@@ -219,9 +222,11 @@ public class FloatBoardRenderer {
       scaledMarginHeight = scaledMarginWidth;
     }
     stoneRadius = max(squareWidth, squareHeight) < 4 ? 1 : max(squareWidth, squareHeight) / 2 - 1;
-
+    //    scaledMarginWidth=(boardWidth0-squareWidth*(Board.boardWidth-1))/2;
+    //    scaledMarginHeight=(boardHeight0-squareHeight*(Board.boardHeight-1))/2;
     // re-center board
-    setLocation(x + (boardWidth0 - boardWidth) / 2, y + (boardHeight0 - boardHeight) / 2);
+    setLocation(
+        x + (int) (boardWidth0 - boardWidth) / 2, y + (int) (boardHeight0 - boardHeight) / 2);
   }
 
   private void drawRawWinrate(Graphics2D g0) {
@@ -2888,8 +2893,8 @@ public class FloatBoardRenderer {
     int height = boardHeight;
     // Draw the cached background image if frame size changes
     if (cachedEditMode != editMode
-        || cachedBoardWidth != boardWidth
-        || cachedBoardHeight != boardHeight
+        || cachedBoardWidth2 != boardWidth
+        || cachedBoardHeight2 != boardHeight
         || changedName
         || cachedShowCoords != showCoordinates()
         || Lizzie.board.isForceRefresh()) {
@@ -2897,8 +2902,8 @@ public class FloatBoardRenderer {
       cachedGhostShadow2 = null;
       changedName = false;
       cachedEditMode = editMode;
-      cachedBoardWidth = boardWidth;
-      cachedBoardHeight = boardHeight;
+      cachedBoardWidth2 = boardWidth;
+      cachedBoardHeight2 = boardHeight;
       cachedShowCoords = showCoordinates();
       Lizzie.board.setForceRefresh(false);
 
