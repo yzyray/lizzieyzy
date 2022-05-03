@@ -2915,14 +2915,12 @@ public class Leelaz {
   }
 
   public void clearWithoutPonder() {
-    synchronized (this) {
-      this.notPondering();
-      nameCmdfornoponder();
-      sendCommand("clear_board");
-      bestMoves = new ArrayList<>();
-      currentTotalPlayouts = 0;
-      currentCmdNum = Math.max(cmdNumber - 2, currentCmdNum);
-    }
+    this.notPondering();
+    nameCmdfornoponder();
+    sendCommand("clear_board");
+    bestMoves = new ArrayList<>();
+    currentTotalPlayouts = 0;
+    currentCmdNum = Math.max(cmdNumber - 2, currentCmdNum);
   }
 
   public void undo() {

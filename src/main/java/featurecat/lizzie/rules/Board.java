@@ -1084,7 +1084,7 @@ public class Board {
     }
   }
 
-  public synchronized void resendMoveToEngine(Leelaz leelaz) {
+  public void resendMoveToEngine(Leelaz leelaz) {
     ArrayList<Movelist> mv = getMoveList();
     leelaz.sendCommand("clear_board");
     Lizzie.board.restoreMoveNumber(mv, false, leelaz);

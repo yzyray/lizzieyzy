@@ -803,15 +803,13 @@ public class ContributeView extends JFrame {
   }
 
   public void addDocs(DocType doc) {
-    synchronized (console) {
-      SimpleAttributeSet attrSet = new SimpleAttributeSet();
-      StyleConstants.setForeground(attrSet, doc.contentColor);
-      if (doc.isCommand) {
-        StyleConstants.setFontFamily(attrSet, Lizzie.config.uiFontName);
-      }
-      StyleConstants.setFontSize(attrSet, doc.fontSize);
-      insert(doc.content, attrSet);
+    SimpleAttributeSet attrSet = new SimpleAttributeSet();
+    StyleConstants.setForeground(attrSet, doc.contentColor);
+    if (doc.isCommand) {
+      StyleConstants.setFontFamily(attrSet, Lizzie.config.uiFontName);
     }
+    StyleConstants.setFontSize(attrSet, doc.fontSize);
+    insert(doc.content, attrSet);
   }
 
   private void insert(String str, AttributeSet attrSet) {
