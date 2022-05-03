@@ -654,6 +654,7 @@ public class Config {
   public int tsumeGoToPlay = 1; // 1=继承,2=黑,3=白
   public int tsumeGoAttaker = 1; // 1=自动检测,2=黑,3=白
   public int tsumeGoKoThreat = 1; // 1=双方,2=进攻,3=防守,4=无
+  public int tsumeGoWallDistance = 1;
 
   public int captureBlackOffset = 120;
   public int captureBlackPercent = 25;
@@ -1406,6 +1407,7 @@ public class Config {
     tsumeGoToPlay = uiConfig.optInt("tsume-go-to-play", 1);
     tsumeGoAttaker = uiConfig.optInt("tsume-go-attaker", 1);
     tsumeGoKoThreat = uiConfig.optInt("tsume-go-ko-threat", 1);
+    tsumeGoWallDistance = uiConfig.optInt("tsume-go-wall-distance", 1);
 
     captureBlackOffset = uiConfig.optInt("capture-black-offset", 120);
     captureBlackPercent = uiConfig.optInt("capture-black-percent", 25);

@@ -276,6 +276,8 @@ public class Input implements MouseListener, KeyListener, MouseWheelListener, Mo
           Lizzie.frame.shareSGF();
         } else if (e.isAltDown()) {
           Lizzie.frame.startEngineGameDialog();
+        } else if (e.isShiftDown()) {
+          Lizzie.frame.openTsumego();
         } else Lizzie.frame.toggleGtpConsole();
         break;
       case VK_RIGHT:
