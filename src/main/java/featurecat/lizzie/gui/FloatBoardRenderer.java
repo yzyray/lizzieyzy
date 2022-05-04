@@ -194,15 +194,14 @@ public class FloatBoardRenderer {
     float boardWidth0 = boardWidth;
     float boardHeight0 = boardHeight;
 
-    squareWidth = Math.round(boardWidth0 / (Board.boardWidth));
-    squareHeight = Math.round(boardHeight0 / (Board.boardHeight));
+    squareWidth = Math.round(boardWidth0 / Board.boardWidth);
+    squareHeight = Math.round(boardHeight0 / Board.boardHeight);
     //   int[] calculatedPixelMargins = calculatePixelMargins();
     boardWidth = squareWidth * Board.boardWidth;
     boardHeight = squareHeight * Board.boardHeight;
     availableWidth = squareWidth * (Board.boardWidth - 1);
     availableHeight = squareHeight * (Board.boardHeight - 1);
-
-    scaledMarginWidth = squareWidth / 2;
+    scaledMarginWidth = (squareWidth + (factor == 1.25 ? 1 : 0)) / 2;
     scaledMarginHeight = squareHeight / 2;
     // squareWidth = calculateSquareWidth(availableWidth);
     // squareHeight = calculateSquareHeight(availableHeight);
@@ -2256,6 +2255,7 @@ public class FloatBoardRenderer {
   private int cachedR;
   private int cachedShadowSize;
   private int cachedStoneCenter;
+  public float factor;
 
   private void drawShadowCache() {
     if (!Lizzie.config.showStoneShadow) return;
@@ -2525,9 +2525,9 @@ public class FloatBoardRenderer {
     return font.deriveFont(atts);
   }
 
-  private int[] calculatePixelMargins() {
-    return calculatePixelMargins(boardWidth, boardHeight);
-  }
+//  private int[] calculatePixelMargins() {
+//    return calculatePixelMargins(boardWidth, boardHeight);
+//  }
 
   /**
    * Set the location to render the board
