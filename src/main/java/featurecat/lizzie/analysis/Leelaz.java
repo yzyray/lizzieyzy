@@ -3343,7 +3343,7 @@ public class Leelaz {
   }
 
   public void tryToDignostic(String message, boolean isModal) {
-    if (!Lizzie.config.autoCheckEngineAlive && Lizzie.engineManager.isEngineGame())
+    if (!Lizzie.config.autoCheckEngineAlive && EngineManager.isEngineGame())
       Lizzie.engineManager.clearEngineGame();
     if (engineFailedMessage != null && engineFailedMessage.isVisible()) return;
     engineFailedMessage =

@@ -201,25 +201,25 @@ public class FloatBoardRenderer {
     boardHeight = squareHeight * Board.boardHeight;
     availableWidth = squareWidth * (Board.boardWidth - 1);
     availableHeight = squareHeight * (Board.boardHeight - 1);
-    scaledMarginWidth = (squareWidth + (factor == 1.25 ? 1 : 0)) / 2;
-    scaledMarginHeight = squareHeight / 2;
+    scaledMarginWidth = (int) (boardWidth0 / (2 * Board.boardWidth));
+    scaledMarginHeight = (int) (boardHeight0 / (2 * Board.boardHeight));
     // squareWidth = calculateSquareWidth(availableWidth);
     // squareHeight = calculateSquareHeight(availableHeight);
-    if (squareWidth > squareHeight) {
-      squareWidth = squareHeight;
-      int newWidth = squareWidth * (Board.boardWidth - 1) + 1;
-      int diff = availableWidth - newWidth;
-      availableWidth = newWidth;
-      boardWidth -= diff + (scaledMarginWidth - scaledMarginHeight) * 2;
-      scaledMarginWidth = scaledMarginHeight;
-    } else if (squareWidth < squareHeight) {
-      squareHeight = squareWidth;
-      int newHeight = squareHeight * (Board.boardHeight - 1) + 1;
-      int diff = availableHeight - newHeight;
-      availableHeight = newHeight;
-      boardHeight -= diff + (scaledMarginHeight - scaledMarginWidth) * 2;
-      scaledMarginHeight = scaledMarginWidth;
-    }
+    //    if (squareWidth > squareHeight) {
+    //      squareWidth = squareHeight;
+    //      int newWidth = squareWidth * (Board.boardWidth - 1) + 1;
+    //      int diff = availableWidth - newWidth;
+    //      availableWidth = newWidth;
+    //      boardWidth -= diff + (scaledMarginWidth - scaledMarginHeight) * 2;
+    //      scaledMarginWidth = scaledMarginHeight;
+    //    } else if (squareWidth < squareHeight) {
+    //      squareHeight = squareWidth;
+    //      int newHeight = squareHeight * (Board.boardHeight - 1) + 1;
+    //      int diff = availableHeight - newHeight;
+    //      availableHeight = newHeight;
+    //      boardHeight -= diff + (scaledMarginHeight - scaledMarginWidth) * 2;
+    //      scaledMarginHeight = scaledMarginWidth;
+    //    }
     stoneRadius = max(squareWidth, squareHeight) < 4 ? 1 : max(squareWidth, squareHeight) / 2 - 1;
     //    scaledMarginWidth=(boardWidth0-squareWidth*(Board.boardWidth-1))/2;
     //    scaledMarginHeight=(boardHeight0-squareHeight*(Board.boardHeight-1))/2;
@@ -2255,7 +2255,7 @@ public class FloatBoardRenderer {
   private int cachedR;
   private int cachedShadowSize;
   private int cachedStoneCenter;
-  public float factor;
+  // public float factor;
 
   private void drawShadowCache() {
     if (!Lizzie.config.showStoneShadow) return;
@@ -2525,9 +2525,9 @@ public class FloatBoardRenderer {
     return font.deriveFont(atts);
   }
 
-//  private int[] calculatePixelMargins() {
-//    return calculatePixelMargins(boardWidth, boardHeight);
-//  }
+  //  private int[] calculatePixelMargins() {
+  //    return calculatePixelMargins(boardWidth, boardHeight);
+  //  }
 
   /**
    * Set the location to render the board

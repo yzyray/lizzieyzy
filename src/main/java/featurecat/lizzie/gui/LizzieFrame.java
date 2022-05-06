@@ -3571,6 +3571,9 @@ public class LizzieFrame extends JFrame {
   private BufferedImage cachedVarImage2;
   private BufferedImage cachedBackground;
   private BufferedImage cachedWinrateImage;
+  public int varBigX;
+  public int varBigY;
+  private BufferedImage cachedVariationTreeBigImage;
   public Paint backgroundPaint;
   private int cachedBackgroundWidth = 0, cachedBackgroundHeight = 0;
   public boolean redrawBackgroundAnyway = false;
@@ -4963,6 +4966,10 @@ public class LizzieFrame extends JFrame {
     g0.drawImage(cachedImage, 0, 0, null);
     if (Lizzie.config.showWinrateGraph && cachedWinrateImage != null && !showControls)
       g0.drawImage(cachedWinrateImage, grx, gry, null);
+    if (Lizzie.config.showVariationGraph
+        && shouldShowSimpleVariation()
+        && cachedVariationTreeBigImage != null
+        && !showControls) g0.drawImage(cachedVariationTreeBigImage, varBigX, varBigY, null);
   }
 
   private String getLoadingText() {
@@ -9042,10 +9049,21 @@ public class LizzieFrame extends JFrame {
     g.fillRect(vx, vy, vw, vh);
     if (!Lizzie.config.showVariationGraph) return;
     if (shouldShowSimpleVariation()) {
-      variationTreeBig.draw(g, vx, vy, vw, vh);
-      if (varTreeScrollPane.isVisible()) {
-        varTreeScrollPane.setVisible(false);
-      }
+      new Thread() {
+        public void run() {
+          BufferedImage variationTreeBigImage = new BufferedImage(vw, vh, TYPE_INT_ARGB);
+          Graphics2D g1 = (Graphics2D) variationTreeBigImage.getGraphics();
+          g1.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+          g1.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+          variationTreeBig.draw(g1, 0, 0, vw, vh);
+          varBigX = vx;
+          varBigY = vy;
+          cachedVariationTreeBigImage = variationTreeBigImage;
+          if (varTreeScrollPane.isVisible()) {
+            varTreeScrollPane.setVisible(false);
+          }
+        }
+      }.start();
       return;
     } else if (vw < 10 || vh < 10) {
       varTreeScrollPane.setVisible(false);

@@ -517,7 +517,7 @@ public class ReadBoard {
                     (int) Math.ceil(Integer.parseInt(params[4]) * factor),
                     Integer.parseInt(param[2]),
                     true);
-            Lizzie.frame.floatBoard.setFactor(factor);
+            // Lizzie.frame.floatBoard.setFactor(factor);
           } else {
             Lizzie.frame.floatBoard.setPos(
                 (int) Math.ceil(Integer.parseInt(params[1]) * factor),
@@ -525,7 +525,7 @@ public class ReadBoard {
                 (int) Math.ceil(Integer.parseInt(params[3]) * factor),
                 (int) Math.ceil(Integer.parseInt(params[4]) * factor),
                 Integer.parseInt(param[2]));
-            Lizzie.frame.floatBoard.setFactor(factor);
+            //   Lizzie.frame.floatBoard.setFactor(factor);
           }
         } else {
           if (Lizzie.frame.floatBoard == null) {
