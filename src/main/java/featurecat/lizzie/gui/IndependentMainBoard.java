@@ -691,7 +691,7 @@ public class IndependentMainBoard extends JFrame {
   }
 
   public void refresh() {
-    mainPanel.repaint();
+    repaint();
   }
 
   public void replayBranch() {

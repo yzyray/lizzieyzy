@@ -5831,6 +5831,10 @@ public class Menu extends JMenuBar {
               if (Lizzie.leelaz.isPondering()) Lizzie.leelaz.ponder();
             } else {
               txtWRN.setEnabled(false);
+              if (txtWRN.getBackground() == Color.RED) {
+                txtWRN.setText("");
+                txtWRN.setBackground(Color.WHITE);
+              }
               if (EngineManager.isEngineGame) {
                 Lizzie.engineManager
                     .engineList
@@ -5973,6 +5977,10 @@ public class Menu extends JMenuBar {
 
             } else {
               txtGfPDA.setEnabled(false);
+              if (txtGfPDA.getBackground() == Color.RED) {
+                txtGfPDA.setText("");
+                txtGfPDA.setBackground(Color.WHITE);
+              }
               if (EngineManager.isEngineGame) {
                 Lizzie.engineManager
                     .engineList

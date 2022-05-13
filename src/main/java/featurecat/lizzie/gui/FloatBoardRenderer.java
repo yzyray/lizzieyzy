@@ -2921,10 +2921,8 @@ public class FloatBoardRenderer {
       // Draw the lines
       g.setColor(Color.BLACK);
       BasicStroke borderStroke =
-          new BasicStroke(
-              Math.max(boardWidth > 560 ? 2f : 1f, Math.min(3.2f, (float) availableWidth / 481f)));
-      BasicStroke normalStroke =
-          new BasicStroke(Math.max(1f, Math.min(1.7f, (float) availableWidth / 1110f)));
+          new BasicStroke(Math.max(boardWidth > 560 ? 2f : 1f, availableWidth / 481f));
+      BasicStroke normalStroke = new BasicStroke(Math.max(1f, availableWidth / 750f));
       int totalHeight = scaledMarginHeight + squareHeight * (Board.boardHeight - 1);
       int totalWidth = scaledMarginWidth + squareWidth * (Board.boardWidth - 1);
       for (int i = 0; i < Board.boardHeight; i++) {
