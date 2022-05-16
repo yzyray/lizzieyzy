@@ -2920,7 +2920,9 @@ public class ConfigDialog2 extends JDialog {
               }
               Color color =
                   JColorChooser.showDialog(
-                      (Component) e.getSource(), "Choose a color", cl.getColor());
+                      (Component) e.getSource(),
+                      Lizzie.resourceBundle.getString("ConfigDialog2.chooseColor"),
+                      cl.getColor());
               if (color != null) {
                 cl.setColor(color);
               }
