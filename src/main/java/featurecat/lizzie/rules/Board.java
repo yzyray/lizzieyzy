@@ -528,16 +528,30 @@ public class Board {
     }
   }
 
-  public ArrayList<Movelist> savelistforeditmode() {
-    if (boardstatbeforeedit == "") {
-      try {
-        boardstatbeforeedit = SGFParser.saveToString(false);
-      } catch (IOException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
-      tempmovelist = getmovelistWithOutStartStone();
+  //  public ArrayList<Movelist> savelistforeditmode() {
+  //    if (boardstatbeforeedit == "") {
+  //      try {
+  //        boardstatbeforeedit = SGFParser.saveToString(false);
+  //      } catch (IOException e) {
+  //        // TODO Auto-generated catch block
+  //        e.printStackTrace();
+  //      }
+  //      tempmovelist = getmovelistWithOutStartStone();
+  //    }
+  //    tempallmovelist = getallmovelist();
+  //    boardstatafteredit = "";
+  //    tempmovelist2 = new ArrayList<Movelist>();
+  //    return tempmovelist;
+  //  }
+
+  public ArrayList<Movelist> saveListForEdit() {
+    try {
+      boardstatbeforeedit = SGFParser.saveToString(false);
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
     }
+    tempmovelist = getmovelistWithOutStartStone();
     tempallmovelist = getallmovelist();
     boardstatafteredit = "";
     tempmovelist2 = new ArrayList<Movelist>();
@@ -3593,14 +3607,17 @@ public class Board {
   public MoveLinkedList getMoveLinkedListAfter(BoardHistoryNode node) {
     // TODO Auto-generated method stub
     MoveLinkedList head = new MoveLinkedList();
-    getMoveLinkedListAfterHelper(node, head);
+    ArrayList<MoveLinkedList> tempHead = new ArrayList<MoveLinkedList>();
+    getMoveLinkedListAfterHelper(node, head, tempHead);
     if (head.variations.size() > 0) return head.variations.get(0);
     else return null;
   }
 
-  public void getMoveLinkedListAfterHelper(BoardHistoryNode node, MoveLinkedList head) {
+  public void getMoveLinkedListAfterHelper(
+      BoardHistoryNode node, MoveLinkedList head, ArrayList<MoveLinkedList> tempHead) {
     Stack<BoardHistoryNode> stack = new Stack<>();
     stack.push(node);
+
     while (!stack.isEmpty()) {
       BoardHistoryNode cur = stack.pop();
       if (cur.extraStones != null) {
@@ -3616,7 +3633,14 @@ public class Board {
         head =
             addMoveToLinedList(
                 head, lastMove, cur.getData().lastMoveColor.isBlack(), !cur.previous().isPresent());
+
+      if (!cur.next().isPresent() && !tempHead.isEmpty()) {
+        head = tempHead.get(tempHead.size() - 1);
+        tempHead.remove(tempHead.size() - 1);
+      }
+
       if (cur.numberOfChildren() >= 1) {
+        if (cur.numberOfChildren() > 1) tempHead.add(head);
         for (int i = cur.numberOfChildren() - 1; i >= 0; i--)
           stack.push(cur.getVariations().get(i));
       }
@@ -3793,7 +3817,7 @@ public class Board {
     GameInfo gameInfo = Lizzie.board.getHistory().getGameInfo();
     boolean oriPlaySound = Lizzie.config.playSound;
     Lizzie.config.playSound = false;
-    Lizzie.board.savelistforeditmode();
+    Lizzie.board.saveListForEdit();
     int moveNumber = Lizzie.board.moveNumberByCoord(coords);
     if (moveNumber > 0) {
       MoveLinkedList reStoreMainListHead =

@@ -3346,7 +3346,7 @@ public class LizzieFrame extends JFrame {
         int startMoveNumber = 0;
         boolean blackToPlay = Lizzie.board.getHistory().getStart().getData().blackToPlay;
         if (Lizzie.board.hasStartStone) startMoveNumber += Lizzie.board.startStonelist.size();
-        Lizzie.board.savelistforeditmode();
+        Lizzie.board.saveListForEdit();
         Lizzie.board.clearforedit();
         Lizzie.board.setMoveListWithFlatten(
             Lizzie.board.tempallmovelist, startMoveNumber, blackToPlay);
@@ -7845,7 +7845,7 @@ public class LizzieFrame extends JFrame {
           refresh();
           return;
         }
-        Lizzie.board.savelistforeditmode();
+        Lizzie.board.saveListForEdit();
         int moveNumber = Lizzie.board.moveNumberByCoord(draggedCoords);
         if (moveNumber > 0) {
           MoveLinkedList reStoreMainListHead =
@@ -11681,7 +11681,7 @@ public class LizzieFrame extends JFrame {
     GameInfo gameInfo = Lizzie.board.getHistory().getGameInfo();
     boolean oriPlaySound = Lizzie.config.playSound;
     Lizzie.config.playSound = false;
-    Lizzie.board.savelistforeditmode();
+    Lizzie.board.saveListForEdit();
     MoveLinkedList listHead =
         Lizzie.board.getMoveLinkedListAfter(Lizzie.board.getHistory().getCurrentHistoryNode());
     if (listHead == null) {
