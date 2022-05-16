@@ -9575,6 +9575,7 @@ public class LizzieFrame extends JFrame {
                   topPanel.setBounds(
                       0, 0, width, topPanelHeight + (Lizzie.config.useJavaLooks ? 1 : 0));
                 }
+                topPanel.revalidate();
               } else {
                 topPanel.setBounds(
                     0, 0, 9999, Config.menuHeight + (Lizzie.config.useJavaLooks ? 1 : 0));
