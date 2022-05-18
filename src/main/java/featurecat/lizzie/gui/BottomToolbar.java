@@ -487,7 +487,7 @@ public class BottomToolbar extends JPanel {
     setButtonSize(savefile, true);
     setButtonSize(analyzeList, false);
     setButtonSize(refresh, true);
-    setButtonSize(analyse, false);
+    setButtonSize(analyse);
     setButtonSize(tryPlay, true);
     setButtonSize(setMain, false);
     setButtonSize(backMain, false);
@@ -2163,6 +2163,10 @@ public class BottomToolbar extends JPanel {
     button.setSize(
         button.getFontMetrics(button.getFont()).stringWidth(button.getText()) + (widden ? 14 : 12),
         26);
+  }
+
+  private void setButtonSize(JButton button) {
+    button.setSize(button.getFontMetrics(button.getFont()).stringWidth(button.getText()) + 33, 26);
   }
 
   public void setDetailIcon() {

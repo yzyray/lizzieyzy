@@ -9963,6 +9963,7 @@ public class Menu extends JMenuBar {
                 if (Lizzie.frame.floatBoard != null && Lizzie.frame.floatBoard.isVisible()) {
                   Lizzie.frame.floatBoard.setPonderState(isPondering);
                 }
+                LizzieFrame.toolbar.analyse.setIcon(icon2);
                 LizzieFrame.toolbar.analyse.setText(
                     Lizzie.resourceBundle.getString("BottomToolbar.pauseAnalyse"));
               } else {
@@ -9971,6 +9972,7 @@ public class Menu extends JMenuBar {
                 if (Lizzie.frame.floatBoard != null && Lizzie.frame.floatBoard.isVisible()) {
                   Lizzie.frame.floatBoard.setPonderState(false);
                 }
+                LizzieFrame.toolbar.analyse.setIcon(ready2);
                 LizzieFrame.toolbar.analyse.setText(
                     Lizzie.resourceBundle.getString("BottomToolbar.analyse"));
               }
