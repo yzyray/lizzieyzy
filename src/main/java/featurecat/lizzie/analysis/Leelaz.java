@@ -950,14 +950,9 @@ public class Leelaz {
         }
       }
       checkNameAndVersion(params);
-
     } else if (line.startsWith("?")) {
       isCommandLine = true;
-    }
-
-    if (Lizzie.gtpConsole.isVisible() || Lizzie.config.alwaysGtp)
-      Lizzie.gtpConsole.addLine(line + "\n");
-    else if (line.startsWith("PDA:")) {
+    } else if (line.startsWith("PDA:")) {
       parsePDALine(line);
     }
   }
