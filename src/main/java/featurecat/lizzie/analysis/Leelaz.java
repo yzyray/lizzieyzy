@@ -3420,6 +3420,7 @@ public class Leelaz {
 
   public void toggleHeatmap(boolean bySpace) {
     // TODO Auto-generated method stub
+    if (Lizzie.frame.isPlayingAgainstLeelaz) return;
     if (EngineManager.isEmpty) {
       Lizzie.frame.togglePolicy();
       return;
@@ -3452,6 +3453,7 @@ public class Leelaz {
     heatOwnership = new ArrayList<Double>();
     if (isheatmap) {
       sendHeatCommand();
+      isPondering = true;
     } else {
       Lizzie.board.clearBestHeatMove();
       if (isPondering) {
