@@ -1552,6 +1552,9 @@ public class BoardRenderer {
       variation = suggestedMove.get().variation;
       pvVistis = suggestedMove.get().pvVisits;
     }
+    if (variation == null) {
+      return;
+    }
     branch = null;
     if (shouldShowPreviousBestMoves()) {
       if (Lizzie.board.getHistory().getCurrentHistoryNode().previous().isPresent())
@@ -1580,7 +1583,6 @@ public class BoardRenderer {
               false,
               null);
     }
-
     mouseOverCoords = suggestedMove.get().coordinate;
     branchOpt = Optional.of(branch);
     variationOpt = Optional.of(variation);

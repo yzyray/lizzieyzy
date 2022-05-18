@@ -785,6 +785,9 @@ public class FloatBoardRenderer {
       variation = suggestedMove.get().variation;
       pvVistis = suggestedMove.get().pvVisits;
     }
+    if (variation == null) {
+      return;
+    }
     branch = null;
     //    if (Lizzie.engineManager.isEngineGame && Lizzie.engineManager.engineGameInfo.isGenmove)
     //      branch =
