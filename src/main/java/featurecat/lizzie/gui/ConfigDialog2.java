@@ -3695,6 +3695,8 @@ public class ConfigDialog2 extends JDialog {
     Lizzie.config.uiConfig.put("limit-time", Lizzie.config.limitTime);
     int oriSpecialCoordsIndex =
         Lizzie.config.useFoxStyleCoords ? 2 : (Lizzie.config.useIinCoordsName ? 1 : 0);
+    if (Lizzie.config.useNumCoordsFromTop) oriSpecialCoordsIndex = 3;
+    if (Lizzie.config.useNumCoordsFromBottom) oriSpecialCoordsIndex = 4;
     int curSpecialCoordsIndex = SpecialCoordsCbx.getSelectedIndex();
     Lizzie.config.useIinCoordsName = curSpecialCoordsIndex == 1;
     Lizzie.config.uiConfig.put("use-i-in-coords-name", Lizzie.config.useIinCoordsName);
