@@ -41,8 +41,8 @@ import org.json.JSONArray;
 public class Menu extends JMenuBar {
   final ButtonGroup buttonGroup = new ButtonGroup();
   private final ResourceBundle resourceBundle = Lizzie.resourceBundle;
-  public static ImageIcon icon;
-  public static ImageIcon icon2;
+  public static ImageIcon playing;
+  public static ImageIcon Playing2;
   public static ImageIcon stop;
   public static ImageIcon ready;
   public static ImageIcon ready2;
@@ -5259,9 +5259,9 @@ public class Menu extends JMenuBar {
     // Math.max(Lizzie.config.allFontSize, 12));
     this.add(engineMenu2);
 
-    icon = new ImageIcon();
+    playing = new ImageIcon();
     try {
-      icon.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/playing.png")));
+      playing.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/playing.png")));
       // icon.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/run.png")));
     } catch (IOException e) {
       // TODO Auto-generated catch block
@@ -5276,9 +5276,9 @@ public class Menu extends JMenuBar {
       e.printStackTrace();
     }
 
-    icon2 = new ImageIcon();
+    Playing2 = new ImageIcon();
     try {
-      icon2.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/playing2.png")));
+      Playing2.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/playing2.png")));
       // icon.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/run.png")));
     } catch (IOException e) {
       // TODO Auto-generated catch block
@@ -9585,7 +9585,7 @@ public class Menu extends JMenuBar {
                 doubleMenuPauseGame.setText(resourceBundle.getString("Menu.continueGameBtn"));
               else doubleMenuPauseGame.setText(resourceBundle.getString("Menu.pauseGameBtn"));
               if (LizzieFrame.toolbar.isPkStop) engineMenu.setIcon(ready2);
-              else engineMenu.setIcon(icon2);
+              else engineMenu.setIcon(Playing2);
             }
           }
         });
@@ -9785,7 +9785,7 @@ public class Menu extends JMenuBar {
             if (mode == 0) engine[locIndex].setIcon(null);
             if (mode == 1) engine[locIndex].setIcon(stop);
             if (mode == 2) engine[locIndex].setIcon(ready);
-            if (mode == 3) engine[locIndex].setIcon(icon);
+            if (mode == 3) engine[locIndex].setIcon(playing);
           }
         });
   }
@@ -9800,7 +9800,7 @@ public class Menu extends JMenuBar {
             if (mode == 0) engine2[locIndex].setIcon(null);
             if (mode == 1) engine2[locIndex].setIcon(stop);
             if (mode == 2) engine2[locIndex].setIcon(ready);
-            if (mode == 3) engine2[locIndex].setIcon(icon);
+            if (mode == 3) engine2[locIndex].setIcon(playing);
           }
         });
   }
@@ -9814,7 +9814,7 @@ public class Menu extends JMenuBar {
               if (i < Lizzie.engineManager.engineList.size()
                   && !Lizzie.engineManager.engineList.get(i).isStarted()) engine[i].setIcon(null);
               else if (engine[i].getIcon() != null && engine[i].getIcon() != Menu.stop) {
-                engine[i].setIcon(Menu.ready);
+                engine[i].setIcon(ready);
               }
             }
             if (EngineManager.currentEngineNo <= 20) {
@@ -9824,7 +9824,7 @@ public class Menu extends JMenuBar {
                   == null) {
               } else {
                 engine[index == 1 ? EngineManager.currentEngineNo : EngineManager.currentEngineNo2]
-                    .setIcon(Menu.icon);
+                    .setIcon(playing);
               }
             }
           }
@@ -9954,16 +9954,16 @@ public class Menu extends JMenuBar {
           public void run() {
             if (engineMenu == null || EngineManager.isEngineGame) return;
             if (isThinking) {
-              engineMenu.setIcon(icon2);
-              if (Lizzie.config.isDoubleEngineMode()) engineMenu2.setIcon(icon2);
+              engineMenu.setIcon(Playing2);
+              if (Lizzie.config.isDoubleEngineMode()) engineMenu2.setIcon(Playing2);
             } else {
               if (isPondering) {
-                engineMenu.setIcon(icon2);
-                if (Lizzie.config.isDoubleEngineMode()) engineMenu2.setIcon(icon2);
+                engineMenu.setIcon(Playing2);
+                if (Lizzie.config.isDoubleEngineMode()) engineMenu2.setIcon(Playing2);
                 if (Lizzie.frame.floatBoard != null && Lizzie.frame.floatBoard.isVisible()) {
                   Lizzie.frame.floatBoard.setPonderState(isPondering);
                 }
-                LizzieFrame.toolbar.analyse.setIcon(icon2);
+                LizzieFrame.toolbar.analyse.setIcon(ready2);
                 LizzieFrame.toolbar.analyse.setText(
                     Lizzie.resourceBundle.getString("BottomToolbar.pauseAnalyse"));
               } else {
@@ -9972,7 +9972,7 @@ public class Menu extends JMenuBar {
                 if (Lizzie.frame.floatBoard != null && Lizzie.frame.floatBoard.isVisible()) {
                   Lizzie.frame.floatBoard.setPonderState(false);
                 }
-                LizzieFrame.toolbar.analyse.setIcon(ready2);
+                LizzieFrame.toolbar.analyse.setIcon(Playing2);
                 LizzieFrame.toolbar.analyse.setText(
                     Lizzie.resourceBundle.getString("BottomToolbar.analyse"));
               }
