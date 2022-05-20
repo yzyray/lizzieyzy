@@ -9055,7 +9055,10 @@ public class LizzieFrame extends JFrame {
           Graphics2D g1 = (Graphics2D) variationTreeBigImage.getGraphics();
           g1.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
           g1.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-          variationTreeBig.draw(g1, 0, 0, vw, vh);
+          try {
+            variationTreeBig.draw(g1, 0, 0, vw, vh);
+          } catch (Exception e) {
+          }
           varBigX = vx;
           varBigY = vy;
           cachedVariationTreeBigImage = variationTreeBigImage;
