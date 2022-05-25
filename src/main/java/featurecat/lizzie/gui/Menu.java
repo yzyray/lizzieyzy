@@ -168,7 +168,7 @@ public class Menu extends JMenuBar {
         new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
-            Lizzie.board.clear(false);
+            Lizzie.frame.newEmptyBoard();
           }
         });
     fileMenu.add(newBoard);
@@ -860,6 +860,28 @@ public class Menu extends JMenuBar {
           }
         });
 
+    final JFontCheckBoxMenuItem showNewBoardConfirmDialog =
+        new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.showNewBoardConfirmDialog"));
+    showNewBoardConfirmDialog.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.config.showNewBoardHint = !Lizzie.config.showNewBoardHint;
+            Lizzie.config.uiConfig.put("show-new-board-hint", Lizzie.config.showNewBoardHint);
+          }
+        });
+
+    final JFontCheckBoxMenuItem showReplaceFileConfirmDialog =
+        new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.showReplaceFileConfirmDialog"));
+    showReplaceFileConfirmDialog.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.config.showReplaceFileHint = !Lizzie.config.showReplaceFileHint;
+            Lizzie.config.uiConfig.put("show-replace-file-hint", Lizzie.config.showReplaceFileHint);
+          }
+        });
+
     final JFontMenu mainPanelSettings =
         new JFontMenu(resourceBundle.getString("Menu.mainPanelSettings")); // ("主界面设置");
     viewMenu.add(mainPanelSettings);
@@ -870,6 +892,9 @@ public class Menu extends JMenuBar {
     mainPanelSettings.add(showNameInBoard);
     mainPanelSettings.add(showCommentConrolPane);
     mainPanelSettings.add(alwaysOnTop);
+    mainPanelSettings.addSeparator();
+    mainPanelSettings.add(showNewBoardConfirmDialog);
+    mainPanelSettings.add(showReplaceFileConfirmDialog);
 
     // viewMenu.addSeparator();
 
@@ -2509,6 +2534,10 @@ public class Menu extends JMenuBar {
             else largeSubBoard.setState(false);
             if (Lizzie.config.appendWinrateToComment) appendWinrateToComment.setState(true);
             else appendWinrateToComment.setState(false);
+            if (Lizzie.config.showNewBoardHint) showNewBoardConfirmDialog.setState(true);
+            else showNewBoardConfirmDialog.setState(false);
+            if (Lizzie.config.showReplaceFileHint) showReplaceFileConfirmDialog.setState(true);
+            else showReplaceFileConfirmDialog.setState(false);
             if (Lizzie.config.uiConfig.optBoolean("mains-always-ontop", false))
               alwaysOnTop.setState(true);
             else alwaysOnTop.setState(false);
@@ -7507,8 +7536,7 @@ public class Menu extends JMenuBar {
       btnNewFile.addActionListener(
           new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-              Lizzie.board.clear(false);
-              Lizzie.frame.refresh();
+              Lizzie.frame.newEmptyBoard();
             }
           });
 

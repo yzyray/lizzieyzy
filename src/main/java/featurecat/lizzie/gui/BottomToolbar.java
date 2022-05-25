@@ -1023,12 +1023,7 @@ public class BottomToolbar extends JPanel {
     clearButton.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            if (Lizzie.engineManager.isEngineGame()) return;
-            Lizzie.board.clear(false);
-            if (Lizzie.leelaz.isPondering()) {
-              Lizzie.leelaz.ponder();
-            }
-            Lizzie.frame.refresh();
+            Lizzie.frame.newEmptyBoard();
             setTxtUnfocuse();
           }
         });

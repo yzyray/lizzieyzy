@@ -12271,4 +12271,52 @@ public class LizzieFrame extends JFrame {
     captureTsumeGoFrame = new CaptureTsumeGoFrame();
     captureTsumeGoFrame.setVisible(true);
   }
+
+  public void newEmptyBoard() {
+    if (EngineManager.isEngineGame()) return;
+    if (Lizzie.config.showNewBoardHint
+        && (Lizzie.board.getHistory().getCurrentHistoryNode().previous().isPresent()
+            || Lizzie.board.getHistory().getCurrentHistoryNode().next().isPresent())) {
+      Box box = Box.createVerticalBox();
+      JFontLabel label =
+          new JFontLabel(Lizzie.resourceBundle.getString("LizzieFrame.confirmNewBoard"));
+      label.setAlignmentX(Component.LEFT_ALIGNMENT);
+      box.add(label);
+      Utils.addFiller(box, 5, 5);
+      JFontCheckBox disableCheckBox =
+          new JFontCheckBox(Lizzie.resourceBundle.getString("LizzieFrame.noNoticeAgain"));
+      disableCheckBox.addActionListener(
+          new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+              Lizzie.config.showNewBoardHint = !disableCheckBox.isSelected();
+              Lizzie.config.uiConfig.put("show-new-board-hint", Lizzie.config.showNewBoardHint);
+            }
+          });
+      disableCheckBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+      box.add(disableCheckBox);
+      Object[] options = new Object[2];
+      options[0] = Lizzie.resourceBundle.getString("LizzieFrame.confirm");
+      options[1] = Lizzie.resourceBundle.getString("LizzieFrame.cancel");
+      Object defaultOption = Lizzie.resourceBundle.getString("LizzieFrame.cancel");
+      JOptionPane optionPane =
+          new JOptionPane(
+              box,
+              JOptionPane.QUESTION_MESSAGE,
+              JOptionPane.YES_NO_OPTION,
+              null,
+              options,
+              defaultOption);
+      JDialog dialog =
+          optionPane.createDialog(
+              this, Lizzie.resourceBundle.getString("LizzieFrame.confirmNewBoardTitle"));
+      dialog.setVisible(true);
+      dialog.dispose();
+      if (optionPane.getValue() == null || optionPane.getValue().equals(defaultOption))
+        // System.out.println("取消");
+        return;
+    }
+    Lizzie.board.clear(false);
+    Lizzie.frame.refresh();
+  }
 }

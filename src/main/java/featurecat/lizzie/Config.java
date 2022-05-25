@@ -556,6 +556,7 @@ public class Config {
 
   public ArrayList<String> recentFilePaths;
   public boolean showReplaceFileHint = true;
+  public boolean showNewBoardHint = true;
   public JSONObject customLayout1;
   public JSONObject customLayout2;
 
@@ -1334,6 +1335,7 @@ public class Config {
     disableWRNInGame = uiConfig.optBoolean("disable-wrn-in-game", true);
 
     showReplaceFileHint = uiConfig.optBoolean("show-replace-file-hint", true);
+    showNewBoardHint = uiConfig.optBoolean("show-new-board-hint", true);
     maxTreeWidth = uiConfig.optInt("max-tree-width", 10000);
     gameStatisticsCustomStart = uiConfig.optInt("game-statistics-custom-start", 10);
     gameStatisticsCustomEnd = uiConfig.optInt("game-statistics-custom-end", 200);
