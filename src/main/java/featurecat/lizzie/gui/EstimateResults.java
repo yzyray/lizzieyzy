@@ -232,11 +232,15 @@ public class EstimateResults extends JDialog {
     if (Lizzie.frame.floatBoard != null
         && Lizzie.frame.floatBoard.isVisible()
         && !Lizzie.frame.mainPanel.hasFocus()) {
-      frameX = Lizzie.frame.floatBoard.getX();
-      frameY = Lizzie.frame.floatBoard.getY();
-      boardX = 0;
-      boardY = 0;
-      boardLenght = Lizzie.frame.floatBoard.getWidth();
+      if (!(Lizzie.config.isFloatBoardMode()
+          && Lizzie.frame.independentMainBoard != null
+          && Lizzie.frame.independentMainBoard.hasFocus())) {
+        frameX = Lizzie.frame.floatBoard.getX();
+        frameY = Lizzie.frame.floatBoard.getY();
+        boardX = 0;
+        boardY = 0;
+        boardLenght = Lizzie.frame.floatBoard.getWidth();
+      }
     }
     if (frameX + boardX + boardLenght + width + 5 <= screenWidth)
       this.setLocation(
