@@ -161,14 +161,6 @@
 			<version>1.6.4</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/junit/junit -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.13.1</version>
-			<scope>test</scope>
-		</dependency>
-
 		<!-- https://code.google.com/archive/p/juniversalchardet -->
 		<dependency>
 			<groupId>com.googlecode.juniversalchardet</groupId>
@@ -187,11 +179,6 @@
 			<groupId>org.java-websocket</groupId>
 			<artifactId>Java-WebSocket</artifactId>
 			<version>1.5.0</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-simple</artifactId>
-			<version>1.7.25</version>
 		</dependency>
 
 		<dependency>
