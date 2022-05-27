@@ -341,13 +341,9 @@ public class PrivateKifuSearch extends JFrame {
                     + "\""
                     + ","
                     + "case  isdelete when '2' then '"
-                    + "\""
                     + resourceBundle.getString("PrivateKifuSearch.sql.private")
-                    + "\""
                     + "' when '0' then '"
-                    + "\""
                     + resourceBundle.getString("PrivateKifuSearch.sql.public")
-                    + "\""
                     + "' end as "
                     + "\""
                     + resourceBundle.getString("PrivateKifuSearch.sql.isPublic")
