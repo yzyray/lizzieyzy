@@ -217,13 +217,12 @@ public class EstimateResults extends JDialog {
     Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
     int screenWidth = screensize.width;
     int screenHeight = screensize.height;
-    int boardX = Lizzie.frame.boardX;
+    int boardX = Utils.zoomIn(Lizzie.frame.boardX);
     int boardY =
-        Lizzie.frame.boardY
-            + Utils.zoomIn(Lizzie.frame.mainPanel.getY())
+        Utils.zoomIn(Lizzie.frame.boardY + Lizzie.frame.mainPanel.getY())
             + Config.menuHeight
             + Lizzie.frame.topPanel.getHeight();
-    int boardLenght = Lizzie.frame.maxSize;
+    int boardLenght = Utils.zoomIn(Lizzie.frame.maxSize);
     if (Lizzie.config.isFloatBoardMode() && Lizzie.frame.independentMainBoard != null) {
       frameX = Lizzie.frame.independentMainBoard.getX();
       frameY = Lizzie.frame.independentMainBoard.getY();
