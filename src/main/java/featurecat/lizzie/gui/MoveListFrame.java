@@ -6815,6 +6815,9 @@ public class MoveListFrame extends JFrame {
         JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
       // if(row%2 == 0){
       // if(row%2 == 0){
+      String coordsName =
+          Board.maybeConvertOtherCoordsToNormal(table.getValueAt(row, 2).toString());
+      int[] coords = Board.convertNameToCoordinates(coordsName);
       if (Lizzie.config.moveListTopCurNode
           && row == 0
           && Lizzie.board.getHistory().getCurrentHistoryNode().previous().isPresent()
@@ -6824,10 +6827,8 @@ public class MoveListFrame extends JFrame {
           && Lizzie.board.getHistory().getCurrentHistoryNode().previous().get().nodeInfo.analyzed) {
         setBackground(new Color(220, 220, 220));
         setForeground(new Color(0, 0, 0));
-      } else if (Board.convertNameToCoordinates(table.getValueAt(row, 2).toString())[0]
-              == Lizzie.frame.clickbadmove[0]
-          && Board.convertNameToCoordinates(table.getValueAt(row, 2).toString())[1]
-              == Lizzie.frame.clickbadmove[1]) {
+      } else if (coords[0] == Lizzie.frame.clickbadmove[0]
+          && coords[1] == Lizzie.frame.clickbadmove[1]) {
         setBackground(new Color(238, 221, 130));
       } else setBackground(Color.WHITE);
       double diffWinrate =
@@ -6894,10 +6895,12 @@ public class MoveListFrame extends JFrame {
 
     public Component getTableCellRendererComponent(
         JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-      if (Board.convertNameToCoordinates(table.getValueAt(row, 1).toString())[0]
-              == Lizzie.frame.clickbadmove[0]
-          && Board.convertNameToCoordinates(table.getValueAt(row, 1).toString())[1]
-              == Lizzie.frame.clickbadmove[1]) {
+
+      String coordsName =
+          Board.maybeConvertOtherCoordsToNormal(table.getValueAt(row, 1).toString());
+      int[] coords = Board.convertNameToCoordinates(coordsName);
+
+      if (coords[0] == Lizzie.frame.clickbadmove[0] && coords[1] == Lizzie.frame.clickbadmove[1]) {
         setBackground(new Color(238, 221, 130));
       } else setBackground(Color.WHITE);
       double diffWinrate =
@@ -7072,7 +7075,8 @@ public class MoveListFrame extends JFrame {
     if (Lizzie.config.isAutoAna) return;
     table.repaint();
     int moveNumber = Integer.parseInt(table.getValueAt(row, 1).toString());
-    int[] coords = Board.convertNameToCoordinates(table.getValueAt(row, 2).toString());
+    String coordsName = Board.maybeConvertOtherCoordsToNormal(table.getValueAt(row, 2).toString());
+    int[] coords = Board.convertNameToCoordinates(coordsName);
     if (this.showBranch.getSelectedIndex() == 0) {
       Lizzie.frame.moveToMainTrunk();
     }
@@ -7087,7 +7091,9 @@ public class MoveListFrame extends JFrame {
     tablePanelMin1.repaint();
     int moveNumber = Integer.parseInt(minTable1.getValueAt(row, 0).toString());
     // Lizzie.board.goToMoveNumber(1);
-    int[] coords = Board.convertNameToCoordinates(minTable1.getValueAt(row, 1).toString());
+    String coordsName =
+        Board.maybeConvertOtherCoordsToNormal(minTable1.getValueAt(row, 1).toString());
+    int[] coords = Board.convertNameToCoordinates(coordsName);
     if (this.showBranch.getSelectedIndex() == 0) {
       Lizzie.frame.moveToMainTrunk();
     }
@@ -7101,7 +7107,9 @@ public class MoveListFrame extends JFrame {
     tablePanelMin2.repaint();
     int moveNumber = Integer.parseInt(minTable2.getValueAt(row, 0).toString().trim());
     // Lizzie.board.goToMoveNumber(1);
-    int[] coords = Board.convertNameToCoordinates(minTable2.getValueAt(row, 1).toString());
+    String coordsName =
+        Board.maybeConvertOtherCoordsToNormal(minTable2.getValueAt(row, 1).toString());
+    int[] coords = Board.convertNameToCoordinates(coordsName);
     if (this.showBranch.getSelectedIndex() == 0) {
       Lizzie.frame.moveToMainTrunk();
     }
@@ -7519,7 +7527,8 @@ public class MoveListFrame extends JFrame {
               case 1:
                 return data.moveNum;
               case 2:
-                return Board.convertCoordinatesToName(data.coords[0], data.coords[1]);
+                return Board.maybeConvertNormalCoordsToOther(
+                    Board.convertCoordinatesToName(data.coords[0], data.coords[1]));
               case 3:
                 return (data.diffWinrate < 0 ? "+" : "-")
                     + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.diffWinrate))
@@ -7553,7 +7562,8 @@ public class MoveListFrame extends JFrame {
               case 1:
                 return data.moveNum;
               case 2:
-                return Board.convertCoordinatesToName(data.coords[0], data.coords[1]);
+                return Board.maybeConvertNormalCoordsToOther(
+                    Board.convertCoordinatesToName(data.coords[0], data.coords[1]));
               case 3:
                 return (data.diffWinrate > 0 ? "+" : "-")
                     + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.diffWinrate))
@@ -7601,7 +7611,8 @@ public class MoveListFrame extends JFrame {
               case 1:
                 return data.moveNum;
               case 2:
-                return Board.convertCoordinatesToName(data.coords[0], data.coords[1]);
+                return Board.maybeConvertNormalCoordsToOther(
+                    Board.convertCoordinatesToName(data.coords[0], data.coords[1]));
               case 3:
                 return (data.diffWinrate < 0 ? "+" : "-")
                     + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.diffWinrate))
@@ -7627,7 +7638,8 @@ public class MoveListFrame extends JFrame {
               case 1:
                 return data.moveNum;
               case 2:
-                return Board.convertCoordinatesToName(data.coords[0], data.coords[1]);
+                return Board.maybeConvertNormalCoordsToOther(
+                    Board.convertCoordinatesToName(data.coords[0], data.coords[1]));
               case 3:
                 return (data.diffWinrate > 0 ? "+" : "-")
                     + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.diffWinrate))
@@ -7878,7 +7890,8 @@ public class MoveListFrame extends JFrame {
               case 0:
                 return data.moveNum;
               case 1:
-                return Board.convertCoordinatesToName(data.coords[0], data.coords[1]);
+                return Board.maybeConvertNormalCoordsToOther(
+                    Board.convertCoordinatesToName(data.coords[0], data.coords[1]));
               case 2:
                 return (data.diffWinrate < 0 ? "+" : "-")
                     + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.diffWinrate))
@@ -7898,7 +7911,8 @@ public class MoveListFrame extends JFrame {
               case 0:
                 return data.moveNum;
               case 1:
-                return Board.convertCoordinatesToName(data.coords[0], data.coords[1]);
+                return Board.maybeConvertNormalCoordsToOther(
+                    Board.convertCoordinatesToName(data.coords[0], data.coords[1]));
               case 2:
                 return (data.diffWinrate > 0 ? "+" : "-")
                     + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.diffWinrate))
@@ -7922,7 +7936,8 @@ public class MoveListFrame extends JFrame {
               case 0:
                 return data.moveNum;
               case 1:
-                return Board.convertCoordinatesToName(data.coords[0], data.coords[1]);
+                return Board.maybeConvertNormalCoordsToOther(
+                    Board.convertCoordinatesToName(data.coords[0], data.coords[1]));
               case 2:
                 return (data.diffWinrate < 0 ? "+" : "-")
                     + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.diffWinrate))
@@ -7940,7 +7955,8 @@ public class MoveListFrame extends JFrame {
               case 0:
                 return data.moveNum;
               case 1:
-                return Board.convertCoordinatesToName(data.coords[0], data.coords[1]);
+                return Board.maybeConvertNormalCoordsToOther(
+                    Board.convertCoordinatesToName(data.coords[0], data.coords[1]));
               case 2:
                 return (data.diffWinrate > 0 ? "+" : "-")
                     + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.diffWinrate))
@@ -8169,7 +8185,8 @@ public class MoveListFrame extends JFrame {
               case 0:
                 return data.moveNum;
               case 1:
-                return Board.convertCoordinatesToName(data.coords[0], data.coords[1]);
+                return Board.maybeConvertNormalCoordsToOther(
+                    Board.convertCoordinatesToName(data.coords[0], data.coords[1]));
               case 2:
                 return (data.diffWinrate < 0 ? "+" : "-")
                     + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.diffWinrate))
@@ -8188,7 +8205,8 @@ public class MoveListFrame extends JFrame {
               case 0:
                 return data.moveNum;
               case 1:
-                return Board.convertCoordinatesToName(data.coords[0], data.coords[1]);
+                return Board.maybeConvertNormalCoordsToOther(
+                    Board.convertCoordinatesToName(data.coords[0], data.coords[1]));
               case 2:
                 return (data.diffWinrate > 0 ? "+" : "-")
                     + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.diffWinrate))
@@ -8212,7 +8230,8 @@ public class MoveListFrame extends JFrame {
               case 0:
                 return data.moveNum;
               case 1:
-                return Board.convertCoordinatesToName(data.coords[0], data.coords[1]);
+                return Board.maybeConvertNormalCoordsToOther(
+                    Board.convertCoordinatesToName(data.coords[0], data.coords[1]));
               case 2:
                 return (data.diffWinrate < 0 ? "+" : "-")
                     + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.diffWinrate))
@@ -8230,7 +8249,8 @@ public class MoveListFrame extends JFrame {
               case 0:
                 return data.moveNum;
               case 1:
-                return Board.convertCoordinatesToName(data.coords[0], data.coords[1]);
+                return Board.maybeConvertNormalCoordsToOther(
+                    Board.convertCoordinatesToName(data.coords[0], data.coords[1]));
               case 2:
                 return (data.diffWinrate > 0 ? "+" : "-")
                     + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.diffWinrate))

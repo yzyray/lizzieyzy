@@ -264,6 +264,58 @@ public class Board {
     else return LizzieFrame.outOfBoundCoordinate;
   }
 
+  public static String maybeConvertOtherCoordsToNormal(String otherCoords) {
+    if (Lizzie.config.useIinCoordsName || Lizzie.config.useFoxStyleCoords) {
+      if (boardWidth > 25 || boardHeight > 25) return otherCoords;
+      if (Lizzie.config.useIinCoordsName) {
+        if (otherCoords.length() <= 3 && otherCoords.charAt(0) >= 'I') {
+          return String.valueOf((char) (otherCoords.charAt(0) + 1)) + otherCoords.substring(1);
+        }
+      }
+      if (Lizzie.config.useFoxStyleCoords) {
+        if (otherCoords.length() <= 3 && otherCoords.charAt(0) >= 'I') {
+          otherCoords =
+              String.valueOf((char) (otherCoords.charAt(0) + 1)) + otherCoords.substring(1);
+        }
+        try {
+          int y = Integer.parseInt(otherCoords.substring(1));
+          y = Board.boardHeight + 1 - y;
+          return otherCoords.substring(0, 1) + y;
+        } catch (NumberFormatException e) {
+
+        }
+      }
+    }
+    return otherCoords;
+  }
+
+  public static String maybeConvertNormalCoordsToOther(String normalCoords) {
+    if (Lizzie.config.useIinCoordsName || Lizzie.config.useFoxStyleCoords) {
+      if (boardWidth > 25 || boardHeight > 25) return normalCoords;
+      if (Lizzie.config.useIinCoordsName) {
+        // H4->I4
+        if (normalCoords.length() <= 3 && normalCoords.charAt(0) > 'I') {
+          return String.valueOf((char) (normalCoords.charAt(0) - 1)) + normalCoords.substring(1);
+        }
+      }
+      if (Lizzie.config.useFoxStyleCoords) {
+        // H4->H16
+        if (normalCoords.length() <= 3 && normalCoords.charAt(0) > 'I') {
+          normalCoords =
+              String.valueOf((char) (normalCoords.charAt(0) - 1)) + normalCoords.substring(1);
+        }
+        try {
+          int y = Integer.parseInt(normalCoords.substring(1));
+          y = Board.boardHeight + 1 - y;
+          return normalCoords.substring(0, 1) + y;
+        } catch (NumberFormatException e) {
+
+        }
+      }
+    }
+    return normalCoords;
+  }
+
   public static int[] convertNameToCoordinates(String name) {
     // coordinates take the form C16 A19 Q5 K10 etc. I is not used.
     Optional<int[]> coords = asCoordinates(name);

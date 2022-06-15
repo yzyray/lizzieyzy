@@ -342,16 +342,17 @@ public class AnalysisFrame extends JFrame {
               return;
             }
             if (table.getValueAt(row, 1).toString().startsWith("pass")) return;
+            String coordsName =
+                Board.maybeConvertOtherCoordsToNormal(table.getValueAt(row, 1).toString());
+            int[] coords = Board.convertNameToCoordinates(coordsName);
             if (selectedorder >= 0
-                && Board.convertNameToCoordinates(table.getValueAt(row, 1).toString())[0]
-                    == Lizzie.frame.suggestionclick[0]
-                && Board.convertNameToCoordinates(table.getValueAt(row, 1).toString())[1]
-                    == Lizzie.frame.suggestionclick[1]) {
+                && coords[0] == Lizzie.frame.suggestionclick[0]
+                && coords[1] == Lizzie.frame.suggestionclick[1]) {
             } else {
               LizzieFrame.boardRenderer.startNormalBoard();
               selectedorder = row;
               currentRow = row;
-              int[] coords = Board.convertNameToCoordinates(table.getValueAt(row, 1).toString());
+              // int[] coords = Board.convertNameToCoordinates(table.getValueAt(row, 1).toString());
               Lizzie.frame.mouseOverCoordinate = coords;
               Lizzie.frame.suggestionclick = coords;
               Lizzie.frame.refresh();
@@ -584,7 +585,8 @@ public class AnalysisFrame extends JFrame {
         } else scoreDiff = 0;
       } else isNextMove = false;
 
-      String coordsName = table.getValueAt(row, 1).toString();
+      String coordsName =
+          Board.maybeConvertOtherCoordsToNormal(table.getValueAt(row, 1).toString());
       int[] coords = new int[] {-2, -2};
       if (!coordsName.startsWith("pas") && coordsName.length() > 1) {
         coords = Board.convertNameToCoordinates(coordsName);
@@ -677,12 +679,12 @@ public class AnalysisFrame extends JFrame {
   private void handleTableClick(int row, int col) {
     LizzieFrame.boardRenderer.startNormalBoard();
     if (table.getValueAt(row, 1).toString().startsWith("pass")) return;
+    String coordsName = Board.maybeConvertOtherCoordsToNormal(table.getValueAt(row, 1).toString());
+    int[] coords = Board.convertNameToCoordinates(coordsName);
     if (clickOrder != -1
         && selectedorder >= 0
-        && Board.convertNameToCoordinates(table.getValueAt(row, 1).toString())[0]
-            == Lizzie.frame.suggestionclick[0]
-        && Board.convertNameToCoordinates(table.getValueAt(row, 1).toString())[1]
-            == Lizzie.frame.suggestionclick[1]) {
+        && coords[0] == Lizzie.frame.suggestionclick[0]
+        && coords[1] == Lizzie.frame.suggestionclick[1]) {
       Lizzie.frame.suggestionclick = LizzieFrame.outOfBoundCoordinate;
       Lizzie.frame.mouseOverCoordinate = LizzieFrame.outOfBoundCoordinate;
       LizzieFrame.boardRenderer.clearBranch();
@@ -695,7 +697,7 @@ public class AnalysisFrame extends JFrame {
       clickOrder = row;
       selectedorder = row;
       currentRow = row;
-      int[] coords = Board.convertNameToCoordinates(table.getValueAt(row, 1).toString());
+      // int[] coords = Board.convertNameToCoordinates(table.getValueAt(row, 1).toString());
       Lizzie.frame.mouseOverCoordinate = coords;
       Lizzie.frame.suggestionclick = coords;
       Lizzie.frame.refresh();
@@ -705,7 +707,9 @@ public class AnalysisFrame extends JFrame {
   private void handleTableRightClick(int row, int col) {
     if (table.getValueAt(row, 1).toString().startsWith("pass")) return;
     if (selectedorder != row) {
-      int[] coords = Board.convertNameToCoordinates(table.getValueAt(row, 1).toString());
+      String coordsName =
+          Board.maybeConvertOtherCoordsToNormal(table.getValueAt(row, 1).toString());
+      int[] coords = Board.convertNameToCoordinates(coordsName);
       Lizzie.frame.suggestionclick = coords;
       Lizzie.frame.mouseOverCoordinate = LizzieFrame.outOfBoundCoordinate;
       Lizzie.frame.refresh();
@@ -963,7 +967,7 @@ public class AnalysisFrame extends JFrame {
             // if(Lizzie.board.convertNameToCoordinates(data.coordinate)[0]==Lizzie.frame.suggestionclick[0]&&Lizzie.board.convertNameToCoordinates(data.coordinate)[1]==Lizzie.frame.suggestionclick[1])
             // {return "*"+data.coordinate;}
             // else
-            return data.coordinate;
+            return Board.maybeConvertNormalCoordsToOther(data.coordinate);
           case 2:
             if (data.isNextMove && data.lcb < -1000) return "--";
             return String.format(Locale.ENGLISH, "%.1f", data.lcb);
