@@ -1,6 +1,7 @@
 package featurecat.lizzie.gui;
 
 import featurecat.lizzie.Lizzie;
+import featurecat.lizzie.rules.BoardHistoryNode;
 import featurecat.lizzie.rules.Tsumego;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
@@ -173,6 +174,17 @@ public class TsumeGoFrame extends JDialog {
     btnConfirm.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
+            if (Lizzie.board.isTusmegoMode && Lizzie.board.tsumegoNode != null) {
+              BoardHistoryNode curNode = Lizzie.board.getHistory().getCurrentHistoryNode();
+              while (curNode.previous().isPresent()) {
+                if (curNode == Lizzie.board.tsumegoNode) {
+                  Lizzie.board.moveToAnyPosition(Lizzie.board.tsumegoNode);
+                  Lizzie.board.previousMove(false);
+                  break;
+                }
+                curNode = curNode.previous().get();
+              }
+            }
             int wallDistance = Lizzie.config.tsumeGoWallDistance;
             try {
               wallDistance = Integer.parseInt(txtWallDistance.getText());
@@ -238,12 +250,11 @@ public class TsumeGoFrame extends JDialog {
               addKoThreatAttacker = false;
               addKoThreatDefender = false;
             }
-
             Tsumego tsumego = new Tsumego();
-
             tsumego.getCoverSideAndIndex(forceSide, forceBlack);
             tsumego.buildCoverWall(
                 addKoThreatDefender, addKoThreatAttacker, forceToPlay, blackToPlay);
+            Lizzie.board.saveTsumegoStatus();
             LizzieFrame.menu.clearInsert();
             Lizzie.frame.refresh();
             setVisible(false);

@@ -81,6 +81,7 @@ public class Board {
   private void initialize(boolean isEngineGame) {
     LizzieFrame.fileNameTitle = "";
     LizzieFrame.curFile = null;
+    clearTsumegoStatus();
     // scoreMode = false;
     isGameBoard = false;
     neverPassedInGame = true;
@@ -4397,5 +4398,18 @@ public class Board {
         };
     reviewThread = new Thread(runnable);
     reviewThread.start();
+  }
+
+  public BoardHistoryNode tsumegoNode;
+  public boolean isTusmegoMode = false;
+
+  public void saveTsumegoStatus() {
+    isTusmegoMode = true;
+    tsumegoNode = Lizzie.board.getHistory().getCurrentHistoryNode();
+  }
+
+  public void clearTsumegoStatus() {
+    isTusmegoMode = false;
+    tsumegoNode = null;
   }
 }
