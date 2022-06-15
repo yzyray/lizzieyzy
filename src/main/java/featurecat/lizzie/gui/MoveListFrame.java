@@ -27,7 +27,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowStateListener;
 import java.awt.font.TextAttribute;
 import java.io.File;
 import java.io.IOException;
@@ -359,11 +358,11 @@ public class MoveListFrame extends JFrame {
     tablePanelMin2 = new JPanel(new BorderLayout());
     tablePanelMin1.add(minScrollpane1);
     tablePanelMin2.add(minScrollpane2);
-    tablePanel.add(scrollpane);
 
     minTablePanel = new JPanel(new GridLayout(1, 2));
     minTablePanel.add(tablePanelMin1);
     minTablePanel.add(tablePanelMin2);
+    tablePanel.add(scrollpane);
 
     keyPanel_tooltip1 = new JPanel();
     keyPanel_tooltip1.setToolTipText(
@@ -590,7 +589,13 @@ public class MoveListFrame extends JFrame {
     topPanel.setSelectedIndex(selectedIndexTop);
 
     if (selectedIndexTop == 2) sortnum = 3;
-    add(topPanel, BorderLayout.CENTER);
+
+    JPanel topContent = new JPanel();
+    topContent.setLayout(new BorderLayout());
+    topContent.add(topPanel, BorderLayout.CENTER);
+    topContent.add(filterPanel, BorderLayout.SOUTH);
+    this.getContentPane().add(topContent, BorderLayout.CENTER);
+    this.getContentPane().add(bottomPanel, BorderLayout.SOUTH);
 
     matchPanel =
         new JPanel() {
@@ -624,20 +629,24 @@ public class MoveListFrame extends JFrame {
         new ComponentAdapter() {
           public void componentResized(ComponentEvent e) {
             reSetLoc();
+            thisDialog.getContentPane().revalidate();
           }
         });
 
-    addWindowStateListener(
-        new WindowStateListener() {
-          public void windowStateChanged(WindowEvent state) {
-            if (true) {
-              bottomPanel.setPreferredSize(
-                  new Dimension(getWidth(), isShowingWinrateGraph ? getHeight() / 4 + 123 : 125));
-            }
-            matchPanelmin.setPreferredSize(new Dimension(getWidth(), 60));
-            resetTop(true);
-          }
-        });
+    //    addWindowStateListener(
+    //        new WindowStateListener() {
+    //          public void windowStateChanged(WindowEvent state) {
+    //  reSetLoc();
+    //	  revalidate();
+    //            if (true) {
+    //              bottomPanel.setPreferredSize(
+    //                  new Dimension(getWidth(), isShowingWinrateGraph ? getHeight() / 4 + 95 :
+    // 100));
+    //            }
+    //            matchPanelmin.setPreferredSize(new Dimension(getWidth(), 60));
+    //            resetTop(true);
+    //          }
+    //        });
     // this.add(matchPanelAll, BorderLayout.SOUTH);
 
     mistakePanelAll = new JPanel();
@@ -687,60 +696,59 @@ public class MoveListFrame extends JFrame {
     bigMistakePanel.setLayout(new BorderLayout());
     bigScoreMistakePanel.setLayout(new BorderLayout());
 
-    add(bottomPanel, BorderLayout.SOUTH);
     int curIndex = 0;
     switch (selectedIndex) {
       case 0:
         curIndex = 0;
-        matchPanelAll.add(filterPanel, BorderLayout.NORTH);
+        // matchPanelAll.add(filterPanel, BorderLayout.NORTH);
         matchPanelAll.add(matchPanelmin, BorderLayout.SOUTH);
         matchPanelAll.add(matchPanel, BorderLayout.CENTER);
         break;
       case 1:
         curIndex = 6;
-        matchGraphAll.add(filterPanel, BorderLayout.NORTH);
+        // matchGraphAll.add(filterPanel, BorderLayout.NORTH);
         matchGraphAll.add(matchPanelmin, BorderLayout.SOUTH);
         matchGraphAll.add(matchPanel, BorderLayout.CENTER);
         break;
       case 2:
         curIndex = 4;
-        mistakePanelAll.add(filterPanel, BorderLayout.NORTH);
+        // mistakePanelAll.add(filterPanel, BorderLayout.NORTH);
         mistakePanelAll.add(matchPanelmin, BorderLayout.SOUTH);
         mistakePanelAll.add(matchPanel, BorderLayout.CENTER);
         break;
       case 3:
         curIndex = 5;
-        scoreDiffGraphAll.add(filterPanel, BorderLayout.NORTH);
+        // scoreDiffGraphAll.add(filterPanel, BorderLayout.NORTH);
         scoreDiffGraphAll.add(matchPanelmin, BorderLayout.SOUTH);
         scoreDiffGraphAll.add(matchPanel, BorderLayout.CENTER);
         break;
       case 4:
         curIndex = 1;
-        matchHistogramAll.add(filterPanel, BorderLayout.NORTH);
+        // matchHistogramAll.add(filterPanel, BorderLayout.NORTH);
         matchHistogramAll.add(matchPanelmin, BorderLayout.SOUTH);
         matchHistogramAll.add(matchPanel, BorderLayout.CENTER);
         break;
       case 5:
         curIndex = 2;
-        winrateDiffStatics.add(filterPanel, BorderLayout.NORTH);
+        // winrateDiffStatics.add(filterPanel, BorderLayout.NORTH);
         winrateDiffStatics.add(matchPanelmin, BorderLayout.SOUTH);
         winrateDiffStatics.add(matchPanel, BorderLayout.CENTER);
         break;
       case 6:
         curIndex = 3;
-        scoreDiffStatics.add(filterPanel, BorderLayout.NORTH);
+        //  scoreDiffStatics.add(filterPanel, BorderLayout.NORTH);
         scoreDiffStatics.add(matchPanelmin, BorderLayout.SOUTH);
         scoreDiffStatics.add(matchPanel, BorderLayout.CENTER);
         break;
       case 7:
         curIndex = 7;
-        bigMistakePanel.add(filterPanel, BorderLayout.NORTH);
+        // bigMistakePanel.add(filterPanel, BorderLayout.NORTH);
         // bigMistakePanel.add(matchPanelmin, BorderLayout.SOUTH);
         bigMistakePanel.add(matchPanel, BorderLayout.CENTER);
         break;
       case 8:
         curIndex = 8;
-        bigScoreMistakePanel.add(filterPanel, BorderLayout.NORTH);
+        //  bigScoreMistakePanel.add(filterPanel, BorderLayout.NORTH);
         // bigMistakePanel.add(matchPanelmin, BorderLayout.SOUTH);
         bigScoreMistakePanel.add(matchPanel, BorderLayout.CENTER);
         break;
@@ -791,71 +799,15 @@ public class MoveListFrame extends JFrame {
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             if (isShowingWinrateGraph) {
-              switch (selectedIndex) {
-                case 0:
-                  matchPanelAll.remove(matchPanel);
-                  break;
-                case 1:
-                  matchGraphAll.remove(matchPanel);
-                  break;
-                case 2:
-                  mistakePanelAll.remove(matchPanel);
-                  break;
-                case 3:
-                  scoreDiffGraphAll.remove(matchPanel);
-                case 4:
-                  matchHistogramAll.remove(matchPanel);
-                  break;
-                case 5:
-                  winrateDiffStatics.remove(matchPanel);
-                  break;
-                case 6:
-                  scoreDiffStatics.remove(matchPanel);
-                  break;
-                case 7:
-                  bigMistakePanel.remove(matchPanel);
-                  break;
-                case 8:
-                  bigScoreMistakePanel.remove(matchPanel);
-                  break;
-              }
-
+              matchPanel.setVisible(false);
               detail.setIcon(iconUp);
 
             } else {
-              switch (selectedIndex) {
-                case 0:
-                  matchPanelAll.add(matchPanel);
-                  break;
-                case 1:
-                  matchGraphAll.add(matchPanel);
-                  break;
-                case 2:
-                  mistakePanelAll.add(matchPanel);
-                  break;
-                case 3:
-                  scoreDiffGraphAll.add(matchPanel);
-                case 4:
-                  matchHistogramAll.add(matchPanel);
-                  break;
-                case 5:
-                  winrateDiffStatics.add(matchPanel);
-                  break;
-                case 6:
-                  scoreDiffStatics.add(matchPanel);
-                  break;
-                case 7:
-                  bigMistakePanel.add(matchPanel);
-                  break;
-                case 8:
-                  bigScoreMistakePanel.add(matchPanel);
-                  break;
-              }
+              matchPanel.setVisible(true);
               detail.setIcon(iconDown);
             }
             isShowingWinrateGraph = !isShowingWinrateGraph;
-            bottomPanel.setPreferredSize(
-                new Dimension(getWidth(), isShowingWinrateGraph ? getHeight() / 4 + 123 : 125));
+            reSetLoc();
             validate();
             Lizzie.config.uiConfig.put("show-winrate-matchai", isShowingWinrateGraph);
           }
@@ -1185,55 +1137,55 @@ public class MoveListFrame extends JFrame {
             switch (index) {
               case 0:
                 selectedIndex = 0;
-                matchPanelAll.add(filterPanel, BorderLayout.NORTH);
+                //    matchPanelAll.add(filterPanel, BorderLayout.NORTH);
                 matchPanelAll.add(matchPanelmin, BorderLayout.SOUTH);
                 matchPanelAll.add(matchPanel, BorderLayout.CENTER);
                 break;
               case 1:
                 selectedIndex = 4;
-                matchHistogramAll.add(filterPanel, BorderLayout.NORTH);
+                //    matchHistogramAll.add(filterPanel, BorderLayout.NORTH);
                 matchHistogramAll.add(matchPanelmin, BorderLayout.SOUTH);
                 matchHistogramAll.add(matchPanel, BorderLayout.CENTER);
                 break;
               case 2:
                 selectedIndex = 5;
-                winrateDiffStatics.add(filterPanel, BorderLayout.NORTH);
+                //     winrateDiffStatics.add(filterPanel, BorderLayout.NORTH);
                 winrateDiffStatics.add(matchPanelmin, BorderLayout.SOUTH);
                 winrateDiffStatics.add(matchPanel, BorderLayout.CENTER);
                 break;
               case 3:
                 selectedIndex = 6;
-                scoreDiffStatics.add(filterPanel, BorderLayout.NORTH);
+                //     scoreDiffStatics.add(filterPanel, BorderLayout.NORTH);
                 scoreDiffStatics.add(matchPanelmin, BorderLayout.SOUTH);
                 scoreDiffStatics.add(matchPanel, BorderLayout.CENTER);
                 break;
               case 4:
                 selectedIndex = 2;
-                mistakePanelAll.add(filterPanel, BorderLayout.NORTH);
+                //     mistakePanelAll.add(filterPanel, BorderLayout.NORTH);
                 mistakePanelAll.add(matchPanelmin, BorderLayout.SOUTH);
                 mistakePanelAll.add(matchPanel, BorderLayout.CENTER);
                 break;
               case 5:
                 selectedIndex = 3;
-                scoreDiffGraphAll.add(filterPanel, BorderLayout.NORTH);
+                //     scoreDiffGraphAll.add(filterPanel, BorderLayout.NORTH);
                 scoreDiffGraphAll.add(matchPanelmin, BorderLayout.SOUTH);
                 scoreDiffGraphAll.add(matchPanel, BorderLayout.CENTER);
                 break;
               case 6:
                 selectedIndex = 1;
-                matchGraphAll.add(filterPanel, BorderLayout.NORTH);
+                //    matchGraphAll.add(filterPanel, BorderLayout.NORTH);
                 matchGraphAll.add(matchPanelmin, BorderLayout.SOUTH);
                 matchGraphAll.add(matchPanel, BorderLayout.CENTER);
                 break;
               case 7:
                 selectedIndex = 7;
-                bigMistakePanel.add(filterPanel, BorderLayout.NORTH);
+                //     bigMistakePanel.add(filterPanel, BorderLayout.NORTH);
                 // bigMistakePanel.add(matchPanelmin, BorderLayout.SOUTH);
                 bigMistakePanel.add(matchPanel, BorderLayout.CENTER);
                 break;
               case 8:
                 selectedIndex = 8;
-                bigScoreMistakePanel.add(filterPanel, BorderLayout.NORTH);
+                //   bigScoreMistakePanel.add(filterPanel, BorderLayout.NORTH);
                 bigScoreMistakePanel.add(matchPanel, BorderLayout.CENTER);
                 break;
             }
@@ -1440,7 +1392,7 @@ public class MoveListFrame extends JFrame {
       btnSetTabelThreshold.setVisible(true);
       btnSetStatisticsThreshold.setVisible(false);
     }
-    filterPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 3, 2));
+    filterPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 1, 1));
     filterPanel.add(hideMove);
     filterPanel.add(btnSetTabelThreshold);
     filterPanel.add(btnSetStatisticsThreshold);
@@ -2093,17 +2045,22 @@ public class MoveListFrame extends JFrame {
   }
 
   protected void reSetLoc() {
+    //	  bottomPanel.setPreferredSize(
+    //	          new Dimension(getWidth(), isShowingWinrateGraph ? getHeight() / 4 + 95 : 100));
     // TODO Auto-generated method stub
     if (Lizzie.config.isShowingMoveList) {
       topPanel.setVisible(true);
       bottomPanel.setPreferredSize(
-          new Dimension(getWidth(), isShowingWinrateGraph ? getHeight() / 4 + 123 : 125));
+          new Dimension(getWidth(), isShowingWinrateGraph ? getHeight() / 4 + 95 : 100));
     } else {
-      bottomPanel.setPreferredSize(new Dimension(getWidth(), getHeight() - 10));
+      bottomPanel.setPreferredSize(
+          new Dimension(getWidth(), (int) (getHeight() - 30 - 46 / Lizzie.javaScaleFactor)));
       topPanel.setVisible(false);
     }
     matchPanelmin.setPreferredSize(new Dimension(getWidth(), 60));
-    resetTop(false);
+    minScrollpane1.setPreferredSize(
+        new Dimension(topPanel.getWidth() / 2 - 5, topPanel.getHeight()));
+    minScrollpane2.setPreferredSize(new Dimension(topPanel.getWidth() / 2, topPanel.getHeight()));
   }
 
   private double convertcoreMean(double coreMean) {
@@ -2117,16 +2074,17 @@ public class MoveListFrame extends JFrame {
     return winrate;
   }
 
-  private void resetTop(boolean isStatChanged) {
-    if (isStatChanged) {
-      minScrollpane1.setPreferredSize(new Dimension(getWidth() / 2 - 5, topPanel.getHeight()));
-      minScrollpane2.setPreferredSize(new Dimension(getWidth() / 2, topPanel.getHeight()));
-    } else {
-      minScrollpane1.setPreferredSize(
-          new Dimension(topPanel.getWidth() / 2 - 5, topPanel.getHeight()));
-      minScrollpane2.setPreferredSize(new Dimension(topPanel.getWidth() / 2, topPanel.getHeight()));
-    }
-  }
+  //  private void resetTop(boolean isStatChanged) {
+  //    if (isStatChanged) {
+  //      minScrollpane1.setPreferredSize(new Dimension(getWidth() / 2 - 5, topPanel.getHeight()));
+  //      minScrollpane2.setPreferredSize(new Dimension(getWidth() / 2, topPanel.getHeight()));
+  //    } else {
+  //      minScrollpane1.setPreferredSize(
+  //          new Dimension(topPanel.getWidth() / 2 - 5, topPanel.getHeight()));
+  //      minScrollpane2.setPreferredSize(new Dimension(topPanel.getWidth() / 2,
+  // topPanel.getHeight()));
+  //    }
+  //  }
 
   public void drawMin(Graphics2D g, int posx, int posy, int width, int height) {
     int blackMatch = 0;
