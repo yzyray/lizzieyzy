@@ -3106,8 +3106,10 @@ public class BoardRenderer {
                     if (Lizzie.config.showNextMoveBlunder
                         && !Lizzie.board.isPkBoard
                         && !Lizzie.frame.isShowingHeatmap
-                        && !Lizzie.frame.isShowingPolicy&&((Lizzie.board.getHistory().isBlacksTurn() && Lizzie.config.showBlackCandidates)
-                        || (!Lizzie.board.getHistory().isBlacksTurn()
+                        && !Lizzie.frame.isShowingPolicy
+                        && ((Lizzie.board.getHistory().isBlacksTurn()
+                                && Lizzie.config.showBlackCandidates)
+                            || (!Lizzie.board.getHistory().isBlacksTurn()
                                 && Lizzie.config.showWhiteCandidates))) {
                       BoardData nextData = nexts.get(0).getData();
                       BoardData thisData = Lizzie.board.getHistory().getData();
