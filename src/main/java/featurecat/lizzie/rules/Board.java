@@ -9,7 +9,6 @@ import featurecat.lizzie.analysis.GameInfo;
 import featurecat.lizzie.analysis.Leelaz;
 import featurecat.lizzie.analysis.MoveData;
 import featurecat.lizzie.gui.LizzieFrame;
-import featurecat.lizzie.gui.Message;
 import featurecat.lizzie.gui.ScoreResult;
 import featurecat.lizzie.util.Utils;
 import java.io.IOException;
@@ -3610,9 +3609,13 @@ public class Board {
 
   public void SpinAndMirror(int type) {
     if (Board.boardWidth != Board.boardHeight && type != 3 && type != 4) {
-      Message msg = new Message();
-      msg.setMessage(
+      Utils.showMsg(
           Lizzie.resourceBundle.getString("SpinAndMirror.noneSquareError")); // "非正方形棋盘不能旋转");
+      return;
+    }
+    if (Lizzie.frame.isPlayingAgainstLeelaz
+        || (EngineManager.isEngineGame && EngineManager.engineGameInfo.isGenmove)) {
+      Utils.showMsg(Lizzie.resourceBundle.getString("SpinAndMirror.inGameError"));
       return;
     }
     AllMovelist listHead = Lizzie.board.getAllMovelist(type);
