@@ -70,6 +70,7 @@ public class Board {
   public boolean isMouseOnStone = false;
   private boolean preMouseOnStone = false;
   public BoardHistoryNode mouseOnNode;
+  private long reviewStartTime = -1;
   public int[] mouseOnStoneCoords = LizzieFrame.outOfBoundCoordinate;
 
   public Board() {
@@ -4376,6 +4377,7 @@ public class Board {
       if (coords == null
           || coords[0] != mouseOnStoneCoords[0]
           || coords[1] != mouseOnStoneCoords[1]) {
+        if (System.currentTimeMillis() - reviewStartTime < 300) return;
         isMouseOnStone = false;
         preMouseOnStone = false;
         mouseOnStoneCoords = LizzieFrame.outOfBoundCoordinate;
@@ -4385,8 +4387,8 @@ public class Board {
     }
   }
 
-  public void setPressStoneInfo(int[] coords) {
-    if (!Lizzie.config.enableClickReview) {
+  public void setPressStoneInfo(int[] coords, boolean fromRightClick) {
+    if (!Lizzie.config.enableClickReview && !fromRightClick) {
       return;
     }
     isMouseOnStone = false;
@@ -4427,6 +4429,7 @@ public class Board {
         };
     Thread thread = new Thread(runnable);
     thread.start();
+    reviewStartTime = System.currentTimeMillis();
   }
 
   private Thread reviewThread;

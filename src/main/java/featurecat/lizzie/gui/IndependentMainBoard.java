@@ -779,7 +779,7 @@ public class IndependentMainBoard extends JFrame {
     if (boardCoordinates.isPresent()) {
       int[] coords = boardCoordinates.get();
       if (Lizzie.board.hasStoneAt(coords)) {
-        Lizzie.board.setPressStoneInfo(coords);
+        Lizzie.board.setPressStoneInfo(coords, false);
       }
       if (Lizzie.frame.bothSync) {
         if (Lizzie.frame.blackorwhite == 0) Lizzie.board.place(coords[0], coords[1]);

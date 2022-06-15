@@ -6116,7 +6116,7 @@ public class LizzieFrame extends JFrame {
       if (Lizzie.frame.isContributing) return;
       int[] coords = boardCoordinates.get();
       if (Lizzie.board.hasStoneAt(coords)) {
-        Lizzie.board.setPressStoneInfo(coords);
+        Lizzie.board.setPressStoneInfo(coords, false);
       }
       if (Lizzie.frame.bothSync) {
         if (blackorwhite == 0) Lizzie.board.place(coords[0], coords[1]);
