@@ -41,8 +41,8 @@ import org.json.JSONArray;
 public class Menu extends JMenuBar {
   final ButtonGroup buttonGroup = new ButtonGroup();
   private final ResourceBundle resourceBundle = Lizzie.resourceBundle;
-  public static ImageIcon icon;
-  public static ImageIcon icon2;
+  public static ImageIcon playing;
+  public static ImageIcon Playing2;
   public static ImageIcon stop;
   public static ImageIcon ready;
   public static ImageIcon ready2;
@@ -168,7 +168,7 @@ public class Menu extends JMenuBar {
         new ActionListener() {
           @Override
           public void actionPerformed(ActionEvent e) {
-            Lizzie.board.clear(false);
+            Lizzie.frame.newEmptyBoard();
           }
         });
     fileMenu.add(newBoard);
@@ -860,6 +860,28 @@ public class Menu extends JMenuBar {
           }
         });
 
+    final JFontCheckBoxMenuItem showNewBoardConfirmDialog =
+        new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.showNewBoardConfirmDialog"));
+    showNewBoardConfirmDialog.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.config.showNewBoardHint = !Lizzie.config.showNewBoardHint;
+            Lizzie.config.uiConfig.put("show-new-board-hint", Lizzie.config.showNewBoardHint);
+          }
+        });
+
+    final JFontCheckBoxMenuItem showReplaceFileConfirmDialog =
+        new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.showReplaceFileConfirmDialog"));
+    showReplaceFileConfirmDialog.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.config.showReplaceFileHint = !Lizzie.config.showReplaceFileHint;
+            Lizzie.config.uiConfig.put("show-replace-file-hint", Lizzie.config.showReplaceFileHint);
+          }
+        });
+
     final JFontMenu mainPanelSettings =
         new JFontMenu(resourceBundle.getString("Menu.mainPanelSettings")); // ("主界面设置");
     viewMenu.add(mainPanelSettings);
@@ -870,6 +892,9 @@ public class Menu extends JMenuBar {
     mainPanelSettings.add(showNameInBoard);
     mainPanelSettings.add(showCommentConrolPane);
     mainPanelSettings.add(alwaysOnTop);
+    mainPanelSettings.addSeparator();
+    mainPanelSettings.add(showNewBoardConfirmDialog);
+    mainPanelSettings.add(showReplaceFileConfirmDialog);
 
     // viewMenu.addSeparator();
 
@@ -1210,18 +1235,6 @@ public class Menu extends JMenuBar {
         });
     panel.add(SuggestionList);
 
-    final JFontCheckBoxMenuItem winrateMode1 =
-        new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.winrateMode1")); // ("双方视角");
-    winrateMode1.addActionListener(
-        new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            LizzieFrame.winrateGraph.mode = 1;
-            Lizzie.frame.repaint();
-          }
-        });
-    winrate.add(winrateMode1);
-
     final JFontCheckBoxMenuItem winrateMode0 =
         new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.winrateMode0")); // ("黑方视角");
     winrateMode0.addActionListener(
@@ -1233,8 +1246,19 @@ public class Menu extends JMenuBar {
           }
         });
     winrate.add(winrateMode0);
+
+    final JFontCheckBoxMenuItem winrateMode1 =
+        new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.winrateMode1")); // ("双方视角");
+    winrateMode1.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            LizzieFrame.winrateGraph.mode = 1;
+            Lizzie.frame.repaint();
+          }
+        });
+    winrate.add(winrateMode1);
     winrate.addSeparator();
-    // 增加设置胜率曲线宽度
 
     final JFontCheckBoxMenuItem showSuggestionOrder =
         new JFontCheckBoxMenuItem(
@@ -1327,9 +1351,59 @@ public class Menu extends JMenuBar {
         });
     Suggestions.add(noRefreshOnMouse);
 
-    final JFontCheckBoxMenuItem showBlunderBar =
+    final JFontMenu showWinRateOrScoreLeadLine =
+        new JFontMenu(resourceBundle.getString("Menu.showWinRateOrScoreLeadLine"));
+    winrate.add(showWinRateOrScoreLeadLine);
+
+    final JFontCheckBoxMenuItem showWinRateLineOnly =
         new JFontCheckBoxMenuItem(
-            resourceBundle.getString("Menu.showBlunderBar")); // Show blunder bar 显示柱状失误条
+            resourceBundle.getString("Menu.showWinRateOrScoreLeadLine.winrate"));
+    showWinRateLineOnly.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.config.showWinrateLine = true;
+            Lizzie.config.showScoreLeadLine = false;
+            Lizzie.config.uiConfig.put("show-win-rate-line", Lizzie.config.showWinrateLine);
+            Lizzie.config.uiConfig.put("show-score-lead-line", Lizzie.config.showScoreLeadLine);
+            Lizzie.frame.refresh();
+          }
+        });
+    showWinRateOrScoreLeadLine.add(showWinRateLineOnly);
+
+    final JFontCheckBoxMenuItem showScoreLeadLineOnly =
+        new JFontCheckBoxMenuItem(
+            resourceBundle.getString("Menu.showWinRateOrScoreLeadLine.scoreLead"));
+    showScoreLeadLineOnly.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.config.showWinrateLine = false;
+            Lizzie.config.showScoreLeadLine = true;
+            Lizzie.config.uiConfig.put("show-win-rate-line", Lizzie.config.showWinrateLine);
+            Lizzie.config.uiConfig.put("show-score-lead-line", Lizzie.config.showScoreLeadLine);
+            Lizzie.frame.refresh();
+          }
+        });
+    showWinRateOrScoreLeadLine.add(showScoreLeadLineOnly);
+
+    final JFontCheckBoxMenuItem showBothLine =
+        new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.showWinRateOrScoreLeadLine.both"));
+    showBothLine.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.config.showWinrateLine = true;
+            Lizzie.config.showScoreLeadLine = true;
+            Lizzie.config.uiConfig.put("show-win-rate-line", Lizzie.config.showWinrateLine);
+            Lizzie.config.uiConfig.put("show-score-lead-line", Lizzie.config.showScoreLeadLine);
+            Lizzie.frame.refresh();
+          }
+        });
+    showWinRateOrScoreLeadLine.add(showBothLine);
+
+    final JFontCheckBoxMenuItem showBlunderBar =
+        new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.showBlunderBar"));
     showBlunderBar.addActionListener(
         new ActionListener() {
           @Override
@@ -1341,23 +1415,8 @@ public class Menu extends JMenuBar {
         });
     winrate.add(showBlunderBar);
 
-    final JFontCheckBoxMenuItem showScoreLeadLine =
-        new JFontCheckBoxMenuItem(
-            resourceBundle.getString("Menu.showScoreLeadLine")); // Show blunder bar 显示目差曲线
-    showScoreLeadLine.addActionListener(
-        new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            Lizzie.config.showScoreLeadLine = !Lizzie.config.showScoreLeadLine;
-            Lizzie.config.uiConfig.put("show-score-lead-line", Lizzie.config.showScoreLeadLine);
-            Lizzie.frame.refresh();
-          }
-        });
-    winrate.add(showScoreLeadLine);
-
     final JFontCheckBoxMenuItem showMouseOverWinrateGraph =
-        new JFontCheckBoxMenuItem(
-            resourceBundle.getString("Menu.showMouseOverWinrateGraph")); // Show blunder bar 显示目差曲线
+        new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.showMouseOverWinrateGraph"));
     showMouseOverWinrateGraph.addActionListener(
         new ActionListener() {
           @Override
@@ -2497,8 +2556,20 @@ public class Menu extends JMenuBar {
             }
             if (Lizzie.config.showBlunderBar) showBlunderBar.setState(true);
             else showBlunderBar.setState(false);
-            if (Lizzie.config.showScoreLeadLine) showScoreLeadLine.setState(true);
-            else showScoreLeadLine.setState(false);
+
+            if (Lizzie.config.showScoreLeadLine && Lizzie.config.showWinrateLine) {
+              showBothLine.setState(true);
+              showScoreLeadLineOnly.setState(false);
+              showWinRateLineOnly.setState(false);
+            } else if (Lizzie.config.showWinrateLine) {
+              showBothLine.setState(false);
+              showScoreLeadLineOnly.setState(false);
+              showWinRateLineOnly.setState(true);
+            } else if (Lizzie.config.showScoreLeadLine) {
+              showBothLine.setState(false);
+              showScoreLeadLineOnly.setState(true);
+              showWinRateLineOnly.setState(false);
+            }
             if (Lizzie.config.showMouseOverWinrateGraph) showMouseOverWinrateGraph.setState(true);
             else showMouseOverWinrateGraph.setState(false);
             if (Lizzie.config.showWinrateGraph && Lizzie.config.showLargeWinrate())
@@ -2509,6 +2580,10 @@ public class Menu extends JMenuBar {
             else largeSubBoard.setState(false);
             if (Lizzie.config.appendWinrateToComment) appendWinrateToComment.setState(true);
             else appendWinrateToComment.setState(false);
+            if (Lizzie.config.showNewBoardHint) showNewBoardConfirmDialog.setState(true);
+            else showNewBoardConfirmDialog.setState(false);
+            if (Lizzie.config.showReplaceFileHint) showReplaceFileConfirmDialog.setState(true);
+            else showReplaceFileConfirmDialog.setState(false);
             if (Lizzie.config.uiConfig.optBoolean("mains-always-ontop", false))
               alwaysOnTop.setState(true);
             else alwaysOnTop.setState(false);
@@ -5259,9 +5334,9 @@ public class Menu extends JMenuBar {
     // Math.max(Lizzie.config.allFontSize, 12));
     this.add(engineMenu2);
 
-    icon = new ImageIcon();
+    playing = new ImageIcon();
     try {
-      icon.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/playing.png")));
+      playing.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/playing.png")));
       // icon.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/run.png")));
     } catch (IOException e) {
       // TODO Auto-generated catch block
@@ -5276,9 +5351,9 @@ public class Menu extends JMenuBar {
       e.printStackTrace();
     }
 
-    icon2 = new ImageIcon();
+    Playing2 = new ImageIcon();
     try {
-      icon2.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/playing2.png")));
+      Playing2.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/playing2.png")));
       // icon.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/run.png")));
     } catch (IOException e) {
       // TODO Auto-generated catch block
@@ -5831,6 +5906,10 @@ public class Menu extends JMenuBar {
               if (Lizzie.leelaz.isPondering()) Lizzie.leelaz.ponder();
             } else {
               txtWRN.setEnabled(false);
+              if (txtWRN.getBackground() == Color.RED) {
+                txtWRN.setText("");
+                txtWRN.setBackground(Color.WHITE);
+              }
               if (EngineManager.isEngineGame) {
                 Lizzie.engineManager
                     .engineList
@@ -5973,6 +6052,10 @@ public class Menu extends JMenuBar {
 
             } else {
               txtGfPDA.setEnabled(false);
+              if (txtGfPDA.getBackground() == Color.RED) {
+                txtGfPDA.setText("");
+                txtGfPDA.setBackground(Color.WHITE);
+              }
               if (EngineManager.isEngineGame) {
                 Lizzie.engineManager
                     .engineList
@@ -7499,8 +7582,7 @@ public class Menu extends JMenuBar {
       btnNewFile.addActionListener(
           new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-              Lizzie.board.clear(false);
-              Lizzie.frame.refresh();
+              Lizzie.frame.newEmptyBoard();
             }
           });
 
@@ -9577,7 +9659,7 @@ public class Menu extends JMenuBar {
                 doubleMenuPauseGame.setText(resourceBundle.getString("Menu.continueGameBtn"));
               else doubleMenuPauseGame.setText(resourceBundle.getString("Menu.pauseGameBtn"));
               if (LizzieFrame.toolbar.isPkStop) engineMenu.setIcon(ready2);
-              else engineMenu.setIcon(icon2);
+              else engineMenu.setIcon(Playing2);
             }
           }
         });
@@ -9777,7 +9859,7 @@ public class Menu extends JMenuBar {
             if (mode == 0) engine[locIndex].setIcon(null);
             if (mode == 1) engine[locIndex].setIcon(stop);
             if (mode == 2) engine[locIndex].setIcon(ready);
-            if (mode == 3) engine[locIndex].setIcon(icon);
+            if (mode == 3) engine[locIndex].setIcon(playing);
           }
         });
   }
@@ -9792,7 +9874,7 @@ public class Menu extends JMenuBar {
             if (mode == 0) engine2[locIndex].setIcon(null);
             if (mode == 1) engine2[locIndex].setIcon(stop);
             if (mode == 2) engine2[locIndex].setIcon(ready);
-            if (mode == 3) engine2[locIndex].setIcon(icon);
+            if (mode == 3) engine2[locIndex].setIcon(playing);
           }
         });
   }
@@ -9806,7 +9888,7 @@ public class Menu extends JMenuBar {
               if (i < Lizzie.engineManager.engineList.size()
                   && !Lizzie.engineManager.engineList.get(i).isStarted()) engine[i].setIcon(null);
               else if (engine[i].getIcon() != null && engine[i].getIcon() != Menu.stop) {
-                engine[i].setIcon(Menu.ready);
+                engine[i].setIcon(ready);
               }
             }
             if (EngineManager.currentEngineNo <= 20) {
@@ -9816,7 +9898,7 @@ public class Menu extends JMenuBar {
                   == null) {
               } else {
                 engine[index == 1 ? EngineManager.currentEngineNo : EngineManager.currentEngineNo2]
-                    .setIcon(Menu.icon);
+                    .setIcon(playing);
               }
             }
           }
@@ -9946,15 +10028,16 @@ public class Menu extends JMenuBar {
           public void run() {
             if (engineMenu == null || EngineManager.isEngineGame) return;
             if (isThinking) {
-              engineMenu.setIcon(icon2);
-              if (Lizzie.config.isDoubleEngineMode()) engineMenu2.setIcon(icon2);
+              engineMenu.setIcon(Playing2);
+              if (Lizzie.config.isDoubleEngineMode()) engineMenu2.setIcon(Playing2);
             } else {
               if (isPondering) {
-                engineMenu.setIcon(icon2);
-                if (Lizzie.config.isDoubleEngineMode()) engineMenu2.setIcon(icon2);
+                engineMenu.setIcon(Playing2);
+                if (Lizzie.config.isDoubleEngineMode()) engineMenu2.setIcon(Playing2);
                 if (Lizzie.frame.floatBoard != null && Lizzie.frame.floatBoard.isVisible()) {
                   Lizzie.frame.floatBoard.setPonderState(isPondering);
                 }
+                LizzieFrame.toolbar.analyse.setIcon(ready2);
                 LizzieFrame.toolbar.analyse.setText(
                     Lizzie.resourceBundle.getString("BottomToolbar.pauseAnalyse"));
               } else {
@@ -9963,6 +10046,7 @@ public class Menu extends JMenuBar {
                 if (Lizzie.frame.floatBoard != null && Lizzie.frame.floatBoard.isVisible()) {
                   Lizzie.frame.floatBoard.setPonderState(false);
                 }
+                LizzieFrame.toolbar.analyse.setIcon(Playing2);
                 LizzieFrame.toolbar.analyse.setText(
                     Lizzie.resourceBundle.getString("BottomToolbar.analyse"));
               }

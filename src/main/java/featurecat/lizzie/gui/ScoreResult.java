@@ -92,10 +92,9 @@ public class ScoreResult extends JDialog {
     Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
     int screenWidth = screensize.width;
     int screenHeight = screensize.height;
-    int boardX = Lizzie.frame.boardX;
+    int boardX = Utils.zoomIn(Lizzie.frame.boardX);
     int boardY =
-        Lizzie.frame.boardY
-            + Utils.zoomIn(Lizzie.frame.mainPanel.getY())
+        Utils.zoomIn(Lizzie.frame.boardY + Lizzie.frame.mainPanel.getY())
             + Config.menuHeight
             + Lizzie.frame.topPanel.getHeight();
     int boardLenght = Lizzie.frame.maxSize;

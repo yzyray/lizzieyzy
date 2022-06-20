@@ -9,7 +9,6 @@ import featurecat.lizzie.analysis.GameInfo;
 import featurecat.lizzie.analysis.Leelaz;
 import featurecat.lizzie.analysis.MoveData;
 import featurecat.lizzie.gui.LizzieFrame;
-import featurecat.lizzie.gui.Message;
 import featurecat.lizzie.gui.ScoreResult;
 import featurecat.lizzie.util.Utils;
 import java.io.IOException;
@@ -71,6 +70,7 @@ public class Board {
   public boolean isMouseOnStone = false;
   private boolean preMouseOnStone = false;
   public BoardHistoryNode mouseOnNode;
+  private long reviewStartTime = -1;
   public int[] mouseOnStoneCoords = LizzieFrame.outOfBoundCoordinate;
 
   public Board() {
@@ -81,6 +81,7 @@ public class Board {
   private void initialize(boolean isEngineGame) {
     LizzieFrame.fileNameTitle = "";
     LizzieFrame.curFile = null;
+    clearTsumegoStatus();
     // scoreMode = false;
     isGameBoard = false;
     neverPassedInGame = true;
@@ -261,6 +262,58 @@ public class Board {
     Optional<int[]> coords = asCoordinates(name, boardHeight);
     if (coords.isPresent()) return coords.get();
     else return LizzieFrame.outOfBoundCoordinate;
+  }
+
+  public static String maybeConvertOtherCoordsToNormal(String otherCoords) {
+    if (Lizzie.config.useIinCoordsName || Lizzie.config.useFoxStyleCoords) {
+      if (boardWidth > 25 || boardHeight > 25) return otherCoords;
+      if (Lizzie.config.useIinCoordsName) {
+        if (otherCoords.length() <= 3 && otherCoords.charAt(0) >= 'I') {
+          return String.valueOf((char) (otherCoords.charAt(0) + 1)) + otherCoords.substring(1);
+        }
+      }
+      if (Lizzie.config.useFoxStyleCoords) {
+        if (otherCoords.length() <= 3 && otherCoords.charAt(0) >= 'I') {
+          otherCoords =
+              String.valueOf((char) (otherCoords.charAt(0) + 1)) + otherCoords.substring(1);
+        }
+        try {
+          int y = Integer.parseInt(otherCoords.substring(1));
+          y = Board.boardHeight + 1 - y;
+          return otherCoords.substring(0, 1) + y;
+        } catch (NumberFormatException e) {
+
+        }
+      }
+    }
+    return otherCoords;
+  }
+
+  public static String maybeConvertNormalCoordsToOther(String normalCoords) {
+    if (Lizzie.config.useIinCoordsName || Lizzie.config.useFoxStyleCoords) {
+      if (boardWidth > 25 || boardHeight > 25) return normalCoords;
+      if (Lizzie.config.useIinCoordsName) {
+        // H4->I4
+        if (normalCoords.length() <= 3 && normalCoords.charAt(0) > 'I') {
+          return String.valueOf((char) (normalCoords.charAt(0) - 1)) + normalCoords.substring(1);
+        }
+      }
+      if (Lizzie.config.useFoxStyleCoords) {
+        // H4->H16
+        if (normalCoords.length() <= 3 && normalCoords.charAt(0) > 'I') {
+          normalCoords =
+              String.valueOf((char) (normalCoords.charAt(0) - 1)) + normalCoords.substring(1);
+        }
+        try {
+          int y = Integer.parseInt(normalCoords.substring(1));
+          y = Board.boardHeight + 1 - y;
+          return normalCoords.substring(0, 1) + y;
+        } catch (NumberFormatException e) {
+
+        }
+      }
+    }
+    return normalCoords;
   }
 
   public static int[] convertNameToCoordinates(String name) {
@@ -528,16 +581,30 @@ public class Board {
     }
   }
 
-  public ArrayList<Movelist> savelistforeditmode() {
-    if (boardstatbeforeedit == "") {
-      try {
-        boardstatbeforeedit = SGFParser.saveToString(false);
-      } catch (IOException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
-      tempmovelist = getmovelistWithOutStartStone();
+  //  public ArrayList<Movelist> savelistforeditmode() {
+  //    if (boardstatbeforeedit == "") {
+  //      try {
+  //        boardstatbeforeedit = SGFParser.saveToString(false);
+  //      } catch (IOException e) {
+  //        // TODO Auto-generated catch block
+  //        e.printStackTrace();
+  //      }
+  //      tempmovelist = getmovelistWithOutStartStone();
+  //    }
+  //    tempallmovelist = getallmovelist();
+  //    boardstatafteredit = "";
+  //    tempmovelist2 = new ArrayList<Movelist>();
+  //    return tempmovelist;
+  //  }
+
+  public ArrayList<Movelist> saveListForEdit() {
+    try {
+      boardstatbeforeedit = SGFParser.saveToString(false);
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
     }
+    tempmovelist = getmovelistWithOutStartStone();
     tempallmovelist = getallmovelist();
     boardstatafteredit = "";
     tempmovelist2 = new ArrayList<Movelist>();
@@ -1084,7 +1151,7 @@ public class Board {
     }
   }
 
-  public synchronized void resendMoveToEngine(Leelaz leelaz) {
+  public void resendMoveToEngine(Leelaz leelaz) {
     ArrayList<Movelist> mv = getMoveList();
     leelaz.sendCommand("clear_board");
     Lizzie.board.restoreMoveNumber(mv, false, leelaz);
@@ -2291,6 +2358,7 @@ public class Board {
           Lizzie.leelaz.playMove(data.get().lastMoveColor, "pass", true, data.get().blackToPlay);
         }
         history.next();
+        history.getCurrentHistoryNode().placeExtraStones();
         updateIsBest();
         clearPressStoneInfo(null);
         if (needRefresh) {
@@ -2875,6 +2943,7 @@ public class Board {
           if (!nopass) Lizzie.leelaz.undo(true, history.getPrevious().get().blackToPlay);
           else modifyEnd();
         }
+        history.getCurrentHistoryNode().undoExtraStones();
         history.previous();
         if (needRefresh) {
           clearAfterMove();
@@ -3541,9 +3610,13 @@ public class Board {
 
   public void SpinAndMirror(int type) {
     if (Board.boardWidth != Board.boardHeight && type != 3 && type != 4) {
-      Message msg = new Message();
-      msg.setMessage(
+      Utils.showMsg(
           Lizzie.resourceBundle.getString("SpinAndMirror.noneSquareError")); // "非正方形棋盘不能旋转");
+      return;
+    }
+    if (Lizzie.frame.isPlayingAgainstLeelaz
+        || (EngineManager.isEngineGame && EngineManager.engineGameInfo.isGenmove)) {
+      Utils.showMsg(Lizzie.resourceBundle.getString("SpinAndMirror.inGameError"));
       return;
     }
     AllMovelist listHead = Lizzie.board.getAllMovelist(type);
@@ -3591,14 +3664,17 @@ public class Board {
   public MoveLinkedList getMoveLinkedListAfter(BoardHistoryNode node) {
     // TODO Auto-generated method stub
     MoveLinkedList head = new MoveLinkedList();
-    getMoveLinkedListAfterHelper(node, head);
+    ArrayList<MoveLinkedList> tempHead = new ArrayList<MoveLinkedList>();
+    getMoveLinkedListAfterHelper(node, head, tempHead);
     if (head.variations.size() > 0) return head.variations.get(0);
     else return null;
   }
 
-  public void getMoveLinkedListAfterHelper(BoardHistoryNode node, MoveLinkedList head) {
+  public void getMoveLinkedListAfterHelper(
+      BoardHistoryNode node, MoveLinkedList head, ArrayList<MoveLinkedList> tempHead) {
     Stack<BoardHistoryNode> stack = new Stack<>();
     stack.push(node);
+
     while (!stack.isEmpty()) {
       BoardHistoryNode cur = stack.pop();
       if (cur.extraStones != null) {
@@ -3614,7 +3690,14 @@ public class Board {
         head =
             addMoveToLinedList(
                 head, lastMove, cur.getData().lastMoveColor.isBlack(), !cur.previous().isPresent());
+
+      if (!cur.next().isPresent() && !tempHead.isEmpty()) {
+        head = tempHead.get(tempHead.size() - 1);
+        tempHead.remove(tempHead.size() - 1);
+      }
+
       if (cur.numberOfChildren() >= 1) {
+        if (cur.numberOfChildren() > 1) tempHead.add(head);
         for (int i = cur.numberOfChildren() - 1; i >= 0; i--)
           stack.push(cur.getVariations().get(i));
       }
@@ -3791,7 +3874,7 @@ public class Board {
     GameInfo gameInfo = Lizzie.board.getHistory().getGameInfo();
     boolean oriPlaySound = Lizzie.config.playSound;
     Lizzie.config.playSound = false;
-    Lizzie.board.savelistforeditmode();
+    Lizzie.board.saveListForEdit();
     int moveNumber = Lizzie.board.moveNumberByCoord(coords);
     if (moveNumber > 0) {
       MoveLinkedList reStoreMainListHead =
@@ -4294,6 +4377,7 @@ public class Board {
       if (coords == null
           || coords[0] != mouseOnStoneCoords[0]
           || coords[1] != mouseOnStoneCoords[1]) {
+        if (System.currentTimeMillis() - reviewStartTime < 300) return;
         isMouseOnStone = false;
         preMouseOnStone = false;
         mouseOnStoneCoords = LizzieFrame.outOfBoundCoordinate;
@@ -4303,8 +4387,8 @@ public class Board {
     }
   }
 
-  public void setPressStoneInfo(int[] coords) {
-    if (!Lizzie.config.enableClickReview) {
+  public void setPressStoneInfo(int[] coords, boolean fromRightClick) {
+    if (!Lizzie.config.enableClickReview && !fromRightClick) {
       return;
     }
     isMouseOnStone = false;
@@ -4345,6 +4429,7 @@ public class Board {
         };
     Thread thread = new Thread(runnable);
     thread.start();
+    reviewStartTime = System.currentTimeMillis();
   }
 
   private Thread reviewThread;
@@ -4371,5 +4456,18 @@ public class Board {
         };
     reviewThread = new Thread(runnable);
     reviewThread.start();
+  }
+
+  public BoardHistoryNode tsumegoNode;
+  public boolean isTusmegoMode = false;
+
+  public void saveTsumegoStatus() {
+    isTusmegoMode = true;
+    tsumegoNode = Lizzie.board.getHistory().getCurrentHistoryNode();
+  }
+
+  public void clearTsumegoStatus() {
+    isTusmegoMode = false;
+    tsumegoNode = null;
   }
 }

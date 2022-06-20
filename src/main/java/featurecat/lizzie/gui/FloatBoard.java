@@ -808,6 +808,10 @@ public class FloatBoard extends JDialog {
     }
   }
 
+  //  public void setFactor(float factor) {
+  //    boardRenderer.factor = factor;
+  //  }
+
   public void setBoardType() {
     // TODO Auto-generated method stub
     if (isScaled && boardType == 1) this.boardRenderer.boardType = -1;

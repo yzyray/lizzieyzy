@@ -607,19 +607,7 @@ public class NewGameDialog extends JDialog {
           @Override
           public void actionPerformed(ActionEvent e) {
             // TODO Auto-generated method stub
-            if (chkNoTime.isSelected()) {
-              textTime.setEnabled(false);
-              chkUseAdvTime.setEnabled(false);
-              btnAboutAdvTime.setEnabled(false);
-              txtAdvanceTime.setEnabled(false);
-              Lizzie.config.genmoveGameNoTime = true;
-            } else {
-              textTime.setEnabled(true);
-              chkUseAdvTime.setEnabled(true);
-              btnAboutAdvTime.setEnabled(true);
-              txtAdvanceTime.setEnabled(true);
-              Lizzie.config.genmoveGameNoTime = false;
-            }
+            setNoTimeStatus(chkNoTime.isSelected());
           }
         });
     GridBagConstraints gbc_chkNoTime = new GridBagConstraints();
@@ -668,20 +656,6 @@ public class NewGameDialog extends JDialog {
     gbc_chkUsePlayMode.gridx = 1;
     gbc_chkUsePlayMode.gridy = 11;
     contentPanel.add(chkUsePlayMode, gbc_chkUsePlayMode);
-
-    if (Lizzie.config.genmoveGameNoTime) {
-      chkNoTime.setSelected(true);
-      textTime.setEnabled(false);
-      chkUseAdvTime.setEnabled(false);
-      btnAboutAdvTime.setEnabled(false);
-      txtAdvanceTime.setEnabled(false);
-    } else {
-      chkNoTime.setSelected(false);
-      textTime.setEnabled(true);
-      chkUseAdvTime.setEnabled(true);
-      btnAboutAdvTime.setEnabled(true);
-      txtAdvanceTime.setEnabled(true);
-    }
 
     if (Lizzie.config.advanceTimeSettings) textTime.setEnabled(false);
     else txtAdvanceTime.setEnabled(false);
@@ -755,6 +729,37 @@ public class NewGameDialog extends JDialog {
     gbc_chkAutoSave.gridy = 14;
     contentPanel.add(chkAutoSave, gbc_chkAutoSave);
     chkTimeChanged();
+    chkNoTime.setSelected(Lizzie.config.genmoveGameNoTime);
+    setNoTimeStatus(Lizzie.config.genmoveGameNoTime);
+  }
+
+  private void setNoTimeStatus(boolean selected) {
+    // TODO Auto-generated method stub
+    if (selected) {
+      kataTimeComboBox.setEnabled(false);
+      txtKataTimeSaveMins.setEnabled(false);
+      txtKataTimeByoyomiSecs.setEnabled(false);
+      txtKataTimeByoyomiTimes.setEnabled(false);
+      chkKataTime.setEnabled(false);
+      chkNormalTime.setEnabled(false);
+      textTime.setEnabled(false);
+      chkUseAdvTime.setEnabled(false);
+      btnAboutAdvTime.setEnabled(false);
+      txtAdvanceTime.setEnabled(false);
+      Lizzie.config.genmoveGameNoTime = true;
+    } else {
+      kataTimeComboBox.setEnabled(true);
+      txtKataTimeSaveMins.setEnabled(true);
+      txtKataTimeByoyomiSecs.setEnabled(true);
+      txtKataTimeByoyomiTimes.setEnabled(true);
+      chkKataTime.setEnabled(true);
+      chkNormalTime.setEnabled(true);
+      textTime.setEnabled(true);
+      chkUseAdvTime.setEnabled(true);
+      btnAboutAdvTime.setEnabled(true);
+      txtAdvanceTime.setEnabled(true);
+      Lizzie.config.genmoveGameNoTime = false;
+    }
   }
 
   private void chkTimeChanged() {

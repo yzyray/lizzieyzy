@@ -1,6 +1,7 @@
 package featurecat.lizzie.gui;
 
 import featurecat.lizzie.Lizzie;
+import featurecat.lizzie.rules.BoardHistoryNode;
 import featurecat.lizzie.rules.Tsumego;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
@@ -12,10 +13,14 @@ import java.awt.event.KeyEvent;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
 import javax.swing.JDialog;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 public class TsumeGoFrame extends JDialog {
+  private JTextField txtWallDistance;
+
   public TsumeGoFrame(Window owner) {
     super(owner);
     setTitle(Lizzie.resourceBundle.getString("TsumeGoFrame.title"));
@@ -45,12 +50,10 @@ public class TsumeGoFrame extends JDialog {
 
     JFontButton btnConfirm =
         new JFontButton(Lizzie.resourceBundle.getString("TsumeGoFrame.btnConfirm"));
-    btnConfirm.setFocusable(false);
     panel.add(btnConfirm);
 
     JFontButton btnCancel =
         new JFontButton(Lizzie.resourceBundle.getString("TsumeGoFrame.btnCancel"));
-    btnCancel.setFocusable(false);
     btnCancel.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
@@ -59,7 +62,7 @@ public class TsumeGoFrame extends JDialog {
           }
         });
     panel.add(btnCancel);
-    contentPane.setLayout(new GridLayout(3, 5, 8, 15));
+    contentPane.setLayout(new GridLayout(4, 5, 8, 15));
 
     JFontLabel lblToPlay =
         new JFontLabel(Lizzie.resourceBundle.getString("TsumeGoFrame.lblToPlay"));
@@ -145,6 +148,16 @@ public class TsumeGoFrame extends JDialog {
     group3.add(rdoKoDefender);
     group3.add(rdoKoNone);
 
+    JLabel lblWallDistance =
+        new JLabel(Lizzie.resourceBundle.getString("TsumeGoFrame.lblWallDistance"));
+    contentPane.add(lblWallDistance);
+
+    txtWallDistance = new JTextField();
+    contentPane.add(txtWallDistance);
+    txtWallDistance.setColumns(5);
+    txtWallDistance.setDocument(new IntDocument());
+    txtWallDistance.setText(String.valueOf(Lizzie.config.tsumeGoWallDistance));
+
     if (Lizzie.config.tsumeGoToPlay == 1) rdoKeepOn.setSelected(true);
     else if (Lizzie.config.tsumeGoToPlay == 2) rdoBlackToPlay.setSelected(true);
     else if (Lizzie.config.tsumeGoToPlay == 3) rdoWhiteToPlay.setSelected(true);
@@ -161,6 +174,26 @@ public class TsumeGoFrame extends JDialog {
     btnConfirm.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
+            if (Lizzie.board.isTusmegoMode && Lizzie.board.tsumegoNode != null) {
+              BoardHistoryNode curNode = Lizzie.board.getHistory().getCurrentHistoryNode();
+              while (curNode.previous().isPresent()) {
+                if (curNode == Lizzie.board.tsumegoNode) {
+                  Lizzie.board.moveToAnyPosition(Lizzie.board.tsumegoNode);
+                  Lizzie.board.previousMove(false);
+                  break;
+                }
+                curNode = curNode.previous().get();
+              }
+            }
+            int wallDistance = Lizzie.config.tsumeGoWallDistance;
+            try {
+              wallDistance = Integer.parseInt(txtWallDistance.getText());
+            } catch (NumberFormatException s) {
+              s.printStackTrace();
+            }
+            if (wallDistance > 0) {
+              Lizzie.config.tsumeGoWallDistance = wallDistance;
+            }
             if (rdoKeepOn.isSelected()) Lizzie.config.tsumeGoToPlay = 1;
             else if (rdoBlackToPlay.isSelected()) Lizzie.config.tsumeGoToPlay = 2;
             else if (rdoWhiteToPlay.isSelected()) Lizzie.config.tsumeGoToPlay = 3;
@@ -174,6 +207,7 @@ public class TsumeGoFrame extends JDialog {
             else if (rdoKoDefender.isSelected()) Lizzie.config.tsumeGoKoThreat = 3;
             else if (rdoKoNone.isSelected()) Lizzie.config.tsumeGoKoThreat = 4;
 
+            Lizzie.config.uiConfig.put("tsume-go-wall-distance", Lizzie.config.tsumeGoWallDistance);
             Lizzie.config.uiConfig.put("tsume-go-to-play", Lizzie.config.tsumeGoToPlay);
             Lizzie.config.uiConfig.put("tsume-go-attaker", Lizzie.config.tsumeGoAttaker);
             Lizzie.config.uiConfig.put("tsume-go-ko-threat", Lizzie.config.tsumeGoKoThreat);
@@ -216,12 +250,11 @@ public class TsumeGoFrame extends JDialog {
               addKoThreatAttacker = false;
               addKoThreatDefender = false;
             }
-
             Tsumego tsumego = new Tsumego();
-
             tsumego.getCoverSideAndIndex(forceSide, forceBlack);
             tsumego.buildCoverWall(
                 addKoThreatDefender, addKoThreatAttacker, forceToPlay, blackToPlay);
+            Lizzie.board.saveTsumegoStatus();
             LizzieFrame.menu.clearInsert();
             Lizzie.frame.refresh();
             setVisible(false);
@@ -241,6 +274,7 @@ public class TsumeGoFrame extends JDialog {
           }
         });
     pack();
+    btnConfirm.requestFocus();
     setLocationRelativeTo(owner);
   }
 }

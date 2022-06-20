@@ -63,6 +63,7 @@ public class FloatBoardRenderer {
   private Branch branch;
 
   private int cachedBoardWidth = 0, cachedBoardHeight = 0;
+  private int cachedBoardWidth2 = 0, cachedBoardHeight2 = 0;
   private BufferedImage cachedStonesImage = emptyImage;
   private BufferedImage cachedStonesImagedraged = emptyImage;
   private BufferedImage blockimage = emptyImage;
@@ -190,38 +191,41 @@ public class FloatBoardRenderer {
 
   /** Calculate good values for boardLength, scaledMargin, availableLength, and squareLength */
   public void setupSizeParameters() {
-    int boardWidth0 = boardWidth;
-    int boardHeight0 = boardHeight;
+    float boardWidth0 = boardWidth;
+    float boardHeight0 = boardHeight;
 
-    int[] calculatedPixelMargins = calculatePixelMargins();
-    boardWidth = calculatedPixelMargins[0];
-    scaledMarginWidth = calculatedPixelMargins[1];
-    availableWidth = calculatedPixelMargins[2];
-    boardHeight = calculatedPixelMargins[3];
-    scaledMarginHeight = calculatedPixelMargins[4];
-    availableHeight = calculatedPixelMargins[5];
-
-    squareWidth = calculateSquareWidth(availableWidth);
-    squareHeight = calculateSquareHeight(availableHeight);
-    if (squareWidth > squareHeight) {
-      squareWidth = squareHeight;
-      int newWidth = squareWidth * (Board.boardWidth - 1) + 1;
-      int diff = availableWidth - newWidth;
-      availableWidth = newWidth;
-      boardWidth -= diff + (scaledMarginWidth - scaledMarginHeight) * 2;
-      scaledMarginWidth = scaledMarginHeight;
-    } else if (squareWidth < squareHeight) {
-      squareHeight = squareWidth;
-      int newHeight = squareHeight * (Board.boardHeight - 1) + 1;
-      int diff = availableHeight - newHeight;
-      availableHeight = newHeight;
-      boardHeight -= diff + (scaledMarginHeight - scaledMarginWidth) * 2;
-      scaledMarginHeight = scaledMarginWidth;
-    }
+    squareWidth = Math.round(boardWidth0 / Board.boardWidth);
+    squareHeight = Math.round(boardHeight0 / Board.boardHeight);
+    //   int[] calculatedPixelMargins = calculatePixelMargins();
+    boardWidth = squareWidth * Board.boardWidth;
+    boardHeight = squareHeight * Board.boardHeight;
+    availableWidth = squareWidth * (Board.boardWidth - 1);
+    availableHeight = squareHeight * (Board.boardHeight - 1);
+    scaledMarginWidth = (int) (boardWidth0 / (2 * Board.boardWidth));
+    scaledMarginHeight = (int) (boardHeight0 / (2 * Board.boardHeight));
+    // squareWidth = calculateSquareWidth(availableWidth);
+    // squareHeight = calculateSquareHeight(availableHeight);
+    //    if (squareWidth > squareHeight) {
+    //      squareWidth = squareHeight;
+    //      int newWidth = squareWidth * (Board.boardWidth - 1) + 1;
+    //      int diff = availableWidth - newWidth;
+    //      availableWidth = newWidth;
+    //      boardWidth -= diff + (scaledMarginWidth - scaledMarginHeight) * 2;
+    //      scaledMarginWidth = scaledMarginHeight;
+    //    } else if (squareWidth < squareHeight) {
+    //      squareHeight = squareWidth;
+    //      int newHeight = squareHeight * (Board.boardHeight - 1) + 1;
+    //      int diff = availableHeight - newHeight;
+    //      availableHeight = newHeight;
+    //      boardHeight -= diff + (scaledMarginHeight - scaledMarginWidth) * 2;
+    //      scaledMarginHeight = scaledMarginWidth;
+    //    }
     stoneRadius = max(squareWidth, squareHeight) < 4 ? 1 : max(squareWidth, squareHeight) / 2 - 1;
-
+    //    scaledMarginWidth=(boardWidth0-squareWidth*(Board.boardWidth-1))/2;
+    //    scaledMarginHeight=(boardHeight0-squareHeight*(Board.boardHeight-1))/2;
     // re-center board
-    setLocation(x + (boardWidth0 - boardWidth) / 2, y + (boardHeight0 - boardHeight) / 2);
+    setLocation(
+        x + (int) (boardWidth0 - boardWidth) / 2, y + (int) (boardHeight0 - boardHeight) / 2);
   }
 
   private void drawRawWinrate(Graphics2D g0) {
@@ -780,6 +784,9 @@ public class FloatBoardRenderer {
         || (!isShowingBranch || !mouseOverCoords.equals(suggestedMove.get().coordinate))) {
       variation = suggestedMove.get().variation;
       pvVistis = suggestedMove.get().pvVisits;
+    }
+    if (variation == null) {
+      return;
     }
     branch = null;
     //    if (Lizzie.engineManager.isEngineGame && Lizzie.engineManager.engineGameInfo.isGenmove)
@@ -2251,6 +2258,7 @@ public class FloatBoardRenderer {
   private int cachedR;
   private int cachedShadowSize;
   private int cachedStoneCenter;
+  // public float factor;
 
   private void drawShadowCache() {
     if (!Lizzie.config.showStoneShadow) return;
@@ -2520,9 +2528,9 @@ public class FloatBoardRenderer {
     return font.deriveFont(atts);
   }
 
-  private int[] calculatePixelMargins() {
-    return calculatePixelMargins(boardWidth, boardHeight);
-  }
+  //  private int[] calculatePixelMargins() {
+  //    return calculatePixelMargins(boardWidth, boardHeight);
+  //  }
 
   /**
    * Set the location to render the board
@@ -2888,8 +2896,8 @@ public class FloatBoardRenderer {
     int height = boardHeight;
     // Draw the cached background image if frame size changes
     if (cachedEditMode != editMode
-        || cachedBoardWidth != boardWidth
-        || cachedBoardHeight != boardHeight
+        || cachedBoardWidth2 != boardWidth
+        || cachedBoardHeight2 != boardHeight
         || changedName
         || cachedShowCoords != showCoordinates()
         || Lizzie.board.isForceRefresh()) {
@@ -2897,8 +2905,8 @@ public class FloatBoardRenderer {
       cachedGhostShadow2 = null;
       changedName = false;
       cachedEditMode = editMode;
-      cachedBoardWidth = boardWidth;
-      cachedBoardHeight = boardHeight;
+      cachedBoardWidth2 = boardWidth;
+      cachedBoardHeight2 = boardHeight;
       cachedShowCoords = showCoordinates();
       Lizzie.board.setForceRefresh(false);
 
@@ -2916,10 +2924,8 @@ public class FloatBoardRenderer {
       // Draw the lines
       g.setColor(Color.BLACK);
       BasicStroke borderStroke =
-          new BasicStroke(
-              Math.max(boardWidth > 560 ? 2f : 1f, Math.min(3.2f, (float) availableWidth / 481f)));
-      BasicStroke normalStroke =
-          new BasicStroke(Math.max(1f, Math.min(1.7f, (float) availableWidth / 1110f)));
+          new BasicStroke(Math.max(boardWidth > 560 ? 2f : 1f, availableWidth / 481f));
+      BasicStroke normalStroke = new BasicStroke(Math.max(1f, availableWidth / 750f));
       int totalHeight = scaledMarginHeight + squareHeight * (Board.boardHeight - 1);
       int totalWidth = scaledMarginWidth + squareWidth * (Board.boardWidth - 1);
       for (int i = 0; i < Board.boardHeight; i++) {

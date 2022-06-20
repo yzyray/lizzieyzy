@@ -61,8 +61,6 @@ public class ContributeView extends JFrame {
   private int watchingGameIndex = 0;
   private JTextField txtMoveNumber;
   private ArrayDeque<DocType> docQueue;
-  private int checkCount = 0;
-  private int scrollLength = 0;
   private ScheduledExecutorService executor;
   private JButton btnPauseResume;
   private JButton btnSlowShutdown;
@@ -70,6 +68,7 @@ public class ContributeView extends JFrame {
   private JButton btnCloseView;
   private JCheckBox chkIgnoreNone19;
   private boolean exitedAfterSignal = false;
+  private int max_length = 15000;
 
   public ContributeView() {
     exitedAfterSignal = false;
@@ -793,25 +792,31 @@ public class ContributeView extends JFrame {
   }
 
   private void checkConsole() {
-    if (console.getText().length() > 200000) {
-      console.setText(
-          console
-              .getText()
-              .substring(console.getText().length() - 70000, console.getText().length()));
-      console.setCaretPosition(console.getDocument().getLength());
+    Document doc = console.getDocument();
+    int length = doc.getLength();
+    try {
+      if (length > max_length) {
+        doc.remove(0, length - max_length / 2);
+      }
+    } catch (BadLocationException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
     }
   }
 
-  public void addDocs(DocType doc) {
-    synchronized (console) {
-      SimpleAttributeSet attrSet = new SimpleAttributeSet();
-      StyleConstants.setForeground(attrSet, doc.contentColor);
-      if (doc.isCommand) {
-        StyleConstants.setFontFamily(attrSet, Lizzie.config.uiFontName);
-      }
-      StyleConstants.setFontSize(attrSet, doc.fontSize);
-      insert(doc.content, attrSet);
+  private void addDocs(DocType doc) {
+    SimpleAttributeSet attrSet = new SimpleAttributeSet();
+    StyleConstants.setForeground(attrSet, doc.contentColor);
+    if (doc.isCommand) {
+      StyleConstants.setFontFamily(attrSet, Lizzie.config.uiFontName);
     }
+    StyleConstants.setFontSize(attrSet, doc.fontSize);
+    String insertContent = doc.content;
+    if (insertContent.length() > max_length / 10) {
+      insertContent = insertContent.substring(0, max_length / 10 - 5) + "(...)\n";
+    }
+    insert(insertContent, attrSet);
+    console.setCaretPosition(console.getDocument().getLength());
   }
 
   private void insert(String str, AttributeSet attrSet) {
@@ -862,17 +867,7 @@ public class ContributeView extends JFrame {
             docQueue.clear();
             break;
           }
-        }
-      }
-      checkCount++;
-      if (checkCount > 300) {
-        checkCount = 0;
-        checkConsole();
-      } else {
-        int length = console.getDocument().getLength();
-        if (length != scrollLength) {
-          scrollLength = length;
-          console.setCaretPosition(scrollLength);
+          checkConsole();
         }
       }
     }

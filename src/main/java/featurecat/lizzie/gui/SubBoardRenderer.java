@@ -353,9 +353,9 @@ public class SubBoardRenderer {
 
       // Draw the lines
       g.setColor(Color.BLACK);
+      g.setStroke(new BasicStroke(Math.max(1f, availableWidth / 750f)));
       for (int i = 0; i < Board.boardHeight; i++) {
         // g.setStroke(new BasicStroke(stoneRadius / 15f));
-
         g.drawLine(
             scaledMarginWidth,
             scaledMarginHeight + squareHeight * i,
@@ -569,29 +569,27 @@ public class SubBoardRenderer {
     }
   }
 
-  public void drawKataEstimateBySize(ArrayList<Double> tempcount, boolean reverse) {
+  public void drawKataEstimateBySize(ArrayList<Double> estimateList, boolean reverse) {
     BufferedImage newEstimateImage = new BufferedImage(boardWidth, boardHeight, TYPE_INT_ARGB);
     Graphics2D g = newEstimateImage.createGraphics();
     boolean blackToPlay = Lizzie.board.getHistory().isBlacksTurn();
     if (reverse) blackToPlay = !blackToPlay;
-    for (int i = 0; i < tempcount.size(); i++) {
-      if ((tempcount.get(i) > 0 && blackToPlay) || (tempcount.get(i) < 0 && !blackToPlay)) {
-        int y = i / Board.boardWidth;
-        int x = i % Board.boardWidth;
+    for (int i = 0; i < estimateList.size(); i++) {
+      int[] c = Lizzie.board.getCoordKataGo(i);
+      int x = c[0];
+      int y = c[1];
+      if ((estimateList.get(i) > 0 && blackToPlay) || (estimateList.get(i) < 0 && !blackToPlay)) {
         int stoneX = scaledMarginWidth + squareWidth * x;
         int stoneY = scaledMarginHeight + squareHeight * y;
         Color cl = new Color(0, 0, 0, 180);
         g.setColor(cl);
-        int length = (int) (convertLength(tempcount.get(i)) * squareWidth);
+        int length = (int) (convertLength(estimateList.get(i)) * squareWidth);
         if (length > 0) g.fillRect(stoneX - length / 2, stoneY - length / 2, length, length);
       }
-      if ((tempcount.get(i) < 0 && Lizzie.board.getHistory().isBlacksTurn())
-          || (tempcount.get(i) > 0 && !Lizzie.board.getHistory().isBlacksTurn())) {
-        int y = i / Board.boardWidth;
-        int x = i % Board.boardWidth;
+      if ((estimateList.get(i) < 0 && blackToPlay) || (estimateList.get(i) > 0 && !blackToPlay)) {
         int stoneX = scaledMarginWidth + squareWidth * x;
         int stoneY = scaledMarginHeight + squareHeight * y;
-        int length = (int) (convertLength(tempcount.get(i)) * squareWidth);
+        int length = (int) (convertLength(estimateList.get(i)) * squareWidth);
 
         Color cl = new Color(255, 255, 255, 180);
         g.setColor(cl);
