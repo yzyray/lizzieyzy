@@ -259,7 +259,7 @@ public class ConfigDialog2 extends JDialog {
   private JCheckBox chkShowIndependentMainBoard;
   private JCheckBox chkCheckEngineAlive;
   private JCheckBox chkVariationRemoveDeadChain;
-  private JCheckBox chkShowScoreLeadLine;
+  private JComboBox<String> cbxShowWinrateOrScoreLeadLine;
   private JCheckBox chkShowMouseOverWinrateGraph;
   private JCheckBox chkShowScoreAsLead;
   private JComboBox<String> comboBoxPvVisits;
@@ -1589,21 +1589,30 @@ public class ConfigDialog2 extends JDialog {
         String.valueOf(Lizzie.config.replayBranchIntervalSeconds * 1000));
 
     JLabel lblVariationReplayInterval =
-        new JLabel(
-            resourceBundle.getString("ConfigDialog2.lblVariationReplayInterval")); // $NON-NLS-1$
+        new JLabel(resourceBundle.getString("ConfigDialog2.lblVariationReplayInterval"));
     lblVariationReplayInterval.setBounds(608, 701, 189, 15);
     uiTab.add(lblVariationReplayInterval);
 
-    chkShowScoreLeadLine = new JCheckBox();
-    chkShowScoreLeadLine.setBounds(532, 233, 26, 23);
-    uiTab.add(chkShowScoreLeadLine);
+    cbxShowWinrateOrScoreLeadLine = new JComboBox<String>();
+    cbxShowWinrateOrScoreLeadLine.addItem(
+        resourceBundle.getString("ConfigDialog2.cbxShowWinrateOrScoreLeadLine.winRate"));
+    cbxShowWinrateOrScoreLeadLine.addItem(
+        resourceBundle.getString("ConfigDialog2.cbxShowWinrateOrScoreLeadLine.scoreLead"));
+    cbxShowWinrateOrScoreLeadLine.addItem(
+        resourceBundle.getString("ConfigDialog2.cbxShowWinrateOrScoreLeadLine.both"));
+    cbxShowWinrateOrScoreLeadLine.setBounds(504, 233, 66, 23);
+    uiTab.add(cbxShowWinrateOrScoreLeadLine);
 
     JLabel lblShowScoreLeadLine =
-        new JLabel(resourceBundle.getString("ConfigDialog2.lblShowScoreLeadLine"));
+        new JLabel(resourceBundle.getString("ConfigDialog2.lblShowWinRateOrScoreLeadLine"));
     lblShowScoreLeadLine.setBounds(312, 236, 190, 15);
     uiTab.add(lblShowScoreLeadLine);
 
-    chkShowScoreLeadLine.setSelected(Lizzie.config.showScoreLeadLine);
+    if (Lizzie.config.showScoreLeadLine && Lizzie.config.showWinrateLine)
+      cbxShowWinrateOrScoreLeadLine.setSelectedIndex(2);
+    else if (Lizzie.config.showWinrateLine) cbxShowWinrateOrScoreLeadLine.setSelectedIndex(0);
+    else if (Lizzie.config.showScoreLeadLine) cbxShowWinrateOrScoreLeadLine.setSelectedIndex(1);
+
     chkVariationRemoveDeadChain.setSelected(Lizzie.config.removeDeadChainInVariation);
 
     JLabel lblShowMouseOverWinrateGraph =
@@ -3716,8 +3725,19 @@ public class ConfigDialog2 extends JDialog {
         "show-mouse-over-winrate-graph", Lizzie.config.showMouseOverWinrateGraph);
     if (oriShowMouseOverWinrateGraph && !Lizzie.config.showMouseOverWinrateGraph)
       Lizzie.frame.clearMouseOverWinrateGraph();
-    Lizzie.config.showScoreLeadLine = chkShowScoreLeadLine.isSelected();
+    int lineIndex = cbxShowWinrateOrScoreLeadLine.getSelectedIndex();
+    if (lineIndex == 0) {
+      Lizzie.config.showScoreLeadLine = false;
+      Lizzie.config.showWinrateLine = true;
+    } else if (lineIndex == 1) {
+      Lizzie.config.showScoreLeadLine = true;
+      Lizzie.config.showWinrateLine = false;
+    } else if (lineIndex == 2) {
+      Lizzie.config.showScoreLeadLine = true;
+      Lizzie.config.showWinrateLine = true;
+    }
     Lizzie.config.uiConfig.put("show-score-lead-line", Lizzie.config.showScoreLeadLine);
+    Lizzie.config.uiConfig.put("show-win-rate-line", Lizzie.config.showWinrateLine);
     Lizzie.config.removeDeadChainInVariation = chkVariationRemoveDeadChain.isSelected();
     Lizzie.config.uiConfig.put(
         "remove-dead-in-variation", Lizzie.config.removeDeadChainInVariation);

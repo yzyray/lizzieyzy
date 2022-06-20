@@ -1235,18 +1235,6 @@ public class Menu extends JMenuBar {
         });
     panel.add(SuggestionList);
 
-    final JFontCheckBoxMenuItem winrateMode1 =
-        new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.winrateMode1")); // ("双方视角");
-    winrateMode1.addActionListener(
-        new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            LizzieFrame.winrateGraph.mode = 1;
-            Lizzie.frame.repaint();
-          }
-        });
-    winrate.add(winrateMode1);
-
     final JFontCheckBoxMenuItem winrateMode0 =
         new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.winrateMode0")); // ("黑方视角");
     winrateMode0.addActionListener(
@@ -1258,8 +1246,19 @@ public class Menu extends JMenuBar {
           }
         });
     winrate.add(winrateMode0);
+
+    final JFontCheckBoxMenuItem winrateMode1 =
+        new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.winrateMode1")); // ("双方视角");
+    winrateMode1.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            LizzieFrame.winrateGraph.mode = 1;
+            Lizzie.frame.repaint();
+          }
+        });
+    winrate.add(winrateMode1);
     winrate.addSeparator();
-    // 增加设置胜率曲线宽度
 
     final JFontCheckBoxMenuItem showSuggestionOrder =
         new JFontCheckBoxMenuItem(
@@ -1352,9 +1351,59 @@ public class Menu extends JMenuBar {
         });
     Suggestions.add(noRefreshOnMouse);
 
-    final JFontCheckBoxMenuItem showBlunderBar =
+    final JFontMenu showWinRateOrScoreLeadLine =
+        new JFontMenu(resourceBundle.getString("Menu.showWinRateOrScoreLeadLine"));
+    winrate.add(showWinRateOrScoreLeadLine);
+
+    final JFontCheckBoxMenuItem showWinRateLineOnly =
         new JFontCheckBoxMenuItem(
-            resourceBundle.getString("Menu.showBlunderBar")); // Show blunder bar 显示柱状失误条
+            resourceBundle.getString("Menu.showWinRateOrScoreLeadLine.winrate"));
+    showWinRateLineOnly.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.config.showWinrateLine = true;
+            Lizzie.config.showScoreLeadLine = false;
+            Lizzie.config.uiConfig.put("show-win-rate-line", Lizzie.config.showWinrateLine);
+            Lizzie.config.uiConfig.put("show-score-lead-line", Lizzie.config.showScoreLeadLine);
+            Lizzie.frame.refresh();
+          }
+        });
+    showWinRateOrScoreLeadLine.add(showWinRateLineOnly);
+
+    final JFontCheckBoxMenuItem showScoreLeadLineOnly =
+        new JFontCheckBoxMenuItem(
+            resourceBundle.getString("Menu.showWinRateOrScoreLeadLine.scoreLead"));
+    showScoreLeadLineOnly.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.config.showWinrateLine = false;
+            Lizzie.config.showScoreLeadLine = true;
+            Lizzie.config.uiConfig.put("show-win-rate-line", Lizzie.config.showWinrateLine);
+            Lizzie.config.uiConfig.put("show-score-lead-line", Lizzie.config.showScoreLeadLine);
+            Lizzie.frame.refresh();
+          }
+        });
+    showWinRateOrScoreLeadLine.add(showScoreLeadLineOnly);
+
+    final JFontCheckBoxMenuItem showBothLine =
+        new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.showWinRateOrScoreLeadLine.both"));
+    showBothLine.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.config.showWinrateLine = true;
+            Lizzie.config.showScoreLeadLine = true;
+            Lizzie.config.uiConfig.put("show-win-rate-line", Lizzie.config.showWinrateLine);
+            Lizzie.config.uiConfig.put("show-score-lead-line", Lizzie.config.showScoreLeadLine);
+            Lizzie.frame.refresh();
+          }
+        });
+    showWinRateOrScoreLeadLine.add(showBothLine);
+
+    final JFontCheckBoxMenuItem showBlunderBar =
+        new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.showBlunderBar"));
     showBlunderBar.addActionListener(
         new ActionListener() {
           @Override
@@ -1366,23 +1415,8 @@ public class Menu extends JMenuBar {
         });
     winrate.add(showBlunderBar);
 
-    final JFontCheckBoxMenuItem showScoreLeadLine =
-        new JFontCheckBoxMenuItem(
-            resourceBundle.getString("Menu.showScoreLeadLine")); // Show blunder bar 显示目差曲线
-    showScoreLeadLine.addActionListener(
-        new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            Lizzie.config.showScoreLeadLine = !Lizzie.config.showScoreLeadLine;
-            Lizzie.config.uiConfig.put("show-score-lead-line", Lizzie.config.showScoreLeadLine);
-            Lizzie.frame.refresh();
-          }
-        });
-    winrate.add(showScoreLeadLine);
-
     final JFontCheckBoxMenuItem showMouseOverWinrateGraph =
-        new JFontCheckBoxMenuItem(
-            resourceBundle.getString("Menu.showMouseOverWinrateGraph")); // Show blunder bar 显示目差曲线
+        new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.showMouseOverWinrateGraph"));
     showMouseOverWinrateGraph.addActionListener(
         new ActionListener() {
           @Override
@@ -2522,8 +2556,20 @@ public class Menu extends JMenuBar {
             }
             if (Lizzie.config.showBlunderBar) showBlunderBar.setState(true);
             else showBlunderBar.setState(false);
-            if (Lizzie.config.showScoreLeadLine) showScoreLeadLine.setState(true);
-            else showScoreLeadLine.setState(false);
+
+            if (Lizzie.config.showScoreLeadLine && Lizzie.config.showWinrateLine) {
+              showBothLine.setState(true);
+              showScoreLeadLineOnly.setState(false);
+              showWinRateLineOnly.setState(false);
+            } else if (Lizzie.config.showWinrateLine) {
+              showBothLine.setState(false);
+              showScoreLeadLineOnly.setState(false);
+              showWinRateLineOnly.setState(true);
+            } else if (Lizzie.config.showScoreLeadLine) {
+              showBothLine.setState(false);
+              showScoreLeadLineOnly.setState(true);
+              showWinRateLineOnly.setState(false);
+            }
             if (Lizzie.config.showMouseOverWinrateGraph) showMouseOverWinrateGraph.setState(true);
             else showMouseOverWinrateGraph.setState(false);
             if (Lizzie.config.showWinrateGraph && Lizzie.config.showLargeWinrate())

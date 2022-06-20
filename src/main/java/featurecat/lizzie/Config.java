@@ -129,7 +129,7 @@ public class Config {
   public Theme theme;
   public float winrateStrokeWidth = 1.7f;
   public int leelaversion = 17;
-  public int minimumBlunderBarWidth = 3;
+  public int minimumBlunderBarWidth = 1;
   public int shadowSize = 75;
   public static String sysDefaultFontName = "Dialog.plain";
   public String fontName = null;
@@ -440,6 +440,7 @@ public class Config {
   public boolean analysisRecentIsPartGame = false;
   public boolean analysisRecentIsAllBranches = false;
   public boolean showScoreLeadLine = true;
+  public boolean showWinrateLine = true;
   public boolean showMouseOverWinrateGraph = true;
   public boolean isChinese;
 
@@ -1183,6 +1184,7 @@ public class Config {
     analysisAlwaysOverride = uiConfig.optBoolean("analysis-always-override", false);
     analysisSpecificRules = uiConfig.optString("analysis-specific-rules", "");
     showScoreLeadLine = uiConfig.optBoolean("show-score-lead-line", true);
+    showWinrateLine = uiConfig.optBoolean("show-win-rate-line", true);
     showMouseOverWinrateGraph = uiConfig.optBoolean("show-mouse-over-winrate-graph", true);
     frameFontSize = uiConfig.optInt("frame-font-size", 12);
     menuHeight = isFrameFontSmall() ? 20 : (isFrameFontMiddle() ? 25 : 30);
@@ -2056,7 +2058,7 @@ public class Config {
     ui.put("large-winrate-graph", false);
     ui.put("winrate-stroke-width", 1.7);
     ui.put("show-blunder-bar", true);
-    ui.put("minimum-blunder-bar-width", 3);
+    ui.put("minimum-blunder-bar-width", 1);
     ui.put("weighted-blunder-bar-height", false);
     // ui.put("dynamic-winrate-graph-width", true);
     ui.put("show-comment", true);
