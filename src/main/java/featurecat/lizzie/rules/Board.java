@@ -1098,50 +1098,40 @@ public class Board {
 
   public void addStartList() {
     Optional<BoardHistoryNode> node = history.getCurrentHistoryNode().now();
-    Optional<int[]> passstep = Optional.empty();
     if (node.isPresent()) {
       Optional<int[]> lastMove = node.get().getData().lastMove;
-      if (lastMove == passstep) {
+      if (lastMove.isPresent()) {
+        int[] n = lastMove.get();
+        Movelist move = new Movelist();
+        move.x = n[0];
+        move.y = n[1];
+        move.ispass = false;
+        move.isblack = node.get().getData().lastMoveColor.isBlack();
+        move.movenum = node.get().getData().moveNumber;
+        startStonelist.add(move);
+      } else {
         Movelist move = new Movelist();
         move.ispass = true;
         move.isblack = node.get().getData().lastMoveColor.isBlack();
         startStonelist.add(move);
         node = node.get().previous();
-      } else {
-        if (lastMove.isPresent()) {
-
-          int[] n = lastMove.get();
-          Movelist move = new Movelist();
-          move.x = n[0];
-          move.y = n[1];
-          move.ispass = false;
-          move.isblack = node.get().getData().lastMoveColor.isBlack();
-          move.movenum = node.get().getData().moveNumber;
-          startStonelist.add(move);
-        }
       }
     }
   }
 
   public void addStartListAll() {
     Optional<BoardHistoryNode> node = history.getCurrentHistoryNode().now();
-    Optional<int[]> passstep = Optional.empty();
     while (node.isPresent()) {
       Optional<int[]> lastMove = node.get().getData().lastMove;
-      if (lastMove == passstep) {
-        node = node.get().previous();
-      } else {
-        if (lastMove.isPresent()) {
-
-          int[] n = lastMove.get();
-          Movelist move = new Movelist();
-          move.x = n[0];
-          move.y = n[1];
-          move.ispass = false;
-          move.isblack = node.get().getData().lastMoveColor.isBlack();
-          move.movenum = node.get().getData().moveNumber;
-          startStonelist.add(move);
-        }
+      if (lastMove.isPresent()) {
+        int[] n = lastMove.get();
+        Movelist move = new Movelist();
+        move.x = n[0];
+        move.y = n[1];
+        move.ispass = false;
+        move.isblack = node.get().getData().lastMoveColor.isBlack();
+        move.movenum = node.get().getData().moveNumber;
+        startStonelist.add(move);
       }
       try {
         node = node.get().previous();
