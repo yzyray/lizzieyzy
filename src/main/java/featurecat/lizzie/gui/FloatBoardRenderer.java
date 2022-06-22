@@ -59,6 +59,7 @@ public class FloatBoardRenderer {
   private boolean isMouseOverStoneBlack;
 
   private boolean isShowingBranch = false;
+  private boolean shouldHideMouseOverInfo = false;
   private String mouseOverCoords = "";
   private Branch branch;
 
@@ -1109,7 +1110,7 @@ public class FloatBoardRenderer {
     if (!branchOpt.isPresent()) {
       return;
     }
-
+    shouldHideMouseOverInfo = false;
     int[] moveNumberList;
     moveNumberList = branchOpt.map(b -> b.data.moveNumberList).orElse(board.getMoveNumberList());
     for (int i = 0; i < Board.boardWidth; i++) {
@@ -1123,8 +1124,14 @@ public class FloatBoardRenderer {
         // don't write the move number if either: the move number is 0, or there will
         // already be
         // playout information written
-        if ((mvNum > 0 || Lizzie.frame.isTrying && mvNum < 0)
-            && (!branchOpt.isPresent() || !Lizzie.frame.floatBoard.isMouseOver(i, j))) {
+        if ((mvNum > 0 || Lizzie.frame.isTrying && mvNum < 0)) {
+          if (isShowingBranch) {
+            boolean isMouseOver = Lizzie.frame.floatBoard.isMouseOver(i, j);
+            if (isMouseOver) {
+              if (mvNum > 1) shouldHideMouseOverInfo = true;
+              else continue;
+            }
+          }
           boolean isShowingPvVists = false;
           boolean reverse = (moveNumberList[Board.getIndex(i, j)] > maxBranchMoves(true));
           if ((lastMoveOpt.isPresent() && lastMoveOpt.get()[0] == i && lastMoveOpt.get()[1] == j)) {
@@ -1623,7 +1630,7 @@ public class FloatBoardRenderer {
               }
             }
           }
-          if (needSkipNumbers) {
+          if (needSkipNumbers || (isShowingBranch && shouldHideMouseOverInfo)) {
             continue;
           }
           if (!branchOpt.isPresent() || isMouseOver) {

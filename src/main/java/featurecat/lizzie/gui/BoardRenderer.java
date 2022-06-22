@@ -70,6 +70,7 @@ public class BoardRenderer {
   private boolean isMouseOverStoneBlack;
 
   private boolean isShowingBranch = false;
+  private boolean shouldHideMouseOverInfo = false;
   private String mouseOverCoords = "";
   private Branch branch;
 
@@ -1855,7 +1856,7 @@ public class BoardRenderer {
         branchOpt
             .map(b -> b.data.moveNumber)
             .orElse(Arrays.stream(moveNumberList).max().getAsInt());
-
+    shouldHideMouseOverInfo = false;
     for (int i = 0; i < Board.boardWidth; i++) {
       for (int j = 0; j < Board.boardHeight; j++) {
         int stoneX = x + scaledMarginWidth + squareWidth * i;
@@ -1884,11 +1885,17 @@ public class BoardRenderer {
         // don't write the move number if either: the move number is 0, or there will
         // already be
         // playout information written
-        if ((mvNum > 0 || Lizzie.frame.isTrying && mvNum < 0)
-            && (!branchOpt.isPresent()
-                || !(isIndependBoard
+        if ((mvNum > 0 || Lizzie.frame.isTrying && mvNum < 0)) {
+          if (isShowingBranch) {
+            boolean isMouseOver =
+                isIndependBoard
                     ? Lizzie.frame.independentMainBoard.isMouseOver(i, j)
-                    : Lizzie.frame.isMouseOver(i, j)))) {
+                    : Lizzie.frame.isMouseOver(i, j);
+            if (isMouseOver) {
+              if (mvNum > 1) shouldHideMouseOverInfo = true;
+              else continue;
+            }
+          }
           boolean isShowingPvVists = false;
           boolean reverse = (moveNumberList[Board.getIndex(i, j)] > maxBranchMoves(true));
           if ((lastMoveOpt.isPresent() && lastMoveOpt.get()[0] == i && lastMoveOpt.get()[1] == j)) {
@@ -1984,7 +1991,6 @@ public class BoardRenderer {
                     (float) (stoneRadius * 1.4),
                     (int) (stoneRadius * 1.4));
               }
-
             } else if (mvNum >= 100) {
               drawString(
                   g,
@@ -2482,7 +2488,7 @@ public class BoardRenderer {
               }
             }
           }
-          if (needSkipNumbers) {
+          if (needSkipNumbers || (isShowingBranch && shouldHideMouseOverInfo)) {
             continue;
           }
           if (isMouseOverNextBlunder && isMouseOver) {
