@@ -1630,7 +1630,7 @@ public class FloatBoardRenderer {
               }
             }
           }
-          if (needSkipNumbers || (isShowingBranch && shouldHideMouseOverInfo)) {
+          if (needSkipNumbers) {
             continue;
           }
           if (!branchOpt.isPresent() || isMouseOver) {
@@ -1653,12 +1653,11 @@ public class FloatBoardRenderer {
                   1,
                   blackToPlay);
             }
-
             if (isMouseOver && isShowingBranch) {
               g.setColor(Color.RED);
               drawCircle(g, suggestionX, suggestionY, stoneRadius + 1, 11f);
+              if (isShowingBranch && shouldHideMouseOverInfo) continue;
             }
-
             if (Lizzie.config.whiteSuggestionWhite) {
               {
                 if (Lizzie.board.getHistory().isBlacksTurn()) g.setColor(Color.BLACK);

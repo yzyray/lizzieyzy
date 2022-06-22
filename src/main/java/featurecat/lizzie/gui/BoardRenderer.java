@@ -2488,7 +2488,7 @@ public class BoardRenderer {
               }
             }
           }
-          if (needSkipNumbers || (isShowingBranch && shouldHideMouseOverInfo)) {
+          if (needSkipNumbers) {
             continue;
           }
           if (isMouseOverNextBlunder && isMouseOver) {
@@ -2502,19 +2502,17 @@ public class BoardRenderer {
             if (flipWinrate) {
               roundedWinrate = 100.0 - roundedWinrate;
             }
-
             if (Lizzie.config.showSuggestionOrder && move.order < 9 && move.order > 0) {
               drawOrder(
                   g, suggestionX, suggestionY, move.order, Lizzie.board.getData().blackToPlay);
             }
-
             if (isMouseOver && isShowingBranch) {
               // Color oriColor = g.getColor();
               g.setColor(Color.RED);
               drawCircle(g, suggestionX, suggestionY, stoneRadius + 1, 11f);
+              if (isShowingBranch && shouldHideMouseOverInfo) continue;
               // g.setColor(oriColor);
             }
-
             if (Lizzie.config.whiteSuggestionWhite) {
               {
                 if (shouldShowPreviousBestMoves()) {
