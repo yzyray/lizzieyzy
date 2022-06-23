@@ -1522,16 +1522,17 @@ public class SGFParser {
         }
       }
       if (data.isSaiData) {
-        double score = data.scoreMean;
-        if (data.blackToPlay) {
-          if (Lizzie.config.showKataGoScoreLeadWithKomi)
-            score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
-          else score = -score;
-        } else {
-          if (Lizzie.config.showKataGoScoreLeadWithKomi)
+        double score = -node.getData().scoreMean;
+        if (Lizzie.config.showKataGoScoreLeadWithKomi) {
+          if (data.blackToPlay) {
             score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
-          else score = -score;
-        }
+            // else score = -score;
+          } else {
+            score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
+            //   else score = -score;
+          }
+          if (Lizzie.config.winrateAlwaysBlack && data.blackToPlay) score = -score;
+        } else if (Lizzie.config.winrateAlwaysBlack && data.blackToPlay) score = -score;
         String wf =
             "%s "
                 + Lizzie.resourceBundle.getString("SGFParse.winrate")
@@ -1558,16 +1559,17 @@ public class SGFParser {
                 playouts,
                 String.format(Locale.ENGLISH, "%.1f", data.getKomi()));
       } else {
-        double score = node.getData().scoreMean;
-        if (data.blackToPlay) {
-          if (Lizzie.config.showKataGoScoreLeadWithKomi)
-            score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
-          else score = -score;
-        } else {
-          if (Lizzie.config.showKataGoScoreLeadWithKomi)
+        double score = -node.getData().scoreMean;
+        if (Lizzie.config.showKataGoScoreLeadWithKomi) {
+          if (data.blackToPlay) {
             score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
-          else score = -score;
-        }
+            // else score = -score;
+          } else {
+            score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
+            //   else score = -score;
+          }
+          if (Lizzie.config.winrateAlwaysBlack && data.blackToPlay) score = -score;
+        } else if (Lizzie.config.winrateAlwaysBlack && data.blackToPlay) score = -score;
         String wf =
             "%s "
                 + Lizzie.resourceBundle.getString("SGFParse.winrate")
@@ -1777,12 +1779,14 @@ public class SGFParser {
       }
       if (data.isSaiData) {
         double score = data.scoreMean;
-        if (data.blackToPlay) {
-          if (Lizzie.config.showKataGoScoreLeadWithKomi)
+        if (Lizzie.config.showKataGoScoreLeadWithKomi) {
+          if (data.blackToPlay) {
             score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
-        } else {
-          if (Lizzie.config.showKataGoScoreLeadWithKomi)
+            // else score = -score;
+          } else {
             score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
+            //   else score = -score;
+          }
         }
         String wf =
             "%s "
@@ -1811,12 +1815,14 @@ public class SGFParser {
                 String.format(Locale.ENGLISH, "%.1f", data.getKomi()));
       } else {
         double score = node.getData().scoreMean;
-        if (data.blackToPlay) {
-          if (Lizzie.config.showKataGoScoreLeadWithKomi)
+        if (Lizzie.config.showKataGoScoreLeadWithKomi) {
+          if (data.blackToPlay) {
             score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
-        } else {
-          if (Lizzie.config.showKataGoScoreLeadWithKomi)
+            // else score = -score;
+          } else {
             score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
+            //   else score = -score;
+          }
         }
         String wf =
             "%s "
@@ -1913,12 +1919,14 @@ public class SGFParser {
       }
       if (data.isSaiData) {
         double score = data.scoreMean;
-        if (data.blackToPlay) {
-          if (Lizzie.config.showKataGoScoreLeadWithKomi)
+        if (Lizzie.config.showKataGoScoreLeadWithKomi) {
+          if (data.blackToPlay) {
             score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
-        } else {
-          if (Lizzie.config.showKataGoScoreLeadWithKomi)
+            // else score = -score;
+          } else {
             score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
+            //   else score = -score;
+          }
         }
         String wf =
             "%s "
@@ -1947,12 +1955,14 @@ public class SGFParser {
                 String.format(Locale.ENGLISH, "%.1f", data.getKomi()));
       } else {
         double score = node.getData().scoreMean;
-        if (data.blackToPlay) {
-          if (Lizzie.config.showKataGoScoreLeadWithKomi)
+        if (Lizzie.config.showKataGoScoreLeadWithKomi) {
+          if (data.blackToPlay) {
             score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
-        } else {
-          if (Lizzie.config.showKataGoScoreLeadWithKomi)
+            // else score = -score;
+          } else {
             score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
+            //   else score = -score;
+          }
         }
         String wf =
             "%s "
@@ -2141,16 +2151,17 @@ public class SGFParser {
         }
       }
       if (data.isSaiData2) {
-        double score = data.scoreMean2;
-        if (data.blackToPlay) {
-          if (Lizzie.config.showKataGoScoreLeadWithKomi)
-            score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
-          else score = -score;
-        } else {
-          if (Lizzie.config.showKataGoScoreLeadWithKomi)
+        double score = -node.getData().scoreMean;
+        if (Lizzie.config.showKataGoScoreLeadWithKomi) {
+          if (data.blackToPlay) {
             score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
-          else score = -score;
-        }
+            // else score = -score;
+          } else {
+            score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
+            //   else score = -score;
+          }
+          if (Lizzie.config.winrateAlwaysBlack && data.blackToPlay) score = -score;
+        } else if (Lizzie.config.winrateAlwaysBlack && data.blackToPlay) score = -score;
         String wf =
             "%s "
                 + Lizzie.resourceBundle.getString("SGFParse.winrate")
@@ -2177,16 +2188,17 @@ public class SGFParser {
                 playouts,
                 String.format(Locale.ENGLISH, "%.1f", data.getKomi()));
       } else {
-        double score = data.scoreMean2;
-        if (data.blackToPlay) {
-          if (Lizzie.config.showKataGoScoreLeadWithKomi)
-            score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
-          else score = -score;
-        } else {
-          if (Lizzie.config.showKataGoScoreLeadWithKomi)
+        double score = -node.getData().scoreMean;
+        if (Lizzie.config.showKataGoScoreLeadWithKomi) {
+          if (data.blackToPlay) {
             score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
-          else score = -score;
-        }
+            // else score = -score;
+          } else {
+            score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
+            //   else score = -score;
+          }
+          if (Lizzie.config.winrateAlwaysBlack && data.blackToPlay) score = -score;
+        } else if (Lizzie.config.winrateAlwaysBlack && data.blackToPlay) score = -score;
         String wf =
             "%s "
                 + Lizzie.resourceBundle.getString("SGFParse.winrate")
