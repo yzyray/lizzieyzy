@@ -1762,7 +1762,6 @@ public class SGFParser {
                   + Lizzie.resourceBundle.getString("SGFParse.komi")
                   + ".*";
       }
-      wp="%.*\\(.*\\/.*\\)";
       // if (Lizzie.leelaz.isKatago) wp = wp + "\n.*";
       if (data.comment.matches("(?s).*" + wp + "(?s).*")) {
         nc = data.comment.replaceAll(wp, nc);
