@@ -297,6 +297,9 @@ public class SGFParser {
 
     String blackPlayer = "", whitePlayer = "";
     String result = "";
+    boolean isChineseRule = true;
+    boolean hasHandicap = false;
+    Double komi = Lizzie.board.getHistory().getGameInfo().getKomi();
     // Support unicode characters (UTF-8)
     int len = value.length();
     boolean shouldProcessDummy = false;
@@ -691,28 +694,28 @@ public class SGFParser {
             }
           } else if (tag.equals("KM")
               || tag.equals("KO")) { // Cyberoro and some site uses komi tag as KO.
-            if (Lizzie.config.readKomi) {
-              try {
-                if (!tagContent.trim().isEmpty()) {
-                  Double komi = Double.parseDouble(tagContent);
-                  if (komi >= 200) {
-                    komi = komi / 100;
-                    if (komi <= 4 && komi >= -4) komi = komi * 2;
-                  }
-                  if (komi.toString().endsWith(".75") || komi.toString().endsWith(".25"))
-                    komi = komi * 2;
-                  if (Math.abs(komi) < Board.boardWidth * Board.boardHeight) {
-                    Lizzie.board.getHistory().getGameInfo().setKomi(komi);
-                    Lizzie.board.getHistory().getGameInfo().changeKomi();
-                    if (EngineManager.currentEngineNo >= 0) {
-                      Lizzie.leelaz.sendCommand("komi " + komi);
-                    }
-                  }
-                }
-              } catch (NumberFormatException e) {
-                e.printStackTrace();
-                Lizzie.board.isLoadingFile = false;
+            try {
+              if (!tagContent.trim().isEmpty()) {
+                komi = Double.parseDouble(tagContent);
               }
+            } catch (NumberFormatException e) {
+              e.printStackTrace();
+            }
+          } else if (tag.equals("HA")) {
+            try {
+              if (!tagContent.trim().isEmpty()) {
+                if (Integer.parseInt(tagContent.trim()) > 0) hasHandicap = true;
+              }
+            } catch (NumberFormatException e) {
+              e.printStackTrace();
+            }
+          } else if (tag.equals("RU")) {
+            if (!tagContent.trim().isEmpty()) {
+              String rules = tagContent.toLowerCase();
+              if (rules.contains("japanese")
+                  || rules.contains("jp")
+                  || rules.contains("korean")
+                  || rules.contains("kr")) isChineseRule = false;
             }
           } else {
             if (moveStart) {
@@ -778,7 +781,24 @@ public class SGFParser {
           }
       }
     }
-
+    if (Lizzie.config.readKomi) {
+      if (!hasHandicap && komi == 0) {
+        if (isChineseRule) komi = 7.5;
+        else komi = 6.5;
+      }
+      if (komi >= 200) {
+        komi = komi / 100;
+        if (komi <= 4 && komi >= -4) komi = komi * 2;
+      }
+      if (komi.toString().endsWith(".75") || komi.toString().endsWith(".25")) komi = komi * 2;
+      if (Math.abs(komi) < Board.boardWidth * Board.boardHeight) {
+        Lizzie.board.getHistory().getGameInfo().setKomi(komi);
+        Lizzie.board.getHistory().getGameInfo().changeKomi();
+        if (EngineManager.currentEngineNo >= 0) {
+          Lizzie.leelaz.sendCommand("komi " + komi);
+        }
+      }
+    }
     Lizzie.frame.setPlayers(whitePlayer, blackPlayer);
     Lizzie.frame.setResult(result);
     GameInfo gameInfo = Lizzie.board.getHistory().getGameInfo();
