@@ -523,8 +523,12 @@ public class Leelaz {
     isNormalEnd = true;
     started = false;
     isLoaded = false;
-    leela0110StopPonder();
-    sendCommand("quit");
+    try {
+      leela0110StopPonder();
+      sendCommand("quit");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
     //		if(isScreen)
     //			sendCommand("name");
     if (Lizzie.leelaz2 != null && this == Lizzie.leelaz2) {
@@ -540,6 +544,7 @@ public class Leelaz {
       try {
         process.destroyForcibly();
       } catch (Exception e) {
+        e.printStackTrace();
       }
     }
     outputStream = null;
