@@ -121,7 +121,8 @@ public class MoveData {
   //    return result;
   //  }
 
-  public static MoveData fromInfoSai(String line) throws ArrayIndexOutOfBoundsException {
+  public static MoveData fromInfoSai(String line, boolean isSayuri)
+      throws ArrayIndexOutOfBoundsException {
     MoveData result = new MoveData();
     String[] data = line.trim().split(" ");
     // int k =
@@ -165,7 +166,11 @@ public class MoveData {
         if (key.equals("prior")) {
           result.policy = Integer.parseInt(value) / 100.0;
         }
-        if (key.equals("areas")) {
+        if (isSayuri) {
+          if (key.equals("scoreLead")) {
+            result.scoreMean = Double.parseDouble(value);
+          }
+        } else if (key.equals("areas")) {
           result.scoreMean =
               Lizzie.board.getHistory().isBlacksTurn()
                   ? result.scoreMean = Integer.parseInt(value) / 10000.0

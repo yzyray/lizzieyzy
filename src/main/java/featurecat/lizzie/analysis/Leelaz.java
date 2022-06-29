@@ -148,6 +148,7 @@ public class Leelaz {
   public boolean noAnalyze = false;
   public boolean isSai = false;
   private boolean isLeela = false;
+  private boolean isSayuri = false;
   public boolean isChanged = false;
   public double scoreMean = 0;
   public double scoreStdev = 0;
@@ -523,6 +524,7 @@ public class Leelaz {
     started = false;
     isLoaded = false;
     leela0110StopPonder();
+    sendCommand("quit");
     //		if(isScreen)
     //			sendCommand("name");
     if (Lizzie.leelaz2 != null && this == Lizzie.leelaz2) {
@@ -555,7 +557,7 @@ public class Leelaz {
     String[] variations = line.split(" info ");
     for (String var : variations) {
       if (!var.trim().isEmpty()) {
-        bestMoves.add(MoveData.fromInfoSai(var));
+        bestMoves.add(MoveData.fromInfoSai(var, isSayuri));
       }
     }
     currentTotalPlayouts = MoveData.getPlayouts(bestMoves);
@@ -1050,6 +1052,11 @@ public class Leelaz {
       if (params[1].toLowerCase().startsWith("katajigo")) {
         this.isKatago = true;
         this.noAnalyze = true;
+      }
+      if (params[1].equals("Sayuri")) {
+        isSayuri = true;
+        isSai = true;
+        canAddPlayer = true;
       }
     } else if (isCheckingVersion && !isLeela0110) {
       if (isKatago) {
@@ -1815,7 +1822,8 @@ public class Leelaz {
       resginMoveCounts = EngineManager.engineGameInfo.whiteResignMoveCounts;
       resignWinrate = EngineManager.engineGameInfo.whiteResignWinrate;
     }
-
+    if (Lizzie.board.getHistory().isBlacksTurn() && !isBlackEngine
+        || !Lizzie.board.getHistory().isBlacksTurn() & isBlackEngine) return;
     if (Lizzie.board.getHistory().getMoveNumber() > EngineManager.engineGameInfo.maxGameMoves) {
       outOfMoveNum = true;
       resigned = true;
@@ -2513,14 +2521,18 @@ public class Leelaz {
       // immediately
       cmdNumber++;
       calculateModifyNumber();
-      if (!cmdQueue.isEmpty()
-          && (cmdQueue.peekLast().startsWith("lz-analyze")
-              || cmdQueue.peekLast().startsWith("kata-analyze")
-              || cmdQueue.peekLast().startsWith("kata-raw")
-              || cmdQueue.peekLast().startsWith("heatmap")
-              || cmdQueue.peekLast().startsWith("stop-ponder"))) {
-        cmdQueue.removeLast();
-        cmdNumber--;
+      if (!cmdQueue.isEmpty()) {
+        if ((isKatago
+                && (cmdQueue.peekLast().startsWith("kata-analyze")
+                    || cmdQueue.peekLast().startsWith("kata-raw")
+                    || cmdQueue.peekLast().startsWith("stop-ponder")))
+            || (!isKatago
+                && (cmdQueue.peekLast().startsWith("lz-analyze")
+                    || cmdQueue.peekLast().startsWith("analyze")
+                    || cmdQueue.peekLast().startsWith("heatmap")))) {
+          cmdQueue.removeLast();
+          cmdNumber--;
+        }
       }
       cmdQueue.addLast(command);
       trySendCommandFromQueue();
@@ -2610,11 +2622,14 @@ public class Leelaz {
         return;
       }
       if (!isResponseUpToPreCommand()) {
-        if (cmdQueue.peekFirst().startsWith("lz-analyze")
-            || cmdQueue.peekFirst().startsWith("kata-analyze")
-            || cmdQueue.peekFirst().startsWith("kata-raw")
-            || cmdQueue.peekFirst().startsWith("heatmap")
-            || cmdQueue.peekFirst().startsWith("stop-ponder")) return;
+        if ((isKatago
+                && (cmdQueue.peekLast().startsWith("kata-analyze")
+                    || cmdQueue.peekLast().startsWith("kata-raw")
+                    || cmdQueue.peekLast().startsWith("stop-ponder")))
+            || (!isKatago
+                && (cmdQueue.peekLast().startsWith("lz-analyze")
+                    || cmdQueue.peekLast().startsWith("analyze")
+                    || cmdQueue.peekLast().startsWith("heatmap")))) return;
       }
       String command = cmdQueue.removeFirst();
       if (command.equals("stop-ponder")) command = "stop";
@@ -2640,7 +2655,7 @@ public class Leelaz {
       } catch (Exception e) {
         //  e.printStackTrace();
       }
-      if (Lizzie.engineManager.isEngineGame()) {
+      if (EngineManager.isEngineGame()) {
         Lizzie.gtpConsole.addCommandForEngineGame(
             command,
             cmdNumber,
@@ -2701,98 +2716,87 @@ public class Leelaz {
     }
     //		canGetGenmoveInfoGen = true;
     //	getGenmoveInfoPrevious = true;
-    synchronized (this) {
-      String colorString;
-      switch (color) {
-        case BLACK:
-          colorString = "B";
-          break;
-        case WHITE:
-          colorString = "W";
-          break;
-        default:
-          return;
-          //          throw new IllegalArgumentException(
-          //              "The stone color must be B or W, but was " + color.toString());
-      }
-
-      sendCommand("play " + colorString + " " + move);
-      bestMoves = new ArrayList<>();
-      currentTotalPlayouts = 0;
-      if (Lizzie.frame.isPlayingAgainstLeelaz) this.canGetSummaryInfo = true;
-      //				bestMovesPrevious = new ArrayList<>();
-      if (Lizzie.frame.isAnaPlayingAgainstLeelaz
-          && !Lizzie.frame.bothSync
-          && Lizzie.frame.playerIsBlack == blackToPlay) return;
-      if ((stopByLimit || isPondering) && !Lizzie.frame.isPlayingAgainstLeelaz)
-        if (Lizzie.config.isAutoAna
-            || ((Lizzie.config.analyzeBlack && color == Stone.WHITE)
-                || (Lizzie.config.analyzeWhite && color == Stone.BLACK)))
-          ponder(addPlayer, blackToPlay);
-        else {
-          nameCmdfornoponder();
-          underPonder = true;
-        }
-      if (!isPondering && !Lizzie.config.playponder && isKatago) sendCommand("stop-ponder");
+    String colorString;
+    switch (color) {
+      case BLACK:
+        colorString = "B";
+        break;
+      case WHITE:
+        colorString = "W";
+        break;
+      default:
+        return;
+        //          throw new IllegalArgumentException(
+        //              "The stone color must be B or W, but was " + color.toString());
     }
+    sendCommand("play " + colorString + " " + move);
+    bestMoves = new ArrayList<>();
+    currentTotalPlayouts = 0;
+    if (Lizzie.frame.isPlayingAgainstLeelaz) this.canGetSummaryInfo = true;
+    //				bestMovesPrevious = new ArrayList<>();
+    if (Lizzie.frame.isAnaPlayingAgainstLeelaz
+        && !Lizzie.frame.bothSync
+        && Lizzie.frame.playerIsBlack == blackToPlay) return;
+    if ((stopByLimit || isPondering) && !Lizzie.frame.isPlayingAgainstLeelaz)
+      if (Lizzie.config.isAutoAna
+          || ((Lizzie.config.analyzeBlack && color == Stone.WHITE)
+              || (Lizzie.config.analyzeWhite && color == Stone.BLACK)))
+        ponder(addPlayer, blackToPlay);
+      else {
+        nameCmdfornoponder();
+        underPonder = true;
+      }
+    if (!isPondering && !Lizzie.config.playponder && isKatago) sendCommand("stop-ponder");
   }
 
   public void playMoveNoPonder(Stone color, String move) {
-    synchronized (this) {
-      String colorString;
-      switch (color) {
-        case BLACK:
-          colorString = "B";
-          break;
-        case WHITE:
-          colorString = "W";
-          break;
-        default:
-          return;
-          //          throw new IllegalArgumentException(
-          //              "The stone color must be B or W, but was " + color.toString());
-      }
-      sendCommand("play " + colorString + " " + move);
-      // Lizzie.frame.subBoardRenderer.reverseBestmoves = true;
-      // Lizzie.frame.boardRenderer.reverseBestmoves = true;
-      // bestMoves = new ArrayList<>();
+    String colorString;
+    switch (color) {
+      case BLACK:
+        colorString = "B";
+        break;
+      case WHITE:
+        colorString = "W";
+        break;
+      default:
+        return;
+        //          throw new IllegalArgumentException(
+        //              "The stone color must be B or W, but was " + color.toString());
     }
+    sendCommand("play " + colorString + " " + move);
+    // Lizzie.frame.subBoardRenderer.reverseBestmoves = true;
+    // Lizzie.frame.boardRenderer.reverseBestmoves = true;
+    // bestMoves = new ArrayList<>();
   }
 
   public void playMoveNoPonder(String colorString, String move) {
     if (Lizzie.config.enginePkPonder) {
-      synchronized (this) {
-        bestMoves = new ArrayList<>();
-        currentTotalPlayouts = 0;
-        sendCommand("play " + colorString + " " + move);
-        pkponder();
-      }
+      bestMoves = new ArrayList<>();
+      currentTotalPlayouts = 0;
+      sendCommand("play " + colorString + " " + move);
+      pkponder();
       pkMoveTime = System.currentTimeMillis() - pkMoveStartTime;
       pkMoveTimeGame = pkMoveTimeGame + pkMoveTime;
       return;
     }
-    synchronized (this) {
-      sendCommand("play " + colorString + " " + move);
-      nameCmdfornoponder();
-      // Lizzie.frame.subBoardRenderer.reverseBestmoves = true;
-      // Lizzie.frame.boardRenderer.reverseBestmoves = true;
-      // bestMoves = new ArrayList<>();
-    }
+    sendCommand("play " + colorString + " " + move);
+    nameCmdfornoponder();
+    // Lizzie.frame.subBoardRenderer.reverseBestmoves = true;
+    // Lizzie.frame.boardRenderer.reverseBestmoves = true;
+    // bestMoves = new ArrayList<>();
     pkMoveTime = System.currentTimeMillis() - pkMoveStartTime;
     pkMoveTimeGame = pkMoveTimeGame + pkMoveTime;
   }
 
   public void playMovePonder(String colorString, String move) {
     Lizzie.frame.mouseOverCoordinate = LizzieFrame.outOfBoundCoordinate;
-    synchronized (this) {
-      canSetNotPlayed = true;
-      if (Lizzie.config.enginePkPonder) {
-        bestMoves = new ArrayList<>();
-        currentTotalPlayouts = 0;
-      }
-      sendCommand("play " + colorString + " " + move);
-      pkponder();
+    canSetNotPlayed = true;
+    if (Lizzie.config.enginePkPonder) {
+      bestMoves = new ArrayList<>();
+      currentTotalPlayouts = 0;
     }
+    sendCommand("play " + colorString + " " + move);
+    pkponder();
     pkMoveStartTime = System.currentTimeMillis();
   }
 
@@ -2802,9 +2806,7 @@ public class Leelaz {
     if (this.resigned) {
       return false;
     }
-    synchronized (this) {
-      sendCommand("play " + colorString + " " + move);
-    }
+    sendCommand("play " + colorString + " " + move);
     Lizzie.frame.updateTitle();
     return true;
   }
@@ -2825,19 +2827,12 @@ public class Leelaz {
             ? ("kata-genmove_analyze " + color + " " + getInterval() + addKataTag())
             : (this.isSai || this.isLeela
                 ? ("lz-genmove_analyze " + color + " " + getInterval())
-                : ("genmove " + color)));
-    /*
-     * We don't support displaying this while playing, so no reason to request it
-     * (for now) if (isPondering) { command = "lz-genmove_analyze " + color + " 10";
-     * }
-     */
+                : (this.isSayuri
+                    ? ("genmove_analyze " + color + " " + getInterval())
+                    : ("genmove " + color))));
     sendCommand(command);
     isThinking = true;
     LizzieFrame.menu.toggleEngineMenuStatus(false, true);
-    // canGetGenmoveInfo = false;
-
-    // isPondering = false;
-    //	genmovenoponder = false;
   }
 
   public void genmoveForPk(String color) {
@@ -2863,7 +2858,9 @@ public class Leelaz {
             ? ("kata-genmove_analyze " + color + " " + getIntervalForGenmovePk() + addKataTag())
             : (this.isSai || this.isLeela
                 ? ("lz-genmove_analyze " + color + " " + getInterval())
-                : ("genmove " + color)));
+                : (this.isSayuri
+                    ? ("genmove_analyze " + color + " " + getInterval())
+                    : ("genmove " + color))));
     /*
      * We don't support displaying this while playing, so no reason to request it
      * (for now) if (isPondering) { command = "lz-genmove_analyze " + color + " 10";
@@ -2973,7 +2970,9 @@ public class Leelaz {
                 untilMove <= 0 ? 1 : untilMove);
     sendCommand(
         String.format(
-            (isKatago ? "kata-analyze %s%d %s" + addKataTag() : "lz-analyze %s%d %s"),
+            (isKatago
+                ? "kata-analyze %s%d %s" + addKataTag()
+                : (isSayuri ? "analyze %s%d %s" : "lz-analyze %s%d %s")),
             maybeAddPlayer(addPlayer, blackToPlay),
             getInterval(),
             parameters));
@@ -2989,7 +2988,9 @@ public class Leelaz {
     }
     sendCommand(
         String.format(
-            (isKatago ? "kata-analyze %s%d %s" + addKataTag() : "lz-analyze %s%d %s"),
+            (isKatago
+                ? "kata-analyze %s%d %s" + addKataTag()
+                : (isSayuri ? "analyze %s%d %s" : "lz-analyze %s%d %s")),
             maybeAddPlayer(),
             getInterval(),
             parameters));
@@ -3051,7 +3052,9 @@ public class Leelaz {
                 + getInterval()
                 + addKataTag());
       } else {
-        sendCommand("lz-analyze " + maybeAddPlayer(addPlayer, blackToPlay) + getInterval());
+        if (isSayuri)
+          sendCommand("analyze " + maybeAddPlayer(addPlayer, blackToPlay) + getInterval());
+        else sendCommand("lz-analyze " + maybeAddPlayer(addPlayer, blackToPlay) + getInterval());
       }
     }
     LizzieFrame.menu.toggleEngineMenuStatus(true, false);
@@ -3090,7 +3093,8 @@ public class Leelaz {
         sendCommand("kata-analyze " + getInterval() + addKataTag() + " ownership true");
       else sendCommand("kata-analyze " + getInterval() + addKataTag());
     } else {
-      sendCommand("lz-analyze " + getInterval());
+      if (isSayuri) sendCommand("analyze 1 " + getInterval());
+      else sendCommand("lz-analyze " + getInterval());
     } // until it responds to this, incoming
     // ponder results are obsolete
 
