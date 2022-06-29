@@ -1228,7 +1228,12 @@ public class SGFParser {
 
     // The AW/AB Comment
     if (!history.getData().comment.isEmpty()) {
-      builder.append(String.format(Locale.ENGLISH, "C[%s]", Escaping(history.getData().comment)));
+      String coment = history.getData().comment;
+      if (forUpload) {
+        coment =
+            removeWinrateComment(history.getData().isKataData, history.getData().isSaiData, coment);
+      }
+      builder.append(String.format(Locale.ENGLISH, "C[%s]", Escaping(coment)));
     }
     BoardHistoryNode curNode = history.getCurrentHistoryNode();
     try {
@@ -1410,10 +1415,11 @@ public class SGFParser {
           }
           //  if (data.komi > -999) curComment = data.comment + "\n" + "贴目: " + data.komi;
           //  if (Lizzie.board.getHistory().getData().pda != 0) curComment += " PDA: " + data.pda;
-          // Write the comment       
-          if(forUpload)
-          {
-        	  curComment=removeWinrateComment(node.getData().isKataData,node.getData().isSaiData,curComment);
+          // Write the comment
+          if (forUpload) {
+            curComment =
+                removeWinrateComment(
+                    node.getData().isKataData, node.getData().isSaiData, curComment);
           }
           if (!data.comment.isEmpty()) {
             builder.append(String.format(Locale.ENGLISH, "C[%s]", Escaping(curComment)));
@@ -1439,9 +1445,10 @@ public class SGFParser {
             }
           }
           String curComment = data.comment;
-          if(forUpload)
-          {
-        	  curComment=removeWinrateComment(node.getData().isKataData,node.getData().isSaiData,curComment);
+          if (forUpload) {
+            curComment =
+                removeWinrateComment(
+                    node.getData().isKataData, node.getData().isSaiData, curComment);
           }
           //  if (data.komi > -999) curComment = data.comment + "\n" + "贴目: " + data.komi;
           //    if (Lizzie.board.getHistory().getData().pda != 0) curComment += " PDA: " + data.pda;
@@ -1459,72 +1466,73 @@ public class SGFParser {
     return builder;
   }
 
-  private static String removeWinrateComment(boolean isKataData,boolean isSaiData,String curComment) {
-	      String wp = "";
-	      if (!isKataData) {
-	        wp =
-	            "("
-	                + Lizzie.resourceBundle.getString("SGFParse.black")
-	                + " |"
-	                + Lizzie.resourceBundle.getString("SGFParse.white")
-	                + " )"
-	                + Lizzie.resourceBundle.getString("SGFParse.winrate")
-	                + " [0-9\\.\\-]+%* \\(*[0-9.\\-+]*%*\\)*\n\\("
-	                + ".*"
-	                + " / [0-9\\.]*[kmKM]* "
-	                + Lizzie.resourceBundle.getString("SGFParse.playouts")
-	                + "\\)\\n"
-	                + Lizzie.resourceBundle.getString("SGFParse.komi")
-	                + ".*";
-	      } else {
-	        if (isSaiData)
-	          wp =
-	              "("
-	                  + Lizzie.resourceBundle.getString("SGFParse.black")
-	                  + " |"
-	                  + Lizzie.resourceBundle.getString("SGFParse.white")
-	                  + " )"
-	                  + Lizzie.resourceBundle.getString("SGFParse.winrate")
-	                  + " [0-9\\.\\-]+%* \\(*[0-9.\\-+]*%*\\)*\n"
-	                  + (Lizzie.config.showKataGoScoreLeadWithKomi
-	                      ? Lizzie.resourceBundle.getString("SGFParse.leadWithKomi")
-	                      : Lizzie.resourceBundle.getString("SGFParse.leadJustScore"))
-	                  + " [0-9\\.\\-+]* \\(*[0-9.\\-+]*\\)*\n\\("
-	                  + ".*"
-	                  + " / [0-9\\.]*[kmKM]* "
-	                  + Lizzie.resourceBundle.getString("SGFParse.playouts")
-	                  + "\\)\\n"
-	                  + Lizzie.resourceBundle.getString("SGFParse.komi")
-	                  + ".*";
-	        else
-	          wp =
-	              "("
-	                  + Lizzie.resourceBundle.getString("SGFParse.black")
-	                  + " |"
-	                  + Lizzie.resourceBundle.getString("SGFParse.white")
-	                  + " )"
-	                  + Lizzie.resourceBundle.getString("SGFParse.winrate")
-	                  + " [0-9\\.\\-]+%* \\(*[0-9.\\-+]*%*\\)*\n"
-	                  + (Lizzie.config.showKataGoScoreLeadWithKomi
-	                      ? Lizzie.resourceBundle.getString("SGFParse.leadWithKomi")
-	                      : Lizzie.resourceBundle.getString("SGFParse.leadJustScore"))
-	                  + " [0-9\\.\\-+]* \\(*[0-9.\\-+]*\\)* "
-	                  + Lizzie.resourceBundle.getString("SGFParse.stdev")
-	                  + " [0-9\\.\\-+]*\n\\("
-	                  + ".*"
-	                  + " / [0-9\\.]*[kmKM]* "
-	                  + Lizzie.resourceBundle.getString("SGFParse.playouts")
-	                  + "\\)\\n"
-	                  + Lizzie.resourceBundle.getString("SGFParse.komi")
-	                  + ".*";
-	      }
-	      if (curComment.matches("(?s).*" + wp + "(?s).*")) {
-	       return curComment.replaceAll(wp, "");
-	      }
-	  return curComment;
-}
+  private static String removeWinrateComment(
+      boolean isKataData, boolean isSaiData, String curComment) {
+    String wp = "";
+    if (!isKataData) {
+      wp =
+          "("
+              + Lizzie.resourceBundle.getString("SGFParse.black")
+              + " |"
+              + Lizzie.resourceBundle.getString("SGFParse.white")
+              + " )"
+              + Lizzie.resourceBundle.getString("SGFParse.winrate")
+              + " [0-9\\.\\-]+%* \\(*[0-9.\\-+]*%*\\)*\n\\("
+              + ".*"
+              + " / [0-9\\.]*[kmKM]* "
+              + Lizzie.resourceBundle.getString("SGFParse.playouts")
+              + "\\)\\n"
+              + Lizzie.resourceBundle.getString("SGFParse.komi")
+              + ".*";
+    } else {
+      if (isSaiData)
+        wp =
+            "("
+                + Lizzie.resourceBundle.getString("SGFParse.black")
+                + " |"
+                + Lizzie.resourceBundle.getString("SGFParse.white")
+                + " )"
+                + Lizzie.resourceBundle.getString("SGFParse.winrate")
+                + " [0-9\\.\\-]+%* \\(*[0-9.\\-+]*%*\\)*\n"
+                + (Lizzie.config.showKataGoScoreLeadWithKomi
+                    ? Lizzie.resourceBundle.getString("SGFParse.leadWithKomi")
+                    : Lizzie.resourceBundle.getString("SGFParse.leadJustScore"))
+                + " [0-9\\.\\-+]* \\(*[0-9.\\-+]*\\)*\n\\("
+                + ".*"
+                + " / [0-9\\.]*[kmKM]* "
+                + Lizzie.resourceBundle.getString("SGFParse.playouts")
+                + "\\)\\n"
+                + Lizzie.resourceBundle.getString("SGFParse.komi")
+                + ".*";
+      else
+        wp =
+            "("
+                + Lizzie.resourceBundle.getString("SGFParse.black")
+                + " |"
+                + Lizzie.resourceBundle.getString("SGFParse.white")
+                + " )"
+                + Lizzie.resourceBundle.getString("SGFParse.winrate")
+                + " [0-9\\.\\-]+%* \\(*[0-9.\\-+]*%*\\)*\n"
+                + (Lizzie.config.showKataGoScoreLeadWithKomi
+                    ? Lizzie.resourceBundle.getString("SGFParse.leadWithKomi")
+                    : Lizzie.resourceBundle.getString("SGFParse.leadJustScore"))
+                + " [0-9\\.\\-+]* \\(*[0-9.\\-+]*\\)* "
+                + Lizzie.resourceBundle.getString("SGFParse.stdev")
+                + " [0-9\\.\\-+]*\n\\("
+                + ".*"
+                + " / [0-9\\.]*[kmKM]* "
+                + Lizzie.resourceBundle.getString("SGFParse.playouts")
+                + "\\)\\n"
+                + Lizzie.resourceBundle.getString("SGFParse.komi")
+                + ".*";
+    }
+    if (curComment.matches("(?s).*" + wp + "(?s).*")) {
+      return curComment.replaceAll(wp, "");
+    }
+    return curComment;
+  }
 
-/**
+  /**
    * Format Comment with following format: Move <Move number> <Winrate> (<Last Move Rate
    * Difference>) (<Weight name> / <Playouts>)
    */
