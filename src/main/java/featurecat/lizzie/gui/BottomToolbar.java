@@ -70,6 +70,7 @@ public class BottomToolbar extends JPanel {
   JButton refresh;
   JPopupMenu yike;
   JPopupMenu sharePopup;
+  JPopupMenu autoAnalyzePopup;
   JButton tryPlay;
   JButton analyzeList;
   JButton move;
@@ -611,8 +612,8 @@ public class BottomToolbar extends JPanel {
             Lizzie.frame.flashAnalyzeSettings();
           }
         });
-    flashAnalyzePopup.setVisible(true);
-    flashAnalyzePopup.setVisible(false);
+    //    flashAnalyzePopup.setVisible(true);
+    //    flashAnalyzePopup.setVisible(false);
 
     flashAnalyze.addActionListener(
         new ActionListener() {
@@ -707,8 +708,6 @@ public class BottomToolbar extends JPanel {
     sharePopup.add(editHistoryRemote);
     sharePopup.add(shareHistoryRemote);
     // sharePopup.add(shareHistory);
-    sharePopup.setVisible(true);
-    sharePopup.setVisible(false);
 
     yike = new JPopupMenu();
     JFontMenuItem yikeLive =
@@ -767,8 +766,6 @@ public class BottomToolbar extends JPanel {
           }
         });
     if (OS.isWindows()) yike.add(syncBoard);
-    yike.setVisible(true);
-    yike.setVisible(false);
 
     autoPlay.addActionListener(
         new ActionListener() {
@@ -818,7 +815,7 @@ public class BottomToolbar extends JPanel {
             Lizzie.frame.refresh();
           }
         });
-    JPopupMenu autoAnalyzePopup = new JPopupMenu();
+    autoAnalyzePopup = new JPopupMenu();
     final JFontMenuItem autoAnalyze =
         new JFontMenuItem(resourceBundle.getString("Menu.autoAnalyze")); // ("自动分析(A)");
     // aboutItem.setMnemonic('A');
@@ -878,8 +875,7 @@ public class BottomToolbar extends JPanel {
             Lizzie.frame.openAnalysisTable();
           }
         });
-    autoAnalyzePopup.setVisible(true);
-    autoAnalyzePopup.setVisible(false);
+
     batchOpen.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
@@ -4633,6 +4629,15 @@ public class BottomToolbar extends JPanel {
   public void setChkShowWhite(boolean show) {
     if (chkShowWhite != null) chkShowWhite.setSelected(show);
     Lizzie.config.showWhiteCandidates = show;
+  }
+
+  public void setPopupMenu() {
+    autoAnalyzePopup.setVisible(true);
+    autoAnalyzePopup.setVisible(false);
+    yike.setVisible(true);
+    yike.setVisible(false);
+    sharePopup.setVisible(true);
+    sharePopup.setVisible(false);
   }
 
   //  public void setFontSize(int fontSize) {

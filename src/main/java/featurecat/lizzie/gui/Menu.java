@@ -6955,8 +6955,8 @@ public class Menu extends JMenuBar {
     selectAllowPopup.add(selectAllowAllMove);
     selectAllowPopup.add(selectAllowOneMove);
     selectAllowPopup.add(selectAllowCustomMove);
-    selectAllowPopup.setVisible(true);
-    selectAllowPopup.setVisible(false);
+    //    selectAllowPopup.setVisible(true);
+    //    selectAllowPopup.setVisible(false);
 
     selectAllowPopup.addPopupMenuListener(
         new PopupMenuListener() {
@@ -7118,8 +7118,8 @@ public class Menu extends JMenuBar {
     selectAvoidPopup.add(selectAvoidAllMove);
     selectAvoidPopup.add(selectAvoidOneMove);
     selectAvoidPopup.add(selectAvoidCustomMove);
-    selectAvoidPopup.setVisible(true);
-    selectAvoidPopup.setVisible(false);
+    //    selectAvoidPopup.setVisible(true);
+    //    selectAvoidPopup.setVisible(false);
 
     selectAvoidPopup.addPopupMenuListener(
         new PopupMenuListener() {
@@ -8059,8 +8059,8 @@ public class Menu extends JMenuBar {
       setTooltip(selectAllowAllMove);
       setTooltip(selectAllowOneMove);
       setToolTipJCheckMenu(selectAllowCustomMove, customNumberAllow);
-      selectAllowPopup.setVisible(true);
-      selectAllowPopup.setVisible(false);
+      //      selectAllowPopup.setVisible(true);
+      //      selectAllowPopup.setVisible(false);
 
       selectAllowPopup.addPopupMenuListener(
           new PopupMenuListener() {
@@ -8224,8 +8224,8 @@ public class Menu extends JMenuBar {
       selectAvoidPopup.add(selectAvoidAllMove);
       selectAvoidPopup.add(selectAvoidOneMove);
       selectAvoidPopup.add(selectAvoidCustomMove);
-      selectAvoidPopup.setVisible(true);
-      selectAvoidPopup.setVisible(false);
+      //      selectAvoidPopup.setVisible(true);
+      //      selectAvoidPopup.setVisible(false);
 
       selectAvoidPopup.addPopupMenuListener(
           new PopupMenuListener() {

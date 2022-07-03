@@ -204,6 +204,7 @@ public class Lizzie {
   public static void start(int index, boolean loadDefault) {
     board = new Board();
     frame = new LizzieFrame();
+    LizzieFrame.toolbar.setPopupMenu();
     LizzieFrame.menu.doubleMenu(true);
     frame.reSetLoc();
     frame.showMainPanel();
@@ -285,7 +286,6 @@ public class Lizzie {
                 e.printStackTrace();
               }
             }
-            frame.setVisible(true);
           }
         });
     if (config.autoCheckVersion) {
