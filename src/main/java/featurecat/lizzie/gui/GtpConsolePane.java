@@ -309,7 +309,7 @@ public class GtpConsolePane extends JDialog {
       return;
     }
     setDocs(
-        (isBlack ? "●" : "○") + engineName + "> " + command + "\n",
+        (isBlack ? "○" : "●") + engineName + "> " + command + "\n",
         Color.WHITE,
         true,
         Config.frameFontSize);

@@ -1366,17 +1366,35 @@ public class BoardRenderer {
         int stoneX = scaledMarginWidth + squareWidth * i;
         int stoneY = scaledMarginHeight + squareHeight * j;
         Stone stone = branch.data.stones[index];
-        if (boardStones[index] != Stone.EMPTY) {
-          boolean isCaptured = (stone == Stone.BLACK_CAPTURED || stone == Stone.WHITE_CAPTURED);
-          if (isCaptured) drawCapturedStone(g, stoneX, stoneY, stone, false);
-          continue;
+        int mvNum = branch.data.moveNumberList[Board.getIndex(i, j)];
+        boolean isCaptured = (stone == Stone.BLACK_CAPTURED || stone == Stone.WHITE_CAPTURED);
+        if (isCaptured) {
+          if (mvNum > 0) {
+            g.setPaint(paint);
+            fillCircle(g, stoneX, stoneY, stoneRadius + 1);
+          } else if (boardStones[index] != Stone.EMPTY) {
+            g.setPaint(paint);
+            fillCircle(g, stoneX, stoneY, stoneRadius + 1);
+            g.setColor(Color.BLACK);
+            g.setStroke(new BasicStroke(1));
+            g.drawLine(
+                stoneX - (i == 0 ? 0 : (stoneRadius + 1)),
+                stoneY,
+                stoneX + (i == Board.boardWidth - 1 ? 0 : (stoneRadius + 1)),
+                stoneY);
+            g.drawLine(
+                stoneX,
+                stoneY - (j == 0 ? 0 : (stoneRadius + 1)),
+                stoneX,
+                stoneY + (j == Board.boardHeight - 1 ? 0 : (stoneRadius + 1)));
+          }
+          drawCapturedStone(g, stoneX, stoneY, stone, mvNum > 0);
         }
         if (Lizzie.config.usePureStone) drawStoneSimple(g, gShadow, stoneX, stoneY, stone);
         else drawStone(g, gShadow, stoneX, stoneY, stone);
-        int mvNum = branch.data.moveNumberList[Board.getIndex(i, j)];
         String moveNumberString = String.valueOf(mvNum);
         if (mvNum >= 100) {
-          g.setColor(stone == Stone.BLACK ? Color.WHITE : Color.BLACK);
+          g.setColor(stone.isBlack() || stone == Stone.BLACK_CAPTURED ? Color.WHITE : Color.BLACK);
           drawString(
               g,
               stoneX,
@@ -1386,7 +1404,7 @@ public class BoardRenderer {
               (float) (stoneRadius * 1.4),
               (int) (stoneRadius * 1.85));
         } else if (mvNum > 0) {
-          g.setColor(stone == Stone.BLACK ? Color.WHITE : Color.BLACK);
+          g.setColor(stone.isBlack() || stone == Stone.BLACK_CAPTURED ? Color.WHITE : Color.BLACK);
           drawString(
               g,
               stoneX,
@@ -1618,9 +1636,13 @@ public class BoardRenderer {
           Stone stone = branch.data.stones[index];
           if (!Lizzie.config.removeDeadChainInVariation && !shouldShowPreviousBestMoves())
             if (Lizzie.board.getData().stones[index] != Stone.EMPTY) continue;
-          if (branch.data.moveNumberList[index] > maxBranchMoves(false)) continue;
+          int moveNumber = branch.data.moveNumberList[index];
+          if (moveNumber > maxBranchMoves(false)) continue;
           int stoneX = scaledMarginWidth + squareWidth * i;
           int stoneY = scaledMarginHeight + squareHeight * j;
+          boolean isCaptured = (stone == Stone.BLACK_CAPTURED || stone == Stone.WHITE_CAPTURED);
+          if (isCaptured) drawCapturedStone(g, stoneX, stoneY, stone, moveNumber > 0);
+          else drawStoneSimple(g, gShadow, stoneX, stoneY, stone);
           boolean isMouseOver = false;
           if (isIndependBoard) {
             if (i == Lizzie.frame.independentMainBoard.mouseOverCoordinate[0]
@@ -1630,9 +1652,6 @@ public class BoardRenderer {
             if (i == Lizzie.frame.mouseOverCoordinate[0]
                 && j == Lizzie.frame.mouseOverCoordinate[1]) isMouseOver = true;
           }
-          boolean isCaptured = (stone == Stone.BLACK_CAPTURED || stone == Stone.WHITE_CAPTURED);
-          if (isCaptured) drawCapturedStone(g, stoneX, stoneY, stone, isMouseOver);
-          else drawStoneSimple(g, gShadow, stoneX, stoneY, stone);
           if (isMouseOver) isMouseOverStoneBlack = stone.isBlackColor();
         }
       }
@@ -1644,10 +1663,14 @@ public class BoardRenderer {
           Stone stone = branch.data.stones[index];
           if (!Lizzie.config.removeDeadChainInVariation && !shouldShowPreviousBestMoves())
             if (Lizzie.board.getData().stones[index] != Stone.EMPTY) continue;
-          if (branch.data.moveNumberList[index] > maxBranchMoves(false)) continue;
+          int moveNumber = branch.data.moveNumberList[index];
+          if (moveNumber > maxBranchMoves(false)) continue;
           int stoneX = scaledMarginWidth + squareWidth * i;
           int stoneY = scaledMarginHeight + squareHeight * j;
           boolean isCaptured = (stone == Stone.BLACK_CAPTURED || stone == Stone.WHITE_CAPTURED);
+
+          if (isCaptured) drawCapturedStone(g, stoneX, stoneY, stone, moveNumber > 0);
+          else drawStone(g, gShadow, stoneX, stoneY, stone);
           boolean isMouseOver = false;
           if (isIndependBoard) {
             if (i == Lizzie.frame.independentMainBoard.mouseOverCoordinate[0]
@@ -1657,8 +1680,6 @@ public class BoardRenderer {
             if (i == Lizzie.frame.mouseOverCoordinate[0]
                 && j == Lizzie.frame.mouseOverCoordinate[1]) isMouseOver = true;
           }
-          if (isCaptured) drawCapturedStone(g, stoneX, stoneY, stone, isMouseOver);
-          else drawStone(g, gShadow, stoneX, stoneY, stone);
           if (isMouseOver) isMouseOverStoneBlack = stone.isBlackColor();
         }
       }
@@ -3725,8 +3746,8 @@ public class BoardRenderer {
   }
 
   private void drawCapturedStone(
-      Graphics2D g, int centerX, int centerY, Stone stone, boolean isMouseOver) {
-    if (isMouseOver) {
+      Graphics2D g, int centerX, int centerY, Stone stone, boolean isDarker) {
+    if (isDarker) {
       if (isFancyBoard) {
         g.setPaint(paint);
       } else {
@@ -3735,8 +3756,8 @@ public class BoardRenderer {
       g.fillOval(
           centerX - stoneRadius, centerY - stoneRadius, 2 * stoneRadius + 1, 2 * stoneRadius + 1);
     }
-    if (stone == Stone.BLACK_CAPTURED) g.setColor(new Color(0, 0, 0, isMouseOver ? 90 : 60));
-    else g.setColor(new Color(255, 255, 255, isMouseOver ? 120 : 85));
+    if (stone == Stone.BLACK_CAPTURED) g.setColor(new Color(0, 0, 0, isDarker ? 80 : 60));
+    else g.setColor(new Color(255, 255, 255, isDarker ? 110 : 85));
     g.fillOval(
         centerX - stoneRadius, centerY - stoneRadius, 2 * stoneRadius + 1, 2 * stoneRadius + 1);
   }

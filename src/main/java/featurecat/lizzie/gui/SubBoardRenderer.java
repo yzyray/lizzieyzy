@@ -895,38 +895,30 @@ public class SubBoardRenderer {
                 stoneY - (j == 0 ? 0 : (stoneRadius + 1)),
                 stoneX,
                 stoneY + (j == Board.boardHeight - 1 ? 0 : (stoneRadius + 1)));
+            drawCapturedStone(g, stoneX, stoneY, stone);
+            continue;
           }
-          continue;
         }
         if (branch.data.moveNumberList[index] > maxBranchMoves()) continue;
 
         int stoneX = scaledMarginWidth + squareWidth * i;
         int stoneY = scaledMarginHeight + squareHeight * j;
-
-        drawStone(g, stoneX, stoneY, stone.unGhosted(), i, j);
-        // if (i == Lizzie.frame.suggestionclick[0] && j ==
-        // Lizzie.frame.suggestionclick[1])
-        // {
-        // Optional<int[]> coords1 =
-        // Board.asCoordinates(suggestedMove.get().coordinate);
-        // if (coords1.isPresent()
-        // && coords1.get()[0] == Lizzie.frame.suggestionclick[0]
-        // && coords1.get()[1] == Lizzie.frame.suggestionclick[1]) {
-        // g.setColor(Color.magenta);
-        // drawCircle3(g, stoneX, stoneY, stoneRadius - 1);
-        // }
-        // }
+        if (stone == Stone.BLACK_CAPTURED || stone == Stone.WHITE_CAPTURED) {
+          g.setPaint(paint);
+          fillCircle(g, stoneX, stoneY, stoneRadius + 1);
+          drawCapturedStone(g, stoneX, stoneY, stone);
+        } else drawStone(g, stoneX, stoneY, stone.unGhosted(), i, j);
       }
-      g = (Graphics2D) newImage.getGraphics();
-      g.setColor(new Color(0, 0, 0, 255));
-      // g.setFont(new Font("幼圆", Font.BOLD, stoneRadius * 5 / 4));
-      //  g.drawString("变化", boardWidth - stoneRadius * 14 / 3, boardWidth - stoneRadius * 2 / 7);
-      g.setFont(new Font(Config.sysDefaultFontName, Font.BOLD, stoneRadius * 3 / 2));
-      g.drawString(
-          "" + (this.bestmovesNum + 1),
-          boardWidth - stoneRadius * 9 / 5,
-          boardHeight - stoneRadius * 1 / 5);
     }
+    g = (Graphics2D) newImage.getGraphics();
+    g.setColor(new Color(0, 0, 0, 255));
+    // g.setFont(new Font("幼圆", Font.BOLD, stoneRadius * 5 / 4));
+    //  g.drawString("变化", boardWidth - stoneRadius * 14 / 3, boardWidth - stoneRadius * 2 / 7);
+    g.setFont(new Font(Config.sysDefaultFontName, Font.BOLD, stoneRadius * 3 / 2));
+    g.drawString(
+        String.valueOf(this.bestmovesNum + 1),
+        boardWidth - stoneRadius * 9 / 5,
+        boardHeight - stoneRadius * 1 / 5);
     branchStonesImage = newImage;
     g.dispose();
     //   gShadow.dispose();
@@ -1069,7 +1061,10 @@ public class SubBoardRenderer {
             g.setColor(Color.RED);
           } else {
             if (reverse) continue;
-            g.setColor(stoneHere.isBlack() ^ reverse ? Color.WHITE : Color.BLACK);
+            g.setColor(
+                stoneHere.isBlack() || stoneHere == Stone.BLACK_CAPTURED
+                    ? Color.WHITE
+                    : Color.BLACK);
             if (displayedBranchLength <= 0) {
               Optional<MoveData> suggestedMove = getBestMove();
               if (suggestedMove.isPresent()) {
@@ -1293,15 +1288,11 @@ public class SubBoardRenderer {
 
   /** Draws a stone centered at (centerX, centerY) */
   private void drawStone(Graphics2D g, int centerX, int centerY, Stone color, int x, int y) {
-    // g.setRenderingHint(KEY_ALPHA_INTERPOLATION,
-    // VALUE_ALPHA_INTERPOLATION_QUALITY);
     g.setRenderingHint(KEY_INTERPOLATION, VALUE_INTERPOLATION_BILINEAR);
     g.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
 
     if (color.isBlack() || color.isWhite()) {
       boolean isBlack = color.isBlack();
-      // if (uiConfig.getBoolean("fancy-stones")) {
-      // 需要恢复的
       g.setColor(isBlack ? Color.BLACK : Color.WHITE);
       fillCircle(g, centerX, centerY, stoneRadius);
       if (!isBlack) {
@@ -1311,16 +1302,14 @@ public class SubBoardRenderer {
     }
   }
 
+  private void drawCapturedStone(Graphics2D g, int centerX, int centerY, Stone stone) {
+    if (stone == Stone.BLACK_CAPTURED) g.setColor(new Color(0, 0, 0, 110));
+    else g.setColor(new Color(255, 255, 255, 120));
+    g.fillOval(
+        centerX - stoneRadius, centerY - stoneRadius, 2 * stoneRadius + 1, 2 * stoneRadius + 1);
+  }
+
   private void drawHeat(Graphics2D g, int x, int y, int length) {
-    // g.setRenderingHint(KEY_ALPHA_INTERPOLATION,
-    // VALUE_ALPHA_INTERPOLATION_QUALITY);
-    // g.setRenderingHint(KEY_INTERPOLATION, VALUE_INTERPOLATION_BILINEAR);
-    // g.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
-
-    // if (uiConfig.getBoolean("fancy-stones")) {
-    // 需要恢复的
-
-    // drawShadow(gShadow, centerX, centerY, isGhost);
     g.drawImage(getHeatStone(squareWidth * 3), x, y, length, length, null);
   }
 
