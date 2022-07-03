@@ -146,9 +146,11 @@ public class EngineManager {
             public void run() {
               if (Lizzie.config.uiConfig.optBoolean("show-badmoves-frame", false)) {
                 Lizzie.frame.toggleBadMoves();
+                Lizzie.frame.setVisible(true);
               }
               if (Lizzie.config.uiConfig.optBoolean("show-suggestions-frame", false)) {
                 Lizzie.frame.toggleBestMoves();
+                Lizzie.frame.setVisible(true);
               }
             }
           });

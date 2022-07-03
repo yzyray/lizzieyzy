@@ -225,7 +225,6 @@ public class Lizzie {
         });
     gtpConsole = new GtpConsolePane(frame);
     gtpConsole.setVisible(config.persistedUi.optBoolean("gtp-console-opened", false));
-    frame.setVisible(true);
     SwingUtilities.invokeLater(
         new Thread() {
           public void run() {
@@ -286,6 +285,7 @@ public class Lizzie {
                 e.printStackTrace();
               }
             }
+            frame.setVisible(true);
           }
         });
     if (config.autoCheckVersion) {
