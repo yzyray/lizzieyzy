@@ -284,7 +284,7 @@ public class LizzieFrame extends JFrame {
   private boolean canShowBigBoardImage = true;
   private boolean oriShowListPane;
   private boolean OriShowVariationGraph;
-  private JPanel tempGamePanelAll;
+  private JLayeredPane tempGamePanelAll;
   private JPanel tempGamePanelTop;
   private JScrollPane tempGameScrollPanel;
   private JPanel tempGamePanel;
@@ -572,7 +572,7 @@ public class LizzieFrame extends JFrame {
             }
           }
         });
-    tempGamePanelAll = new JPanel();
+    tempGamePanelAll = new JLayeredPane();
     tempGamePanelAll.setLayout(null);
     tempGamePanelAll.setVisible(false);
     tempGamePanelAll.setFocusable(false);
@@ -597,8 +597,8 @@ public class LizzieFrame extends JFrame {
     tempGameScrollPanel.getVerticalScrollBar().setUnitIncrement(16);
     tempGameScrollPanel.getVerticalScrollBar().setUI(new DemoScrollBarUI());
 
-    tempGamePanelAll.add(tempGamePanelTop);
-    tempGamePanelAll.add(tempGameScrollPanel);
+    tempGamePanelAll.add(tempGamePanelTop, new Integer(2));
+    tempGamePanelAll.add(tempGameScrollPanel, new Integer(1));
 
     varTreePane =
         new JPanel() {

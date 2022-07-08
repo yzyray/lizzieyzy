@@ -861,6 +861,7 @@ public class FloatBoardRenderer {
                 && j == Lizzie.frame.floatBoard.mouseOverCoordinate[1]);
         if (Lizzie.config.removeDeadChainInVariation) {
           if (isCaptured) {
+            System.out.println("cap");
             g.setPaint(paint);
             fillCircle(g, stoneX, stoneY, stoneRadius + 1);
             if (!isMouseOver) {
