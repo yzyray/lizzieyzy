@@ -82,19 +82,8 @@ public class IndependentSubBoard extends JFrame {
     addMouseListener(input);
     addMouseWheelListener(input);
     mainPanel.enableInputMethods(false);
-    getContentPane().add(mainPanel);
+    // getContentPane().add(mainPanel);
     // setBounds(600, 140, 220, 220);
-
-    boolean persisted = Lizzie.config.persistedUi != null;
-    if (persisted
-        && Lizzie.config.persistedUi.optJSONArray("independent-sub-board") != null
-        && Lizzie.config.persistedUi.optJSONArray("independent-sub-board").length() == 4) {
-      JSONArray pos = Lizzie.config.persistedUi.getJSONArray("independent-sub-board");
-      setBounds(pos.getInt(0), pos.getInt(1), pos.getInt(2), pos.getInt(3));
-    } else {
-      Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
-      setBounds(0, (int) screensize.getHeight() / 2 - 150, 300, 300);
-    }
 
     ImageIcon lock;
     lock = new ImageIcon();
@@ -253,13 +242,25 @@ public class IndependentSubBoard extends JFrame {
     topUntop.setMargin(new Insets(0, -1, 0, 0));
 
     lockUnlock.setVisible(false);
-    allPanel.setLayout(null);
+    // allPanel.setLayout(null);
     getContentPane().add(allPanel);
 
     allPanel.add(topUntop, new Integer(200));
     allPanel.add(lockUnlock, new Integer(200));
     allPanel.add(btnClose, new Integer(200));
     allPanel.add(mainPanel, new Integer(100));
+
+    pack();
+    boolean persisted = Lizzie.config.persistedUi != null;
+    if (persisted
+        && Lizzie.config.persistedUi.optJSONArray("independent-sub-board") != null
+        && Lizzie.config.persistedUi.optJSONArray("independent-sub-board").length() == 4) {
+      JSONArray pos = Lizzie.config.persistedUi.getJSONArray("independent-sub-board");
+      setBounds(pos.getInt(0), pos.getInt(1), pos.getInt(2), pos.getInt(3));
+    } else {
+      Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
+      setBounds(0, (int) screensize.getHeight() / 2 - 150, 300, 300);
+    }
 
     addComponentListener(
         new ComponentAdapter() {

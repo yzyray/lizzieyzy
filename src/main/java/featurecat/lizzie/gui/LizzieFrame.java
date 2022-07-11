@@ -3593,14 +3593,10 @@ public class LizzieFrame extends JFrame {
       int height = mainPanel.getHeight();
 
       Optional<Graphics2D> backgroundG = Optional.empty();
-      if (!Lizzie.config.usePureBackground
-          && (cachedBackgroundWidth != width
-              || cachedBackgroundHeight != height
-              || redrawBackgroundAnyway)) {
+      if (cachedBackgroundWidth != width
+          || cachedBackgroundHeight != height
+          || redrawBackgroundAnyway) {
         backgroundG = Optional.of(createBackground(width, height));
-      } else {
-        g0.setColor(Lizzie.config.pureBackgroundColor);
-        g0.fillRect(0, 0, width, height);
       }
       if (!showControls) {
         BufferedImage cachedImage = new BufferedImage(width, height, TYPE_INT_ARGB);
@@ -4965,7 +4961,7 @@ public class LizzieFrame extends JFrame {
       }
     }
 
-    if (!Lizzie.config.usePureBackground) g0.drawImage(cachedBackground, 0, 0, null);
+    g0.drawImage(cachedBackground, 0, 0, null);
     g0.drawImage(cachedImage, 0, 0, null);
     if (Lizzie.config.showWinrateGraph && cachedWinrateImage != null && !showControls)
       g0.drawImage(cachedWinrateImage, grx, gry, null);
@@ -5041,6 +5037,12 @@ public class LizzieFrame extends JFrame {
     int drawWidth = max(wallpaper.getWidth(), mainPanel.getWidth());
     int drawHeight = max(wallpaper.getHeight(), mainPanel.getHeight());
     // Support seamless texture
+    if (Lizzie.config.usePureBackground) {
+      g.setColor(Lizzie.config.pureBackgroundColor);
+      g.fillRect(0, 0, width, height);
+      g.dispose();
+      return g;
+    }
     boardRenderer.drawTextureImage(g, wallpaper, 0, 0, drawWidth, drawHeight, false);
     Lizzie.board.setForceRefresh(true);
     if (backgroundPaint == null) {
@@ -6997,14 +6999,19 @@ public class LizzieFrame extends JFrame {
     }
     if (Lizzie.config.commentFontSize <= 0) {
       int fontSize;
-      if (Lizzie.config.showLargeSubBoard() || Lizzie.config.showLargeWinrate()) {
-        fontSize =
-            (int)
-                (min(
-                        (getWidth() > 1.75 * getHeight() ? 1.75 * getHeight() : getWidth()) * 0.43,
-                        getHeight())
-                    * 0.0225);
-      } else fontSize = (int) (min(getWidth() * 0.6, getHeight()) * 0.0225);
+      if (Lizzie.config.isFloatBoardMode()) {
+        fontSize = (int) (min(getWidth() * 1.2, getHeight()) * 0.0225);
+      } else {
+        if (Lizzie.config.showLargeSubBoard() || Lizzie.config.showLargeWinrate()) {
+          fontSize =
+              (int)
+                  (min(
+                          (getWidth() > 1.75 * getHeight() ? 1.75 * getHeight() : getWidth())
+                              * 0.43,
+                          getHeight())
+                      * 0.0225);
+        } else fontSize = (int) (min(getWidth() * 0.6, getHeight()) * 0.0225);
+      }
       if (fontSize > Config.frameFontSize + 3) {
         fontSize = Config.frameFontSize + 3;
       } else if (fontSize < Config.frameFontSize - 2) {

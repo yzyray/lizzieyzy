@@ -121,18 +121,6 @@ public class IndependentMainBoard extends JFrame {
 
     // setBounds(600, 140, 220, 220);
 
-    boolean persisted = Lizzie.config.persistedUi != null;
-    if (persisted
-        && Lizzie.config.persistedUi.optJSONArray("independent-main-board") != null
-        && Lizzie.config.persistedUi.optJSONArray("independent-main-board").length() == 4) {
-      JSONArray pos = Lizzie.config.persistedUi.getJSONArray("independent-main-board");
-      setBounds(pos.getInt(0), pos.getInt(1), pos.getInt(2), pos.getInt(3));
-    } else {
-      Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
-      setBounds(
-          (int) screensize.getWidth() - 600, (int) screensize.getHeight() / 2 - 300, 600, 600);
-    }
-
     ImageIcon lock;
     lock = new ImageIcon();
     try {
@@ -288,7 +276,7 @@ public class IndependentMainBoard extends JFrame {
     btnClose.setVisible(false);
     lockUnlock.setVisible(false);
     topUntop.setVisible(false);
-    allPanel.setLayout(null);
+    // allPanel.setLayout(null);
     getContentPane().add(allPanel);
 
     allPanel.add(topUntop, new Integer(200));
@@ -296,6 +284,18 @@ public class IndependentMainBoard extends JFrame {
     allPanel.add(btnClose, new Integer(200));
     allPanel.add(mainPanel, new Integer(100));
 
+    pack();
+    boolean persisted = Lizzie.config.persistedUi != null;
+    if (persisted
+        && Lizzie.config.persistedUi.optJSONArray("independent-main-board") != null
+        && Lizzie.config.persistedUi.optJSONArray("independent-main-board").length() == 4) {
+      JSONArray pos = Lizzie.config.persistedUi.getJSONArray("independent-main-board");
+      setBounds(pos.getInt(0), pos.getInt(1), pos.getInt(2), pos.getInt(3));
+    } else {
+      Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
+      setBounds(
+          (int) screensize.getWidth() - 600, (int) screensize.getHeight() / 2 - 300, 600, 600);
+    }
     addComponentListener(
         new ComponentAdapter() {
           @Override

@@ -448,7 +448,7 @@ public class Config {
   public static int menuHeight = 20;
   public static int menuIconSize = 16;
 
-  public boolean isDeletingPersist = false;
+  public boolean deletedPersist = false;
   public boolean showPreviousBestmovesInEngineGame = false;
   public boolean showPreviousBestmovesOnlyFirstMove = true;
   public boolean showDetailedToolbarMenu = false;
@@ -2144,6 +2144,7 @@ public class Config {
   }
 
   public void persist() throws IOException {
+    if (deletedPersist) return;
     boolean windowIsMaximized = Lizzie.frame.getExtendedState() == JFrame.MAXIMIZED_BOTH;
     persistedUi.put("gtp-console-opened", Lizzie.gtpConsole.isVisible());
     JSONArray mainPos = new JSONArray();
@@ -2526,7 +2527,7 @@ public class Config {
   public void deletePersist(boolean showMsg) {
     if (!showMsg && !new File(persistFilename).exists()) return;
     new File(persistFilename).delete();
-    isDeletingPersist = true;
+    deletedPersist = true;
     if (showMsg) Utils.showMsg(Lizzie.resourceBundle.getString("Config.deletePersistFile"));
     else {
       JSONObject persistConfig = createPersistConfig();
