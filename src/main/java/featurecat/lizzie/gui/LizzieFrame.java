@@ -3598,6 +3598,9 @@ public class LizzieFrame extends JFrame {
               || cachedBackgroundHeight != height
               || redrawBackgroundAnyway)) {
         backgroundG = Optional.of(createBackground(width, height));
+      } else {
+        g0.setColor(Lizzie.config.pureBackgroundColor);
+        g0.fillRect(0, 0, width, height);
       }
       if (!showControls) {
         BufferedImage cachedImage = new BufferedImage(width, height, TYPE_INT_ARGB);
@@ -5028,19 +5031,11 @@ public class LizzieFrame extends JFrame {
     } else Lizzie.board.updateMovelist(Lizzie.board.getHistory().getCurrentHistoryNode());
   }
 
-  private Graphics2D createBackground(int width, int hight) {
-    cachedBackground = new BufferedImage(width, hight, TYPE_INT_RGB);
+  private Graphics2D createBackground(int width, int height) {
+    cachedBackground = new BufferedImage(width, height, TYPE_INT_RGB);
     cachedBackgroundWidth = cachedBackground.getWidth();
     cachedBackgroundHeight = cachedBackground.getHeight();
-
     Graphics2D g = cachedBackground.createGraphics();
-    //    if (Lizzie.config.usePureBackground) {
-    //      g.setColor(Lizzie.config.pureBackgroundColor);
-    //      g.fillRect(0, 0, width, hight);
-    //      g.dispose();
-    //      return g;
-    //    }
-    // g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 
     BufferedImage wallpaper = boardRenderer.getWallpaper();
     int drawWidth = max(wallpaper.getWidth(), mainPanel.getWidth());
