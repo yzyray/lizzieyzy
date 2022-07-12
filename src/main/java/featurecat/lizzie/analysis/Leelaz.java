@@ -2830,10 +2830,10 @@ public class Leelaz {
     String command =
         (this.isKatago
             ? ("kata-genmove_analyze " + color + " " + getInterval() + addKataTag())
-            : (this.isSai || this.isLeela
-                ? ("lz-genmove_analyze " + color + " " + getInterval())
-                : (this.isSayuri
-                    ? ("genmove_analyze " + color + " " + getInterval())
+            : (this.isSayuri
+                ? ("genmove_analyze " + color + " " + getInterval())
+                : (this.isSai || this.isLeela
+                    ? ("lz-genmove_analyze " + color + " " + getInterval())
                     : ("genmove " + color))));
     sendCommand(command);
     isThinking = true;
@@ -2861,10 +2861,10 @@ public class Leelaz {
     String command =
         (this.isKatago
             ? ("kata-genmove_analyze " + color + " " + getIntervalForGenmovePk() + addKataTag())
-            : (this.isSai || this.isLeela
-                ? ("lz-genmove_analyze " + color + " " + getInterval())
-                : (this.isSayuri
-                    ? ("genmove_analyze " + color + " " + getInterval())
+            : (this.isSayuri
+                ? ("genmove_analyze " + color + " " + getInterval())
+                : (this.isSai || this.isLeela
+                    ? ("lz-genmove_analyze " + color + " " + getInterval())
                     : ("genmove " + color))));
     /*
      * We don't support displaying this while playing, so no reason to request it

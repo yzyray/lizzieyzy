@@ -655,11 +655,11 @@ public class BoardRenderer {
     if (EngineManager.isEngineGame && EngineManager.engineGameInfo.isBatchGame) {
       if (EngineManager.engineGameInfo.firstEngineIndex
           == EngineManager.engineGameInfo.blackEngineIndex) {
-        black = black + " " + EngineManager.engineGameInfo.getFirstEngineWins();
-        white = EngineManager.engineGameInfo.getSecondEngineWins() + " " + white;
+        black = black + "  " + EngineManager.engineGameInfo.getFirstEngineWins();
+        white = EngineManager.engineGameInfo.getSecondEngineWins() + "  " + white;
       } else {
-        black = black + " " + EngineManager.engineGameInfo.getSecondEngineWins();
-        white = EngineManager.engineGameInfo.getFirstEngineWins() + " " + white;
+        black = black + "  " + EngineManager.engineGameInfo.getSecondEngineWins();
+        white = EngineManager.engineGameInfo.getFirstEngineWins() + "  " + white;
       }
     }
     lengthB = g0.getFontMetrics().stringWidth(black);

@@ -3566,7 +3566,7 @@ public class BottomToolbar extends JPanel {
     txtenginePkTime.setEnabled(enable);
     txtenginePkTimeWhite.setEnabled(enable);
 
-    // setGenmove();
+    setGenmove();
   }
 
   public boolean startEngineGame() {
