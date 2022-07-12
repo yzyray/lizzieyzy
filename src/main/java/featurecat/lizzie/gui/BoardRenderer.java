@@ -261,8 +261,8 @@ public class BoardRenderer {
         }
         if (isMouseOverNextBlunder) drawNextBlunderFirstMove(g);
         if (Lizzie.config.isShowingMarkupTools) drawStoneMarkup(g);
-        if (Lizzie.frame.clickbadmove != LizzieFrame.outOfBoundCoordinate)
-          drawbadstone(Lizzie.frame.clickbadmove[0], Lizzie.frame.clickbadmove[1], g);
+        if (!isShowingBranch && Lizzie.frame.clickbadmove != LizzieFrame.outOfBoundCoordinate)
+          drawFocusStone(Lizzie.frame.clickbadmove[0], Lizzie.frame.clickbadmove[1], g);
         g.drawImage(cachedStonesShadowImagedraged, x, y, null);
         g.drawImage(cachedStonesImagedraged, x, y, null);
         // timer.lap("leelaz");
@@ -714,7 +714,7 @@ public class BoardRenderer {
       Shape shab =
           tlb.getOutline(
               AffineTransform.getTranslateInstance(
-                  x + boardWidth / 2 - lengthB - scaledMarginWidth * 3 / 5,
+                  x + boardWidth / 2 - lengthB - scaledMarginWidth * 4 / 5,
                   y - scaledMarginHeight + boardHeight + stoneRadius * 13 / 8 + (height + 2) / 4));
       g0.setColor(Color.BLACK);
       g0.fill(shab);
@@ -734,7 +734,7 @@ public class BoardRenderer {
       Shape sha =
           tl.getOutline(
               AffineTransform.getTranslateInstance(
-                  x + boardWidth / 2 + scaledMarginWidth * 3 / 5 + 1,
+                  x + boardWidth / 2 + scaledMarginWidth * 4 / 5 + 1,
                   y - scaledMarginHeight + boardHeight + stoneRadius * 13 / 8 + (height + 2) / 4));
       g0.setColor(Color.BLACK);
       g0.setStroke(new BasicStroke(2));
@@ -1265,7 +1265,7 @@ public class BoardRenderer {
     g.dispose();
   }
 
-  public void drawbadstone(int x, int y, Graphics2D g) {
+  public void drawFocusStone(int x, int y, Graphics2D g) {
     int stoneX = this.x + scaledMarginWidth + squareWidth * x;
     int stoneY = this.y + scaledMarginHeight + squareHeight * y;
     g.setColor(Color.magenta);
