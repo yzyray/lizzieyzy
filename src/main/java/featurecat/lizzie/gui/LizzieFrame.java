@@ -12118,14 +12118,17 @@ public class LizzieFrame extends JFrame {
     try {
       if (OS.isWindows()) {
         boolean success = false;
-        String java64Path = "jre\\java11\\bin\\java.exe";
-        File java64 = new File(java64Path);
+        File java64_1 = new File(Utils.java64Path1);
 
-        if (java64.exists()) {
+        if (java64_1.exists()) {
           try {
             processClockHelper =
                 Runtime.getRuntime()
-                    .exec(java64Path + " -jar clockHelper" + File.separator + javaReadBoardName);
+                    .exec(
+                        Utils.java64Path1
+                            + " -jar clockHelper"
+                            + File.separator
+                            + javaReadBoardName);
             success = true;
           } catch (Exception e) {
             success = false;
@@ -12133,13 +12136,34 @@ public class LizzieFrame extends JFrame {
           }
         }
         if (!success) {
-          String java32Path = "jre\\java8_32\\bin\\java.exe";
-          File java32 = new File(java32Path);
+          File java64_2 = new File(Utils.java64Path2);
+          if (java64_2.exists()) {
+            try {
+              processClockHelper =
+                  Runtime.getRuntime()
+                      .exec(
+                          Utils.java64Path2
+                              + " -jar clockHelper"
+                              + File.separator
+                              + javaReadBoardName);
+              success = true;
+            } catch (Exception e) {
+              success = false;
+              e.printStackTrace();
+            }
+          }
+        }
+        if (!success) {
+          File java32 = new File(Utils.java32Path);
           if (java32.exists()) {
             try {
               processClockHelper =
                   Runtime.getRuntime()
-                      .exec(java32 + " -jar clockHelper" + File.separator + javaReadBoardName);
+                      .exec(
+                          Utils.java32Path
+                              + " -jar clockHelper"
+                              + File.separator
+                              + javaReadBoardName);
               success = true;
             } catch (Exception e) {
               success = false;

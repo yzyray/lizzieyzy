@@ -53,15 +53,13 @@ public class CaptureTsumeGo {
     boolean success = false;
     try {
       if (OS.isWindows()) {
-        String java64Path = "jre\\java11\\bin\\java.exe";
-        File java64 = new File(java64Path);
-
-        if (java64.exists()) {
+        File java64_1 = new File(Utils.java64Path1);
+        if (java64_1.exists()) {
           try {
             process =
                 Runtime.getRuntime()
                     .exec(
-                        java64Path
+                        Utils.java64Path1
                             + " -Dsun.java2d.uiScale=1.0 -jar captureTsumeGo"
                             + File.separator
                             + jarName
@@ -73,14 +71,32 @@ public class CaptureTsumeGo {
           }
         }
         if (!success) {
-          String java32Path = "jre\\java8_32\\bin\\java.exe";
-          File java32 = new File(java32Path);
+          File java64_2 = new File(Utils.java64Path2);
+          if (java64_2.exists()) {
+            try {
+              process =
+                  Runtime.getRuntime()
+                      .exec(
+                          Utils.java64Path2
+                              + " -Dsun.java2d.uiScale=1.0 -jar captureTsumeGo"
+                              + File.separator
+                              + jarName
+                              + params);
+              success = true;
+            } catch (Exception e) {
+              success = false;
+              e.printStackTrace();
+            }
+          }
+        }
+        if (!success) {
+          File java32 = new File(Utils.java32Path);
           if (java32.exists()) {
             try {
               process =
                   Runtime.getRuntime()
                       .exec(
-                          java32
+                          Utils.java32Path
                               + " -Dsun.java2d.uiScale=1.0 -jar captureTsumeGo"
                               + File.separator
                               + jarName

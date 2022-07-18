@@ -52,6 +52,9 @@ import org.json.JSONObject;
 
 public class Utils {
 
+  public static String java64Path1 = "jre\\java17\\bin\\java.exe";
+  public static String java64Path2 = "jre\\java11\\bin\\java.exe";
+  public static String java32Path = "jre\\java8_32\\bin\\java.exe";
   public static String aesKey = "iyekeeaysueeaesk";
   public static String iv = "s6st73f41adc4c5d";
   public static String aesKey2 = "iyekeeay2ueeaesk";
