@@ -111,8 +111,7 @@ public class BoardHistoryList {
    *
    * @return data of previous node, Optional.empty if there is no previous node
    */
-  public synchronized Optional<BoardData> previous() {
-    head.undoExtraStones();
+  public Optional<BoardData> previous() {
     if (!head.previous().isPresent()) return Optional.empty();
     else head = head.previous().get();
     return Optional.of(head.getData());
@@ -131,13 +130,12 @@ public class BoardHistoryList {
     return next(false);
   }
 
-  public synchronized Optional<BoardData> next(boolean includeDummay) {
+  public Optional<BoardData> next(boolean includeDummay) {
     Optional<BoardHistoryNode> n = head.next(includeDummay);
     // n.ifPresent(x -> head = x);
     if (n.isPresent()) {
       Lizzie.leelaz.clearBestMoves();
       head = n.get();
-      head.placeExtraStones();
       // Lizzie.board.clearAfterMove();
     }
     return n.map(x -> x.getData());

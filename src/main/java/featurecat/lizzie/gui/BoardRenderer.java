@@ -799,10 +799,8 @@ public class BoardRenderer {
       // Draw the lines
       g.setColor(Color.BLACK);
       BasicStroke borderStroke =
-          new BasicStroke(
-              Math.max(boardWidth > 560 ? 2f : 1f, Math.min(3.2f, (float) availableWidth / 481f)));
-      BasicStroke normalStroke =
-          new BasicStroke(Math.max(1f, Math.min(1.7f, (float) availableWidth / 1110f)));
+          new BasicStroke(Math.max(boardWidth > 560 ? 2f : 1f, availableWidth / 481f));
+      BasicStroke normalStroke = new BasicStroke(Math.max(1f, availableWidth / 750f));
       for (int i = 0; i < Board.boardHeight; i++) {
         // g.setStroke(new BasicStroke(stoneRadius / 15f));
         if (i == 0 || i == Board.boardHeight - 1) {
@@ -1554,6 +1552,9 @@ public class BoardRenderer {
       variation = suggestedMove.get().variation;
       pvVistis = suggestedMove.get().pvVisits;
     }
+    if (variation == null) {
+      return;
+    }
     branch = null;
     if (shouldShowPreviousBestMoves()) {
       if (Lizzie.board.getHistory().getCurrentHistoryNode().previous().isPresent())
@@ -1582,7 +1583,6 @@ public class BoardRenderer {
               false,
               null);
     }
-
     mouseOverCoords = suggestedMove.get().coordinate;
     branchOpt = Optional.of(branch);
     variationOpt = Optional.of(variation);
@@ -3106,7 +3106,11 @@ public class BoardRenderer {
                     if (Lizzie.config.showNextMoveBlunder
                         && !Lizzie.board.isPkBoard
                         && !Lizzie.frame.isShowingHeatmap
-                        && !Lizzie.frame.isShowingPolicy) {
+                        && !Lizzie.frame.isShowingPolicy
+                        && ((Lizzie.board.getHistory().isBlacksTurn()
+                                && Lizzie.config.showBlackCandidates)
+                            || (!Lizzie.board.getHistory().isBlacksTurn()
+                                && Lizzie.config.showWhiteCandidates))) {
                       BoardData nextData = nexts.get(0).getData();
                       BoardData thisData = Lizzie.board.getHistory().getData();
                       boolean isMain = this.boardIndex != 1;
@@ -3856,6 +3860,7 @@ public class BoardRenderer {
                 for (String label : labels) {
                   String[] moves = label.split(":");
                   int[] move = SGFParser.convertSgfPosToCoord(moves[0]);
+                  if (move[0] >= Board.boardWidth - 1 || move[1] >= Board.boardWidth - 1) return;
                   if (move != null) {
                     if ((isIndependBoard
                             ? Lizzie.frame.independentMainBoard.isMouseOver(move[0], move[1])

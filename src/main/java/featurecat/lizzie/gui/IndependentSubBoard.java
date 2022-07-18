@@ -358,7 +358,7 @@ public class IndependentSubBoard extends JFrame {
   }
 
   public void refresh() {
-    mainPanel.repaint();
+    repaint();
   }
 
   public void processIndependentPressOnSub(MouseEvent e) {

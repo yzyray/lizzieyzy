@@ -43,7 +43,7 @@ import org.json.JSONArray;
 public class GtpConsolePane extends JDialog {
   private final ResourceBundle resourceBundle = Lizzie.resourceBundle;
 
-  private int scrollLength = 0;
+  // private int scrollLength = 0;
   private JScrollPane scrollPane;
   public JIMSendTextPane console;
   public final JFontTextField txtCommand = new JFontTextField();
@@ -51,10 +51,11 @@ public class GtpConsolePane extends JDialog {
   private JFontLabel lblCommand = new JFontLabel();
   private JPanel pnlCommand = new JPanel();
   private ScheduledExecutorService executor;
-  private int checkCount = 0;
+  // private int checkCount = 0;
   private Font gtpFont;
   private ArrayDeque<DocType> docQueue;
   private FileOutputStream bos;
+  private int max_length = 30000;
 
   /** Creates a Gtp Console Window */
   public GtpConsolePane(Window owner) {
@@ -194,15 +195,18 @@ public class GtpConsolePane extends JDialog {
   }
 
   private void addDocs(DocType doc) {
-    synchronized (console) {
-      SimpleAttributeSet attrSet = new SimpleAttributeSet();
-      StyleConstants.setForeground(attrSet, doc.contentColor);
-      if (doc.isCommand) {
-        StyleConstants.setFontFamily(attrSet, Lizzie.config.uiFontName);
-      }
-      StyleConstants.setFontSize(attrSet, doc.fontSize);
-      insert(doc.content, attrSet);
+    SimpleAttributeSet attrSet = new SimpleAttributeSet();
+    StyleConstants.setForeground(attrSet, doc.contentColor);
+    if (doc.isCommand) {
+      StyleConstants.setFontFamily(attrSet, Lizzie.config.uiFontName);
     }
+    StyleConstants.setFontSize(attrSet, doc.fontSize);
+    String insertContent = doc.content;
+    if (insertContent.length() > max_length / 10) {
+      insertContent = insertContent.substring(0, max_length / 10 - 5) + "(...)\n";
+    }
+    insert(insertContent, attrSet);
+    console.setCaretPosition(console.getDocument().getLength());
   }
 
   private void setDocs(String str, Color col, boolean isCommand, int fontSize) {
@@ -214,11 +218,25 @@ public class GtpConsolePane extends JDialog {
     docQueue.addLast(doc);
   }
 
+  private void checkConsole() {
+    Document doc = console.getDocument();
+    int length = doc.getLength();
+    try {
+      if (length > max_length) {
+        doc.remove(0, length - max_length / 2);
+      }
+    } catch (BadLocationException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
+
   private void insert(String str, AttributeSet attrSet) {
     Document doc = console.getDocument();
     try {
       doc.insertString(doc.getLength(), str, attrSet);
     } catch (BadLocationException e) {
+      // TODO Auto-generated catch block
       e.printStackTrace();
     }
   }
@@ -244,6 +262,7 @@ public class GtpConsolePane extends JDialog {
                 e.printStackTrace();
               }
             }
+            checkConsole();
           } catch (NoSuchElementException e) {
             docQueue = new ArrayDeque<>();
             docQueue.clear();
@@ -261,29 +280,28 @@ public class GtpConsolePane extends JDialog {
                       .engineList
                       .get(EngineManager.engineGameInfo.blackEngineIndex)
                       .isLoaded()))) Lizzie.frame.refresh();
-      checkCount++;
-      if (checkCount > 300) {
-        checkCount = 0;
-        checkConsole();
-      } else {
-        int length = console.getDocument().getLength();
-        if (length != scrollLength) {
-          scrollLength = length;
-          console.setCaretPosition(scrollLength);
-        }
-      }
+      //      checkCount++;
+      //      if (checkCount > 300) {
+      //        checkCount = 0;
+      //      } else {
+      //        int length = console.getDocument().getLength();
+      //        if (length != scrollLength) {
+      //          scrollLength = length;
+      //          console.setCaretPosition(scrollLength);
+      //        }
+      //      }
     }
   }
 
-  public void checkConsole() {
-    if (console.getText().length() > 200000) {
-      console.setText(
-          console
-              .getText()
-              .substring(console.getText().length() - 70000, console.getText().length()));
-      console.setCaretPosition(console.getDocument().getLength());
-    }
-  }
+  //  public void checkConsole() {
+  //    if (console.getText().length() > 5000) {
+  //      console.setText(
+  //          console
+  //              .getText()
+  //              .substring(console.getText().length()/2, console.getText().length()));
+  //      //console.setCaretPosition(console.getDocument().getLength());
+  //    }
+  //  }
 
   public void addCommandForEngineGame(
       String command, int commandNumber, String engineName, boolean isBlack) {

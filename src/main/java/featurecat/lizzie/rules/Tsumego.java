@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Tsumego {
-  private int wallGap = 2;
+  private int wallGap = Lizzie.config.tsumeGoWallDistance + 1;
   private int leftIndex;
   private int rightIndex;
   private int topIndex;
@@ -15,6 +15,7 @@ public class Tsumego {
   private Stone otherSide;
 
   public Stone getCoverSideAndIndex(boolean forceSide, boolean forceBlack) {
+    wallGap = Lizzie.config.tsumeGoWallDistance + 1;
     Stone[] stones = Lizzie.board.getStones();
     int whiteCount = 0, blackCount = 0;
     int leftIndex = Board.boardWidth - 1,

@@ -950,14 +950,9 @@ public class Leelaz {
         }
       }
       checkNameAndVersion(params);
-
     } else if (line.startsWith("?")) {
       isCommandLine = true;
-    }
-
-    if (Lizzie.gtpConsole.isVisible() || Lizzie.config.alwaysGtp)
-      Lizzie.gtpConsole.addLine(line + "\n");
-    else if (line.startsWith("PDA:")) {
+    } else if (line.startsWith("PDA:")) {
       parsePDALine(line);
     }
   }
@@ -2915,14 +2910,12 @@ public class Leelaz {
   }
 
   public void clearWithoutPonder() {
-    synchronized (this) {
-      this.notPondering();
-      nameCmdfornoponder();
-      sendCommand("clear_board");
-      bestMoves = new ArrayList<>();
-      currentTotalPlayouts = 0;
-      currentCmdNum = Math.max(cmdNumber - 2, currentCmdNum);
-    }
+    this.notPondering();
+    nameCmdfornoponder();
+    sendCommand("clear_board");
+    bestMoves = new ArrayList<>();
+    currentTotalPlayouts = 0;
+    currentCmdNum = Math.max(cmdNumber - 2, currentCmdNum);
   }
 
   public void undo() {
@@ -3345,7 +3338,7 @@ public class Leelaz {
   }
 
   public void tryToDignostic(String message, boolean isModal) {
-    if (!Lizzie.config.autoCheckEngineAlive && Lizzie.engineManager.isEngineGame())
+    if (!Lizzie.config.autoCheckEngineAlive && EngineManager.isEngineGame())
       Lizzie.engineManager.clearEngineGame();
     if (engineFailedMessage != null && engineFailedMessage.isVisible()) return;
     engineFailedMessage =
@@ -3427,6 +3420,7 @@ public class Leelaz {
 
   public void toggleHeatmap(boolean bySpace) {
     // TODO Auto-generated method stub
+    if (Lizzie.frame.isPlayingAgainstLeelaz) return;
     if (EngineManager.isEmpty) {
       Lizzie.frame.togglePolicy();
       return;
@@ -3459,6 +3453,7 @@ public class Leelaz {
     heatOwnership = new ArrayList<Double>();
     if (isheatmap) {
       sendHeatCommand();
+      isPondering = true;
     } else {
       Lizzie.board.clearBestHeatMove();
       if (isPondering) {

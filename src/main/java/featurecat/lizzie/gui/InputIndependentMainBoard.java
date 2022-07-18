@@ -122,6 +122,8 @@ public class InputIndependentMainBoard implements KeyListener {
           Lizzie.frame.shareSGF();
         } else if (e.isAltDown()) {
           Lizzie.frame.startEngineGameDialog();
+        } else if (e.isShiftDown()) {
+          Lizzie.frame.openTsumego();
         } else Lizzie.frame.toggleGtpConsole();
         break;
       case VK_RIGHT:

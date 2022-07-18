@@ -3346,7 +3346,7 @@ public class LizzieFrame extends JFrame {
         int startMoveNumber = 0;
         boolean blackToPlay = Lizzie.board.getHistory().getStart().getData().blackToPlay;
         if (Lizzie.board.hasStartStone) startMoveNumber += Lizzie.board.startStonelist.size();
-        Lizzie.board.savelistforeditmode();
+        Lizzie.board.saveListForEdit();
         Lizzie.board.clearforedit();
         Lizzie.board.setMoveListWithFlatten(
             Lizzie.board.tempallmovelist, startMoveNumber, blackToPlay);
@@ -3571,6 +3571,9 @@ public class LizzieFrame extends JFrame {
   private BufferedImage cachedVarImage2;
   private BufferedImage cachedBackground;
   private BufferedImage cachedWinrateImage;
+  public int varBigX;
+  public int varBigY;
+  private BufferedImage cachedVariationTreeBigImage;
   public Paint backgroundPaint;
   private int cachedBackgroundWidth = 0, cachedBackgroundHeight = 0;
   public boolean redrawBackgroundAnyway = false;
@@ -4963,6 +4966,10 @@ public class LizzieFrame extends JFrame {
     g0.drawImage(cachedImage, 0, 0, null);
     if (Lizzie.config.showWinrateGraph && cachedWinrateImage != null && !showControls)
       g0.drawImage(cachedWinrateImage, grx, gry, null);
+    if (Lizzie.config.showVariationGraph
+        && shouldShowSimpleVariation()
+        && cachedVariationTreeBigImage != null
+        && !showControls) g0.drawImage(cachedVariationTreeBigImage, varBigX, varBigY, null);
   }
 
   private String getLoadingText() {
@@ -6109,7 +6116,7 @@ public class LizzieFrame extends JFrame {
       if (Lizzie.frame.isContributing) return;
       int[] coords = boardCoordinates.get();
       if (Lizzie.board.hasStoneAt(coords)) {
-        Lizzie.board.setPressStoneInfo(coords);
+        Lizzie.board.setPressStoneInfo(coords, false);
       }
       if (Lizzie.frame.bothSync) {
         if (blackorwhite == 0) Lizzie.board.place(coords[0], coords[1]);
@@ -7838,7 +7845,7 @@ public class LizzieFrame extends JFrame {
           refresh();
           return;
         }
-        Lizzie.board.savelistforeditmode();
+        Lizzie.board.saveListForEdit();
         int moveNumber = Lizzie.board.moveNumberByCoord(draggedCoords);
         if (moveNumber > 0) {
           MoveLinkedList reStoreMainListHead =
@@ -9042,10 +9049,24 @@ public class LizzieFrame extends JFrame {
     g.fillRect(vx, vy, vw, vh);
     if (!Lizzie.config.showVariationGraph) return;
     if (shouldShowSimpleVariation()) {
-      variationTreeBig.draw(g, vx, vy, vw, vh);
-      if (varTreeScrollPane.isVisible()) {
-        varTreeScrollPane.setVisible(false);
-      }
+      new Thread() {
+        public void run() {
+          BufferedImage variationTreeBigImage = new BufferedImage(vw, vh, TYPE_INT_ARGB);
+          Graphics2D g1 = (Graphics2D) variationTreeBigImage.getGraphics();
+          g1.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+          g1.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+          try {
+            variationTreeBig.draw(g1, 0, 0, vw, vh);
+          } catch (Exception e) {
+          }
+          varBigX = vx;
+          varBigY = vy;
+          cachedVariationTreeBigImage = variationTreeBigImage;
+          if (varTreeScrollPane.isVisible()) {
+            varTreeScrollPane.setVisible(false);
+          }
+        }
+      }.start();
       return;
     } else if (vw < 10 || vh < 10) {
       varTreeScrollPane.setVisible(false);
@@ -9557,6 +9578,7 @@ public class LizzieFrame extends JFrame {
                   topPanel.setBounds(
                       0, 0, width, topPanelHeight + (Lizzie.config.useJavaLooks ? 1 : 0));
                 }
+                topPanel.revalidate();
               } else {
                 topPanel.setBounds(
                     0, 0, 9999, Config.menuHeight + (Lizzie.config.useJavaLooks ? 1 : 0));
@@ -11662,7 +11684,7 @@ public class LizzieFrame extends JFrame {
     GameInfo gameInfo = Lizzie.board.getHistory().getGameInfo();
     boolean oriPlaySound = Lizzie.config.playSound;
     Lizzie.config.playSound = false;
-    Lizzie.board.savelistforeditmode();
+    Lizzie.board.saveListForEdit();
     MoveLinkedList listHead =
         Lizzie.board.getMoveLinkedListAfter(Lizzie.board.getHistory().getCurrentHistoryNode());
     if (listHead == null) {
@@ -12248,5 +12270,53 @@ public class LizzieFrame extends JFrame {
     }
     captureTsumeGoFrame = new CaptureTsumeGoFrame();
     captureTsumeGoFrame.setVisible(true);
+  }
+
+  public void newEmptyBoard() {
+    if (EngineManager.isEngineGame()) return;
+    if (Lizzie.config.showNewBoardHint
+        && (Lizzie.board.getHistory().getCurrentHistoryNode().previous().isPresent()
+            || Lizzie.board.getHistory().getCurrentHistoryNode().next().isPresent())) {
+      Box box = Box.createVerticalBox();
+      JFontLabel label =
+          new JFontLabel(Lizzie.resourceBundle.getString("LizzieFrame.confirmNewBoard"));
+      label.setAlignmentX(Component.LEFT_ALIGNMENT);
+      box.add(label);
+      Utils.addFiller(box, 5, 5);
+      JFontCheckBox disableCheckBox =
+          new JFontCheckBox(Lizzie.resourceBundle.getString("LizzieFrame.noNoticeAgain"));
+      disableCheckBox.addActionListener(
+          new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+              Lizzie.config.showNewBoardHint = !disableCheckBox.isSelected();
+              Lizzie.config.uiConfig.put("show-new-board-hint", Lizzie.config.showNewBoardHint);
+            }
+          });
+      disableCheckBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+      box.add(disableCheckBox);
+      Object[] options = new Object[2];
+      options[0] = Lizzie.resourceBundle.getString("LizzieFrame.confirm");
+      options[1] = Lizzie.resourceBundle.getString("LizzieFrame.cancel");
+      Object defaultOption = Lizzie.resourceBundle.getString("LizzieFrame.cancel");
+      JOptionPane optionPane =
+          new JOptionPane(
+              box,
+              JOptionPane.QUESTION_MESSAGE,
+              JOptionPane.YES_NO_OPTION,
+              null,
+              options,
+              defaultOption);
+      JDialog dialog =
+          optionPane.createDialog(
+              this, Lizzie.resourceBundle.getString("LizzieFrame.confirmNewBoardTitle"));
+      dialog.setVisible(true);
+      dialog.dispose();
+      if (optionPane.getValue() == null || optionPane.getValue().equals(defaultOption))
+        // System.out.println("取消");
+        return;
+    }
+    Lizzie.board.clear(false);
+    Lizzie.frame.refresh();
   }
 }

@@ -2,11 +2,17 @@ package featurecat.lizzie.gui;
 
 import featurecat.lizzie.Lizzie;
 import featurecat.lizzie.util.MultiOutputStream;
+import featurecat.lizzie.util.Utils;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import me.friwi.jcefmaven.*;
@@ -20,6 +26,8 @@ import org.cef.browser.CefMessageRouter;
 import org.cef.handler.CefDisplayHandlerAdapter;
 import org.cef.handler.CefFocusHandlerAdapter;
 import org.cef.handler.CefLifeSpanHandlerAdapter;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 public class BrowserFrame extends JFrame {
   private static final long serialVersionUID = -5570653778104813836L;
@@ -47,6 +55,7 @@ public class BrowserFrame extends JFrame {
     } catch (IOException e) {
       e.printStackTrace();
     }
+    checkBundleFolder();
     CefAppBuilder builder = new CefAppBuilder();
     // windowless_rendering_enabled must be set to false if not wanted.
     builder.getCefSettings().windowless_rendering_enabled = false;
@@ -312,6 +321,36 @@ public class BrowserFrame extends JFrame {
             setVisible(false);
           }
         });
+  }
+
+  private void checkBundleFolder() {
+    // TODO Auto-generated method stub
+    String tag = "jcef-56fb723+cef-95.7.14+g9f72f35+chromium-95.0.4638.69";
+    File meta = new File("jcef-bundle" + File.separator + "build_meta.json");
+    if (meta.exists()) {
+      FileInputStream fp;
+      try {
+        fp = new FileInputStream(meta);
+        InputStreamReader reader;
+        reader = new InputStreamReader(fp, "utf-8");
+        JSONObject json = new JSONObject(new JSONTokener(reader));
+        reader.close();
+        fp.close();
+        if (!json.has("release_tag") || !json.getString("release_tag").equals(tag)) {
+          File dir = new File("jcef-bundle");
+          Utils.deleteDir(dir);
+        }
+      } catch (FileNotFoundException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      } catch (UnsupportedEncodingException e1) {
+        // TODO Auto-generated catch block
+        e1.printStackTrace();
+      } catch (IOException e2) {
+        // TODO Auto-generated catch block
+        e2.printStackTrace();
+      }
+    }
   }
 
   private void setFrameSize() {

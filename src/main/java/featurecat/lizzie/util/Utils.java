@@ -859,7 +859,7 @@ public class Utils {
   public static void copyCaptureTsumeGo() {
     // TODO Auto-generated method stub
     try {
-      copy("/assets/captureTsumeGo/CaptureTsumeGo.jar", "captureTsumeGo");
+      copy("/assets/captureTsumeGo/CaptureTsumeGo1.1.jar", "captureTsumeGo");
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();

@@ -48,6 +48,7 @@ public class PrivateKifuSearch extends JFrame {
   private JTextField txtLabel;
   private JTextField txtWhite;
   private JTextField txtBlack;
+  private JTextField txtBlackOrWhite;
   JLabel lbl_tab;
   private JTextField txtOtherInfo;
   int tabNumber = 1;
@@ -87,18 +88,38 @@ public class PrivateKifuSearch extends JFrame {
     date = getDateBefore(date, 60);
     Date date2 = new Date();
     GridBagLayout gbl_panel = new GridBagLayout();
-    gbl_panel.columnWidths = new int[] {56, 82, 56, 82, 56, 82, 56, 82, 56, 82, 56, 82, 0};
+    gbl_panel.columnWidths = new int[] {56, 82, 56, 82, 56, 82, 56, 82, 56, 82, 56, 82, 56, 82, 0};
     gbl_panel.rowHeights = new int[] {23, 23, 0};
     gbl_panel.columnWeights =
-        new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+        new double[] {
+          0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE
+        };
     gbl_panel.rowWeights = new double[] {0.0, 0.0, Double.MIN_VALUE};
     panel.setLayout(gbl_panel);
+
+    JLabel label_blackOrWhite = new JLabel(resourceBundle.getString("PrivateKifuSearch.labelName"));
+    GridBagConstraints gbc_blackOrWhite = new GridBagConstraints();
+    gbc_blackOrWhite.fill = GridBagConstraints.VERTICAL;
+    gbc_blackOrWhite.insets = new Insets(0, 0, 5, 5);
+    gbc_blackOrWhite.gridx = 0;
+    gbc_blackOrWhite.gridy = 0;
+    panel.add(label_blackOrWhite, gbc_blackOrWhite);
+
+    txtBlackOrWhite = new JTextField();
+    GridBagConstraints gbc_txtBlackOrWhite = new GridBagConstraints();
+    gbc_txtBlackOrWhite.fill = GridBagConstraints.BOTH;
+    gbc_txtBlackOrWhite.insets = new Insets(0, 0, 5, 5);
+    gbc_txtBlackOrWhite.gridx = 1;
+    gbc_txtBlackOrWhite.gridy = 0;
+    panel.add(txtBlackOrWhite, gbc_txtBlackOrWhite);
+    txtBlackOrWhite.setColumns(4);
+
     JLabel label_5 =
         new JLabel(resourceBundle.getString("PrivateKifuSearch.labelBlack")); // ("黑方:");
     GridBagConstraints gbc_label_5 = new GridBagConstraints();
     gbc_label_5.fill = GridBagConstraints.VERTICAL;
     gbc_label_5.insets = new Insets(0, 0, 5, 5);
-    gbc_label_5.gridx = 0;
+    gbc_label_5.gridx = 2;
     gbc_label_5.gridy = 0;
     panel.add(label_5, gbc_label_5);
 
@@ -106,7 +127,7 @@ public class PrivateKifuSearch extends JFrame {
     GridBagConstraints gbc_txtBlack = new GridBagConstraints();
     gbc_txtBlack.fill = GridBagConstraints.BOTH;
     gbc_txtBlack.insets = new Insets(0, 0, 5, 5);
-    gbc_txtBlack.gridx = 1;
+    gbc_txtBlack.gridx = 3;
     gbc_txtBlack.gridy = 0;
     panel.add(txtBlack, gbc_txtBlack);
     txtBlack.setColumns(4);
@@ -116,7 +137,7 @@ public class PrivateKifuSearch extends JFrame {
     GridBagConstraints gbc_label_7 = new GridBagConstraints();
     gbc_label_7.fill = GridBagConstraints.VERTICAL;
     gbc_label_7.insets = new Insets(0, 0, 5, 5);
-    gbc_label_7.gridx = 2;
+    gbc_label_7.gridx = 4;
     gbc_label_7.gridy = 0;
     panel.add(label_7, gbc_label_7);
 
@@ -124,7 +145,7 @@ public class PrivateKifuSearch extends JFrame {
     GridBagConstraints gbc_txtBScore = new GridBagConstraints();
     gbc_txtBScore.fill = GridBagConstraints.BOTH;
     gbc_txtBScore.insets = new Insets(0, 0, 5, 5);
-    gbc_txtBScore.gridx = 3;
+    gbc_txtBScore.gridx = 5;
     gbc_txtBScore.gridy = 0;
     panel.add(txtBScore, gbc_txtBScore);
     txtBScore.setColumns(3);
@@ -134,7 +155,7 @@ public class PrivateKifuSearch extends JFrame {
     GridBagConstraints gbc_label_4 = new GridBagConstraints();
     gbc_label_4.fill = GridBagConstraints.VERTICAL;
     gbc_label_4.insets = new Insets(0, 0, 5, 5);
-    gbc_label_4.gridx = 4;
+    gbc_label_4.gridx = 6;
     gbc_label_4.gridy = 0;
     panel.add(label_4, gbc_label_4);
 
@@ -142,7 +163,7 @@ public class PrivateKifuSearch extends JFrame {
     GridBagConstraints gbc_txtWhite = new GridBagConstraints();
     gbc_txtWhite.fill = GridBagConstraints.BOTH;
     gbc_txtWhite.insets = new Insets(0, 0, 5, 5);
-    gbc_txtWhite.gridx = 5;
+    gbc_txtWhite.gridx = 7;
     gbc_txtWhite.gridy = 0;
     panel.add(txtWhite, gbc_txtWhite);
     txtWhite.setColumns(4);
@@ -152,7 +173,7 @@ public class PrivateKifuSearch extends JFrame {
     GridBagConstraints gbc_label_8 = new GridBagConstraints();
     gbc_label_8.fill = GridBagConstraints.VERTICAL;
     gbc_label_8.insets = new Insets(0, 0, 5, 5);
-    gbc_label_8.gridx = 6;
+    gbc_label_8.gridx = 8;
     gbc_label_8.gridy = 0;
     panel.add(label_8, gbc_label_8);
 
@@ -160,7 +181,7 @@ public class PrivateKifuSearch extends JFrame {
     GridBagConstraints gbc_txtWScore = new GridBagConstraints();
     gbc_txtWScore.fill = GridBagConstraints.BOTH;
     gbc_txtWScore.insets = new Insets(0, 0, 5, 5);
-    gbc_txtWScore.gridx = 7;
+    gbc_txtWScore.gridx = 9;
     gbc_txtWScore.gridy = 0;
     panel.add(txtWScore, gbc_txtWScore);
     txtWScore.setColumns(3);
@@ -170,7 +191,7 @@ public class PrivateKifuSearch extends JFrame {
     GridBagConstraints gbc_label_10 = new GridBagConstraints();
     gbc_label_10.fill = GridBagConstraints.VERTICAL;
     gbc_label_10.insets = new Insets(0, 0, 5, 5);
-    gbc_label_10.gridx = 8;
+    gbc_label_10.gridx = 10;
     gbc_label_10.gridy = 0;
     panel.add(label_10, gbc_label_10);
 
@@ -178,7 +199,7 @@ public class PrivateKifuSearch extends JFrame {
     GridBagConstraints gbc_txtAllMove = new GridBagConstraints();
     gbc_txtAllMove.fill = GridBagConstraints.BOTH;
     gbc_txtAllMove.insets = new Insets(0, 0, 5, 5);
-    gbc_txtAllMove.gridx = 9;
+    gbc_txtAllMove.gridx = 11;
     gbc_txtAllMove.gridy = 0;
     panel.add(txtAllMove, gbc_txtAllMove);
     txtAllMove.setColumns(3);
@@ -188,7 +209,7 @@ public class PrivateKifuSearch extends JFrame {
     GridBagConstraints gbc_label_9 = new GridBagConstraints();
     gbc_label_9.fill = GridBagConstraints.VERTICAL;
     gbc_label_9.insets = new Insets(0, 0, 5, 5);
-    gbc_label_9.gridx = 10;
+    gbc_label_9.gridx = 12;
     gbc_label_9.gridy = 0;
     panel.add(label_9, gbc_label_9);
 
@@ -196,7 +217,7 @@ public class PrivateKifuSearch extends JFrame {
     GridBagConstraints gbc_txtAnalyzedMove = new GridBagConstraints();
     gbc_txtAnalyzedMove.fill = GridBagConstraints.BOTH;
     gbc_txtAnalyzedMove.insets = new Insets(0, 0, 5, 0);
-    gbc_txtAnalyzedMove.gridx = 11;
+    gbc_txtAnalyzedMove.gridx = 13;
     gbc_txtAnalyzedMove.gridy = 0;
     panel.add(txtAnalyzedMove, gbc_txtAnalyzedMove);
     txtAnalyzedMove.setColumns(3);
@@ -320,13 +341,9 @@ public class PrivateKifuSearch extends JFrame {
                     + "\""
                     + ","
                     + "case  isdelete when '2' then '"
-                    + "\""
                     + resourceBundle.getString("PrivateKifuSearch.sql.private")
-                    + "\""
                     + "' when '0' then '"
-                    + "\""
                     + resourceBundle.getString("PrivateKifuSearch.sql.public")
-                    + "\""
                     + "' end as "
                     + "\""
                     + resourceBundle.getString("PrivateKifuSearch.sql.isPublic")
@@ -370,7 +387,11 @@ public class PrivateKifuSearch extends JFrame {
                     + txtBlack.getText()
                     + "%' and white like '%"
                     + txtWhite.getText()
-                    + "%' and uploader = '"
+                    + "%' and (white like '%"
+                    + txtBlackOrWhite.getText()
+                    + "%' or black like '%"
+                    + txtBlackOrWhite.getText()
+                    + "%') and uploader like '%"
                     + txtUploader.getText()
                     + "' and otherinfo like '%"
                     + txtOtherInfo.getText()

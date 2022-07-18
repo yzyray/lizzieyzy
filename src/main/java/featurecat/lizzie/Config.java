@@ -129,7 +129,7 @@ public class Config {
   public Theme theme;
   public float winrateStrokeWidth = 1.7f;
   public int leelaversion = 17;
-  public int minimumBlunderBarWidth = 3;
+  public int minimumBlunderBarWidth = 1;
   public int shadowSize = 75;
   public static String sysDefaultFontName = "Dialog.plain";
   public String fontName = null;
@@ -440,6 +440,7 @@ public class Config {
   public boolean analysisRecentIsPartGame = false;
   public boolean analysisRecentIsAllBranches = false;
   public boolean showScoreLeadLine = true;
+  public boolean showWinrateLine = true;
   public boolean showMouseOverWinrateGraph = true;
   public boolean isChinese;
 
@@ -556,6 +557,7 @@ public class Config {
 
   public ArrayList<String> recentFilePaths;
   public boolean showReplaceFileHint = true;
+  public boolean showNewBoardHint = true;
   public JSONObject customLayout1;
   public JSONObject customLayout2;
 
@@ -654,6 +656,7 @@ public class Config {
   public int tsumeGoToPlay = 1; // 1=继承,2=黑,3=白
   public int tsumeGoAttaker = 1; // 1=自动检测,2=黑,3=白
   public int tsumeGoKoThreat = 1; // 1=双方,2=进攻,3=防守,4=无
+  public int tsumeGoWallDistance = 1;
 
   public int captureBlackOffset = 120;
   public int captureBlackPercent = 25;
@@ -1181,6 +1184,7 @@ public class Config {
     analysisAlwaysOverride = uiConfig.optBoolean("analysis-always-override", false);
     analysisSpecificRules = uiConfig.optString("analysis-specific-rules", "");
     showScoreLeadLine = uiConfig.optBoolean("show-score-lead-line", true);
+    showWinrateLine = uiConfig.optBoolean("show-win-rate-line", true);
     showMouseOverWinrateGraph = uiConfig.optBoolean("show-mouse-over-winrate-graph", true);
     frameFontSize = uiConfig.optInt("frame-font-size", 12);
     menuHeight = isFrameFontSmall() ? 20 : (isFrameFontMiddle() ? 25 : 30);
@@ -1333,6 +1337,7 @@ public class Config {
     disableWRNInGame = uiConfig.optBoolean("disable-wrn-in-game", true);
 
     showReplaceFileHint = uiConfig.optBoolean("show-replace-file-hint", true);
+    showNewBoardHint = uiConfig.optBoolean("show-new-board-hint", true);
     maxTreeWidth = uiConfig.optInt("max-tree-width", 10000);
     gameStatisticsCustomStart = uiConfig.optInt("game-statistics-custom-start", 10);
     gameStatisticsCustomEnd = uiConfig.optInt("game-statistics-custom-end", 200);
@@ -1406,6 +1411,7 @@ public class Config {
     tsumeGoToPlay = uiConfig.optInt("tsume-go-to-play", 1);
     tsumeGoAttaker = uiConfig.optInt("tsume-go-attaker", 1);
     tsumeGoKoThreat = uiConfig.optInt("tsume-go-ko-threat", 1);
+    tsumeGoWallDistance = uiConfig.optInt("tsume-go-wall-distance", 1);
 
     captureBlackOffset = uiConfig.optInt("capture-black-offset", 120);
     captureBlackPercent = uiConfig.optInt("capture-black-percent", 25);
@@ -2052,7 +2058,7 @@ public class Config {
     ui.put("large-winrate-graph", false);
     ui.put("winrate-stroke-width", 1.7);
     ui.put("show-blunder-bar", true);
-    ui.put("minimum-blunder-bar-width", 3);
+    ui.put("minimum-blunder-bar-width", 1);
     ui.put("weighted-blunder-bar-height", false);
     // ui.put("dynamic-winrate-graph-width", true);
     ui.put("show-comment", true);
