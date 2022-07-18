@@ -3712,6 +3712,30 @@ public class Menu extends JMenuBar {
           }
         });
 
+    final JFontMenuItem undoDelete = new JFontMenuItem(resourceBundle.getString("Menu.undoDelete"));
+    editMenu.add(undoDelete);
+    undoDelete.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            GameInfo gameInfo = Lizzie.board.getHistory().getGameInfo();
+            Lizzie.board.cleanedit();
+            Lizzie.board.getHistory().setGameInfo(gameInfo);
+            Lizzie.frame.refresh();
+          }
+        });
+
+    final JFontMenuItem redoDelete = new JFontMenuItem(resourceBundle.getString("Menu.redoDelete"));
+    editMenu.add(redoDelete);
+    redoDelete.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            GameInfo gameInfo = Lizzie.board.getHistory().getGameInfo();
+            Lizzie.board.reedit();
+            Lizzie.board.getHistory().setGameInfo(gameInfo);
+            Lizzie.frame.refresh();
+          }
+        });
+
     editMenu.addSeparator();
 
     final JFontMenuItem setInfo =
@@ -3809,6 +3833,10 @@ public class Menu extends JMenuBar {
               insertBlack.setState(false);
               insertWhite.setState(true);
             }
+            if (Lizzie.board.boardstatbeforeedit == "") undoDelete.setVisible(false);
+            else undoDelete.setVisible(true);
+            if (Lizzie.board.boardstatafteredit == "") redoDelete.setVisible(false);
+            else redoDelete.setVisible(true);
           }
 
           @Override

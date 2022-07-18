@@ -52,6 +52,7 @@ public class FloatBoardRenderer {
   private List<MoveData> bestMoves = new ArrayList<MoveData>();
   private ArrayList<Double> estimateArray;
   private ArrayList<Double> preEstimateArray;
+  private boolean estimateBlackToPlay;
   private MoveData mouseOverTemp = new MoveData();
   private BoardHistoryNode mouseOverTempNode;
 
@@ -494,12 +495,10 @@ public class FloatBoardRenderer {
   }
 
   public void drawKataEstimateByTransparent(
-      ArrayList<Double> estimateList, boolean reverse, boolean fromRawNet) {
+      ArrayList<Double> estimateList, boolean blackToPlay, boolean fromRawNet) {
     BufferedImage newEstimateImage = new BufferedImage(boardWidth, boardHeight, TYPE_INT_ARGB);
     Graphics2D g = newEstimateImage.createGraphics();
-    boolean blackToPlay = Lizzie.board.getHistory().isBlacksTurn();
     boolean showBigSize = shouldShowCountBlockBig();
-    if (reverse) blackToPlay = !blackToPlay;
     for (int i = 0; i < estimateList.size(); i++) {
       int[] c = Lizzie.board.getCoordKataGo(i);
       int x = c[0];
@@ -584,29 +583,25 @@ public class FloatBoardRenderer {
     }
   }
 
-  public void drawKataEstimateBySize(ArrayList<Double> tempcount, boolean reverse) {
+  public void drawKataEstimateBySize(ArrayList<Double> estimateList, boolean blackToPlay) {
     BufferedImage newEstimateImage = new BufferedImage(boardWidth, boardHeight, TYPE_INT_ARGB);
     Graphics2D g = newEstimateImage.createGraphics();
-    boolean blackToPlay = Lizzie.board.getHistory().getCurOrMainEnd(editMode).getData().blackToPlay;
-    if (reverse) blackToPlay = !blackToPlay;
-    for (int i = 0; i < tempcount.size(); i++) {
-      if ((tempcount.get(i) > 0 && blackToPlay) || (tempcount.get(i) < 0 && !blackToPlay)) {
-        int y = i / Board.boardWidth;
-        int x = i % Board.boardWidth;
+    for (int i = 0; i < estimateList.size(); i++) {
+      int[] c = Lizzie.board.getCoordKataGo(i);
+      int x = c[0];
+      int y = c[1];
+      if ((estimateList.get(i) > 0 && blackToPlay) || (estimateList.get(i) < 0 && !blackToPlay)) {
         int stoneX = scaledMarginWidth + squareWidth * x;
         int stoneY = scaledMarginHeight + squareHeight * y;
         Color cl = new Color(0, 0, 0, 180);
         g.setColor(cl);
-        int length = (int) (convertLength(tempcount.get(i)) * squareWidth);
+        int length = (int) (convertLength(estimateList.get(i)) * squareWidth);
         if (length > 0) g.fillRect(stoneX - length / 2, stoneY - length / 2, length, length);
       }
-      if ((tempcount.get(i) < 0 && Lizzie.board.getHistory().isBlacksTurn())
-          || (tempcount.get(i) > 0 && !Lizzie.board.getHistory().isBlacksTurn())) {
-        int y = i / Board.boardWidth;
-        int x = i % Board.boardWidth;
+      if ((estimateList.get(i) < 0 && blackToPlay) || (estimateList.get(i) > 0 && !blackToPlay)) {
         int stoneX = scaledMarginWidth + squareWidth * x;
         int stoneY = scaledMarginHeight + squareHeight * y;
-        int length = (int) (convertLength(tempcount.get(i)) * squareWidth);
+        int length = (int) (convertLength(estimateList.get(i)) * squareWidth);
 
         Color cl = new Color(255, 255, 255, 180);
         g.setColor(cl);
@@ -681,16 +676,16 @@ public class FloatBoardRenderer {
         && Lizzie.config.showKataGoEstimateOnMainbord) {
       if (estimateArray != null) {
         if (Lizzie.config.showKataGoEstimateBySize) {
-          drawKataEstimateBySize(estimateArray, false);
+          drawKataEstimateBySize(estimateArray, estimateBlackToPlay);
         } else {
-          drawKataEstimateByTransparent(estimateArray, false, false);
+          drawKataEstimateByTransparent(estimateArray, estimateBlackToPlay, false);
         }
         hasDraw = true;
       } else if (preEstimateArray != null) {
         if (Lizzie.config.showKataGoEstimateBySize) {
-          drawKataEstimateBySize(preEstimateArray, true);
+          drawKataEstimateBySize(preEstimateArray, estimateBlackToPlay);
         } else {
-          drawKataEstimateByTransparent(preEstimateArray, true, false);
+          drawKataEstimateByTransparent(preEstimateArray, estimateBlackToPlay, false);
         }
         hasDraw = true;
       }
@@ -711,19 +706,16 @@ public class FloatBoardRenderer {
     }
     showingBranch = false;
     branchOpt = Optional.empty();
-    bestMoves = Lizzie.board.getHistory().getCurOrMainEnd(editMode).getData().bestMoves;
-    estimateArray = Lizzie.board.getHistory().getCurOrMainEnd(editMode).getData().estimateArray;
+    BoardData mainEndData = Lizzie.board.getHistory().getCurOrMainEnd(editMode).getData();
+    bestMoves = mainEndData.bestMoves;
+    estimateArray = mainEndData.estimateArray;
+    estimateBlackToPlay = mainEndData.blackToPlay;
     if (Lizzie.config.showKataGoEstimate
         && estimateArray == null
         && Lizzie.board.getHistory().getCurOrMainEnd(editMode).previous().isPresent()) {
-      preEstimateArray =
-          Lizzie.board
-              .getHistory()
-              .getCurOrMainEnd(editMode)
-              .previous()
-              .get()
-              .getData()
-              .estimateArray;
+      mainEndData = Lizzie.board.getHistory().getCurOrMainEnd(editMode).previous().get().getData();
+      preEstimateArray = mainEndData.estimateArray;
+      estimateBlackToPlay = mainEndData.blackToPlay;
     } else preEstimateArray = null;
     if ((Lizzie.board.getHistory().isBlacksTurn() && !Lizzie.config.showBlackCandidates)
         || (!Lizzie.board.getHistory().isBlacksTurn() && !Lizzie.config.showWhiteCandidates))

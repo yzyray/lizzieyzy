@@ -2674,6 +2674,7 @@ public class Board {
           return;
         }
       }
+      saveListForEdit();
       if (currentNode.previous().isPresent()) {
         BoardHistoryNode pre = currentNode.previous().get();
         previousMove(true);
@@ -2702,6 +2703,7 @@ public class Board {
 
   public void deleteMoveNoHintAfter() {
     if (!history.getCurrentHistoryNode().next().isPresent()) return;
+    saveListForEdit();
     synchronized (this) {
       BoardHistoryNode currentNode = history.getCurrentHistoryNode().next().get();
       if (currentNode.previous().isPresent()) {
@@ -2733,6 +2735,7 @@ public class Board {
   public void deleteMoveNoHint() {
     synchronized (this) {
       BoardHistoryNode currentNode = history.getCurrentHistoryNode();
+      saveListForEdit();
       if (currentNode.previous().isPresent()) {
         BoardHistoryNode pre = currentNode.previous().get();
         previousMove(true);

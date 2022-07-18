@@ -12169,6 +12169,7 @@ public class LizzieFrame extends JFrame {
     Lizzie.board.hasStartStone = true;
     Lizzie.board.addStartListAll();
     Lizzie.board.flatten();
+    refresh();
   }
 
   public void addContributeLine(String line, boolean stdout) {
