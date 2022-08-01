@@ -968,8 +968,8 @@ public class Menu extends JMenuBar {
         });
     Suggestions.add(customInfoOrdr);
 
-    final JFontMenuItem setCandidatesDelay =
-        new JFontMenuItem(resourceBundle.getString("Menu.setCandidatesDelay"));
+    final JFontCheckBoxMenuItem setCandidatesDelay =
+        new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.setCandidatesDelay"));
     setCandidatesDelay.addActionListener(
         new ActionListener() {
           @Override
@@ -2463,6 +2463,8 @@ public class Menu extends JMenuBar {
             //              scoreLeadPerspectiveBlack.setState(false);
             //              scoreLeadPerspectiveAlternately.setState(true);
             //            }
+            if (Lizzie.config.delayShowCandidates) setCandidatesDelay.setState(true);
+            else setCandidatesDelay.setState(false);
             if (Lizzie.config.showKataGoEstimate) {
               kataEstimateClose.setState(false);
               if (Lizzie.config.showKataGoEstimateOnMainbord

@@ -19,11 +19,11 @@ public class GetFoxRequest {
 
   public GetFoxRequest(FoxKifuDownload foxKifuDownload) {
     this.foxKifuDownload = foxKifuDownload;
-    File foxFile = new File("foxReq" + File.separator + "foxRequestQ.jar");
+    File foxFile = new File("foxReq" + File.separator + "FoxRequest.jar");
     if (!foxFile.exists()) {
       Utils.copyFoxReq();
     }
-    String jarString = " -jar -Dfile.encoding=utf-8 foxReq" + File.separator + "foxRequestQ.jar";
+    String jarString = " -jar -Dfile.encoding=utf-8 foxReq" + File.separator + "FoxRequest.jar";
     try {
       if (OS.isWindows()) {
         boolean success = false;

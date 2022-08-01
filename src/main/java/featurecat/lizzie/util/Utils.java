@@ -895,7 +895,7 @@ public class Utils {
   public static void copyFoxReq() {
     // TODO Auto-generated method stub
     try {
-      copy("/assets/foxReq/foxRequestQ.jar", "foxReq");
+      copy("/assets/foxReq/FoxRequest.jar", "foxReq");
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();

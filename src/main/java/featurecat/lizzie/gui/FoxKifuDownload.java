@@ -281,6 +281,7 @@ public class FoxKifuDownload extends JFrame {
       Utils.showMsg(Lizzie.resourceBundle.getString("FoxKifuDownload.waitLastSearch"), this);
       return;
     }
+    myUid=0;
     isSearching = true;
     isSecondTimeReqEmpty = false;
     isRequestEmpty = false;
@@ -292,13 +293,43 @@ public class FoxKifuDownload extends JFrame {
     Lizzie.config.uiConfig.put("last-fox-name", Lizzie.config.lastFoxName);
   }
 
+  class UserInfo {
+    int blackUid;
+    String blackNickName;
+    String blackUserName;
+    int whiteUid;
+    String whiteNickName;
+    String whiteUserName;
+  }
+
   public void receiveResult(String string) {
     // TODO Auto-generated method stub
     try {
       JSONObject jsonOjbect = new JSONObject(string);
-      if (jsonOjbect.has("uid")) {
-        myUid = jsonOjbect.getInt("uid");
-        foxReq.sendCommand("uid " + myUid);
+      if (myUid == 0) {
+        if (jsonOjbect.has("chesslist")) {
+          JSONArray jsonArray = jsonOjbect.getJSONArray("chesslist");
+          for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+            UserInfo userInfo = new UserInfo();
+            userInfo.blackNickName = jsonObject.optString("blacknick", "");
+            userInfo.blackUserName = jsonObject.getString("blackenname");
+            userInfo.blackUid = jsonObject.getInt("blackuid");
+
+            userInfo.whiteNickName = jsonObject.optString("whitenick", "");
+            userInfo.whiteUserName = jsonObject.getString("whiteenname");
+            userInfo.whiteUid = jsonObject.getInt("whiteuid");
+            if (userInfo.blackNickName.trim().equalsIgnoreCase(Lizzie.config.lastFoxName)
+                || userInfo.blackUserName.trim().equalsIgnoreCase(Lizzie.config.lastFoxName)) {
+              myUid = userInfo.blackUid;
+              break;
+            } else if (userInfo.whiteNickName.trim().equalsIgnoreCase(Lizzie.config.lastFoxName)
+                || userInfo.whiteUserName.trim().equalsIgnoreCase(Lizzie.config.lastFoxName)) {
+              myUid = userInfo.whiteUid;
+              break;
+            }
+          }
+        }
       }
       if (jsonOjbect.has("chesslist")) {
         isSearching = false;

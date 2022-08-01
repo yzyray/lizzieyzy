@@ -170,25 +170,11 @@ public class Tsumego {
       }
     }
 
-    //    int leftGap=leftIndex+1;
-    //    int rightGap=Board.boardWidth-rightIndex-1;
-    //    int topGap=topIndex+1;
-    //    int bottomGap=Board.boardHeight-bottomtIndex-1;
-    //    int minGap=999;
-    //    if(leftGap<minGap)
-    //    	minGap=leftGap;
-    //    if(rightGap<minGap)
-    //    	minGap=rightGap;
-    //    if(topGap<minGap)
-    //    	minGap=topGap;
-    //    if(bottomGap<minGap)
-    //    	minGap=bottomGap;
-    // fill board
     int minIndex = -1;
     int leftArea = (rightIndex + 1) * Board.boardHeight;
-    int rightArea = (Board.boardWidth - leftIndex + 1) * Board.boardHeight;
+    int rightArea = (Board.boardWidth - leftIndex) * Board.boardHeight;
     int topArea = (bottomIndex + 1) * Board.boardWidth;
-    int bottomArea = (Board.boardHeight - topIndex + 1) * Board.boardWidth;
+    int bottomArea = (Board.boardHeight - topIndex) * Board.boardWidth;
     int minArea = 99999;
     if (leftArea < minArea) {
       minArea = leftArea;
@@ -312,22 +298,25 @@ public class Tsumego {
           }
         } else {
           outOfHalf = true;
-          boolean topMin = false;
-          int topRoom = topIndex;
-          int bottomRoom = Board.boardHeight - bottomIndex - 1;
-          if (topRoom <= bottomRoom) topMin = true;
           if (addKoThreatSide) {
             if (rightIndex < 4) {
               noRoomForSideKo = true;
-            } else if (topRoom >= 2 && bottomRoom < 2) {
-              topMin = true;
-            } else if (topRoom < 2 && bottomRoom >= 2) topMin = false;
+            }
           }
-          // 确定好用哪一边填充,topMin
-          if (topMin) {
-            totalArea =
-                Math.min(Board.boardWidth, rightIndex + 1)
-                    * Math.min(Board.boardHeight, (bottomIndex + 1));
+          int totalArea1 =
+              Math.min(Board.boardWidth, rightIndex + 1)
+                  * Math.min(Board.boardHeight, (bottomIndex + 1));
+          int totalArea2 =
+              Math.min(Board.boardWidth, rightIndex + 1)
+                  * (Board.boardHeight - Math.max(0, topIndex));
+
+          double komi1 =
+              Math.abs(2 * (totalArea1 - Math.ceil((Board.boardHeight * Board.boardWidth) / 2.0)));
+          double komi2 =
+              Math.abs(2 * (totalArea2 - Math.ceil((Board.boardHeight * Board.boardWidth) / 2.0)));
+
+          if (komi1 < komi2) {
+            totalArea = totalArea1;
             for (int x = 0; x < Board.boardWidth; x++) {
               for (int y = 0; y < Board.boardHeight; y++) {
                 if (x < rightIndex) {
@@ -377,9 +366,7 @@ public class Tsumego {
               }
             }
           } else {
-            totalArea =
-                Math.min(Board.boardWidth, rightIndex + 1)
-                    * (Board.boardHeight - Math.max(0, topIndex));
+            totalArea = totalArea2;
             for (int x = 0; x < Board.boardWidth; x++) {
               for (int y = 0; y < Board.boardHeight; y++) {
                 if (x < rightIndex) {
@@ -553,23 +540,25 @@ public class Tsumego {
           }
         } else {
           outOfHalf = true;
-          boolean topMin = false;
-          int topRoom = topIndex;
-          int bottomRoom = Board.boardHeight - bottomIndex - 1;
-          if (topRoom <= bottomRoom) topMin = true;
           if (addKoThreatSide) {
             if (Board.boardWidth - leftIndex - 1 < 4) {
               noRoomForSideKo = true;
-            } else if (topRoom >= 2 && bottomRoom < 2) {
-              topMin = true;
-            } else if (topRoom < 2 && bottomRoom >= 2) {
-              topMin = false;
             }
           }
-          if (topMin) {
-            totalArea =
-                (Board.boardWidth - Math.max(0, leftIndex))
-                    * Math.min(Board.boardHeight, (bottomIndex + 1));
+          int totalArea1 =
+              (Board.boardWidth - Math.max(0, leftIndex))
+                  * Math.min(Board.boardHeight, (bottomIndex + 1));
+          int totalArea2 =
+              (Board.boardWidth - Math.max(0, leftIndex))
+                  * (Board.boardHeight - Math.max(0, topIndex));
+
+          double komi1 =
+              Math.abs(2 * (totalArea1 - Math.ceil((Board.boardHeight * Board.boardWidth) / 2.0)));
+          double komi2 =
+              Math.abs(2 * (totalArea2 - Math.ceil((Board.boardHeight * Board.boardWidth) / 2.0)));
+
+          if (komi1 < komi2) {
+            totalArea = totalArea1;
             for (int x = 0; x < Board.boardWidth; x++) {
               for (int y = 0; y < Board.boardHeight; y++) {
                 if (x > leftIndex) {
@@ -621,9 +610,7 @@ public class Tsumego {
               }
             }
           } else {
-            totalArea =
-                (Board.boardWidth - Math.max(0, leftIndex))
-                    * (Board.boardHeight - Math.max(0, topIndex));
+            totalArea = totalArea2;
             for (int x = 0; x < Board.boardWidth; x++) {
               for (int y = 0; y < Board.boardHeight; y++) {
                 if (x > leftIndex) {
@@ -794,23 +781,26 @@ public class Tsumego {
           }
         } else {
           outOfHalf = true;
-          boolean leftMin = false;
-          int leftRoom = leftIndex;
-          int rightRoom = Board.boardWidth - rightIndex - 1;
-          if (leftRoom <= rightRoom) leftMin = true;
           if (addKoThreatSide) {
             if (bottomIndex < 4) {
               noRoomForSideKo = true;
-            } else if (leftRoom >= 2 && rightRoom < 2) {
-              leftMin = true;
-            } else if (leftRoom < 2 && rightRoom >= 2) {
-              leftMin = false;
             }
           }
-          if (leftMin) {
-            totalArea =
-                Math.min(Board.boardWidth, rightIndex + 1)
-                    * Math.min(Board.boardHeight, bottomIndex + 1);
+
+          int totalArea1 =
+              Math.min(Board.boardWidth, rightIndex + 1)
+                  * Math.min(Board.boardHeight, bottomIndex + 1);
+          int totalArea2 =
+              (Board.boardWidth - Math.max(0, leftIndex)) // 16
+                  * Math.min(Board.boardHeight, bottomIndex + 1); // 13
+
+          double komi1 =
+              Math.abs(2 * (totalArea1 - Math.ceil((Board.boardHeight * Board.boardWidth) / 2.0)));
+          double komi2 =
+              Math.abs(2 * (totalArea2 - Math.ceil((Board.boardHeight * Board.boardWidth) / 2.0)));
+
+          if (komi1 < komi2) {
+            totalArea = totalArea1;
             for (int x = 0; x < Board.boardWidth; x++) {
               for (int y = 0; y < Board.boardHeight; y++) {
                 if (y < bottomIndex) {
@@ -860,9 +850,7 @@ public class Tsumego {
               }
             }
           } else {
-            totalArea =
-                (Board.boardWidth - Math.max(0, leftIndex - 1))
-                    * Math.min(Board.boardHeight, bottomIndex + 1);
+            totalArea = totalArea2;
             for (int x = 0; x < Board.boardWidth; x++) {
               for (int y = 0; y < Board.boardHeight; y++) {
                 if ((x > rightIndex && y < bottomIndex) || (x >= leftIndex && y < topIndex)) {
@@ -1034,23 +1022,24 @@ public class Tsumego {
           }
         } else {
           outOfHalf = true;
-          boolean leftMin = false;
-          int leftRoom = leftIndex;
-          int rightRoom = Board.boardWidth - rightIndex - 1;
-          if (leftRoom <= rightRoom) leftMin = true;
           if (addKoThreatSide) {
             if (bottomIndex < 4) {
               noRoomForSideKo = true;
-            } else if (leftRoom >= 2 && rightRoom < 2) {
-              leftMin = true;
-            } else if (leftRoom < 2 && rightRoom >= 2) {
-              leftMin = false;
             }
           }
-          if (leftMin) {
-            totalArea =
-                Math.min(Board.boardWidth, rightIndex + 1)
-                    * (Board.boardHeight - Math.max(0, topIndex));
+          int totalArea1 =
+              Math.min(Board.boardWidth, rightIndex + 1) // 15
+                  * (Board.boardHeight - Math.max(0, topIndex)); // 13
+          int totalArea2 =
+              (Board.boardWidth - Math.max(0, leftIndex))
+                  * (Board.boardHeight - Math.max(0, topIndex));
+
+          double komi1 =
+              Math.abs(2 * (totalArea1 - Math.ceil((Board.boardHeight * Board.boardWidth) / 2.0)));
+          double komi2 =
+              Math.abs(2 * (totalArea2 - Math.ceil((Board.boardHeight * Board.boardWidth) / 2.0)));
+          if (komi1 < komi2) {
+            totalArea = totalArea1;
             for (int x = 0; x < Board.boardWidth; x++) {
               for (int y = 0; y < Board.boardHeight; y++) {
                 if (y > topIndex) {
@@ -1102,9 +1091,7 @@ public class Tsumego {
               }
             }
           } else {
-            totalArea =
-                (Board.boardWidth - Math.max(0, leftIndex))
-                    * (Board.boardHeight - Math.max(0, topIndex));
+            totalArea = totalArea2;
             for (int x = 0; x < Board.boardWidth; x++) {
               for (int y = 0; y < Board.boardHeight; y++) {
                 if (y > topIndex) {
