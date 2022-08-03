@@ -338,7 +338,7 @@ public class ConfigDialog2 extends JDialog {
     aboutTab = new PanelWithToolTips();
     LinkLabel lblLizzieName =
         new LinkLabel(
-            "<html><div align=\"center\"><b>Lizzie Yzy 2.5.0</b></div>"
+            "<html><div align=\"center\"><b>Lizzie Yzy 2.5.1</b></div>"
                 + "<div align=\"center\"><font style=\"font-weight:plain;font-size:12;\">Java version: "
                 + Lizzie.javaVersionString
                 + "</font></div></html>");

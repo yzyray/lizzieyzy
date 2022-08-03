@@ -281,7 +281,7 @@ public class FoxKifuDownload extends JFrame {
       Utils.showMsg(Lizzie.resourceBundle.getString("FoxKifuDownload.waitLastSearch"), this);
       return;
     }
-    myUid=0;
+    myUid = 0;
     isSearching = true;
     isSecondTimeReqEmpty = false;
     isRequestEmpty = false;
