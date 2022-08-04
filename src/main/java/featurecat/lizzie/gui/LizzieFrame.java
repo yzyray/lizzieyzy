@@ -10072,7 +10072,7 @@ public class LizzieFrame extends JFrame {
         JLabel label =
             (JLabel) super.getTableCellRendererComponent(table, value, false, false, row, column);
         if (isNextMove) label.setToolTipText(value.toString());
-        else label.setToolTipText("");
+        else label.setToolTipText(null);
         return label;
       } else {
         isSelect = false;
@@ -10080,7 +10080,7 @@ public class LizzieFrame extends JFrame {
         JLabel label =
             (JLabel) super.getTableCellRendererComponent(table, value, false, false, row, column);
         if (isNextMove) label.setToolTipText(value.toString());
-        else label.setToolTipText("");
+        else label.setToolTipText(null);
         return label;
       }
     }
