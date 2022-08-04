@@ -10069,12 +10069,19 @@ public class LizzieFrame extends JFrame {
           isChanged = false;
         }
         isSelect = true;
-        return super.getTableCellRendererComponent(table, value, false, false, row, column);
-
+        JLabel label =
+            (JLabel) super.getTableCellRendererComponent(table, value, false, false, row, column);
+        if (isNextMove) label.setToolTipText(value.toString());
+        else label.setToolTipText("");
+        return label;
       } else {
         isSelect = false;
         isChanged = false;
-        return super.getTableCellRendererComponent(table, value, false, false, row, column);
+        JLabel label =
+            (JLabel) super.getTableCellRendererComponent(table, value, false, false, row, column);
+        if (isNextMove) label.setToolTipText(value.toString());
+        else label.setToolTipText("");
+        return label;
       }
     }
 
