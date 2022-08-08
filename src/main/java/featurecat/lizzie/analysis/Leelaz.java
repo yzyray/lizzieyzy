@@ -814,7 +814,8 @@ public class Leelaz {
           genmoveResign(false);
           return;
         }
-        if (Lizzie.board.getHistory().getMoveNumber() > EngineManager.engineGameInfo.maxGameMoves) {
+        if (Lizzie.board.getHistory().getMoveNumber()
+            > EngineManager.engineGameInfo.getMaxGameMoves()) {
           pkMoveTime = System.currentTimeMillis() - pkMoveStartTime;
           pkMoveTimeGame = pkMoveTimeGame + pkMoveTime;
           outOfMoveNum = true;
@@ -1829,7 +1830,8 @@ public class Leelaz {
     }
     if (Lizzie.board.getHistory().isBlacksTurn() && !isBlackEngine
         || !Lizzie.board.getHistory().isBlacksTurn() & isBlackEngine) return;
-    if (Lizzie.board.getHistory().getMoveNumber() > EngineManager.engineGameInfo.maxGameMoves) {
+    if (Lizzie.board.getHistory().getMoveNumber()
+        > EngineManager.engineGameInfo.getMaxGameMoves()) {
       outOfMoveNum = true;
       resigned = true;
     }

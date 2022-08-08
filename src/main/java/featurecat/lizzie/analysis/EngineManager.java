@@ -251,8 +251,8 @@ public class EngineManager {
     engineGameInfo.whiteMinMove = Lizzie.config.secondEngineMinMove;
     engineGameInfo.whiteResignMoveCounts = Lizzie.config.secondEngineResignMoveCounts;
     engineGameInfo.whiteResignWinrate = Lizzie.config.secondEngineResignWinrate;
-    if (checkGameMaxMove) engineGameInfo.maxGameMoves = maxGameMoves;
-    else engineGameInfo.maxGameMoves = Board.boardHeight * Board.boardWidth * 2;
+    if (checkGameMaxMove) engineGameInfo.setMaxGameMoves(maxGameMoves);
+    else engineGameInfo.setMaxGameMoves(-1);
     engineGameInfo.SF = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
     if (Lizzie.frame.enginePkSgfWinLoss != null)
       engineGameInfo.engineGameSgfWinLoss = Lizzie.frame.enginePkSgfWinLoss;
@@ -471,7 +471,7 @@ public class EngineManager {
     // 添加结果
     if (engineList.get(resignIndex).doublePass) {
       df += resourceBundle.getString("EngineManager.doublePassFileName"); // "_双pass对局";
-    } else if (Lizzie.board.getHistory().getMoveNumber() > engineGameInfo.maxGameMoves) {
+    } else if (Lizzie.board.getHistory().getMoveNumber() > engineGameInfo.getMaxGameMoves()) {
       df += resourceBundle.getString("EngineManager.outOfMoveFileName"); // "_超手数对局";
     } else {
       if (resignIndex == engineGameInfo.whiteEngineIndex) {
@@ -1046,7 +1046,7 @@ public class EngineManager {
         }
 
         engineGameInfo.settingAll +=
-            resourceBundle.getString("EngineGameInfo.maxMoves") + engineGameInfo.maxGameMoves;
+            resourceBundle.getString("EngineGameInfo.maxMoves") + engineGameInfo.getMaxGameMoves();
       } else {
         engineGameInfo.settingAll =
             resourceBundle.getString("EngineGameInfo.otherSettings")
@@ -1084,7 +1084,7 @@ public class EngineManager {
         }
 
         engineGameInfo.settingAll +=
-            resourceBundle.getString("EngineGameInfo.maxMoves") + engineGameInfo.maxGameMoves;
+            resourceBundle.getString("EngineGameInfo.maxMoves") + engineGameInfo.getMaxGameMoves();
 
         if (LizzieFrame.toolbar.isRandomMove) {
           engineGameInfo.settingAll +=
