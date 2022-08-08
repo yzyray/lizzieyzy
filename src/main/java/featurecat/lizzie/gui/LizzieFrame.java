@@ -9551,9 +9551,35 @@ public class LizzieFrame extends JFrame {
       }
     }
     if (Lizzie.config.isAutoAna) {
-      Lizzie.config.isAutoAna = false;
-      LizzieFrame.toolbar.chkAutoAnalyse.setSelected(false);
-      Lizzie.leelaz.notPondering();
+      if (Lizzie.config.exitAutoAnalyzeByPause) {
+        if (Lizzie.config.exitAutoAnalyzeTip) {
+          Object[] options = new Object[2];
+          options[0] = Lizzie.resourceBundle.getString("LizzieFrame.autoAnalyze.notShowAgain");
+          options[1] = Lizzie.resourceBundle.getString("LizzieFrame.confirm");
+          Object defaultOption = Lizzie.resourceBundle.getString("LizzieFrame.confirm");
+          JOptionPane optionPane =
+              new JOptionPane(
+                  new JFontLabel(
+                      Lizzie.resourceBundle.getString("LizzieFrame.autoAnalyze.tip.content")),
+                  JOptionPane.INFORMATION_MESSAGE,
+                  JOptionPane.YES_NO_OPTION,
+                  null,
+                  options,
+                  defaultOption);
+          JDialog dialog =
+              optionPane.createDialog(
+                  this, Lizzie.resourceBundle.getString("LizzieFrame.autoAnalyze.tip.title"));
+          dialog.setVisible(true);
+          dialog.dispose();
+          if (optionPane.getValue().equals(options[0])) {
+            Lizzie.config.exitAutoAnalyzeTip = false;
+            Lizzie.config.uiConfig.put("exit-auto-analyze-tip", Lizzie.config.exitAutoAnalyzeTip);
+          }
+        }
+        Lizzie.config.isAutoAna = false;
+        LizzieFrame.toolbar.chkAutoAnalyse.setSelected(false);
+        Lizzie.leelaz.notPondering();
+      }
     }
     LizzieFrame.menu.toggleDoubleMenuGameStatus();
     return isGaming;

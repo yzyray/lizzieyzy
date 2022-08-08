@@ -664,6 +664,9 @@ public class Config {
   public int captureWhitePercent = 15;
   public int captureGrayOffset = 80;
 
+  public boolean exitAutoAnalyzeByPause = true;
+  public boolean exitAutoAnalyzeTip = true;
+
   private JSONObject loadAndMergeSaveBoardConfig(
       JSONObject defaultCfg, String fileName, boolean needValidation) throws IOException {
     File file = new File(fileName);
@@ -1384,6 +1387,8 @@ public class Config {
     winrateAlwaysBlack = uiConfig.optBoolean("win-rate-always-black", false);
     showScoreAsDiff = uiConfig.optBoolean("show-score-as-diff", false);
     useMovesOwnership = uiConfig.optBoolean("use-moves-ownership", true);
+    exitAutoAnalyzeByPause = uiConfig.optBoolean("exit-auto-analyze-by-pause", true);
+    exitAutoAnalyzeTip = uiConfig.optBoolean("exit-auto-analyze-tip", true);
     // chkPkStartNum = uiConfig.optBoolean("chkpk-start-num", false);
     // pkStartNum = uiConfig.optInt("pk-start-num", 1);
     contributeEnginePath = uiConfig.optString("contribute-engine-path", "");

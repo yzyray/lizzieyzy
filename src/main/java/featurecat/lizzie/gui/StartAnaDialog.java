@@ -43,6 +43,7 @@ public class StartAnaDialog extends JDialog {
   private JCheckBox chkAllBranches;
   private boolean cancelled = true;
   private JCheckBox chkUseDiff;
+  private JCheckBox chkExitByPause;
   private boolean isAnalysisMode = false;
 
   public StartAnaDialog(boolean isAnalysisMode, Window owner) {
@@ -90,7 +91,7 @@ public class StartAnaDialog extends JDialog {
 
   private void initContentPanel() {
     GridLayout gridLayout =
-        new GridLayout(isAnalysisMode ? 4 : Lizzie.frame.isBatchAna ? 9 : 10, 2, 4, 4);
+        new GridLayout(isAnalysisMode ? 4 : Lizzie.frame.isBatchAna ? 10 : 11, 2, 4, 4);
     contentPanel.setLayout(gridLayout);
 
     //  checkBoxPlayerIsBlack =
@@ -125,7 +126,7 @@ public class StartAnaDialog extends JDialog {
               Lizzie.resourceBundle.getString(
                   "StartAnaDialog.totalVisitsPerMove"))); // ("每手总计算量"));
       contentPanel.add(txtAnalysisPlayouts);
-      chkAllBranches = new JCheckBox();
+      chkAllBranches = new JFontCheckBox();
       contentPanel.add(
           new JFontLabel(
               Lizzie.resourceBundle.getString("StartAnaDialog.chkAllBranches"))); // ("每手总计算量"));
@@ -184,7 +185,7 @@ public class StartAnaDialog extends JDialog {
             }
           });
       bigMistakeSetPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
-      chkUseDiff = new JCheckBox();
+      chkUseDiff = new JFontCheckBox();
       chkUseDiff.setSelected(Lizzie.config.autoAnaDiffEnable);
       btnSetDiff.setEnabled(Lizzie.config.autoAnaDiffEnable);
       chkUseDiff.addActionListener(
@@ -197,6 +198,12 @@ public class StartAnaDialog extends JDialog {
       bigMistakeSetPanel.add(chkUseDiff);
       bigMistakeSetPanel.add(btnSetDiff);
       contentPanel.add(bigMistakeSetPanel);
+
+      chkExitByPause = new JFontCheckBox();
+      chkExitByPause.setSelected(Lizzie.config.exitAutoAnalyzeByPause);
+      contentPanel.add(
+          new JFontLabel(Lizzie.resourceBundle.getString("StartAnaDialog.chkExitByPause")));
+      contentPanel.add(chkExitByPause);
     }
     if (!Lizzie.frame.isBatchAna) {
       contentPanel.add(
@@ -271,6 +278,11 @@ public class StartAnaDialog extends JDialog {
   }
 
   public void apply() {
+    if (chkExitByPause != null) {
+      Lizzie.config.exitAutoAnalyzeByPause = chkExitByPause.isSelected();
+      Lizzie.config.uiConfig.put(
+          "exit-auto-analyze-by-pause", Lizzie.config.exitAutoAnalyzeByPause);
+    }
     try {
       LizzieFrame.toolbar.firstMove =
           Integer.parseInt(LizzieFrame.toolbar.txtFirstAnaMove.getText().replace(" ", ""));
