@@ -125,6 +125,7 @@ public class AnalysisEngine {
 
   private void showErrMsg(String errMsg) {
     if (isPreLoad) return;
+    if (waitFrame != null) waitFrame.setVisible(false);
     tryToDignostic(errMsg);
     AnalysisSettings analysisSettings = new AnalysisSettings(true, true);
     analysisSettings.setVisible(true);
