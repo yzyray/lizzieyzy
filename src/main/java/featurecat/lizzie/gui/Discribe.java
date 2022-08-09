@@ -60,6 +60,7 @@ public class Discribe extends JDialog {
     else Lizzie.setFrameSize(this, 801, 303);
     setLocationRelativeTo(owner);
     setVisible(false);
+    setModal(true);
     setVisible(true);
   }
 
