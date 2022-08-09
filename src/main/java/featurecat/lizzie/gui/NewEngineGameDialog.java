@@ -967,7 +967,8 @@ public class NewEngineGameDialog extends JDialog {
       double komi = 7.5;
       try {
         komi = FORMAT_KOMI.parse(textFieldKomi.getText()).doubleValue();
-      } catch (NumberFormatException err) {
+      } catch (NumberFormatException e) {
+        e.printStackTrace();
       }
       int handicap =
           !textFieldHandicap.isEnabled()

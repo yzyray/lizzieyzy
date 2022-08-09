@@ -159,6 +159,7 @@ public class Lizzie {
         config.uiConfig.optString(
             "share-label-3", resourceBundle.getString("ShareFrame.shareLabel3"));
     setLookAndFeel();
+    Locale.setDefault(Locale.ENGLISH);
     if (Lizzie.config.uiConfig.optBoolean("autoload-default", false)) {
       start(-1, true);
     } else if (Lizzie.config.uiConfig.optBoolean("autoload-last", false)) {
