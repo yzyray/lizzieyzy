@@ -128,6 +128,7 @@ public class Config {
 
   public Theme theme;
   public float winrateStrokeWidth = 1.7f;
+  public float scoreLeadStrokeWidth = 1.0f;
   public int leelaversion = 17;
   public int minimumBlunderBarWidth = 1;
   public int shadowSize = 75;
@@ -1521,6 +1522,7 @@ public class Config {
     Color oriPureBackgroundColor = pureBackgroundColor;
     Color oriPureBoardColor = pureBoardColor;
     winrateStrokeWidth = theme.winrateStrokeWidth();
+    scoreLeadStrokeWidth = theme.scoreLeadStrokeWidth();
     minimumBlunderBarWidth = theme.minimumBlunderBarWidth();
     shadowSize = theme.shadowSize();
     commentFontSize = theme.commentFontSize();

@@ -194,6 +194,7 @@ public class ConfigDialog2 extends JDialog {
   // private boolean isLoadedTheme = false;
   private JComboBox<String> cmbThemes;
   private JSpinner spnWinrateStrokeWidth;
+  private JSpinner spnScoreLeadStrokeWidth;
   private JSpinner spnMinimumBlunderBarWidth;
   private JSpinner spnShadowSize;
   private JComboBox<String> cmbFontName;
@@ -2090,6 +2091,15 @@ public class ConfigDialog2 extends JDialog {
     spnWinrateStrokeWidth.setBounds(175, 42, 69, 20);
     themeTab.add(spnWinrateStrokeWidth);
 
+    JLabel lblScoreLeadStrokeWidth =
+        new JLabel(resourceBundle.getString("LizzieConfig.title.scoreLeadStrokeWidth"));
+    lblScoreLeadStrokeWidth.setBounds(294, 44, 133, 16);
+    themeTab.add(lblScoreLeadStrokeWidth);
+    spnScoreLeadStrokeWidth = new JSpinner();
+    spnScoreLeadStrokeWidth.setModel(new SpinnerNumberModel(1.0, 0.1, 10, 0.1));
+    spnScoreLeadStrokeWidth.setBounds(425, 42, 69, 20);
+    themeTab.add(spnScoreLeadStrokeWidth);
+
     JLabel lblMinimumBlunderBarWidth =
         new JLabel(resourceBundle.getString("LizzieConfig.title.minimumBlunderBarWidth"));
     lblMinimumBlunderBarWidth.setBounds(10, 74, 163, 16);
@@ -3336,6 +3346,7 @@ public class ConfigDialog2 extends JDialog {
         chkPureBoard.setSelected(theme.usePureBoard(false));
         lblPureBoardColor.setColor(theme.pureBoardColor());
         spnWinrateStrokeWidth.setValue(theme.winrateStrokeWidth());
+        spnScoreLeadStrokeWidth.setValue(theme.scoreLeadStrokeWidth());
         spnMinimumBlunderBarWidth.setValue(theme.minimumBlunderBarWidth());
         spnShadowSize.setValue(theme.shadowSize());
         setFontValue(cmbFontName, theme.fontName());
@@ -3409,6 +3420,7 @@ public class ConfigDialog2 extends JDialog {
             "pure-background-color", Theme.color2ArrayNoAlpha(lblPureBackgroundColor.getColor()));
         theme.config.put("show-stone-shadow", chkShowStoneShaow.isSelected());
         theme.config.put("winrate-stroke-width", spnWinrateStrokeWidth.getValue());
+        theme.config.put("score-lead-stroke-width", spnScoreLeadStrokeWidth.getValue());
         theme.config.put("minimum-blunder-bar-width", spnMinimumBlunderBarWidth.getValue());
         theme.config.put("shadow-size", spnShadowSize.getValue());
         theme.config.put("font-name", getFontItemName(cmbFontName));
@@ -3500,6 +3512,8 @@ public class ConfigDialog2 extends JDialog {
             Lizzie.config.uiConfig.optJSONArray("pure-background-color"), Color.GRAY));
     txtBackgroundFilter.setEnabled(!chkPureBackground.isSelected());
     spnWinrateStrokeWidth.setValue(Lizzie.config.uiConfig.optFloat("winrate-stroke-width", 1.7f));
+    spnScoreLeadStrokeWidth.setValue(
+        Lizzie.config.uiConfig.optFloat("score-lead-stroke-width", 1.0f));
     spnMinimumBlunderBarWidth.setValue(
         Lizzie.config.uiConfig.optInt("minimum-blunder-bar-width", 1));
     spnShadowSize.setValue(Lizzie.config.uiConfig.optInt("shadow-size", 85));
@@ -3583,6 +3597,7 @@ public class ConfigDialog2 extends JDialog {
     Lizzie.config.uiConfig.put(
         "pure-background-color", Theme.color2ArrayNoAlpha(lblPureBackgroundColor.getColor()));
     Lizzie.config.uiConfig.put("winrate-stroke-width", spnWinrateStrokeWidth.getValue());
+    Lizzie.config.uiConfig.put("score-lead-stroke-width", spnScoreLeadStrokeWidth.getValue());
     Lizzie.config.uiConfig.put("minimum-blunder-bar-width", spnMinimumBlunderBarWidth.getValue());
     Lizzie.config.uiConfig.put("shadow-size", spnShadowSize.getValue());
     Lizzie.config.uiConfig.put("show-stone-shadow", chkShowStoneShaow.isSelected());

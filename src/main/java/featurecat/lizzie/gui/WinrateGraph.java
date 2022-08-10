@@ -996,7 +996,7 @@ public class WinrateGraph {
                   // Color lineColor = g.getColor();
                   Stroke previousStroke = g.getStroke();
                   g.setColor(Lizzie.config.scoreMeanLineColor);
-                  g.setStroke(new BasicStroke(1));
+                  g.setStroke(new BasicStroke(Lizzie.config.scoreLeadStrokeWidth));
                   g.drawLine(
                       posx + ((lastOkMove) * width / numMoves),
                       posy
@@ -1027,7 +1027,7 @@ public class WinrateGraph {
             // Color lineColor = g.getColor();
             Stroke previousStroke = g.getStroke();
             g.setColor(Lizzie.config.scoreMeanLineColor);
-            g.setStroke(new BasicStroke(1));
+            g.setStroke(new BasicStroke(Lizzie.config.scoreLeadStrokeWidth));
             g.drawLine(
                 posx + ((lastOkMove) * width / numMoves),
                 posy
@@ -1104,7 +1104,7 @@ public class WinrateGraph {
                   // Color lineColor = g.getColor();
                   Stroke previousStroke = g.getStroke();
                   g.setColor(Lizzie.config.scoreMeanLineColor);
-                  g.setStroke(new BasicStroke(1));
+                  g.setStroke(new BasicStroke(Lizzie.config.scoreLeadStrokeWidth));
                   g.drawLine(
                       posx + ((lastOkMove) * width / numMoves),
                       posy
@@ -1135,7 +1135,7 @@ public class WinrateGraph {
             // Color lineColor = g.getColor();
             Stroke previousStroke = g.getStroke();
             g.setColor(Lizzie.config.scoreMeanLineColor);
-            g.setStroke(new BasicStroke(1));
+            g.setStroke(new BasicStroke(Lizzie.config.scoreLeadStrokeWidth));
             g.drawLine(
                 posx + ((lastOkMove) * width / numMoves),
                 posy
@@ -1204,7 +1204,7 @@ public class WinrateGraph {
                 //                if (!node.isMainTrunk()) {
                 //                  g.setStroke(dashed);
                 //                } else
-                g.setStroke(new BasicStroke(1));
+                g.setStroke(new BasicStroke(Lizzie.config.scoreLeadStrokeWidth));
                 g.drawLine(
                     posx + (lastOkMove * width / numMoves),
                     posy

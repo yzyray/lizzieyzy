@@ -234,6 +234,11 @@ public class Theme {
     return config.optFloat("winrate-stroke-width", uiConfig.optFloat("winrate-stroke-width", 1.7f));
   }
 
+  public float scoreLeadStrokeWidth() {
+    return config.optFloat(
+        "score-lead-stroke-width", uiConfig.optFloat("score-lead-stroke-width", 1.0f));
+  }
+
   /** The minimum width of the blunder bar */
   public int minimumBlunderBarWidth() {
     return getIntByKey("minimum-blunder-bar-width", 1);
