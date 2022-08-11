@@ -20,6 +20,7 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.FontMetrics;
 import java.awt.Window;
 import java.io.BufferedWriter;
@@ -61,6 +62,30 @@ public class Utils {
   public static String iv2 = "s6st73f49adc4c5d";
   private static int msemaphoretryroom = 1;
   private static boolean alertedNoByoyomiSoundFile = false;
+
+  public static void loadFonts(String uiFontName, String playoutFontName, String winrateFontName) {
+    try {
+      LizzieFrame.uiFont = new Font("SansSerif", Font.TRUETYPE_FONT, 12);
+      LizzieFrame.winrateFont =
+          Font.createFont(
+              Font.TRUETYPE_FONT,
+              Thread.currentThread()
+                  .getContextClassLoader()
+                  .getResourceAsStream("fonts/OpenSans-Semibold.ttf"));
+    } catch (IOException | FontFormatException e) {
+      e.printStackTrace();
+    }
+    if (uiFontName != null
+        && (!(uiFontName.equals("Lizzie默认") || uiFontName.equals("Lizzie Default")))) {
+      LizzieFrame.uiFont = new Font(uiFontName, Font.PLAIN, 12);
+    }
+    if (playoutFontName != null)
+      LizzieFrame.playoutsFont = new Font(playoutFontName, Font.PLAIN, 12);
+    if (winrateFontName != null
+        && (!(winrateFontName.equals("Lizzie默认") || winrateFontName.equals("Lizzie Default")))) {
+      LizzieFrame.winrateFont = new Font(winrateFontName, Font.BOLD, 12);
+    }
+  }
 
   public static void addStone(
       Stone[] stones,

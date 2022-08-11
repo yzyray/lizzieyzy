@@ -5078,7 +5078,7 @@ public class Menu extends JMenuBar {
           public void actionPerformed(ActionEvent e) {
             Lizzie.config.useLanguage = 0;
             Lizzie.config.uiConfig.put("use-language", Lizzie.config.useLanguage);
-            Utils.showMsg(resourceBundle.getString("Lizzie.hint.restart"));
+            Utils.showMsg(Lizzie.resourceBundle.getString("Lizzie.hint.restart"));
           }
         });
 
@@ -5089,7 +5089,9 @@ public class Menu extends JMenuBar {
           public void actionPerformed(ActionEvent e) {
             Lizzie.config.useLanguage = 1;
             Lizzie.config.uiConfig.put("use-language", Lizzie.config.useLanguage);
-            Utils.showMsg("重新打开Lizzie后设置生效!");
+            Utils.showMsg(
+                ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("zh", "CN"))
+                    .getString("Lizzie.hint.restart"));
           }
         });
 
@@ -5100,29 +5102,37 @@ public class Menu extends JMenuBar {
           public void actionPerformed(ActionEvent e) {
             Lizzie.config.useLanguage = 2;
             Lizzie.config.uiConfig.put("use-language", Lizzie.config.useLanguage);
-            Utils.showMsg("Please restart Lizzie to apply changes.");
+            Utils.showMsg(
+                ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("en", "US"))
+                    .getString("Lizzie.hint.restart"));
           }
         });
 
     final JFontCheckBoxMenuItem languageKR = new JFontCheckBoxMenuItem("한국어");
+    languageKR.setFont(new Font("맑은 고딕", Font.PLAIN, Config.frameFontSize));
     language.add(languageKR);
     languageKR.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             Lizzie.config.useLanguage = 3;
             Lizzie.config.uiConfig.put("use-language", Lizzie.config.useLanguage);
-            Utils.showMsg(Lizzie.resourceBundle.getString("Lizzie.hint.restart"));
+            Utils.showMsg(
+                ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("ko"))
+                    .getString("Lizzie.hint.restart"));
           }
         });
 
     final JFontCheckBoxMenuItem languageJP = new JFontCheckBoxMenuItem("日本語");
+    languageJP.setFont(new Font("Yu Gothic UI", Font.PLAIN, Config.frameFontSize));
     language.add(languageJP);
     languageJP.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             Lizzie.config.useLanguage = 4;
             Lizzie.config.uiConfig.put("use-language", Lizzie.config.useLanguage);
-            Utils.showMsg(Lizzie.resourceBundle.getString("Lizzie.hint.restart"));
+            Utils.showMsg(
+                ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("ja", "JP"))
+                    .getString("Lizzie.hint.restart"));
           }
         });
 

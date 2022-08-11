@@ -15,7 +15,6 @@ import featurecat.lizzie.rules.Board;
 import featurecat.lizzie.util.MultiOutputStream;
 import featurecat.lizzie.util.Utils;
 import java.awt.Font;
-import java.awt.FontFormatException;
 import java.awt.Window;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -57,17 +56,6 @@ public class Lizzie {
   public static void main(String[] args) throws IOException {
     mainArgs = args;
     config = new Config();
-    try {
-      LizzieFrame.uiFont = new Font("SansSerif", Font.TRUETYPE_FONT, 12);
-      LizzieFrame.winrateFont =
-          Font.createFont(
-              Font.TRUETYPE_FONT,
-              Thread.currentThread()
-                  .getContextClassLoader()
-                  .getResourceAsStream("fonts/OpenSans-Semibold.ttf"));
-    } catch (IOException | FontFormatException e) {
-      e.printStackTrace();
-    }
     if (config.logConsoleToFile) {
       PrintStream oldPrintStream = System.out;
       FileOutputStream bos =
@@ -135,20 +123,10 @@ public class Lizzie {
     else if (config.useLanguage == 4)
       resourceBundle = ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("ja", "JP"));
     config.isChinese = (resourceBundle.getString("Lizzie.isChinese")).equals("yes");
+    if (config.theme.uiFontName() != null) config.uiFontName = config.theme.uiFontName();
+    Utils.loadFonts(config.uiFontName, config.fontName, config.winrateFontName);
     if (resourceBundle.containsKey("Lizzie.defaultFontName"))
       Config.sysDefaultFontName = resourceBundle.getString("Lizzie.defaultFontName");
-    if (config.theme.uiFontName() != null) config.uiFontName = config.theme.uiFontName();
-    if (Lizzie.config.uiFontName != null
-        && !(Lizzie.config.uiFontName.equals("Lizzie默认")
-            || Lizzie.config.uiFontName.equals("Lizzie Default"))) {
-      LizzieFrame.uiFont = new Font(Lizzie.config.uiFontName, Font.PLAIN, 12);
-    }
-    LizzieFrame.playoutsFont = new Font(Lizzie.config.fontName, Font.PLAIN, 12);
-    if (Lizzie.config.winrateFontName != null
-        && !(Lizzie.config.winrateFontName.equals("Lizzie默认")
-            || Lizzie.config.winrateFontName.equals("Lizzie Default"))) {
-      LizzieFrame.winrateFont = new Font(Lizzie.config.winrateFontName, Font.BOLD, 12);
-    }
     config.shareLabel1 =
         config.uiConfig.optString(
             "share-label-1", resourceBundle.getString("ShareFrame.shareLabel1"));

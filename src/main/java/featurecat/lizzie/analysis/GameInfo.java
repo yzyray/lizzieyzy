@@ -3,11 +3,9 @@ package featurecat.lizzie.analysis;
 import featurecat.lizzie.Lizzie;
 import featurecat.lizzie.gui.LizzieFrame;
 import java.util.Date;
-import java.util.ResourceBundle;
 
 public class GameInfo {
-  private static final ResourceBundle resourceBundle = Lizzie.resourceBundle;
-  public static final String DEFAULT_NAME_CPU_PLAYER = "Leela Zero";
+  public static final String DEFAULT_NAME_CPU_PLAYER = "Computer";
   public static double DEFAULT_KOMI = 7.5;
   public boolean changedKomi = false;
 
@@ -49,7 +47,7 @@ public class GameInfo {
 
   public String getSaveFileName() {
     if (playerBlack.equals("") && playerWhite.equals(""))
-      return resourceBundle.getString("GameInfo.untitled");
+      return Lizzie.resourceBundle.getString("GameInfo.untitled");
     else return playerBlack + "_Vs_" + playerWhite;
   }
 

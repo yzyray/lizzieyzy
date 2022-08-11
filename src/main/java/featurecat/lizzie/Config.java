@@ -1467,13 +1467,6 @@ public class Config {
     analyzeUpdateIntervalCentisec = leelazConfig.optInt("analyze-update-interval-centisec", 10);
     analyzeUpdateIntervalCentisecSSH =
         leelazConfig.optInt("analyze-update-interval-centisecssh", 10);
-    if (theme.fontName() != null) fontName = theme.fontName();
-    // else fontName = "微软雅黑";
-
-    if (theme.uiFontName() != null) uiFontName = theme.uiFontName();
-    // else uiFontName = "微软雅黑";
-
-    if (theme.winrateFontName() != null) winrateFontName = theme.winrateFontName();
     readThemeVaule(true);
   }
 
@@ -1514,6 +1507,10 @@ public class Config {
       theme = new Theme();
       theme.getTheme(uiConfig);
     }
+    if (theme.fontName() != null) fontName = theme.fontName();
+    if (theme.uiFontName() != null) uiFontName = theme.uiFontName();
+    if (theme.winrateFontName() != null) winrateFontName = theme.winrateFontName();
+    if (!first) Utils.loadFonts(uiFontName, fontName, winrateFontName);
     int oriShadowSize = shadowSize;
     boolean oriShowStoneShadow = showStoneShadow;
     boolean oriUsePureBackground = usePureBackground;

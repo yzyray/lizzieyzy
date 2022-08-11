@@ -86,7 +86,7 @@ import org.json.JSONObject;
 
 /** The window used to display the game. */
 public class LizzieFrame extends JFrame {
-  private static final String[] commands = {
+  private String[] commands = {
     Lizzie.resourceBundle.getString("LizzieFrame.commands.keySpace"),
     Lizzie.resourceBundle.getString("LizzieFrame.commands.keyN"),
     Lizzie.resourceBundle.getString("LizzieFrame.commands.keyEnter"),
@@ -142,7 +142,7 @@ public class LizzieFrame extends JFrame {
     Lizzie.resourceBundle.getString("LizzieFrame.commands.keyDelete"),
     Lizzie.resourceBundle.getString("LizzieFrame.commands.keyE"),
   };
-  private static final String DEFAULT_TITLE = Lizzie.resourceBundle.getString("LizzieFrame.title");
+  private String DEFAULT_TITLE = Lizzie.resourceBundle.getString("LizzieFrame.title");
   private JLayeredPane basePanel;
   public static BoardRenderer boardRenderer;
   public static BoardRenderer boardRenderer2;
