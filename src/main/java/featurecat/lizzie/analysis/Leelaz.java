@@ -960,6 +960,9 @@ public class Leelaz {
       checkNameAndVersion(params);
     } else if (line.startsWith("?")) {
       isCommandLine = true;
+      if (line.startsWith("? unacceptable komi")) {
+        illegalKomi();
+      }
     } else if (line.startsWith("PDA:")) {
       parsePDALine(line);
     }
@@ -1480,9 +1483,16 @@ public class Leelaz {
         checkNameAndVersion(params);
       } else if (line.startsWith("?")) {
         isCommandLine = true;
+        if (line.startsWith("? unacceptable komi")) {
+          illegalKomi();
+        }
       }
       parseHeatMap(line);
     }
+  }
+
+  private void illegalKomi() {
+    Utils.showMsg(Lizzie.resourceBundle.getString("Leelaz.unacceptableKomi"));
   }
 
   private void parsePDALine(String line) {
