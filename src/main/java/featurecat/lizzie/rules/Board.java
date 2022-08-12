@@ -1564,7 +1564,7 @@ public class Board {
       Lizzie.frame.refresh();
       if (Lizzie.frame.isPlayingAgainstLeelaz || Lizzie.frame.isAnaPlayingAgainstLeelaz) {
         if (Lizzie.frame.playerIsBlack != Lizzie.board.getHistory().isBlacksTurn()) {
-          if (neverPassedInGame) {
+          if (neverPassedInGame && !Lizzie.frame.syncBoard) {
             neverPassedInGame = false;
             Utils.showMsg(Lizzie.resourceBundle.getString("LizzieFrame.passInGameTip"));
           }
