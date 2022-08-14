@@ -1492,7 +1492,7 @@ public class Leelaz {
   }
 
   private void illegalKomi() {
-    Utils.showMsg(Lizzie.resourceBundle.getString("Leelaz.unacceptableKomi"));
+    Utils.showMsgNoModal(Lizzie.resourceBundle.getString("Leelaz.unacceptableKomi"));
   }
 
   private void parsePDALine(String line) {
@@ -1990,7 +1990,7 @@ public class Leelaz {
     // TODO Auto-generated method stub
     if (!this.isLoaded) {
       if (line.toLowerCase().contains("cl_platform_not_found"))
-        Utils.showMsg(Lizzie.resourceBundle.getString("Leelaz.openclPlatfromNotFound"));
+        Utils.showMsgNoModal(Lizzie.resourceBundle.getString("Leelaz.openclPlatfromNotFound"));
     }
     if (!this.isLeela0110 || Lizzie.frame.isPlayingAgainstLeelaz)
       if (Lizzie.gtpConsole.isVisible() || Lizzie.config.alwaysGtp || !this.isLoaded)
