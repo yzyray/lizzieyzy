@@ -1046,8 +1046,6 @@ public class NewEngineGameDialog extends JDialog {
       } else LizzieFrame.toolbar.isEngineGameHandicapToolbar = false;
 
       Lizzie.board.getHistory().setGameInfo(gameInfo);
-      Lizzie.leelaz.komi(gameInfo.getKomi());
-      // Lizzie.frame.komi = gameInfo.getKomi() );
 
       LizzieFrame.toolbar.chkenginePk.setSelected(true);
       if (LizzieFrame.toolbar.startEngineGame()) setVisible(false);
