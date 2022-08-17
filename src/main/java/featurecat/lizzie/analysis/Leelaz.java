@@ -1492,7 +1492,8 @@ public class Leelaz {
   }
 
   private void illegalKomi() {
-    Utils.showMsgNoModal(Lizzie.resourceBundle.getString("Leelaz.unacceptableKomi"));
+    Utils.showMsgNoModal(
+        currentEnginename + ": " + Lizzie.resourceBundle.getString("Leelaz.unacceptableKomi"));
   }
 
   private void parsePDALine(String line) {
