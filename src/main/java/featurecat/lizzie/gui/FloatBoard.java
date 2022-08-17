@@ -1,5 +1,7 @@
 package featurecat.lizzie.gui;
 
+import static java.awt.RenderingHints.KEY_ANTIALIASING;
+import static java.awt.RenderingHints.VALUE_ANTIALIAS_OFF;
 import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
 
 import featurecat.lizzie.Config;
@@ -7,12 +9,13 @@ import featurecat.lizzie.Lizzie;
 import featurecat.lizzie.analysis.MoveData;
 import featurecat.lizzie.rules.Board;
 import featurecat.lizzie.util.Utils;
-import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
+import java.awt.Rectangle;
+import java.awt.TexturePaint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -113,7 +116,6 @@ public class FloatBoard extends JDialog {
         new JPanel() {
           @Override
           public void paintComponent(Graphics g) {
-            ((Graphics2D) g).setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
             if (Config.isScaled) {
               Graphics2D g1 = (Graphics2D) g;
               g1.scale(1.0 / Lizzie.javaScaleFactor, 1.0 / Lizzie.javaScaleFactor);
@@ -123,7 +125,6 @@ public class FloatBoard extends JDialog {
         };
     mainPanel.enableInputMethods(false);
     mainPanel.setBounds(0, 0, Utils.zoomIn(width), Utils.zoomIn(height));
-
     //  mainPanel.setBackground(new Color(0, 0, 0, 0));
 
     toStop = new ImageIcon();
@@ -384,7 +385,9 @@ public class FloatBoard extends JDialog {
               if (isCoordsChanged) {
                 boolean isCurMouseOver = false;
                 List<MoveData> bestMoves =
-                    Lizzie.board.getHistory().getMainEnd().getData().bestMoves;
+                    editMode
+                        ? Lizzie.board.getHistory().getCurrentHistoryNode().getData().bestMoves
+                        : Lizzie.board.getHistory().getMainEnd().getData().bestMoves;
                 if (!bestMoves.isEmpty())
                   for (int i = 0; i < bestMoves.size(); i++) {
                     Optional<int[]> bestCoords = Board.asCoordinates(bestMoves.get(i).coordinate);
@@ -424,6 +427,31 @@ public class FloatBoard extends JDialog {
             if (needRepaint) refreshByLis();
           }
         });
+  }
+
+  private static final BufferedImage emptyImage =
+      new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+  private BufferedImage cachedBackgroundImage = emptyImage;
+
+  private void drawTextureImage(
+      Graphics2D g, BufferedImage img, int x, int y, int width, int height) {
+    g.setPaint(new TexturePaint(img, new Rectangle(0, 0, img.getWidth(), img.getHeight())));
+    g.fill(new Rectangle(x, y, width, height));
+  }
+
+  private void drawBackground(Graphics2D g, int x, int y, int width, int height) {
+    if (Lizzie.config.usePureBoard) {
+      // simple version
+      g.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_OFF);
+      g.setColor(Lizzie.config.pureBoardColor);
+      g.fillRect(0, 0, width, height);
+    } else {
+      // fancy version
+      if (cachedBackgroundImage == emptyImage) {
+        cachedBackgroundImage = Lizzie.config.theme.board();
+      }
+      drawTextureImage(g, cachedBackgroundImage, x, y, width, height);
+    }
   }
 
   public void changeEetEditMode() {
@@ -493,6 +521,13 @@ public class FloatBoard extends JDialog {
   private void paintMianPanel(Graphics g) {
     if (posWidth <= 40 || posHeight <= 40) return;
     cachedImage = new BufferedImage(posWidth, posHeight, TYPE_INT_ARGB);
+    if (editMode)
+      drawBackground(
+          (Graphics2D) g,
+          Utils.zoomIn(20),
+          Utils.zoomIn(20),
+          posWidth - Utils.zoomIn(40),
+          posHeight - Utils.zoomIn(40));
     // TODO Auto-generated method stub
     if (!hideSuggestion) {
       Graphics2D g0 = (Graphics2D) cachedImage.getGraphics();
