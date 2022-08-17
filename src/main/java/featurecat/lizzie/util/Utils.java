@@ -750,7 +750,7 @@ public class Utils {
                   } else playVoice(File.separator + "sound" + File.separator + "Stone.wav", false);
                 }
               } else {
-                playVoice("\\sound\\Stone.wav", false);
+                playVoice(File.separator + "sound" + File.separator + "Stone.wav", false);
               }
             } catch (Exception e) {
               // TODO Auto-generated catch block
