@@ -1004,7 +1004,7 @@ public class Config {
                   Toolkit.getDefaultToolkit().getDesktopProperty("win.xpstyle.themeActive");
     } catch (Exception e) {
       // TODO Auto-generated catch block
-      e.printStackTrace();
+      // e.printStackTrace();
     }
     showSuggestionVariations = uiConfig.optBoolean("show-suggestion-variations", true);
     subBoardRaw = uiConfig.optBoolean("subboard-raw", false);
