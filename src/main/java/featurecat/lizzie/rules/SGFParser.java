@@ -297,8 +297,8 @@ public class SGFParser {
 
     String blackPlayer = "", whitePlayer = "";
     String result = "";
-    boolean isChineseRule = true;
-    boolean hasHandicap = false;
+    // boolean isChineseRule = true;
+    // boolean hasHandicap = false;
     Double komi = Lizzie.board.getHistory().getGameInfo().getKomi();
     // Support unicode characters (UTF-8)
     int len = value.length();
@@ -701,23 +701,26 @@ public class SGFParser {
             } catch (NumberFormatException e) {
               e.printStackTrace();
             }
-          } else if (tag.equals("HA")) {
-            try {
-              if (!tagContent.trim().isEmpty()) {
-                if (Integer.parseInt(tagContent.trim()) > 0) hasHandicap = true;
-              }
-            } catch (NumberFormatException e) {
-              e.printStackTrace();
-            }
-          } else if (tag.equals("RU")) {
-            if (!tagContent.trim().isEmpty()) {
-              String rules = tagContent.toLowerCase();
-              if (rules.contains("japanese")
-                  || rules.contains("jp")
-                  || rules.contains("korean")
-                  || rules.contains("kr")) isChineseRule = false;
-            }
-          } else {
+          }
+          //          else if (tag.equals("HA")) {
+          //            try {
+          //              if (!tagContent.trim().isEmpty()) {
+          //                if (Integer.parseInt(tagContent.trim()) > 0) hasHandicap = true;
+          //              }
+          //            } catch (NumberFormatException e) {
+          //              e.printStackTrace();
+          //            }
+          //          }
+          //          else if (tag.equals("RU")) {
+          //            if (!tagContent.trim().isEmpty()) {
+          //              String rules = tagContent.toLowerCase();
+          //              if (rules.contains("japanese")
+          //                  || rules.contains("jp")
+          //                  || rules.contains("korean")
+          //                  || rules.contains("kr")) isChineseRule = false;
+          //            }
+          //          }
+          else {
             if (moveStart) {
               // Other SGF node properties
               if ("AE".equals(tag)) {
@@ -782,10 +785,10 @@ public class SGFParser {
       }
     }
     if (Lizzie.config.readKomi) {
-      if (!hasHandicap && komi == 0) {
-        if (isChineseRule) komi = 7.5;
-        else komi = 6.5;
-      }
+      //      if (!hasHandicap && komi == 0) {
+      //        if (isChineseRule) komi = 7.5;
+      //        else komi = 6.5;
+      //      }
       if (komi >= 200) {
         komi = komi / 100;
         if (komi <= 4 && komi >= -4) komi = komi * 2;
