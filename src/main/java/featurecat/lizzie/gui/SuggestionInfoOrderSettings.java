@@ -81,10 +81,7 @@ public class SuggestionInfoOrderSettings extends JDialog {
         new JPanel() {
           @Override
           public void paintComponent(Graphics g) {
-            if (Config.isScaled) {
-              Graphics2D g1 = (Graphics2D) g;
-              g1.scale(1.0 / Lizzie.javaScaleFactor, 1.0 / Lizzie.javaScaleFactor);
-            }
+            Utils.ajustScale(g);
             paintMianPanel(g);
           }
         };

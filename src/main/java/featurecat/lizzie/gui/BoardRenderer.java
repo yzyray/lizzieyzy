@@ -160,13 +160,6 @@ public class BoardRenderer {
 
   /** Draw a go board */
   public void draw(Graphics2D g) {
-    //    if (Lizzie.config.isScaled) {
-    //      drawNoSuggestion(g);
-    //      return;
-    //    }
-    // setupSizeParameters();
-
-    // Stopwatch timer = new Stopwatch();
     drawGoban(g);
     nextCoords = new ArrayList<int[]>();
     if (Board.boardWidth <= 3) {

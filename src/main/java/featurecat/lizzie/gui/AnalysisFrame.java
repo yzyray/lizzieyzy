@@ -543,13 +543,6 @@ public class AnalysisFrame extends JFrame {
         }
       }
     }
-    //    if (Config.isScaled) {
-    //      Graphics2D g1 = (Graphics2D) g0;
-    //      g1.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-    //      g1.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
-    //      g1.drawImage(cachedImage, 0, 0, null);
-    //    } else g0.drawImage(cachedImage, 0, 0, null);
-    //    g.dispose();
   }
 
   class ColorTableCellRenderer extends DefaultTableCellRenderer {

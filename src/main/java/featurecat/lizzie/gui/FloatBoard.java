@@ -4,7 +4,6 @@ import static java.awt.RenderingHints.KEY_ANTIALIASING;
 import static java.awt.RenderingHints.VALUE_ANTIALIAS_OFF;
 import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
 
-import featurecat.lizzie.Config;
 import featurecat.lizzie.Lizzie;
 import featurecat.lizzie.analysis.MoveData;
 import featurecat.lizzie.rules.Board;
@@ -116,10 +115,7 @@ public class FloatBoard extends JDialog {
         new JPanel() {
           @Override
           public void paintComponent(Graphics g) {
-            if (Config.isScaled) {
-              Graphics2D g1 = (Graphics2D) g;
-              g1.scale(1.0 / Lizzie.javaScaleFactor, 1.0 / Lizzie.javaScaleFactor);
-            }
+            Utils.ajustScale(g);
             paintMianPanel(g);
           }
         };

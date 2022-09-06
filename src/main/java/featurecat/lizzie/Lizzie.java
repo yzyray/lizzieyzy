@@ -15,6 +15,7 @@ import featurecat.lizzie.rules.Board;
 import featurecat.lizzie.util.MultiOutputStream;
 import featurecat.lizzie.util.Utils;
 import java.awt.Font;
+import java.awt.GraphicsEnvironment;
 import java.awt.Window;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -48,6 +49,7 @@ public class Lizzie {
   public static EngineManager engineManager;
   public static int javaVersion = 8;
   public static Float javaScaleFactor = 1.0f;
+  public static boolean isMultiScreen = false;
   public static String javaVersionString = "";
   public static Float sysScaleFactor =
       OS.isWindows() ? (java.awt.Toolkit.getDefaultToolkit().getScreenResolution() / 96.0f) : 1.0f;
@@ -89,7 +91,8 @@ public class Lizzie {
     }
     System.out.println("java version:" + javaVersionString);
     leelaz = new Leelaz("");
-
+    isMultiScreen = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices().length > 1;
+    System.out.println(isMultiScreen);
     AwareScaled awareScaled = new AwareScaled();
     awareScaled.setVisible(true);
     String hostName = InetAddress.getLocalHost().getHostName();

@@ -548,16 +548,7 @@ public class LizzieFrame extends JFrame {
         new JPanel(true) {
           @Override
           public void paintComponent(Graphics g) {
-            //        	  final Graphics2D g1 = (Graphics2D) g;
-            //        	  final AffineTransform t = g1.getTransform();
-            //        	  t.setToScale(1, 1);
-            //        	  g1.setTransform(t);
-            //        	  g.setColor(Color.DARK_GRAY);
-            //        	  g.fillRect(0, 0, mainPanel.getWidth(), mainPanel.getHeight());
-            if (Config.isScaled) {
-              Graphics2D g1 = (Graphics2D) g;
-              g1.scale(1.0 / Lizzie.javaScaleFactor, 1.0 / Lizzie.javaScaleFactor);
-            }
+            Utils.ajustScale(g);
             paintMianPanel(g);
           }
         };
@@ -605,12 +596,25 @@ public class LizzieFrame extends JFrame {
           @Override
           public void paintComponent(Graphics g) {
             if (cachedVarImage2 != null && Lizzie.config.showVariationGraph) {
-              if (Config.isScaled) {
-                Graphics2D g1 = (Graphics2D) g;
-                g1.scale(1.0 / Lizzie.javaScaleFactor, 1.0 / Lizzie.javaScaleFactor);
-                g1.drawImage(cachedVarImage2, -1, -1, null);
+              if (Lizzie.isMultiScreen) {
+                final Graphics2D g0 = (Graphics2D) g;
+                final AffineTransform t = g0.getTransform();
+                final double scaling = t.getScaleX();
+                if (scaling > 1) {
+                  Graphics2D g1 = (Graphics2D) g;
+                  g1.scale(1.0 / scaling, 1.0 / scaling);
+                  g1.drawImage(cachedVarImage2, -1, -1, null);
+                } else {
+                  g.drawImage(cachedVarImage2, 0, 0, null);
+                }
               } else {
-                g.drawImage(cachedVarImage2, 0, 0, null);
+                if (Config.isScaled) {
+                  Graphics2D g1 = (Graphics2D) g;
+                  g1.scale(1.0 / Lizzie.javaScaleFactor, 1.0 / Lizzie.javaScaleFactor);
+                  g1.drawImage(cachedVarImage2, -1, -1, null);
+                } else {
+                  g.drawImage(cachedVarImage2, 0, 0, null);
+                }
               }
             }
           }
@@ -8576,7 +8580,7 @@ public class LizzieFrame extends JFrame {
   }
 
   private void saveIndependMainBoardToClipboard() {
-    if (Config.isScaled) {
+    if (Config.isScaled || Lizzie.isMultiScreen) {
       int width = this.independentMainBoard.cachedImage.getWidth();
       int height = this.independentMainBoard.cachedImage.getHeight();
       Rectangle rect = new Rectangle(0, 0, width, height);
@@ -8608,7 +8612,7 @@ public class LizzieFrame extends JFrame {
   }
 
   private BufferedImage getIndependMainBoardToClipboard() {
-    if (Config.isScaled) {
+    if (Config.isScaled || Lizzie.isMultiScreen) {
       int width = this.independentMainBoard.cachedImage.getWidth();
       int height = this.independentMainBoard.cachedImage.getHeight();
       Rectangle rect = new Rectangle(0, 0, width, height);
@@ -8640,7 +8644,7 @@ public class LizzieFrame extends JFrame {
   }
 
   public void savePicToClipboard(int x, int y, int width, int height) {
-    if (Config.isScaled) {
+    if (Config.isScaled || Lizzie.isMultiScreen) {
       Rectangle rect = new Rectangle(x, y, width, height);
       BufferedImage areaImage = cachedImage.getSubimage(rect.x, rect.y, rect.width, rect.height);
       BufferedImage buffImg = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
@@ -9658,7 +9662,7 @@ public class LizzieFrame extends JFrame {
   }
 
   private void saveIndependSubBoardToClipboard() {
-    if (Config.isScaled) {
+    if (Config.isScaled || Lizzie.isMultiScreen) {
       int width = this.independentSubBoard.cachedImage.getWidth();
       int height = this.independentSubBoard.cachedImage.getHeight();
       Rectangle rect = new Rectangle(0, 0, width, height);
@@ -9690,7 +9694,7 @@ public class LizzieFrame extends JFrame {
   }
 
   private BufferedImage getIndependSubBoardToClipboard() {
-    if (Config.isScaled) {
+    if (Config.isScaled || Lizzie.isMultiScreen) {
       int width = this.independentSubBoard.cachedImage.getWidth();
       int height = this.independentSubBoard.cachedImage.getHeight();
       Rectangle rect = new Rectangle(0, 0, width, height);
@@ -10265,7 +10269,7 @@ public class LizzieFrame extends JFrame {
   }
 
   public Image saveMainBoardToImageOri() {
-    if (Config.isScaled) {
+    if (Config.isScaled || Lizzie.isMultiScreen) {
       if (Lizzie.config.isFloatBoardMode()) {
         int width = this.independentMainBoard.cachedImage.getWidth();
         int height = this.independentMainBoard.cachedImage.getHeight();

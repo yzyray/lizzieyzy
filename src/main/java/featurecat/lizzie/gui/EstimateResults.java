@@ -307,11 +307,6 @@ public class EstimateResults extends JDialog {
     int height = getHeight();
     int topCap = (int) ((Lizzie.sysScaleFactor - Lizzie.javaScaleFactor) * 20) + 5;
     Graphics2D g2 = (Graphics2D) g;
-    // if (Lizzie.config.isScaled) {
-    //     g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-    //     g2.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
-    //   }
-
     if (cachedBackgroundImage == null) {
       try {
         cachedBackgroundImage =

@@ -22,7 +22,10 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Window;
+import java.awt.geom.AffineTransform;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -62,6 +65,23 @@ public class Utils {
   public static String iv2 = "s6st73f49adc4c5d";
   private static int msemaphoretryroom = 1;
   private static boolean alertedNoByoyomiSoundFile = false;
+
+  public static void ajustScale(Graphics g) {
+    if (Lizzie.isMultiScreen) {
+      final Graphics2D g0 = (Graphics2D) g;
+      final AffineTransform t = g0.getTransform();
+      final double scaling = t.getScaleX();
+      if (scaling > 1) {
+        Graphics2D g1 = (Graphics2D) g;
+        g1.scale(1.0 / scaling, 1.0 / scaling);
+      }
+    } else {
+      if (Config.isScaled) {
+        Graphics2D g1 = (Graphics2D) g;
+        g1.scale(1.0 / Lizzie.javaScaleFactor, 1.0 / Lizzie.javaScaleFactor);
+      }
+    }
+  }
 
   public static void loadFonts(String uiFontName, String playoutFontName, String winrateFontName) {
     try {
