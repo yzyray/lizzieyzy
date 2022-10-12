@@ -92,7 +92,6 @@ public class Lizzie {
     System.out.println("java version:" + javaVersionString);
     leelaz = new Leelaz("");
     isMultiScreen = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices().length > 1;
-    System.out.println(isMultiScreen);
     AwareScaled awareScaled = new AwareScaled();
     awareScaled.setVisible(true);
     String hostName = InetAddress.getLocalHost().getHostName();

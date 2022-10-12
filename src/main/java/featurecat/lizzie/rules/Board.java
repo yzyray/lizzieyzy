@@ -86,7 +86,6 @@ public class Board {
     isGameBoard = false;
     neverPassedInGame = true;
     analysisMode = false;
-    Optional.empty();
     forceRefresh = false;
     forceRefresh2 = false;
     hasBigBranch = false;

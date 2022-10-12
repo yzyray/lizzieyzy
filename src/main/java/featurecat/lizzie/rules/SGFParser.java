@@ -748,7 +748,9 @@ public class SGFParser {
                       move[0], move[1], tag.equals("AB") ? Stone.BLACK : Stone.WHITE);
                 }
               } else if (!"FIT".equals(tag)) {
-                boolean firstProp = (subTreeStepMap.get(subTreeDepth).hasVariations());
+                boolean firstProp =
+                    Lizzie.board.getHistory().getCurrentHistoryNode().hasVariations();
+                // (subTreeStepMap.get(subTreeDepth).hasVariations());
                 if (firstProp) {
                   addProperty(pendingProps, tag, tagContent);
                 } else {
@@ -3014,7 +3016,8 @@ public class SGFParser {
                       move[0], move[1], tag.equals("AB") ? Stone.BLACK : Stone.WHITE);
                 }
               } else {
-                boolean firstProp = (subTreeStepMap.get(subTreeDepth).hasVariations());
+                boolean firstProp = history.getCurrentHistoryNode().hasVariations();
+                ;
                 if (firstProp) {
                   addProperty(pendingProps, tag, tagContent);
                 } else {
