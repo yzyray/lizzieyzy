@@ -4303,6 +4303,14 @@ public class BottomToolbar extends JPanel {
       w = w - (moveRank.getWidth() - (Config.isScaled ? 0 : 1));
       moveRank.setLocation(w, 0);
     }
+    if (finalScore.isVisible()) {
+      w = w - (finalScore.getWidth() - (Config.isScaled ? 0 : 1));
+      finalScore.setLocation(w, 0);
+    }
+    if (countButton.isVisible()) {
+      w = w - (countButton.getWidth() - (Config.isScaled ? 0 : 1));
+      countButton.setLocation(w, 0);
+    }
     if (lastButton.isVisible()) {
       w = w - (lastButton.getWidth() - (Config.isScaled ? 0 : 1));
       lastButton.setLocation(w, 0);
@@ -4377,14 +4385,6 @@ public class BottomToolbar extends JPanel {
       w = w - (heatMap.getWidth() - (Config.isScaled ? 0 : 1));
       heatMap.setLocation(w, 0);
     }
-    if (countButton.isVisible()) {
-      w = w - (countButton.getWidth() - (Config.isScaled ? 0 : 1));
-      countButton.setLocation(w, 0);
-    }
-    if (finalScore.isVisible()) {
-      w = w - (finalScore.getWidth() - (Config.isScaled ? 0 : 1));
-      finalScore.setLocation(w, 0);
-    }
     if (savefile.isVisible()) {
       w = w - (savefile.getWidth() - (Config.isScaled ? 0 : 1));
       savefile.setLocation(w, 0);
@@ -4445,14 +4445,6 @@ public class BottomToolbar extends JPanel {
     if (savefile.isVisible()) {
       savefile.setLocation(w, 0);
       w = w + savefile.getWidth() - (Config.isScaled ? 0 : 1);
-    }
-    if (countButton.isVisible()) {
-      countButton.setLocation(w, 0);
-      w = w + countButton.getWidth() - (Config.isScaled ? 0 : 1);
-    }
-    if (finalScore.isVisible()) {
-      finalScore.setLocation(w, 0);
-      w = w + finalScore.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (heatMap.isVisible()) {
       heatMap.setLocation(w, 0);
@@ -4529,6 +4521,14 @@ public class BottomToolbar extends JPanel {
     if (lastButton.isVisible()) {
       lastButton.setLocation(w, 0);
       w = w + lastButton.getWidth() - (Config.isScaled ? 0 : 1);
+    }
+    if (countButton.isVisible()) {
+      countButton.setLocation(w, 0);
+      w = w + countButton.getWidth() - (Config.isScaled ? 0 : 1);
+    }
+    if (finalScore.isVisible()) {
+      finalScore.setLocation(w, 0);
+      w = w + finalScore.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (moveRank.isVisible()) {
       moveRank.setLocation(w, 0);
