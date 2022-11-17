@@ -3017,7 +3017,6 @@ public class SGFParser {
                 }
               } else {
                 boolean firstProp = history.getCurrentHistoryNode().hasVariations();
-                ;
                 if (firstProp) {
                   addProperty(pendingProps, tag, tagContent);
                 } else {
