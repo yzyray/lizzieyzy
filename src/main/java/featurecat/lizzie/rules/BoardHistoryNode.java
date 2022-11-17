@@ -708,17 +708,24 @@ public class BoardHistoryNode {
 
   public void resetMoveNumberList() {
     // TODO Auto-generated method stub
-    if (!this.previous.isPresent() || !this.getData().lastMove.isPresent()) return;
-    boolean isNewBranch = this.previous.get().variations.get(0) != this;
+    if (!this.previous.isPresent()) return;
+    boolean isNewBranch =
+        this.previous.get().variations.get(0) != this && Lizzie.config.newMoveNumberInBranch;
+    BoardHistoryNode preNode = this.previous().get();
+    this.getData().moveNumber = preNode.getData().moveNumber + 1;
+    this.getData().moveMNNumber =
+        preNode.getData().moveMNNumber > -1 && !isNewBranch
+            ? preNode.getData().moveMNNumber + 1
+            : 1;
     this.getData().moveNumberList =
         isNewBranch
             ? new int[Board.boardWidth * Board.boardHeight]
             : this.previous.get().getData().moveNumberList.clone();
-
-    this.getData()
-            .moveNumberList[
-            Board.getIndex(this.getData().lastMove.get()[0], this.getData().lastMove.get()[1])] =
-        isNewBranch ? 1 : this.getData().moveNumber;
+    if (getData().lastMove.isPresent())
+      this.getData()
+              .moveNumberList[
+              Board.getIndex(this.getData().lastMove.get()[0], this.getData().lastMove.get()[1])] =
+          isNewBranch ? 1 : this.getData().moveMNNumber;
     if (this.numberOfChildren() >= 1) this.variations.get(0).resetMoveNumberList();
   }
 }
