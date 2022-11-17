@@ -525,7 +525,7 @@ public class FloatBoard extends JDialog {
           posWidth - Utils.zoomIn(40),
           posHeight - Utils.zoomIn(40));
     // TODO Auto-generated method stub
-    if (!hideSuggestion) {
+    if (!hideSuggestion || editMode) {
       Graphics2D g0 = (Graphics2D) cachedImage.getGraphics();
       boardRenderer.setLocation(Utils.zoomIn(20), Utils.zoomIn(20));
       boardRenderer.setBoardLength(posWidth - Utils.zoomIn(40), posHeight - Utils.zoomIn(40));
