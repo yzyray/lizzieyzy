@@ -647,7 +647,7 @@ public class SGFParser {
                 boolean newBranch = true;
                 Lizzie.board
                     .getHistory()
-                    .pass(Lizzie.board.getHistory().getLastMoveColor(), newBranch, true);
+                    .pass(Lizzie.board.getHistory().getLastMoveColor(), newBranch, false);
                 if (newBranch) {
                   processPendingPros(Lizzie.board.getHistory(), pendingProps);
                 }
@@ -735,7 +735,7 @@ public class SGFParser {
                   boolean newBranch =
                       Lizzie.board.getHistory().getCurrentHistoryNode().hasVariations();
                   //  Lizzie.board.pass(color, newBranch, true);
-                  Lizzie.board.getHistory().pass(color, newBranch, true);
+                  Lizzie.board.getHistory().pass(color, newBranch, false);
                   if (newBranch) {
                     processPendingPros(Lizzie.board.getHistory(), pendingProps);
                   }

@@ -19,6 +19,7 @@ public class BoardHistoryNode {
   public boolean diffAnalyzed = false;
   public boolean isBest = false;
   public ArrayList<ExtraStones> extraStones;
+  private boolean hasRemovedStone = false;
 
   private BoardData data;
 
@@ -727,5 +728,27 @@ public class BoardHistoryNode {
               Board.getIndex(this.getData().lastMove.get()[0], this.getData().lastMove.get()[1])] =
           isNewBranch ? 1 : this.getData().moveMNNumber;
     if (this.numberOfChildren() >= 1) this.variations.get(0).resetMoveNumberList();
+  }
+
+  public void setRemovedStone() {
+    hasRemovedStone = true;
+  }
+
+  public boolean hasRemovedStone() {
+    return hasRemovedStone;
+  }
+
+  public void clearAndSyncBoard() {
+    Lizzie.leelaz.clear();
+    for (int x = 0; x < Board.boardWidth; x++) {
+      for (int y = 0; y < Board.boardHeight; y++) {
+        Stone stone = data.stones[Board.getIndex(x, y)];
+        if (stone.isBlack()) {
+          Lizzie.leelaz.playMove(stone, Board.convertCoordinatesToName(x, y));
+        } else if (stone.isWhite()) {
+          Lizzie.leelaz.playMove(stone, Board.convertCoordinatesToName(x, y));
+        }
+      }
+    }
   }
 }

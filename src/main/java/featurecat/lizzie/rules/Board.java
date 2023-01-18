@@ -850,7 +850,7 @@ public class Board {
       stones[getIndex(x, y)] = Stone.EMPTY;
       zobrist.toggleStone(x, y, oriColor);
       data.moveNumberList[Board.getIndex(x, y)] = 0;
-
+      history.setRemovedStone();
       Lizzie.frame.refresh();
     }
   }
@@ -1922,25 +1922,35 @@ public class Board {
       boolean blackToPlay,
       List<extraMoveForTsumego> extraStones,
       double komi) {
-    // 变成一步 extrastones 或者直接不flatten?
-    //	    Stone[] stones = history.getStones();
-    //	    boolean blackToPlay = history.isBlacksTurn();
-    BoardData state =
-        new BoardData(
-            stones,
-            Optional.empty(),
-            Stone.EMPTY,
-            blackToPlay,
-            zobrist,
-            0,
-            new int[boardWidth * boardHeight],
-            0,
-            0,
-            0.0,
-            0);
-    history.addOrGoto(state, false, false, true);
+    history =
+        new BoardHistoryList(
+            new BoardData(
+                stones,
+                Optional.empty(),
+                Stone.EMPTY,
+                blackToPlay,
+                zobrist,
+                0,
+                new int[boardWidth * boardHeight],
+                0,
+                0,
+                0.0,
+                0));
+    hasStartStone = true;
+    startStonelist = new ArrayList<Movelist>();
     if (extraStones != null && extraStones.size() > 0) {
-      for (extraMoveForTsumego stone : extraStones) addExtraStoneNow(stone.x, stone.y, stone.color);
+      int moveNum = 1;
+      for (extraMoveForTsumego stone : extraStones) {
+        Movelist move = new Movelist();
+        move.x = stone.x;
+        move.y = stone.y;
+        move.ispass = false;
+        move.isblack = stone.color == Stone.BLACK;
+        move.movenum = moveNum;
+        startStonelist.add(move);
+        moveNum++;
+        Lizzie.leelaz.playMove(stone.color, convertCoordinatesToName(stone.x, stone.y));
+      }
     }
     history.getGameInfo().setKomi(komi);
     history.getGameInfo().changeKomi();
@@ -1953,22 +1963,37 @@ public class Board {
     // 变成一步 extrastones 或者直接不flatten?
     //	    Stone[] stones = history.getStones();
     //	    boolean blackToPlay = history.isBlacksTurn();
-    BoardData state =
-        new BoardData(
-            stones,
-            Optional.empty(),
-            Stone.EMPTY,
-            blackToPlay,
-            zobrist,
-            0,
-            new int[boardWidth * boardHeight],
-            0,
-            0,
-            0.0,
-            0);
-    history.addOrGoto(state, false, false, true);
+    history =
+        new BoardHistoryList(
+            new BoardData(
+                stones,
+                Optional.empty(),
+                Stone.EMPTY,
+                blackToPlay,
+                zobrist,
+                0,
+                new int[boardWidth * boardHeight],
+                0,
+                0,
+                0.0,
+                0));
+    hasStartStone = true;
+    startStonelist = new ArrayList<Movelist>();
     if (extraStones != null && extraStones.size() > 0) {
-      for (extraMoveForTsumego stone : extraStones) addExtraStoneNow(stone.x, stone.y, stone.color);
+      int moveNum = 1;
+      for (extraMoveForTsumego stone :
+          extraStones) // addExtraStoneNow(stone.x, stone.y, stone.color);
+      {
+        Movelist move = new Movelist();
+        move.x = stone.x;
+        move.y = stone.y;
+        move.ispass = false;
+        move.isblack = stone.color == Stone.BLACK;
+        move.movenum = moveNum;
+        startStonelist.add(move);
+        moveNum++;
+        Lizzie.leelaz.playMove(stone.color, convertCoordinatesToName(stone.x, stone.y));
+      }
     }
     Lizzie.leelaz.ponder();
   }
@@ -2348,6 +2373,8 @@ public class Board {
         }
         history.next();
         history.getCurrentHistoryNode().placeExtraStones();
+        if (history.getCurrentHistoryNode().hasRemovedStone())
+          history.getCurrentHistoryNode().clearAndSyncBoard();
         updateIsBest();
         clearPressStoneInfo(null);
         if (needRefresh) {
@@ -2921,6 +2948,7 @@ public class Board {
     synchronized (this) {
       modifyStart();
       boolean isPass = false;
+      boolean needSync = history.getCurrentHistoryNode().hasRemovedStone();
       if (history.getCurrentHistoryNode().next().isPresent())
         updateIsBest(history.getCurrentHistoryNode().next().get());
       if (!history.getLastMove().isPresent()) isPass = true;
@@ -2937,6 +2965,7 @@ public class Board {
         }
         history.getCurrentHistoryNode().undoExtraStones();
         history.previous();
+        if (needSync) history.getCurrentHistoryNode().clearAndSyncBoard();
         if (needRefresh) {
           clearAfterMove();
           Lizzie.frame.refresh();

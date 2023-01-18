@@ -148,8 +148,12 @@ public class BoardHistoryList {
    */
   public Optional<BoardData> nextVariation(int idx) {
     Optional<BoardHistoryNode> n = head.getVariation(idx);
-    n.ifPresent(x -> head = x);
-    if (n.isPresent()) head.placeExtraStones();
+    if (n.isPresent()) {
+      if (head.hasRemovedStone()) head.clearAndSyncBoard();
+      head = n.get();
+      head.placeExtraStones();
+      if (head.hasRemovedStone()) head.clearAndSyncBoard();
+    }
     return n.map(x -> x.getData());
   }
 
@@ -704,5 +708,9 @@ public class BoardHistoryList {
     }
     if (name.length() > 21) return name.substring(0, 20);
     else return name;
+  }
+
+  public void setRemovedStone() {
+    head.setRemovedStone();
   }
 }
