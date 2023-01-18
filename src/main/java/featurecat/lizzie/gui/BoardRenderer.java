@@ -320,6 +320,9 @@ public class BoardRenderer {
 
   private void drawPass(Graphics2D g, Board board, Optional<int[]> lastMoveOpt) {
     if (!lastMoveOpt.isPresent() && board.getData().moveNumber != 0 && !board.getData().dummy) {
+      if (board.getHistory().getCurrentHistoryNode().hasRemovedStone()
+          || (board.getHistory().getCurrentHistoryNode().extraStones != null
+              && !board.getHistory().getCurrentHistoryNode().extraStones.isEmpty())) return;
       g.setColor(
           board.getData().blackToPlay ? new Color(255, 255, 255, 80) : new Color(0, 0, 0, 80));
       g.fillOval(

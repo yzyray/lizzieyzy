@@ -86,6 +86,7 @@ public class Utils {
   public static void loadFonts(String uiFontName, String playoutFontName, String winrateFontName) {
     try {
       LizzieFrame.uiFont = new Font("SansSerif", Font.TRUETYPE_FONT, 12);
+      LizzieFrame.playoutsFont = new Font("SansSerif", Font.TRUETYPE_FONT, 12);
       LizzieFrame.winrateFont =
           Font.createFont(
               Font.TRUETYPE_FONT,
@@ -907,7 +908,7 @@ public class Utils {
   public static void copyCaptureTsumeGo() {
     // TODO Auto-generated method stub
     try {
-      copy("/assets/captureTsumeGo/CaptureTsumeGo1.1.jar", "captureTsumeGo");
+      copy("/assets/captureTsumeGo/CaptureTsumeGo1.2.jar", "captureTsumeGo");
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
