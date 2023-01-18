@@ -36,7 +36,7 @@ public class CaptureTsumeGo {
   }
 
   private boolean start() {
-    String jarName = "CaptureTsumeGo1.1.jar";
+    String jarName = "CaptureTsumeGo1.2.jar";
     String params =
         " "
             + Lizzie.config.captureBlackOffset
