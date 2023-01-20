@@ -71,6 +71,7 @@ public class BottomToolbar extends JPanel {
   JPopupMenu yike;
   JPopupMenu sharePopup;
   JPopupMenu autoAnalyzePopup;
+  JPopupMenu flashAnalyzePopup;
   JButton tryPlay;
   JButton analyzeList;
   JButton move;
@@ -571,7 +572,7 @@ public class BottomToolbar extends JPanel {
           }
         });
 
-    JPopupMenu flashAnalyzePopup = new JPopupMenu();
+    flashAnalyzePopup = new JPopupMenu();
 
     final JFontMenuItem flashAnalyzeAllGame =
         new JFontMenuItem(resourceBundle.getString("Menu.flashAnalyzeAllGame"));
@@ -4638,6 +4639,8 @@ public class BottomToolbar extends JPanel {
     yike.setVisible(false);
     sharePopup.setVisible(true);
     sharePopup.setVisible(false);
+    flashAnalyzePopup.setVisible(true);
+    flashAnalyzePopup.setVisible(false);
   }
 
   //  public void setFontSize(int fontSize) {

@@ -3880,9 +3880,9 @@ public class BoardRenderer {
                 String[] labels = value.split(",");
                 for (String label : labels) {
                   String[] moves = label.split(":");
-                  int[] move = SGFParser.convertSgfPosToCoord(moves[0]);                  
+                  int[] move = SGFParser.convertSgfPosToCoord(moves[0]);
                   if (move != null) {
-                	  if (move[0] >= Board.boardWidth - 1 || move[1] >= Board.boardWidth - 1) return;
+                    if (move[0] >= Board.boardWidth - 1 || move[1] >= Board.boardWidth - 1) return;
                     if ((isIndependBoard
                             ? Lizzie.frame.independentMainBoard.isMouseOver(move[0], move[1])
                             : Lizzie.frame.isMouseOver(move[0], move[1]))

@@ -446,6 +446,7 @@ public class LizzieFrame extends JFrame {
   public boolean isMarkuping = false;
   public int markupType = 0;
   private int lastLabel;
+  private int lastNumLabel;
   private boolean hasMarkup;
   private String markupKey;
   private String markupValue;
@@ -11292,6 +11293,7 @@ public class LizzieFrame extends JFrame {
     // TODO Auto-generated method stub
     this.isMarkuping = isMarkuping;
     // 0=无 1=字母 2=圈 3=X 4=方块 5=三角
+    // 增加6=数字
     this.markupType = type;
   }
 
@@ -11356,6 +11358,7 @@ public class LizzieFrame extends JFrame {
         int[] coords = boardCoordinates.get();
         BoardData data = Lizzie.board.getHistory().getData();
         lastLabel = 'A' - 1;
+        lastNumLabel = 0;
         hasMarkup = false;
         data.getProperties()
             .forEach(
@@ -11375,6 +11378,15 @@ public class LizzieFrame extends JFrame {
                           if (moves[1].charAt(0) > lastLabel) lastLabel = moves[1].charAt(0);
                         }
                       }
+                      if (markupType == 7) {
+                        if ("LB".equals(key) && moves.length > 1) {
+                          // Number
+                          try {
+                            lastNumLabel = Math.max(lastNumLabel, Integer.parseInt(moves[1]));
+                          } catch (NumberFormatException e) {
+                          }
+                        }
+                      }
                     }
                   }
                 });
@@ -11386,6 +11398,10 @@ public class LizzieFrame extends JFrame {
           lastLabel = lastLabel + 1;
           if (lastLabel >= 91 && lastLabel <= 96) lastLabel = 97;
           String value = SGFParser.asCoord(coords) + ":" + ((char) lastLabel);
+          data.getProperties().merge("LB", value, (old, val) -> old + "," + val);
+        } else if (markupType == 7) {
+          lastNumLabel = lastNumLabel + 1;
+          String value = SGFParser.asCoord(coords) + ":" + lastNumLabel;
           data.getProperties().merge("LB", value, (old, val) -> old + "," + val);
         } else if (markupType == 2) {
           String value = SGFParser.asCoord(coords);

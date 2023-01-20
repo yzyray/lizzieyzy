@@ -7492,6 +7492,8 @@ public class Menu extends JMenuBar {
       ImageIcon iconMarkup2 = new ImageIcon();
       ImageIcon markupLabel1 = new ImageIcon();
       ImageIcon markupLabel2 = new ImageIcon();
+      ImageIcon markupLabelNum1 = new ImageIcon();
+      ImageIcon markupLabelNum2 = new ImageIcon();
       ImageIcon markupCircle1 = new ImageIcon();
       ImageIcon markupCircle2 = new ImageIcon();
       ImageIcon markupX1 = new ImageIcon();
@@ -7555,6 +7557,14 @@ public class Menu extends JMenuBar {
                     Config.menuIconSize, Config.menuIconSize, java.awt.Image.SCALE_SMOOTH));
         markupLabel2.setImage(
             ImageIO.read(getClass().getResourceAsStream("/assets/label2.png"))
+                .getScaledInstance(
+                    Config.menuIconSize, Config.menuIconSize, java.awt.Image.SCALE_SMOOTH));
+        markupLabelNum1.setImage(
+            ImageIO.read(getClass().getResourceAsStream("/assets/labelnum1.png"))
+                .getScaledInstance(
+                    Config.menuIconSize, Config.menuIconSize, java.awt.Image.SCALE_SMOOTH));
+        markupLabelNum2.setImage(
+            ImageIO.read(getClass().getResourceAsStream("/assets/labelnum2.png"))
                 .getScaledInstance(
                     Config.menuIconSize, Config.menuIconSize, java.awt.Image.SCALE_SMOOTH));
         markupX1.setImage(
@@ -7893,6 +7903,20 @@ public class Menu extends JMenuBar {
             }
           });
 
+      JFontButton btnMarkupLabelNum = new JFontButton();
+      if (Lizzie.frame.markupType == 7) btnMarkupLabelNum.setIcon(markupLabelNum2);
+      else btnMarkupLabelNum.setIcon(markupLabelNum1);
+      btnMarkupLabelNum.setFocusable(false);
+      btnMarkupLabelNum.setPreferredSize(new Dimension(Config.menuHeight, Config.menuHeight));
+      btnMarkupLabelNum.addActionListener(
+          new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              if (Lizzie.frame.markupType == 7) Lizzie.frame.setMarkupType(false, 0);
+              else Lizzie.frame.setMarkupType(true, 7);
+              doubleMenu(false);
+            }
+          });
+
       JFontButton btnMarkupCircle = new JFontButton();
       if (Lizzie.frame.markupType == 2) btnMarkupCircle.setIcon(markupCircle2);
       else btnMarkupCircle.setIcon(markupCircle1);
@@ -7990,7 +8014,8 @@ public class Menu extends JMenuBar {
       Lizzie.frame.topPanel.add(btnMarkup);
       if (Lizzie.config.isShowingMarkupTools) {
         Lizzie.frame.topPanel.add(btnMarkupLabel);
-        Lizzie.frame.topPanel.add(btnMarkupCircle);
+        Lizzie.frame.topPanel.add(btnMarkupLabel);
+        Lizzie.frame.topPanel.add(btnMarkupLabelNum);
         Lizzie.frame.topPanel.add(btnMarkupX);
         Lizzie.frame.topPanel.add(btnMarkupSquare);
         Lizzie.frame.topPanel.add(btnMarkupTri);
