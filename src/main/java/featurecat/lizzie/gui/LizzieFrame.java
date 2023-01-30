@@ -6962,6 +6962,8 @@ public class LizzieFrame extends JFrame {
       if (isLoadingEngine) {
         if (Lizzie.gtpConsole != null) {
           comment = Lizzie.gtpConsole.console.getText();
+          if (comment.length() > 1000)
+            comment = comment.substring(comment.length() - 1000, comment.length());
           if (!Lizzie.config.showStatus && isTuningEngine)
             comment += Lizzie.resourceBundle.getString("LizzieFrame.display.tuning");
         }
@@ -7081,7 +7083,7 @@ public class LizzieFrame extends JFrame {
     }
   }
 
-  private void appendComment() {
+  public void appendComment() {
     if (Lizzie.config.showComment) {
       if (!EngineManager.isEmpty) {
         if (Lizzie.config.appendWinrateToComment || EngineManager.isEngineGame) {

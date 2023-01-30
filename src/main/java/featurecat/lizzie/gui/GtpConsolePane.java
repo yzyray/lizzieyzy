@@ -279,7 +279,10 @@ public class GtpConsolePane extends JDialog {
                   || !Lizzie.engineManager
                       .engineList
                       .get(EngineManager.engineGameInfo.blackEngineIndex)
-                      .isLoaded()))) Lizzie.frame.refresh();
+                      .isLoaded()))) {
+        Lizzie.frame.setCommentEditable(false);
+        Lizzie.frame.appendComment();
+      }
       //      checkCount++;
       //      if (checkCount > 300) {
       //        checkCount = 0;
