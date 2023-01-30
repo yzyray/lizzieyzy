@@ -91,8 +91,9 @@ public class SocketCheckVersion {
           if (params.length == 3) {
             String remoteVersion = params[1];
             String remoteVersionDis = params[2];
-            if (Integer.parseInt(remoteVersion) <= Integer.parseInt(Lizzie.checkVersion)
-                || Integer.parseInt(remoteVersion) <= Lizzie.config.ignoreVersion) {
+            if (Integer.parseInt(remoteVersion) <= Integer.parseInt(Lizzie.checkVersion))
+            //    || Integer.parseInt(remoteVersion) <= Lizzie.config.ignoreVersion)
+            {
               if (!isAutoCheck) {
                 CheckVersion checkVersion =
                     new CheckVersion(false, remoteVersion, remoteVersionDis);

@@ -202,7 +202,7 @@ public class Config {
   public boolean badMoves = false;
   public boolean autoPlay = true;
   public boolean deleteMove = true;
-  public boolean share = true;
+  public boolean share = false;
   public boolean flashAnalyze = false;
   public boolean enableLizzieCache = true;
   public boolean showQuickLinks = false;
@@ -241,9 +241,9 @@ public class Config {
   public String shareLabel5 = "";
   public boolean sharePublic = true;
 
-  public boolean autoCheckVersion = true;
+  // public boolean autoCheckVersion = true;
   public String autoCheckDate = "";
-  public int ignoreVersion = 0;
+  // public int ignoreVersion = 0;
 
   public String kataRules = "";
   public boolean autoLoadKataRules = false;
@@ -1253,7 +1253,7 @@ public class Config {
     autoPlay = uiConfig.optBoolean("autoPlay", true);
     showQuickLinks = uiConfig.optBoolean("show-quick-links", false);
     liveButton = uiConfig.optBoolean("liveButton", true);
-    share = uiConfig.optBoolean("share", true);
+    // share = uiConfig.optBoolean("share", true);
     flashAnalyze =
         uiConfig.optBoolean("flash-analyze", showDoubleMenu && showTopToolBar ? false : true);
     badMoves = uiConfig.optBoolean("badMoves", showDoubleMenu && showTopToolBar ? false : true);
@@ -1292,9 +1292,9 @@ public class Config {
     shareLabel4 = uiConfig.optString("share-label-4", "");
     shareLabel5 = uiConfig.optString("share-label-5", "");
     sharePublic = uiConfig.optBoolean("share-public", true);
-    autoCheckVersion = uiConfig.optBoolean("auto-check-version", true);
+    // autoCheckVersion = uiConfig.optBoolean("auto-check-version", true);
     autoCheckDate = uiConfig.optString("auto-check-date", "");
-    ignoreVersion = uiConfig.optInt("ignore-version", 0);
+    //  ignoreVersion = uiConfig.optInt("ignore-version", 0);
     // firstUse = uiConfig.optBoolean("first-time-use", true);
     loadSgfLast = uiConfig.optBoolean("load-sgf-last", false);
     useShortcutKataEstimate = uiConfig.optBoolean("shortcut-kata-estimate", false);

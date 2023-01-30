@@ -8809,13 +8809,13 @@ public class LizzieFrame extends JFrame {
   }
 
   public void shareSGF() {
-    shareFrame = new ShareFrame();
-    shareFrame.setVisible(true);
+    //    shareFrame = new ShareFrame();
+    //    shareFrame.setVisible(true);
   }
 
   public void batchShareSGF() {
-    batchShareFrame = new BatchShareFrame();
-    batchShareFrame.setVisible(true);
+    //    batchShareFrame = new BatchShareFrame();
+    //    batchShareFrame.setVisible(true);
   }
 
   public void setLzSaiEngine() {

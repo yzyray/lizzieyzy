@@ -10,7 +10,6 @@ import featurecat.lizzie.gui.GtpConsolePane;
 import featurecat.lizzie.gui.LizzieFrame;
 import featurecat.lizzie.gui.LoadEngine;
 import featurecat.lizzie.gui.Message;
-import featurecat.lizzie.gui.SocketCheckVersion;
 import featurecat.lizzie.rules.Board;
 import featurecat.lizzie.util.MultiOutputStream;
 import featurecat.lizzie.util.Utils;
@@ -42,7 +41,7 @@ public class Lizzie {
   public static Board board;
   public static Leelaz leelaz;
   public static Leelaz leelaz2;
-  public static String lizzieVersion = "yzy2.5.1";
+  public static String lizzieVersion = "2.5.1";
   public static String checkVersion = "220803";
   public static boolean readMode = false;
   private static String[] mainArgs;
@@ -269,13 +268,13 @@ public class Lizzie {
             }
           }
         });
-    if (config.autoCheckVersion) {
-      String date = new SimpleDateFormat("yyyyMMdd").format(new Date());
-      if (!config.autoCheckDate.equals(date)) {
-        SocketCheckVersion socketCheckVersion = new SocketCheckVersion();
-        socketCheckVersion.SocketCheckVersion(true);
-      }
-    }
+    //    if (config.autoCheckVersion) {
+    //      String date = new SimpleDateFormat("yyyyMMdd").format(new Date());
+    //      if (!config.autoCheckDate.equals(date)) {
+    //        SocketCheckVersion socketCheckVersion = new SocketCheckVersion();
+    //        socketCheckVersion.SocketCheckVersion(true);
+    //      }
+    //    }
   }
 
   public static void setLookAndFeel() {

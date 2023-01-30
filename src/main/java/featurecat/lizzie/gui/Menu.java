@@ -3857,7 +3857,7 @@ public class Menu extends JMenuBar {
     shareKifu.setFont(baseMenuFont);
     shareKifu.setForeground(Color.BLACK);
     // shareKifu.setFont(headFont);
-    this.add(shareKifu);
+    // this.add(shareKifu);
 
     final JFontMenuItem shareCurrentSgf =
         new JFontMenuItem(resourceBundle.getString("Menu.shareCurrentSgf")); // ("分享当前棋谱(Ctrl+E)");
@@ -4586,7 +4586,7 @@ public class Menu extends JMenuBar {
 
     final JFontCheckBoxMenuItem shareButton =
         new JFontCheckBoxMenuItem(resourceBundle.getString("BottomToolbar.share")); // ("分享");
-    customToolbarItem.add(shareButton);
+    // customToolbarItem.add(shareButton);
     shareButton.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
@@ -4931,15 +4931,17 @@ public class Menu extends JMenuBar {
     checkUpdate.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            Runnable runnable =
-                new Runnable() {
-                  public void run() {
-                    SocketCheckVersion socketCheckVersion = new SocketCheckVersion();
-                    socketCheckVersion.SocketCheckVersion(false);
-                  }
-                };
-            Thread thread = new Thread(runnable);
-            thread.start();
+            CheckVersion checkVersion = new CheckVersion(false, "", "");
+            checkVersion.setVisible(true);
+            //            Runnable runnable =
+            //                new Runnable() {
+            //                  public void run() {
+            //                    SocketCheckVersion socketCheckVersion = new SocketCheckVersion();
+            //                    socketCheckVersion.SocketCheckVersion(false);
+            //                  }
+            //                };
+            //            Thread thread = new Thread(runnable);
+            //            thread.start();
           }
         });
 
