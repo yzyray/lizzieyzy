@@ -77,6 +77,14 @@ public class NewGameDialog extends JDialog {
   private JTextField txtKataTimeByoyomiTimes;
   private JTextField txtKataTimeFisherIncrementSecs;
   private Window thisDialog = this;
+  private JPanel panel;
+  private JCheckBox chkUseKataAdvSettings;
+  private JPanel kataSettingPanel;
+  private JLabel kataVisits;
+  private JTextField txtKataVisits;
+  private JLabel kataPlayouts;
+  private JTextField txtKataPlayouts;
+  private JLabel lblVersionRequire;
 
   private void initComponents() {
     setMinimumSize(new Dimension(100, 150));
@@ -121,10 +129,10 @@ public class NewGameDialog extends JDialog {
           EngineManager.currentEngineNo >= 0 ? EngineManager.currentEngineNo : 0);
     GridBagLayout gbl_contentPanel = new GridBagLayout();
     gbl_contentPanel.columnWidths = new int[] {176, 92, 0};
-    gbl_contentPanel.rowHeights = new int[] {31, 31, 31, 31, 31, 31, 31, 0, 31, 31, 31, 31, 31};
+    gbl_contentPanel.rowHeights = new int[] {31, 31, 31, 31, 31, 31, 31, 31, 0, 0, 31, 31, 31, 31};
     gbl_contentPanel.columnWeights = new double[] {1.0, 1.0, Double.MIN_VALUE};
     gbl_contentPanel.rowWeights =
-        new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+        new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0};
     contentPanel.setLayout(gbl_contentPanel);
     GridBagConstraints gbc = new GridBagConstraints();
     gbc.fill = GridBagConstraints.BOTH;
@@ -347,6 +355,13 @@ public class NewGameDialog extends JDialog {
       texByoSeconds.setEnabled(false);
       texByoTimes.setEnabled(false);
     }
+    ImageIcon iconSettings = new ImageIcon();
+    try {
+      iconSettings.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/settings.png")));
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
 
     JPanel myTimeSettingsPanel = new JPanel();
     myTimeSettingsPanel.add(new JFontLabel(resourceBundle.getString("Byoyomi.newGame.saveTime")));
@@ -387,13 +402,61 @@ public class NewGameDialog extends JDialog {
     gbc_textTime.gridy = 6;
     contentPanel.add(textTime, gbc_textTime);
 
+    JPanel advTimeLabelPanel = new JPanel();
+    advTimeLabelPanel.setBorder(BorderFactory.createEmptyBorder());
+    GridBagConstraints gbc_advTimeLabelPanel = new GridBagConstraints();
+    gbc_advTimeLabelPanel.anchor = GridBagConstraints.WEST;
+    gbc_advTimeLabelPanel.fill = GridBagConstraints.VERTICAL;
+    gbc_advTimeLabelPanel.insets = new Insets(0, 0, 5, 5);
+    gbc_advTimeLabelPanel.gridx = 0;
+    gbc_advTimeLabelPanel.gridy = 7;
+    contentPanel.add(advTimeLabelPanel, gbc_advTimeLabelPanel);
+
+    chkUseAdvTime = new JFontCheckBox(resourceBundle.getString("NewGameDialog.lblAdvanceTime"));
+    chkUseAdvTime.setBounds(99, 4, 18, 18);
+    chkUseAdvTime.setSelected(Lizzie.config.advanceTimeSettings);
+    advTimeLabelPanel.add(chkUseAdvTime);
+
+    btnAboutAdvTime = new JFontButton(iconSettings); // $NON-NLS-1$
+    btnAboutAdvTime.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            Utils.showHtmlMessageModal(
+                resourceBundle.getString("AdvanceTimeSettings.title"),
+                resourceBundle.getString("AdvanceTimeSettings.describe"),
+                thisDialog);
+          }
+        });
+    btnAboutAdvTime.setPreferredSize(new Dimension(Config.menuHeight, Config.menuHeight));
+    btnAboutAdvTime.setFocusable(false);
+    advTimeLabelPanel.add(btnAboutAdvTime);
+
+    chkUseAdvTime.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            chkTimeChanged();
+          }
+        });
+    chkUseAdvTime.setSelected(Lizzie.config.advanceTimeSettings);
+
+    txtAdvanceTime = new JFontTextField();
+    GridBagConstraints gbc_txtAdvanceTime = new GridBagConstraints();
+    gbc_txtAdvanceTime.fill = GridBagConstraints.BOTH;
+    gbc_txtAdvanceTime.insets = new Insets(0, 0, 5, 0);
+    gbc_txtAdvanceTime.gridx = 1;
+    gbc_txtAdvanceTime.gridy = 7;
+    contentPanel.add(txtAdvanceTime, gbc_txtAdvanceTime);
+    txtAdvanceTime.setColumns(13);
+    txtAdvanceTime.setText(Lizzie.config.advanceTimeTxt);
+
     JPanel kataTimeLabelPanel = new JPanel();
     GridBagConstraints gbc_kataTimeLabelPanel = new GridBagConstraints();
     gbc_kataTimeLabelPanel.anchor = GridBagConstraints.WEST;
     gbc_kataTimeLabelPanel.fill = GridBagConstraints.VERTICAL;
     gbc_kataTimeLabelPanel.insets = new Insets(0, 0, 5, 5);
     gbc_kataTimeLabelPanel.gridx = 0;
-    gbc_kataTimeLabelPanel.gridy = 7;
+    gbc_kataTimeLabelPanel.gridy = 8;
     contentPanel.add(kataTimeLabelPanel, gbc_kataTimeLabelPanel);
 
     chkKataTime =
@@ -406,7 +469,7 @@ public class NewGameDialog extends JDialog {
     gbc_panel.insets = new Insets(0, 0, 5, 0);
     gbc_panel.fill = GridBagConstraints.VERTICAL;
     gbc_panel.gridx = 1;
-    gbc_panel.gridy = 7;
+    gbc_panel.gridy = 8;
     contentPanel.add(kataTimeSettingsPanel, gbc_panel);
 
     kataTimeComboBox = new JFontComboBox<String>();
@@ -516,43 +579,6 @@ public class NewGameDialog extends JDialog {
           }
         });
 
-    JPanel advTimeLabelPanel = new JPanel();
-    advTimeLabelPanel.setBorder(BorderFactory.createEmptyBorder());
-    GridBagConstraints gbc_advTimeLabelPanel = new GridBagConstraints();
-    gbc_advTimeLabelPanel.anchor = GridBagConstraints.WEST;
-    gbc_advTimeLabelPanel.fill = GridBagConstraints.VERTICAL;
-    gbc_advTimeLabelPanel.insets = new Insets(0, 0, 5, 5);
-    gbc_advTimeLabelPanel.gridx = 0;
-    gbc_advTimeLabelPanel.gridy = 8;
-    contentPanel.add(advTimeLabelPanel, gbc_advTimeLabelPanel);
-
-    chkUseAdvTime = new JFontCheckBox(resourceBundle.getString("NewGameDialog.lblAdvanceTime"));
-    chkUseAdvTime.setBounds(99, 4, 18, 18);
-    chkUseAdvTime.setSelected(Lizzie.config.advanceTimeSettings);
-    advTimeLabelPanel.add(chkUseAdvTime);
-
-    ImageIcon iconSettings = new ImageIcon();
-    try {
-      iconSettings.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/settings.png")));
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-
-    btnAboutAdvTime = new JFontButton(iconSettings); // $NON-NLS-1$
-    btnAboutAdvTime.addActionListener(
-        new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            Utils.showHtmlMessageModal(
-                resourceBundle.getString("AdvanceTimeSettings.title"),
-                resourceBundle.getString("AdvanceTimeSettings.describe"),
-                thisDialog);
-          }
-        });
-    btnAboutAdvTime.setPreferredSize(new Dimension(Config.menuHeight, Config.menuHeight));
-    btnAboutAdvTime.setFocusable(false);
-    advTimeLabelPanel.add(btnAboutAdvTime);
-
     chkNormalTime.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
@@ -566,15 +592,6 @@ public class NewGameDialog extends JDialog {
             chkTimeChanged();
           }
         });
-
-    chkUseAdvTime.addActionListener(
-        new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            chkTimeChanged();
-          }
-        });
-    chkUseAdvTime.setSelected(Lizzie.config.advanceTimeSettings);
     chkKataTime.setSelected(Lizzie.config.kataTimeSettings);
     chkNormalTime.setSelected(
         !Lizzie.config.advanceTimeSettings && !Lizzie.config.kataTimeSettings);
@@ -584,21 +601,65 @@ public class NewGameDialog extends JDialog {
     chkTimeGroup.add(chkKataTime);
     chkTimeGroup.add(chkUseAdvTime);
 
-    txtAdvanceTime = new JFontTextField();
-    GridBagConstraints gbc_txtAdvanceTime = new GridBagConstraints();
-    gbc_txtAdvanceTime.fill = GridBagConstraints.BOTH;
-    gbc_txtAdvanceTime.insets = new Insets(0, 0, 5, 0);
-    gbc_txtAdvanceTime.gridx = 1;
-    gbc_txtAdvanceTime.gridy = 8;
-    contentPanel.add(txtAdvanceTime, gbc_txtAdvanceTime);
-    txtAdvanceTime.setColumns(13);
-    txtAdvanceTime.setText(Lizzie.config.advanceTimeTxt);
+    panel = new JPanel();
+    GridBagConstraints gbc_panel2 = new GridBagConstraints();
+    gbc_panel2.anchor = GridBagConstraints.WEST;
+    gbc_panel2.insets = new Insets(0, 0, 5, 5);
+    gbc_panel2.fill = GridBagConstraints.VERTICAL;
+    gbc_panel2.gridx = 0;
+    gbc_panel2.gridy = 9;
+    contentPanel.add(panel, gbc_panel2);
+
+    chkUseKataAdvSettings =
+        new JFontCheckBox(resourceBundle.getString("NewGameDialog.chkUseKataAdvSettings"));
+    panel.add(chkUseKataAdvSettings);
+
+    kataSettingPanel = new JPanel();
+    GridBagConstraints gbc_panel_1 = new GridBagConstraints();
+    gbc_panel_1.anchor = GridBagConstraints.WEST;
+    gbc_panel_1.insets = new Insets(0, 0, 5, 0);
+    gbc_panel_1.gridx = 1;
+    gbc_panel_1.gridy = 9;
+    contentPanel.add(kataSettingPanel, gbc_panel_1);
+
+    kataVisits = new JFontLabel(resourceBundle.getString("NewGameDialog.kataVisits"));
+    kataSettingPanel.add(kataVisits);
+
+    txtKataVisits = new JFontTextField();
+    kataSettingPanel.add(txtKataVisits);
+    txtKataVisits.setColumns(5);
+    txtKataVisits.setDocument(new IntDocument());
+    if (Lizzie.config.kataVisits > 0)
+      txtKataVisits.setText(String.valueOf(Lizzie.config.kataVisits));
+
+    kataPlayouts = new JFontLabel(resourceBundle.getString("NewGameDialog.kataPlayouts"));
+    kataSettingPanel.add(kataPlayouts);
+
+    txtKataPlayouts = new JFontTextField();
+    kataSettingPanel.add(txtKataPlayouts);
+    txtKataPlayouts.setColumns(5);
+    txtKataPlayouts.setDocument(new IntDocument());
+    if (Lizzie.config.kataPlayouts > 0)
+      txtKataPlayouts.setText(String.valueOf(Lizzie.config.kataPlayouts));
+
+    lblVersionRequire = new JFontLabel(resourceBundle.getString("NewGameDialog.lblVersionRequire"));
+    kataSettingPanel.add(lblVersionRequire);
+
+    chkUseKataAdvSettings.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            setKataAdvStatus();
+          }
+        });
+    chkUseKataAdvSettings.setSelected(Lizzie.config.kataVisitsPlayoutsSettings);
+    setKataAdvStatus();
 
     GridBagConstraints gbc_4 = new GridBagConstraints();
     gbc_4.fill = GridBagConstraints.BOTH;
     gbc_4.insets = new Insets(0, 0, 5, 5);
     gbc_4.gridx = 0;
-    gbc_4.gridy = 9;
+    gbc_4.gridy = 10;
     JFontLabel label_4 = new JFontLabel(resourceBundle.getString("NewGameDialog.noTime"));
     contentPanel.add(label_4, gbc_4);
     chkNoTime = new JFontCheckBox();
@@ -614,14 +675,14 @@ public class NewGameDialog extends JDialog {
     gbc_chkNoTime.fill = GridBagConstraints.BOTH;
     gbc_chkNoTime.insets = new Insets(0, 0, 5, 0);
     gbc_chkNoTime.gridx = 1;
-    gbc_chkNoTime.gridy = 9;
+    gbc_chkNoTime.gridy = 10;
     contentPanel.add(chkNoTime, gbc_chkNoTime);
 
     GridBagConstraints gbc_5 = new GridBagConstraints();
     gbc_5.fill = GridBagConstraints.BOTH;
     gbc_5.insets = new Insets(0, 0, 5, 5);
     gbc_5.gridx = 0;
-    gbc_5.gridy = 10;
+    gbc_5.gridy = 11;
     JFontLabel label_5 = new JFontLabel(resourceBundle.getString("NewGameDialog.chkPonder"));
     contentPanel.add(label_5, gbc_5); // ("AI是否后台思考"));
     chkPonder = new JFontCheckBox(resourceBundle.getString("NewGameDialog.chkPonderDescribe"));
@@ -630,14 +691,14 @@ public class NewGameDialog extends JDialog {
     gbc_chkPonder.fill = GridBagConstraints.BOTH;
     gbc_chkPonder.insets = new Insets(0, 0, 5, 0);
     gbc_chkPonder.gridx = 1;
-    gbc_chkPonder.gridy = 10;
+    gbc_chkPonder.gridy = 11;
     contentPanel.add(chkPonder, gbc_chkPonder);
 
     GridBagConstraints gbc_6 = new GridBagConstraints();
     gbc_6.fill = GridBagConstraints.BOTH;
     gbc_6.insets = new Insets(0, 0, 5, 5);
     gbc_6.gridx = 0;
-    gbc_6.gridy = 11;
+    gbc_6.gridy = 12;
     JFontLabel label_7 = new JFontLabel(resourceBundle.getString("NewGameDialog.chkUsePlayMode"));
     contentPanel.add(label_7, gbc_6);
     chkUsePlayMode =
@@ -654,7 +715,7 @@ public class NewGameDialog extends JDialog {
     gbc_chkUsePlayMode.insets = new Insets(0, 0, 5, 0);
     gbc_chkUsePlayMode.fill = GridBagConstraints.BOTH;
     gbc_chkUsePlayMode.gridx = 1;
-    gbc_chkUsePlayMode.gridy = 11;
+    gbc_chkUsePlayMode.gridy = 12;
     contentPanel.add(chkUsePlayMode, gbc_chkUsePlayMode);
 
     if (Lizzie.config.advanceTimeSettings) textTime.setEnabled(false);
@@ -670,7 +731,7 @@ public class NewGameDialog extends JDialog {
     gbc_lblNewLabel.anchor = GridBagConstraints.WEST;
     gbc_lblNewLabel.insets = new Insets(0, 0, 5, 5);
     gbc_lblNewLabel.gridx = 0;
-    gbc_lblNewLabel.gridy = 12;
+    gbc_lblNewLabel.gridy = 13;
     contentPanel.add(lblShowBlack, gbc_lblNewLabel);
 
     chkShowBlack = new JFontCheckBox();
@@ -678,7 +739,7 @@ public class NewGameDialog extends JDialog {
     gbc_chckbxNewCheckBox.fill = GridBagConstraints.HORIZONTAL;
     gbc_chckbxNewCheckBox.insets = new Insets(0, 0, 5, 0);
     gbc_chckbxNewCheckBox.gridx = 1;
-    gbc_chckbxNewCheckBox.gridy = 12;
+    gbc_chckbxNewCheckBox.gridy = 13;
     contentPanel.add(chkShowBlack, gbc_chckbxNewCheckBox);
 
     JFontLabel lblShowWhite =
@@ -687,7 +748,7 @@ public class NewGameDialog extends JDialog {
     gbc_lblNewLabel_1.anchor = GridBagConstraints.WEST;
     gbc_lblNewLabel_1.insets = new Insets(0, 0, 5, 5);
     gbc_lblNewLabel_1.gridx = 0;
-    gbc_lblNewLabel_1.gridy = 13;
+    gbc_lblNewLabel_1.gridy = 14;
     contentPanel.add(lblShowWhite, gbc_lblNewLabel_1);
 
     chkShowWhite = new JFontCheckBox();
@@ -695,7 +756,7 @@ public class NewGameDialog extends JDialog {
     gbc_chckbxNewCheckBox_1.fill = GridBagConstraints.HORIZONTAL;
     gbc_chckbxNewCheckBox_1.insets = new Insets(0, 0, 5, 0);
     gbc_chckbxNewCheckBox_1.gridx = 1;
-    gbc_chckbxNewCheckBox_1.gridy = 13;
+    gbc_chckbxNewCheckBox_1.gridy = 14;
     contentPanel.add(chkShowWhite, gbc_chckbxNewCheckBox_1);
     chkShowBlack.setSelected(false);
     chkShowWhite.setSelected(false);
@@ -706,7 +767,7 @@ public class NewGameDialog extends JDialog {
     gbc_lblAutoSave.anchor = GridBagConstraints.WEST;
     gbc_lblAutoSave.insets = new Insets(0, 0, 0, 5);
     gbc_lblAutoSave.gridx = 0;
-    gbc_lblAutoSave.gridy = 14;
+    gbc_lblAutoSave.gridy = 15;
     contentPanel.add(lblAutoSave, gbc_lblAutoSave);
 
     JCheckBox chkAutoSave =
@@ -726,11 +787,17 @@ public class NewGameDialog extends JDialog {
     GridBagConstraints gbc_chkAutoSave = new GridBagConstraints();
     gbc_chkAutoSave.fill = GridBagConstraints.HORIZONTAL;
     gbc_chkAutoSave.gridx = 1;
-    gbc_chkAutoSave.gridy = 14;
+    gbc_chkAutoSave.gridy = 15;
     contentPanel.add(chkAutoSave, gbc_chkAutoSave);
     chkTimeChanged();
     chkNoTime.setSelected(Lizzie.config.genmoveGameNoTime);
     setNoTimeStatus(Lizzie.config.genmoveGameNoTime);
+  }
+
+  protected void setKataAdvStatus() {
+    // TODO Auto-generated method stub
+    txtKataPlayouts.setEnabled(chkUseKataAdvSettings.isSelected());
+    txtKataVisits.setEnabled(chkUseKataAdvSettings.isSelected());
   }
 
   private void setNoTimeStatus(boolean selected) {
@@ -853,6 +920,9 @@ public class NewGameDialog extends JDialog {
       Lizzie.config.kataTimeFisherIncrementSecs =
           Utils.parseTextToInt(
               txtKataTimeFisherIncrementSecs, Lizzie.config.kataTimeFisherIncrementSecs);
+      Lizzie.config.kataVisits = Utils.parseTextToInt(txtKataVisits, -1);
+      Lizzie.config.kataPlayouts = Utils.parseTextToInt(txtKataPlayouts, -1);
+
       Lizzie.config.uiConfig.put("kata-time-main-time-mins", Lizzie.config.kataTimeMainTimeMins);
       Lizzie.config.uiConfig.put("kata-time-byoyomi-secs", Lizzie.config.kataTimeByoyomiSecs);
       Lizzie.config.uiConfig.put("kata-time-byoyomi-times", Lizzie.config.kataTimeByoyomiTimes);
@@ -869,6 +939,7 @@ public class NewGameDialog extends JDialog {
       Lizzie.config.mySaveTime = textSaveTime.getSelectedIndex();
       Lizzie.config.myByoyomiSeconds = texByoSeconds.getSelectedIndex();
       Lizzie.config.myByoyomiTimes = texByoTimes.getSelectedIndex();
+      Lizzie.config.kataVisitsPlayoutsSettings = chkUseKataAdvSettings.isSelected();
 
       Lizzie.config.uiConfig.put("check-play-black", Lizzie.config.checkPlayBlack);
       Lizzie.config.uiConfig.put("check-continue-play", Lizzie.config.checkContinuePlay);
@@ -880,6 +951,12 @@ public class NewGameDialog extends JDialog {
       Lizzie.config.uiConfig.put("my-save-time", Lizzie.config.mySaveTime);
       Lizzie.config.uiConfig.put("my-byoyomo-seconds", Lizzie.config.myByoyomiSeconds);
       Lizzie.config.uiConfig.put("my-byoyomo-times", Lizzie.config.myByoyomiTimes);
+
+      Lizzie.config.uiConfig.put(
+          "kata-visits-playouts-settings", Lizzie.config.kataVisitsPlayoutsSettings);
+      Lizzie.config.uiConfig.put("kata-visits-txt", Lizzie.config.kataVisits);
+      Lizzie.config.uiConfig.put("kata-playouts-txt", Lizzie.config.kataPlayouts);
+
       LizzieFrame.toolbar.setChkShowBlack(chkShowBlack.isSelected());
       LizzieFrame.toolbar.setChkShowWhite(chkShowWhite.isSelected());
       LizzieFrame.menu.setChkShowBlack(chkShowBlack.isSelected());

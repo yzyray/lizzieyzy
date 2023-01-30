@@ -108,6 +108,10 @@ public class Config {
   public int kataTimeByoyomiTimes = 3;
   public int kataTimeFisherIncrementSecs = 5;
 
+  public boolean kataVisitsPlayoutsSettings = false;
+  public int kataVisits = -1;
+  public int kataPlayouts = -1;
+
   public boolean pkAdvanceTimeSettings = false;
   public String advanceBlackTimeTxt = "time_settings 120 2 1";
   public String advanceWhiteTimeTxt = "time_settings 120 2 1";
@@ -1128,6 +1132,10 @@ public class Config {
     kataTimeByoyomiSecs = uiConfig.optInt("kata-time-byoyomi-secs", 5);
     kataTimeByoyomiTimes = uiConfig.optInt("kata-time-byoyomi-times", 3);
     kataTimeFisherIncrementSecs = uiConfig.optInt("kata-time-fisher-increment-secs", 5);
+
+    kataVisitsPlayoutsSettings = uiConfig.optBoolean("kata-visits-playouts-settings", false);
+    kataVisits = uiConfig.optInt("kata-visits-txt", -1);
+    kataPlayouts = uiConfig.optInt("kata-playouts-txt", -1);
 
     pkAdvanceTimeSettings = uiConfig.optBoolean("pk-advance-time-settings", false);
     advanceBlackTimeTxt = uiConfig.optString("advance-black-time-txt", "time_settings 10 2 1");

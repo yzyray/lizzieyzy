@@ -3018,6 +3018,15 @@ public class LizzieFrame extends JFrame {
                   Lizzie.config.getMyByoyomiTimes());
             if (!Lizzie.config.genmoveGameNoTime) sendAiTime(true, Lizzie.leelaz, true);
             clearWRNforGame(true);
+            if (Lizzie.config.kataVisitsPlayoutsSettings) {
+              if (Lizzie.config.kataVisits > 0)
+                Lizzie.leelaz.sendCommand("kata-set-param maxVisits " + Lizzie.config.kataVisits);
+              else Lizzie.leelaz.sendCommand("kata-set-param maxVisits 1125899906842624");
+              if (Lizzie.config.kataPlayouts > 0)
+                Lizzie.leelaz.sendCommand(
+                    "kata-set-param maxPlayouts " + Lizzie.config.kataPlayouts);
+              else Lizzie.leelaz.sendCommand("kata-set-param maxPlayouts 1125899906842624");
+            }
             if (isHandicapGame) {
               Lizzie.board.getHistory().getData().blackToPlay = false;
               if (Lizzie.leelaz.isKatago && Lizzie.config.useFreeHandicap)
