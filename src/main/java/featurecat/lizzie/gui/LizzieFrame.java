@@ -3031,6 +3031,7 @@ public class LizzieFrame extends JFrame {
               } else if (playerIsBlack && !Lizzie.board.getHistory().isBlacksTurn())
                 Lizzie.leelaz.genmove("w");
             }
+            //发送检测版本+检测maxVisits等的命令
             GameInfo gameInfo = Lizzie.board.getHistory().getGameInfo();
             gameInfo.setPlayerBlack(
                 playerIsBlack
@@ -5361,7 +5362,7 @@ public class LizzieFrame extends JFrame {
   private void drawMoveStatistics(Graphics2D g, int posX, int posY, int width, int height) {
     if (width < 10 || height < 5) return;
     g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-    if (isInPlayMode()) {
+    if (isInPlayMode()||isShowingByoTime) {
       g.setColor(new Color(0, 0, 0, 130));
       g.fillRect(posX, posY, width, height);
       int strokeRadius = 1;

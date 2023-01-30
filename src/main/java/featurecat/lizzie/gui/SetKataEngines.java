@@ -45,6 +45,18 @@ public class SetKataEngines extends JDialog {
   private JCheckBox chkAutoRPT;
   private JFontLabel lblHint;
   private JTextField txtThreads;
+  
+  private JTextField txtMaxTime;
+  private JTextField txtMaxVisits;
+  private JTextField txtMaxPlayouts;
+  
+  private JCheckBox chkEditMaxTime;
+  private JCheckBox chkEditMaxVisits;
+  private JCheckBox chkEditMaxPlayouts;
+  
+  private JCheckBox chkAutoMaxTime;
+  private JCheckBox chkAutoMaxVisits;
+  private JCheckBox chkAutoMaxPlayouts;
 
   public SetKataEngines() {
     // this.setModal(true);
@@ -66,7 +78,7 @@ public class SetKataEngines extends JDialog {
         });
     btnCancel.setBounds(
         Lizzie.config.isFrameFontSmall() ? 376 : (Lizzie.config.isFrameFontMiddle() ? 440 : 540),
-        173,
+        269,
         93,
         25);
     getContentPane().add(btnCancel);
@@ -130,6 +142,45 @@ public class SetKataEngines extends JDialog {
               Lizzie.leelaz.sendCommand(
                   "kata-set-param numSearchThreads " + Lizzie.config.txtKataEngineThreads);
             }
+            
+            Lizzie.config.chkKataEngineMaxTime = chkEditMaxTime.isSelected();
+            Lizzie.config.autoLoadKataEngineMaxTime = chkAutoMaxTime.isSelected();
+            Lizzie.config.txtKataEngineMaxTime = txtMaxTime.getText();
+            Lizzie.config.uiConfig.put(
+                "txt-kata-engine-maxtime", Lizzie.config.txtKataEngineMaxTime);
+            Lizzie.config.uiConfig.put(
+                "autoload-kata-engine-maxtime", Lizzie.config.autoLoadKataEngineMaxTime);
+
+            if (Lizzie.config.chkKataEngineMaxTime) {
+              Lizzie.leelaz.sendCommand(
+                  "kata-set-param maxTime " + Lizzie.config.txtKataEngineMaxTime);
+            }
+            
+            Lizzie.config.chkKataEngineMaxVisits = chkEditMaxVisits.isSelected();
+            Lizzie.config.autoLoadKataEngineMaxVisits = chkAutoMaxVisits.isSelected();
+            Lizzie.config.txtKataEngineMaxVisits = txtMaxVisits.getText();
+            Lizzie.config.uiConfig.put(
+                "txt-kata-engine-maxvisits", Lizzie.config.txtKataEngineMaxVisits);
+            Lizzie.config.uiConfig.put(
+                "autoload-kata-engine-maxvisits", Lizzie.config.autoLoadKataEngineMaxVisits);
+
+            if (Lizzie.config.chkKataEngineMaxVisits) {
+              Lizzie.leelaz.sendCommand(
+                  "kata-set-param maxVisits " + Lizzie.config.txtKataEngineMaxVisits);
+            }
+            
+            Lizzie.config.chkKataEngineMaxPlayouts = chkEditMaxPlayouts.isSelected();
+            Lizzie.config.autoLoadKataEngineMaxVisits = chkAutoMaxPlayouts.isSelected();
+            Lizzie.config.txtKataEngineMaxPlayouts = txtMaxPlayouts.getText();
+            Lizzie.config.uiConfig.put(
+                "txt-kata-engine-maxplayouts", Lizzie.config.txtKataEngineMaxPlayouts);
+            Lizzie.config.uiConfig.put(
+                "autoload-kata-engine-maxplayouts", Lizzie.config.autoLoadKataEngineMaxPlayouts);
+
+            if (Lizzie.config.chkKataEngineMaxPlayouts) {
+              Lizzie.leelaz.sendCommand(
+                  "kata-set-param maxPlayouts " + Lizzie.config.txtKataEngineMaxPlayouts);
+            }
             //            Lizzie.config.chkKataEngineRPT = chkEditRPT.isSelected();
             //            Lizzie.config.autoLoadKataEngineRPT = chkAutoRPT.isSelected();
             //            Lizzie.config.txtKataEngineRPT = txtRPT.getText();
@@ -163,7 +214,7 @@ public class SetKataEngines extends JDialog {
         });
     btnApply.setBounds(
         Lizzie.config.isFrameFontSmall() ? 278 : (Lizzie.config.isFrameFontMiddle() ? 340 : 440),
-        173,
+        269,
         93,
         25);
     getContentPane().add(btnApply);
@@ -461,19 +512,19 @@ public class SetKataEngines extends JDialog {
         new JFontLabel(
             Lizzie.resourceBundle.getString(
                 "SetKataEngines.lblHint")); // ("注:需要至少KataGoV1.4引擎,勾选自动加载则在所有KataGo引擎启动后自动加载勾选的选项");
-    lblHint.setBounds(10, 123, 1100, 25);
+    lblHint.setBounds(10, 219, 1100, 25);
     getContentPane().add(lblHint);
 
     LinkLabel lblHint2 = new LinkLabel(Lizzie.resourceBundle.getString("SetKataEngines.Hint2"));
-    lblHint2.setBounds(7, 145, 559, 28);
+    lblHint2.setBounds(7, 241, 559, 28);
     getContentPane().add(lblHint2);
 
-    setSize(983, 342);
+    setSize(983, 438);
     // Lizzie.setFrameSize(this, 770, 230);
     Lizzie.setFrameSize(
         this,
         Lizzie.config.isFrameFontSmall() ? 790 : (Lizzie.config.isFrameFontMiddle() ? 940 : 1120),
-        230);
+        326);
     try {
       this.setIconImage(ImageIO.read(MoreEngines.class.getResourceAsStream("/assets/logo.png")));
       Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -603,6 +654,144 @@ public class SetKataEngines extends JDialog {
         25,
         23);
     getContentPane().add(chkAutoLoadThreads);
+    
+    JLabel lblMaxTime =
+            new JFontLabel(Lizzie.resourceBundle.getString("SetKataEngines.lblMaxTime"));
+    lblMaxTime.setBounds(10, 120, 664, 25);
+        getContentPane().add(lblMaxTime);
+        
+        chkEditMaxTime = new JCheckBox();
+        chkEditMaxTime.setBounds(
+            Lizzie.config.isFrameFontSmall() ? 451 : (Lizzie.config.isFrameFontMiddle() ? 560 : 680),
+            119,
+            25,
+            23);
+        getContentPane().add(chkEditMaxTime);
+
+        chkEditMaxTime.addActionListener(
+            new ActionListener() {
+              @Override
+              public void actionPerformed(ActionEvent e) {
+                // TODO Auto-generated method stub
+                if (chkEditMaxTime.isSelected()) {
+                	txtMaxTime.setEnabled(true);
+                	chkAutoMaxTime.setEnabled(true);
+                } else {
+                	chkAutoMaxTime.setSelected(false);
+                  txtMaxTime.setEnabled(false);
+                  chkAutoMaxTime.setEnabled(false);
+                }
+              }
+            });
+
+        txtMaxTime = new JFontTextField();
+        txtMaxTime.setDocument(new IntDocument());
+        txtMaxTime.setBounds(
+            Lizzie.config.isFrameFontSmall() ? 482 : (Lizzie.config.isFrameFontMiddle() ? 591 : 711),
+            119,
+            133,
+            24);
+        getContentPane().add(txtMaxTime);
+
+        chkAutoMaxTime = new JCheckBox();
+        chkAutoMaxTime.setBounds(
+            Lizzie.config.isFrameFontSmall() ? 640 : (Lizzie.config.isFrameFontMiddle() ? 756 : 885),
+            119,
+            25,
+            23);
+        getContentPane().add(chkAutoMaxTime);   
+        
+        JLabel lblMaxVisits =
+                new JFontLabel(Lizzie.resourceBundle.getString("SetKataEngines.lblMaxVisits"));
+        lblMaxVisits.setBounds(10, 152, 664, 25);
+            getContentPane().add(lblMaxVisits);
+            
+            chkEditMaxVisits = new JCheckBox();
+            chkEditMaxVisits.setBounds(
+                Lizzie.config.isFrameFontSmall() ? 451 : (Lizzie.config.isFrameFontMiddle() ? 560 : 680),
+                151,
+                25,
+                23);
+            getContentPane().add(chkEditMaxVisits);
+
+            chkEditMaxVisits.addActionListener(
+                new ActionListener() {
+                  @Override
+                  public void actionPerformed(ActionEvent e) {
+                    // TODO Auto-generated method stub
+                    if (chkEditMaxVisits.isSelected()) {
+                    	txtMaxVisits.setEnabled(true);
+                    	chkAutoMaxVisits.setEnabled(true);
+                    } else {
+                    	chkAutoMaxVisits.setSelected(false);
+                    	txtMaxVisits.setEnabled(false);
+                      chkAutoMaxVisits.setEnabled(false);
+                    }
+                  }
+                });
+
+            txtMaxVisits = new JFontTextField();
+            txtMaxVisits.setDocument(new IntDocument());
+            txtMaxVisits.setBounds(
+                Lizzie.config.isFrameFontSmall() ? 482 : (Lizzie.config.isFrameFontMiddle() ? 591 : 711),
+                151,
+                133,
+                24);
+            getContentPane().add(txtMaxVisits);
+
+            chkAutoMaxVisits = new JCheckBox();
+            chkAutoMaxVisits.setBounds(
+                Lizzie.config.isFrameFontSmall() ? 640 : (Lizzie.config.isFrameFontMiddle() ? 756 : 885),
+                151,
+                25,
+                23);
+            getContentPane().add(chkAutoMaxVisits);                         
+            
+            JLabel lblMaxPlayouts =
+                    new JFontLabel(Lizzie.resourceBundle.getString("SetKataEngines.lblMaxPlayouts"));
+            lblMaxPlayouts.setBounds(10, 184, 664, 25);
+                getContentPane().add(lblMaxPlayouts);
+                
+                chkEditMaxPlayouts = new JCheckBox();
+                chkEditMaxPlayouts.setBounds(
+                    Lizzie.config.isFrameFontSmall() ? 451 : (Lizzie.config.isFrameFontMiddle() ? 560 : 680),
+                    183,
+                    25,
+                    23);
+                getContentPane().add(chkEditMaxPlayouts);
+
+                chkEditMaxPlayouts.addActionListener(
+                    new ActionListener() {
+                      @Override
+                      public void actionPerformed(ActionEvent e) {
+                        // TODO Auto-generated method stub
+                        if (chkEditMaxPlayouts.isSelected()) {
+                        	txtMaxPlayouts.setEnabled(true);
+                        	chkAutoMaxPlayouts.setEnabled(true);
+                        } else {
+                        	chkAutoMaxPlayouts.setSelected(false);
+                        	txtMaxPlayouts.setEnabled(false);
+                        	chkAutoMaxPlayouts.setEnabled(false);
+                        }
+                      }
+                    });
+
+                txtMaxPlayouts = new JFontTextField();
+                txtMaxPlayouts.setDocument(new IntDocument());
+                txtMaxPlayouts.setBounds(
+                    Lizzie.config.isFrameFontSmall() ? 482 : (Lizzie.config.isFrameFontMiddle() ? 591 : 711),
+                    183,
+                    133,
+                    24);
+                getContentPane().add(txtMaxPlayouts);
+
+                chkAutoMaxPlayouts = new JCheckBox();
+                chkAutoMaxPlayouts.setBounds(
+                    Lizzie.config.isFrameFontSmall() ? 640 : (Lizzie.config.isFrameFontMiddle() ? 756 : 885),
+                    183,
+                    25,
+                    23);
+                getContentPane().add(chkAutoMaxPlayouts);   
 
     if (!Lizzie.config.chkKataEnginePDA) {
       txtPDA.setEnabled(false);
@@ -665,7 +854,64 @@ public class SetKataEngines extends JDialog {
       chkAutoLoadThreads.setSelected(true);
       txtThreads.setText(Lizzie.config.txtKataEngineThreads);
     } else chkAutoLoadThreads.setSelected(false);
+    
+    if (Lizzie.config.chkKataEngineMaxTime) {
+        chkEditMaxTime.setSelected(true);
+        txtMaxTime.setEnabled(true);
+        chkAutoMaxTime.setEnabled(true);
+        txtMaxTime.setText(Lizzie.config.txtKataEngineMaxTime);
+      } else {
+    	  chkEditMaxTime.setSelected(false);
+    	  txtMaxTime.setEnabled(false);
+    	  chkAutoMaxTime.setEnabled(false);
+    	  chkAutoMaxTime.setSelected(false);
+      }
+      if (Lizzie.config.autoLoadKataEngineMaxTime) {
+    	  chkEditMaxTime.setSelected(true);
+        txtMaxTime.setEnabled(true);
+        chkAutoMaxTime.setEnabled(true);
+        chkAutoMaxTime.setSelected(true);
+        txtMaxTime.setText(Lizzie.config.txtKataEngineMaxTime);
+      } else chkAutoMaxTime.setSelected(false);
 
+      if (Lizzie.config.chkKataEngineMaxVisits) {
+          chkEditMaxVisits.setSelected(true);
+          txtMaxVisits.setEnabled(true);
+          chkAutoMaxVisits.setEnabled(true);
+          txtMaxVisits.setText(Lizzie.config.txtKataEngineMaxVisits);
+        } else {
+      	  chkEditMaxVisits.setSelected(false);
+      	  txtMaxVisits.setEnabled(false);
+      	  chkAutoMaxVisits.setEnabled(false);
+      	  chkAutoMaxVisits.setSelected(false);
+        }
+        if (Lizzie.config.autoLoadKataEngineMaxVisits) {
+      	  chkEditMaxVisits.setSelected(true);
+          txtMaxVisits.setEnabled(true);
+          chkAutoMaxVisits.setEnabled(true);
+          chkAutoMaxVisits.setSelected(true);
+          txtMaxVisits.setText(Lizzie.config.txtKataEngineMaxVisits);
+        } else chkAutoMaxVisits.setSelected(false);
+        
+        if (Lizzie.config.chkKataEngineMaxPlayouts) {
+            chkEditMaxPlayouts.setSelected(true);
+            txtMaxPlayouts.setEnabled(true);
+            chkAutoMaxPlayouts.setEnabled(true);
+            txtMaxPlayouts.setText(Lizzie.config.txtKataEngineMaxPlayouts);
+          } else {
+        	  chkEditMaxPlayouts.setSelected(false);
+        	  txtMaxPlayouts.setEnabled(false);
+        	  chkAutoMaxPlayouts.setEnabled(false);
+        	  chkAutoMaxPlayouts.setSelected(false);
+          }
+          if (Lizzie.config.autoLoadKataEngineMaxPlayouts) {
+        	  chkEditMaxPlayouts.setSelected(true);
+            txtMaxPlayouts.setEnabled(true);
+            chkAutoMaxPlayouts.setEnabled(true);
+            chkAutoMaxPlayouts.setSelected(true);
+            txtMaxPlayouts.setText(Lizzie.config.txtKataEngineMaxPlayouts);
+          } else chkAutoMaxPlayouts.setSelected(false);
+        
     //   if (Lizzie.config.chkKataEngineRPT || Lizzie.config.autoLoadKataEngineRPT)
     //  txtRPT.setText(Lizzie.config.txtKataEngineRPT);
 

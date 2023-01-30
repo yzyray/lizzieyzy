@@ -282,6 +282,18 @@ public class Config {
   public boolean chkKataEngineThreads = false;
   public String txtKataEngineThreads = "";
   public boolean autoLoadKataEngineThreads = false;
+  
+  public boolean chkKataEngineMaxTime = false;
+  public String txtKataEngineMaxTime = "";
+  public boolean autoLoadKataEngineMaxTime = false;
+  
+  public boolean chkKataEngineMaxVisits = false;
+  public String txtKataEngineMaxVisits = "";
+  public boolean autoLoadKataEngineMaxVisits = false;
+  
+  public boolean chkKataEngineMaxPlayouts = false;
+  public String txtKataEngineMaxPlayouts = "";
+  public boolean autoLoadKataEngineMaxPlayouts = false;
 
   public boolean showWRNInMenu = true;
   public boolean showPDAInMenu = true;
@@ -1335,6 +1347,15 @@ public class Config {
 
     txtKataEngineThreads = uiConfig.optString("txt-kata-engine-threads", "");
     autoLoadKataEngineThreads = uiConfig.optBoolean("autoload-kata-engine-threads", false);
+    
+    txtKataEngineMaxTime = uiConfig.optString("txt-kata-engine-maxtime", "");
+    autoLoadKataEngineMaxTime = uiConfig.optBoolean("autoload-kata-engine-maxtime", false);
+    
+    txtKataEngineMaxVisits = uiConfig.optString("txt-kata-engine-maxvisits", "");
+    autoLoadKataEngineMaxVisits = uiConfig.optBoolean("autoload-kata-engine-maxvisits", false);
+    
+    txtKataEngineMaxPlayouts = uiConfig.optString("txt-kata-engine-maxplayouts", "");
+    autoLoadKataEngineMaxPlayouts = uiConfig.optBoolean("autoload-kata-engine-maxplayouts", false);
 
     showWRNInMenu = uiConfig.optBoolean("show-wrn-in-menu", true);
     showPDAInMenu = uiConfig.optBoolean("show-pda-in-menu", true);
