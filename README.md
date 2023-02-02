@@ -1,9 +1,9 @@
-# LizzieYzy - 围棋引擎界面(中文,[English](#en),[日本語](http://translate.google.com/translate?sl=ja&tl=ja&u=https%3A%2F%2Fgithub.com%2Fyzyray%2Flizzieyzy%2Fblob%2Fmain%2FREADME_EN.md),[한국어](http://translate.google.com/translate?sl=en&tl=ko&u=https%3A%2F%2Fgithub.com%2Fyzyray%2Flizzieyzy%2Fblob%2Fmain%2FREADME_EN.md))
+# LizzieYzy - 围棋引擎界面(中文,[English](#en),[日本語](https://github-com.translate.goog/yzyray/lizzieyzy/blob/main/README_EN.md?_x_tr_sl=en&_x_tr_tl=ja&_x_tr_pto=wapp),[한국어](https://github-com.translate.goog/yzyray/lizzieyzy/blob/main/README_EN.md?_x_tr_sl=en&_x_tr_tl=ko&_x_tr_pto=wapp))
 ![screenshot](/screenshot.png?raw=true)
 
 LizzieYzy 是一个引擎界面,修改自[Lizzie](https://github.com/featurecat/lizzie),可加载围棋引擎:[Katago](https://github.com/lightvector/KataGo)、[LeelaZero](https://github.com/leela-zero/leela-zero)、[Leela](https://github.com/gcp/Leela)、[ZenGTP](https://github.com/yzyray/ZenGTP)、[SAI](http://sai.unich.it)、[Pachi](https://github.com/pasky/pachi)以及其他标准GTP引擎。
 
-在Lizzie的基础上增加了一些新功能:**鹰眼分析,闪电分析,批量分析,形势判断,棋盘同步,引擎对局,上传分享,双引擎模式,可视化KataGo分布式训练**,以及一些细节修改,可完美支持高分辨率,不会因为系统缩放而显示模糊
+在Lizzie的基础上增加了一些新功能:**鹰眼分析,闪电分析,批量分析,形势判断,棋盘同步,引擎对局,死活题分析,双引擎模式,可视化KataGo分布式训练**,以及一些细节修改,可完美支持高分辨率,不会因为系统缩放而显示模糊
 #
 * 新功能
 
@@ -21,7 +21,7 @@ LizzieYzy 是一个引擎界面,修改自[Lizzie](https://github.com/featurecat/
 
   * **引擎对局**: 两个引擎之间的单盘/多盘对局,可加载多个SGF作为开局,支持使用不同命令获取引擎选点:`lz-analyze`、`kata-analyze`、`genmove`,多盘对局将会自动计算elo、标准差区间等信息
 
-  * **上传分享**: [相关仓库](https://github.com/yzyray/LizziePlayer) 支持上传棋谱到[LizziePlayer](http://lizzieyzy.cn)上,然后在手机、平板等移动端观看,LizziePlayer会展示选点、胜率图、吻合度等信息,可查找失误手
+  * **死活题分析**: 支持抓取局部棋盘上的死活题,并自动生成死活题框架以便AI在正确的范围内思考,详见[菜单]-[分析]-[死活题]以及[抓取死活题],或工具栏的最右侧[死活]按钮
 
   * **双引擎模式**: 支持同时加载两个引擎并同步分析对比
 
@@ -37,7 +37,7 @@ LizzieYzy 是一个引擎界面,修改自[Lizzie](https://github.com/featurecat/
 
 LizzieYzy is a graphical interface modified from [Lizzie](https://github.com/featurecat/lizzie),allow loading various engines like: [Katago](https://github.com/lightvector/KataGo)、[LeelaZero](https://github.com/leela-zero/leela-zero)、[Leela](https://github.com/gcp/Leela)、[ZenGTP](https://github.com/yzyray/ZenGTP)、[SAI](http://sai.unich.it)、[Pachi](https://github.com/pasky/pachi) or other GTP engines.
 
-Add some new features on Lizzie's basis: **Hawk Eye, Flash Analyze, Batch Analyze, Estimate, Board Synchronization(only windows), Engine Game, Upload And Share, Double Engine Mode, Visualized KataGo Distributed Training** and ajust some details, support retina monitor, won't get fuzzy by scaled.
+Add some new features on Lizzie's basis: **Hawk Eye, Flash Analyze, Batch Analyze, Estimate, Board Synchronization(only windows), Engine Game, Tsumego Frame, Double Engine Mode, Visualized KataGo Distributed Training** and ajust some details, support retina monitor, won't get fuzzy by scaled.
 #
 * New features
 
@@ -55,7 +55,7 @@ Add some new features on Lizzie's basis: **Hawk Eye, Flash Analyze, Batch Analyz
 
   * **Engine Game**: Allow a game or multiple games bettween two engines, support load some SGF files as opening books, support various commands:`lz-analyze`, `kata-analyze`, `genmove` to get moves, multiple games will collect some statistics: elo, stdev interval and etc.
 
-  * **Upload And Share**: [Repository](https://github.com/yzyray/LizziePlayer) Support upload kifu to [LizziePlayer](http://lizzieyzy.cn) and view on other device like cellphone or pad, LizziePlayer will display candidates, winrate graph, accuracy and support search blunder moves.
+  * **Tsumego Analysis**: Support capture tsumego in part of goban, and automatically generate other part of stones help engine analyze in right area, refer to [Analyze]-[Tsumego frame] or [Capture tsumego] or [Tsumego] button in toolbar. 
 
   * **Double Engine Mode**: Support load two engins and analyze synchronously, convenient for comparison.
 
