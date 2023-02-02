@@ -1,4 +1,4 @@
-# LizzieYzy - 围棋引擎界面(中文,[English](#en),[日本語](http://translate.google.com/translate?sl=ja&tl=ja&u=https%3A%2F%2Fgithub.com%2Fyzyray%2Flizzieyzy%2Fblob%2Fmain%2FREADME_EN.md),[한국어](http://translate.google.com/translate?sl=en&tl=ko&u=https%3A%2F%2Fgithub.com%2Fyzyray%2Flizzieyzy%2Fblob%2Fmain%2FREADME_EN.md))
+# LizzieYzy - 围棋引擎界面(中文,[English](#en),[日本語](https://github-com.translate.goog/yzyray/lizzieyzy/blob/main/README_EN.md?_x_tr_sl=en&_x_tr_tl=ja&_x_tr_pto=wapp),[한국어](https://github-com.translate.goog/yzyray/lizzieyzy/blob/main/README_EN.md?_x_tr_sl=en&_x_tr_tl=ko&_x_tr_pto=wapp)
 ![screenshot](/screenshot.png?raw=true)
 
 LizzieYzy 是一个引擎界面,修改自[Lizzie](https://github.com/featurecat/lizzie),可加载围棋引擎:[Katago](https://github.com/lightvector/KataGo)、[LeelaZero](https://github.com/leela-zero/leela-zero)、[Leela](https://github.com/gcp/Leela)、[ZenGTP](https://github.com/yzyray/ZenGTP)、[SAI](http://sai.unich.it)、[Pachi](https://github.com/pasky/pachi)以及其他标准GTP引擎。
