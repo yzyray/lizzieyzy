@@ -21,7 +21,7 @@ LizzieYzy 是一个引擎界面,修改自[Lizzie](https://github.com/featurecat/
 
   * **引擎对局**: 两个引擎之间的单盘/多盘对局,可加载多个SGF作为开局,支持使用不同命令获取引擎选点:`lz-analyze`、`kata-analyze`、`genmove`,多盘对局将会自动计算elo、标准差区间等信息
 
-  * **上传分享**: [相关仓库](https://github.com/yzyray/LizziePlayer) 支持上传棋谱到[LizziePlayer](http://lizzieyzy.cn)上,然后在手机、平板等移动端观看,LizziePlayer会展示选点、胜率图、吻合度等信息,可查找失误手
+  * **死活题分析**: 支持抓取局部棋盘上的死活题,并自动生成死活题框架以便AI在正确的范围内思考,详见[菜单]-[分析]-[死活题]以及[抓取死活题],或工具栏的最右侧[死活]按钮
 
   * **双引擎模式**: 支持同时加载两个引擎并同步分析对比
 
@@ -55,7 +55,7 @@ Add some new features on Lizzie's basis: **Hawk Eye, Flash Analyze, Batch Analyz
 
   * **Engine Game**: Allow a game or multiple games bettween two engines, support load some SGF files as opening books, support various commands:`lz-analyze`, `kata-analyze`, `genmove` to get moves, multiple games will collect some statistics: elo, stdev interval and etc.
 
-  * **Upload And Share**: [Repository](https://github.com/yzyray/LizziePlayer) Support upload kifu to [LizziePlayer](http://lizzieyzy.cn) and view on other device like cellphone or pad, LizziePlayer will display candidates, winrate graph, accuracy and support search blunder moves.
+  * **Tsumego Analysis**: Support capture tsumego in part of goban, and automatically generate other part of stones help engine analyze in right area, refer to [Analyze]-[Tsumego frame] or [Capture tsumego] or [Tsumego] button in toolbar. 
 
   * **Double Engine Mode**: Support load two engins and analyze synchronously, convenient for comparison.
 
