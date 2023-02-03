@@ -69,7 +69,7 @@ public class CheckVersion extends JDialog {
     getContentPane().add(label);
 
     JLabel label_1 = new JLabel(resourceBundle.getString("CheckVersion.noCheckUpdate"));
-    label_1.setBounds(5, 35, 341, 15);
+    label_1.setBounds(5, 35, 641, 15);
     getContentPane().add(label_1);
 
     //    JLabel lblUpdateHint = new
