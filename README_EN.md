@@ -13,7 +13,7 @@ Add some new features on Lizzie's basis: **Hawk Eye, Flash Analyze, Batch Analyz
 
   * **Batch Analyze**: Support batch analyze kifus by GTP engine or Katago's analysis mode.
 
-  * **Estimate**: Use Katago(default)'s command:`kata-raw-nn or` ZenGTP's command `territory` to get raw territory, support automatically estimate after each move.	
+  * **Estimate**: Use Katago(default)'s command:`kata-raw-nn` or ZenGTP's command `territory` to get raw territory,support automatically estimate after each move.
 
   * **Board Synchronization(C#)**: [Repository](https://github.com/yzyray/readboard) Two mode: foreground(board can't be moved or covered)/backgorund, optimize for FoxWQ、TYGEM、SINA platform allow sync by click a button, when synchronizing from other platform or a picture or a movie you need to select the rigon of the board, support automatically carry moves for both sides(developed by C#, only support windows).
 
@@ -21,7 +21,7 @@ Add some new features on Lizzie's basis: **Hawk Eye, Flash Analyze, Batch Analyz
 
   * **Engine Game**: Allow a game or multiple games bettween two engines, support load some SGF files as opening books, support various commands:`lz-analyze`, `kata-analyze`, `genmove` to get moves, multiple games will collect some statistics: elo, stdev interval and etc.
 
-  * **Tsumego Analysis**: Support capture tsumego in part of goban, and automatically generate other part of stones help engine analyze in right area, refer to [Analyze]-[Tsumego frame] or [Capture tsumego] or [Tsumego] button in toolbar. 
+  * **Tsumego Analysis**: Support capture tsumego in part of goban, and automatically generate other part of stones help engine analyze in right area, refer to [Analyze]-[Tsumego frame] or [Capture tsumego] or [Tsumego] button in toolbar.
 
   * **Double Engine Mode**: Support load two engins and analyze synchronously, convenient for comparison.
 
