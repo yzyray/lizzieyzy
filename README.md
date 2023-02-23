@@ -45,9 +45,9 @@ Add some new features on Lizzie's basis: **Hawk Eye, Flash Analyze, Batch Analyz
 
   * **Flash Analyze**: Depend on Katago's analysis mode,analyze all kifus in parallel,get winrate graph candidates rapidly,support batch analyze.
 
-  * **Batch Analyze**: Support batch analyze kifus by GTP engin,or Katago's analysis mode.
+  * **Batch Analyze**: Support batch analyze kifus by GTP engine or Katago's analysis mode.
 
-  * **Estimate**: Use Katago(default)'s command:`kata-raw-nn or` ZenGTP's command `territory` to get raw territory,support automatically estimate after each move.	
+  * **Estimate**: Use Katago(default)'s command:`kata-raw-nn` or ZenGTP's command `territory` to get raw territory,support automatically estimate after each move.
 
   * **Board Synchronization(C#)**: [Repository](https://github.com/yzyray/readboard) Two mode: foreground(board can't be moved or covered)/backgorund,optimize for FoxWQ、TYGEM、SINA platform allow sync by click a button,when sync from other platform or a picture or a movie you need select the rigon contains the board,support automatically carry moves for both sides,developed by C#,so only support windows.
 
