@@ -11,7 +11,7 @@ Lizzie 기반에 몇 가지 새로운 기능 추가: **Hawk Eye, Flash Analyze, 
 
   * **Flash Analyze**: Katago의 분석 모드를 사용함. 모든 기보를 병렬로 분석. 승률 그래프 후보를 빠르게 획득. 일괄 분석 지원.
 
-  * **Batch Analyze**: GTP engin 또는 Katago의 분석 모드를 사용한 다수 기보 일괄 분석 지원.
+  * **Batch Analyze**: GTP engine 또는 Katago의 분석 모드를 사용한 다수 기보 일괄 분석 지원.
 
   * **Estimate**: Katago(기본값)의 `kata-raw-nn` 명령 또는 ZenGTP의 `territory` 명령을 사용하여 현재 집 수 계산. 각 착수 후의 집 수 자동 예측을 지원.
 

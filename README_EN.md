@@ -11,7 +11,7 @@ Add some new features on Lizzie's basis: **Hawk Eye, Flash Analyze, Batch Analyz
 
   * **Flash Analyze**: Depend on Katago's analysis mode,analyze all kifus in parallel,get winrate graph candidates rapidly,support batch analyze.
 
-  * **Batch Analyze**: Support batch analyze kifus by GTP engin,or Katago's analysis mode.
+  * **Batch Analyze**: Support batch analyze kifus by GTP engine or Katago's analysis mode.
 
   * **Estimate**: Use Katago(default)'s command:`kata-raw-nn or` ZenGTP's command `territory` to get raw territory,support automatically estimate after each move.	
 
