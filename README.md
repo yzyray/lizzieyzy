@@ -67,7 +67,7 @@ Add some new features on Lizzie's basis: **Hawk Eye, Flash Analyze, Batch Analyz
 
 #
 <span id="ko"></span>
-# LizzieYzy - 바둑 대국용 GUI
+# LizzieYzy - 바둑 엔진용 GUI
 ![screenshot_ko](/screenshot_ko.png?raw=true)
 
 LizzieYzy는 [Lizzie](https://github.com/featurecat/lizzie)를 기반으로 [Katago](https://github.com/lightvector/KataGo)、[LeelaZero](https://github.com/leela-zero/leela-zero)、[Leela](https://github.com/gcp/Leela)、[ZenGTP](https://github.com/yzyray/ZenGTP)、[SAI](http://sai.unich.it)、[Pachi](https://github.com/pasky/pachi) 등의 다른 GTP engine들을 로드할 수 있도록 수정된 그래픽 인터페이스입니다.
