@@ -211,6 +211,7 @@ public class Lizzie {
           public void run() {
             if (config.isShowingIndependentMain) frame.openIndependentMainBoard();
             if (config.isShowingIndependentSub) frame.openIndependentSubBoard();
+            if (config.isCtrlOpened) frame.openController();
             try {
               Thread.sleep(60);
             } catch (InterruptedException e2) {
@@ -395,6 +396,9 @@ public class Lizzie {
     if (Lizzie.config.uiConfig.optBoolean("autoload-last", false)) {
       Lizzie.config.uiConfig.put("last-engine", EngineManager.currentEngineNo);
     }
+    if (Lizzie.frame.ctrl != null && Lizzie.frame.ctrl.isVisible()) {
+      Lizzie.config.uiConfig.put("is-ctrl-opened", true);
+    } else Lizzie.config.uiConfig.put("is-ctrl-opened", false);
     try {
       config.persist();
     } catch (Exception e) {

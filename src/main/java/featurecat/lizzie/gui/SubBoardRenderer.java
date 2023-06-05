@@ -959,10 +959,11 @@ public class SubBoardRenderer {
 
     // g.drawImage(cachedStonesImagedraged, x, y, null);
     g.drawImage(blockimage, x, y, null);
-    if ((Lizzie.config.showKataGoEstimate
-            && Lizzie.config.showKataGoEstimateOnSubbord
-            && Lizzie.config.showKataGoEstimateOnSubbord)
-        || Lizzie.frame.isShowingHeatmap) g.drawImage(heatimage, x, y, null);
+    //    if ((Lizzie.config.showKataGoEstimate
+    //            && Lizzie.config.showKataGoEstimateOnSubbord
+    //            && Lizzie.config.showKataGoEstimateOnSubbord)
+    //        || Lizzie.frame.isShowingHeatmap)
+    if (showHeat) g.drawImage(heatimage, x, y, null);
     if (!Lizzie.frame.isInPlayMode() && !Lizzie.config.subBoardRaw && Lizzie.config.showBranchNow()
         || (Lizzie.config.isFourSubMode() && !showHeat && this != Lizzie.frame.subBoardRenderer4)) {
       g.drawImage(branchStonesImage, x, y, null);

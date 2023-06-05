@@ -137,10 +137,10 @@ public class Menu extends JMenuBar {
   JFontButton setBoardSize;
   JFontButton saveLoad;
   JFontLabel lblWRN;
-  JFontLabel lblWRNForDouble;
+  // JFontLabel lblWRNForDouble;
   public JFontTextField txtWRN;
   JFontCheckBox chkWRN;
-  JFontLabel lblGfPDAForDouble;
+  // JFontLabel lblGfPDAForDouble;
   JFontCheckBox chkPDA;
   JFontLabel lblGfPDA;
   public JFontTextField txtGfPDA;
@@ -1158,6 +1158,17 @@ public class Menu extends JMenuBar {
           @Override
           public void actionPerformed(ActionEvent e) {
             Lizzie.frame.toggleGtpConsole();
+          }
+        });
+
+    final JFontCheckBoxMenuItem ctrlPanel =
+        new JFontCheckBoxMenuItem(resourceBundle.getString("Menu.ctrlPanel"));
+    panel.add(ctrlPanel);
+    ctrlPanel.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.frame.openController();
           }
         });
 
@@ -2607,6 +2618,9 @@ public class Menu extends JMenuBar {
             else statusPanel.setState(false);
             if (Lizzie.gtpConsole.isVisible()) gtpPanel.setState(true);
             else gtpPanel.setState(false);
+            if (Lizzie.frame.ctrl != null && Lizzie.frame.ctrl.isVisible())
+              ctrlPanel.setState(true);
+            else ctrlPanel.setState(false);
             if (Lizzie.config.uiConfig.optBoolean("show-suggestions-frame", false))
               SuggestionList.setState(true);
             else SuggestionList.setState(false);
@@ -7490,6 +7504,7 @@ public class Menu extends JMenuBar {
       ImageIcon iconSetMain = new ImageIcon();
       ImageIcon iconBackMain = new ImageIcon();
       ImageIcon iconChangeTurn = new ImageIcon();
+      ImageIcon iconControlPanel = new ImageIcon();
       ImageIcon iconMarkup1 = new ImageIcon();
       ImageIcon iconMarkup2 = new ImageIcon();
       ImageIcon markupLabel1 = new ImageIcon();
@@ -7507,6 +7522,7 @@ public class Menu extends JMenuBar {
       ImageIcon eraser1 = new ImageIcon();
       ImageIcon eraser2 = new ImageIcon();
       ImageIcon clear = new ImageIcon();
+      ImageIcon drawPaint = new ImageIcon();
       ImageIcon flash = new ImageIcon();
       try {
         iconNewFile.setImage(
@@ -7515,6 +7531,10 @@ public class Menu extends JMenuBar {
                     Config.menuIconSize, Config.menuIconSize, java.awt.Image.SCALE_SMOOTH));
         flash.setImage(
             ImageIO.read(getClass().getResourceAsStream("/assets/flash.png"))
+                .getScaledInstance(
+                    Config.menuIconSize, Config.menuIconSize, java.awt.Image.SCALE_SMOOTH));
+        drawPaint.setImage(
+            ImageIO.read(getClass().getResourceAsStream("/assets/paint.png"))
                 .getScaledInstance(
                     Config.menuIconSize, Config.menuIconSize, java.awt.Image.SCALE_SMOOTH));
         iconOpen.setImage(
@@ -7543,6 +7563,10 @@ public class Menu extends JMenuBar {
                     Config.menuIconSize, Config.menuIconSize, java.awt.Image.SCALE_SMOOTH));
         iconChangeTurn.setImage(
             ImageIO.read(getClass().getResourceAsStream("/assets/pass.png"))
+                .getScaledInstance(
+                    Config.menuIconSize, Config.menuIconSize, java.awt.Image.SCALE_SMOOTH));
+        iconControlPanel.setImage(
+            ImageIO.read(getClass().getResourceAsStream("/assets/control.png"))
                 .getScaledInstance(
                     Config.menuIconSize, Config.menuIconSize, java.awt.Image.SCALE_SMOOTH));
         iconMarkup1.setImage(
@@ -7875,6 +7899,17 @@ public class Menu extends JMenuBar {
             }
           });
 
+      JFontButton btnContrlPanel = new JFontButton(iconControlPanel);
+      btnContrlPanel.setPreferredSize(new Dimension(Config.menuHeight, Config.menuHeight));
+      btnContrlPanel.setFocusable(false);
+      btnContrlPanel.setToolTipText(resourceBundle.getString("Menu.btnContrlPanel.toolTipText"));
+      btnContrlPanel.addActionListener(
+          new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              Lizzie.frame.openController();
+            }
+          });
+
       JFontButton btnMarkup = new JFontButton();
       if (Lizzie.config.isShowingMarkupTools) btnMarkup.setIcon(iconMarkup2);
       else btnMarkup.setIcon(iconMarkup1);
@@ -8002,6 +8037,17 @@ public class Menu extends JMenuBar {
             }
           });
 
+      JFontButton btnDrawPainting = new JFontButton(drawPaint);
+      btnDrawPainting.setFocusable(false);
+      btnDrawPainting.setPreferredSize(new Dimension(Config.menuHeight, Config.menuHeight));
+      btnDrawPainting.setToolTipText(resourceBundle.getString("Menu.drawPainting.toolTipText"));
+      btnDrawPainting.addActionListener(
+          new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+              Lizzie.frame.drawPainting();
+            }
+          });
+
       // Lizzie.frame.topPanel.addSeparator();
       Lizzie.frame.topPanel.add(btnNewFile);
       Lizzie.frame.topPanel.add(btnOpen);
@@ -8013,6 +8059,7 @@ public class Menu extends JMenuBar {
       Lizzie.frame.topPanel.add(btnChangeTurn);
       Lizzie.frame.topPanel.add(btnSetMain);
       Lizzie.frame.topPanel.add(btnBackMain);
+      Lizzie.frame.topPanel.add(btnContrlPanel);
       Lizzie.frame.topPanel.add(btnMarkup);
       if (Lizzie.config.isShowingMarkupTools) {
         Lizzie.frame.topPanel.add(btnMarkupLabel);
@@ -8023,6 +8070,7 @@ public class Menu extends JMenuBar {
         Lizzie.frame.topPanel.add(btnMarkupTri);
         Lizzie.frame.topPanel.add(btnMarkupEraser);
         Lizzie.frame.topPanel.add(btnMarkupClear);
+        Lizzie.frame.topPanel.add(btnDrawPainting);
       }
       Lizzie.frame.topPanel.addSeparator(new Dimension(8, Config.menuHeight + 2));
     }
@@ -9071,10 +9119,11 @@ public class Menu extends JMenuBar {
             Lizzie.config.isFrameFontSmall() ? 18 : (Lizzie.config.isFrameFontMiddle() ? 21 : 24)));
 
     Lizzie.frame.topPanel.add(chkPDA);
+    chkPDA.setText(resourceBundle.getString("Menu.separateLblPda"));
     chkPDA.setPreferredSize(
         new Dimension((int) chkPDA.getPreferredSize().getWidth(), Config.menuHeight - 3));
-    lblGfPDAForDouble = new JFontLabel(resourceBundle.getString("Menu.separateLblPda"));
-    Lizzie.frame.topPanel.add(lblGfPDAForDouble);
+    // lblGfPDAForDouble = new JFontLabel(resourceBundle.getString("Menu.separateLblPda"));
+    // Lizzie.frame.topPanel.add(lblGfPDAForDouble);
     Lizzie.frame.topPanel.add(txtGfPDA);
     txtGfPDA.setPreferredSize(
         new Dimension(
@@ -9082,10 +9131,11 @@ public class Menu extends JMenuBar {
             Lizzie.config.isFrameFontSmall() ? 18 : (Lizzie.config.isFrameFontMiddle() ? 21 : 23)));
 
     Lizzie.frame.topPanel.add(chkWRN);
+    chkWRN.setText(resourceBundle.getString("Menu.separateLblWrn"));
     chkWRN.setPreferredSize(
         new Dimension((int) chkWRN.getPreferredSize().getWidth(), Config.menuHeight - 3));
-    lblWRNForDouble = new JFontLabel(resourceBundle.getString("Menu.separateLblWrn"));
-    Lizzie.frame.topPanel.add(lblWRNForDouble);
+    // lblWRNForDouble = new JFontLabel(resourceBundle.getString("Menu.separateLblWrn"));
+    // Lizzie.frame.topPanel.add(lblWRNForDouble);
     Lizzie.frame.topPanel.add(txtWRN);
     txtWRN.setPreferredSize(
         new Dimension(
@@ -9358,7 +9408,7 @@ public class Menu extends JMenuBar {
       txtPDA.setVisible(true);
       more2.setVisible(true);
       customPDAMorePanel.setVisible(true);
-      lblGfPDAForDouble.setVisible(false);
+      // lblGfPDAForDouble.setVisible(false);
       chkPDA.setVisible(false);
       txtGfPDA.setVisible(false);
       needRemoveS = false;
@@ -9372,11 +9422,11 @@ public class Menu extends JMenuBar {
           && Lizzie.leelaz != null
           && Lizzie.leelaz.isKatago) {
         chkPDA.setVisible(true);
-        lblGfPDAForDouble.setVisible(true);
+        // lblGfPDAForDouble.setVisible(true);
         txtGfPDA.setVisible(true);
         needRemoveS = false;
       } else {
-        lblGfPDAForDouble.setVisible(false);
+        //  lblGfPDAForDouble.setVisible(false);
         chkPDA.setVisible(false);
         txtGfPDA.setVisible(false);
       }
@@ -9387,11 +9437,11 @@ public class Menu extends JMenuBar {
         && Lizzie.leelaz != null
         && Lizzie.leelaz.isKatago) {
       needRemoveS = false;
-      lblWRNForDouble.setVisible(true);
+      // lblWRNForDouble.setVisible(true);
       chkWRN.setVisible(true);
       txtWRN.setVisible(true);
     } else {
-      lblWRNForDouble.setVisible(false);
+      // lblWRNForDouble.setVisible(false);
       chkWRN.setVisible(false);
       txtWRN.setVisible(false);
     }
