@@ -261,7 +261,7 @@ public class BoardRenderer {
         // timer.lap("leelaz");
       }
     }
-
+    cachedShowCoords = showCoordinates();
     // timer.print();
   }
 
@@ -775,7 +775,6 @@ public class BoardRenderer {
       changedSize = true;
       cachedShadow = null;
       cachedGhostShadow2 = null;
-      cachedShowCoords = showCoordinates();
       clearAfterMove();
       changedName = false;
       cachedBoardWidth = boardWidth;
@@ -1275,8 +1274,8 @@ public class BoardRenderer {
     if (cachedStonesImage.getWidth() != boardWidth
         || cachedStonesImage.getHeight() != boardHeight
         || cachedDisplayedBranchLength != displayedBranchLength
-        || !cachedZhash.equals(data.zobrist)) {
-
+        || !cachedZhash.equals(data.zobrist)
+        || cachedShowCoords != showCoordinates()) {
       cachedZhash = data.zobrist.clone();
       cachedStonesImage = new BufferedImage(boardWidth, boardHeight, TYPE_INT_ARGB);
       cachedStonesShadowImage = new BufferedImage(boardWidth, boardHeight, TYPE_INT_ARGB);

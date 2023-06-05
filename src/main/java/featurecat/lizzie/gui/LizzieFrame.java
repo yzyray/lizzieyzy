@@ -217,7 +217,7 @@ public class LizzieFrame extends JFrame {
   // private ChangeMoveDialog2 ChangeMoveDialog2 = new ChangeMoveDialog2();
 
   // Save the player title
-  private String playerTitle = "";
+  public String playerTitle = "";
   private String resultTitle = "";
   public static String fileNameTitle = "";
 
@@ -495,6 +495,7 @@ public class LizzieFrame extends JFrame {
 
   private TsumeGoFrame tsumeGoFrame;
   private CaptureTsumeGoFrame captureTsumeGoFrame;
+  public Controller ctrl;
 
   /** Creates a window */
   public LizzieFrame() {
@@ -2497,6 +2498,14 @@ public class LizzieFrame extends JFrame {
         Lizzie.leelaz.ponder();
       this.setTitle(titleBeforeTrying);
       if (needRefresh) refresh();
+    }
+  }
+
+  public void clearTryPlay() {
+    if (isTrying) {
+      isTrying = false;
+      toolbar.tryPlay.setText(Lizzie.resourceBundle.getString("BottomToolbar.tryPlay")); // ("试下");
+      this.setTitle(titleBeforeTrying);
     }
   }
 
@@ -5007,30 +5016,30 @@ public class LizzieFrame extends JFrame {
   public void refresh() {
     // 分开各部分刷新,1代表来自info move的刷新
     redrawWinratePaneOnly = false;
-    repaint();
     if (independentSubBoard != null && independentSubBoard.isVisible())
       independentSubBoard.refresh();
     if (independentMainBoard != null && independentMainBoard.isVisible())
       independentMainBoard.refresh();
     if (floatBoard != null && floatBoard.isVisible()) floatBoard.refresh();
     appendComment();
+    repaint();
   }
 
   public void refresh(int mode) {
     // 分开各部分刷新,1代表来自info move的刷新
     redrawWinratePaneOnly = false;
+    if (independentSubBoard != null && independentSubBoard.isVisible())
+      independentSubBoard.refresh();
+    if (independentMainBoard != null && independentMainBoard.isVisible())
+      independentMainBoard.refresh();
+    if (floatBoard != null && floatBoard.isVisible()) floatBoard.refresh();
+    appendComment();
     switch (mode) {
       case 1:
         refreshFromInfo = true;
         repaint();
       default:
     }
-    if (independentSubBoard != null && independentSubBoard.isVisible())
-      independentSubBoard.refresh();
-    if (independentMainBoard != null && independentMainBoard.isVisible())
-      independentMainBoard.refresh();
-    if (floatBoard != null && floatBoard.isVisible()) floatBoard.refresh();
-    appendComment();
   }
 
   private void updateMoveList(boolean notPondering) {
@@ -12176,11 +12185,11 @@ public class LizzieFrame extends JFrame {
   }
 
   private void openInVisibleFrame() {
-    String javaReadBoardName = "invisibleFrame.jar";
-    File javaReadBoard = new File("clockHelper" + File.separator + javaReadBoardName);
-    if (!javaReadBoard.exists()) Utils.copyClockHelper();
-    try {
-      if (OS.isWindows()) {
+    if (OS.isWindows()) {
+      String javaReadBoardName = "invisibleFrame.jar";
+      File javaReadBoard = new File("clockHelper" + File.separator + javaReadBoardName);
+      if (!javaReadBoard.exists()) Utils.copyClockHelper();
+      try {
         boolean success = false;
         File java64_1 = new File(Utils.java64Path1);
 
@@ -12240,17 +12249,14 @@ public class LizzieFrame extends JFrame {
               Runtime.getRuntime()
                   .exec("java -jar clockHelper" + File.separator + javaReadBoardName);
         }
-      } else {
-        processClockHelper =
-            Runtime.getRuntime().exec("java -jar clockHelper" + File.separator + javaReadBoardName);
+      } catch (Exception e) {
+        Utils.showMsg(e.getLocalizedMessage());
       }
-    } catch (Exception e) {
-      Utils.showMsg(e.getLocalizedMessage());
     }
   }
 
   public void shutdownClockHelper() {
-    processClockHelper.destroy();
+    if (processClockHelper != null) processClockHelper.destroy();
   }
 
   public void flattenBoard() {
@@ -12409,5 +12415,32 @@ public class LizzieFrame extends JFrame {
     }
     Lizzie.board.clear(false);
     Lizzie.frame.refresh();
+  }
+
+  public void openController() {
+    // TODO Auto-generated method stub
+    if (ctrl == null) {
+      ctrl = new Controller(this);
+      ctrl.setVisible(true);
+    } else {
+      if (ctrl.isVisible()) ctrl.setVisible(false);
+      else ctrl.setVisible(true);
+    }
+  }
+
+  public void drawPainting() {
+    // TODO Auto-generated method stub
+    new DrawPainting(
+            Lizzie.frame.getX() + Lizzie.frame.getInsets().left,
+            Lizzie.frame.getY() + Lizzie.frame.mainPanel.getY() + Lizzie.frame.getInsets().top,
+            Lizzie.frame.getWidth()
+                - Lizzie.frame.getInsets().left
+                - Lizzie.frame.getInsets().right,
+            Lizzie.frame.getHeight()
+                - Lizzie.frame.mainPanel.getY()
+                - Lizzie.frame.getInsets().top
+                - Lizzie.frame.getInsets().bottom
+                - Lizzie.frame.toolbarHeight)
+        .setVisible(true);
   }
 }

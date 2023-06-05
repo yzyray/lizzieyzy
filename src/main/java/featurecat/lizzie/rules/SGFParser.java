@@ -155,10 +155,11 @@ public class SGFParser {
   }
 
   public static String passPos() {
-    return (Board.boardWidth <= 51 && Board.boardHeight <= 51)
-        ? String.format(
-            "%c%c", alphabet.charAt(Board.boardWidth), alphabet.charAt(Board.boardHeight))
-        : "";
+    return "";
+    //    (Board.boardWidth <= 51 && Board.boardHeight <= 51)
+    //        ? String.format(
+    //            "%c%c", alphabet.charAt(Board.boardWidth), alphabet.charAt(Board.boardHeight))
+    //        : "";
   }
 
   public static boolean isPassPos(String pos) {

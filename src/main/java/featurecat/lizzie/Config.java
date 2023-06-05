@@ -672,6 +672,9 @@ public class Config {
   public boolean exitAutoAnalyzeByPause = true;
   public boolean exitAutoAnalyzeTip = true;
 
+  public boolean isCtrlOpened = false;
+  public int lastPaintingColor = 0;
+
   private JSONObject loadAndMergeSaveBoardConfig(
       JSONObject defaultCfg, String fileName, boolean needValidation) throws IOException {
     File file = new File(fileName);
@@ -1398,6 +1401,8 @@ public class Config {
     useMovesOwnership = uiConfig.optBoolean("use-moves-ownership", true);
     exitAutoAnalyzeByPause = uiConfig.optBoolean("exit-auto-analyze-by-pause", true);
     exitAutoAnalyzeTip = uiConfig.optBoolean("exit-auto-analyze-tip", true);
+    isCtrlOpened = uiConfig.optBoolean("is-ctrl-opened", false);
+    lastPaintingColor = uiConfig.optInt("last-painting-color", 0);
     // chkPkStartNum = uiConfig.optBoolean("chkpk-start-num", false);
     // pkStartNum = uiConfig.optInt("pk-start-num", 1);
     contributeEnginePath = uiConfig.optString("contribute-engine-path", "");
@@ -2298,6 +2303,15 @@ public class Config {
         persistedUi.put("suggestions-list-position-9", pos2);
       }
     }
+    if (Lizzie.frame.ctrl != null) {
+      JSONArray ctrlPos = new JSONArray();
+      ctrlPos.put(Lizzie.frame.ctrl.getX());
+      ctrlPos.put(Lizzie.frame.ctrl.getY());
+      ctrlPos.put(Lizzie.frame.ctrl.getWidth());
+      ctrlPos.put(Lizzie.frame.ctrl.getHeight());
+      persistedUi.put("ctrl-position", ctrlPos);
+    }
+
     if (Lizzie.frame.search != null) {
       JSONArray searchPos = new JSONArray();
 

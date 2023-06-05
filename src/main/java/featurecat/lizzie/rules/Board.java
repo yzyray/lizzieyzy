@@ -11,6 +11,7 @@ import featurecat.lizzie.analysis.MoveData;
 import featurecat.lizzie.gui.LizzieFrame;
 import featurecat.lizzie.gui.ScoreResult;
 import featurecat.lizzie.util.Utils;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -100,6 +101,7 @@ public class Board {
       if (LizzieFrame.boardRenderer2 != null) LizzieFrame.boardRenderer2.clearAfterMove();
       LizzieFrame.forceRecreate = true;
     }
+    if (Lizzie.frame != null) Lizzie.frame.clearTryPlay();
     if (boardWidth < 4) isExtremlySmallBoard = true;
     else isExtremlySmallBoard = false;
     Lizzie.leelaz.clearPonderLimit();
@@ -1936,8 +1938,10 @@ public class Board {
                 0,
                 0.0,
                 0));
-    hasStartStone = true;
-    startStonelist = new ArrayList<Movelist>();
+    if (!hasStartStone) {
+      hasStartStone = true;
+      startStonelist = new ArrayList<Movelist>();
+    }
     if (extraStones != null && extraStones.size() > 0) {
       int moveNum = 1;
       for (extraMoveForTsumego stone : extraStones) {
@@ -3623,9 +3627,19 @@ public class Board {
     double komi = Lizzie.board.getHistory().getGameInfo().getKomi();
     int startMoveNumber = 0;
     if (hasStartStone) startMoveNumber += startStonelist.size();
+    File tempfile = null;
+    String playerTitle = Lizzie.frame.playerTitle;
+    if (LizzieFrame.curFile != null) {
+      tempfile = LizzieFrame.curFile;
+    }
     Lizzie.board.clear(false);
     Lizzie.board.playAllMovelist(listHead, startMoveNumber);
     Lizzie.leelaz.komi(komi);
+    if (tempfile != null) {
+      LizzieFrame.curFile = tempfile;
+      LizzieFrame.fileNameTitle = LizzieFrame.curFile.getName();
+    }
+    Lizzie.frame.playerTitle = playerTitle;
     Lizzie.frame.refresh();
   }
 
@@ -3644,9 +3658,19 @@ public class Board {
     double komi = Lizzie.board.getHistory().getGameInfo().getKomi();
     int startMoveNumber = 0;
     if (hasStartStone) startMoveNumber += startStonelist.size();
+    File tempfile = null;
+    String playerTitle = Lizzie.frame.playerTitle;
+    if (LizzieFrame.curFile != null) {
+      tempfile = LizzieFrame.curFile;
+    }
     Lizzie.board.clear(false);
     Lizzie.board.playAllMovelist(listHead, startMoveNumber);
     Lizzie.leelaz.komi(komi);
+    if (tempfile != null) {
+      LizzieFrame.curFile = tempfile;
+      LizzieFrame.fileNameTitle = LizzieFrame.curFile.getName();
+    }
+    Lizzie.frame.playerTitle = playerTitle;
     Lizzie.frame.refresh();
   }
 
