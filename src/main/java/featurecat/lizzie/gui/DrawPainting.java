@@ -131,8 +131,7 @@ public class DrawPainting extends JDialog {
           public void mouseDragged(MouseEvent e) {
             // TODO Auto-generated method stub
             //  System.out.println("1");
-            DrawPoint p1 =
-                new DrawPoint((Utils.zoomOut(e.getX())), (Utils.zoomOut(e.getY())), colorIndex);
+            DrawPoint p1 = new DrawPoint((e.getX()), (e.getY()), colorIndex);
             list.add(p1);
             draw();
           }
