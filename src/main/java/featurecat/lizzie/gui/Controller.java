@@ -154,10 +154,10 @@ public class Controller extends JDialog {
   }
 
   private void setBtnFont(JButton btn) {
-    int width = btn.getWidth();
-    int height = btn.getHeight();
+    float width = (btn.getWidth() - btn.getInsets().left - btn.getInsets().right) * 0.9f;
+    float height = (btn.getHeight() - btn.getInsets().top - btn.getInsets().bottom) * 0.5f;
     int number = btn.getText().length();
-    float newSize = Math.min(width / number, height) / 2.0f;
+    float newSize = Math.min(width / number, height) / 1.0f;
     btn.setFont(btn.getFont().deriveFont(newSize));
   }
 }
