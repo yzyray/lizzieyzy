@@ -777,6 +777,7 @@ public class SGFParser {
           if (inTag) {
             if (c == '\\') {
               escaping = true;
+              if (!tag.equals("C")) tagContentBuilder.append(c);
               continue;
             }
             tagContentBuilder.append(c);
@@ -2649,6 +2650,7 @@ public class SGFParser {
           if (inTag) {
             if (c == '\\') {
               escaping = true;
+              if (!tag.equals("C")) tagContentBuilder.append(c);
               continue;
             }
             tagContentBuilder.append(c);
@@ -3043,6 +3045,7 @@ public class SGFParser {
           if (inTag) {
             if (c == '\\') {
               escaping = true;
+              if (!tag.equals("C")) tagContentBuilder.append(c);
               continue;
             }
             tagContentBuilder.append(c);
@@ -3308,6 +3311,7 @@ public class SGFParser {
           if (inTag) {
             if (c == '\\') {
               escaping = true;
+              if (!tag.equals("C")) tagContentBuilder.append(c);
               continue;
             }
             tagContentBuilder.append(c);
