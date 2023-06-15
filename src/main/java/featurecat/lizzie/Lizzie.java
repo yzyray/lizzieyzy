@@ -41,8 +41,8 @@ public class Lizzie {
   public static Board board;
   public static Leelaz leelaz;
   public static Leelaz leelaz2;
-  public static String lizzieVersion = "2.5.2";
-  public static String checkVersion = "230130";
+  public static String lizzieVersion = "2.5.3";
+  public static String checkVersion = "230614";
   public static boolean readMode = false;
   private static String[] mainArgs;
   public static EngineManager engineManager;
