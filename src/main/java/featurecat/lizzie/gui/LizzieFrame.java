@@ -3528,6 +3528,10 @@ public class LizzieFrame extends JFrame {
   }
 
   public void loadFile(File file, boolean fromTemp, boolean showHint) {
+    if (EngineManager.isEngineGame() || isPlayingAgainstLeelaz || isAnaPlayingAgainstLeelaz) {
+      Utils.showMsg(Lizzie.resourceBundle.getString("LizzieFrame.openFileFailed.inGame"));
+      return;
+    }
     boolean oriSound = Lizzie.config.playSound;
     canGoAfterload = false;
     Lizzie.config.playSound = false;
