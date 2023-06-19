@@ -853,6 +853,8 @@ public class EngineManager {
     stopCountDown();
     LizzieFrame.menu.toggleDoubleMenuGameStatus();
     LizzieFrame.toolbar.isPkStop = false;
+    Lizzie.frame.hasEnginePkTitile = true;
+    Lizzie.frame.enginePkTitile = "";
     // 保存SGF文件
     if (mannul) {
       engineList.get(engineGameInfo.blackEngineIndex).notPondering();
