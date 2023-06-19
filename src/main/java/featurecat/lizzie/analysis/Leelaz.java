@@ -2192,7 +2192,7 @@ public class Leelaz {
       }
     } else {
       if ((Lizzie.frame.isPlayingAgainstLeelaz || EngineManager.isEngineGame)
-          && line.startsWith("CHAT:")) {
+          && line.startsWith("MALKOVICH:")) {
         if (line.contains("PDA")) {
           String value = line.substring(line.indexOf("PDA") + 4);
           value = value.substring(0, value.indexOf(")"));
