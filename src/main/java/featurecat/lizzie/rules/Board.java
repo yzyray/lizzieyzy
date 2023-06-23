@@ -2380,7 +2380,7 @@ public class Board {
         history.next();
         history.getCurrentHistoryNode().placeExtraStones();
         if (history.getCurrentHistoryNode().hasRemovedStone())
-          history.getCurrentHistoryNode().clearAndSyncBoard();
+          history.getCurrentHistoryNode().clearAndSyncBoard(false);
         updateIsBest();
         clearPressStoneInfo(null);
         if (needRefresh) {
@@ -2433,6 +2433,10 @@ public class Board {
 
   public void restoreMoveNumber(
       ArrayList<Movelist> mv, boolean isEngineGame, Leelaz engine, boolean loadEngine) {
+    if (loadEngine && Lizzie.board.getHistory().getCurrentHistoryNode().clearAndSyncBoard(true)) {
+      Lizzie.initializeAfterVersionCheck(isEngineGame, engine);
+      return;
+    }
     int lenth = mv.size();
     for (int i = 0; i < lenth; i++) {
       Movelist move = mv.get(lenth - 1 - i);
@@ -2972,7 +2976,7 @@ public class Board {
         }
         history.getCurrentHistoryNode().undoExtraStones();
         history.previous();
-        if (needSync) history.getCurrentHistoryNode().clearAndSyncBoard();
+        if (needSync) history.getCurrentHistoryNode().clearAndSyncBoard(false);
         if (needRefresh) {
           clearAfterMove();
           Lizzie.frame.refresh();

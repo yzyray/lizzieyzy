@@ -738,8 +738,8 @@ public class BoardHistoryNode {
     return hasRemovedStone || Lizzie.board.hasRemovedStone;
   }
 
-  public void clearAndSyncBoard() {
-    if (Lizzie.board.isLoadingFile) return;
+  public boolean clearAndSyncBoard(boolean loadEngine) {
+    if (Lizzie.board.isLoadingFile && !loadEngine) return false;
     Optional<BoardHistoryNode> preNode = previous;
     boolean hasRemovedStone = this.hasRemovedStone;
     while (!hasRemovedStone && preNode.isPresent()) {
@@ -759,9 +759,12 @@ public class BoardHistoryNode {
           }
         }
       }
-      if (Lizzie.leelaz.isPondering()) Lizzie.leelaz.ponder();
     } else {
-      Lizzie.board.resendMoveToEngine(Lizzie.leelaz, false);
+      if (!loadEngine) {
+        Lizzie.board.resendMoveToEngine(Lizzie.leelaz, false);
+        if (Lizzie.leelaz.isPondering()) Lizzie.leelaz.ponder();
+      }
     }
+    return hasRemovedStone;
   }
 }
