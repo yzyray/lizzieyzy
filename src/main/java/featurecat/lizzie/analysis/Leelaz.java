@@ -475,7 +475,7 @@ public class Leelaz {
                 e.printStackTrace();
               }
             }
-            if (isPondering) Lizzie.board.resendMoveToEngine(thisLeelz);
+            if (isPondering) Lizzie.board.resendMoveToEngine(thisLeelz, true);
             else {
               Lizzie.board.resetMoves();
             }

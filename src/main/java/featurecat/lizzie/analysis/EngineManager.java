@@ -109,7 +109,7 @@ public class EngineManager {
             }
             if (currentEngineNo > 20) LizzieFrame.menu.changeEngineIcon(20, 3);
             else LizzieFrame.menu.changeEngineIcon(currentEngineNo, 3);
-            Lizzie.board.resendMoveToEngine(Lizzie.leelaz);
+            Lizzie.board.resendMoveToEngine(Lizzie.leelaz, true);
           }
         }.start();
       } else {
@@ -1698,7 +1698,7 @@ public class EngineManager {
             }
             if (currentEngineNo > 20) LizzieFrame.menu.changeEngineIcon(20, 3);
             else LizzieFrame.menu.changeEngineIcon(currentEngineNo, 3);
-            Lizzie.board.resendMoveToEngine(Lizzie.leelaz);
+            Lizzie.board.resendMoveToEngine(Lizzie.leelaz, true);
           }
         }.start();
       } else {
@@ -1924,7 +1924,7 @@ public class EngineManager {
                 e.printStackTrace();
               }
             }
-            Lizzie.board.restoreMoveNumber(mv, true, newEng);
+            Lizzie.board.restoreMoveNumber(mv, true, newEng, true);
             if (newEng.isKataGoPda) newEng.sendCommand("dympdacap " + newEng.pdaCap);
           }
         };
@@ -1980,7 +1980,7 @@ public class EngineManager {
                 e.printStackTrace();
               }
             }
-            Lizzie.board.resendMoveToEngine(newEng);
+            Lizzie.board.resendMoveToEngine(newEng, true);
             newEng.nameCmd();
 
             newEng.setResponseUpToDate();
@@ -2124,7 +2124,7 @@ public class EngineManager {
                   }
                 } while (!newEng.isLoaded() || newEng.isCheckingName);
                 newEng.notPondering();
-                Lizzie.board.resendMoveToEngine(newEng);
+                Lizzie.board.resendMoveToEngine(newEng, true);
                 if (newEng == Lizzie.leelaz) {
                   Lizzie.board.clearBestMovesAfterForFirstEngine(
                       Lizzie.board.getHistory().getStart());
@@ -2168,7 +2168,7 @@ public class EngineManager {
 
                 Lizzie.board.clearBestMovesAfterForSecondEngine(
                     Lizzie.board.getHistory().getStart());
-                Lizzie.board.resendMoveToEngine(newEng);
+                Lizzie.board.resendMoveToEngine(newEng, true);
                 Menu.engineMenu2.setText(
                     "["
                         + (currentEngineNo2 + 1)

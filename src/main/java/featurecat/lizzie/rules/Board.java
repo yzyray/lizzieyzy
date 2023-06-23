@@ -73,6 +73,7 @@ public class Board {
   public BoardHistoryNode mouseOnNode;
   private long reviewStartTime = -1;
   public int[] mouseOnStoneCoords = LizzieFrame.outOfBoundCoordinate;
+  public boolean hasRemovedStone = false;
 
   public Board() {
     initialize(false);
@@ -90,6 +91,7 @@ public class Board {
     forceRefresh = false;
     forceRefresh2 = false;
     hasBigBranch = false;
+    hasRemovedStone = false;
     history = new BoardHistoryList(BoardData.empty(boardWidth, boardHeight));
     if (isEngineGame) {
       Lizzie.board
@@ -1142,10 +1144,10 @@ public class Board {
     }
   }
 
-  public void resendMoveToEngine(Leelaz leelaz) {
+  public void resendMoveToEngine(Leelaz leelaz, boolean loadEngine) {
     ArrayList<Movelist> mv = getMoveList();
     leelaz.sendCommand("clear_board");
-    Lizzie.board.restoreMoveNumber(mv, false, leelaz);
+    Lizzie.board.restoreMoveNumber(mv, false, leelaz, loadEngine);
   }
 
   public ArrayList<Movelist> getMoveList() {
@@ -2429,7 +2431,8 @@ public class Board {
         });
   }
 
-  public void restoreMoveNumber(ArrayList<Movelist> mv, boolean isEngineGame, Leelaz engine) {
+  public void restoreMoveNumber(
+      ArrayList<Movelist> mv, boolean isEngineGame, Leelaz engine, boolean loadEngine) {
     int lenth = mv.size();
     for (int i = 0; i < lenth; i++) {
       Movelist move = mv.get(lenth - 1 - i);
@@ -2443,7 +2446,7 @@ public class Board {
         engine.sendCommand("play " + color + " " + convertCoordinatesToName(move.x, move.y));
       }
     }
-    Lizzie.initializeAfterVersionCheck(isEngineGame, engine);
+    if (loadEngine) Lizzie.initializeAfterVersionCheck(isEngineGame, engine);
   }
 
   /** Go to move number by back routing from children when in branch */

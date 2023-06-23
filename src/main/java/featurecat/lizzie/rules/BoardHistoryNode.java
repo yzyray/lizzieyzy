@@ -735,20 +735,33 @@ public class BoardHistoryNode {
   }
 
   public boolean hasRemovedStone() {
-    return hasRemovedStone;
+    return hasRemovedStone || Lizzie.board.hasRemovedStone;
   }
 
   public void clearAndSyncBoard() {
-    Lizzie.leelaz.clear();
-    for (int x = 0; x < Board.boardWidth; x++) {
-      for (int y = 0; y < Board.boardHeight; y++) {
-        Stone stone = data.stones[Board.getIndex(x, y)];
-        if (stone.isBlack()) {
-          Lizzie.leelaz.playMove(stone, Board.convertCoordinatesToName(x, y));
-        } else if (stone.isWhite()) {
-          Lizzie.leelaz.playMove(stone, Board.convertCoordinatesToName(x, y));
+    if (Lizzie.board.isLoadingFile) return;
+    Optional<BoardHistoryNode> preNode = previous;
+    boolean hasRemovedStone = this.hasRemovedStone;
+    while (!hasRemovedStone && preNode.isPresent()) {
+      hasRemovedStone = preNode.get().hasRemovedStone;
+      preNode = preNode.get().previous;
+    }
+    Lizzie.board.hasRemovedStone = hasRemovedStone;
+    if (hasRemovedStone) {
+      Lizzie.leelaz.clear();
+      for (int x = 0; x < Board.boardWidth; x++) {
+        for (int y = 0; y < Board.boardHeight; y++) {
+          Stone stone = data.stones[Board.getIndex(x, y)];
+          if (stone.isBlack()) {
+            Lizzie.leelaz.playMove(stone, Board.convertCoordinatesToName(x, y));
+          } else if (stone.isWhite()) {
+            Lizzie.leelaz.playMove(stone, Board.convertCoordinatesToName(x, y));
+          }
         }
       }
+      if (Lizzie.leelaz.isPondering()) Lizzie.leelaz.ponder();
+    } else {
+      Lizzie.board.resendMoveToEngine(Lizzie.leelaz, false);
     }
   }
 }
