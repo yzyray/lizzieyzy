@@ -73,7 +73,6 @@ public class Board {
   public BoardHistoryNode mouseOnNode;
   private long reviewStartTime = -1;
   public int[] mouseOnStoneCoords = LizzieFrame.outOfBoundCoordinate;
-  public boolean hasRemovedStone = false;
 
   public Board() {
     initialize(false);
@@ -91,7 +90,6 @@ public class Board {
     forceRefresh = false;
     forceRefresh2 = false;
     hasBigBranch = false;
-    hasRemovedStone = false;
     history = new BoardHistoryList(BoardData.empty(boardWidth, boardHeight));
     if (isEngineGame) {
       Lizzie.board
@@ -2004,12 +2002,12 @@ public class Board {
     Lizzie.leelaz.ponder();
   }
 
-  private void addExtraStoneNow(int x, int y, Stone color) {
-    if (color != null) {
-      history.getCurrentHistoryNode().addExtraStones(x, y, color == Stone.BLACK);
-      Lizzie.leelaz.playMove(color, convertCoordinatesToName(x, y));
-    }
-  }
+  //  private void addExtraStoneNow(int x, int y, Stone color) {
+  //    if (color != null) {
+  //      history.getCurrentHistoryNode().addExtraStones(x, y, color == Stone.BLACK);
+  //      Lizzie.leelaz.playMove(color, convertCoordinatesToName(x, y));
+  //    }
+  //  }
 
   /**
    * Removes a chain if it has no liberties
@@ -2380,7 +2378,7 @@ public class Board {
         history.next();
         history.getCurrentHistoryNode().placeExtraStones();
         if (history.getCurrentHistoryNode().hasRemovedStone())
-          history.getCurrentHistoryNode().clearAndSyncBoard(false);
+          history.getCurrentHistoryNode().clearAndSyncBoard(true);
         updateIsBest();
         clearPressStoneInfo(null);
         if (needRefresh) {
@@ -2433,7 +2431,7 @@ public class Board {
 
   public void restoreMoveNumber(
       ArrayList<Movelist> mv, boolean isEngineGame, Leelaz engine, boolean loadEngine) {
-    if (loadEngine && Lizzie.board.getHistory().getCurrentHistoryNode().clearAndSyncBoard(true)) {
+    if (loadEngine && Lizzie.board.getHistory().getCurrentHistoryNode().checkForRemovedStone()) {
       Lizzie.initializeAfterVersionCheck(isEngineGame, engine);
       return;
     }

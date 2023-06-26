@@ -735,19 +735,12 @@ public class BoardHistoryNode {
   }
 
   public boolean hasRemovedStone() {
-    return hasRemovedStone || Lizzie.board.hasRemovedStone;
+    return hasRemovedStone;
   }
 
-  public boolean clearAndSyncBoard(boolean loadEngine) {
-    if (Lizzie.board.isLoadingFile && !loadEngine) return false;
-    Optional<BoardHistoryNode> preNode = previous;
-    boolean hasRemovedStone = this.hasRemovedStone;
-    while (!hasRemovedStone && preNode.isPresent()) {
-      hasRemovedStone = preNode.get().hasRemovedStone;
-      preNode = preNode.get().previous;
-    }
-    Lizzie.board.hasRemovedStone = hasRemovedStone;
-    if (hasRemovedStone) {
+  public void clearAndSyncBoard(boolean stepIn) {
+    if (stepIn) {
+      //	  System.out.println("in");
       Lizzie.leelaz.clear();
       for (int x = 0; x < Board.boardWidth; x++) {
         for (int y = 0; y < Board.boardHeight; y++) {
@@ -760,11 +753,50 @@ public class BoardHistoryNode {
         }
       }
     } else {
-      if (!loadEngine) {
-        Lizzie.board.resendMoveToEngine(Lizzie.leelaz, false);
-        if (Lizzie.leelaz.isPondering()) Lizzie.leelaz.ponder();
+      //  System.out.println("out");
+      Lizzie.board.resendMoveToEngine(Lizzie.leelaz, false);
+      if (Lizzie.leelaz.isPondering()) Lizzie.leelaz.ponder();
+    }
+  }
+
+  public boolean checkForRemovedStone() {
+    // TODO Auto-generated method stub
+    boolean removedStone = this.hasRemovedStone;
+    Optional<BoardHistoryNode> node = previous;
+    while (!removedStone && node.isPresent()) {
+      removedStone = node.get().hasRemovedStone;
+      node = node.get().previous;
+    }
+    if (removedStone) {
+      Optional<BoardHistoryNode> nextNode = node;
+      for (int x = 0; x < Board.boardWidth; x++) {
+        for (int y = 0; y < Board.boardHeight; y++) {
+          Stone stone = node.get().data.stones[Board.getIndex(x, y)];
+          if (stone.isBlack()) {
+            Lizzie.leelaz.playMove(stone, Board.convertCoordinatesToName(x, y));
+          } else if (stone.isWhite()) {
+            Lizzie.leelaz.playMove(stone, Board.convertCoordinatesToName(x, y));
+          }
+        }
+      }
+      while (nextNode.get().next().isPresent()) {
+        if (nextNode.get().data.lastMove.isPresent()) {
+          Lizzie.leelaz.playMove(
+              nextNode.get().data.lastMoveColor,
+              Board.convertCoordinatesToName(
+                  nextNode.get().data.lastMove.get()[0], nextNode.get().data.lastMove.get()[1]));
+        } else Lizzie.leelaz.playMove(nextNode.get().data.lastMoveColor, "pass");
+        nextNode = nextNode.get().next();
+      }
+      if (nextNode != node) {
+        if (nextNode.get().data.lastMove.isPresent()) {
+          Lizzie.leelaz.playMove(
+              nextNode.get().data.lastMoveColor,
+              Board.convertCoordinatesToName(
+                  nextNode.get().data.lastMove.get()[0], nextNode.get().data.lastMove.get()[1]));
+        } else Lizzie.leelaz.playMove(nextNode.get().data.lastMoveColor, "pass");
       }
     }
-    return hasRemovedStone;
+    return removedStone;
   }
 }
