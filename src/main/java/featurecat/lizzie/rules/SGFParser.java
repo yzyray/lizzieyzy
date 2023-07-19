@@ -239,14 +239,10 @@ public class SGFParser {
   public static boolean isSGF(String value) {
     final Pattern SGF_PATTERN = Pattern.compile("(?s).*?(\\(\\s*;{0,1}.*\\))(?s).*?");
     Matcher sgfMatcher = SGF_PATTERN.matcher(value);
-    if (sgfMatcher.matches()) {
-      value = sgfMatcher.group(1);
-    } else {
+    if (!sgfMatcher.matches()) {
       value = "(;" + value.substring(1);
       Matcher sgfMatcher2 = SGF_PATTERN.matcher(value);
-      if (sgfMatcher2.matches()) {
-        value = sgfMatcher2.group(1);
-      } else {
+      if (!sgfMatcher2.matches()) {
         return false;
       }
     }
