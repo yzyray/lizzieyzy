@@ -236,6 +236,23 @@ public class SGFParser {
     islzloaded = false;
   }
 
+  public static boolean isSGF(String value) {
+    final Pattern SGF_PATTERN = Pattern.compile("(?s).*?(\\(\\s*;{0,1}.*\\))(?s).*?");
+    Matcher sgfMatcher = SGF_PATTERN.matcher(value);
+    if (sgfMatcher.matches()) {
+      value = sgfMatcher.group(1);
+    } else {
+      value = "(;" + value.substring(1);
+      Matcher sgfMatcher2 = SGF_PATTERN.matcher(value);
+      if (sgfMatcher2.matches()) {
+        value = sgfMatcher2.group(1);
+      } else {
+        return false;
+      }
+    }
+    return true;
+  }
+
   private static boolean parse(String value) {
     // Drop anything outside "(;...)"
     boolean oriPlaySound = Lizzie.config.playSound;

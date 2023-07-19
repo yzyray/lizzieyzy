@@ -7328,13 +7328,13 @@ public class LizzieFrame extends JFrame {
             .orElse("");
 
     // Load game contents from sgf string
-    if (!sgfContent.isEmpty()) {
+    if (!sgfContent.isEmpty() && SGFParser.isSGF(sgfContent)) {
       SGFParser.loadFromString(sgfContent);
       Lizzie.board.setMovelistAll();
       if (Lizzie.leelaz.isPondering()) Lizzie.leelaz.ponder();
+      Lizzie.frame.resetMovelistFrameandAnalysisFrame();
+      Lizzie.frame.setVisible(true);
     }
-    Lizzie.frame.resetMovelistFrameandAnalysisFrame();
-    Lizzie.frame.setVisible(true);
   }
 
   public boolean resetMovelistFrameandAnalysisFrame() {
