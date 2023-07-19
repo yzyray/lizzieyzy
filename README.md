@@ -72,7 +72,7 @@ We have added some new features on Lizzie's basis: **Hawk Eye, Flash Analyze, Ba
 
 LizzieYzy는 [Lizzie](https://github.com/featurecat/lizzie)를 기반으로 [Katago](https://github.com/lightvector/KataGo)、[LeelaZero](https://github.com/leela-zero/leela-zero)、[Leela](https://github.com/gcp/Leela)、[ZenGTP](https://github.com/yzyray/ZenGTP)、[SAI](http://sai.unich.it)、[Pachi](https://github.com/pasky/pachi) 등의 다른 GTP engine들을 로드할 수 있도록 수정된 그래픽 인터페이스입니다.
 
-Lizzie 기반에 몇 가지 새로운 기능 추가: **Hawk Eye, Flash Analyze, Batch Analyze, Estimate, Board Synchronization(only windows), Engine Game, Upload And Share, Double Engine Mode, Visualized KataGo Distributed Training** 및 몇몇 세부 사항 조정, 고해상도를 완벽하게 지원하여 시스템 스케일링으로 인해 흐릿하게 표시되지 않습니다.
+Lizzie 기반에 몇 가지 새로운 기능 추가: **Hawk Eye, Flash Analyze, Batch Analyze, Estimate, Board Synchronization(only windows), Engine Game, Tsumego Analysis, Double Engine Mode, Visualized KataGo Distributed Training** 및 몇몇 세부 사항 조정, 고해상도를 완벽하게 지원하여 시스템 스케일링으로 인해 흐릿하게 표시되지 않습니다.
 #
 * 새로운 기능
 
@@ -90,7 +90,7 @@ Lizzie 기반에 몇 가지 새로운 기능 추가: **Hawk Eye, Flash Analyze, 
 
   * **Engine Game**: 두 엔진 간의 1회(또는 다회) 대국을 수행. 대국 시작점으로 일부 sgf를 사용할 수 있습니다. 착수를 위한 다양한 명령 지원: `lz-analyze`, `kata-analyze`, `genmove`. 다회 대국시에 몇 가지 통계를 수집합니다: elo, stdev 간격 등.
 
-  * **Upload And Share**: [Repository](https://github.com/yzyray/LizziePlayer) 기보를 [LizziePlayer](http://lizzieyzy.cn)로 업로드하여 휴대폰, 패드와 같은 다른 기기에서 보기 지원. LizziePlayer가 후보수를 표시하고, 승률 그래프, 정확도, 실착수 검색을 지원.
+  * **Tsumego Analysis**: Support capture tsumego in part of goban, and automatically generate other part of stones help engine analyze in right area, refer to [Analyze]-[Tsumego frame] or [Capture tsumego] or [Tsumego] button in toolbar.
 
   * **Double Engine Mode**: 2개 엔진을 로드하여 동시 분석을 지원. 비교에 편리합니다.
 
