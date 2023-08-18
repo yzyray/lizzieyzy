@@ -1591,7 +1591,7 @@ public class Leelaz {
           }
         }
         if (playNow) {
-          notifyAnaResign(false);
+          if (notifyAnaResign(false)) return;
           MoveData playMove = null;
           if (!Lizzie.frame.bothSync
               && Lizzie.config.enableAnaGameRamdonStart
@@ -1618,7 +1618,7 @@ public class Leelaz {
     }
   }
 
-  private void notifyAnaResign(boolean isResgined) {
+  private boolean notifyAnaResign(boolean isResgined) {
     // TODO Auto-generated method stub
     if (isResgined) {
       Lizzie.frame.togglePonderMannul();
@@ -1632,9 +1632,10 @@ public class Leelaz {
       if (this.anaGameResignCount >= Lizzie.config.anaGameResignMove) {
         Lizzie.frame.togglePonderMannul();
         Utils.showMsg(oriEnginename + " " + Lizzie.resourceBundle.getString("Leelaz.resign"));
-        return;
+        return true;
       }
     }
+    return isResgined;
   }
 
   public void analyzeNextMove(boolean isLastMove) {
