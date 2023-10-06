@@ -102,7 +102,7 @@ Lizzie 기반에 몇 가지 새로운 기능 추가: **Hawk Eye, Flash Analyze, 
 
 #
 <span id="jp"></span>
-# LizzieYzy - LizzieYzyは、囲碁AI用のグラフィカルユーザーインターフェースです。
+# LizzieYzy - 囲碁AI用グラフィカルユーザーインターフェース
 ![screenshot_ko](/screenshot_jp.png?raw=true)
 
 LizzieYzyは、 [Lizzie](https://github.com/featurecat/lizzie)を元に改良されたもので、 [Katago](https://github.com/lightvector/KataGo)、[LeelaZero](https://github.com/leela-zero/leela-zero)、[Leela](https://github.com/gcp/Leela)、[ZenGTP](https://github.com/yzyray/ZenGTP)、[SAI](http://sai.unich.it)、[Pachi](https://github.com/pasky/pachi) などの様々なGTPエンジンをロードすることができます。
@@ -132,5 +132,6 @@ Lizzieをベースに、いくつかの新機能が追加されました。: **�
   * **視覚化されたKataGoの分散トレーニング**: KataGoの分散トレーニングに参加することができます。対局状況（盤面）を見ることができます。
 
 #
- * [使用説明](https://github.com/yzyray/lizzieyzy/blob/main/readme_en.pdf)
+ * [LIzzieYzyの使い方（英語版）](https://github.com/yzyray/lizzieyzy/blob/main/readme_en.pdf)
+ * [LizzieYzyの使い方（日本語版）](https://www.h-eba.jp/Lizzie/LizzieYzy/manual.html)
  * その他のjarファイルのソースコードのリンク: [foxRequestQ.jar](https://github.com/yzyray/FoxRequest) [InVisibleFrame.jar](https://github.com/yzyray/testbuffer) [CaptureTsumeGo.jar](https://github.com/yzyray/captureTsumeGo/blob/main/README.md)
