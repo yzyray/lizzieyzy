@@ -1,7 +1,7 @@
 # LizzieYzy - 囲碁AI用グラフィカルユーザーインターフェース
 ![screenshot_jp](/screenshot_jp.png?raw=true)
 
-LizzieYzyは、 [Lizzie](https://github.com/featurecat/lizzie){:target="_blank"}を元に改良されたもので、 [Katago](https://github.com/lightvector/KataGo){:target="_blank"}、[LeelaZero](https://github.com/leela-zero/leela-zero){:target="_blank"}、[Leela](https://github.com/gcp/Leela){:target="_blank"}、[ZenGTP](https://github.com/yzyray/ZenGTP){:target="_blank"}、[SAI](http://sai.unich.it){:target="_blank"}、[Pachi](https://github.com/pasky/pachi){:target="_blank"} などの様々なGTPエンジンをロードすることができます。
+LizzieYzyは、 [Lizzie](https://github.com/featurecat/lizzie)を元に改良されたもので、 [Katago](https://github.com/lightvector/KataGo)、[LeelaZero](https://github.com/leela-zero/leela-zero)、[Leela](https://github.com/gcp/Leela)、[ZenGTP](https://github.com/yzyray/ZenGTP)、[SAI](http://sai.unich.it)、[Pachi](https://github.com/pasky/pachi) などの様々なGTPエンジンをロードすることができます。
 
 Lizzieをベースに、いくつかの新機能が追加されました。: **ホークアイ, フラッシュ分析, バッチ分析, 形勢分析, 碁盤同期機能(Windows限定), エンジン同士の対局, 詰碁解析, ダブルエンジンモード, 視覚化されたKataGoの分散トレーニング** 及び、いくつかの詳細な変更により高解像度が完全にサポートされ、システムのスケーリングによって表示がぼやけることがありません。
 #
@@ -15,9 +15,9 @@ Lizzieをベースに、いくつかの新機能が追加されました。: **�
 
   * **形勢分析**: KataGoの `kata-raw-nn` や ZenGTPの `territory` コマンドを使用して、おおまかな地合い判定をします。
 
-  * **碁盤同期機能(C#)**: [リポジトリ](https://github.com/yzyray/readboard){:target="_blank"} 任意の碁盤の画像をLizzieYzyに取り込むことができます。また、野狐、弈城、新浪のプラットフォームとの連携も可能で、これらは特別に最適化されています。C#言語を使用するため、Windows限定の機能です。
+  * **碁盤同期機能(C#)**: [リポジトリ](https://github.com/yzyray/readboard) 任意の碁盤の画像をLizzieYzyに取り込むことができます。また、野狐、弈城、新浪のプラットフォームとの連携も可能で、これらは特別に最適化されています。C#言語を使用するため、Windows限定の機能です。
 
-  * **碁盤同期機能(Java)**: [リポジトリ](https://github.com/yzyray/readboard_Boofcv){:target="_blank"} 任意の碁盤の画像をLizzieYzyに取り込むことができます。
+  * **碁盤同期機能(Java)**: [リポジトリ](https://github.com/yzyray/readboard_Boofcv) 任意の碁盤の画像をLizzieYzyに取り込むことができます。
 
   * **エンジン同士の対局**: エンジン同士の対局が可能です。複数の対局を連続で行うこともできます。着手のための様々なコマンドをサポートしています: `lz-analyze`, `kata-analyze`, `genmove`。複数の対局を行った場合は、終了時にEloレーティングや標準偏差等の統計データが自動的に保存されます。
 
@@ -28,6 +28,8 @@ Lizzieをベースに、いくつかの新機能が追加されました。: **�
   * **視覚化されたKataGoの分散トレーニング**: KataGoの分散トレーニングに参加することができます。対局状況（盤面）を見ることができます。
 
 #
- * [LizzieYzyの使い方（英語版）](https://github.com/yzyray/lizzieyzy/blob/main/readme_en.pdf){:target="_blank"}
- * [LizzieYzyの使い方（日本語版）](https://www.h-eba.jp/Lizzie/LizzieYzy/manual.html){:target="_blank"}
- * その他のjarファイルのソースコードのリンク: [foxRequestQ.jar](https://github.com/yzyray/FoxRequest){:target="_blank"} [InVisibleFrame.jar](https://github.com/yzyray/testbuffer){:target="_blank"} [CaptureTsumeGo.jar](https://github.com/yzyray/captureTsumeGo/blob/main/README.md){:target="_blank"}
+ * [LIzzieYzyの使い方（英語版）](https://github.com/yzyray/lizzieyzy/blob/main/readme_en.pdf)
+ * [LizzieYzyの使い方（日本語版）](https://www.h-eba.jp/Lizzie/LizzieYzy/manual.html)
+ * その他のjarファイルのソースコードのリンク: [foxRequestQ.jar](https://github.com/yzyray/FoxRequest)[InVisibleFrame.jar](https://github.com/yzyray/testbuffer) [CaptureTsumeGo.jar](https://github.com/yzyray/captureTsumeGo/blob/main/README.md)
+
+ <a href="https://www.h-eba.jp/Lizzie/LizzieYzy/manual.html" target="_blank">Hello, world!</a>
