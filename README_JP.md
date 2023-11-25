@@ -30,4 +30,4 @@ Lizzieをベースに、いくつかの新機能が追加されました。: **�
 #
  * [LIzzieYzyの使い方（英語版）](https://github.com/yzyray/lizzieyzy/blob/main/readme_en.pdf)
  * [LizzieYzyの使い方（日本語版）](https://www.h-eba.jp/Lizzie/LizzieYzy/manual.html)
- * その他のjarファイルのソースコードのリンク: [foxRequestQ.jar](https://github.com/yzyray/FoxRequest)[InVisibleFrame.jar](https://github.com/yzyray/testbuffer) [CaptureTsumeGo.jar](https://github.com/yzyray/captureTsumeGo/blob/main/README.md)
+ * その他のjarファイルのソースコードのリンク: [foxRequestQ.jar](https://github.com/yzyray/FoxRequest) [InVisibleFrame.jar](https://github.com/yzyray/testbuffer) [CaptureTsumeGo.jar](https://github.com/yzyray/captureTsumeGo/blob/main/README.md)
