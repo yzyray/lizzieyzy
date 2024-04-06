@@ -41,17 +41,13 @@ public enum Stone {
     }
   }
 
+  /**
+   * 判断石子是否为空或被俘获
+   *
+   * @return 石子是否为空或被俘获
+   */
   public boolean isEmpty() {
-    switch (this) {
-      case EMPTY:
-        return true;
-      case BLACK_CAPTURED:
-        return true;
-      case WHITE_CAPTURED:
-        return true;
-      default:
-        return false;
-    }
+    return this == EMPTY || this == BLACK_CAPTURED || this == WHITE_CAPTURED;
   }
   /**
    * used to keep track of which stones were visited during removal of dead stones
@@ -79,18 +75,20 @@ public enum Stone {
   }
 
   public boolean needDrawBlack() {
-    return this == BLACK || this == BLACK_RECURSED;
+    return isBlack();
   }
   /** @return Whether or not this stone is of the white variants. */
   public boolean isWhite() {
-    return this != EMPTY && !this.isBlack();
-  }
-
-  public boolean needDrawWhite() {
     return this == WHITE || this == WHITE_RECURSED;
   }
 
+  public boolean needDrawWhite() {
+    return isWhite();
+  }
+
   public Stone unGhosted() {
+    return isEmpty() ? EMPTY : this;
+    /*
     switch (this) {
       case BLACK:
         return BLACK;
@@ -99,5 +97,6 @@ public enum Stone {
       default:
         return EMPTY;
     }
+     */
   }
 }
