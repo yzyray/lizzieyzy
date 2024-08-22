@@ -70,6 +70,8 @@ public class BottomToolbar extends JPanel {
   JButton refresh;
   JPopupMenu yike;
   JPopupMenu sharePopup;
+  JPopupMenu autoAnalyzePopup;
+  JPopupMenu flashAnalyzePopup;
   JButton tryPlay;
   JButton analyzeList;
   JButton move;
@@ -487,7 +489,7 @@ public class BottomToolbar extends JPanel {
     setButtonSize(savefile, true);
     setButtonSize(analyzeList, false);
     setButtonSize(refresh, true);
-    setButtonSize(analyse, false);
+    setButtonSize(analyse);
     setButtonSize(tryPlay, true);
     setButtonSize(setMain, false);
     setButtonSize(backMain, false);
@@ -570,14 +572,15 @@ public class BottomToolbar extends JPanel {
           }
         });
 
-    JPopupMenu flashAnalyzePopup = new JPopupMenu();
+    flashAnalyzePopup = new JPopupMenu();
+
     final JFontMenuItem flashAnalyzeAllGame =
         new JFontMenuItem(resourceBundle.getString("Menu.flashAnalyzeAllGame"));
     flashAnalyzePopup.add(flashAnalyzeAllGame);
     flashAnalyzeAllGame.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            Lizzie.frame.flashAnalyzeGame(true);
+            Lizzie.frame.flashAnalyzeGame(true, false);
           }
         });
 
@@ -590,6 +593,17 @@ public class BottomToolbar extends JPanel {
             Lizzie.frame.flashAnalyzePart();
           }
         });
+
+    final JFontMenuItem flashAnalyzeAllBranches =
+        new JFontMenuItem(resourceBundle.getString("Menu.flashAnalyzeAllBranches"));
+    flashAnalyzePopup.add(flashAnalyzeAllBranches);
+    flashAnalyzeAllBranches.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.frame.flashAnalyzeGame(false, true);
+          }
+        });
+
     final JFontMenuItem flashAnalyzeSettings =
         new JFontMenuItem(resourceBundle.getString("Menu.flashAnalyzeSettings"));
     flashAnalyzePopup.add(flashAnalyzeSettings);
@@ -599,8 +613,8 @@ public class BottomToolbar extends JPanel {
             Lizzie.frame.flashAnalyzeSettings();
           }
         });
-    flashAnalyzePopup.setVisible(true);
-    flashAnalyzePopup.setVisible(false);
+    //    flashAnalyzePopup.setVisible(true);
+    //    flashAnalyzePopup.setVisible(false);
 
     flashAnalyze.addActionListener(
         new ActionListener() {
@@ -695,8 +709,6 @@ public class BottomToolbar extends JPanel {
     sharePopup.add(editHistoryRemote);
     sharePopup.add(shareHistoryRemote);
     // sharePopup.add(shareHistory);
-    sharePopup.setVisible(true);
-    sharePopup.setVisible(false);
 
     yike = new JPopupMenu();
     JFontMenuItem yikeLive =
@@ -755,8 +767,6 @@ public class BottomToolbar extends JPanel {
           }
         });
     if (OS.isWindows()) yike.add(syncBoard);
-    yike.setVisible(true);
-    yike.setVisible(false);
 
     autoPlay.addActionListener(
         new ActionListener() {
@@ -806,7 +816,7 @@ public class BottomToolbar extends JPanel {
             Lizzie.frame.refresh();
           }
         });
-    JPopupMenu autoAnalyzePopup = new JPopupMenu();
+    autoAnalyzePopup = new JPopupMenu();
     final JFontMenuItem autoAnalyze =
         new JFontMenuItem(resourceBundle.getString("Menu.autoAnalyze")); // ("自动分析(A)");
     // aboutItem.setMnemonic('A');
@@ -848,6 +858,7 @@ public class BottomToolbar extends JPanel {
 
     final JFontMenuItem stopAutoAnalyze =
         new JFontMenuItem(resourceBundle.getString("Menu.stopAutoAnalyze")); // ("停止自动(批量)分析");
+    autoAnalyzePopup.addSeparator();
     autoAnalyzePopup.add(stopAutoAnalyze);
     stopAutoAnalyze.addActionListener(
         new ActionListener() {
@@ -865,8 +876,7 @@ public class BottomToolbar extends JPanel {
             Lizzie.frame.openAnalysisTable();
           }
         });
-    autoAnalyzePopup.setVisible(true);
-    autoAnalyzePopup.setVisible(false);
+
     batchOpen.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
@@ -1010,12 +1020,7 @@ public class BottomToolbar extends JPanel {
     clearButton.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            if (Lizzie.engineManager.isEngineGame()) return;
-            Lizzie.board.clear(false);
-            if (Lizzie.leelaz.isPondering()) {
-              Lizzie.leelaz.ponder();
-            }
-            Lizzie.frame.refresh();
+            Lizzie.frame.newEmptyBoard();
             setTxtUnfocuse();
           }
         });
@@ -1696,12 +1701,15 @@ public class BottomToolbar extends JPanel {
         });
 
     chkenginePkTime = new JCheckBox();
+    chkenginePkTime.setSelected(true);
     lblenginePkTime = new JLabel("时间(秒) 黑");
     lblenginePkTimeWhite = new JLabel("白");
     txtenginePkTime = new JTextField();
     txtenginePkTime.setDocument(new IntDocument());
+    txtenginePkTime.setText("2");
     txtenginePkTimeWhite = new JTextField();
     txtenginePkTimeWhite.setDocument(new IntDocument());
+    txtenginePkTimeWhite.setText("2");
     enginePkPanel.add(chkenginePkTime);
     enginePkPanel.add(lblenginePkTime);
     enginePkPanel.add(txtenginePkTime);
@@ -2057,7 +2065,7 @@ public class BottomToolbar extends JPanel {
 
       if (pos.getInt(19) > 0) {
         this.txtenginePkTime.setText(String.valueOf(pos.getInt(19)));
-      }
+      } else this.txtenginePkTime.setText("");
 
       if (pos.getInt(20) > 0) {
         this.txtenginePkPlayputs.setText(String.valueOf(pos.getInt(20)));
@@ -2112,7 +2120,7 @@ public class BottomToolbar extends JPanel {
       checkGameMaxMove = pos.getBoolean(37);
       if (pos.getInt(38) > 0) {
         txtenginePkTimeWhite.setText(String.valueOf(pos.getInt(38)));
-      }
+      } else this.txtenginePkTimeWhite.setText("");
       if (pos.getInt(39) > 0) {
         this.chkAutoSub.setSelected(true);
       }
@@ -2147,6 +2155,10 @@ public class BottomToolbar extends JPanel {
     button.setSize(
         button.getFontMetrics(button.getFont()).stringWidth(button.getText()) + (widden ? 14 : 12),
         26);
+  }
+
+  private void setButtonSize(JButton button) {
+    button.setSize(button.getFontMetrics(button.getFont()).stringWidth(button.getText()) + 33, 26);
   }
 
   public void setDetailIcon() {
@@ -3555,7 +3567,7 @@ public class BottomToolbar extends JPanel {
     txtenginePkTime.setEnabled(enable);
     txtenginePkTimeWhite.setEnabled(enable);
 
-    // setGenmove();
+    setGenmove();
   }
 
   public boolean startEngineGame() {
@@ -4292,6 +4304,14 @@ public class BottomToolbar extends JPanel {
       w = w - (moveRank.getWidth() - (Config.isScaled ? 0 : 1));
       moveRank.setLocation(w, 0);
     }
+    if (finalScore.isVisible()) {
+      w = w - (finalScore.getWidth() - (Config.isScaled ? 0 : 1));
+      finalScore.setLocation(w, 0);
+    }
+    if (countButton.isVisible()) {
+      w = w - (countButton.getWidth() - (Config.isScaled ? 0 : 1));
+      countButton.setLocation(w, 0);
+    }
     if (lastButton.isVisible()) {
       w = w - (lastButton.getWidth() - (Config.isScaled ? 0 : 1));
       lastButton.setLocation(w, 0);
@@ -4366,14 +4386,6 @@ public class BottomToolbar extends JPanel {
       w = w - (heatMap.getWidth() - (Config.isScaled ? 0 : 1));
       heatMap.setLocation(w, 0);
     }
-    if (countButton.isVisible()) {
-      w = w - (countButton.getWidth() - (Config.isScaled ? 0 : 1));
-      countButton.setLocation(w, 0);
-    }
-    if (finalScore.isVisible()) {
-      w = w - (finalScore.getWidth() - (Config.isScaled ? 0 : 1));
-      finalScore.setLocation(w, 0);
-    }
     if (savefile.isVisible()) {
       w = w - (savefile.getWidth() - (Config.isScaled ? 0 : 1));
       savefile.setLocation(w, 0);
@@ -4434,14 +4446,6 @@ public class BottomToolbar extends JPanel {
     if (savefile.isVisible()) {
       savefile.setLocation(w, 0);
       w = w + savefile.getWidth() - (Config.isScaled ? 0 : 1);
-    }
-    if (countButton.isVisible()) {
-      countButton.setLocation(w, 0);
-      w = w + countButton.getWidth() - (Config.isScaled ? 0 : 1);
-    }
-    if (finalScore.isVisible()) {
-      finalScore.setLocation(w, 0);
-      w = w + finalScore.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (heatMap.isVisible()) {
       heatMap.setLocation(w, 0);
@@ -4518,6 +4522,14 @@ public class BottomToolbar extends JPanel {
     if (lastButton.isVisible()) {
       lastButton.setLocation(w, 0);
       w = w + lastButton.getWidth() - (Config.isScaled ? 0 : 1);
+    }
+    if (countButton.isVisible()) {
+      countButton.setLocation(w, 0);
+      w = w + countButton.getWidth() - (Config.isScaled ? 0 : 1);
+    }
+    if (finalScore.isVisible()) {
+      finalScore.setLocation(w, 0);
+      w = w + finalScore.getWidth() - (Config.isScaled ? 0 : 1);
     }
     if (moveRank.isVisible()) {
       moveRank.setLocation(w, 0);
@@ -4618,6 +4630,17 @@ public class BottomToolbar extends JPanel {
   public void setChkShowWhite(boolean show) {
     if (chkShowWhite != null) chkShowWhite.setSelected(show);
     Lizzie.config.showWhiteCandidates = show;
+  }
+
+  public void setPopupMenu() {
+    autoAnalyzePopup.setVisible(true);
+    autoAnalyzePopup.setVisible(false);
+    yike.setVisible(true);
+    yike.setVisible(false);
+    sharePopup.setVisible(true);
+    sharePopup.setVisible(false);
+    flashAnalyzePopup.setVisible(true);
+    flashAnalyzePopup.setVisible(false);
   }
 
   //  public void setFontSize(int fontSize) {

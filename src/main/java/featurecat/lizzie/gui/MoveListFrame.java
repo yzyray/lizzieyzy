@@ -27,7 +27,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowStateListener;
 import java.awt.font.TextAttribute;
 import java.io.File;
 import java.io.IOException;
@@ -102,6 +101,7 @@ public class MoveListFrame extends JFrame {
   JButton settings;
   JLabel lblMatchConfig2;
   JLabel lblMatchConfig3;
+  JLabel lblMatchConfig4;
 
   ImageIcon iconUp;
   ImageIcon iconDown;
@@ -110,6 +110,8 @@ public class MoveListFrame extends JFrame {
   private JPanel statisticsPanel;
   private JPanel statisticsGraph;
   private JPanel keyPanel;
+  private JPanel keyPanel_tooltip1;
+  private JPanel keyPanel_tooltip2;
   private JTabbedPane lossPanel;
   private JPanel winLossPanel;
   private JPanel scoreLossPanel;
@@ -356,16 +358,22 @@ public class MoveListFrame extends JFrame {
     tablePanelMin2 = new JPanel(new BorderLayout());
     tablePanelMin1.add(minScrollpane1);
     tablePanelMin2.add(minScrollpane2);
-    tablePanel.add(scrollpane);
 
     minTablePanel = new JPanel(new GridLayout(1, 2));
     minTablePanel.add(tablePanelMin1);
     minTablePanel.add(tablePanelMin2);
+    tablePanel.add(scrollpane);
 
+    keyPanel_tooltip1 = new JPanel();
+    keyPanel_tooltip1.setToolTipText(
+        Lizzie.resourceBundle.getString("Movelistframe.keyPanel.accuracy.tip"));
+    keyPanel_tooltip2 = new JPanel();
+    keyPanel_tooltip2.setToolTipText(
+        Lizzie.resourceBundle.getString("Movelistframe.keyPanel.match.tip"));
     keyPanel =
-        new JPanel(true) {
+        new JPanel() {
           @Override
-          protected void paintComponent(Graphics g) {
+          public void paintComponent(Graphics g) {
             Graphics2D g0 = (Graphics2D) g;
             g0.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
             g0.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -373,12 +381,16 @@ public class MoveListFrame extends JFrame {
             g0.dispose();
           }
         };
+    keyPanel.setLayout(null);
+    keyPanel.add(keyPanel_tooltip1);
+    keyPanel.add(keyPanel_tooltip2);
+
     lossPanel = new JTabbedPane();
 
     winLossPanel =
-        new JPanel(true) {
+        new JPanel() {
           @Override
-          protected void paintComponent(Graphics g) {
+          public void paintComponent(Graphics g) {
             Graphics2D g0 = (Graphics2D) g;
             g0.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
             g0.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -387,9 +399,9 @@ public class MoveListFrame extends JFrame {
           }
         };
     scoreLossPanel =
-        new JPanel(true) {
+        new JPanel() {
           @Override
-          protected void paintComponent(Graphics g) {
+          public void paintComponent(Graphics g) {
             Graphics2D g0 = (Graphics2D) g;
             g0.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
             g0.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -400,6 +412,7 @@ public class MoveListFrame extends JFrame {
 
     lossPanel.addTab(Lizzie.resourceBundle.getString("Movelistframe.scoreLoss"), scoreLossPanel);
     lossPanel.addTab(Lizzie.resourceBundle.getString("Movelistframe.winLoss"), winLossPanel);
+    lossPanel.setFont(new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize));
 
     if (Lizzie.config.lossPanelSelectWinrate || !isKatago) lossPanel.setSelectedIndex(1);
     else lossPanel.setSelectedIndex(0);
@@ -576,12 +589,18 @@ public class MoveListFrame extends JFrame {
     topPanel.setSelectedIndex(selectedIndexTop);
 
     if (selectedIndexTop == 2) sortnum = 3;
-    add(topPanel, BorderLayout.CENTER);
+
+    JPanel topContent = new JPanel();
+    topContent.setLayout(new BorderLayout());
+    topContent.add(topPanel, BorderLayout.CENTER);
+    topContent.add(filterPanel, BorderLayout.SOUTH);
+    this.getContentPane().add(topContent, BorderLayout.CENTER);
+    this.getContentPane().add(bottomPanel, BorderLayout.SOUTH);
 
     matchPanel =
-        new JPanel(true) {
+        new JPanel() {
           @Override
-          protected void paintComponent(Graphics g) {
+          public void paintComponent(Graphics g) {
             Graphics2D g0 = (Graphics2D) g;
             g0.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
             g0.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
@@ -594,7 +613,7 @@ public class MoveListFrame extends JFrame {
     matchPanelmin =
         new PanelWithToolTips() {
           @Override
-          protected void paintComponent(Graphics g) {
+          public void paintComponent(Graphics g) {
             Graphics2D g0 = (Graphics2D) g;
             g0.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
             g0.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
@@ -610,20 +629,24 @@ public class MoveListFrame extends JFrame {
         new ComponentAdapter() {
           public void componentResized(ComponentEvent e) {
             reSetLoc();
+            thisDialog.getContentPane().revalidate();
           }
         });
 
-    addWindowStateListener(
-        new WindowStateListener() {
-          public void windowStateChanged(WindowEvent state) {
-            if (true) {
-              bottomPanel.setPreferredSize(
-                  new Dimension(getWidth(), isShowingWinrateGraph ? getHeight() / 4 + 123 : 125));
-            }
-            matchPanelmin.setPreferredSize(new Dimension(getWidth(), 60));
-            resetTop(true);
-          }
-        });
+    //    addWindowStateListener(
+    //        new WindowStateListener() {
+    //          public void windowStateChanged(WindowEvent state) {
+    //  reSetLoc();
+    //	  revalidate();
+    //            if (true) {
+    //              bottomPanel.setPreferredSize(
+    //                  new Dimension(getWidth(), isShowingWinrateGraph ? getHeight() / 4 + 95 :
+    // 100));
+    //            }
+    //            matchPanelmin.setPreferredSize(new Dimension(getWidth(), 60));
+    //            resetTop(true);
+    //          }
+    //        });
     // this.add(matchPanelAll, BorderLayout.SOUTH);
 
     mistakePanelAll = new JPanel();
@@ -673,60 +696,59 @@ public class MoveListFrame extends JFrame {
     bigMistakePanel.setLayout(new BorderLayout());
     bigScoreMistakePanel.setLayout(new BorderLayout());
 
-    add(bottomPanel, BorderLayout.SOUTH);
     int curIndex = 0;
     switch (selectedIndex) {
       case 0:
         curIndex = 0;
-        matchPanelAll.add(filterPanel, BorderLayout.NORTH);
+        // matchPanelAll.add(filterPanel, BorderLayout.NORTH);
         matchPanelAll.add(matchPanelmin, BorderLayout.SOUTH);
         matchPanelAll.add(matchPanel, BorderLayout.CENTER);
         break;
       case 1:
         curIndex = 6;
-        matchGraphAll.add(filterPanel, BorderLayout.NORTH);
+        // matchGraphAll.add(filterPanel, BorderLayout.NORTH);
         matchGraphAll.add(matchPanelmin, BorderLayout.SOUTH);
         matchGraphAll.add(matchPanel, BorderLayout.CENTER);
         break;
       case 2:
         curIndex = 4;
-        mistakePanelAll.add(filterPanel, BorderLayout.NORTH);
+        // mistakePanelAll.add(filterPanel, BorderLayout.NORTH);
         mistakePanelAll.add(matchPanelmin, BorderLayout.SOUTH);
         mistakePanelAll.add(matchPanel, BorderLayout.CENTER);
         break;
       case 3:
         curIndex = 5;
-        scoreDiffGraphAll.add(filterPanel, BorderLayout.NORTH);
+        // scoreDiffGraphAll.add(filterPanel, BorderLayout.NORTH);
         scoreDiffGraphAll.add(matchPanelmin, BorderLayout.SOUTH);
         scoreDiffGraphAll.add(matchPanel, BorderLayout.CENTER);
         break;
       case 4:
         curIndex = 1;
-        matchHistogramAll.add(filterPanel, BorderLayout.NORTH);
+        // matchHistogramAll.add(filterPanel, BorderLayout.NORTH);
         matchHistogramAll.add(matchPanelmin, BorderLayout.SOUTH);
         matchHistogramAll.add(matchPanel, BorderLayout.CENTER);
         break;
       case 5:
         curIndex = 2;
-        winrateDiffStatics.add(filterPanel, BorderLayout.NORTH);
+        // winrateDiffStatics.add(filterPanel, BorderLayout.NORTH);
         winrateDiffStatics.add(matchPanelmin, BorderLayout.SOUTH);
         winrateDiffStatics.add(matchPanel, BorderLayout.CENTER);
         break;
       case 6:
         curIndex = 3;
-        scoreDiffStatics.add(filterPanel, BorderLayout.NORTH);
+        //  scoreDiffStatics.add(filterPanel, BorderLayout.NORTH);
         scoreDiffStatics.add(matchPanelmin, BorderLayout.SOUTH);
         scoreDiffStatics.add(matchPanel, BorderLayout.CENTER);
         break;
       case 7:
         curIndex = 7;
-        bigMistakePanel.add(filterPanel, BorderLayout.NORTH);
+        // bigMistakePanel.add(filterPanel, BorderLayout.NORTH);
         // bigMistakePanel.add(matchPanelmin, BorderLayout.SOUTH);
         bigMistakePanel.add(matchPanel, BorderLayout.CENTER);
         break;
       case 8:
         curIndex = 8;
-        bigScoreMistakePanel.add(filterPanel, BorderLayout.NORTH);
+        //  bigScoreMistakePanel.add(filterPanel, BorderLayout.NORTH);
         // bigMistakePanel.add(matchPanelmin, BorderLayout.SOUTH);
         bigScoreMistakePanel.add(matchPanel, BorderLayout.CENTER);
         break;
@@ -777,71 +799,15 @@ public class MoveListFrame extends JFrame {
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             if (isShowingWinrateGraph) {
-              switch (selectedIndex) {
-                case 0:
-                  matchPanelAll.remove(matchPanel);
-                  break;
-                case 1:
-                  matchGraphAll.remove(matchPanel);
-                  break;
-                case 2:
-                  mistakePanelAll.remove(matchPanel);
-                  break;
-                case 3:
-                  scoreDiffGraphAll.remove(matchPanel);
-                case 4:
-                  matchHistogramAll.remove(matchPanel);
-                  break;
-                case 5:
-                  winrateDiffStatics.remove(matchPanel);
-                  break;
-                case 6:
-                  scoreDiffStatics.remove(matchPanel);
-                  break;
-                case 7:
-                  bigMistakePanel.remove(matchPanel);
-                  break;
-                case 8:
-                  bigScoreMistakePanel.remove(matchPanel);
-                  break;
-              }
-
+              matchPanel.setVisible(false);
               detail.setIcon(iconUp);
 
             } else {
-              switch (selectedIndex) {
-                case 0:
-                  matchPanelAll.add(matchPanel);
-                  break;
-                case 1:
-                  matchGraphAll.add(matchPanel);
-                  break;
-                case 2:
-                  mistakePanelAll.add(matchPanel);
-                  break;
-                case 3:
-                  scoreDiffGraphAll.add(matchPanel);
-                case 4:
-                  matchHistogramAll.add(matchPanel);
-                  break;
-                case 5:
-                  winrateDiffStatics.add(matchPanel);
-                  break;
-                case 6:
-                  scoreDiffStatics.add(matchPanel);
-                  break;
-                case 7:
-                  bigMistakePanel.add(matchPanel);
-                  break;
-                case 8:
-                  bigScoreMistakePanel.add(matchPanel);
-                  break;
-              }
+              matchPanel.setVisible(true);
               detail.setIcon(iconDown);
             }
             isShowingWinrateGraph = !isShowingWinrateGraph;
-            bottomPanel.setPreferredSize(
-                new Dimension(getWidth(), isShowingWinrateGraph ? getHeight() / 4 + 123 : 125));
+            reSetLoc();
             validate();
             Lizzie.config.uiConfig.put("show-winrate-matchai", isShowingWinrateGraph);
           }
@@ -898,6 +864,8 @@ public class MoveListFrame extends JFrame {
         });
 
     lblMatchConfig3 = new JLabel("%");
+    lblMatchConfig4 =
+        new JLabel(Lizzie.resourceBundle.getString("Movelistframe.accuracyAndMatch.tip"));
 
     Document dtSuggestionMoves = suggestionMoves.getDocument();
     dtSuggestionMoves.addDocumentListener(
@@ -936,12 +904,14 @@ public class MoveListFrame extends JFrame {
       lblMatchConfig2.setBounds(110, 40, 250, 20);
       percentPlayouts.setBounds(258, 43, 40, 16);
       lblMatchConfig3.setBounds(299, 40, 15, 20);
+      lblMatchConfig4.setBounds(320, 40, 500, 20);
     } else {
       lblMatchConfig1.setBounds(5, 40, 166, 20);
       suggestionMoves.setBounds(123, 43, 25, 16);
       lblMatchConfig2.setBounds(150, 40, 250, 20);
       percentPlayouts.setBounds(363, 43, 40, 16);
       lblMatchConfig3.setBounds(405, 40, 15, 20);
+      lblMatchConfig4.setBounds(426, 40, 500, 20);
     }
 
     lblDiffConfig1 =
@@ -1167,55 +1137,55 @@ public class MoveListFrame extends JFrame {
             switch (index) {
               case 0:
                 selectedIndex = 0;
-                matchPanelAll.add(filterPanel, BorderLayout.NORTH);
+                //    matchPanelAll.add(filterPanel, BorderLayout.NORTH);
                 matchPanelAll.add(matchPanelmin, BorderLayout.SOUTH);
                 matchPanelAll.add(matchPanel, BorderLayout.CENTER);
                 break;
               case 1:
                 selectedIndex = 4;
-                matchHistogramAll.add(filterPanel, BorderLayout.NORTH);
+                //    matchHistogramAll.add(filterPanel, BorderLayout.NORTH);
                 matchHistogramAll.add(matchPanelmin, BorderLayout.SOUTH);
                 matchHistogramAll.add(matchPanel, BorderLayout.CENTER);
                 break;
               case 2:
                 selectedIndex = 5;
-                winrateDiffStatics.add(filterPanel, BorderLayout.NORTH);
+                //     winrateDiffStatics.add(filterPanel, BorderLayout.NORTH);
                 winrateDiffStatics.add(matchPanelmin, BorderLayout.SOUTH);
                 winrateDiffStatics.add(matchPanel, BorderLayout.CENTER);
                 break;
               case 3:
                 selectedIndex = 6;
-                scoreDiffStatics.add(filterPanel, BorderLayout.NORTH);
+                //     scoreDiffStatics.add(filterPanel, BorderLayout.NORTH);
                 scoreDiffStatics.add(matchPanelmin, BorderLayout.SOUTH);
                 scoreDiffStatics.add(matchPanel, BorderLayout.CENTER);
                 break;
               case 4:
                 selectedIndex = 2;
-                mistakePanelAll.add(filterPanel, BorderLayout.NORTH);
+                //     mistakePanelAll.add(filterPanel, BorderLayout.NORTH);
                 mistakePanelAll.add(matchPanelmin, BorderLayout.SOUTH);
                 mistakePanelAll.add(matchPanel, BorderLayout.CENTER);
                 break;
               case 5:
                 selectedIndex = 3;
-                scoreDiffGraphAll.add(filterPanel, BorderLayout.NORTH);
+                //     scoreDiffGraphAll.add(filterPanel, BorderLayout.NORTH);
                 scoreDiffGraphAll.add(matchPanelmin, BorderLayout.SOUTH);
                 scoreDiffGraphAll.add(matchPanel, BorderLayout.CENTER);
                 break;
               case 6:
                 selectedIndex = 1;
-                matchGraphAll.add(filterPanel, BorderLayout.NORTH);
+                //    matchGraphAll.add(filterPanel, BorderLayout.NORTH);
                 matchGraphAll.add(matchPanelmin, BorderLayout.SOUTH);
                 matchGraphAll.add(matchPanel, BorderLayout.CENTER);
                 break;
               case 7:
                 selectedIndex = 7;
-                bigMistakePanel.add(filterPanel, BorderLayout.NORTH);
+                //     bigMistakePanel.add(filterPanel, BorderLayout.NORTH);
                 // bigMistakePanel.add(matchPanelmin, BorderLayout.SOUTH);
                 bigMistakePanel.add(matchPanel, BorderLayout.CENTER);
                 break;
               case 8:
                 selectedIndex = 8;
-                bigScoreMistakePanel.add(filterPanel, BorderLayout.NORTH);
+                //   bigScoreMistakePanel.add(filterPanel, BorderLayout.NORTH);
                 bigScoreMistakePanel.add(matchPanel, BorderLayout.CENTER);
                 break;
             }
@@ -1422,7 +1392,7 @@ public class MoveListFrame extends JFrame {
       btnSetTabelThreshold.setVisible(true);
       btnSetStatisticsThreshold.setVisible(false);
     }
-    filterPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 3, 2));
+    filterPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 1, 1));
     filterPanel.add(hideMove);
     filterPanel.add(btnSetTabelThreshold);
     filterPanel.add(btnSetStatisticsThreshold);
@@ -2075,17 +2045,22 @@ public class MoveListFrame extends JFrame {
   }
 
   protected void reSetLoc() {
+    //	  bottomPanel.setPreferredSize(
+    //	          new Dimension(getWidth(), isShowingWinrateGraph ? getHeight() / 4 + 95 : 100));
     // TODO Auto-generated method stub
     if (Lizzie.config.isShowingMoveList) {
       topPanel.setVisible(true);
       bottomPanel.setPreferredSize(
-          new Dimension(getWidth(), isShowingWinrateGraph ? getHeight() / 4 + 123 : 125));
+          new Dimension(getWidth(), isShowingWinrateGraph ? getHeight() / 4 + 95 : 100));
     } else {
-      bottomPanel.setPreferredSize(new Dimension(getWidth(), getHeight() - 10));
+      bottomPanel.setPreferredSize(
+          new Dimension(getWidth(), (int) (getHeight() - 30 - 46 / Lizzie.javaScaleFactor)));
       topPanel.setVisible(false);
     }
     matchPanelmin.setPreferredSize(new Dimension(getWidth(), 60));
-    resetTop(false);
+    minScrollpane1.setPreferredSize(
+        new Dimension(topPanel.getWidth() / 2 - 5, topPanel.getHeight()));
+    minScrollpane2.setPreferredSize(new Dimension(topPanel.getWidth() / 2, topPanel.getHeight()));
   }
 
   private double convertcoreMean(double coreMean) {
@@ -2099,16 +2074,17 @@ public class MoveListFrame extends JFrame {
     return winrate;
   }
 
-  private void resetTop(boolean isStatChanged) {
-    if (isStatChanged) {
-      minScrollpane1.setPreferredSize(new Dimension(getWidth() / 2 - 5, topPanel.getHeight()));
-      minScrollpane2.setPreferredSize(new Dimension(getWidth() / 2, topPanel.getHeight()));
-    } else {
-      minScrollpane1.setPreferredSize(
-          new Dimension(topPanel.getWidth() / 2 - 5, topPanel.getHeight()));
-      minScrollpane2.setPreferredSize(new Dimension(topPanel.getWidth() / 2, topPanel.getHeight()));
-    }
-  }
+  //  private void resetTop(boolean isStatChanged) {
+  //    if (isStatChanged) {
+  //      minScrollpane1.setPreferredSize(new Dimension(getWidth() / 2 - 5, topPanel.getHeight()));
+  //      minScrollpane2.setPreferredSize(new Dimension(getWidth() / 2, topPanel.getHeight()));
+  //    } else {
+  //      minScrollpane1.setPreferredSize(
+  //          new Dimension(topPanel.getWidth() / 2 - 5, topPanel.getHeight()));
+  //      minScrollpane2.setPreferredSize(new Dimension(topPanel.getWidth() / 2,
+  // topPanel.getHeight()));
+  //    }
+  //  }
 
   public void drawMin(Graphics2D g, int posx, int posy, int width, int height) {
     int blackMatch = 0;
@@ -5301,7 +5277,7 @@ public class MoveListFrame extends JFrame {
         int playouts = isMainEngine ? node.getData().getPlayouts() : node.getData().getPlayouts2();
         switch (selectedIndex) {
           case 0:
-            if (playouts >= 0) {
+            if (playouts > 0) {
               if (wr < 0) {
                 wr = 100 - lastWr;
               } else if (!node.getData().blackToPlay) {
@@ -5327,8 +5303,13 @@ public class MoveListFrame extends JFrame {
                       posx + ((movenum) * width / numMoves),
                       posx + ((movenum) * width / numMoves)
                     };
+                    double convertWinrate;
+                    if (lastOkMove - movenum > 1)
+                      convertWinrate =
+                          convertWinrate(wr + ((lastWr - wr) / (lastOkMove - movenum)));
+                    else convertWinrate = convertWinrate(lastWr);
                     int[] yPoints = {
-                      posy + height - (int) (convertWinrate(lastWr) * height / 100),
+                      posy + height - (int) (convertWinrate * height / 100),
                       origParams[3],
                       origParams[3],
                       posy + height - (int) (convertWinrate(wr) * height / 100)
@@ -5358,8 +5339,13 @@ public class MoveListFrame extends JFrame {
                       posx + ((movenum) * width / numMoves),
                       posx + ((movenum) * width / numMoves)
                     };
+                    double convertWinrate;
+                    if (lastOkMove - movenum > 1)
+                      convertWinrate =
+                          convertWinrate(wr + ((lastWr - wr) / (lastOkMove - movenum)));
+                    else convertWinrate = convertWinrate(lastWr);
                     int[] yPoints = {
-                      posy + height - (int) (convertWinrate(lastWr) * height / 100),
+                      posy + height - (int) (convertWinrate * height / 100),
                       0,
                       0,
                       posy + height - (int) (convertWinrate(wr) * height / 100)
@@ -5396,7 +5382,7 @@ public class MoveListFrame extends JFrame {
                 } else {
                   g.setColor(Color.ORANGE);
                   int lostMoves = lastOkMove - movenum;
-                  if (Math.abs(movenum - lastOkMove) < 35)
+                  if (lastOkMove - movenum < 35)
                     g.drawLine(
                         posx + (lastOkMove * width / numMoves),
                         posy + height - (int) (convertWinrate(lastWr) * height / 100),
@@ -6437,52 +6423,60 @@ public class MoveListFrame extends JFrame {
     int valueStartXMiddle = startX + valueWidth;
     int valueRowHeight = (int) ((availableHeight - titleHeight - heightGap) / 5);
     g.setColor(Color.BLACK);
+    int x1 = (int) (valueStartXMiddle + availableWidth * 0.2 * 0.05);
+    int y1 = valueStartY + valueRowHeight / 4;
+    double stringW = availableWidth * 0.2 * 0.9;
+    double stringH = valueRowHeight / 2;
     Font font =
         drawStringMid(
             g,
-            (int) (valueStartXMiddle + availableWidth * 0.2 * 0.05),
-            valueStartY + valueRowHeight / 4,
+            x1,
+            y1,
             LizzieFrame.uiFont,
             Font.PLAIN,
             Lizzie.resourceBundle.getString("Movelistframe.keyPanel.accuracy"),
-            availableWidth * 0.2 * 0.9,
-            valueRowHeight / 2);
+            stringW,
+            stringH);
+    keyPanel_tooltip1.setBounds(0, y1, width, (int) stringH);
+
     drawStringMid(
         g,
-        (int) (valueStartXMiddle + availableWidth * 0.2 * 0.05),
-        valueStartY + valueRowHeight + valueRowHeight / 4,
+        x1,
+        y1 + valueRowHeight,
         LizzieFrame.uiFont,
         Font.PLAIN,
         Lizzie.resourceBundle.getString("Movelistframe.keyPanel.match"),
-        availableWidth * 0.2 * 0.9,
-        valueRowHeight / 2);
+        stringW,
+        stringH);
+    keyPanel_tooltip2.setBounds(0, y1 + valueRowHeight, width, (int) stringH);
+
     drawStringMid(
         g,
-        (int) (valueStartXMiddle + availableWidth * 0.2 * 0.05),
-        valueStartY + valueRowHeight * 2 + valueRowHeight / 4,
+        x1,
+        y1 + valueRowHeight * 2,
         LizzieFrame.uiFont,
         Font.PLAIN,
         Lizzie.resourceBundle.getString("Movelistframe.keyPanel.matchBestMove"),
-        availableWidth * 0.2 * 0.9,
-        valueRowHeight / 2);
+        stringW,
+        stringH);
     drawStringMid(
         g,
-        (int) (valueStartXMiddle + availableWidth * 0.2 * 0.05),
-        valueStartY + valueRowHeight * 3 + valueRowHeight / 4,
+        x1,
+        y1 + valueRowHeight * 3,
         LizzieFrame.uiFont,
         Font.PLAIN,
         Lizzie.resourceBundle.getString("Movelistframe.keyPanel.avgScoreLoss"),
-        availableWidth * 0.2 * 0.9,
-        valueRowHeight / 2);
+        stringW,
+        stringH);
     drawStringMid(
         g,
-        (int) (valueStartXMiddle + availableWidth * 0.2 * 0.05),
-        valueStartY + valueRowHeight * 4 + valueRowHeight / 4,
+        x1,
+        y1 + valueRowHeight * 4,
         LizzieFrame.uiFont,
         Font.PLAIN,
         Lizzie.resourceBundle.getString("Movelistframe.keyPanel.avgWinLoss"),
-        availableWidth * 0.2 * 0.9,
-        valueRowHeight / 2);
+        stringW,
+        stringH);
 
     int blackAnalyzedCount = 0;
     int blackMatchCount = 0;
@@ -6821,6 +6815,9 @@ public class MoveListFrame extends JFrame {
         JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
       // if(row%2 == 0){
       // if(row%2 == 0){
+      String coordsName =
+          Board.maybeConvertOtherCoordsToNormal(table.getValueAt(row, 2).toString());
+      int[] coords = Board.convertNameToCoordinates(coordsName);
       if (Lizzie.config.moveListTopCurNode
           && row == 0
           && Lizzie.board.getHistory().getCurrentHistoryNode().previous().isPresent()
@@ -6830,10 +6827,8 @@ public class MoveListFrame extends JFrame {
           && Lizzie.board.getHistory().getCurrentHistoryNode().previous().get().nodeInfo.analyzed) {
         setBackground(new Color(220, 220, 220));
         setForeground(new Color(0, 0, 0));
-      } else if (Board.convertNameToCoordinates(table.getValueAt(row, 2).toString())[0]
-              == Lizzie.frame.clickbadmove[0]
-          && Board.convertNameToCoordinates(table.getValueAt(row, 2).toString())[1]
-              == Lizzie.frame.clickbadmove[1]) {
+      } else if (coords[0] == Lizzie.frame.clickbadmove[0]
+          && coords[1] == Lizzie.frame.clickbadmove[1]) {
         setBackground(new Color(238, 221, 130));
       } else setBackground(Color.WHITE);
       double diffWinrate =
@@ -6900,10 +6895,12 @@ public class MoveListFrame extends JFrame {
 
     public Component getTableCellRendererComponent(
         JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-      if (Board.convertNameToCoordinates(table.getValueAt(row, 1).toString())[0]
-              == Lizzie.frame.clickbadmove[0]
-          && Board.convertNameToCoordinates(table.getValueAt(row, 1).toString())[1]
-              == Lizzie.frame.clickbadmove[1]) {
+
+      String coordsName =
+          Board.maybeConvertOtherCoordsToNormal(table.getValueAt(row, 1).toString());
+      int[] coords = Board.convertNameToCoordinates(coordsName);
+
+      if (coords[0] == Lizzie.frame.clickbadmove[0] && coords[1] == Lizzie.frame.clickbadmove[1]) {
         setBackground(new Color(238, 221, 130));
       } else setBackground(Color.WHITE);
       double diffWinrate =
@@ -6989,6 +6986,7 @@ public class MoveListFrame extends JFrame {
     if (selectedIndex == 4) {
       matchPanelmin.add(detail);
       matchPanelmin.add(settings);
+      matchPanelmin.add(lblMatchConfig4);
     } else {
       if (selectedIndex == 2 || selectedIndex == 3 || selectedIndex == 5 || selectedIndex == 6) {
         matchPanelmin.add(lblDiffConfig1);
@@ -7014,6 +7012,7 @@ public class MoveListFrame extends JFrame {
         matchPanelmin.add(suggestionMoves);
         matchPanelmin.add(percentPlayouts);
         matchPanelmin.add(lblMatchConfig3);
+        matchPanelmin.add(lblMatchConfig4);
       }
     }
     if (selectedIndex == 0) {
@@ -7023,27 +7022,31 @@ public class MoveListFrame extends JFrame {
         lblMatchConfig2.setBounds(110, 40, 250, 20);
         percentPlayouts.setBounds(258, 43, 40, 16);
         lblMatchConfig3.setBounds(299, 40, 15, 20);
+        lblMatchConfig4.setBounds(320, 40, 500, 20);
       } else {
         lblMatchConfig1.setBounds(5, 40, 166, 20);
         suggestionMoves.setBounds(123, 43, 25, 16);
         lblMatchConfig2.setBounds(150, 40, 250, 20);
         percentPlayouts.setBounds(363, 43, 40, 16);
         lblMatchConfig3.setBounds(405, 40, 15, 20);
+        lblMatchConfig4.setBounds(435, 40, 500, 20);
       }
     }
-    if (selectedIndex == 1) {
+    if (selectedIndex == 1 || selectedIndex == 4) {
       if (Lizzie.config.isChinese) {
         lblMatchConfig1.setBounds(0, 0, 0, 0);
         suggestionMoves.setBounds(0, 0, 0, 0);
         lblMatchConfig2.setBounds(0, 0, 0, 0);
         percentPlayouts.setBounds(0, 0, 0, 0);
         lblMatchConfig3.setBounds(0, 0, 0, 0);
+        lblMatchConfig4.setBounds(5, 40, 500, 20);
       } else {
         lblMatchConfig1.setBounds(0, 0, 0, 0);
         suggestionMoves.setBounds(0, 0, 0, 0);
         lblMatchConfig2.setBounds(0, 0, 0, 0);
         percentPlayouts.setBounds(0, 0, 0, 0);
         lblMatchConfig3.setBounds(0, 0, 0, 0);
+        lblMatchConfig4.setBounds(5, 40, 500, 20);
       }
     }
   }
@@ -7072,7 +7075,8 @@ public class MoveListFrame extends JFrame {
     if (Lizzie.config.isAutoAna) return;
     table.repaint();
     int moveNumber = Integer.parseInt(table.getValueAt(row, 1).toString());
-    int[] coords = Board.convertNameToCoordinates(table.getValueAt(row, 2).toString());
+    String coordsName = Board.maybeConvertOtherCoordsToNormal(table.getValueAt(row, 2).toString());
+    int[] coords = Board.convertNameToCoordinates(coordsName);
     if (this.showBranch.getSelectedIndex() == 0) {
       Lizzie.frame.moveToMainTrunk();
     }
@@ -7087,7 +7091,9 @@ public class MoveListFrame extends JFrame {
     tablePanelMin1.repaint();
     int moveNumber = Integer.parseInt(minTable1.getValueAt(row, 0).toString());
     // Lizzie.board.goToMoveNumber(1);
-    int[] coords = Board.convertNameToCoordinates(minTable1.getValueAt(row, 1).toString());
+    String coordsName =
+        Board.maybeConvertOtherCoordsToNormal(minTable1.getValueAt(row, 1).toString());
+    int[] coords = Board.convertNameToCoordinates(coordsName);
     if (this.showBranch.getSelectedIndex() == 0) {
       Lizzie.frame.moveToMainTrunk();
     }
@@ -7101,7 +7107,9 @@ public class MoveListFrame extends JFrame {
     tablePanelMin2.repaint();
     int moveNumber = Integer.parseInt(minTable2.getValueAt(row, 0).toString().trim());
     // Lizzie.board.goToMoveNumber(1);
-    int[] coords = Board.convertNameToCoordinates(minTable2.getValueAt(row, 1).toString());
+    String coordsName =
+        Board.maybeConvertOtherCoordsToNormal(minTable2.getValueAt(row, 1).toString());
+    int[] coords = Board.convertNameToCoordinates(coordsName);
     if (this.showBranch.getSelectedIndex() == 0) {
       Lizzie.frame.moveToMainTrunk();
     }
@@ -7519,7 +7527,8 @@ public class MoveListFrame extends JFrame {
               case 1:
                 return data.moveNum;
               case 2:
-                return Board.convertCoordinatesToName(data.coords[0], data.coords[1]);
+                return Board.maybeConvertNormalCoordsToOther(
+                    Board.convertCoordinatesToName(data.coords[0], data.coords[1]));
               case 3:
                 return (data.diffWinrate < 0 ? "+" : "-")
                     + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.diffWinrate))
@@ -7553,7 +7562,8 @@ public class MoveListFrame extends JFrame {
               case 1:
                 return data.moveNum;
               case 2:
-                return Board.convertCoordinatesToName(data.coords[0], data.coords[1]);
+                return Board.maybeConvertNormalCoordsToOther(
+                    Board.convertCoordinatesToName(data.coords[0], data.coords[1]));
               case 3:
                 return (data.diffWinrate > 0 ? "+" : "-")
                     + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.diffWinrate))
@@ -7601,7 +7611,8 @@ public class MoveListFrame extends JFrame {
               case 1:
                 return data.moveNum;
               case 2:
-                return Board.convertCoordinatesToName(data.coords[0], data.coords[1]);
+                return Board.maybeConvertNormalCoordsToOther(
+                    Board.convertCoordinatesToName(data.coords[0], data.coords[1]));
               case 3:
                 return (data.diffWinrate < 0 ? "+" : "-")
                     + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.diffWinrate))
@@ -7627,7 +7638,8 @@ public class MoveListFrame extends JFrame {
               case 1:
                 return data.moveNum;
               case 2:
-                return Board.convertCoordinatesToName(data.coords[0], data.coords[1]);
+                return Board.maybeConvertNormalCoordsToOther(
+                    Board.convertCoordinatesToName(data.coords[0], data.coords[1]));
               case 3:
                 return (data.diffWinrate > 0 ? "+" : "-")
                     + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.diffWinrate))
@@ -7878,7 +7890,8 @@ public class MoveListFrame extends JFrame {
               case 0:
                 return data.moveNum;
               case 1:
-                return Board.convertCoordinatesToName(data.coords[0], data.coords[1]);
+                return Board.maybeConvertNormalCoordsToOther(
+                    Board.convertCoordinatesToName(data.coords[0], data.coords[1]));
               case 2:
                 return (data.diffWinrate < 0 ? "+" : "-")
                     + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.diffWinrate))
@@ -7898,7 +7911,8 @@ public class MoveListFrame extends JFrame {
               case 0:
                 return data.moveNum;
               case 1:
-                return Board.convertCoordinatesToName(data.coords[0], data.coords[1]);
+                return Board.maybeConvertNormalCoordsToOther(
+                    Board.convertCoordinatesToName(data.coords[0], data.coords[1]));
               case 2:
                 return (data.diffWinrate > 0 ? "+" : "-")
                     + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.diffWinrate))
@@ -7922,7 +7936,8 @@ public class MoveListFrame extends JFrame {
               case 0:
                 return data.moveNum;
               case 1:
-                return Board.convertCoordinatesToName(data.coords[0], data.coords[1]);
+                return Board.maybeConvertNormalCoordsToOther(
+                    Board.convertCoordinatesToName(data.coords[0], data.coords[1]));
               case 2:
                 return (data.diffWinrate < 0 ? "+" : "-")
                     + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.diffWinrate))
@@ -7940,7 +7955,8 @@ public class MoveListFrame extends JFrame {
               case 0:
                 return data.moveNum;
               case 1:
-                return Board.convertCoordinatesToName(data.coords[0], data.coords[1]);
+                return Board.maybeConvertNormalCoordsToOther(
+                    Board.convertCoordinatesToName(data.coords[0], data.coords[1]));
               case 2:
                 return (data.diffWinrate > 0 ? "+" : "-")
                     + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.diffWinrate))
@@ -8169,7 +8185,8 @@ public class MoveListFrame extends JFrame {
               case 0:
                 return data.moveNum;
               case 1:
-                return Board.convertCoordinatesToName(data.coords[0], data.coords[1]);
+                return Board.maybeConvertNormalCoordsToOther(
+                    Board.convertCoordinatesToName(data.coords[0], data.coords[1]));
               case 2:
                 return (data.diffWinrate < 0 ? "+" : "-")
                     + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.diffWinrate))
@@ -8188,7 +8205,8 @@ public class MoveListFrame extends JFrame {
               case 0:
                 return data.moveNum;
               case 1:
-                return Board.convertCoordinatesToName(data.coords[0], data.coords[1]);
+                return Board.maybeConvertNormalCoordsToOther(
+                    Board.convertCoordinatesToName(data.coords[0], data.coords[1]));
               case 2:
                 return (data.diffWinrate > 0 ? "+" : "-")
                     + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.diffWinrate))
@@ -8212,7 +8230,8 @@ public class MoveListFrame extends JFrame {
               case 0:
                 return data.moveNum;
               case 1:
-                return Board.convertCoordinatesToName(data.coords[0], data.coords[1]);
+                return Board.maybeConvertNormalCoordsToOther(
+                    Board.convertCoordinatesToName(data.coords[0], data.coords[1]));
               case 2:
                 return (data.diffWinrate < 0 ? "+" : "-")
                     + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.diffWinrate))
@@ -8230,7 +8249,8 @@ public class MoveListFrame extends JFrame {
               case 0:
                 return data.moveNum;
               case 1:
-                return Board.convertCoordinatesToName(data.coords[0], data.coords[1]);
+                return Board.maybeConvertNormalCoordsToOther(
+                    Board.convertCoordinatesToName(data.coords[0], data.coords[1]));
               case 2:
                 return (data.diffWinrate > 0 ? "+" : "-")
                     + String.format(Locale.ENGLISH, "%.2f", Math.abs(data.diffWinrate))

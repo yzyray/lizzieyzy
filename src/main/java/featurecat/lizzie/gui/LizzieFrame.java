@@ -6,15 +6,11 @@ import static java.lang.Math.max;
 import static java.lang.Math.min;
 
 import com.jhlabs.image.GaussianFilter;
-import com.teamdev.jxbrowser.chromium.Browser;
-import com.teamdev.jxbrowser.chromium.PopupContainer;
-import com.teamdev.jxbrowser.chromium.PopupHandler;
-import com.teamdev.jxbrowser.chromium.PopupParams;
-import com.teamdev.jxbrowser.chromium.swing.BrowserView;
 import featurecat.lizzie.Config;
 import featurecat.lizzie.ExtraMode;
 import featurecat.lizzie.Lizzie;
 import featurecat.lizzie.analysis.AnalysisEngine;
+import featurecat.lizzie.analysis.CaptureTsumeGo;
 import featurecat.lizzie.analysis.ContributeEngine;
 import featurecat.lizzie.analysis.EngineManager;
 import featurecat.lizzie.analysis.GameInfo;
@@ -82,13 +78,15 @@ import javax.swing.table.TableModel;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
+import me.friwi.jcefmaven.CefInitializationException;
+import me.friwi.jcefmaven.UnsupportedPlatformException;
 import org.jdesktop.swingx.util.OS;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 /** The window used to display the game. */
 public class LizzieFrame extends JFrame {
-  private static final String[] commands = {
+  private String[] commands = {
     Lizzie.resourceBundle.getString("LizzieFrame.commands.keySpace"),
     Lizzie.resourceBundle.getString("LizzieFrame.commands.keyN"),
     Lizzie.resourceBundle.getString("LizzieFrame.commands.keyEnter"),
@@ -144,8 +142,8 @@ public class LizzieFrame extends JFrame {
     Lizzie.resourceBundle.getString("LizzieFrame.commands.keyDelete"),
     Lizzie.resourceBundle.getString("LizzieFrame.commands.keyE"),
   };
-  private static final String DEFAULT_TITLE = Lizzie.resourceBundle.getString("LizzieFrame.title");
-  private JPanel basePanel;
+  private String DEFAULT_TITLE = Lizzie.resourceBundle.getString("LizzieFrame.title");
+  private JLayeredPane basePanel;
   public static BoardRenderer boardRenderer;
   public static BoardRenderer boardRenderer2;
   public static SubBoardRenderer subBoardRenderer;
@@ -219,7 +217,7 @@ public class LizzieFrame extends JFrame {
   // private ChangeMoveDialog2 ChangeMoveDialog2 = new ChangeMoveDialog2();
 
   // Save the player title
-  private String playerTitle = "";
+  public String playerTitle = "";
   private String resultTitle = "";
   public static String fileNameTitle = "";
 
@@ -269,6 +267,7 @@ public class LizzieFrame extends JFrame {
   private ScheduledExecutorService showPlayouts = Executors.newScheduledThreadPool(1);
   // private ScheduledExecutorService updateTitleSchedual = Executors.newScheduledThreadPool(1);
   private String visitsString = "";
+  private long visitsStringTime;
   private int visitsCount = 4;
   private VisitsTemp[] visitsTemp = new VisitsTemp[visitsCount];
   // private long lastPlayouts0 = 0;
@@ -285,7 +284,7 @@ public class LizzieFrame extends JFrame {
   private boolean canShowBigBoardImage = true;
   private boolean oriShowListPane;
   private boolean OriShowVariationGraph;
-  private JPanel tempGamePanelAll;
+  private JLayeredPane tempGamePanelAll;
   private JPanel tempGamePanelTop;
   private JScrollPane tempGameScrollPanel;
   private JPanel tempGamePanel;
@@ -379,10 +378,11 @@ public class LizzieFrame extends JFrame {
   ArrayList<Movelist> tryMoveList;
   String tryString;
   String titleBeforeTrying;
-  public Browser browser;
-  JFrame frame;
-  ArrayList<String> urlList;
-  int urlIndex;
+  public BrowserFrame browserFrame;
+  public BrowserInitializing browserInitializing;
+  //  JFrame frame;
+  //  ArrayList<String> urlList;
+  //  int urlIndex;
   public static OnlineDialog onlineDialog;
   // public int mode1;
 
@@ -446,6 +446,7 @@ public class LizzieFrame extends JFrame {
   public boolean isMarkuping = false;
   public int markupType = 0;
   private int lastLabel;
+  private int lastNumLabel;
   private boolean hasMarkup;
   private String markupKey;
   private String markupValue;
@@ -492,9 +493,13 @@ public class LizzieFrame extends JFrame {
   public ContributeView contributeView;
   public boolean isShowingContributeGame = false;
 
+  private TsumeGoFrame tsumeGoFrame;
+  private CaptureTsumeGoFrame captureTsumeGoFrame;
+  public Controller ctrl;
+
   /** Creates a window */
   public LizzieFrame() {
-    super(DEFAULT_TITLE);
+    setTitle(DEFAULT_TITLE);
     boardRenderer = new BoardRenderer(false);
     subBoardRenderer = new SubBoardRenderer(false);
     variationTree = new VariationTree();
@@ -544,18 +549,8 @@ public class LizzieFrame extends JFrame {
     mainPanel =
         new JPanel(true) {
           @Override
-          protected void paintComponent(Graphics g) {
-            //  super.paintComponent(g);
-            //        	  final Graphics2D g1 = (Graphics2D) g;
-            //        	  final AffineTransform t = g1.getTransform();
-            //        	  t.setToScale(1, 1);
-            //        	  g1.setTransform(t);
-            //        	  g.setColor(Color.DARK_GRAY);
-            //        	  g.fillRect(0, 0, mainPanel.getWidth(), mainPanel.getHeight());
-            if (Config.isScaled) {
-              Graphics2D g1 = (Graphics2D) g;
-              g1.scale(1.0 / Lizzie.javaScaleFactor, 1.0 / Lizzie.javaScaleFactor);
-            }
+          public void paintComponent(Graphics g) {
+            Utils.ajustScale(g);
             paintMianPanel(g);
           }
         };
@@ -570,7 +565,7 @@ public class LizzieFrame extends JFrame {
             }
           }
         });
-    tempGamePanelAll = new JPanel();
+    tempGamePanelAll = new JLayeredPane();
     tempGamePanelAll.setLayout(null);
     tempGamePanelAll.setVisible(false);
     tempGamePanelAll.setFocusable(false);
@@ -595,20 +590,33 @@ public class LizzieFrame extends JFrame {
     tempGameScrollPanel.getVerticalScrollBar().setUnitIncrement(16);
     tempGameScrollPanel.getVerticalScrollBar().setUI(new DemoScrollBarUI());
 
-    tempGamePanelAll.add(tempGamePanelTop);
-    tempGamePanelAll.add(tempGameScrollPanel);
+    tempGamePanelAll.add(tempGamePanelTop, new Integer(2));
+    tempGamePanelAll.add(tempGameScrollPanel, new Integer(1));
 
     varTreePane =
-        new JPanel(true) {
+        new JPanel() {
           @Override
-          protected void paintComponent(Graphics g) {
+          public void paintComponent(Graphics g) {
             if (cachedVarImage2 != null && Lizzie.config.showVariationGraph) {
-              if (Config.isScaled) {
-                Graphics2D g1 = (Graphics2D) g;
-                g1.scale(1.0 / Lizzie.javaScaleFactor, 1.0 / Lizzie.javaScaleFactor);
-                g1.drawImage(cachedVarImage2, -1, -1, null);
+              if (Lizzie.isMultiScreen) {
+                final Graphics2D g0 = (Graphics2D) g;
+                final AffineTransform t = g0.getTransform();
+                final double scaling = t.getScaleX();
+                if (scaling > 1) {
+                  Graphics2D g1 = (Graphics2D) g;
+                  g1.scale(1.0 / scaling, 1.0 / scaling);
+                  g1.drawImage(cachedVarImage2, -1, -1, null);
+                } else {
+                  g.drawImage(cachedVarImage2, 0, 0, null);
+                }
               } else {
-                g.drawImage(cachedVarImage2, 0, 0, null);
+                if (Config.isScaled) {
+                  Graphics2D g1 = (Graphics2D) g;
+                  g1.scale(1.0 / Lizzie.javaScaleFactor, 1.0 / Lizzie.javaScaleFactor);
+                  g1.drawImage(cachedVarImage2, -1, -1, null);
+                } else {
+                  g.drawImage(cachedVarImage2, 0, 0, null);
+                }
               }
             }
           }
@@ -1487,18 +1495,20 @@ public class LizzieFrame extends JFrame {
         new Runnable() {
           @Override
           public void run() {
+            boolean notPondering =
+                Lizzie.leelaz == null || EngineManager.isEmpty || !Lizzie.leelaz.isPondering();
+            try {
+              autosaveMaybe();
+              updateMoveList(notPondering);
+            } catch (Exception e) {
+              e.printStackTrace();
+            }
             if (!isDrawVisitsInTitle) {
               visitsString = "";
-              try {
-                autosaveMaybe();
-                updateMoveListMaybe();
-              } catch (Exception e) {
-                e.printStackTrace();
-              }
               updateTitle();
               return;
             }
-            if (Lizzie.leelaz == null || EngineManager.isEmpty || !Lizzie.leelaz.isPondering()) {
+            if (notPondering) {
               updateTitle();
               return;
             }
@@ -1512,16 +1522,16 @@ public class LizzieFrame extends JFrame {
                   visitsString =
                       String.format(
                           " %d " + Lizzie.resourceBundle.getString("LizzieFrame.speedUnit"), speed);
+                  visitsStringTime = System.currentTimeMillis();
                 }
-              }
+              } else if (System.currentTimeMillis() - visitsStringTime > 5000)
+                visitsString = " - " + Lizzie.resourceBundle.getString("LizzieFrame.speedUnit");
               visitsCount++;
               if (visitsCount > 3) visitsCount = 0;
               if (totalPlayouts > 0) {
                 visitsTemp[visitsCount].node = Lizzie.board.getHistory().getCurrentHistoryNode();
                 visitsTemp[visitsCount].Playouts = totalPlayouts;
               }
-              autosaveMaybe();
-              updateMoveListMaybe();
             } catch (Exception e) {
               e.printStackTrace();
             }
@@ -1545,22 +1555,22 @@ public class LizzieFrame extends JFrame {
     mainPanel.addMouseMotionListener(input);
     toolbar.addMouseWheelListener(input);
     addInput(false);
-    basePanel = new JPanel(false);
+    basePanel = new JLayeredPane();
     if (Lizzie.config.usePureBackground) {
       basePanel.setBackground(Lizzie.config.pureBackgroundColor);
     } else basePanel.setBackground(Color.GRAY);
     getContentPane().add(basePanel);
     basePanel.setLayout(null);
-    basePanel.add(commentBlunderControlPane);
-    basePanel.add(tempGamePanelAll);
-    basePanel.add(varTreeScrollPane);
-    basePanel.add(listScrollpane);
-    basePanel.add(blunderContentPane);
-    basePanel.add(commentEditPane);
-    basePanel.add(commentScrollPane);
-    basePanel.add(topPanel);
-    basePanel.add(toolbar);
-    basePanel.add(mainPanel);
+    basePanel.add(commentBlunderControlPane, new Integer(10));
+    basePanel.add(tempGamePanelAll, new Integer(9));
+    basePanel.add(varTreeScrollPane, new Integer(8));
+    basePanel.add(listScrollpane, new Integer(7));
+    basePanel.add(blunderContentPane, new Integer(6));
+    basePanel.add(commentEditPane, new Integer(5));
+    basePanel.add(commentScrollPane, new Integer(4));
+    basePanel.add(topPanel, new Integer(3));
+    basePanel.add(toolbar, new Integer(2));
+    basePanel.add(mainPanel, new Integer(1));
     mainPanel.setVisible(false);
     commentScrollPane.setVisible(false);
     blunderContentPane.setVisible(false);
@@ -2461,6 +2471,8 @@ public class LizzieFrame extends JFrame {
 
   public void tryPlay(boolean needRefresh) {
     if (EngineManager.isEngineGame || EngineManager.isPreEngineGame) return;
+    if (floatBoard != null && floatBoard.isVisible() && floatBoard.editMode)
+      floatBoard.changeEetEditMode();
     if (!isTrying) {
       isTrying = true;
       try {
@@ -2486,6 +2498,14 @@ public class LizzieFrame extends JFrame {
         Lizzie.leelaz.ponder();
       this.setTitle(titleBeforeTrying);
       if (needRefresh) refresh();
+    }
+  }
+
+  public void clearTryPlay() {
+    if (isTrying) {
+      isTrying = false;
+      toolbar.tryPlay.setText(Lizzie.resourceBundle.getString("BottomToolbar.tryPlay")); // ("试下");
+      this.setTitle(titleBeforeTrying);
     }
   }
 
@@ -3007,6 +3027,15 @@ public class LizzieFrame extends JFrame {
                   Lizzie.config.getMyByoyomiTimes());
             if (!Lizzie.config.genmoveGameNoTime) sendAiTime(true, Lizzie.leelaz, true);
             clearWRNforGame(true);
+            if (Lizzie.config.kataVisitsPlayoutsSettings) {
+              if (Lizzie.config.kataVisits > 0)
+                Lizzie.leelaz.sendCommand("kata-set-param maxVisits " + Lizzie.config.kataVisits);
+              else Lizzie.leelaz.sendCommand("kata-set-param maxVisits 1125899906842624");
+              if (Lizzie.config.kataPlayouts > 0)
+                Lizzie.leelaz.sendCommand(
+                    "kata-set-param maxPlayouts " + Lizzie.config.kataPlayouts);
+              else Lizzie.leelaz.sendCommand("kata-set-param maxPlayouts 1125899906842624");
+            }
             if (isHandicapGame) {
               Lizzie.board.getHistory().getData().blackToPlay = false;
               if (Lizzie.leelaz.isKatago && Lizzie.config.useFreeHandicap)
@@ -3340,7 +3369,7 @@ public class LizzieFrame extends JFrame {
         int startMoveNumber = 0;
         boolean blackToPlay = Lizzie.board.getHistory().getStart().getData().blackToPlay;
         if (Lizzie.board.hasStartStone) startMoveNumber += Lizzie.board.startStonelist.size();
-        Lizzie.board.savelistforeditmode();
+        Lizzie.board.saveListForEdit();
         Lizzie.board.clearforedit();
         Lizzie.board.setMoveListWithFlatten(
             Lizzie.board.tempallmovelist, startMoveNumber, blackToPlay);
@@ -3499,6 +3528,10 @@ public class LizzieFrame extends JFrame {
   }
 
   public void loadFile(File file, boolean fromTemp, boolean showHint) {
+    if (EngineManager.isEngineGame() || isPlayingAgainstLeelaz || isAnaPlayingAgainstLeelaz) {
+      Utils.showMsg(Lizzie.resourceBundle.getString("LizzieFrame.openFileFailed.inGame"));
+      return;
+    }
     boolean oriSound = Lizzie.config.playSound;
     canGoAfterload = false;
     Lizzie.config.playSound = false;
@@ -3565,6 +3598,9 @@ public class LizzieFrame extends JFrame {
   private BufferedImage cachedVarImage2;
   private BufferedImage cachedBackground;
   private BufferedImage cachedWinrateImage;
+  public int varBigX;
+  public int varBigY;
+  private BufferedImage cachedVariationTreeBigImage;
   public Paint backgroundPaint;
   private int cachedBackgroundWidth = 0, cachedBackgroundHeight = 0;
   public boolean redrawBackgroundAnyway = false;
@@ -3584,10 +3620,9 @@ public class LizzieFrame extends JFrame {
       int height = mainPanel.getHeight();
 
       Optional<Graphics2D> backgroundG = Optional.empty();
-      if (!Lizzie.config.usePureBackground
-          && (cachedBackgroundWidth != width
-              || cachedBackgroundHeight != height
-              || redrawBackgroundAnyway)) {
+      if (cachedBackgroundWidth != width
+          || cachedBackgroundHeight != height
+          || redrawBackgroundAnyway) {
         backgroundG = Optional.of(createBackground(width, height));
       }
       if (!showControls) {
@@ -4574,7 +4609,6 @@ public class LizzieFrame extends JFrame {
                 subBoardY = tempy;
                 subBoardLength = Math.min(tempw, temph);
               }
-              // super.paintComponents(g0);
             }
 
             // initialize
@@ -4954,10 +4988,14 @@ public class LizzieFrame extends JFrame {
       }
     }
 
-    if (!Lizzie.config.usePureBackground) g0.drawImage(cachedBackground, 0, 0, null);
+    g0.drawImage(cachedBackground, 0, 0, null);
     g0.drawImage(cachedImage, 0, 0, null);
     if (Lizzie.config.showWinrateGraph && cachedWinrateImage != null && !showControls)
       g0.drawImage(cachedWinrateImage, grx, gry, null);
+    if (Lizzie.config.showVariationGraph
+        && shouldShowSimpleVariation()
+        && cachedVariationTreeBigImage != null
+        && !showControls) g0.drawImage(cachedVariationTreeBigImage, varBigX, varBigY, null);
   }
 
   private String getLoadingText() {
@@ -4982,54 +5020,56 @@ public class LizzieFrame extends JFrame {
   public void refresh() {
     // 分开各部分刷新,1代表来自info move的刷新
     redrawWinratePaneOnly = false;
-    basePanel.repaint();
     if (independentSubBoard != null && independentSubBoard.isVisible())
       independentSubBoard.refresh();
     if (independentMainBoard != null && independentMainBoard.isVisible())
       independentMainBoard.refresh();
     if (floatBoard != null && floatBoard.isVisible()) floatBoard.refresh();
     appendComment();
+    repaint();
   }
 
   public void refresh(int mode) {
     // 分开各部分刷新,1代表来自info move的刷新
     redrawWinratePaneOnly = false;
-    switch (mode) {
-      case 1:
-        refreshFromInfo = true;
-        basePanel.repaint();
-      default:
-    }
     if (independentSubBoard != null && independentSubBoard.isVisible())
       independentSubBoard.refresh();
     if (independentMainBoard != null && independentMainBoard.isVisible())
       independentMainBoard.refresh();
     if (floatBoard != null && floatBoard.isVisible()) floatBoard.refresh();
     appendComment();
+    switch (mode) {
+      case 1:
+        refreshFromInfo = true;
+        repaint();
+      default:
+    }
   }
 
-  private void updateMoveListMaybe() {
-    Lizzie.board.updateMovelist(Lizzie.board.getHistory().getCurrentHistoryNode());
+  private void updateMoveList(boolean notPondering) {
+    if (notPondering) {
+      int lastMoveCandidateNo = Lizzie.board.getData().lastMoveMatchCandidteNo;
+      Lizzie.board.updateMovelist(Lizzie.board.getHistory().getCurrentHistoryNode());
+      if (Lizzie.board.getData().lastMoveMatchCandidteNo != lastMoveCandidateNo) refresh();
+    } else Lizzie.board.updateMovelist(Lizzie.board.getHistory().getCurrentHistoryNode());
   }
 
-  private Graphics2D createBackground(int width, int hight) {
-    cachedBackground = new BufferedImage(width, hight, TYPE_INT_RGB);
+  private Graphics2D createBackground(int width, int height) {
+    cachedBackground = new BufferedImage(width, height, TYPE_INT_RGB);
     cachedBackgroundWidth = cachedBackground.getWidth();
     cachedBackgroundHeight = cachedBackground.getHeight();
-
     Graphics2D g = cachedBackground.createGraphics();
-    //    if (Lizzie.config.usePureBackground) {
-    //      g.setColor(Lizzie.config.pureBackgroundColor);
-    //      g.fillRect(0, 0, width, hight);
-    //      g.dispose();
-    //      return g;
-    //    }
-    // g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
 
     BufferedImage wallpaper = boardRenderer.getWallpaper();
     int drawWidth = max(wallpaper.getWidth(), mainPanel.getWidth());
     int drawHeight = max(wallpaper.getHeight(), mainPanel.getHeight());
     // Support seamless texture
+    if (Lizzie.config.usePureBackground) {
+      g.setColor(Lizzie.config.pureBackgroundColor);
+      g.fillRect(0, 0, width, height);
+      g.dispose();
+      return g;
+    }
     boardRenderer.drawTextureImage(g, wallpaper, 0, 0, drawWidth, drawHeight, false);
     Lizzie.board.setForceRefresh(true);
     if (backgroundPaint == null) {
@@ -5488,12 +5528,13 @@ public class LizzieFrame extends JFrame {
         scoreStdev = Lizzie.leelaz.scoreStdev;
       } // +"目差:""复杂度:"
 
-      text =
-          text
-              + (Lizzie.config.showKataGoScoreLeadWithKomi
+      text +=
+          (Lizzie.config.showKataGoScoreLeadWithKomi
                   ? Lizzie.resourceBundle.getString("LizzieFrame.scoreLeadWithKomi")
                   : Lizzie.resourceBundle.getString("LizzieFrame.scoreLeadJustScore"))
               + String.format(Locale.ENGLISH, "%.1f", scoreLead);
+      if (Lizzie.config.isThinkingMode() || Lizzie.config.isFourSubMode())
+        text += " (±" + String.format(Locale.ENGLISH, "%.1f", curData.scoreStdev) + ")";
       if (EngineManager.isEngineGame && !Lizzie.leelaz.isSai)
         text =
             text
@@ -5527,18 +5568,19 @@ public class LizzieFrame extends JFrame {
     } else {
       double wr = validLastWinrate ? 100 - lastWR - curWR : 0;
       double score = validLastWinrate ? (-lastScore) - curScore : 0;
-      text =
-          text
-              + " "
-              + Lizzie.resourceBundle.getString("LizzieFrame.display.lastMove")
-              + ((wr > 0 ? "+" : "-") + String.format(Locale.ENGLISH, "%.1f%%", Math.abs(wr)));
+      text = text + " " + Lizzie.resourceBundle.getString("LizzieFrame.display.lastMove");
+      int lastNo = Lizzie.board.getData().lastMoveMatchCandidteNo;
+      if (lastNo > 0) {
+        text += "(#" + lastNo + ")";
+      } else text += "(#  )";
+      text += ": " + ((wr > 0 ? "+" : "-") + String.format(Locale.ENGLISH, "%.1f%%", Math.abs(wr)));
       if (isKataStyle && !EngineManager.isEngineGame) {
-        text =
-            text
-                + " "
+        text +=
+            " "
                 + ((score > 0 ? "+" : "-") + String.format(Locale.ENGLISH, "%.1f", Math.abs(score)))
                 + Lizzie.resourceBundle.getString("LizzieFrame.pts"); // + "目";
       }
+
       drawString(
           g,
           posX,
@@ -6098,6 +6140,10 @@ public class LizzieFrame extends JFrame {
       if (Lizzie.frame.isContributing) return;
       int[] coords = boardCoordinates.get();
       if (!Lizzie.board.convertHexCoords(coords[0], coords[1])) return;
+
+      if (Lizzie.board.hasStoneAt(coords)) {
+        Lizzie.board.setPressStoneInfo(coords, false);
+      }
       if (Lizzie.frame.bothSync) {
         if (blackorwhite == 0) Lizzie.board.place(coords[0], coords[1]);
         if (blackorwhite == 1) Lizzie.board.place(coords[0], coords[1], Stone.BLACK);
@@ -6355,6 +6401,7 @@ public class LizzieFrame extends JFrame {
         boardRenderer2.removeblock();
       }
     }
+    Lizzie.board.clearPressStoneInfo(null);
     if (needRepaint) refresh();
   }
 
@@ -6418,17 +6465,17 @@ public class LizzieFrame extends JFrame {
     return false;
   }
 
-  public void onMouseMoved(int x, int y) {
+  public boolean onMouseMoved(int x, int y) {
     if (Lizzie.config.showMouseOverWinrateGraph
         && Lizzie.config.showWinrateGraph
-        && processMouseMoveOnWinrateGraph(x, y)) return;
+        && processMouseMoveOnWinrateGraph(x, y)) return false;
     if (Lizzie.config.showMouseOverWinrateGraph
         && Lizzie.config.showWinrateGraph
         && winrateGraph.mouseOverNode != null) {
       winrateGraph.clearMouseOverNode();
       this.redrawWinratePaneOnly = true;
       repaint();
-      return;
+      return false;
     }
     boolean needRepaint = false;
     curSuggestionMoveOrderByNumber = -1;
@@ -6436,7 +6483,7 @@ public class LizzieFrame extends JFrame {
       mainPanel.requestFocus();
     }
     if (RightClickMenu.isVisible() || RightClickMenu2.isVisible()) {
-      return;
+      return false;
     }
     //    if (isshowrightmenu) {
     //      isshowrightmenu = false;
@@ -6449,7 +6496,7 @@ public class LizzieFrame extends JFrame {
           clearMoved();
         }
         if (!isMouseOnSub && (!Lizzie.leelaz.isPondering() || EngineManager.isEmpty)) repaint();
-        return;
+        return false;
       } else {
         if (isMouseOnSub) {
           if ((!Lizzie.leelaz.isPondering() || EngineManager.isEmpty)) needRepaint = true;
@@ -6470,12 +6517,14 @@ public class LizzieFrame extends JFrame {
       }
     }
     if (clickOrder != -1) {
-      return;
+      return false;
     }
     // mouseOverCoordinate = outOfBoundCoordinate;
     Optional<int[]> coords = boardRenderer.convertScreenToCoordinates(x, y);
-    if (coords.isPresent()) {
+    boolean inBoard = coords.isPresent();
+    if (inBoard) {
       int[] curCoords = coords.get();
+      Lizzie.board.clearPressStoneInfo(curCoords);
       boolean isCoordsChanged = false;
       if (mouseOverCoordinate[0] != curCoords[0] || mouseOverCoordinate[1] != curCoords[1]) {
         isCoordsChanged = true;
@@ -6545,18 +6594,19 @@ public class LizzieFrame extends JFrame {
           Optional<int[]> coords2 = boardRenderer2.convertScreenToCoordinates(x, y);
           if (coords2.isPresent()) {
             boardRenderer2.drawmoveblock(
-                coords.get()[0], coords.get()[1], Lizzie.board.getHistory().isBlacksTurn());
+                curCoords[0], curCoords[1], Lizzie.board.getHistory().isBlacksTurn());
           } else
             boardRenderer.drawmoveblock(
-                coords.get()[0], coords.get()[1], Lizzie.board.getHistory().isBlacksTurn());
+                curCoords[0], curCoords[1], Lizzie.board.getHistory().isBlacksTurn());
         } else
           boardRenderer.drawmoveblock(
-              coords.get()[0], coords.get()[1], Lizzie.board.getHistory().isBlacksTurn());
+              curCoords[0], curCoords[1], Lizzie.board.getHistory().isBlacksTurn());
       } else if (Lizzie.frame.isAnaPlayingAgainstLeelaz || Lizzie.frame.isPlayingAgainstLeelaz)
         boardRenderer.removeblock();
       if (Lizzie.config.isDoubleEngineMode()) {
         boardRenderer2.removeblock();
       }
+
     } else {
       mouseOverCoordinate = outOfBoundCoordinate;
       if (isMouseOver) {
@@ -6578,6 +6628,7 @@ public class LizzieFrame extends JFrame {
       }
     }
     if (needRepaint) refresh();
+    return inBoard;
   }
 
   public void clearMoved() {
@@ -6926,6 +6977,8 @@ public class LizzieFrame extends JFrame {
       if (isLoadingEngine) {
         if (Lizzie.gtpConsole != null) {
           comment = Lizzie.gtpConsole.console.getText();
+          if (comment.length() > 1000)
+            comment = comment.substring(comment.length() - 1000, comment.length());
           if (!Lizzie.config.showStatus && isTuningEngine)
             comment += Lizzie.resourceBundle.getString("LizzieFrame.display.tuning");
         }
@@ -6977,14 +7030,19 @@ public class LizzieFrame extends JFrame {
     }
     if (Lizzie.config.commentFontSize <= 0) {
       int fontSize;
-      if (Lizzie.config.showLargeSubBoard() || Lizzie.config.showLargeWinrate()) {
-        fontSize =
-            (int)
-                (min(
-                        (getWidth() > 1.75 * getHeight() ? 1.75 * getHeight() : getWidth()) * 0.43,
-                        getHeight())
-                    * 0.0225);
-      } else fontSize = (int) (min(getWidth() * 0.6, getHeight()) * 0.0225);
+      if (Lizzie.config.isFloatBoardMode()) {
+        fontSize = (int) (min(getWidth() * 1.2, getHeight()) * 0.0225);
+      } else {
+        if (Lizzie.config.showLargeSubBoard() || Lizzie.config.showLargeWinrate()) {
+          fontSize =
+              (int)
+                  (min(
+                          (getWidth() > 1.75 * getHeight() ? 1.75 * getHeight() : getWidth())
+                              * 0.43,
+                          getHeight())
+                      * 0.0225);
+        } else fontSize = (int) (min(getWidth() * 0.6, getHeight()) * 0.0225);
+      }
       if (fontSize > Config.frameFontSize + 3) {
         fontSize = Config.frameFontSize + 3;
       } else if (fontSize < Config.frameFontSize - 2) {
@@ -7040,7 +7098,7 @@ public class LizzieFrame extends JFrame {
     }
   }
 
-  private void appendComment() {
+  public void appendComment() {
     if (Lizzie.config.showComment) {
       if (!EngineManager.isEmpty) {
         if (Lizzie.config.appendWinrateToComment || EngineManager.isEngineGame) {
@@ -7138,10 +7196,8 @@ public class LizzieFrame extends JFrame {
         double winRateC = Lizzie.board.getHistory().getData().winrate;
         if (!Lizzie.board.getHistory().isBlacksTurn()) winRateC = 100 - winRateC;
         winRate = winRateC > -100 && winRateC < 100 ? winRateC : winRate;
-        sb.append(
-            String.format(Locale.ENGLISH, "%.1f", winRate)
-                + " "
-                + Utils.getPlayoutsString(Lizzie.board.getHistory().getData().getPlayouts()));
+
+        sb.append(String.format(Locale.ENGLISH, "%.1f", winRate));
         if (Lizzie.board.getHistory().getData().isKataData) {
           double scoreC = Lizzie.board.getHistory().getCurrentHistoryNode().getData().scoreMean;
           if (scoreC != 0) {
@@ -7157,6 +7213,7 @@ public class LizzieFrame extends JFrame {
           }
           sb.append(" " + String.format(Locale.ENGLISH, "%.1f", score));
         }
+        sb.append(" " + Utils.getPlayoutsString(Lizzie.board.getHistory().getData().getPlayouts()));
         sb.append("] ");
       } else if (Lizzie.board.getHistory().getCurrentHistoryNode().previous().isPresent()
           && Lizzie.board
@@ -7171,12 +7228,15 @@ public class LizzieFrame extends JFrame {
         BoardData data =
             Lizzie.board.getHistory().getCurrentHistoryNode().previous().get().getData();
         sb.append(
-            String.format(Locale.ENGLISH, "%.1f", 100 - data.winrate)
-                + " "
-                + Utils.getPlayoutsString(data.getPlayouts()));
+            String.format(
+                Locale.ENGLISH, "%.1f", data.blackToPlay ? data.winrate : 100 - data.winrate));
         if (data.isKataData) {
-          sb.append(" " + String.format(Locale.ENGLISH, "%.1f", data.scoreMean));
+          sb.append(
+              " "
+                  + String.format(
+                      Locale.ENGLISH, "%.1f", data.blackToPlay ? data.scoreMean : -data.scoreMean));
         }
+        sb.append(" " + Utils.getPlayoutsString(data.getPlayouts()));
         sb.append("] ");
       } else if (isPlayingAgainstLeelaz || isAnaPlayingAgainstLeelaz) {
         sb.append("[ ---   ---   --- ] ");
@@ -7270,17 +7330,17 @@ public class LizzieFrame extends JFrame {
             .orElse("");
 
     // Load game contents from sgf string
-    if (!sgfContent.isEmpty()) {
+    if (!sgfContent.isEmpty() && SGFParser.isSGF(sgfContent)) {
       SGFParser.loadFromString(sgfContent);
       Lizzie.board.setMovelistAll();
       if (Lizzie.leelaz.isPondering()) Lizzie.leelaz.ponder();
+      Lizzie.frame.resetMovelistFrameandAnalysisFrame();
+      Lizzie.frame.setVisible(true);
     }
-    Lizzie.frame.resetMovelistFrameandAnalysisFrame();
-    Lizzie.frame.setVisible(true);
   }
 
   public boolean resetMovelistFrameandAnalysisFrame() {
-    boolean hadSetFrame = false;
+    boolean setFrame = false;
     if (Lizzie.config.uiConfig.optBoolean("show-suggestions-frame", false)) {
       if (analysisFrame == null) toggleBestMoves();
       else {
@@ -7292,7 +7352,7 @@ public class LizzieFrame extends JFrame {
               }
             });
       }
-      hadSetFrame = true;
+      setFrame = true;
     } else if (analysisFrame != null && analysisFrame.isVisible()) {
       SwingUtilities.invokeLater(
           new Runnable() {
@@ -7301,7 +7361,7 @@ public class LizzieFrame extends JFrame {
               toggleBestMoves();
             }
           });
-      hadSetFrame = true;
+      setFrame = true;
     }
     if (Lizzie.config.uiConfig.optBoolean("show-badmoves-frame", false)) {
       if (moveListFrame == null) toggleBadMoves();
@@ -7314,7 +7374,7 @@ public class LizzieFrame extends JFrame {
               }
             });
       }
-      hadSetFrame = true;
+      setFrame = true;
     } else if (moveListFrame != null && moveListFrame.isVisible()) {
       SwingUtilities.invokeLater(
           new Runnable() {
@@ -7323,9 +7383,9 @@ public class LizzieFrame extends JFrame {
               toggleBestMoves();
             }
           });
-      hadSetFrame = true;
+      setFrame = true;
     }
-    return hadSetFrame;
+    return setFrame;
   }
 
   /**
@@ -7411,7 +7471,12 @@ public class LizzieFrame extends JFrame {
 
   public void setCommentPaneOrArea(boolean isArea) {
     isCommentArea = isArea;
-    setCommentComponet();
+    SwingUtilities.invokeLater(
+        new Thread() {
+          public void run() {
+            setCommentComponet();
+          }
+        });
   }
 
   public void resetCommentComponent() {
@@ -7813,7 +7878,7 @@ public class LizzieFrame extends JFrame {
           refresh();
           return;
         }
-        Lizzie.board.savelistforeditmode();
+        Lizzie.board.saveListForEdit();
         int moveNumber = Lizzie.board.moveNumberByCoord(draggedCoords);
         if (moveNumber > 0) {
           MoveLinkedList reStoreMainListHead =
@@ -8053,7 +8118,10 @@ public class LizzieFrame extends JFrame {
   }
 
   public void addSuggestionAsBranch() {
-    boardRenderer.addSuggestionAsBranch();
+    if (!Lizzie.board.getHistory().getCurrentHistoryNode().isMainTrunk()
+        && !Lizzie.board.getHistory().getCurrentHistoryNode().next().isPresent())
+      Lizzie.frame.playCurrentVariation();
+    else boardRenderer.addSuggestionAsBranch();
     if (Lizzie.leelaz.isPondering()) Lizzie.leelaz.ponder();
   }
 
@@ -8539,7 +8607,7 @@ public class LizzieFrame extends JFrame {
   }
 
   private void saveIndependMainBoardToClipboard() {
-    if (Config.isScaled) {
+    if (Config.isScaled || Lizzie.isMultiScreen) {
       int width = this.independentMainBoard.cachedImage.getWidth();
       int height = this.independentMainBoard.cachedImage.getHeight();
       Rectangle rect = new Rectangle(0, 0, width, height);
@@ -8571,7 +8639,7 @@ public class LizzieFrame extends JFrame {
   }
 
   private BufferedImage getIndependMainBoardToClipboard() {
-    if (Config.isScaled) {
+    if (Config.isScaled || Lizzie.isMultiScreen) {
       int width = this.independentMainBoard.cachedImage.getWidth();
       int height = this.independentMainBoard.cachedImage.getHeight();
       Rectangle rect = new Rectangle(0, 0, width, height);
@@ -8603,7 +8671,7 @@ public class LizzieFrame extends JFrame {
   }
 
   public void savePicToClipboard(int x, int y, int width, int height) {
-    if (Config.isScaled) {
+    if (Config.isScaled || Lizzie.isMultiScreen) {
       Rectangle rect = new Rectangle(x, y, width, height);
       BufferedImage areaImage = cachedImage.getSubimage(rect.x, rect.y, rect.width, rect.height);
       BufferedImage buffImg = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
@@ -8651,7 +8719,7 @@ public class LizzieFrame extends JFrame {
     Toolkit.getDefaultToolkit().getSystemClipboard().setContents(trans, null);
   }
 
-  private void syncOnline(String url) {
+  public void syncOnline(String url) {
     if (onlineDialog == null) onlineDialog = new OnlineDialog(this);
     else {
       try {
@@ -8662,39 +8730,6 @@ public class LizzieFrame extends JFrame {
 
     onlineDialog.applyChangeWeb(url);
     syncLiveBoardStat();
-    //    if (onlineDialog != null) {
-    //      onlineDialog.dispose();
-    //    }
-    //    if (isSyncing && System.currentTimeMillis() - startSyncTime < 2000) {
-    //      if (firstIsSyncing) firstIsSyncing = false;
-    //      else return;
-    //      Timer timer = new Timer();
-    //      timer.schedule(
-    //          new TimerTask() {
-    //            public void run() {
-    //              //    onlineDialog = new OnlineDialog();
-    //              onlineDialog.applyChangeWeb(url);
-    //              startSyncTime = System.currentTimeMillis();
-    //              isSyncing = false;
-    //              firstIsSyncing = true;
-    //              this.cancel();
-    //            }
-    //          },
-    //          2000);
-    //      return;
-    //    }
-    //
-    //    if (System.currentTimeMillis() - startSyncTime < 1000) {
-    //      isSyncing = true;
-    //      // onlineDialog = new OnlineDialog();
-    //      onlineDialog.applyChangeWeb(url);
-    //      startSyncTime = System.currentTimeMillis();
-    //      return;
-    //    }
-    //    isSyncing = false;
-    //    //  onlineDialog = new OnlineDialog();
-    //    onlineDialog.applyChangeWeb(url);
-    //       startSyncTime = System.currentTimeMillis();
   }
 
   public void openHelp() {
@@ -8711,245 +8746,28 @@ public class LizzieFrame extends JFrame {
     bowser(url, Lizzie.resourceBundle.getString("LizzieFrame.introduction"), false);
   }
 
-  public void bowser(String url, String title, boolean toolbar) {
-    JTextField thisUrl = new JTextField();
-    JToolBar toolBar = new JToolBar(Lizzie.resourceBundle.getString("LizzieFrame.url")); // ("地址栏");
-    urlList = new ArrayList<String>();
-    urlList.add(url);
-    urlIndex = 0;
-    if (browser != null && !browser.isDisposed()) {
-      browser.loadURL(url);
-      frame.setTitle(title);
-      frame.setVisible(true);
-      return;
+  public void bowser(String url, String title, boolean isYike) {
+    if (browserFrame == null) {
+      if (!Lizzie.config.browserInitiazed && browserInitializing != null) {
+        browserInitializing.setVisible(true);
+        return;
+      }
+      new Thread() {
+        public void run() {
+          try {
+            browserFrame = new BrowserFrame(url, title, isYike);
+          } catch (UnsupportedPlatformException
+              | CefInitializationException
+              | IOException
+              | InterruptedException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
+        }
+      }.start();
     } else {
-      browser = new Browser();
-      browser.loadURL(url);
+      browserFrame.openURL(url, title, isYike);
     }
-    browser.setPopupHandler(
-        new PopupHandler() {
-          @Override
-          public PopupContainer handlePopup(PopupParams popupParams) {
-            // browser.loadURL(popupParams.getURL());
-            //  thisUrl.setText(popupParams.getURL());
-            Runnable runnable =
-                new Runnable() {
-                  public void run() {
-                    if (Lizzie.config.openHtmlOnLive) {
-                      browser.loadURL(popupParams.getURL());
-                      thisUrl.setText(popupParams.getURL());
-                      urlList.add(popupParams.getURL());
-                      urlIndex = urlList.size() - 1;
-                    }
-                    syncOnline(popupParams.getURL());
-                  }
-                };
-            Thread thread = new Thread(runnable);
-            thread.start();
-
-            return null;
-          }
-        });
-    BrowserView view = new BrowserView(browser);
-    JPanel viewPanel = new JPanel();
-    viewPanel.setLayout(null);
-    viewPanel.add(view);
-    frame = new JFrame();
-
-    frame.setSize(bowserWidth, bowserHeight);
-    frame.setTitle(title);
-    frame.add(viewPanel, BorderLayout.CENTER);
-    frame.setLocation(bowserX, bowserY);
-    frame.setVisible(true);
-
-    frame.addWindowListener(
-        new WindowAdapter() {
-          public void windowClosing(WindowEvent e) {
-            if (toolbar) {
-              bowserX = frame.getX();
-              bowserY = frame.getY();
-              bowserWidth = frame.getWidth();
-              bowserHeight = frame.getHeight();
-            }
-            frame.setVisible(false);
-            frame.dispose();
-            browser.dispose();
-          }
-        });
-
-    viewPanel.addComponentListener(
-        new ComponentAdapter() {
-          @Override
-          public void componentResized(ComponentEvent e) {
-            viewPanel.revalidate();
-            view.setBounds(
-                0,
-                toolbar ? (int) (toolBar.getHeight() * (Lizzie.sysScaleFactor - 1)) : 0,
-                (int) Math.ceil((viewPanel.getWidth() * Lizzie.sysScaleFactor)),
-                (int) Math.ceil((viewPanel.getHeight() * Lizzie.sysScaleFactor)));
-            viewPanel.revalidate();
-          }
-        });
-    if (toolbar) {
-      frame.addComponentListener(
-          new ComponentAdapter() {
-            @Override
-            public void componentResized(ComponentEvent e) {
-              bowserWidth = frame.getWidth();
-              bowserHeight = frame.getHeight();
-            }
-
-            public void componentMoved(ComponentEvent e) {
-              bowserX = frame.getX();
-              bowserY = frame.getY();
-            }
-          });
-    }
-    thisUrl.setText(url);
-    try {
-      frame.setIconImage(ImageIO.read(MoveListFrame.class.getResourceAsStream("/assets/logo.png")));
-    } catch (IOException e1) {
-      // TODO Auto-generated catch block
-      e1.printStackTrace();
-    }
-
-    ImageIcon iconLeft = new ImageIcon();
-    try {
-      iconLeft.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/left.png")));
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-    ImageIcon iconRight = new ImageIcon();
-    try {
-      iconRight.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/right.png")));
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-
-    thisUrl.addKeyListener(
-        new KeyAdapter() {
-          public void keyPressed(KeyEvent e) {
-            if (e.getKeyChar() == KeyEvent.VK_ENTER) // 按回车键执行相应操作;
-            {
-              browser.loadURL(thisUrl.getText());
-              if (!thisUrl.getText().equals(url)) {
-                syncOnline(thisUrl.getText());
-              }
-            }
-          }
-        });
-    JButton backward = new JButton(iconLeft);
-    backward.setFocusable(false);
-    backward.addActionListener(
-        new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            if (urlIndex > 0) {
-              urlIndex = urlIndex - 1;
-              browser.loadURL(urlList.get(urlIndex));
-              thisUrl.setText(urlList.get(urlIndex));
-              if (urlList.get(urlIndex) != url) {
-                syncOnline(urlList.get(urlIndex));
-              }
-            }
-          }
-        });
-
-    JButton forward = new JButton(iconRight);
-    forward.setFocusable(false);
-    forward.addActionListener(
-        new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            // TBD未完成
-            if (urlIndex < urlList.size() - 1) {
-              urlIndex = urlIndex + 1;
-              browser.loadURL(urlList.get(urlIndex));
-              thisUrl.setText(urlList.get(urlIndex));
-              if (urlList.get(urlIndex) != url) {
-                syncOnline(urlList.get(urlIndex));
-              }
-            }
-          }
-        });
-    JButton refresh = new JButton(Lizzie.resourceBundle.getString("LizzieFrame.refresh")); // "刷新");
-    refresh.setFocusable(false);
-    refresh.addActionListener(
-        new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            // TBD未完成
-            browser.loadURL(browser.getURL());
-            thisUrl.setText(browser.getURL());
-            if (!browser.getURL().equals(url)) {
-              syncOnline(browser.getURL());
-            }
-          }
-        });
-    JButton load = new JButton(Lizzie.resourceBundle.getString("LizzieFrame.onLoad")); // ("加载");
-    load.setFocusable(false);
-    load.addActionListener(
-        new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            // TBD未完成
-            browser.loadURL(thisUrl.getText());
-            if (!thisUrl.getText().equals(url)) {
-              syncOnline(thisUrl.getText());
-            }
-          }
-        });
-
-    JButton back =
-        new JButton(Lizzie.resourceBundle.getString("LizzieFrame.backToHall")); // ("返回大厅");
-    back.setFocusable(false);
-    back.addActionListener(
-        new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            // TBD未完成
-            browser.loadURL(url);
-            thisUrl.setText(url);
-          }
-        });
-    JButton stop =
-        new JButton(Lizzie.resourceBundle.getString("LizzieFrame.stopSync")); // ("停止同步");
-    stop.setFocusable(false);
-    stop.addActionListener(
-        new ActionListener() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            // TBD
-            if (onlineDialog != null) {
-              onlineDialog.stopSync();
-            }
-          }
-        });
-    toolBar.setBorderPainted(false);
-    toolBar.add(backward);
-    toolBar.add(forward);
-    toolBar.add(back);
-
-    toolBar.add(thisUrl);
-    toolBar.add(load);
-    toolBar.addSeparator();
-    toolBar.add(refresh);
-    toolBar.addSeparator();
-    toolBar.add(stop);
-
-    view.requestFocus();
-    if (toolbar) frame.add(toolBar, BorderLayout.PAGE_START);
-    else frame.setExtendedState(Frame.MAXIMIZED_BOTH);
-    view.setBounds(
-        0,
-        0,
-        (int) (viewPanel.getWidth() * Lizzie.sysScaleFactor),
-        (int) (viewPanel.getHeight() * Lizzie.sysScaleFactor));
-    toolBar.setVisible(false);
-    toolBar.setVisible(true);
-    //  frame.add(back);
   }
 
   public void syncLiveBoardStat() {
@@ -9017,13 +8835,13 @@ public class LizzieFrame extends JFrame {
   }
 
   public void shareSGF() {
-    shareFrame = new ShareFrame();
-    shareFrame.setVisible(true);
+    //    shareFrame = new ShareFrame();
+    //    shareFrame.setVisible(true);
   }
 
   public void batchShareSGF() {
-    batchShareFrame = new BatchShareFrame();
-    batchShareFrame.setVisible(true);
+    //    batchShareFrame = new BatchShareFrame();
+    //    batchShareFrame.setVisible(true);
   }
 
   public void setLzSaiEngine() {
@@ -9140,12 +8958,12 @@ public class LizzieFrame extends JFrame {
     if (isPlayingAgainstLeelaz || isAnaPlayingAgainstLeelaz) {
       stopAiPlayingAndPolicy();
     }
+    if (Lizzie.config.limitMyTime)
+      countDownForHuman(
+          Lizzie.config.getMySaveTime(),
+          Lizzie.config.getMyByoyomiSeconds(),
+          Lizzie.config.getMyByoyomiTimes());
     if (isGenmove) {
-      if (Lizzie.config.limitMyTime)
-        countDownForHuman(
-            Lizzie.config.getMySaveTime(),
-            Lizzie.config.getMyByoyomiSeconds(),
-            Lizzie.config.getMyByoyomiTimes());
       if (!Lizzie.leelaz.isThinking) {
         if (!Lizzie.config.genmoveGameNoTime) sendAiTime(true, Lizzie.leelaz, true);
         isPlayingAgainstLeelaz = true;
@@ -9264,10 +9082,24 @@ public class LizzieFrame extends JFrame {
     g.fillRect(vx, vy, vw, vh);
     if (!Lizzie.config.showVariationGraph) return;
     if (shouldShowSimpleVariation()) {
-      variationTreeBig.draw(g, vx, vy, vw, vh);
-      if (varTreeScrollPane.isVisible()) {
-        varTreeScrollPane.setVisible(false);
-      }
+      new Thread() {
+        public void run() {
+          BufferedImage variationTreeBigImage = new BufferedImage(vw, vh, TYPE_INT_ARGB);
+          Graphics2D g1 = (Graphics2D) variationTreeBigImage.getGraphics();
+          g1.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+          g1.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+          try {
+            variationTreeBig.draw(g1, 0, 0, vw, vh);
+          } catch (Exception e) {
+          }
+          varBigX = vx;
+          varBigY = vy;
+          cachedVariationTreeBigImage = variationTreeBigImage;
+          if (varTreeScrollPane.isVisible()) {
+            varTreeScrollPane.setVisible(false);
+          }
+        }
+      }.start();
       return;
     } else if (vw < 10 || vh < 10) {
       varTreeScrollPane.setVisible(false);
@@ -9590,6 +9422,7 @@ public class LizzieFrame extends JFrame {
         clearKataEstimate();
       }
       Lizzie.leelaz.ponder();
+      Lizzie.frame.refresh();
     } else {
       if (Lizzie.frame.isCounting) {
         clearKataEstimate();
@@ -9749,9 +9582,35 @@ public class LizzieFrame extends JFrame {
       }
     }
     if (Lizzie.config.isAutoAna) {
-      Lizzie.config.isAutoAna = false;
-      LizzieFrame.toolbar.chkAutoAnalyse.setSelected(false);
-      Lizzie.leelaz.notPondering();
+      if (Lizzie.config.exitAutoAnalyzeByPause) {
+        if (Lizzie.config.exitAutoAnalyzeTip) {
+          Object[] options = new Object[2];
+          options[0] = Lizzie.resourceBundle.getString("LizzieFrame.autoAnalyze.notShowAgain");
+          options[1] = Lizzie.resourceBundle.getString("LizzieFrame.confirm");
+          Object defaultOption = Lizzie.resourceBundle.getString("LizzieFrame.confirm");
+          JOptionPane optionPane =
+              new JOptionPane(
+                  new JFontLabel(
+                      Lizzie.resourceBundle.getString("LizzieFrame.autoAnalyze.tip.content")),
+                  JOptionPane.INFORMATION_MESSAGE,
+                  JOptionPane.YES_NO_OPTION,
+                  null,
+                  options,
+                  defaultOption);
+          JDialog dialog =
+              optionPane.createDialog(
+                  this, Lizzie.resourceBundle.getString("LizzieFrame.autoAnalyze.tip.title"));
+          dialog.setVisible(true);
+          dialog.dispose();
+          if (optionPane.getValue().equals(options[0])) {
+            Lizzie.config.exitAutoAnalyzeTip = false;
+            Lizzie.config.uiConfig.put("exit-auto-analyze-tip", Lizzie.config.exitAutoAnalyzeTip);
+          }
+        }
+        Lizzie.config.isAutoAna = false;
+        LizzieFrame.toolbar.chkAutoAnalyse.setSelected(false);
+        Lizzie.leelaz.notPondering();
+      }
     }
     LizzieFrame.menu.toggleDoubleMenuGameStatus();
     return isGaming;
@@ -9769,15 +9628,19 @@ public class LizzieFrame extends JFrame {
             int width = getWidth() - getInsets().left - getInsets().right;
             if (Lizzie.config.showTopToolBar) {
               if (Lizzie.config.autoWrapToolBar) {
-                topPanel.setBounds(0, 0, width, Config.menuHeight);
+                topPanel.setBounds(
+                    0, 0, width, Config.menuHeight + (Lizzie.config.useJavaLooks ? 1 : 0));
                 int curHeight = topPanel.getPreferredSize().height + 8;
                 topPanelHeight = Config.menuHeight;
                 if (curHeight / Config.menuHeight > 1) {
                   topPanelHeight = (curHeight / Config.menuHeight) * Config.menuHeight;
-                  topPanel.setBounds(0, 0, width, topPanelHeight);
+                  topPanel.setBounds(
+                      0, 0, width, topPanelHeight + (Lizzie.config.useJavaLooks ? 1 : 0));
                 }
+                topPanel.revalidate();
               } else {
-                topPanel.setBounds(0, 0, 9999, Config.menuHeight);
+                topPanel.setBounds(
+                    0, 0, 9999, Config.menuHeight + (Lizzie.config.useJavaLooks ? 1 : 0));
                 topPanelHeight = Config.menuHeight;
               }
             } else {
@@ -9826,7 +9689,7 @@ public class LizzieFrame extends JFrame {
   }
 
   private void saveIndependSubBoardToClipboard() {
-    if (Config.isScaled) {
+    if (Config.isScaled || Lizzie.isMultiScreen) {
       int width = this.independentSubBoard.cachedImage.getWidth();
       int height = this.independentSubBoard.cachedImage.getHeight();
       Rectangle rect = new Rectangle(0, 0, width, height);
@@ -9858,7 +9721,7 @@ public class LizzieFrame extends JFrame {
   }
 
   private BufferedImage getIndependSubBoardToClipboard() {
-    if (Config.isScaled) {
+    if (Config.isScaled || Lizzie.isMultiScreen) {
       int width = this.independentSubBoard.cachedImage.getWidth();
       int height = this.independentSubBoard.cachedImage.getHeight();
       Rectangle rect = new Rectangle(0, 0, width, height);
@@ -10263,15 +10126,23 @@ public class LizzieFrame extends JFrame {
           isChanged = false;
         }
         isSelect = true;
-        return super.getTableCellRendererComponent(table, value, false, false, row, column);
-
+        JLabel label =
+            (JLabel) super.getTableCellRendererComponent(table, value, false, false, row, column);
+        if (isNextMove) label.setToolTipText(value.toString());
+        else label.setToolTipText(null);
+        return label;
       } else {
         isSelect = false;
         isChanged = false;
-        return super.getTableCellRendererComponent(table, value, false, false, row, column);
+        JLabel label =
+            (JLabel) super.getTableCellRendererComponent(table, value, false, false, row, column);
+        if (isNextMove) label.setToolTipText(value.toString());
+        else label.setToolTipText(null);
+        return label;
       }
     }
 
+    @Override
     public void paintComponent(Graphics g) {
       if (isPlayoutPercents) {
         Graphics2D g2 = (Graphics2D) g;
@@ -10425,7 +10296,7 @@ public class LizzieFrame extends JFrame {
   }
 
   public Image saveMainBoardToImageOri() {
-    if (Config.isScaled) {
+    if (Config.isScaled || Lizzie.isMultiScreen) {
       if (Lizzie.config.isFloatBoardMode()) {
         int width = this.independentMainBoard.cachedImage.getWidth();
         int height = this.independentMainBoard.cachedImage.getHeight();
@@ -11448,6 +11319,7 @@ public class LizzieFrame extends JFrame {
     // TODO Auto-generated method stub
     this.isMarkuping = isMarkuping;
     // 0=无 1=字母 2=圈 3=X 4=方块 5=三角
+    // 增加6=数字
     this.markupType = type;
   }
 
@@ -11512,6 +11384,7 @@ public class LizzieFrame extends JFrame {
         int[] coords = boardCoordinates.get();
         BoardData data = Lizzie.board.getHistory().getData();
         lastLabel = 'A' - 1;
+        lastNumLabel = 0;
         hasMarkup = false;
         data.getProperties()
             .forEach(
@@ -11531,6 +11404,15 @@ public class LizzieFrame extends JFrame {
                           if (moves[1].charAt(0) > lastLabel) lastLabel = moves[1].charAt(0);
                         }
                       }
+                      if (markupType == 7) {
+                        if ("LB".equals(key) && moves.length > 1) {
+                          // Number
+                          try {
+                            lastNumLabel = Math.max(lastNumLabel, Integer.parseInt(moves[1]));
+                          } catch (NumberFormatException e) {
+                          }
+                        }
+                      }
                     }
                   }
                 });
@@ -11542,6 +11424,10 @@ public class LizzieFrame extends JFrame {
           lastLabel = lastLabel + 1;
           if (lastLabel >= 91 && lastLabel <= 96) lastLabel = 97;
           String value = SGFParser.asCoord(coords) + ":" + ((char) lastLabel);
+          data.getProperties().merge("LB", value, (old, val) -> old + "," + val);
+        } else if (markupType == 7) {
+          lastNumLabel = lastNumLabel + 1;
+          String value = SGFParser.asCoord(coords) + ":" + lastNumLabel;
           data.getProperties().merge("LB", value, (old, val) -> old + "," + val);
         } else if (markupType == 2) {
           String value = SGFParser.asCoord(coords);
@@ -11572,7 +11458,7 @@ public class LizzieFrame extends JFrame {
     }
   }
 
-  public void flashAnalyzeGameBatch(int firstMove, int lastMove) {
+  public void flashAnalyzeGameBatch(int firstMove, int lastMove, boolean isAllBranches) {
     // TODO Auto-generated method stub
     Lizzie.config.analysisStartMove = firstMove;
     Lizzie.config.analysisEndMove = lastMove;
@@ -11580,74 +11466,85 @@ public class LizzieFrame extends JFrame {
     if (analysisTable != null) {
       analysisTable.resetAnalysisMode();
     }
-    flashAnalyzeGame(true);
+    flashAnalyzeGame(false, isAllBranches);
   }
 
   public void flashAutoAnaSaveAndLoad() {
-    if (Lizzie.leelaz.autoAnalysed) SGFParser.appendAiScoreBlunder();
-    String name = Lizzie.frame.Batchfiles.get(Lizzie.frame.BatchAnaNum).getName();
-    String path = Lizzie.frame.Batchfiles.get(Lizzie.frame.BatchAnaNum).getParent();
-    String df = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-    String prefix = name.substring(name.lastIndexOf("."));
-    int num = prefix.length();
-    String fileOtherName = name.substring(0, name.length() - num);
-    String filename =
-        path
-            + File.separator
-            + fileOtherName
-            + "_"
-            + Lizzie.resourceBundle.getString("Leelaz.analyzed")
-            + "_"
-            + df
-            + ".sgf";
-    File autoSaveFile = new File(filename);
-    try {
-      SGFParser.save(Lizzie.board, autoSaveFile.getPath());
-    } catch (IOException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-    }
-    if (Lizzie.frame.Batchfiles.size() > (Lizzie.frame.BatchAnaNum + 1)) {
-      double komi = Lizzie.board.getHistory().getGameInfo().getKomi();
-      toolbar.loadAutoBatchFile();
-      Lizzie.leelaz.komi(komi);
-      flashAnalyzeGameBatch(LizzieFrame.toolbar.firstMove, LizzieFrame.toolbar.lastMove);
-    } else {
-      isBatchAna = false;
-      isBatchAnalysisMode = false;
-      toolbar.chkAnaAutoSave.setEnabled(true);
-      //	isSaving = false;
-      Batchfiles = new ArrayList<File>();
-      BatchAnaNum = 0;
-      if (Lizzie.frame.analysisTable != null && Lizzie.frame.analysisTable.frame.isVisible()) {
-        Lizzie.frame.analysisTable.refreshTable();
+    if (Lizzie.frame.Batchfiles.size() > (Lizzie.frame.BatchAnaNum)) {
+      if (Lizzie.leelaz.autoAnalysed) SGFParser.appendAiScoreBlunder();
+      String name = Lizzie.frame.Batchfiles.get(Lizzie.frame.BatchAnaNum).getName();
+      String path = Lizzie.frame.Batchfiles.get(Lizzie.frame.BatchAnaNum).getParent();
+      String df = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
+      String prefix = name.substring(name.lastIndexOf("."));
+      int num = prefix.length();
+      String fileOtherName = name.substring(0, name.length() - num);
+      String filename =
+          path
+              + File.separator
+              + fileOtherName
+              + "_"
+              + Lizzie.resourceBundle.getString("Leelaz.analyzed")
+              + "_"
+              + df
+              + ".sgf";
+      File autoSaveFile = new File(filename);
+      try {
+        SGFParser.save(Lizzie.board, autoSaveFile.getPath());
+      } catch (IOException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
       }
-      Utils.showMsg(Lizzie.resourceBundle.getString("Leelaz.batchAutoAnalyzeComplete"));
-      if (Lizzie.config.analysisAutoQuit) {
-        analysisEngine.normalQuit();
+      analysisEngine.waitFrame.setVisible(false);
+      if (Lizzie.frame.Batchfiles.size() > (Lizzie.frame.BatchAnaNum + 1)) {
+        double komi = Lizzie.board.getHistory().getGameInfo().getKomi();
+        toolbar.loadAutoBatchFile();
+        Lizzie.leelaz.komi(komi);
+        flashAnalyzeGameBatch(
+            LizzieFrame.toolbar.firstMove,
+            LizzieFrame.toolbar.lastMove,
+            Lizzie.config.analysisRecentIsAllBranches);
+      } else {
+        isBatchAna = false;
+        isBatchAnalysisMode = false;
+        toolbar.chkAnaAutoSave.setEnabled(true);
+        //	isSaving = false;
+        Batchfiles = new ArrayList<File>();
+        BatchAnaNum = 0;
+        if (Lizzie.frame.analysisTable != null && Lizzie.frame.analysisTable.frame.isVisible()) {
+          Lizzie.frame.analysisTable.refreshTable();
+        }
+        Utils.showMsg(Lizzie.resourceBundle.getString("Leelaz.batchAutoAnalyzeComplete"));
+        if (Lizzie.config.analysisAutoQuit) {
+          analysisEngine.normalQuit();
+        }
       }
     }
   }
 
-  public void flashAnalyzeGame(boolean isAllGame) {
+  public void flashAnalyzeGame(boolean isAllGame, boolean isAllBranches) {
     Lizzie.config.analysisRecentIsPartGame = isAllGame;
+    Lizzie.config.analysisRecentIsAllBranches = isAllBranches;
     if (analysisEngine == null
         || analysisEngine.useJavaSSH && analysisEngine.javaSSHClosed
         || (!analysisEngine.useJavaSSH
             && (analysisEngine.process == null || !analysisEngine.process.isAlive()))) {
       try {
         analysisEngine = new AnalysisEngine(false);
-        analysisEngine.sendRequest(
-            isAllGame ? -1 : Lizzie.config.analysisStartMove,
-            isAllGame ? -1 : Lizzie.config.analysisEndMove);
+        if (isAllBranches) analysisEngine.startRequestAllBranches();
+        else
+          analysisEngine.startRequest(
+              isAllGame ? -1 : Lizzie.config.analysisStartMove,
+              isAllGame ? -1 : Lizzie.config.analysisEndMove);
       } catch (IOException e) {
         // TODO Auto-generated catch block
         e.printStackTrace();
       }
     } else {
-      analysisEngine.sendRequest(
-          isAllGame ? -1 : Lizzie.config.analysisStartMove,
-          isAllGame ? -1 : Lizzie.config.analysisEndMove);
+      if (isAllBranches) analysisEngine.startRequestAllBranches();
+      else
+        analysisEngine.startRequest(
+            isAllGame ? -1 : Lizzie.config.analysisStartMove,
+            isAllGame ? -1 : Lizzie.config.analysisEndMove);
     }
   }
 
@@ -11868,7 +11765,7 @@ public class LizzieFrame extends JFrame {
     GameInfo gameInfo = Lizzie.board.getHistory().getGameInfo();
     boolean oriPlaySound = Lizzie.config.playSound;
     Lizzie.config.playSound = false;
-    Lizzie.board.savelistforeditmode();
+    Lizzie.board.saveListForEdit();
     MoveLinkedList listHead =
         Lizzie.board.getMoveLinkedListAfter(Lizzie.board.getHistory().getCurrentHistoryNode());
     if (listHead == null) {
@@ -12253,14 +12150,6 @@ public class LizzieFrame extends JFrame {
     if (subBoardRenderer4 != null) subBoardRenderer4.boardWidth = 1;
   }
 
-  //  public void addNotify() {
-  //    // needless?
-  //    //
-  // https://stackoverflow.com/questions/3435994/buffers-have-not-been-created-whilst-creating-buffers
-  //    super.addNotify();
-  //    createBufferStrategy(2);
-  //  }
-
   public void hideCandidates() {
     if (Lizzie.config.showBlackCandidates || Lizzie.config.showWhiteCandidates) {
       toolbar.setChkShowBlack(false);
@@ -12302,20 +12191,23 @@ public class LizzieFrame extends JFrame {
   }
 
   private void openInVisibleFrame() {
-    String javaReadBoardName = "invisibleFrame.jar";
-    File javaReadBoard = new File("clockHelper" + File.separator + javaReadBoardName);
-    if (!javaReadBoard.exists()) Utils.copyClockHelper();
-    try {
-      if (OS.isWindows()) {
+    if (OS.isWindows()) {
+      String javaReadBoardName = "invisibleFrame.jar";
+      File javaReadBoard = new File("clockHelper" + File.separator + javaReadBoardName);
+      if (!javaReadBoard.exists()) Utils.copyClockHelper();
+      try {
         boolean success = false;
-        String java64Path = "jre\\java11\\bin\\java.exe";
-        File java64 = new File(java64Path);
+        File java64_1 = new File(Utils.java64Path1);
 
-        if (java64.exists()) {
+        if (java64_1.exists()) {
           try {
             processClockHelper =
                 Runtime.getRuntime()
-                    .exec(java64Path + " -jar clockHelper" + File.separator + javaReadBoardName);
+                    .exec(
+                        Utils.java64Path1
+                            + " -jar clockHelper"
+                            + File.separator
+                            + javaReadBoardName);
             success = true;
           } catch (Exception e) {
             success = false;
@@ -12323,13 +12215,34 @@ public class LizzieFrame extends JFrame {
           }
         }
         if (!success) {
-          String java32Path = "jre\\java8_32\\bin\\java.exe";
-          File java32 = new File(java32Path);
+          File java64_2 = new File(Utils.java64Path2);
+          if (java64_2.exists()) {
+            try {
+              processClockHelper =
+                  Runtime.getRuntime()
+                      .exec(
+                          Utils.java64Path2
+                              + " -jar clockHelper"
+                              + File.separator
+                              + javaReadBoardName);
+              success = true;
+            } catch (Exception e) {
+              success = false;
+              e.printStackTrace();
+            }
+          }
+        }
+        if (!success) {
+          File java32 = new File(Utils.java32Path);
           if (java32.exists()) {
             try {
               processClockHelper =
                   Runtime.getRuntime()
-                      .exec(java32 + " -jar clockHelper" + File.separator + javaReadBoardName);
+                      .exec(
+                          Utils.java32Path
+                              + " -jar clockHelper"
+                              + File.separator
+                              + javaReadBoardName);
               success = true;
             } catch (Exception e) {
               success = false;
@@ -12342,23 +12255,21 @@ public class LizzieFrame extends JFrame {
               Runtime.getRuntime()
                   .exec("java -jar clockHelper" + File.separator + javaReadBoardName);
         }
-      } else {
-        processClockHelper =
-            Runtime.getRuntime().exec("java -jar clockHelper" + File.separator + javaReadBoardName);
+      } catch (Exception e) {
+        Utils.showMsg(e.getLocalizedMessage());
       }
-    } catch (Exception e) {
-      Utils.showMsg(e.getLocalizedMessage());
     }
   }
 
   public void shutdownClockHelper() {
-    processClockHelper.destroy();
+    if (processClockHelper != null) processClockHelper.destroy();
   }
 
   public void flattenBoard() {
     Lizzie.board.hasStartStone = true;
     Lizzie.board.addStartListAll();
     Lizzie.board.flatten();
+    refresh();
   }
 
   public void addContributeLine(String line, boolean stdout) {
@@ -12432,11 +12343,110 @@ public class LizzieFrame extends JFrame {
       contributeView.setVisible(false);
       contributeView.dispose();
     }
-    contributeView = new ContributeView(this);
+    contributeView = new ContributeView();
   }
 
   public void openContributeSettings() {
     ContributeSettings contributeSettings = new ContributeSettings(this);
     contributeSettings.setVisible(true);
+  }
+
+  public void openTsumego() {
+    if (tsumeGoFrame != null && tsumeGoFrame.isVisible()) {
+      tsumeGoFrame.setVisible(false);
+      tsumeGoFrame.dispose();
+    }
+    tsumeGoFrame = new TsumeGoFrame(this);
+    tsumeGoFrame.setVisible(true);
+  }
+
+  public void startCaptureTsumeGo() {
+    setExtendedState(JFrame.ICONIFIED);
+    if (captureTsumeGoFrame != null && captureTsumeGoFrame.isVisible())
+      captureTsumeGoFrame.setVisible(false);
+    new CaptureTsumeGo();
+  }
+
+  public void openCaptureTsumego() {
+    if (captureTsumeGoFrame != null && captureTsumeGoFrame.isVisible()) {
+      captureTsumeGoFrame.setVisible(false);
+    }
+    captureTsumeGoFrame = new CaptureTsumeGoFrame();
+    captureTsumeGoFrame.setVisible(true);
+  }
+
+  public void newEmptyBoard() {
+    if (EngineManager.isEngineGame()) return;
+    if (Lizzie.config.showNewBoardHint
+        && (Lizzie.board.getHistory().getCurrentHistoryNode().previous().isPresent()
+            || Lizzie.board.getHistory().getCurrentHistoryNode().next().isPresent())) {
+      Box box = Box.createVerticalBox();
+      JFontLabel label =
+          new JFontLabel(Lizzie.resourceBundle.getString("LizzieFrame.confirmNewBoard"));
+      label.setAlignmentX(Component.LEFT_ALIGNMENT);
+      box.add(label);
+      Utils.addFiller(box, 5, 5);
+      JFontCheckBox disableCheckBox =
+          new JFontCheckBox(Lizzie.resourceBundle.getString("LizzieFrame.noNoticeAgain"));
+      disableCheckBox.addActionListener(
+          new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+              Lizzie.config.showNewBoardHint = !disableCheckBox.isSelected();
+              Lizzie.config.uiConfig.put("show-new-board-hint", Lizzie.config.showNewBoardHint);
+            }
+          });
+      disableCheckBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+      box.add(disableCheckBox);
+      Object[] options = new Object[2];
+      options[0] = Lizzie.resourceBundle.getString("LizzieFrame.confirm");
+      options[1] = Lizzie.resourceBundle.getString("LizzieFrame.cancel");
+      Object defaultOption = Lizzie.resourceBundle.getString("LizzieFrame.cancel");
+      JOptionPane optionPane =
+          new JOptionPane(
+              box,
+              JOptionPane.QUESTION_MESSAGE,
+              JOptionPane.YES_NO_OPTION,
+              null,
+              options,
+              defaultOption);
+      JDialog dialog =
+          optionPane.createDialog(
+              this, Lizzie.resourceBundle.getString("LizzieFrame.confirmNewBoardTitle"));
+      dialog.setVisible(true);
+      dialog.dispose();
+      if (optionPane.getValue() == null || optionPane.getValue().equals(defaultOption))
+        // System.out.println("取消");
+        return;
+    }
+    Lizzie.board.clear(false);
+    Lizzie.frame.refresh();
+  }
+
+  public void openController() {
+    // TODO Auto-generated method stub
+    if (ctrl == null) {
+      ctrl = new Controller(this);
+      ctrl.setVisible(true);
+    } else {
+      if (ctrl.isVisible()) ctrl.setVisible(false);
+      else ctrl.setVisible(true);
+    }
+  }
+
+  public void drawPainting() {
+    // TODO Auto-generated method stub
+    new DrawPainting(
+            Lizzie.frame.getX() + Lizzie.frame.getInsets().left,
+            Lizzie.frame.getY() + Lizzie.frame.mainPanel.getY() + Lizzie.frame.getInsets().top,
+            Lizzie.frame.getWidth()
+                - Lizzie.frame.getInsets().left
+                - Lizzie.frame.getInsets().right,
+            Lizzie.frame.getHeight()
+                - Lizzie.frame.mainPanel.getY()
+                - Lizzie.frame.getInsets().top
+                - Lizzie.frame.getInsets().bottom
+                - Lizzie.frame.toolbarHeight)
+        .setVisible(true);
   }
 }

@@ -91,6 +91,7 @@ public class EngineFailedMessage extends JDialog {
           new ActionListener() {
             public void actionPerformed(ActionEvent e) {
               Lizzie.frame.startContributeEngine();
+              setVisible(false);
             }
           });
       btnRestart.setBounds(

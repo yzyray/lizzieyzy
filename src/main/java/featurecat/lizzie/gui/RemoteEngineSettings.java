@@ -172,7 +172,7 @@ public class RemoteEngineSettings extends JDialog {
     buttonBar.setLayout(new GridBagLayout());
     ((GridBagLayout) buttonBar.getLayout()).columnWidths = new int[] {0, 80};
     ((GridBagLayout) buttonBar.getLayout()).columnWeights = new double[] {1.0, 0.0};
-    okButton.setText("确定");
+    okButton.setText(Lizzie.resourceBundle.getString("RemoteEngineSettings.okButton"));
     okButton.addActionListener(
         new ActionListener() {
           @Override

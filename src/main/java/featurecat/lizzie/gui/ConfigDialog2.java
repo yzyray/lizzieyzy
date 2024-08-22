@@ -194,6 +194,7 @@ public class ConfigDialog2 extends JDialog {
   // private boolean isLoadedTheme = false;
   private JComboBox<String> cmbThemes;
   private JSpinner spnWinrateStrokeWidth;
+  private JSpinner spnScoreLeadStrokeWidth;
   private JSpinner spnMinimumBlunderBarWidth;
   private JSpinner spnShadowSize;
   private JComboBox<String> cmbFontName;
@@ -231,8 +232,9 @@ public class ConfigDialog2 extends JDialog {
   private JCheckBox chkShowTitleWr;
   private JCheckBox chkAlwaysGtp;
   private JCheckBox chkNoCapture;
-  private JCheckBox chkEnableDoubCli;
+  private JCheckBox chkEnableDoubClick;
   private JCheckBox chkEnableDragStone;
+  private JCheckBox chkEnableClickReview;
   private JCheckBox chkNoRefreshSub;
   private JCheckBox chkLizzieCache;
 
@@ -258,7 +260,7 @@ public class ConfigDialog2 extends JDialog {
   private JCheckBox chkShowIndependentMainBoard;
   private JCheckBox chkCheckEngineAlive;
   private JCheckBox chkVariationRemoveDeadChain;
-  private JCheckBox chkShowScoreLeadLine;
+  private JComboBox<String> cbxShowWinrateOrScoreLeadLine;
   private JCheckBox chkShowMouseOverWinrateGraph;
   private JCheckBox chkShowScoreAsLead;
   private JComboBox<String> comboBoxPvVisits;
@@ -337,7 +339,7 @@ public class ConfigDialog2 extends JDialog {
     aboutTab = new PanelWithToolTips();
     LinkLabel lblLizzieName =
         new LinkLabel(
-            "<html><div align=\"center\"><b>Lizzie Yzy 2.4.7</b></div>"
+            "<html><div align=\"center\"><b>Lizzie Yzy 2.5.3</b></div>"
                 + "<div align=\"center\"><font style=\"font-weight:plain;font-size:12;\">Java version: "
                 + Lizzie.javaVersionString
                 + "</font></div></html>");
@@ -1314,14 +1316,23 @@ public class ConfigDialog2 extends JDialog {
     lblEnableDoubleClickFindMove.setBounds(312, 641, 207, 15);
     uiTab.add(lblEnableDoubleClickFindMove);
 
+    chkEnableDoubClick = new JCheckBox();
+    chkEnableDoubClick.setBounds(Lizzie.config.isChinese ? 400 : 446, 638, 23, 23);
+    uiTab.add(chkEnableDoubClick);
+
+    JLabel lblEnableClickReview =
+        new JLabel(resourceBundle.getString("LizzieConfig.lblEnableClickReview"));
+    lblEnableClickReview.setBounds(471, 641, 207, 15);
+    uiTab.add(lblEnableClickReview);
+
+    chkEnableClickReview = new JCheckBox();
+    chkEnableClickReview.setBounds(Lizzie.config.isChinese ? 560 : 582, 638, 23, 23);
+    uiTab.add(chkEnableClickReview);
+
     JLabel lblEnableDragStone =
         new JLabel(resourceBundle.getString("LizzieConfig.lblEnableDragStone")); // ("启用拖拽棋子功能");
     lblEnableDragStone.setBounds(608, 641, 86, 15);
     uiTab.add(lblEnableDragStone);
-
-    chkEnableDoubCli = new JCheckBox(); // $NON-NLS-1$
-    chkEnableDoubCli.setBounds(532, 638, 26, 23);
-    uiTab.add(chkEnableDoubCli);
 
     chkEnableDragStone = new JCheckBox();
     chkEnableDragStone.setBounds(685, 638, 26, 23);
@@ -1579,21 +1590,30 @@ public class ConfigDialog2 extends JDialog {
         String.valueOf(Lizzie.config.replayBranchIntervalSeconds * 1000));
 
     JLabel lblVariationReplayInterval =
-        new JLabel(
-            resourceBundle.getString("ConfigDialog2.lblVariationReplayInterval")); // $NON-NLS-1$
+        new JLabel(resourceBundle.getString("ConfigDialog2.lblVariationReplayInterval"));
     lblVariationReplayInterval.setBounds(608, 701, 189, 15);
     uiTab.add(lblVariationReplayInterval);
 
-    chkShowScoreLeadLine = new JCheckBox();
-    chkShowScoreLeadLine.setBounds(532, 233, 26, 23);
-    uiTab.add(chkShowScoreLeadLine);
+    cbxShowWinrateOrScoreLeadLine = new JComboBox<String>();
+    cbxShowWinrateOrScoreLeadLine.addItem(
+        resourceBundle.getString("ConfigDialog2.cbxShowWinrateOrScoreLeadLine.winRate"));
+    cbxShowWinrateOrScoreLeadLine.addItem(
+        resourceBundle.getString("ConfigDialog2.cbxShowWinrateOrScoreLeadLine.scoreLead"));
+    cbxShowWinrateOrScoreLeadLine.addItem(
+        resourceBundle.getString("ConfigDialog2.cbxShowWinrateOrScoreLeadLine.both"));
+    cbxShowWinrateOrScoreLeadLine.setBounds(504, 233, 66, 23);
+    uiTab.add(cbxShowWinrateOrScoreLeadLine);
 
     JLabel lblShowScoreLeadLine =
-        new JLabel(resourceBundle.getString("ConfigDialog2.lblShowScoreLeadLine"));
+        new JLabel(resourceBundle.getString("ConfigDialog2.lblShowWinRateOrScoreLeadLine"));
     lblShowScoreLeadLine.setBounds(312, 236, 190, 15);
     uiTab.add(lblShowScoreLeadLine);
 
-    chkShowScoreLeadLine.setSelected(Lizzie.config.showScoreLeadLine);
+    if (Lizzie.config.showScoreLeadLine && Lizzie.config.showWinrateLine)
+      cbxShowWinrateOrScoreLeadLine.setSelectedIndex(2);
+    else if (Lizzie.config.showWinrateLine) cbxShowWinrateOrScoreLeadLine.setSelectedIndex(0);
+    else if (Lizzie.config.showScoreLeadLine) cbxShowWinrateOrScoreLeadLine.setSelectedIndex(1);
+
     chkVariationRemoveDeadChain.setSelected(Lizzie.config.removeDeadChainInVariation);
 
     JLabel lblShowMouseOverWinrateGraph =
@@ -1924,8 +1944,9 @@ public class ConfigDialog2 extends JDialog {
     else txtAdvanceTime.setEditable(false);
     if (Lizzie.config.noCapture) chkNoCapture.setSelected(true);
 
-    if (Lizzie.config.allowDoubleClick) chkEnableDoubCli.setSelected(true);
+    if (Lizzie.config.allowDoubleClick) chkEnableDoubClick.setSelected(true);
     if (Lizzie.config.allowDrag) chkEnableDragStone.setSelected(true);
+    if (Lizzie.config.enableClickReview) chkEnableClickReview.setSelected(true);
     if (Lizzie.config.noRefreshOnSub) chkNoRefreshSub.setSelected(true);
     if (Lizzie.config.enableLizzieCache) chkLizzieCache.setSelected(true);
 
@@ -2069,6 +2090,15 @@ public class ConfigDialog2 extends JDialog {
     spnWinrateStrokeWidth.setModel(new SpinnerNumberModel(1.7, 0.1, 10, 0.1));
     spnWinrateStrokeWidth.setBounds(175, 42, 69, 20);
     themeTab.add(spnWinrateStrokeWidth);
+
+    JLabel lblScoreLeadStrokeWidth =
+        new JLabel(resourceBundle.getString("LizzieConfig.title.scoreLeadStrokeWidth"));
+    lblScoreLeadStrokeWidth.setBounds(294, 44, 133, 16);
+    themeTab.add(lblScoreLeadStrokeWidth);
+    spnScoreLeadStrokeWidth = new JSpinner();
+    spnScoreLeadStrokeWidth.setModel(new SpinnerNumberModel(1.0, 0.1, 10, 0.1));
+    spnScoreLeadStrokeWidth.setBounds(425, 42, 69, 20);
+    themeTab.add(spnScoreLeadStrokeWidth);
 
     JLabel lblMinimumBlunderBarWidth =
         new JLabel(resourceBundle.getString("LizzieConfig.title.minimumBlunderBarWidth"));
@@ -2486,12 +2516,6 @@ public class ConfigDialog2 extends JDialog {
     btnWhiteStonePath.setBounds(759, 313, 40, 26);
     themeTab.add(btnWhiteStonePath);
 
-    cmbThemes.setSelectedItem(
-        Lizzie.config.uiConfig.optString(
-            "theme", resourceBundle.getString("LizzieConfig.title.defaultTheme")));
-    if (cmbThemes.getSelectedIndex() == 0) btnDeleteTheme.setEnabled(false);
-    else btnDeleteTheme.setEnabled(true);
-
     chkShowStoneShaow = new JCheckBox(resourceBundle.getString("LizzieConfig.title.shadowSize"));
     chkShowStoneShaow.setBounds(6, 101, 131, 23);
     themeTab.add(chkShowStoneShaow);
@@ -2559,8 +2583,7 @@ public class ConfigDialog2 extends JDialog {
     pnlBoardPreview =
         new JPanel() {
           @Override
-          protected void paintComponent(Graphics g) {
-            super.paintComponent(g);
+          public void paintComponent(Graphics g) {
             if (tabbedPane.getSelectedIndex() != 1) return;
             if (g instanceof Graphics2D) {
               int width = getWidth();
@@ -2757,6 +2780,12 @@ public class ConfigDialog2 extends JDialog {
     pnlBoardPreview.setBounds(530, 11, 200, 200);
     themeTab.add(pnlBoardPreview);
     Utils.changeFontRecursive(themeTab, Config.sysDefaultFontName);
+
+    cmbThemes.setSelectedItem(
+        Lizzie.config.uiConfig.optString(
+            "theme", resourceBundle.getString("LizzieConfig.title.defaultTheme")));
+    if (cmbThemes.getSelectedIndex() == 0) btnDeleteTheme.setEnabled(false);
+    else btnDeleteTheme.setEnabled(true);
     timer =
         new javax.swing.Timer(
             100,
@@ -2910,7 +2939,9 @@ public class ConfigDialog2 extends JDialog {
               }
               Color color =
                   JColorChooser.showDialog(
-                      (Component) e.getSource(), "Choose a color", cl.getColor());
+                      (Component) e.getSource(),
+                      Lizzie.resourceBundle.getString("ConfigDialog2.chooseColor"),
+                      cl.getColor());
               if (color != null) {
                 cl.setColor(color);
               }
@@ -3315,6 +3346,7 @@ public class ConfigDialog2 extends JDialog {
         chkPureBoard.setSelected(theme.usePureBoard(false));
         lblPureBoardColor.setColor(theme.pureBoardColor());
         spnWinrateStrokeWidth.setValue(theme.winrateStrokeWidth());
+        spnScoreLeadStrokeWidth.setValue(theme.scoreLeadStrokeWidth());
         spnMinimumBlunderBarWidth.setValue(theme.minimumBlunderBarWidth());
         spnShadowSize.setValue(theme.shadowSize());
         setFontValue(cmbFontName, theme.fontName());
@@ -3388,6 +3420,7 @@ public class ConfigDialog2 extends JDialog {
             "pure-background-color", Theme.color2ArrayNoAlpha(lblPureBackgroundColor.getColor()));
         theme.config.put("show-stone-shadow", chkShowStoneShaow.isSelected());
         theme.config.put("winrate-stroke-width", spnWinrateStrokeWidth.getValue());
+        theme.config.put("score-lead-stroke-width", spnScoreLeadStrokeWidth.getValue());
         theme.config.put("minimum-blunder-bar-width", spnMinimumBlunderBarWidth.getValue());
         theme.config.put("shadow-size", spnShadowSize.getValue());
         theme.config.put("font-name", getFontItemName(cmbFontName));
@@ -3479,6 +3512,8 @@ public class ConfigDialog2 extends JDialog {
             Lizzie.config.uiConfig.optJSONArray("pure-background-color"), Color.GRAY));
     txtBackgroundFilter.setEnabled(!chkPureBackground.isSelected());
     spnWinrateStrokeWidth.setValue(Lizzie.config.uiConfig.optFloat("winrate-stroke-width", 1.7f));
+    spnScoreLeadStrokeWidth.setValue(
+        Lizzie.config.uiConfig.optFloat("score-lead-stroke-width", 1.0f));
     spnMinimumBlunderBarWidth.setValue(
         Lizzie.config.uiConfig.optInt("minimum-blunder-bar-width", 1));
     spnShadowSize.setValue(Lizzie.config.uiConfig.optInt("shadow-size", 85));
@@ -3562,6 +3597,7 @@ public class ConfigDialog2 extends JDialog {
     Lizzie.config.uiConfig.put(
         "pure-background-color", Theme.color2ArrayNoAlpha(lblPureBackgroundColor.getColor()));
     Lizzie.config.uiConfig.put("winrate-stroke-width", spnWinrateStrokeWidth.getValue());
+    Lizzie.config.uiConfig.put("score-lead-stroke-width", spnScoreLeadStrokeWidth.getValue());
     Lizzie.config.uiConfig.put("minimum-blunder-bar-width", spnMinimumBlunderBarWidth.getValue());
     Lizzie.config.uiConfig.put("shadow-size", spnShadowSize.getValue());
     Lizzie.config.uiConfig.put("show-stone-shadow", chkShowStoneShaow.isSelected());
@@ -3683,6 +3719,8 @@ public class ConfigDialog2 extends JDialog {
     Lizzie.config.uiConfig.put("limit-time", Lizzie.config.limitTime);
     int oriSpecialCoordsIndex =
         Lizzie.config.useFoxStyleCoords ? 2 : (Lizzie.config.useIinCoordsName ? 1 : 0);
+    if (Lizzie.config.useNumCoordsFromTop) oriSpecialCoordsIndex = 3;
+    if (Lizzie.config.useNumCoordsFromBottom) oriSpecialCoordsIndex = 4;
     int curSpecialCoordsIndex = SpecialCoordsCbx.getSelectedIndex();
     Lizzie.config.useIinCoordsName = curSpecialCoordsIndex == 1;
     Lizzie.config.uiConfig.put("use-i-in-coords-name", Lizzie.config.useIinCoordsName);
@@ -3702,8 +3740,19 @@ public class ConfigDialog2 extends JDialog {
         "show-mouse-over-winrate-graph", Lizzie.config.showMouseOverWinrateGraph);
     if (oriShowMouseOverWinrateGraph && !Lizzie.config.showMouseOverWinrateGraph)
       Lizzie.frame.clearMouseOverWinrateGraph();
-    Lizzie.config.showScoreLeadLine = chkShowScoreLeadLine.isSelected();
+    int lineIndex = cbxShowWinrateOrScoreLeadLine.getSelectedIndex();
+    if (lineIndex == 0) {
+      Lizzie.config.showScoreLeadLine = false;
+      Lizzie.config.showWinrateLine = true;
+    } else if (lineIndex == 1) {
+      Lizzie.config.showScoreLeadLine = true;
+      Lizzie.config.showWinrateLine = false;
+    } else if (lineIndex == 2) {
+      Lizzie.config.showScoreLeadLine = true;
+      Lizzie.config.showWinrateLine = true;
+    }
     Lizzie.config.uiConfig.put("show-score-lead-line", Lizzie.config.showScoreLeadLine);
+    Lizzie.config.uiConfig.put("show-win-rate-line", Lizzie.config.showWinrateLine);
     Lizzie.config.removeDeadChainInVariation = chkVariationRemoveDeadChain.isSelected();
     Lizzie.config.uiConfig.put(
         "remove-dead-in-variation", Lizzie.config.removeDeadChainInVariation);
@@ -3801,10 +3850,12 @@ public class ConfigDialog2 extends JDialog {
       Lizzie.config.uiConfig.put("show-right-menu", Lizzie.config.showRightMenu);
       Lizzie.config.enableLizzieCache = chkLizzieCache.isSelected();
       Lizzie.config.leelazConfig.put("enable-lizzie-cache", Lizzie.config.enableLizzieCache);
-      Lizzie.config.allowDoubleClick = chkEnableDoubCli.isSelected();
+      Lizzie.config.allowDoubleClick = chkEnableDoubClick.isSelected();
       Lizzie.config.uiConfig.put("allow-double-click", Lizzie.config.allowDoubleClick);
       Lizzie.config.allowDrag = chkEnableDragStone.isSelected();
       Lizzie.config.uiConfig.put("allow-drag", Lizzie.config.allowDrag);
+      Lizzie.config.enableClickReview = chkEnableClickReview.isSelected();
+      Lizzie.config.uiConfig.put("enable-click-review", Lizzie.config.enableClickReview);
       Lizzie.config.noRefreshOnSub = chkNoRefreshSub.isSelected();
       Lizzie.config.uiConfig.put("no-refresh-on-sub", Lizzie.config.noRefreshOnSub);
 
@@ -4018,7 +4069,7 @@ public class ConfigDialog2 extends JDialog {
   }
 
   public void switchTab(int index) {
+    if (index == 1) loadThemeTab();
     tabbedPane.setSelectedIndex(index);
-    loadThemeTab();
   }
 }

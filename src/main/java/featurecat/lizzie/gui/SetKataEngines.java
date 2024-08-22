@@ -175,7 +175,7 @@ public class SetKataEngines extends JDialog {
     getContentPane().add(lblPDA);
 
     txtPDA = new JFontTextField();
-    txtPDA.setDocument(new DoubleDocument());
+    txtPDA.setDocument(new KomiDocument(false));
     txtPDA.setBounds(
         Lizzie.config.isFrameFontSmall() ? 482 : (Lizzie.config.isFrameFontMiddle() ? 591 : 711),
         24,

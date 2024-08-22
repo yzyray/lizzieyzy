@@ -19,6 +19,7 @@ public class BoardHistoryNode {
   public boolean diffAnalyzed = false;
   public boolean isBest = false;
   public ArrayList<ExtraStones> extraStones;
+  private boolean hasRemovedStone = false;
 
   private BoardData data;
 
@@ -41,7 +42,7 @@ public class BoardHistoryNode {
     variations.clear();
   }
 
-  public void addExtraStones(int x, int y, boolean isBlack) {
+  public synchronized void addExtraStones(int x, int y, boolean isBlack) {
     if (extraStones == null) extraStones = new ArrayList<ExtraStones>();
     ExtraStones stone = new ExtraStones();
     stone.x = x;
@@ -50,7 +51,7 @@ public class BoardHistoryNode {
     extraStones.add(stone);
   }
 
-  public void undoExtraStones() {
+  public synchronized void undoExtraStones() {
     if (extraStones == null || Lizzie.board.isLoadingFile) return;
     for (ExtraStones stone : extraStones) {
       Lizzie.leelaz.undo(true, Lizzie.board.getHistory().getPrevious().get().blackToPlay);
@@ -122,7 +123,7 @@ public class BoardHistoryNode {
   }
 
   public BoardHistoryNode addOrGoto(BoardData data, boolean newBranch) {
-    return addOrGoto(data, newBranch, false);
+    return addOrGoto(data, newBranch, false, false);
   }
 
   /**
@@ -165,7 +166,8 @@ public class BoardHistoryNode {
     }
   }
 
-  public BoardHistoryNode addOrGoto(BoardData data, boolean newBranch, boolean changeMove) {
+  public BoardHistoryNode addOrGoto(
+      BoardData data, boolean newBranch, boolean changeMove, boolean tsumego) {
     if (!Lizzie.board.isLoadingFile && Lizzie.leelaz != null && !EngineManager.isEngineGame) {
       Lizzie.leelaz.clearBestMoves();
     }
@@ -178,7 +180,7 @@ public class BoardHistoryNode {
     if (!newBranch && nextDummy) {
       changeMove = true;
     }
-    if (!newBranch) {
+    if (!newBranch && !tsumego) {
       for (int i = 0; i < variations.size(); i++) {
         if (variations.get(i).data.zobrist.equals(data.zobrist)) {
           // if (i != 0) {
@@ -197,7 +199,7 @@ public class BoardHistoryNode {
       }
     }
 
-    if (!this.previous.isPresent()) {
+    if (!this.previous.isPresent() && !tsumego) {
       data.moveMNNumber = 1;
     }
     if (Lizzie.config.newMoveNumberInBranch && !variations.isEmpty() && !changeMove) {
@@ -224,7 +226,7 @@ public class BoardHistoryNode {
 
     } else {
       // Add node
-      if (variations.size() == 0) {
+      if (variations.size() == 0 && !tsumego) {
         if (this.data.blackToPlay != node.getData().lastMoveColor.isBlack()) {
           this.data.blackToPlay = node.getData().lastMoveColor.isBlack();
         }
@@ -707,17 +709,94 @@ public class BoardHistoryNode {
 
   public void resetMoveNumberList() {
     // TODO Auto-generated method stub
-    if (!this.previous.isPresent() || !this.getData().lastMove.isPresent()) return;
-    boolean isNewBranch = this.previous.get().variations.get(0) != this;
+    if (!this.previous.isPresent()) return;
+    boolean isNewBranch =
+        this.previous.get().variations.get(0) != this && Lizzie.config.newMoveNumberInBranch;
+    BoardHistoryNode preNode = this.previous().get();
+    this.getData().moveNumber = preNode.getData().moveNumber + 1;
+    this.getData().moveMNNumber =
+        preNode.getData().moveMNNumber > -1 && !isNewBranch
+            ? preNode.getData().moveMNNumber + 1
+            : 1;
     this.getData().moveNumberList =
         isNewBranch
             ? new int[Board.boardWidth * Board.boardHeight]
             : this.previous.get().getData().moveNumberList.clone();
-
-    this.getData()
-            .moveNumberList[
-            Board.getIndex(this.getData().lastMove.get()[0], this.getData().lastMove.get()[1])] =
-        isNewBranch ? 1 : this.getData().moveNumber;
+    if (getData().lastMove.isPresent())
+      this.getData()
+              .moveNumberList[
+              Board.getIndex(this.getData().lastMove.get()[0], this.getData().lastMove.get()[1])] =
+          isNewBranch ? 1 : this.getData().moveMNNumber;
     if (this.numberOfChildren() >= 1) this.variations.get(0).resetMoveNumberList();
+  }
+
+  public void setRemovedStone() {
+    hasRemovedStone = true;
+  }
+
+  public boolean hasRemovedStone() {
+    return hasRemovedStone;
+  }
+
+  public void clearAndSyncBoard(boolean stepIn) {
+    if (stepIn) {
+      //	  System.out.println("in");
+      Lizzie.leelaz.clear();
+      for (int x = 0; x < Board.boardWidth; x++) {
+        for (int y = 0; y < Board.boardHeight; y++) {
+          Stone stone = data.stones[Board.getIndex(x, y)];
+          if (stone.isBlack()) {
+            Lizzie.leelaz.playMove(stone, Board.convertCoordinatesToName(x, y));
+          } else if (stone.isWhite()) {
+            Lizzie.leelaz.playMove(stone, Board.convertCoordinatesToName(x, y));
+          }
+        }
+      }
+    } else {
+      //  System.out.println("out");
+      Lizzie.board.resendMoveToEngine(Lizzie.leelaz, false);
+      if (Lizzie.leelaz.isPondering()) Lizzie.leelaz.ponder();
+    }
+  }
+
+  public boolean checkForRemovedStone() {
+    // TODO Auto-generated method stub
+    boolean removedStone = this.hasRemovedStone;
+    Optional<BoardHistoryNode> node = previous;
+    while (!removedStone && node.isPresent()) {
+      removedStone = node.get().hasRemovedStone;
+      node = node.get().previous;
+    }
+    if (removedStone) {
+      Optional<BoardHistoryNode> nextNode = node;
+      for (int x = 0; x < Board.boardWidth; x++) {
+        for (int y = 0; y < Board.boardHeight; y++) {
+          Stone stone = node.get().data.stones[Board.getIndex(x, y)];
+          if (stone.isBlack()) {
+            Lizzie.leelaz.playMove(stone, Board.convertCoordinatesToName(x, y));
+          } else if (stone.isWhite()) {
+            Lizzie.leelaz.playMove(stone, Board.convertCoordinatesToName(x, y));
+          }
+        }
+      }
+      while (nextNode.get().next().isPresent()) {
+        if (nextNode.get().data.lastMove.isPresent()) {
+          Lizzie.leelaz.playMove(
+              nextNode.get().data.lastMoveColor,
+              Board.convertCoordinatesToName(
+                  nextNode.get().data.lastMove.get()[0], nextNode.get().data.lastMove.get()[1]));
+        } else Lizzie.leelaz.playMove(nextNode.get().data.lastMoveColor, "pass");
+        nextNode = nextNode.get().next();
+      }
+      if (nextNode != node) {
+        if (nextNode.get().data.lastMove.isPresent()) {
+          Lizzie.leelaz.playMove(
+              nextNode.get().data.lastMoveColor,
+              Board.convertCoordinatesToName(
+                  nextNode.get().data.lastMove.get()[0], nextNode.get().data.lastMove.get()[1]));
+        } else Lizzie.leelaz.playMove(nextNode.get().data.lastMoveColor, "pass");
+      }
+    }
+    return removedStone;
   }
 }

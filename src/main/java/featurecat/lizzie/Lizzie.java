@@ -10,12 +10,11 @@ import featurecat.lizzie.gui.GtpConsolePane;
 import featurecat.lizzie.gui.LizzieFrame;
 import featurecat.lizzie.gui.LoadEngine;
 import featurecat.lizzie.gui.Message;
-import featurecat.lizzie.gui.SocketCheckVersion;
 import featurecat.lizzie.rules.Board;
 import featurecat.lizzie.util.MultiOutputStream;
 import featurecat.lizzie.util.Utils;
 import java.awt.Font;
-import java.awt.FontFormatException;
+import java.awt.GraphicsEnvironment;
 import java.awt.Window;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -42,13 +41,14 @@ public class Lizzie {
   public static Board board;
   public static Leelaz leelaz;
   public static Leelaz leelaz2;
-  public static String lizzieVersion = "yzy2.4.7";
-  public static String checkVersion = "220105";
+  public static String lizzieVersion = "2.5.3";
+  public static String checkVersion = "230614";
   public static boolean readMode = false;
   private static String[] mainArgs;
   public static EngineManager engineManager;
   public static int javaVersion = 8;
   public static Float javaScaleFactor = 1.0f;
+  public static boolean isMultiScreen = false;
   public static String javaVersionString = "";
   public static Float sysScaleFactor =
       OS.isWindows() ? (java.awt.Toolkit.getDefaultToolkit().getScreenResolution() / 96.0f) : 1.0f;
@@ -57,17 +57,6 @@ public class Lizzie {
   public static void main(String[] args) throws IOException {
     mainArgs = args;
     config = new Config();
-    try {
-      LizzieFrame.uiFont = new Font("SansSerif", Font.TRUETYPE_FONT, 12);
-      LizzieFrame.winrateFont =
-          Font.createFont(
-              Font.TRUETYPE_FONT,
-              Thread.currentThread()
-                  .getContextClassLoader()
-                  .getResourceAsStream("fonts/OpenSans-Semibold.ttf"));
-    } catch (IOException | FontFormatException e) {
-      e.printStackTrace();
-    }
     if (config.logConsoleToFile) {
       PrintStream oldPrintStream = System.out;
       FileOutputStream bos =
@@ -91,6 +80,7 @@ public class Lizzie {
     // -Dsun.java2d.win.uiScaleX=120dpi -Dsun.java2d.win.uiScaleY=120dpi
     //  System.out.println(System.getProperty("sun.java2d.win.uiScaleX"));
     // System.setProperty("sun.java2d.uiScale.enabled", "false");
+    // -Dsun.java2d.uiScale=1.0
     javaVersionString = System.getProperty("java.version");
     try {
       javaVersion =
@@ -100,11 +90,9 @@ public class Lizzie {
     }
     System.out.println("java version:" + javaVersionString);
     leelaz = new Leelaz("");
-
+    isMultiScreen = GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices().length > 1;
     AwareScaled awareScaled = new AwareScaled();
     awareScaled.setVisible(true);
-    setLookAndFeel();
-    ToolTipManager.sharedInstance().setDismissDelay(99999);
     String hostName = InetAddress.getLocalHost().getHostName();
     if (config.firstTimeLoad || !hostName.equals(config.hostName)) {
       if (!config.hostName.equals("")) config.deletePersist(false);
@@ -136,20 +124,10 @@ public class Lizzie {
     else if (config.useLanguage == 4)
       resourceBundle = ResourceBundle.getBundle("l10n.DisplayStrings", new Locale("ja", "JP"));
     config.isChinese = (resourceBundle.getString("Lizzie.isChinese")).equals("yes");
+    if (config.theme.uiFontName() != null) config.uiFontName = config.theme.uiFontName();
+    Utils.loadFonts(config.uiFontName, config.fontName, config.winrateFontName);
     if (resourceBundle.containsKey("Lizzie.defaultFontName"))
       Config.sysDefaultFontName = resourceBundle.getString("Lizzie.defaultFontName");
-    if (config.theme.uiFontName() != null) config.uiFontName = config.theme.uiFontName();
-    if (Lizzie.config.uiFontName != null
-        && !(Lizzie.config.uiFontName.equals("Lizzie默认")
-            || Lizzie.config.uiFontName.equals("Lizzie Default"))) {
-      LizzieFrame.uiFont = new Font(Lizzie.config.uiFontName, Font.PLAIN, 12);
-    }
-    LizzieFrame.playoutsFont = new Font(Lizzie.config.fontName, Font.PLAIN, 12);
-    if (Lizzie.config.winrateFontName != null
-        && !(Lizzie.config.winrateFontName.equals("Lizzie默认")
-            || Lizzie.config.winrateFontName.equals("Lizzie Default"))) {
-      LizzieFrame.winrateFont = new Font(Lizzie.config.winrateFontName, Font.BOLD, 12);
-    }
     config.shareLabel1 =
         config.uiConfig.optString(
             "share-label-1", resourceBundle.getString("ShareFrame.shareLabel1"));
@@ -159,6 +137,8 @@ public class Lizzie {
     config.shareLabel3 =
         config.uiConfig.optString(
             "share-label-3", resourceBundle.getString("ShareFrame.shareLabel3"));
+    setLookAndFeel();
+    Locale.setDefault(Locale.ENGLISH);
     if (Lizzie.config.uiConfig.optBoolean("autoload-default", false)) {
       start(-1, true);
     } else if (Lizzie.config.uiConfig.optBoolean("autoload-last", false)) {
@@ -204,6 +184,7 @@ public class Lizzie {
   public static void start(int index, boolean loadDefault) {
     board = new Board();
     frame = new LizzieFrame();
+    LizzieFrame.toolbar.setPopupMenu();
     LizzieFrame.menu.doubleMenu(true);
     frame.reSetLoc();
     frame.showMainPanel();
@@ -225,12 +206,12 @@ public class Lizzie {
         });
     gtpConsole = new GtpConsolePane(frame);
     gtpConsole.setVisible(config.persistedUi.optBoolean("gtp-console-opened", false));
-    frame.setVisible(true);
     SwingUtilities.invokeLater(
         new Thread() {
           public void run() {
             if (config.isShowingIndependentMain) frame.openIndependentMainBoard();
             if (config.isShowingIndependentSub) frame.openIndependentSubBoard();
+            if (config.isCtrlOpened) frame.openController();
             try {
               Thread.sleep(60);
             } catch (InterruptedException e2) {
@@ -286,18 +267,19 @@ public class Lizzie {
                 e.printStackTrace();
               }
             }
-            if (config.autoCheckVersion) {
-              String date = new SimpleDateFormat("yyyyMMdd").format(new Date());
-              if (!config.autoCheckDate.equals(date)) {
-                SocketCheckVersion socketCheckVersion = new SocketCheckVersion();
-                socketCheckVersion.SocketCheckVersion(true);
-              }
-            }
           }
         });
+    //    if (config.autoCheckVersion) {
+    //      String date = new SimpleDateFormat("yyyyMMdd").format(new Date());
+    //      if (!config.autoCheckDate.equals(date)) {
+    //        SocketCheckVersion socketCheckVersion = new SocketCheckVersion();
+    //        socketCheckVersion.SocketCheckVersion(true);
+    //      }
+    //    }
   }
 
   public static void setLookAndFeel() {
+    ToolTipManager.sharedInstance().setDismissDelay(99999);
     try {
       if (System.getProperty("os.name").contains("Mac")) {
         if (config.useJavaLooks)
@@ -315,12 +297,10 @@ public class Lizzie {
           new FontUIResource(
               new Font(Config.sysDefaultFontName, Font.PLAIN, Config.frameFontSize)));
       if (config.useJavaLooks) {
-        String lookAndFeel = UIManager.getCrossPlatformLookAndFeelClassName();
-        UIManager.setLookAndFeel(lookAndFeel);
+        UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
       } else {
         // String lookAndFeel = "com.sun.java.swing.plaf.windows.WindowsClassicLookAndFeel";
-        String lookAndFeel = UIManager.getSystemLookAndFeelClassName();
-        UIManager.setLookAndFeel(lookAndFeel);
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
       }
     } catch (IllegalAccessException e) {
       e.printStackTrace();
@@ -358,13 +338,15 @@ public class Lizzie {
     while (keys.hasMoreElements()) {
       Object key = keys.nextElement();
       Object value = UIManager.get(key);
-      if (value instanceof javax.swing.plaf.FontUIResource) UIManager.put(key, f);
+      if (value instanceof javax.swing.plaf.FontUIResource) {
+        UIManager.put(key, f);
+      }
     }
   }
 
   public static void initializeAfterVersionCheck(boolean isEngineGame, Leelaz engine) {
     engine.canRestoreDymPda = true;
-    if (engineManager.isEngineGame()) {
+    if (EngineManager.isEngineGame()) {
       if (engineManager.engineList.get(EngineManager.engineGameInfo.firstEngineIndex).isKataGoPda
           || engineManager.engineList.get(EngineManager.engineGameInfo.secondEngineIndex)
               .isKataGoPda) LizzieFrame.menu.showPda(true);
@@ -414,13 +396,34 @@ public class Lizzie {
     if (Lizzie.config.uiConfig.optBoolean("autoload-last", false)) {
       Lizzie.config.uiConfig.put("last-engine", EngineManager.currentEngineNo);
     }
+    if (Lizzie.frame.ctrl != null && Lizzie.frame.ctrl.isVisible()) {
+      Lizzie.config.uiConfig.put("is-ctrl-opened", true);
+    } else Lizzie.config.uiConfig.put("is-ctrl-opened", false);
     try {
       config.persist();
+    } catch (Exception e) {
+      Utils.showMsgModal(
+          "<html>"
+              + resourceBundle.getString("Lizzie.save.error")
+              + e.getLocalizedMessage()
+              + "<br />"
+              + resourceBundle.getString("Lizzie.save.path")
+              + config.getPersistFilePath()
+              + "</html>");
+      e.printStackTrace();
+    }
+    try {
       config.save();
     } catch (Exception e) {
-      Utils.showMsg(resourceBundle.getString("Lizzie.save.error") + e.getLocalizedMessage());
+      Utils.showMsgModal(
+          "<html>"
+              + resourceBundle.getString("Lizzie.save.error")
+              + e.getLocalizedMessage()
+              + "<br />"
+              + resourceBundle.getString("Lizzie.save.path")
+              + config.getConfigFilePath()
+              + "</html>");
       e.printStackTrace();
-      config.deletePersist(false);
     }
     try {
       frame.closeContributeEngine();
@@ -452,8 +455,10 @@ public class Lizzie {
     config.allowCloseCommentControlHint = true;
     config.showReplaceFileHint = true;
     config.firstLoadKataGo = true;
+    config.exitAutoAnalyzeTip = true;
     config.uiConfig.put("first-load-katago", config.firstLoadKataGo);
     config.uiConfig.put("show-replace-file-hint", config.showReplaceFileHint);
     config.uiConfig.put("allow-close-comment-control-hint", config.allowCloseCommentControlHint);
+    config.uiConfig.put("exit-auto-analyze-tip", true);
   }
 }

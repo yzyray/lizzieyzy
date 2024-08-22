@@ -109,7 +109,7 @@ public class EngineManager {
             }
             if (currentEngineNo > 20) LizzieFrame.menu.changeEngineIcon(20, 3);
             else LizzieFrame.menu.changeEngineIcon(currentEngineNo, 3);
-            Lizzie.board.resendMoveToEngine(Lizzie.leelaz);
+            Lizzie.board.resendMoveToEngine(Lizzie.leelaz, true);
           }
         }.start();
       } else {
@@ -146,9 +146,11 @@ public class EngineManager {
             public void run() {
               if (Lizzie.config.uiConfig.optBoolean("show-badmoves-frame", false)) {
                 Lizzie.frame.toggleBadMoves();
+                Lizzie.frame.setVisible(true);
               }
               if (Lizzie.config.uiConfig.optBoolean("show-suggestions-frame", false)) {
                 Lizzie.frame.toggleBestMoves();
+                Lizzie.frame.setVisible(true);
               }
             }
           });
@@ -249,8 +251,8 @@ public class EngineManager {
     engineGameInfo.whiteMinMove = Lizzie.config.secondEngineMinMove;
     engineGameInfo.whiteResignMoveCounts = Lizzie.config.secondEngineResignMoveCounts;
     engineGameInfo.whiteResignWinrate = Lizzie.config.secondEngineResignWinrate;
-    if (checkGameMaxMove) engineGameInfo.maxGameMoves = maxGameMoves;
-    else engineGameInfo.maxGameMoves = Board.boardHeight * Board.boardWidth * 2;
+    if (checkGameMaxMove) engineGameInfo.setMaxGameMoves(maxGameMoves);
+    else engineGameInfo.setMaxGameMoves(-1);
     engineGameInfo.SF = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
     if (Lizzie.frame.enginePkSgfWinLoss != null)
       engineGameInfo.engineGameSgfWinLoss = Lizzie.frame.enginePkSgfWinLoss;
@@ -469,7 +471,7 @@ public class EngineManager {
     // 添加结果
     if (engineList.get(resignIndex).doublePass) {
       df += resourceBundle.getString("EngineManager.doublePassFileName"); // "_双pass对局";
-    } else if (Lizzie.board.getHistory().getMoveNumber() > engineGameInfo.maxGameMoves) {
+    } else if (Lizzie.board.getHistory().getMoveNumber() > engineGameInfo.getMaxGameMoves()) {
       df += resourceBundle.getString("EngineManager.outOfMoveFileName"); // "_超手数对局";
     } else {
       if (resignIndex == engineGameInfo.whiteEngineIndex) {
@@ -716,8 +718,9 @@ public class EngineManager {
 
     Lizzie.frame.hasEnginePkTitile = true;
     Lizzie.frame.enginePkTitile =
-        resourceBundle.getString("EngineGameInfo.titleScore") //  " 比分 "
-            + engineGameInfo.getFirstEngineWins()
+        //        resourceBundle.getString("EngineGameInfo.titleScore") //  " 比分 "
+        //            +
+        engineGameInfo.getFirstEngineWins()
             + ":"
             + engineGameInfo.getSecondEngineWins()
             + " "
@@ -850,6 +853,8 @@ public class EngineManager {
     stopCountDown();
     LizzieFrame.menu.toggleDoubleMenuGameStatus();
     LizzieFrame.toolbar.isPkStop = false;
+    Lizzie.frame.hasEnginePkTitile = true;
+    Lizzie.frame.enginePkTitile = "";
     // 保存SGF文件
     if (mannul) {
       engineList.get(engineGameInfo.blackEngineIndex).notPondering();
@@ -1043,7 +1048,7 @@ public class EngineManager {
         }
 
         engineGameInfo.settingAll +=
-            resourceBundle.getString("EngineGameInfo.maxMoves") + engineGameInfo.maxGameMoves;
+            resourceBundle.getString("EngineGameInfo.maxMoves") + engineGameInfo.getMaxGameMoves();
       } else {
         engineGameInfo.settingAll =
             resourceBundle.getString("EngineGameInfo.otherSettings")
@@ -1081,7 +1086,7 @@ public class EngineManager {
         }
 
         engineGameInfo.settingAll +=
-            resourceBundle.getString("EngineGameInfo.maxMoves") + engineGameInfo.maxGameMoves;
+            resourceBundle.getString("EngineGameInfo.maxMoves") + engineGameInfo.getMaxGameMoves();
 
         if (LizzieFrame.toolbar.isRandomMove) {
           engineGameInfo.settingAll +=
@@ -1693,7 +1698,7 @@ public class EngineManager {
             }
             if (currentEngineNo > 20) LizzieFrame.menu.changeEngineIcon(20, 3);
             else LizzieFrame.menu.changeEngineIcon(currentEngineNo, 3);
-            Lizzie.board.resendMoveToEngine(Lizzie.leelaz);
+            Lizzie.board.resendMoveToEngine(Lizzie.leelaz, true);
           }
         }.start();
       } else {
@@ -1919,7 +1924,7 @@ public class EngineManager {
                 e.printStackTrace();
               }
             }
-            Lizzie.board.restoreMoveNumber(mv, true, newEng);
+            Lizzie.board.restoreMoveNumber(mv, true, newEng, true);
             if (newEng.isKataGoPda) newEng.sendCommand("dympdacap " + newEng.pdaCap);
           }
         };
@@ -1975,7 +1980,7 @@ public class EngineManager {
                 e.printStackTrace();
               }
             }
-            Lizzie.board.resendMoveToEngine(newEng);
+            Lizzie.board.resendMoveToEngine(newEng, true);
             newEng.nameCmd();
 
             newEng.setResponseUpToDate();
@@ -2061,8 +2066,8 @@ public class EngineManager {
       }
       if (isMain) Lizzie.leelaz = newEng;
       else Lizzie.leelaz2 = newEng;
-      // boolean changedKomi = Lizzie.board.getHistory().getGameInfo().changedKomi;
-      if (!isMain) {
+      boolean changedKomi = Lizzie.board.getHistory().getGameInfo().changedKomi;
+      if (!isMain || changedKomi) {
         newEng.komi = (float) Lizzie.board.getHistory().getGameInfo().getKomi();
       } else newEng.komi = newEng.orikomi;
       if (!newEng.isStarted()) {
@@ -2119,7 +2124,7 @@ public class EngineManager {
                   }
                 } while (!newEng.isLoaded() || newEng.isCheckingName);
                 newEng.notPondering();
-                Lizzie.board.resendMoveToEngine(newEng);
+                Lizzie.board.resendMoveToEngine(newEng, true);
                 if (newEng == Lizzie.leelaz) {
                   Lizzie.board.clearBestMovesAfterForFirstEngine(
                       Lizzie.board.getHistory().getStart());
@@ -2163,7 +2168,7 @@ public class EngineManager {
 
                 Lizzie.board.clearBestMovesAfterForSecondEngine(
                     Lizzie.board.getHistory().getStart());
-                Lizzie.board.resendMoveToEngine(newEng);
+                Lizzie.board.resendMoveToEngine(newEng, true);
                 Menu.engineMenu2.setText(
                     "["
                         + (currentEngineNo2 + 1)
@@ -2234,7 +2239,7 @@ public class EngineManager {
     LizzieFrame.menu.changeicon(index);
   }
 
-  public boolean isEngineGame() {
+  public static boolean isEngineGame() {
     return isPreEngineGame || isEngineGame;
   }
 

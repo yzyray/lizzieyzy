@@ -14,7 +14,6 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Toolkit;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -25,9 +24,10 @@ import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -43,10 +43,9 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-public class ContributeView extends JDialog {
+public class ContributeView extends JFrame {
   private JTextField txtGameIndex;
   private JTextField txtAutoPlayInterval;
   private JLabel lblGameInfos;
@@ -62,14 +61,24 @@ public class ContributeView extends JDialog {
   private int watchingGameIndex = 0;
   private JTextField txtMoveNumber;
   private ArrayDeque<DocType> docQueue;
-  private int checkCount = 0;
-  private int scrollLength = 0;
   private ScheduledExecutorService executor;
+  private JButton btnPauseResume;
+  private JButton btnSlowShutdown;
+  private JButton btnForceShutdown;
+  private JButton btnCloseView;
+  private JCheckBox chkIgnoreNone19;
+  private boolean exitedAfterSignal = false;
+  private int max_length = 15000;
 
-  public ContributeView(Window owner) {
-    super(owner);
+  public ContributeView() {
+    exitedAfterSignal = false;
     setTitle(Lizzie.resourceBundle.getString("ContributeView.title")); // ("KataGo跑谱贡献");
     setResizable(false);
+    try {
+      setIconImage(ImageIO.read(getClass().getResourceAsStream("/assets/logo.png")));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
     JPanel mainPanel = new JPanel();
     mainPanel.setBorder(new EmptyBorder(0, 0, 0, 0));
     getContentPane().add(mainPanel, BorderLayout.CENTER);
@@ -89,6 +98,17 @@ public class ContributeView extends JDialog {
 
     lblGameInfos = new JFontLabel();
     labelPanel.add(lblGameInfos);
+
+    JButton btnSaveGameRecords =
+        new JFontButton(
+            Lizzie.resourceBundle.getString("ContributeView.btnSaveGameRecords")); // ("保存所有棋谱");
+    labelPanel.add(btnSaveGameRecords);
+    btnSaveGameRecords.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            if (Lizzie.frame.contributeEngine != null) Lizzie.frame.contributeEngine.saveAllGames();
+          }
+        });
     updateLblGameInfos();
 
     JPanel gameControlPanel = new JPanel();
@@ -316,7 +336,7 @@ public class ContributeView extends JDialog {
 
     txtAutoPlayInterval = new JFontTextField();
     autoPlayPanel.add(txtAutoPlayInterval);
-    txtAutoPlayInterval.setColumns(5);
+    txtAutoPlayInterval.setColumns(3);
     txtAutoPlayInterval.setDocument(new DoubleDocument());
     Document dtTxtAutoPlayInterval = txtAutoPlayInterval.getDocument();
     dtTxtAutoPlayInterval.addDocumentListener(
@@ -353,6 +373,7 @@ public class ContributeView extends JDialog {
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             Lizzie.config.contributeWatchAutoPlayNextGame = chkAutoPlayNextGame.isSelected();
+            chkIgnoreNone19.setEnabled(chkAutoPlayNextGame.isSelected());
             Lizzie.config.uiConfig.put(
                 "contribute-watch-auto-play-next-game",
                 Lizzie.config.contributeWatchAutoPlayNextGame);
@@ -360,7 +381,7 @@ public class ContributeView extends JDialog {
         });
     chkAutoPlayNextGame.setSelected(Lizzie.config.contributeWatchAutoPlayNextGame);
 
-    JCheckBox chkIgnoreNone19 =
+    chkIgnoreNone19 =
         new JFontCheckBox(
             Lizzie.resourceBundle.getString("ContributeView.chkIgnoreNone19")); // ("跳过非19x19");
     autoPlayPanel.add(chkIgnoreNone19);
@@ -373,6 +394,7 @@ public class ContributeView extends JDialog {
           }
         });
     chkIgnoreNone19.setSelected(Lizzie.config.contributeWatchSkipNone19);
+    chkIgnoreNone19.setEnabled(chkAutoPlayNextGame.isSelected());
 
     JPanel panel = new JPanel();
     panel.setLayout(new FlowLayout(1, 10, 2));
@@ -419,6 +441,7 @@ public class ContributeView extends JDialog {
     btnHideShowResult.setMargin(new Insets(1, 7, 1, 7));
 
     txtRules = new JTextPane();
+    txtRules.setEditable(false);
     JPanel ruleAndButtonPanel = new JPanel();
     getContentPane().add(ruleAndButtonPanel, BorderLayout.SOUTH);
     txtRules.setText(
@@ -466,28 +489,59 @@ public class ContributeView extends JDialog {
     JPanel buttonPanel = new JPanel();
     ruleAndButtonPanel.add(buttonPanel, BorderLayout.SOUTH);
 
-    JButton btnShutdown =
+    btnSlowShutdown =
+        new JFontButton(Lizzie.resourceBundle.getString("ContributeView.btnSlowShutdown"));
+    btnSlowShutdown.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            if (Lizzie.frame.contributeEngine != null) {
+              if (Lizzie.frame.contributeEngine.paused) Lizzie.frame.contributeEngine.togglePause();
+              Lizzie.frame.contributeEngine.slowQuit();
+            }
+          }
+        });
+
+    btnSlowShutdown.setToolTipText(
+        Lizzie.resourceBundle.getString("ContributeView.btnSlowShutdownTip"));
+
+    btnForceShutdown =
         new JFontButton(
-            Lizzie.resourceBundle.getString("ContributeView.btnShutdown")); // "结束跑谱贡献");
-    btnShutdown.addActionListener(
+            Lizzie.resourceBundle.getString(
+                "ContributeView.btnForceShutdown")); // "结束跑谱贡献");btnForceShutdown
+    btnForceShutdown.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             if (Lizzie.frame.contributeEngine != null) Lizzie.frame.contributeEngine.normalQuit();
             setVisible(false);
           }
         });
+    btnForceShutdown.setToolTipText(
+        Lizzie.resourceBundle.getString("ContributeView.btnForceShutdownTip"));
+    //    if (Lizzie.frame.contributeEngine != null)
+    //      setSlowShutdownButton(Lizzie.frame.contributeEngine.canSlowClose());
 
-    JButton btnSaveGameRecords =
-        new JFontButton(
-            Lizzie.resourceBundle.getString("ContributeView.btnSaveGameRecords")); // ("保存所有棋谱");
-    btnSaveGameRecords.addActionListener(
+    btnPauseResume = new JFontButton(Lizzie.resourceBundle.getString("ContributeView.btnPause"));
+    btnPauseResume.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
-            if (Lizzie.frame.contributeEngine != null) Lizzie.frame.contributeEngine.saveAllGames();
+            if (Lizzie.frame.contributeEngine != null)
+              Lizzie.frame.contributeEngine.pauseAndResume();
           }
         });
-    buttonPanel.add(btnSaveGameRecords);
-    buttonPanel.add(btnShutdown);
+
+    buttonPanel.add(btnPauseResume);
+    buttonPanel.add(btnSlowShutdown);
+    buttonPanel.add(btnForceShutdown);
+
+    btnCloseView = new JFontButton(Lizzie.resourceBundle.getString("ContributeView.btnCloseView"));
+    btnCloseView.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent arg0) {
+            setVisible(false);
+          }
+        });
+    buttonPanel.add(btnCloseView);
+    btnCloseView.setVisible(false);
 
     JPanel consolePanel = new JPanel();
     consolePanel.setLayout(new BorderLayout());
@@ -555,18 +609,35 @@ public class ContributeView extends JDialog {
             : Lizzie.resourceBundle.getString("ContributeView.hideConsole"));
     if (Lizzie.config.contributeHideConsole) scrollConsole.setVisible(false);
     else scrollConsole.setVisible(true);
+    consolePanel.add(consoleButtonPane, BorderLayout.SOUTH);
+
+    JPanel panel_1 = new JPanel();
+    panel_1.setLayout(new FlowLayout(0, 0, 0));
+    consoleButtonPane.add(panel_1, BorderLayout.EAST);
 
     JButton btnFullConsole =
         new JFontButton(
             Lizzie.resourceBundle.getString("ContributeView.btnFullConsole")); // "完整控制台");
+    panel_1.add(btnFullConsole);
+
+    JCheckBox chkAlwaysTop =
+        new JCheckBox(Lizzie.resourceBundle.getString("ContributeView.chkAlwaysTop"));
+    panel_1.add(chkAlwaysTop);
+    chkAlwaysTop.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            Lizzie.config.contributeViewAlwaysTop = chkAlwaysTop.isSelected();
+            Lizzie.config.uiConfig.put(
+                "contribute-always-top", Lizzie.config.contributeViewAlwaysTop);
+            setAlwaysOnTop(Lizzie.config.contributeViewAlwaysTop);
+          }
+        });
     btnFullConsole.addActionListener(
         new ActionListener() {
           public void actionPerformed(ActionEvent e) {
             Lizzie.frame.toggleGtpConsole();
           }
         });
-    consoleButtonPane.add(btnFullConsole, BorderLayout.EAST);
-    consolePanel.add(consoleButtonPane, BorderLayout.SOUTH);
 
     executor = Executors.newSingleThreadScheduledExecutor();
     executor.execute(this::read);
@@ -575,8 +646,11 @@ public class ContributeView extends JDialog {
     this.addWindowListener(
         new WindowAdapter() {
           public void windowClosing(WindowEvent e) {
-            Utils.showMsg(
-                Lizzie.resourceBundle.getString("ContributeView.closeTip")); // ("请使用结束跑普贡献关闭此窗口");
+            if (exitedAfterSignal) setVisible(false);
+            else
+              Utils.showMsg(
+                  Lizzie.resourceBundle.getString(
+                      "ContributeView.closeTip")); // ("请使用结束跑普贡献关闭此窗口");
           }
         });
 
@@ -622,6 +696,20 @@ public class ContributeView extends JDialog {
     setVisible(true);
   }
 
+  //  public void setSlowShutdownButton(boolean set) {
+  //    // TODO Auto-generated method stub
+  //    if (set) {
+  //      btnSlowShutdown.setVisible(true);
+  //
+  // btnForceShutdown.setText(Lizzie.resourceBundle.getString("ContributeView.btnForceShutdown"));
+  //      btnForceShutdown.setToolTipText(
+  //          Lizzie.resourceBundle.getString("ContributeView.btnForceShutdownTip"));
+  //    } else {
+  //      btnSlowShutdown.setVisible(false);
+  //      btnForceShutdown.setText(Lizzie.resourceBundle.getString("ContributeView.btnShutdown"));
+  //    }
+  //  }
+
   public void setType(String text) {
     lblGameType.setText(Lizzie.resourceBundle.getString("ContributeView.lblGameType") + text);
   }
@@ -655,59 +743,8 @@ public class ContributeView extends JDialog {
     //	            + "还棋头:否\r\n"
     //	            + "让子贴还(让N子): 贴还N目\r\n"
     //	            + "收后贴还0.5目: 否");
-    String rules = "";
-    try {
-      if (jsonRules.has("scoring")) {
-        rules += Lizzie.resourceBundle.getString("ContributeView.rules.scoring");
-        if (jsonRules.getString("scoring").contentEquals("AREA"))
-          rules += Lizzie.resourceBundle.getString("ContributeView.rules.scoring.area");
-        else rules += Lizzie.resourceBundle.getString("ContributeView.rules.scoring.territory");
-      }
-      if (jsonRules.has("ko")) {
-        rules += "\r\n" + Lizzie.resourceBundle.getString("ContributeView.rules.ko");
-        if (jsonRules.getString("ko").contentEquals("POSITIONAL"))
-          rules += Lizzie.resourceBundle.getString("ContributeView.rules.ko.positional");
-        else if (jsonRules.getString("ko").contentEquals("SITUATIONAL"))
-          rules += Lizzie.resourceBundle.getString("ContributeView.rules.ko.situational");
-        else if (jsonRules.getString("ko").contentEquals("SIMPLE"))
-          rules += Lizzie.resourceBundle.getString("ContributeView.rules.ko.simple");
-      }
-      if (jsonRules.has("suicide")) {
-        rules += "\r\n" + Lizzie.resourceBundle.getString("ContributeView.rules.suicide");
-        if (jsonRules.getBoolean("suicide"))
-          rules += Lizzie.resourceBundle.getString("ContributeView.rules.yes");
-        else rules += Lizzie.resourceBundle.getString("ContributeView.rules.no");
-      }
-      if (jsonRules.has("tax")) {
-        rules += "\r\n" + Lizzie.resourceBundle.getString("ContributeView.rules.tax");
-        if (jsonRules.getString("tax").contentEquals("NONE"))
-          rules += Lizzie.resourceBundle.getString("ContributeView.rules.tax.none");
-        else if (jsonRules.getString("tax").contentEquals("ALL"))
-          rules += Lizzie.resourceBundle.getString("ContributeView.rules.tax.all");
-        else if (jsonRules.getString("tax").contentEquals("SEKI"))
-          rules += Lizzie.resourceBundle.getString("ContributeView.rules.tax.seki");
-      }
-      if (jsonRules.has("whiteHandicapBonus")) {
-        rules +=
-            "\r\n" + Lizzie.resourceBundle.getString("ContributeView.rules.whiteHandicapBonus");
-        if (jsonRules.getString("whiteHandicapBonus").contentEquals("0"))
-          rules += Lizzie.resourceBundle.getString("ContributeView.rules.whiteHandicapBonus.0");
-        else if (jsonRules.getString("whiteHandicapBonus").contentEquals("N"))
-          rules += Lizzie.resourceBundle.getString("ContributeView.rules.whiteHandicapBonus.N");
-        else if (jsonRules.getString("whiteHandicapBonus").contentEquals("N-1"))
-          rules += Lizzie.resourceBundle.getString("ContributeView.rules.whiteHandicapBonus.N-1");
-      }
-      if (jsonRules.has("hasButton")) {
-        rules += "\r\n" + Lizzie.resourceBundle.getString("ContributeView.rules.button");
-        if (jsonRules.getBoolean("hasButton"))
-          rules += Lizzie.resourceBundle.getString("ContributeView.rules.yes");
-        else rules += Lizzie.resourceBundle.getString("ContributeView.rules.no");
-      }
-      txtRules.setText(rules);
-      pack();
-    } catch (JSONException e) {
-      e.printStackTrace();
-    }
+    txtRules.setText(Utils.getRuleString(jsonRules));
+    pack();
   }
 
   public void setGames(int finishedGames, int playingGames) {
@@ -747,26 +784,39 @@ public class ContributeView extends JDialog {
     //            + "</html>");
   }
 
+  public void setBtnPauseResume(boolean paused) {
+    btnPauseResume.setText(
+        paused
+            ? Lizzie.resourceBundle.getString("ContributeView.btnResume")
+            : Lizzie.resourceBundle.getString("ContributeView.btnPause"));
+  }
+
   private void checkConsole() {
-    if (console.getText().length() > 200000) {
-      console.setText(
-          console
-              .getText()
-              .substring(console.getText().length() - 70000, console.getText().length()));
-      console.setCaretPosition(console.getDocument().getLength());
+    Document doc = console.getDocument();
+    int length = doc.getLength();
+    try {
+      if (length > max_length) {
+        doc.remove(0, length - max_length / 2);
+      }
+    } catch (BadLocationException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
     }
   }
 
-  public void addDocs(DocType doc) {
-    synchronized (console) {
-      SimpleAttributeSet attrSet = new SimpleAttributeSet();
-      StyleConstants.setForeground(attrSet, doc.contentColor);
-      if (doc.isCommand) {
-        StyleConstants.setFontFamily(attrSet, Lizzie.config.uiFontName);
-      }
-      StyleConstants.setFontSize(attrSet, doc.fontSize);
-      insert(doc.content, attrSet);
+  private void addDocs(DocType doc) {
+    SimpleAttributeSet attrSet = new SimpleAttributeSet();
+    StyleConstants.setForeground(attrSet, doc.contentColor);
+    if (doc.isCommand) {
+      StyleConstants.setFontFamily(attrSet, Lizzie.config.uiFontName);
     }
+    StyleConstants.setFontSize(attrSet, doc.fontSize);
+    String insertContent = doc.content;
+    if (insertContent.length() > max_length / 10) {
+      insertContent = insertContent.substring(0, max_length / 10 - 5) + "(...)\n";
+    }
+    insert(insertContent, attrSet);
+    console.setCaretPosition(console.getDocument().getLength());
   }
 
   private void insert(String str, AttributeSet attrSet) {
@@ -817,19 +867,17 @@ public class ContributeView extends JDialog {
             docQueue.clear();
             break;
           }
-        }
-      }
-      checkCount++;
-      if (checkCount > 300) {
-        checkCount = 0;
-        checkConsole();
-      } else {
-        int length = console.getDocument().getLength();
-        if (length != scrollLength) {
-          scrollLength = length;
-          console.setCaretPosition(scrollLength);
+          checkConsole();
         }
       }
     }
+  }
+
+  public void exitedAfterSignal() {
+    // TODO Auto-generated method stub
+    btnSlowShutdown.setVisible(false);
+    btnForceShutdown.setVisible(false);
+    btnCloseView.setVisible(true);
+    exitedAfterSignal = true;
   }
 }

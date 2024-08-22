@@ -34,7 +34,7 @@ public class AnalysisPartGame extends JDialog {
             Lizzie.config.uiConfig.put("analysis-start-move", Lizzie.config.analysisStartMove);
             Lizzie.config.uiConfig.put("analysis-end-move", Lizzie.config.analysisEndMove);
             setVisible(false);
-            Lizzie.frame.flashAnalyzeGame(false);
+            Lizzie.frame.flashAnalyzeGame(false, false);
           }
         });
     btnStart.setBounds(

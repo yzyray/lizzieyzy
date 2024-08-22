@@ -2,6 +2,7 @@ package featurecat.lizzie.analysis;
 
 import featurecat.lizzie.gui.LizzieFrame;
 import featurecat.lizzie.gui.SgfWinLossList;
+import featurecat.lizzie.rules.Board;
 import featurecat.lizzie.rules.Movelist;
 import java.util.ArrayList;
 
@@ -21,12 +22,12 @@ public class EngineGameInfo {
 
   public int firstEngineWinAsBlack;
   public int firstEngineWinAsWhite;
-  public int firstEngineTotlePlayouts;
+  public long firstEngineTotlePlayouts;
   public int firstEngineTotleTime;
 
   public int secondEngineWinAsBlack;
   public int secondEngineWinAsWhite;
-  public int secondEngineTotlePlayouts;
+  public long secondEngineTotlePlayouts;
   public int secondEngineTotleTime;
 
   public int timeBlack;
@@ -59,7 +60,7 @@ public class EngineGameInfo {
   public int whiteResignMoveCounts;
   public Double whiteResignWinrate;
 
-  public int maxGameMoves;
+  private int maxGameMoves;
 
   public int getFirstEngineWins() {
     return firstEngineWinAsBlack + firstEngineWinAsWhite;
@@ -132,5 +133,14 @@ public class EngineGameInfo {
 
   public boolean isFirstEnginePlayBlack() {
     return firstEngineIndex == blackEngineIndex;
+  }
+
+  public int getMaxGameMoves() {
+    if (maxGameMoves > 0) return maxGameMoves;
+    else return Board.boardWidth * Board.boardHeight * 2;
+  }
+
+  public void setMaxGameMoves(int maxMoves) {
+    maxGameMoves = maxMoves;
   }
 }

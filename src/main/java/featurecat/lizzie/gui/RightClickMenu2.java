@@ -10,6 +10,7 @@ import java.util.TimerTask;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JPopupMenu;
+import javax.swing.JToolBar.Separator;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 
@@ -21,8 +22,11 @@ public class RightClickMenu2 extends JPopupMenu {
   private JFontMenuItem switchone;
   private JFontMenuItem deleteone;
   private JFontMenuItem previousMove;
+  private Separator sep1;
+  private Separator sep2;
   private JFontMenuItem moveStone;
   private JFontMenuItem findStone;
+  private JFontMenuItem review;
   private final ResourceBundle resourceBundle = Lizzie.resourceBundle;
   private boolean isFromIndependent;
 
@@ -66,13 +70,19 @@ public class RightClickMenu2 extends JPopupMenu {
               deleteone.setVisible(false);
               moveStone.setVisible(false);
               findStone.setVisible(false);
+              review.setVisible(false);
+              sep1.setVisible(false);
+              sep2.setVisible(false);
             } else {
               previousMove.setText(
                   resourceBundle.getString("RightClickMenu.previousMove")); // ("回退一手");
+              review.setVisible(true);
               switchone.setVisible(true);
               deleteone.setVisible(true);
               moveStone.setVisible(true);
               findStone.setVisible(true);
+              sep1.setVisible(true);
+              sep2.setVisible(true);
             }
           }
         };
@@ -94,10 +104,15 @@ public class RightClickMenu2 extends JPopupMenu {
     previousMove = new JFontMenuItem(resourceBundle.getString("RightClickMenu.previousMove"));
     previousMove.setIcon(iconBack);
     moveStone = new JFontMenuItem(resourceBundle.getString("RightClickMenu2.moveStone"));
+    review = new JFontMenuItem(resourceBundle.getString("RightClickMenu2.review"));
+    sep1 = new Separator();
+    sep2 = new Separator();
     this.add(moveStone);
     this.add(switchone);
     this.add(deleteone);
-    this.addSeparator();
+    this.add(sep1);
+    this.add(review);
+    this.add(sep2);
     this.add(previousMove);
     this.add(findStone);
     findStone.addActionListener(
@@ -138,6 +153,16 @@ public class RightClickMenu2 extends JPopupMenu {
           public void actionPerformed(ActionEvent e) {
             if (isFromIndependent) Lizzie.frame.independentMainBoard.setDragStartInfo(coords, true);
             else Lizzie.frame.setDragStartInfo(coords, true);
+          }
+        });
+
+    review.addActionListener(
+        new ActionListener() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            if (Lizzie.board.hasStoneAt(coords)) {
+              Lizzie.board.setPressStoneInfo(coords, true);
+            }
           }
         });
   }

@@ -209,7 +209,6 @@ public class EstimateResults extends JDialog {
   }
 
   private void setLocNearBoard() {
-    // TODO Auto-generated method stub
     int width = this.getWidth();
     int height = this.getHeight();
     int frameX = Lizzie.frame.getX();
@@ -217,19 +216,31 @@ public class EstimateResults extends JDialog {
     Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
     int screenWidth = screensize.width;
     int screenHeight = screensize.height;
-    int boardX = Lizzie.frame.boardX;
+    int boardX = Utils.zoomIn(Lizzie.frame.boardX);
     int boardY =
-        Lizzie.frame.boardY
-            + Utils.zoomIn(Lizzie.frame.mainPanel.getY())
+        Utils.zoomIn(Lizzie.frame.boardY + Lizzie.frame.mainPanel.getY())
             + Config.menuHeight
             + Lizzie.frame.topPanel.getHeight();
-    int boardLenght = Lizzie.frame.maxSize;
+    int boardLenght = Utils.zoomIn(Lizzie.frame.maxSize);
     if (Lizzie.config.isFloatBoardMode() && Lizzie.frame.independentMainBoard != null) {
       frameX = Lizzie.frame.independentMainBoard.getX();
       frameY = Lizzie.frame.independentMainBoard.getY();
       boardX = 0;
       boardY = 0;
       boardLenght = Lizzie.frame.independentMainBoard.getWidth();
+    }
+    if (Lizzie.frame.floatBoard != null
+        && Lizzie.frame.floatBoard.isVisible()
+        && !Lizzie.frame.mainPanel.hasFocus()) {
+      if (!(Lizzie.config.isFloatBoardMode()
+          && Lizzie.frame.independentMainBoard != null
+          && Lizzie.frame.independentMainBoard.hasFocus())) {
+        frameX = Lizzie.frame.floatBoard.getX();
+        frameY = Lizzie.frame.floatBoard.getY();
+        boardX = 0;
+        boardY = 0;
+        boardLenght = Lizzie.frame.floatBoard.getWidth();
+      }
     }
     if (frameX + boardX + boardLenght + width + 5 <= screenWidth)
       this.setLocation(
@@ -289,17 +300,13 @@ public class EstimateResults extends JDialog {
     //  }
   }
 
+  @Override
   public void paint(Graphics g) // 画图对象
       {
     int width = getWidth();
     int height = getHeight();
     int topCap = (int) ((Lizzie.sysScaleFactor - Lizzie.javaScaleFactor) * 20) + 5;
     Graphics2D g2 = (Graphics2D) g;
-    // if (Lizzie.config.isScaled) {
-    //     g2.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-    //     g2.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_ON);
-    //   }
-
     if (cachedBackgroundImage == null) {
       try {
         cachedBackgroundImage =

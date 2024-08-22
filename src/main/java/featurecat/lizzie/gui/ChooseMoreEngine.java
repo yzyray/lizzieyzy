@@ -16,7 +16,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
-import java.util.ResourceBundle;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
@@ -68,7 +67,6 @@ public class ChooseMoreEngine extends JPanel {
   public String enginePath = "";
   public String weightPath = "";
   public String commandHelp = "";
-  private static final ResourceBundle resourceBundle = Lizzie.resourceBundle;
 
   public ChooseMoreEngine() {
     // super(new BorderLayout());
@@ -130,7 +128,7 @@ public class ChooseMoreEngine extends JPanel {
     // checkBlack.setSelected(true);
     // checkWhite.setSelected(true);
 
-    ok = new JFontButton(resourceBundle.getString("ChooseMoreEngine.ok")); // "切换选中引擎"
+    ok = new JFontButton(Lizzie.resourceBundle.getString("ChooseMoreEngine.ok")); // "切换选中引擎"
     // noEngine = new JButton("不加载引擎");
     // exit = new JButton("退出");
 
@@ -157,7 +155,8 @@ public class ChooseMoreEngine extends JPanel {
             engch.setVisible(false);
             if (curIndex < 0) {
               JOptionPane.showMessageDialog(
-                  engch, resourceBundle.getString("ChooseMoreEngine.selectHint")); // "请先选择一个引擎 ");
+                  engch,
+                  Lizzie.resourceBundle.getString("ChooseMoreEngine.selectHint")); // "请先选择一个引擎 ");
               return;
             }
             if (engineMenuIndex == 1) Lizzie.engineManager.switchEngine(curIndex, true);
@@ -348,9 +347,12 @@ public class ChooseMoreEngine extends JPanel {
 
       public String getColumnName(int column) {
 
-        if (column == 0) return resourceBundle.getString("ChooseMoreEngine.column1"); // "序号";
-        if (column == 1) return resourceBundle.getString("ChooseMoreEngine.column2"); // "名称";
-        if (column == 2) return resourceBundle.getString("ChooseMoreEngine.column3"); // "命令行";
+        if (column == 0)
+          return Lizzie.resourceBundle.getString("ChooseMoreEngine.column1"); // "序号";
+        if (column == 1)
+          return Lizzie.resourceBundle.getString("ChooseMoreEngine.column2"); // "名称";
+        if (column == 2)
+          return Lizzie.resourceBundle.getString("ChooseMoreEngine.column3"); // "命令行";
 
         return "";
       }
@@ -384,7 +386,8 @@ public class ChooseMoreEngine extends JPanel {
   public static JDialog createDialog(int index) {
     // Create and set up the window.
     engch = new JDialog();
-    engch.setTitle(resourceBundle.getString("ChooseMoreEngine.title")); // "选择要切换的引擎(双击直接切换)");
+    engch.setTitle(
+        Lizzie.resourceBundle.getString("ChooseMoreEngine.title")); // "选择要切换的引擎(双击直接切换)");
     engineMenuIndex = index;
     engch.addWindowListener(
         new WindowAdapter() {

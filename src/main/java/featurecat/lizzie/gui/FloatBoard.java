@@ -1,18 +1,20 @@
 package featurecat.lizzie.gui;
 
+import static java.awt.RenderingHints.KEY_ANTIALIASING;
+import static java.awt.RenderingHints.VALUE_ANTIALIAS_OFF;
 import static java.awt.image.BufferedImage.TYPE_INT_ARGB;
 
-import featurecat.lizzie.Config;
 import featurecat.lizzie.Lizzie;
 import featurecat.lizzie.analysis.MoveData;
 import featurecat.lizzie.rules.Board;
 import featurecat.lizzie.util.Utils;
-import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
+import java.awt.Rectangle;
+import java.awt.TexturePaint;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -61,6 +63,8 @@ public class FloatBoard extends JDialog {
   private ImageIcon left;
   private ImageIcon right;
   private ImageIcon position;
+  private ImageIcon noEdit;
+  private ImageIcon edit;
   private JButton btnStopGo;
   private JButton btnHideShow;
   private JButton btnLeft;
@@ -68,6 +72,7 @@ public class FloatBoard extends JDialog {
   private JButton btnUp;
   private JButton btnDown;
   private JButton btnShowPos;
+  private JButton btnEdit;
   private int posX, posY, posWidth, posHeight;
   public boolean hideSuggestion = false;
   private int boardType; // 0=野狐 1=YC 2=新浪 >2其他
@@ -76,6 +81,7 @@ public class FloatBoard extends JDialog {
   private int extraX, extraY;
   private int tempX, tempY, tempWidth, tempHeight;
   private boolean showPosBtn = false;
+  public boolean editMode = false;
 
   public FloatBoard(int x, int y, int width, int height, int boardType, boolean isScaled) {
     tempX = x;
@@ -106,21 +112,15 @@ public class FloatBoard extends JDialog {
     boardRenderer = new FloatBoardRenderer();
     setBoardType();
     mainPanel =
-        new JPanel(true) {
+        new JPanel() {
           @Override
-          protected void paintComponent(Graphics g) {
-            // super.paintComponent(g);
-            ((Graphics2D) g).setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
-            if (Config.isScaled) {
-              Graphics2D g1 = (Graphics2D) g;
-              g1.scale(1.0 / Lizzie.javaScaleFactor, 1.0 / Lizzie.javaScaleFactor);
-            }
+          public void paintComponent(Graphics g) {
+            Utils.ajustScale(g);
             paintMianPanel(g);
           }
         };
     mainPanel.enableInputMethods(false);
     mainPanel.setBounds(0, 0, Utils.zoomIn(width), Utils.zoomIn(height));
-
     //  mainPanel.setBackground(new Color(0, 0, 0, 0));
 
     toStop = new ImageIcon();
@@ -132,6 +132,8 @@ public class FloatBoard extends JDialog {
     left = new ImageIcon();
     right = new ImageIcon();
     position = new ImageIcon();
+    noEdit = new ImageIcon();
+    edit = new ImageIcon();
     try {
       toStop.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/tostop.png")));
       toPlay.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/toplay.png")));
@@ -142,6 +144,12 @@ public class FloatBoard extends JDialog {
       left.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/leftFloat.png")));
       right.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/rightFloat.png")));
       position.setImage(ImageIO.read(getClass().getResourceAsStream("/assets/pos.png")));
+      noEdit.setImage(
+          ImageIO.read(getClass().getResourceAsStream("/assets/noEdit.png"))
+              .getScaledInstance(16, 16, java.awt.Image.SCALE_SMOOTH));
+      edit.setImage(
+          ImageIO.read(getClass().getResourceAsStream("/assets/edit.png"))
+              .getScaledInstance(16, 16, java.awt.Image.SCALE_SMOOTH));
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -172,16 +180,6 @@ public class FloatBoard extends JDialog {
     btnHideShow.setVisible(true);
     btnStopGo.setPreferredSize(new Dimension(16, 16));
     btnHideShow.setPreferredSize(new Dimension(16, 16));
-    btnStopGo.setBounds(
-        getWidth() - 20 - Utils.zoomIn(Utils.zoomIn(20)),
-        getHeight() - 18 - Utils.zoomIn(Utils.zoomIn(20)),
-        19,
-        19);
-    btnHideShow.setBounds(
-        getWidth() - 40 - Utils.zoomIn(Utils.zoomIn(20)),
-        getHeight() - 18 - Utils.zoomIn(Utils.zoomIn(20)),
-        19,
-        19);
 
     btnLeft = new JButton(left);
     btnLeft.setContentAreaFilled(false);
@@ -248,6 +246,19 @@ public class FloatBoard extends JDialog {
     btnShowPos.setFocusable(false);
     btnShowPos.setPreferredSize(new Dimension(16, 16));
 
+    btnEdit = new JButton(edit);
+    btnEdit.setContentAreaFilled(false);
+    btnEdit.setMargin(new Insets(0, 0, 0, 0));
+    btnEdit.addActionListener(
+        new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+            changeEetEditMode();
+          }
+        });
+    btnEdit.setFocusable(false);
+    btnEdit.setPreferredSize(new Dimension(16, 16));
+
+    setEditButton();
     setButton();
 
     allPanel = new JLayeredPane();
@@ -260,6 +271,7 @@ public class FloatBoard extends JDialog {
     allPanel.add(btnDown, new Integer(200));
     allPanel.add(btnHideShow, new Integer(200));
     allPanel.add(btnStopGo, new Integer(200));
+    allPanel.add(btnEdit, new Integer(200));
     allPanel.add(mainPanel, new Integer(100));
 
     this.setUndecorated(true);
@@ -277,6 +289,7 @@ public class FloatBoard extends JDialog {
                 Lizzie.frame.countstones(true);
               }
             }
+            if (e.getKeyCode() == KeyEvent.VK_V) changeEetEditMode();
             if (e.getKeyCode() == KeyEvent.VK_PERIOD)
               if (Lizzie.config.useShortcutKataEstimate) Lizzie.frame.toggleShowKataEstimate();
             if (e.getKeyCode() == KeyEvent.VK_H) Lizzie.leelaz.toggleHeatmap(false);
@@ -335,11 +348,15 @@ public class FloatBoard extends JDialog {
             if (e.getWheelRotation() > 0) {
               if (boardRenderer.isShowingBranch()) {
                 doBranch(1);
-              } else boardRenderer.incrementDisplayedBranchLength(1);
+              } else if (editMode) {
+                Lizzie.board.nextMove(true);
+              }
             } else if (e.getWheelRotation() < 0) {
               if (boardRenderer.isShowingBranch()) {
                 doBranch(-1);
-              } else boardRenderer.incrementDisplayedBranchLength(-1);
+              } else if (editMode) {
+                Lizzie.board.previousMove(true);
+              }
             }
             refreshByLis();
           }
@@ -364,7 +381,9 @@ public class FloatBoard extends JDialog {
               if (isCoordsChanged) {
                 boolean isCurMouseOver = false;
                 List<MoveData> bestMoves =
-                    Lizzie.board.getHistory().getMainEnd().getData().bestMoves;
+                    editMode
+                        ? Lizzie.board.getHistory().getCurrentHistoryNode().getData().bestMoves
+                        : Lizzie.board.getHistory().getMainEnd().getData().bestMoves;
                 if (!bestMoves.isEmpty())
                   for (int i = 0; i < bestMoves.size(); i++) {
                     Optional<int[]> bestCoords = Board.asCoordinates(bestMoves.get(i).coordinate);
@@ -404,6 +423,42 @@ public class FloatBoard extends JDialog {
             if (needRepaint) refreshByLis();
           }
         });
+  }
+
+  private static final BufferedImage emptyImage =
+      new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+  private BufferedImage cachedBackgroundImage = emptyImage;
+
+  private void drawTextureImage(
+      Graphics2D g, BufferedImage img, int x, int y, int width, int height) {
+    g.setPaint(new TexturePaint(img, new Rectangle(0, 0, img.getWidth(), img.getHeight())));
+    g.fill(new Rectangle(x, y, width, height));
+  }
+
+  private void drawBackground(Graphics2D g, int x, int y, int width, int height) {
+    if (Lizzie.config.usePureBoard) {
+      // simple version
+      g.setRenderingHint(KEY_ANTIALIASING, VALUE_ANTIALIAS_OFF);
+      g.setColor(Lizzie.config.pureBoardColor);
+      g.fillRect(0, 0, width, height);
+    } else {
+      // fancy version
+      if (cachedBackgroundImage == emptyImage) {
+        cachedBackgroundImage = Lizzie.config.theme.board();
+      }
+      drawTextureImage(g, cachedBackgroundImage, x, y, width, height);
+    }
+  }
+
+  public void changeEetEditMode() {
+    editMode = !editMode;
+    if (editMode) btnEdit.setIcon(noEdit);
+    else btnEdit.setIcon(edit);
+    Lizzie.frame.readBoard.editMode = editMode;
+    boardRenderer.editMode = editMode;
+    if (!editMode) Lizzie.board.moveToAnyPosition(Lizzie.board.getHistory().getMainEnd());
+    mouseOverCoordinate = LizzieFrame.outOfBoundCoordinate;
+    repaint();
   }
 
   private void toggleHide() {
@@ -462,8 +517,15 @@ public class FloatBoard extends JDialog {
   private void paintMianPanel(Graphics g) {
     if (posWidth <= 40 || posHeight <= 40) return;
     cachedImage = new BufferedImage(posWidth, posHeight, TYPE_INT_ARGB);
+    if (editMode)
+      drawBackground(
+          (Graphics2D) g,
+          Utils.zoomIn(20),
+          Utils.zoomIn(20),
+          posWidth - Utils.zoomIn(40),
+          posHeight - Utils.zoomIn(40));
     // TODO Auto-generated method stub
-    if (!hideSuggestion) {
+    if (!hideSuggestion || editMode) {
       Graphics2D g0 = (Graphics2D) cachedImage.getGraphics();
       boardRenderer.setLocation(Utils.zoomIn(20), Utils.zoomIn(20));
       boardRenderer.setBoardLength(posWidth - Utils.zoomIn(40), posHeight - Utils.zoomIn(40));
@@ -478,11 +540,11 @@ public class FloatBoard extends JDialog {
   }
 
   public void refresh() {
-    mainPanel.repaint();
+    repaint();
   }
 
   private void refreshByLis() {
-    mainPanel.repaint();
+    repaint();
   }
 
   public void replayBranch() {
@@ -636,7 +698,7 @@ public class FloatBoard extends JDialog {
     if (boardCoordinates.isPresent()) {
       // 增加判断是否为插入模式
       int[] coords = boardCoordinates.get();
-      if (Lizzie.frame.bothSync) {
+      if (Lizzie.frame.bothSync || editMode) {
         Lizzie.board.place(coords[0], coords[1]);
       }
     }
@@ -651,6 +713,11 @@ public class FloatBoard extends JDialog {
     if (Lizzie.config.showSuggestionVariations)
       return mouseOverCoordinate[0] == x && mouseOverCoordinate[1] == y;
     else return false;
+  }
+
+  public void setEditButton() {
+    if (Lizzie.frame.bothSync) btnEdit.setVisible(false);
+    else btnEdit.setVisible(true);
   }
 
   private void setButton() {
@@ -695,6 +762,11 @@ public class FloatBoard extends JDialog {
           getHeight() - 72 - Utils.zoomIn(Utils.zoomIn(20)),
           19,
           19);
+      btnEdit.setBounds(
+          getWidth() - 100 - Utils.zoomIn(Utils.zoomIn(20)),
+          getHeight() - 18 - Utils.zoomIn(Utils.zoomIn(20)),
+          19,
+          19);
     } else {
       btnLeft.setVisible(false);
       btnRight.setVisible(false);
@@ -712,6 +784,11 @@ public class FloatBoard extends JDialog {
           19);
       btnHideShow.setBounds(
           getWidth() - 40 - Utils.zoomIn(Utils.zoomIn(20)),
+          getHeight() - 18 - Utils.zoomIn(Utils.zoomIn(20)),
+          19,
+          19);
+      btnEdit.setBounds(
+          getWidth() - 60 - Utils.zoomIn(Utils.zoomIn(20)),
           getHeight() - 18 - Utils.zoomIn(Utils.zoomIn(20)),
           19,
           19);
@@ -761,6 +838,10 @@ public class FloatBoard extends JDialog {
       if (hideSuggestion) toggleHide();
     }
   }
+
+  //  public void setFactor(float factor) {
+  //    boardRenderer.factor = factor;
+  //  }
 
   public void setBoardType() {
     // TODO Auto-generated method stub

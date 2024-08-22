@@ -78,13 +78,10 @@ public class SuggestionInfoOrderSettings extends JDialog {
     middlePanel.setBounds(0, 170, 500, 30);
 
     previewPanel =
-        new JPanel(true) {
+        new JPanel() {
           @Override
-          protected void paintComponent(Graphics g) {
-            if (Config.isScaled) {
-              Graphics2D g1 = (Graphics2D) g;
-              g1.scale(1.0 / Lizzie.javaScaleFactor, 1.0 / Lizzie.javaScaleFactor);
-            }
+          public void paintComponent(Graphics g) {
+            Utils.ajustScale(g);
             paintMianPanel(g);
           }
         };
@@ -665,16 +662,12 @@ public class SuggestionInfoOrderSettings extends JDialog {
           Lizzie.config.showSuggestionMaxRed && !isMouseOver && !isGenmoveBest;
       Color oriColor = g.getColor();
       if (showScoreLead && showPlayouts && showWinrate) {
-        double score = move.scoreMean;
-        if (Lizzie.config.showKataGoScoreLeadWithKomi) {
-          score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
-        }
         boolean shouldShowMaxColorWinrate = canShowMaxColor && hasMaxWinrate;
         boolean shouldShowMaxColorPlayouts = canShowMaxColor && move.playouts == maxPlayouts;
         boolean shouldShowMaxColorScoreLead = canShowMaxColor && move.scoreMean == maxScoreMean;
         String winrateText = String.format(Locale.ENGLISH, "%.1f", roundedWinrate);
         String playoutsText = Utils.getPlayoutsString(move.playouts);
-        String scoreLeadText = Utils.convertScoreToString(score, 5.0);
+        String scoreLeadText = Utils.convertScoreToString(move.scoreMean, 5.0);
         if (currerentUseDefaultInfoRowOrder) {
           if (shouldShowMaxColorWinrate) g.setColor(maxColor);
           if (roundedWinrate < 10)

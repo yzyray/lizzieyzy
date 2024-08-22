@@ -31,7 +31,7 @@ public class ReadBoard {
   // private long startSyncTime = 0;
 
   public boolean isLoaded = false;
-  private int version = 220104;
+  private int version = 220430;
   private String engineCommand;
   public String currentEnginename = "";
   private int port = -1;
@@ -50,11 +50,12 @@ public class ReadBoard {
   private boolean isSyncing = false;
   // private long startTime;
   private boolean javaReadBoard = false;
-  private String javaReadBoardName = "readboard-1.5.7-shaded.jar";
+  private String javaReadBoardName = "readboard-1.6.2-shaded.jar";
   private boolean waitSocket = true;
   public boolean lastMovePlayByLizzie = false;
   private boolean hideFloadBoardBeforePlace = false;
   private boolean hideFromPlace = false;
+  public boolean editMode = false;
 
   public ReadBoard(boolean usePipe, boolean isJavaReadBoard) throws Exception {
     this.usePipe = usePipe;
@@ -112,15 +113,14 @@ public class ReadBoard {
       try {
         if (OS.isWindows()) {
           boolean success = false;
-          String java64Path = "jre\\java11\\bin\\java.exe";
-          File java64 = new File(java64Path);
+          File java64_1 = new File(Utils.java64Path1);
 
-          if (java64.exists()) {
+          if (java64_1.exists()) {
             try {
               process =
                   Runtime.getRuntime()
                       .exec(
-                          java64Path
+                          Utils.java64Path1
                               + " -jar -Dsun.java2d.uiScale=1.0 readboard_java"
                               + File.separator
                               + javaReadBoardName
@@ -132,14 +132,32 @@ public class ReadBoard {
             }
           }
           if (!success) {
-            String java32Path = "jre\\java8_32\\bin\\java.exe";
-            File java32 = new File(java32Path);
+            File java64_2 = new File(Utils.java64Path2);
+            if (java64_2.exists()) {
+              try {
+                process =
+                    Runtime.getRuntime()
+                        .exec(
+                            Utils.java64Path2
+                                + " -jar -Dsun.java2d.uiScale=1.0 readboard_java"
+                                + File.separator
+                                + javaReadBoardName
+                                + param);
+                success = true;
+              } catch (Exception e) {
+                success = false;
+                e.printStackTrace();
+              }
+            }
+          }
+          if (!success) {
+            File java32 = new File(Utils.java32Path);
             if (java32.exists()) {
               try {
                 process =
                     Runtime.getRuntime()
                         .exec(
-                            java32
+                            Utils.java32Path
                                 + " -jar -Dsun.java2d.uiScale=1.0 readboard_java"
                                 + File.separator
                                 + javaReadBoardName
@@ -364,9 +382,13 @@ public class ReadBoard {
     }
     if (line.startsWith("both")) {
       Lizzie.frame.bothSync = true;
+      if (Lizzie.frame.floatBoard != null && Lizzie.frame.floatBoard.isVisible())
+        Lizzie.frame.floatBoard.setEditButton();
     }
     if (line.startsWith("noboth")) {
       Lizzie.frame.bothSync = false;
+      if (Lizzie.frame.floatBoard != null && Lizzie.frame.floatBoard.isVisible())
+        Lizzie.frame.floatBoard.setEditButton();
     }
     if (line.startsWith("stopAutoPlay")) {
       LizzieFrame.toolbar.chkAutoPlay.setSelected(false);
@@ -506,19 +528,21 @@ public class ReadBoard {
           if (Lizzie.frame.floatBoard == null) {
             Lizzie.frame.floatBoard =
                 new FloatBoard(
-                    Math.round(Integer.parseInt(params[1]) * factor) + 1,
-                    Math.round(Integer.parseInt(params[2]) * factor) + 1,
-                    Math.round(Integer.parseInt(params[3]) * factor) + 1,
-                    Math.round(Integer.parseInt(params[4]) * factor) + 1,
+                    (int) Math.ceil(Integer.parseInt(params[1]) * factor),
+                    (int) Math.ceil(Integer.parseInt(params[2]) * factor),
+                    (int) Math.ceil(Integer.parseInt(params[3]) * factor),
+                    (int) Math.ceil(Integer.parseInt(params[4]) * factor),
                     Integer.parseInt(param[2]),
                     true);
+            // Lizzie.frame.floatBoard.setFactor(factor);
           } else {
             Lizzie.frame.floatBoard.setPos(
-                Math.round(Integer.parseInt(params[1]) * factor) + 1,
-                Math.round(Integer.parseInt(params[2]) * factor) + 1,
-                Math.round(Integer.parseInt(params[3]) * factor) + 1,
-                Math.round(Integer.parseInt(params[4]) * factor) + 1,
+                (int) Math.ceil(Integer.parseInt(params[1]) * factor),
+                (int) Math.ceil(Integer.parseInt(params[2]) * factor),
+                (int) Math.ceil(Integer.parseInt(params[3]) * factor),
+                (int) Math.ceil(Integer.parseInt(params[4]) * factor),
                 Integer.parseInt(param[2]));
+            //   Lizzie.frame.floatBoard.setFactor(factor);
           }
         } else {
           if (Lizzie.frame.floatBoard == null) {
@@ -694,10 +718,10 @@ public class ReadBoard {
           && Lizzie.board.getHistory().getCurrentHistoryNode().previous().isPresent()
           && node != node2) {
         Lizzie.board.moveToAnyPosition(node);
-        Lizzie.frame.renderVarTree(0, 0, false, false);
       }
     }
-
+    if (editMode) Lizzie.board.moveToAnyPosition(node);
+    if (played) Lizzie.frame.renderVarTree(0, 0, false, false);
     if (needReSync && !isSecondTime) {
       Lizzie.board.clear(false);
       syncBoardStones(true);

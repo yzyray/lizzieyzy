@@ -10,14 +10,22 @@ import featurecat.lizzie.gui.HtmlMessage;
 import featurecat.lizzie.gui.LizzieFrame;
 import featurecat.lizzie.gui.Message;
 import featurecat.lizzie.gui.RemoteEngineData;
+import featurecat.lizzie.rules.Board;
 import featurecat.lizzie.rules.BoardHistoryNode;
+import featurecat.lizzie.rules.Stone;
+import featurecat.lizzie.rules.Zobrist;
+import featurecat.lizzie.rules.extraMoveForTsumego;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Window;
+import java.awt.geom.AffineTransform;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -43,16 +51,134 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.TableModel;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Utils {
 
+  public static String java64Path1 = "jre\\java17\\bin\\java.exe";
+  public static String java64Path2 = "jre\\java11\\bin\\java.exe";
+  public static String java32Path = "jre\\java8_32\\bin\\java.exe";
   public static String aesKey = "iyekeeaysueeaesk";
   public static String iv = "s6st73f41adc4c5d";
   public static String aesKey2 = "iyekeeay2ueeaesk";
   public static String iv2 = "s6st73f49adc4c5d";
   private static int msemaphoretryroom = 1;
   private static boolean alertedNoByoyomiSoundFile = false;
+
+  public static void ajustScale(Graphics g) {
+    if (Lizzie.isMultiScreen) {
+      final Graphics2D g0 = (Graphics2D) g;
+      final AffineTransform t = g0.getTransform();
+      final double scaling = t.getScaleX();
+      if (scaling > 1) {
+        Graphics2D g1 = (Graphics2D) g;
+        g1.scale(1.0 / scaling, 1.0 / scaling);
+      }
+    } else {
+      if (Config.isScaled) {
+        Graphics2D g1 = (Graphics2D) g;
+        g1.scale(1.0 / Lizzie.javaScaleFactor, 1.0 / Lizzie.javaScaleFactor);
+      }
+    }
+  }
+
+  public static void loadFonts(String uiFontName, String playoutFontName, String winrateFontName) {
+    try {
+      LizzieFrame.uiFont = new Font("SansSerif", Font.TRUETYPE_FONT, 12);
+      LizzieFrame.playoutsFont = new Font("SansSerif", Font.TRUETYPE_FONT, 12);
+      LizzieFrame.winrateFont =
+          Font.createFont(
+              Font.TRUETYPE_FONT,
+              Thread.currentThread()
+                  .getContextClassLoader()
+                  .getResourceAsStream("fonts/OpenSans-Semibold.ttf"));
+    } catch (IOException | FontFormatException e) {
+      e.printStackTrace();
+    }
+    if (uiFontName != null
+        && (!(uiFontName.equals("Lizzie默认") || uiFontName.equals("Lizzie Default")))) {
+      LizzieFrame.uiFont = new Font(uiFontName, Font.PLAIN, 12);
+    }
+    if (playoutFontName != null)
+      LizzieFrame.playoutsFont = new Font(playoutFontName, Font.PLAIN, 12);
+    if (winrateFontName != null
+        && (!(winrateFontName.equals("Lizzie默认") || winrateFontName.equals("Lizzie Default")))) {
+      LizzieFrame.winrateFont = new Font(winrateFontName, Font.BOLD, 12);
+    }
+  }
+
+  public static void addStone(
+      Stone[] stones,
+      Zobrist zobrist,
+      int x,
+      int y,
+      Stone color,
+      List<extraMoveForTsumego> extraStones) {
+    if (stones[Board.getIndex(x, y)] != Stone.EMPTY) return;
+    stones[Board.getIndex(x, y)] = color;
+    zobrist.toggleStone(x, y, color);
+    extraMoveForTsumego stone = new extraMoveForTsumego();
+    stone.x = x;
+    stone.y = y;
+    stone.color = color;
+    extraStones.add(stone);
+  }
+
+  public static String getRuleString(JSONObject jsonRules) {
+    String rules = "";
+    try {
+      if (jsonRules.has("scoring")) {
+        rules += Lizzie.resourceBundle.getString("ContributeView.rules.scoring");
+        if (jsonRules.getString("scoring").contentEquals("AREA"))
+          rules += Lizzie.resourceBundle.getString("ContributeView.rules.scoring.area");
+        else rules += Lizzie.resourceBundle.getString("ContributeView.rules.scoring.territory");
+      }
+      if (jsonRules.has("ko")) {
+        rules += "\r\n" + Lizzie.resourceBundle.getString("ContributeView.rules.ko");
+        if (jsonRules.getString("ko").contentEquals("POSITIONAL"))
+          rules += Lizzie.resourceBundle.getString("ContributeView.rules.ko.positional");
+        else if (jsonRules.getString("ko").contentEquals("SITUATIONAL"))
+          rules += Lizzie.resourceBundle.getString("ContributeView.rules.ko.situational");
+        else if (jsonRules.getString("ko").contentEquals("SIMPLE"))
+          rules += Lizzie.resourceBundle.getString("ContributeView.rules.ko.simple");
+      }
+      if (jsonRules.has("suicide")) {
+        rules += "\r\n" + Lizzie.resourceBundle.getString("ContributeView.rules.suicide");
+        if (jsonRules.getBoolean("suicide"))
+          rules += Lizzie.resourceBundle.getString("ContributeView.rules.yes");
+        else rules += Lizzie.resourceBundle.getString("ContributeView.rules.no");
+      }
+      if (jsonRules.has("tax")) {
+        rules += "\r\n" + Lizzie.resourceBundle.getString("ContributeView.rules.tax");
+        if (jsonRules.getString("tax").contentEquals("NONE"))
+          rules += Lizzie.resourceBundle.getString("ContributeView.rules.tax.none");
+        else if (jsonRules.getString("tax").contentEquals("ALL"))
+          rules += Lizzie.resourceBundle.getString("ContributeView.rules.tax.all");
+        else if (jsonRules.getString("tax").contentEquals("SEKI"))
+          rules += Lizzie.resourceBundle.getString("ContributeView.rules.tax.seki");
+      }
+      if (jsonRules.has("whiteHandicapBonus")) {
+        rules +=
+            "\r\n" + Lizzie.resourceBundle.getString("ContributeView.rules.whiteHandicapBonus");
+        if (jsonRules.getString("whiteHandicapBonus").contentEquals("0"))
+          rules += Lizzie.resourceBundle.getString("ContributeView.rules.whiteHandicapBonus.0");
+        else if (jsonRules.getString("whiteHandicapBonus").contentEquals("N"))
+          rules += Lizzie.resourceBundle.getString("ContributeView.rules.whiteHandicapBonus.N");
+        else if (jsonRules.getString("whiteHandicapBonus").contentEquals("N-1"))
+          rules += Lizzie.resourceBundle.getString("ContributeView.rules.whiteHandicapBonus.N-1");
+      }
+      if (jsonRules.has("hasButton")) {
+        rules += "\r\n" + Lizzie.resourceBundle.getString("ContributeView.rules.button");
+        if (jsonRules.getBoolean("hasButton"))
+          rules += Lizzie.resourceBundle.getString("ContributeView.rules.yes");
+        else rules += Lizzie.resourceBundle.getString("ContributeView.rules.no");
+      }
+    } catch (JSONException e) {
+      e.printStackTrace();
+    }
+    return rules;
+  }
 
   public static Color getNoneAlphaColor(Color alphaColor) {
     return new Color(alphaColor.getRed(), alphaColor.getGreen(), alphaColor.getBlue());
@@ -486,10 +612,9 @@ public class Utils {
     //  Message msg = new Message();
     //    msg.setMessage(message);
     HtmlMessage htmlMessage =
-        new HtmlMessage(Lizzie.resourceBundle.getString("Message.title"), message, null);
-    if (Lizzie.frame != null) htmlMessage.setLocationRelativeTo(Lizzie.frame);
+        new HtmlMessage(Lizzie.resourceBundle.getString("Message.title"), message, Lizzie.frame);
+    htmlMessage.setModal(true);
     htmlMessage.setVisible(true);
-    //  msg.setVisible(true);
   }
 
   public static void showMsg(String message, Window owner) {
@@ -500,7 +625,13 @@ public class Utils {
   public static void showMsgNoModal(String message) {
     Message msg = new Message();
     msg.setMessageNoModal(message);
-    //  msg.setVisible(true);
+  }
+
+  public static void showMsgModal(String message) {
+    HtmlMessage htmlMessage =
+        new HtmlMessage(Lizzie.resourceBundle.getString("Message.title"), message, Lizzie.frame);
+    htmlMessage.setModal(true);
+    htmlMessage.setVisible(true);
   }
 
   public static void showMsgNoModalForTime(String message, int seconds) {
@@ -640,7 +771,7 @@ public class Utils {
                   } else playVoice(File.separator + "sound" + File.separator + "Stone.wav", false);
                 }
               } else {
-                playVoice("\\sound\\Stone.wav", false);
+                playVoice(File.separator + "sound" + File.separator + "Stone.wav", false);
               }
             } catch (Exception e) {
               // TODO Auto-generated catch block
@@ -706,7 +837,7 @@ public class Utils {
       sourceDataLine.start();
       // Read from the data sent to the mixer input stream
       int count;
-      byte tempBuffer[] = new byte[1024];
+      byte tempBuffer[] = new byte[8192];
       while ((count = audioInputStream.read(tempBuffer, 0, tempBuffer.length)) != -1) {
         if (count > 0) {
           sourceDataLine.write(tempBuffer, 0, count);
@@ -726,8 +857,7 @@ public class Utils {
         Paths.get(
             currentRealPath
                 + File.separator
-                + newFolderName
-                + File.separator
+                + (newFolderName.length() == 0 ? "" : (newFolderName + File.separator))
                 + path.substring(path.lastIndexOf("/") + 1));
     Path parent = dist.getParent();
     if (parent != null) {
@@ -775,6 +905,16 @@ public class Utils {
     }
   }
 
+  public static void copyCaptureTsumeGo() {
+    // TODO Auto-generated method stub
+    try {
+      copy("/assets/captureTsumeGo/CaptureTsumeGo1.2.jar", "captureTsumeGo");
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
+
   public static void copyClockHelper() {
     // TODO Auto-generated method stub
     try {
@@ -801,7 +941,7 @@ public class Utils {
   public static void copyFoxReq() {
     // TODO Auto-generated method stub
     try {
-      copy("/assets/foxReq/foxRequestQ.jar", "foxReq");
+      copy("/assets/foxReq/FoxRequest.jar", "foxReq");
     } catch (IOException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -829,6 +969,11 @@ public class Utils {
       if (!sideToMove && !isBlack) {
         mv.winrate = 100 - mv.winrate;
         mv.scoreMean = -mv.scoreMean;
+      }
+      if (moveInfo.has("ownership")) {
+        JSONArray ownership = moveInfo.getJSONArray("ownership");
+        List<Object> list = ownership.toList();
+        mv.movesEstimateArray = (ArrayList<Double>) (List) list;
       }
       JSONArray pv = moveInfo.getJSONArray("pv");
       List<Object> list = pv.toList();
@@ -871,7 +1016,19 @@ public class Utils {
       else if (diff < 0) result = "-" + String.valueOf(round(Math.abs(diff) * 10) / 10.0);
       else result = String.valueOf(round(diff * 10) / 10.0);
       return result;
-    } else return String.valueOf(round(score * 10) / 10.0);
+    } else if (Lizzie.board.getHistory().isBlacksTurn()) {
+      if (Lizzie.config.showKataGoScoreLeadWithKomi) {
+        score += Lizzie.board.getHistory().getGameInfo().getKomi();
+      }
+    } else {
+      if (Lizzie.config.showKataGoScoreLeadWithKomi) {
+        score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
+      }
+      if (Lizzie.config.winrateAlwaysBlack) {
+        score = -score;
+      }
+    }
+    return String.valueOf(round(score * 10) / 10.0);
   }
 
   public static void changeFontRecursive(Container root, String fontName) {

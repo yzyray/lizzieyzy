@@ -189,9 +189,12 @@ public class SetKataPDA extends JDialog {
 
     txtStaticCur.setEnabled(false);
 
-    JFontLabel lblpda = new JFontLabel("注:动态变化系数修改后,会自动按让子数计算PDA,并设为当前值,不推荐序盘以后修改");
-    lblpda.setBounds(10, 72, 831, 23);
-    getContentPane().add(lblpda);
+    JFontLabel lblTip =
+        new JFontLabel(
+            resourceBundle.getString(
+                "SetKataPDA.lblTip")); // "注:动态变化系数修改后,会自动按让子数计算PDA,并设为当前值,不推荐序盘以后修改");
+    lblTip.setBounds(10, 72, 831, 23);
+    getContentPane().add(lblTip);
 
     JLabel lblCurPDA = new JLabel(resourceBundle.getString("SetKataPDA.lblCurPDA")); // ("当前PDA:");
     lblCurPDA.setFont(new Font("Song", Font.PLAIN, Math.max(Config.frameFontSize, 14)));
@@ -281,7 +284,7 @@ public class SetKataPDA extends JDialog {
             resourceBundle.getString(
                 "SetKataPDA.lblpdakatagopdapda")); // ("注:PDA为KataGo控制行棋激进/消极程度的参数,分先一般不需开启,让子需要激进(PDA为正)");
     lblpdakatagopdapda.setForeground(Color.RED);
-    lblpdakatagopdapda.setBounds(6, 125, 835, 23);
+    lblpdakatagopdapda.setBounds(10, 125, 835, 23);
     getContentPane().add(lblpdakatagopdapda);
 
     JFontLabel lblpdapda = new JFontLabel("被让子需要消极(PDA为负,如默认为白视角,则黑方需设置PDA为正才是消极)");

@@ -155,10 +155,11 @@ public class SGFParser {
   }
 
   public static String passPos() {
-    return (Board.boardWidth <= 51 && Board.boardHeight <= 51)
-        ? String.format(
-            "%c%c", alphabet.charAt(Board.boardWidth), alphabet.charAt(Board.boardHeight))
-        : "";
+    return "";
+    //    (Board.boardWidth <= 51 && Board.boardHeight <= 51)
+    //        ? String.format(
+    //            "%c%c", alphabet.charAt(Board.boardWidth), alphabet.charAt(Board.boardHeight))
+    //        : "";
   }
 
   public static boolean isPassPos(String pos) {
@@ -221,7 +222,7 @@ public class SGFParser {
       Lizzie.board.getData().isKataData = true;
       if (line1.length >= 5) {
         double scoreStdev = Double.parseDouble(line1[4]);
-        Lizzie.board.getData().scoreStdev = scoreStdev;
+        if (scoreStdev > 0) Lizzie.board.getData().scoreStdev = scoreStdev;
       }
       if (line1.length >= 6) {
         double pda = Double.parseDouble(line1[5]);
@@ -230,9 +231,22 @@ public class SGFParser {
       }
     }
     if (numPlayouts > 0 && !line2.isEmpty()) {
-      parseInfofromfile(line2);
+      parseInfofromfile(line2, Lizzie.board.getData().scoreStdev);
     }
     islzloaded = false;
+  }
+
+  public static boolean isSGF(String value) {
+    final Pattern SGF_PATTERN = Pattern.compile("(?s).*?(\\(\\s*;{0,1}.*\\))(?s).*?");
+    Matcher sgfMatcher = SGF_PATTERN.matcher(value);
+    if (!sgfMatcher.matches()) {
+      value = "(;" + value.substring(1);
+      Matcher sgfMatcher2 = SGF_PATTERN.matcher(value);
+      if (!sgfMatcher2.matches()) {
+        return false;
+      }
+    }
+    return true;
   }
 
   private static boolean parse(String value) {
@@ -297,6 +311,9 @@ public class SGFParser {
 
     String blackPlayer = "", whitePlayer = "";
     String result = "";
+    // boolean isChineseRule = true;
+    // boolean hasHandicap = false;
+    Double komi = Lizzie.board.getHistory().getGameInfo().getKomi();
     // Support unicode characters (UTF-8)
     int len = value.length();
     boolean shouldProcessDummy = false;
@@ -495,7 +512,7 @@ public class SGFParser {
                 Lizzie.board.getData().isKataData = true;
                 if (line1.length >= 5) {
                   double scoreStdev = Double.parseDouble(line1[4]);
-                  Lizzie.board.getData().scoreStdev = scoreStdev;
+                  if (scoreStdev > 0) Lizzie.board.getData().scoreStdev = scoreStdev;
                 }
                 if (line1.length >= 6) {
                   double pda = Double.parseDouble(line1[5]);
@@ -504,7 +521,7 @@ public class SGFParser {
                 }
               }
               if (numPlayouts > 0 && !line2.isEmpty()) {
-                parseInfofromfile(line2);
+                parseInfofromfile(line2, Lizzie.board.getData().scoreStdev);
               }
             }
           } else if (tag.equals("LZ2")) {
@@ -542,7 +559,7 @@ public class SGFParser {
                 Lizzie.board.getData().isKataData2 = true;
                 if (line1.length >= 5) {
                   double scoreStdev = Double.parseDouble(line1[4]);
-                  Lizzie.board.getData().scoreStdev2 = scoreStdev;
+                  if (scoreStdev > 0) Lizzie.board.getData().scoreStdev2 = scoreStdev;
                 }
                 if (line1.length >= 6) {
                   double pda = Double.parseDouble(line1[5]);
@@ -551,7 +568,7 @@ public class SGFParser {
                 }
               }
               if (numPlayouts > 0 && !line2.isEmpty()) {
-                parseInfofromfile2(line2);
+                parseInfofromfile2(line2, Lizzie.board.getData().scoreStdev2);
               }
             }
           } else if (tag.equals("LZOP")) {
@@ -584,7 +601,7 @@ public class SGFParser {
                 Lizzie.board.getData().isKataData = true;
                 if (line1.length >= 5) {
                   double scoreStdev = Double.parseDouble(line1[4]);
-                  Lizzie.board.getData().scoreStdev = scoreStdev;
+                  if (scoreStdev > 0) Lizzie.board.getData().scoreStdev = scoreStdev;
                 }
                 if (line1.length >= 6) {
                   double pda = Double.parseDouble(line1[5]);
@@ -593,7 +610,7 @@ public class SGFParser {
                 }
               }
               if (numPlayouts > 0 && !line2.isEmpty()) {
-                parseInfofromfile(line2);
+                parseInfofromfile(line2, Lizzie.board.getData().scoreStdev);
               }
             }
           } else if (tag.equals("LZOP2")) {
@@ -621,7 +638,7 @@ public class SGFParser {
                   Lizzie.board.getData().isKataData2 = true;
                   if (line1.length >= 5) {
                     double scoreStdev = Double.parseDouble(line1[4]);
-                    Lizzie.board.getData().scoreStdev2 = scoreStdev;
+                    if (scoreStdev > 0) Lizzie.board.getData().scoreStdev2 = scoreStdev;
                   }
                   if (line1.length >= 6) {
                     double pda = Double.parseDouble(line1[5]);
@@ -630,7 +647,7 @@ public class SGFParser {
                   }
                 }
                 if (numPlayouts > 0 && !line2.isEmpty()) {
-                  parseInfofromfile2(line2);
+                  parseInfofromfile2(line2, Lizzie.board.getData().scoreStdev2);
                 }
               }
             }
@@ -644,7 +661,7 @@ public class SGFParser {
                 boolean newBranch = true;
                 Lizzie.board
                     .getHistory()
-                    .pass(Lizzie.board.getHistory().getLastMoveColor(), newBranch, true);
+                    .pass(Lizzie.board.getHistory().getLastMoveColor(), newBranch, false);
                 if (newBranch) {
                   processPendingPros(Lizzie.board.getHistory(), pendingProps);
                 }
@@ -691,30 +708,33 @@ public class SGFParser {
             }
           } else if (tag.equals("KM")
               || tag.equals("KO")) { // Cyberoro and some site uses komi tag as KO.
-            if (Lizzie.config.readKomi) {
-              try {
-                if (!tagContent.trim().isEmpty()) {
-                  Double komi = Double.parseDouble(tagContent);
-                  if (komi >= 200) {
-                    komi = komi / 100;
-                    if (komi <= 4 && komi >= -4) komi = komi * 2;
-                  }
-                  if (komi.toString().endsWith(".75") || komi.toString().endsWith(".25"))
-                    komi = komi * 2;
-                  if (Math.abs(komi) < Board.boardWidth * Board.boardHeight) {
-                    Lizzie.board.getHistory().getGameInfo().setKomi(komi);
-                    Lizzie.board.getHistory().getGameInfo().changeKomi();
-                    if (EngineManager.currentEngineNo >= 0) {
-                      Lizzie.leelaz.sendCommand("komi " + komi);
-                    }
-                  }
-                }
-              } catch (NumberFormatException e) {
-                e.printStackTrace();
-                Lizzie.board.isLoadingFile = false;
+            try {
+              if (!tagContent.trim().isEmpty()) {
+                komi = Double.parseDouble(tagContent);
               }
+            } catch (NumberFormatException e) {
+              e.printStackTrace();
             }
-          } else {
+          }
+          //          else if (tag.equals("HA")) {
+          //            try {
+          //              if (!tagContent.trim().isEmpty()) {
+          //                if (Integer.parseInt(tagContent.trim()) > 0) hasHandicap = true;
+          //              }
+          //            } catch (NumberFormatException e) {
+          //              e.printStackTrace();
+          //            }
+          //          }
+          //          else if (tag.equals("RU")) {
+          //            if (!tagContent.trim().isEmpty()) {
+          //              String rules = tagContent.toLowerCase();
+          //              if (rules.contains("japanese")
+          //                  || rules.contains("jp")
+          //                  || rules.contains("korean")
+          //                  || rules.contains("kr")) isChineseRule = false;
+          //            }
+          //          }
+          else {
             if (moveStart) {
               // Other SGF node properties
               if ("AE".equals(tag)) {
@@ -729,7 +749,7 @@ public class SGFParser {
                   boolean newBranch =
                       Lizzie.board.getHistory().getCurrentHistoryNode().hasVariations();
                   //  Lizzie.board.pass(color, newBranch, true);
-                  Lizzie.board.getHistory().pass(color, newBranch, true);
+                  Lizzie.board.getHistory().pass(color, newBranch, false);
                   if (newBranch) {
                     processPendingPros(Lizzie.board.getHistory(), pendingProps);
                   }
@@ -742,7 +762,9 @@ public class SGFParser {
                       move[0], move[1], tag.equals("AB") ? Stone.BLACK : Stone.WHITE);
                 }
               } else if (!"FIT".equals(tag)) {
-                boolean firstProp = (subTreeStepMap.get(subTreeDepth).hasVariations());
+                boolean firstProp =
+                    Lizzie.board.getHistory().getCurrentHistoryNode().hasVariations();
+                // (subTreeStepMap.get(subTreeDepth).hasVariations());
                 if (firstProp) {
                   addProperty(pendingProps, tag, tagContent);
                 } else {
@@ -768,6 +790,7 @@ public class SGFParser {
           if (inTag) {
             if (c == '\\') {
               escaping = true;
+              if (!tag.equals("C")) tagContentBuilder.append(c);
               continue;
             }
             tagContentBuilder.append(c);
@@ -778,7 +801,24 @@ public class SGFParser {
           }
       }
     }
-
+    if (Lizzie.config.readKomi) {
+      //      if (!hasHandicap && komi == 0) {
+      //        if (isChineseRule) komi = 7.5;
+      //        else komi = 6.5;
+      //      }
+      if (komi >= 200) {
+        komi = komi / 100;
+        if (komi <= 4 && komi >= -4) komi = komi * 2;
+      }
+      if (komi.toString().endsWith(".75") || komi.toString().endsWith(".25")) komi = komi * 2;
+      if (Math.abs(komi) < Board.boardWidth * Board.boardHeight) {
+        Lizzie.board.getHistory().getGameInfo().setKomi(komi);
+        Lizzie.board.getHistory().getGameInfo().changeKomi();
+        if (EngineManager.currentEngineNo >= 0) {
+          Lizzie.leelaz.sendCommand("komi " + komi);
+        }
+      }
+    }
     Lizzie.frame.setPlayers(whitePlayer, blackPlayer);
     Lizzie.frame.setResult(result);
     GameInfo gameInfo = Lizzie.board.getHistory().getGameInfo();
@@ -1228,7 +1268,12 @@ public class SGFParser {
 
     // The AW/AB Comment
     if (!history.getData().comment.isEmpty()) {
-      builder.append(String.format(Locale.ENGLISH, "C[%s]", Escaping(history.getData().comment)));
+      String coment = history.getData().comment;
+      if (forUpload) {
+        coment =
+            removeWinrateComment(history.getData().isKataData, history.getData().isSaiData, coment);
+      }
+      builder.append(String.format(Locale.ENGLISH, "C[%s]", Escaping(coment)));
     }
     BoardHistoryNode curNode = history.getCurrentHistoryNode();
     try {
@@ -1411,6 +1456,11 @@ public class SGFParser {
           //  if (data.komi > -999) curComment = data.comment + "\n" + "贴目: " + data.komi;
           //  if (Lizzie.board.getHistory().getData().pda != 0) curComment += " PDA: " + data.pda;
           // Write the comment
+          if (forUpload) {
+            curComment =
+                removeWinrateComment(
+                    node.getData().isKataData, node.getData().isSaiData, curComment);
+          }
           if (!data.comment.isEmpty()) {
             builder.append(String.format(Locale.ENGLISH, "C[%s]", Escaping(curComment)));
           }
@@ -1435,6 +1485,11 @@ public class SGFParser {
             }
           }
           String curComment = data.comment;
+          if (forUpload) {
+            curComment =
+                removeWinrateComment(
+                    node.getData().isKataData, node.getData().isSaiData, curComment);
+          }
           //  if (data.komi > -999) curComment = data.comment + "\n" + "贴目: " + data.komi;
           //    if (Lizzie.board.getHistory().getData().pda != 0) curComment += " PDA: " + data.pda;
           // Write the comment
@@ -1449,6 +1504,72 @@ public class SGFParser {
         }
     }
     return builder;
+  }
+
+  private static String removeWinrateComment(
+      boolean isKataData, boolean isSaiData, String curComment) {
+    String wp = "";
+    if (!isKataData) {
+      wp =
+          "("
+              + Lizzie.resourceBundle.getString("SGFParse.black")
+              + " |"
+              + Lizzie.resourceBundle.getString("SGFParse.white")
+              + " )"
+              + Lizzie.resourceBundle.getString("SGFParse.winrate")
+              + " [0-9\\.\\-]+%* \\(*[0-9.\\-+]*%*\\)*\n\\("
+              + ".*"
+              + " / [0-9\\.]*[kmKM]* "
+              + Lizzie.resourceBundle.getString("SGFParse.playouts")
+              + "\\)\\n"
+              + Lizzie.resourceBundle.getString("SGFParse.komi")
+              + ".*";
+    } else {
+      if (isSaiData)
+        wp =
+            "("
+                + Lizzie.resourceBundle.getString("SGFParse.black")
+                + " |"
+                + Lizzie.resourceBundle.getString("SGFParse.white")
+                + " )"
+                + Lizzie.resourceBundle.getString("SGFParse.winrate")
+                + " [0-9\\.\\-]+%* \\(*[0-9.\\-+]*%*\\)*\n"
+                + (Lizzie.config.showKataGoScoreLeadWithKomi
+                    ? Lizzie.resourceBundle.getString("SGFParse.leadWithKomi")
+                    : Lizzie.resourceBundle.getString("SGFParse.leadJustScore"))
+                + " [0-9\\.\\-+]* \\(*[0-9.\\-+]*\\)*\n\\("
+                + ".*"
+                + " / [0-9\\.]*[kmKM]* "
+                + Lizzie.resourceBundle.getString("SGFParse.playouts")
+                + "\\)\\n"
+                + Lizzie.resourceBundle.getString("SGFParse.komi")
+                + ".*";
+      else
+        wp =
+            "("
+                + Lizzie.resourceBundle.getString("SGFParse.black")
+                + " |"
+                + Lizzie.resourceBundle.getString("SGFParse.white")
+                + " )"
+                + Lizzie.resourceBundle.getString("SGFParse.winrate")
+                + " [0-9\\.\\-]+%* \\(*[0-9.\\-+]*%*\\)*\n"
+                + (Lizzie.config.showKataGoScoreLeadWithKomi
+                    ? Lizzie.resourceBundle.getString("SGFParse.leadWithKomi")
+                    : Lizzie.resourceBundle.getString("SGFParse.leadJustScore"))
+                + " [0-9\\.\\-+]* \\(*[0-9.\\-+]*\\)* "
+                + Lizzie.resourceBundle.getString("SGFParse.stdev")
+                + " [0-9\\.\\-+]*\n\\("
+                + ".*"
+                + " / [0-9\\.]*[kmKM]* "
+                + Lizzie.resourceBundle.getString("SGFParse.playouts")
+                + "\\)\\n"
+                + Lizzie.resourceBundle.getString("SGFParse.komi")
+                + ".*";
+    }
+    if (curComment.matches("(?s).*" + wp + "(?s).*")) {
+      return curComment.replaceAll(wp, "");
+    }
+    return curComment;
   }
 
   /**
@@ -1522,16 +1643,17 @@ public class SGFParser {
         }
       }
       if (data.isSaiData) {
-        double score = data.scoreMean;
-        if (data.blackToPlay) {
-          if (Lizzie.config.showKataGoScoreLeadWithKomi)
-            score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
-          else score = -score;
-        } else {
-          if (Lizzie.config.showKataGoScoreLeadWithKomi)
+        double score = -node.getData().scoreMean;
+        if (Lizzie.config.showKataGoScoreLeadWithKomi) {
+          if (data.blackToPlay) {
             score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
-          else score = -score;
-        }
+            // else score = -score;
+          } else {
+            score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
+            //   else score = -score;
+          }
+          if (Lizzie.config.winrateAlwaysBlack && data.blackToPlay) score = -score;
+        } else if (Lizzie.config.winrateAlwaysBlack && data.blackToPlay) score = -score;
         String wf =
             "%s "
                 + Lizzie.resourceBundle.getString("SGFParse.winrate")
@@ -1558,16 +1680,17 @@ public class SGFParser {
                 playouts,
                 String.format(Locale.ENGLISH, "%.1f", data.getKomi()));
       } else {
-        double score = node.getData().scoreMean;
-        if (data.blackToPlay) {
-          if (Lizzie.config.showKataGoScoreLeadWithKomi)
-            score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
-          else score = -score;
-        } else {
-          if (Lizzie.config.showKataGoScoreLeadWithKomi)
+        double score = -node.getData().scoreMean;
+        if (Lizzie.config.showKataGoScoreLeadWithKomi) {
+          if (data.blackToPlay) {
             score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
-          else score = -score;
-        }
+            // else score = -score;
+          } else {
+            score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
+            //   else score = -score;
+          }
+          if (Lizzie.config.winrateAlwaysBlack && data.blackToPlay) score = -score;
+        } else if (Lizzie.config.winrateAlwaysBlack && data.blackToPlay) score = -score;
         String wf =
             "%s "
                 + Lizzie.resourceBundle.getString("SGFParse.winrate")
@@ -1582,12 +1705,8 @@ public class SGFParser {
                 + ")\n"
                 + Lizzie.resourceBundle.getString("SGFParse.komi")
                 + " %s";
-        double scoreStdev = 0;
-        try {
-          if (!data.bestMoves.isEmpty()) scoreStdev = node.getData().bestMoves.get(0).scoreStdev;
-        } catch (Exception ex) {
-          ex.printStackTrace();
-        }
+        double scoreStdev = node.getData().scoreStdev;
+
         nc =
             String.format(
                 wf,
@@ -1781,12 +1900,14 @@ public class SGFParser {
       }
       if (data.isSaiData) {
         double score = data.scoreMean;
-        if (data.blackToPlay) {
-          if (Lizzie.config.showKataGoScoreLeadWithKomi)
+        if (Lizzie.config.showKataGoScoreLeadWithKomi) {
+          if (data.blackToPlay) {
             score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
-        } else {
-          if (Lizzie.config.showKataGoScoreLeadWithKomi)
+            // else score = -score;
+          } else {
             score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
+            //   else score = -score;
+          }
         }
         String wf =
             "%s "
@@ -1815,12 +1936,14 @@ public class SGFParser {
                 String.format(Locale.ENGLISH, "%.1f", data.getKomi()));
       } else {
         double score = node.getData().scoreMean;
-        if (data.blackToPlay) {
-          if (Lizzie.config.showKataGoScoreLeadWithKomi)
+        if (Lizzie.config.showKataGoScoreLeadWithKomi) {
+          if (data.blackToPlay) {
             score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
-        } else {
-          if (Lizzie.config.showKataGoScoreLeadWithKomi)
+            // else score = -score;
+          } else {
             score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
+            //   else score = -score;
+          }
         }
         String wf =
             "%s "
@@ -1836,12 +1959,7 @@ public class SGFParser {
                 + ")\n"
                 + Lizzie.resourceBundle.getString("SGFParse.komi")
                 + " %s";
-        double scoreStdev = 0;
-        try {
-          if (!data.bestMoves.isEmpty()) scoreStdev = node.getData().bestMoves.get(0).scoreStdev;
-        } catch (Exception ex) {
-          ex.printStackTrace();
-        }
+        double scoreStdev = node.getData().scoreStdev;
         nc =
             String.format(
                 wf,
@@ -1922,12 +2040,14 @@ public class SGFParser {
       }
       if (data.isSaiData) {
         double score = data.scoreMean;
-        if (data.blackToPlay) {
-          if (Lizzie.config.showKataGoScoreLeadWithKomi)
+        if (Lizzie.config.showKataGoScoreLeadWithKomi) {
+          if (data.blackToPlay) {
             score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
-        } else {
-          if (Lizzie.config.showKataGoScoreLeadWithKomi)
+            // else score = -score;
+          } else {
             score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
+            //   else score = -score;
+          }
         }
         String wf =
             "%s "
@@ -1956,12 +2076,14 @@ public class SGFParser {
                 String.format(Locale.ENGLISH, "%.1f", data.getKomi()));
       } else {
         double score = node.getData().scoreMean;
-        if (data.blackToPlay) {
-          if (Lizzie.config.showKataGoScoreLeadWithKomi)
+        if (Lizzie.config.showKataGoScoreLeadWithKomi) {
+          if (data.blackToPlay) {
             score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
-        } else {
-          if (Lizzie.config.showKataGoScoreLeadWithKomi)
+            // else score = -score;
+          } else {
             score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
+            //   else score = -score;
+          }
         }
         String wf =
             "%s "
@@ -1977,12 +2099,7 @@ public class SGFParser {
                 + ")\n"
                 + Lizzie.resourceBundle.getString("SGFParse.komi")
                 + " %s";
-        double scoreStdev = 0;
-        try {
-          if (!data.bestMoves.isEmpty()) scoreStdev = node.getData().bestMoves.get(0).scoreStdev;
-        } catch (Exception ex) {
-          ex.printStackTrace();
-        }
+        double scoreStdev = node.getData().scoreStdev;
         nc =
             String.format(
                 wf,
@@ -2155,16 +2272,17 @@ public class SGFParser {
         }
       }
       if (data.isSaiData2) {
-        double score = data.scoreMean2;
-        if (data.blackToPlay) {
-          if (Lizzie.config.showKataGoScoreLeadWithKomi)
-            score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
-          else score = -score;
-        } else {
-          if (Lizzie.config.showKataGoScoreLeadWithKomi)
+        double score = -node.getData().scoreMean;
+        if (Lizzie.config.showKataGoScoreLeadWithKomi) {
+          if (data.blackToPlay) {
             score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
-          else score = -score;
-        }
+            // else score = -score;
+          } else {
+            score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
+            //   else score = -score;
+          }
+          if (Lizzie.config.winrateAlwaysBlack && data.blackToPlay) score = -score;
+        } else if (Lizzie.config.winrateAlwaysBlack && data.blackToPlay) score = -score;
         String wf =
             "%s "
                 + Lizzie.resourceBundle.getString("SGFParse.winrate")
@@ -2191,16 +2309,17 @@ public class SGFParser {
                 playouts,
                 String.format(Locale.ENGLISH, "%.1f", data.getKomi()));
       } else {
-        double score = data.scoreMean2;
-        if (data.blackToPlay) {
-          if (Lizzie.config.showKataGoScoreLeadWithKomi)
-            score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
-          else score = -score;
-        } else {
-          if (Lizzie.config.showKataGoScoreLeadWithKomi)
+        double score = -node.getData().scoreMean;
+        if (Lizzie.config.showKataGoScoreLeadWithKomi) {
+          if (data.blackToPlay) {
             score = score - Lizzie.board.getHistory().getGameInfo().getKomi();
-          else score = -score;
-        }
+            // else score = -score;
+          } else {
+            score = score + Lizzie.board.getHistory().getGameInfo().getKomi();
+            //   else score = -score;
+          }
+          if (Lizzie.config.winrateAlwaysBlack && data.blackToPlay) score = -score;
+        } else if (Lizzie.config.winrateAlwaysBlack && data.blackToPlay) score = -score;
         String wf =
             "%s "
                 + Lizzie.resourceBundle.getString("SGFParse.winrate")
@@ -2215,12 +2334,7 @@ public class SGFParser {
                 + ")\n"
                 + Lizzie.resourceBundle.getString("SGFParse.komi")
                 + " %s";
-        double scoreStdev = 0;
-        try {
-          if (!data.bestMoves2.isEmpty()) scoreStdev = data.bestMoves2.get(0).scoreStdev;
-        } catch (Exception ex) {
-          ex.printStackTrace();
-        }
+        double scoreStdev = node.getData().scoreStdev2;
         nc =
             String.format(
                 wf,
@@ -2353,34 +2467,47 @@ public class SGFParser {
     curWinrate = String.format(Locale.ENGLISH, "%.1f", 100 - curWR);
 
     if (data.isKataData) {
-      if (data.pda != 0) {
-        String wf = "%s %s %s %s %s %s\n%s";
-        return String.format(
-            wf,
-            data.engineName,
-            curWinrate,
-            playouts,
-            String.format(Locale.ENGLISH, "%.1f", data.scoreMean),
-            String.format(Locale.ENGLISH, "%.1f", data.scoreStdev),
-            data.pda,
-            data.bestMovesToString());
-      } else {
-        String wf = "%s %s %s %s %s\n%s";
-        return String.format(
-            wf,
-            data.engineName,
-            curWinrate,
-            playouts,
-            String.format(Locale.ENGLISH, "%.1f", data.scoreMean),
-            String.format(Locale.ENGLISH, "%.1f", data.scoreStdev),
-            data.bestMovesToString());
+      boolean hasOwnership = false;
+      String ownership = " ownership";
+      if (data.estimateArray != null && !data.estimateArray.isEmpty()) {
+        for (Double value : data.estimateArray) {
+          ownership += " " + value;
+        }
+        hasOwnership = true;
       }
+      String wf = "%s %s %s %s %s %s\n%s";
+      if (data.pda != 0) {
+        wf =
+            String.format(
+                wf,
+                data.engineName,
+                curWinrate,
+                playouts,
+                String.format(Locale.ENGLISH, "%.1f", data.scoreMean),
+                String.format(Locale.ENGLISH, "%.1f", data.scoreStdev),
+                data.pda,
+                data.bestMovesToString());
+      } else {
+        wf = "%s %s %s %s %s\n%s";
+        wf =
+            String.format(
+                wf,
+                data.engineName,
+                curWinrate,
+                playouts,
+                String.format(Locale.ENGLISH, "%.1f", data.scoreMean),
+                String.format(Locale.ENGLISH, "%.1f", data.scoreStdev),
+                data.bestMovesToString());
+      }
+      if (hasOwnership) {
+        wf += ownership;
+      }
+      return wf;
     }
 
     String wf = "%s %s %s\n%s";
 
-    return String.format(
-        wf, data.engineName.replaceAll(" ", ""), curWinrate, playouts, data.bestMovesToString());
+    return String.format(wf, data.engineName, curWinrate, playouts, data.bestMovesToString());
   }
 
   private static String formatNodeData2(BoardHistoryNode node) {
@@ -2401,28 +2528,42 @@ public class SGFParser {
     curWinrate = String.format(Locale.ENGLISH, "%.1f", 100 - curWR);
 
     if (data.isKataData2) {
-      if (data.pda != 0) {
-        String wf = "%s %s %s %s %s %s\n%s";
-        return String.format(
-            wf,
-            data.engineName2,
-            curWinrate,
-            playouts,
-            String.format(Locale.ENGLISH, "%.1f", data.scoreMean2),
-            String.format(Locale.ENGLISH, "%.1f", data.scoreStdev2),
-            data.pda2,
-            data.bestMovesToString2());
-      } else {
-        String wf = "%s %s %s %s %s\n%s";
-        return String.format(
-            wf,
-            data.engineName2,
-            curWinrate,
-            playouts,
-            String.format(Locale.ENGLISH, "%.1f", data.scoreMean2),
-            String.format(Locale.ENGLISH, "%.1f", data.scoreStdev2),
-            data.bestMovesToString2());
+      boolean hasOwnership = false;
+      String ownership = " ownership";
+      if (data.estimateArray2 != null && !data.estimateArray2.isEmpty()) {
+        for (Double value : data.estimateArray2) {
+          ownership += " " + value;
+        }
+        hasOwnership = true;
       }
+      String wf = "%s %s %s %s %s %s\n%s";
+      if (data.pda != 0) {
+        wf =
+            String.format(
+                wf,
+                data.engineName2,
+                curWinrate,
+                playouts,
+                String.format(Locale.ENGLISH, "%.1f", data.scoreMean2),
+                String.format(Locale.ENGLISH, "%.1f", data.scoreStdev2),
+                data.pda,
+                data.bestMovesToString2());
+      } else {
+        wf = "%s %s %s %s %s\n%s";
+        wf =
+            String.format(
+                wf,
+                data.engineName2,
+                curWinrate,
+                playouts,
+                String.format(Locale.ENGLISH, "%.1f", data.scoreMean2),
+                String.format(Locale.ENGLISH, "%.1f", data.scoreStdev2),
+                data.bestMovesToString2());
+      }
+      if (hasOwnership) {
+        wf += ownership;
+      }
+      return wf;
     }
 
     String wf = "%s %s %s\n%s";
@@ -2522,6 +2663,7 @@ public class SGFParser {
           if (inTag) {
             if (c == '\\') {
               escaping = true;
+              if (!tag.equals("C")) tagContentBuilder.append(c);
               continue;
             }
             tagContentBuilder.append(c);
@@ -2794,7 +2936,7 @@ public class SGFParser {
                         .replaceAll("m", "000000")
                         .replaceAll("[^0-9]", ""));
             if (numPlayouts > 0 && !line2.isEmpty()) {
-              Lizzie.board.getData().bestMoves = Lizzie.leelaz.parseInfo(line2);
+              Lizzie.board.getData().bestMoves = parseInfofromfile(line2, 0);
             }
           } else if (tag.equals("AB") || tag.equals("AW")) {
             int[] move = convertSgfPosToCoord(tagContent);
@@ -2890,7 +3032,7 @@ public class SGFParser {
                       move[0], move[1], tag.equals("AB") ? Stone.BLACK : Stone.WHITE);
                 }
               } else {
-                boolean firstProp = (subTreeStepMap.get(subTreeDepth).hasVariations());
+                boolean firstProp = history.getCurrentHistoryNode().hasVariations();
                 if (firstProp) {
                   addProperty(pendingProps, tag, tagContent);
                 } else {
@@ -2916,6 +3058,7 @@ public class SGFParser {
           if (inTag) {
             if (c == '\\') {
               escaping = true;
+              if (!tag.equals("C")) tagContentBuilder.append(c);
               continue;
             }
             tagContentBuilder.append(c);
@@ -3181,6 +3324,7 @@ public class SGFParser {
           if (inTag) {
             if (c == '\\') {
               escaping = true;
+              if (!tag.equals("C")) tagContentBuilder.append(c);
               continue;
             }
             tagContentBuilder.append(c);
@@ -3201,7 +3345,14 @@ public class SGFParser {
     return asCoord(cor);
   }
 
-  private static List<MoveData> parseInfofromfile(String line) {
+  private static List<MoveData> parseInfofromfile(String line, double stdev) {
+    boolean hasOwnership = false;
+    String[] lineInfo = null;
+    if (line.contains("ownership")) {
+      hasOwnership = true;
+      lineInfo = line.split("ownership");
+      line = lineInfo[0];
+    }
     List<MoveData> bestMoves = new ArrayList<>();
     String[] variations = line.split(" info ");
     int k =
@@ -3215,14 +3366,38 @@ public class SGFParser {
         if (k < 1) break;
       }
     }
+    if (bestMoves.size() > 0) bestMoves.get(0).scoreStdev = stdev;
+    ArrayList<Double> estimateArray = new ArrayList<Double>();
+    if (hasOwnership && lineInfo != null && lineInfo.length > 1) {
+      String[] params2 = lineInfo[1].trim().split(" ");
+      for (int i = 0; i < params2.length; i++) {
+        try {
+          estimateArray.add(Double.parseDouble(params2[i]));
+        } catch (NumberFormatException e) {
+          break;
+        }
+      }
+    } else estimateArray = null;
     Lizzie.board
         .getData()
         .tryToSetBestMoves(
-            bestMoves, Lizzie.board.getData().engineName, false, MoveData.getPlayouts(bestMoves));
+            bestMoves,
+            Lizzie.board.getData().engineName,
+            false,
+            MoveData.getPlayouts(bestMoves),
+            estimateArray);
+
     return bestMoves;
   }
 
-  private static List<MoveData> parseInfofromfile2(String line) {
+  private static List<MoveData> parseInfofromfile2(String line, double stdev) {
+    boolean hasOwnership = false;
+    String[] lineInfo = null;
+    if (line.contains("ownership")) {
+      hasOwnership = true;
+      lineInfo = line.split("ownership");
+      line = lineInfo[0];
+    }
     List<MoveData> bestMoves = new ArrayList<>();
     String[] variations = line.split(" info ");
     // int k =
@@ -3234,10 +3409,26 @@ public class SGFParser {
         // if (k < 1) break;
       }
     }
+    if (bestMoves.size() > 0) bestMoves.get(0).scoreStdev = stdev;
+    ArrayList<Double> estimateArray = new ArrayList<Double>();
+    if (hasOwnership && lineInfo != null && lineInfo.length > 1) {
+      String[] params2 = lineInfo[1].trim().split(" ");
+      for (int i = 0; i < params2.length; i++) {
+        try {
+          estimateArray.add(Double.parseDouble(params2[i]));
+        } catch (NumberFormatException e) {
+          break;
+        }
+      }
+    } else estimateArray = null;
     Lizzie.board
         .getData()
         .tryToSetBestMoves2(
-            bestMoves, Lizzie.board.getData().engineName2, false, MoveData.getPlayouts(bestMoves));
+            bestMoves,
+            Lizzie.board.getData().engineName2,
+            false,
+            MoveData.getPlayouts(bestMoves),
+            estimateArray);
     return bestMoves;
   }
 

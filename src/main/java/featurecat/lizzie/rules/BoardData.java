@@ -54,6 +54,8 @@ public class BoardData {
   public double wrn = 0;
   public ArrayList<Double> estimateArray;
   public ArrayList<Double> estimateArray2;
+  public boolean playoutsChanged;
+  public int lastMoveMatchCandidteNo;
   //	public boolean commented=true;
   //	public boolean commented2=true;
 
@@ -225,6 +227,7 @@ public class BoardData {
     // added for change bestmoves when playouts is not increased
     if (totalplayouts < playouts) isChanged = false;
     setPlayouts(totalplayouts);
+    playoutsChanged = true;
     this.estimateArray = estimateArray;
     winrate = moves.get(0).winrate;
     if (moves.get(0).isKataData) {
@@ -408,6 +411,8 @@ public class BoardData {
       if (i < bestMoves.size())
         sb.append(" info "); // this order is just because of how the MoveData info parser works
     }
+    if (estimateArray != null && !estimateArray.isEmpty()) {}
+
     return sb.toString();
   }
 

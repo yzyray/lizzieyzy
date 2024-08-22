@@ -100,16 +100,18 @@ public class BoardHistoryList {
   }
 
   public void addOrGoto(BoardData data, boolean newBranch, boolean changeMove) {
-    head = head.addOrGoto(data, newBranch, changeMove);
+    head = head.addOrGoto(data, newBranch, changeMove, false);
   }
 
+  public void addOrGoto(BoardData data, boolean newBranch, boolean changeMove, boolean tsumego) {
+    head = head.addOrGoto(data, newBranch, changeMove, tsumego);
+  }
   /**
    * moves the pointer to the left, returns the data stored there
    *
    * @return data of previous node, Optional.empty if there is no previous node
    */
   public Optional<BoardData> previous() {
-    head.undoExtraStones();
     if (!head.previous().isPresent()) return Optional.empty();
     else head = head.previous().get();
     return Optional.of(head.getData());
@@ -134,7 +136,6 @@ public class BoardHistoryList {
     if (n.isPresent()) {
       Lizzie.leelaz.clearBestMoves();
       head = n.get();
-      head.placeExtraStones();
       // Lizzie.board.clearAfterMove();
     }
     return n.map(x -> x.getData());
@@ -147,8 +148,11 @@ public class BoardHistoryList {
    */
   public Optional<BoardData> nextVariation(int idx) {
     Optional<BoardHistoryNode> n = head.getVariation(idx);
-    n.ifPresent(x -> head = x);
-    if (n.isPresent()) head.placeExtraStones();
+    if (n.isPresent()) {
+      if (head.hasRemovedStone()) head.clearAndSyncBoard(true);
+      head = n.get();
+      head.placeExtraStones();
+    }
     return n.map(x -> x.getData());
   }
 
@@ -361,6 +365,11 @@ public class BoardHistoryList {
       e = e.next().get();
     }
     return e;
+  }
+
+  public BoardHistoryNode getCurOrMainEnd(boolean editMode) {
+    if (editMode) return getCurrentHistoryNode();
+    else return getMainEnd();
   }
 
   public BoardHistoryNode getMainEndWithPass() {
@@ -698,5 +707,9 @@ public class BoardHistoryList {
     }
     if (name.length() > 21) return name.substring(0, 20);
     else return name;
+  }
+
+  public void setRemovedStone() {
+    head.setRemovedStone();
   }
 }

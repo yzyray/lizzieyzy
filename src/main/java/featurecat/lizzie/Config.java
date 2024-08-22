@@ -35,7 +35,7 @@ public class Config {
   public boolean showCaptured = true;
   // public boolean handicapInsteadOfWinrate = false;
   //  public boolean showDynamicKomi = false;
-  public double replayBranchIntervalSeconds = 0.9;
+  public double replayBranchIntervalSeconds = 0.5;
   public boolean showCoordinates = true;
   public boolean colorByWinrateInsteadOfVisits = false;
   // public boolean showlcbwinrate = false;
@@ -48,7 +48,7 @@ public class Config {
   // public boolean scoreMeanWinrateGraphBoard = false;
   public boolean showKataGoEstimate = false;
   // public boolean allowDrageDoubleClick = true;
-  public boolean showKataGoEstimateOnSubbord = false;
+  public boolean showKataGoEstimateOnSubbord = true;
   public boolean showKataGoEstimateOnMainbord = true;
   public boolean showSuggestionOrder = true;
   public boolean showSuggestionMaxRed = true;
@@ -108,6 +108,10 @@ public class Config {
   public int kataTimeByoyomiTimes = 3;
   public int kataTimeFisherIncrementSecs = 5;
 
+  public boolean kataVisitsPlayoutsSettings = false;
+  public int kataVisits = -1;
+  public int kataPlayouts = -1;
+
   public boolean pkAdvanceTimeSettings = false;
   public String advanceBlackTimeTxt = "time_settings 120 2 1";
   public String advanceWhiteTimeTxt = "time_settings 120 2 1";
@@ -128,8 +132,9 @@ public class Config {
 
   public Theme theme;
   public float winrateStrokeWidth = 1.7f;
+  public float scoreLeadStrokeWidth = 1.0f;
   public int leelaversion = 17;
-  public int minimumBlunderBarWidth = 3;
+  public int minimumBlunderBarWidth = 1;
   public int shadowSize = 75;
   public static String sysDefaultFontName = "Dialog.plain";
   public String fontName = null;
@@ -191,17 +196,17 @@ public class Config {
   public boolean backMain = false;
   public boolean setMain = true;
   public boolean batchOpen = true;
-  public boolean refresh = true;
-  public boolean tryPlay = true;
-  public boolean analyzeList = true;
+  public boolean refresh = false;
+  public boolean tryPlay = false;
+  public boolean analyzeList = false;
   public boolean move = true;
-  public boolean moveRank = true;
+  public boolean moveRank = false;
   public boolean coords = true;
   public boolean liveButton = true;
   public boolean badMoves = false;
   public boolean autoPlay = true;
   public boolean deleteMove = true;
-  public boolean share = true;
+  public boolean share = false;
   public boolean flashAnalyze = false;
   public boolean enableLizzieCache = true;
   public boolean showQuickLinks = false;
@@ -240,9 +245,9 @@ public class Config {
   public String shareLabel5 = "";
   public boolean sharePublic = true;
 
-  public boolean autoCheckVersion = true;
+  // public boolean autoCheckVersion = true;
   public String autoCheckDate = "";
-  public int ignoreVersion = 0;
+  // public int ignoreVersion = 0;
 
   public String kataRules = "";
   public boolean autoLoadKataRules = false;
@@ -315,6 +320,7 @@ public class Config {
   public boolean showEditbar = true;
   public boolean showForceMenu = true;
   public boolean showRuleMenu = true;
+  public boolean showTsumeGoMenu = true;
   public boolean showParamMenu = true;
   public boolean showGobanMenu = true;
   public boolean showSaveLoadMenu = true;
@@ -437,7 +443,9 @@ public class Config {
   public String analysisSpecificRules = "";
 
   public boolean analysisRecentIsPartGame = false;
+  public boolean analysisRecentIsAllBranches = false;
   public boolean showScoreLeadLine = true;
+  public boolean showWinrateLine = true;
   public boolean showMouseOverWinrateGraph = true;
   public boolean isChinese;
 
@@ -445,7 +453,7 @@ public class Config {
   public static int menuHeight = 20;
   public static int menuIconSize = 16;
 
-  public boolean isDeletingPersist = false;
+  public boolean deletedPersist = false;
   public boolean showPreviousBestmovesInEngineGame = false;
   public boolean showPreviousBestmovesOnlyFirstMove = true;
   public boolean showDetailedToolbarMenu = false;
@@ -554,6 +562,7 @@ public class Config {
 
   public ArrayList<String> recentFilePaths;
   public boolean showReplaceFileHint = true;
+  public boolean showNewBoardHint = true;
   public JSONObject customLayout1;
   public JSONObject customLayout2;
 
@@ -626,6 +635,7 @@ public class Config {
   public String contributeBatchGames = "6";
   public boolean contributeShowEstimate = false;
   public boolean contributeUseCommand = false;
+  public boolean contributeUsePureCommand = false;
   public String contributeCommand = "";
   public boolean contributeAutoSave = false;
 
@@ -638,13 +648,38 @@ public class Config {
   public boolean contributeHideConsole = false;
   public boolean contributeHideRules = false;
   public boolean showContribute = true;
+  // public boolean contributeUseSlowShutdown = true;
 
   public double initialMaxScoreLead = 15;
+  public boolean enableClickReview = false;
+  public boolean contributeDisableRatingMatches = false;
+  public boolean contributeViewAlwaysTop = true;
+
+  public boolean useMovesOwnership = true;
+  public boolean browserInitiazed = false;
+
+  public int tsumeGoToPlay = 1; // 1=继承,2=黑,3=白
+  public int tsumeGoAttaker = 1; // 1=自动检测,2=黑,3=白
+  public int tsumeGoKoThreat = 1; // 1=双方,2=进攻,3=防守,4=无
+  public int tsumeGoWallDistance = 1;
+
+  public int captureBlackOffset = 120;
+  public int captureBlackPercent = 25;
+  public int captureWhiteOffset = 120;
+  public int captureWhitePercent = 15;
+  public int captureGrayOffset = 80;
+
+  public boolean exitAutoAnalyzeByPause = true;
+  public boolean exitAutoAnalyzeTip = true;
+
+  public boolean isCtrlOpened = false;
+  public int lastPaintingColor = 0;
 
   private JSONObject loadAndMergeSaveBoardConfig(
       JSONObject defaultCfg, String fileName, boolean needValidation) throws IOException {
     File file = new File(fileName);
     File dir = new File("save");
+    if (!dir.isDirectory()) dir.delete();
     if (!dir.exists()) {
       dir.mkdirs();
     }
@@ -976,7 +1011,7 @@ public class Config {
                   Toolkit.getDefaultToolkit().getDesktopProperty("win.xpstyle.themeActive");
     } catch (Exception e) {
       // TODO Auto-generated catch block
-      e.printStackTrace();
+      // e.printStackTrace();
     }
     showSuggestionVariations = uiConfig.optBoolean("show-suggestion-variations", true);
     subBoardRaw = uiConfig.optBoolean("subboard-raw", false);
@@ -1069,7 +1104,7 @@ public class Config {
     mySaveTime = uiConfig.optInt("my-save-time", 3);
     myByoyomiSeconds = uiConfig.optInt("my-byoyomo-seconds", 4);
     myByoyomiTimes = uiConfig.optInt("my-byoyomo-times", 2);
-    showKataGoEstimateOnSubbord = uiConfig.optBoolean("show-katago-estimate-onsubbord", false);
+    showKataGoEstimateOnSubbord = uiConfig.optBoolean("show-katago-estimate-onsubbord", true);
     showKataGoEstimateOnMainbord = uiConfig.optBoolean("show-katago-estimate-onmainboard", true);
     if (!showKataGoEstimateOnMainbord && !showKataGoEstimateOnSubbord && showKataGoEstimate)
       isHiddenKataEstimate = true;
@@ -1101,6 +1136,10 @@ public class Config {
     kataTimeByoyomiTimes = uiConfig.optInt("kata-time-byoyomi-times", 3);
     kataTimeFisherIncrementSecs = uiConfig.optInt("kata-time-fisher-increment-secs", 5);
 
+    kataVisitsPlayoutsSettings = uiConfig.optBoolean("kata-visits-playouts-settings", false);
+    kataVisits = uiConfig.optInt("kata-visits-txt", -1);
+    kataPlayouts = uiConfig.optInt("kata-playouts-txt", -1);
+
     pkAdvanceTimeSettings = uiConfig.optBoolean("pk-advance-time-settings", false);
     advanceBlackTimeTxt = uiConfig.optString("advance-black-time-txt", "time_settings 10 2 1");
     advanceWhiteTimeTxt = uiConfig.optString("advance-white-time-txt", "time_settings 10 2 1");
@@ -1121,6 +1160,7 @@ public class Config {
     showEditbar = uiConfig.optBoolean("show-edit-bar", true);
     showForceMenu = uiConfig.optBoolean("show-force-menu", true);
     showRuleMenu = uiConfig.optBoolean("show-rule-menu", true);
+    showTsumeGoMenu = uiConfig.optBoolean("show-tsume-go-menu", true);
     showParamMenu = uiConfig.optBoolean("show-param-menu", true);
     showGobanMenu = uiConfig.optBoolean("show-goban-menu", true);
     showSaveLoadMenu = uiConfig.optBoolean("show-saveload-menu", true);
@@ -1133,7 +1173,7 @@ public class Config {
     suggestionsalwaysontop = uiConfig.optBoolean("suggestions-always-ontop", false);
     appendWinrateToComment = uiConfig.optBoolean("append-winrate-to-comment", true);
     showCoordinates = uiConfig.optBoolean("show-coordinates", true);
-    replayBranchIntervalSeconds = uiConfig.optDouble("replay-branch-interval-seconds", 0.9);
+    replayBranchIntervalSeconds = uiConfig.optDouble("replay-branch-interval-seconds", 0.5);
     colorByWinrateInsteadOfVisits = uiConfig.optBoolean("color-by-winrate-instead-of-visits");
     boardPositionProportion = uiConfig.optInt("board-postion-proportion", 4);
     showPvVisits = uiConfig.optBoolean("show-pv-visits", false);
@@ -1159,6 +1199,7 @@ public class Config {
     analysisAlwaysOverride = uiConfig.optBoolean("analysis-always-override", false);
     analysisSpecificRules = uiConfig.optString("analysis-specific-rules", "");
     showScoreLeadLine = uiConfig.optBoolean("show-score-lead-line", true);
+    showWinrateLine = uiConfig.optBoolean("show-win-rate-line", true);
     showMouseOverWinrateGraph = uiConfig.optBoolean("show-mouse-over-winrate-graph", true);
     frameFontSize = uiConfig.optInt("frame-font-size", 12);
     menuHeight = isFrameFontSmall() ? 20 : (isFrameFontMiddle() ? 25 : 30);
@@ -1214,16 +1255,16 @@ public class Config {
     backMain = uiConfig.optBoolean("backMain", false);
     setMain = uiConfig.optBoolean("setMain", true);
     batchOpen = uiConfig.optBoolean("batchOpen", true);
-    refresh = uiConfig.optBoolean("refresh", true);
-    tryPlay = uiConfig.optBoolean("tryPlay", true);
-    analyzeList = uiConfig.optBoolean("analyze-list", true);
+    refresh = uiConfig.optBoolean("refresh", false);
+    tryPlay = uiConfig.optBoolean("tryPlay", false);
+    analyzeList = uiConfig.optBoolean("analyze-list", false);
     move = uiConfig.optBoolean("move", true);
-    moveRank = uiConfig.optBoolean("move-rank", true);
+    moveRank = uiConfig.optBoolean("move-rank", false);
     coords = uiConfig.optBoolean("coords", true);
     autoPlay = uiConfig.optBoolean("autoPlay", true);
     showQuickLinks = uiConfig.optBoolean("show-quick-links", false);
     liveButton = uiConfig.optBoolean("liveButton", true);
-    share = uiConfig.optBoolean("share", true);
+    // share = uiConfig.optBoolean("share", true);
     flashAnalyze =
         uiConfig.optBoolean("flash-analyze", showDoubleMenu && showTopToolBar ? false : true);
     badMoves = uiConfig.optBoolean("badMoves", showDoubleMenu && showTopToolBar ? false : true);
@@ -1262,9 +1303,9 @@ public class Config {
     shareLabel4 = uiConfig.optString("share-label-4", "");
     shareLabel5 = uiConfig.optString("share-label-5", "");
     sharePublic = uiConfig.optBoolean("share-public", true);
-    autoCheckVersion = uiConfig.optBoolean("auto-check-version", true);
+    // autoCheckVersion = uiConfig.optBoolean("auto-check-version", true);
     autoCheckDate = uiConfig.optString("auto-check-date", "");
-    ignoreVersion = uiConfig.optInt("ignore-version", 0);
+    //  ignoreVersion = uiConfig.optInt("ignore-version", 0);
     // firstUse = uiConfig.optBoolean("first-time-use", true);
     loadSgfLast = uiConfig.optBoolean("load-sgf-last", false);
     useShortcutKataEstimate = uiConfig.optBoolean("shortcut-kata-estimate", false);
@@ -1311,6 +1352,7 @@ public class Config {
     disableWRNInGame = uiConfig.optBoolean("disable-wrn-in-game", true);
 
     showReplaceFileHint = uiConfig.optBoolean("show-replace-file-hint", true);
+    showNewBoardHint = uiConfig.optBoolean("show-new-board-hint", true);
     maxTreeWidth = uiConfig.optInt("max-tree-width", 10000);
     gameStatisticsCustomStart = uiConfig.optInt("game-statistics-custom-start", 10);
     gameStatisticsCustomEnd = uiConfig.optInt("game-statistics-custom-end", 200);
@@ -1356,7 +1398,11 @@ public class Config {
     showrect = uiConfig.optInt("show-move-rect", 1);
     winrateAlwaysBlack = uiConfig.optBoolean("win-rate-always-black", false);
     showScoreAsDiff = uiConfig.optBoolean("show-score-as-diff", false);
-
+    useMovesOwnership = uiConfig.optBoolean("use-moves-ownership", true);
+    exitAutoAnalyzeByPause = uiConfig.optBoolean("exit-auto-analyze-by-pause", true);
+    exitAutoAnalyzeTip = uiConfig.optBoolean("exit-auto-analyze-tip", true);
+    isCtrlOpened = uiConfig.optBoolean("is-ctrl-opened", false);
+    lastPaintingColor = uiConfig.optInt("last-painting-color", 0);
     // chkPkStartNum = uiConfig.optBoolean("chkpk-start-num", false);
     // pkStartNum = uiConfig.optInt("pk-start-num", 1);
     contributeEnginePath = uiConfig.optString("contribute-engine-path", "");
@@ -1366,6 +1412,7 @@ public class Config {
     contributeBatchGames = uiConfig.optString("contribute-batch-games", "6");
     contributeShowEstimate = uiConfig.optBoolean("contribute-show-estimate", false);
     contributeUseCommand = uiConfig.optBoolean("contribute-use-command", false);
+    contributeUsePureCommand = uiConfig.optBoolean("contribute-use-pure-command", false);
     contributeCommand = uiConfig.optString("contribute-command", "");
     contributeAutoSave = uiConfig.optBoolean("contribute-auto-save", false);
     contributeWatchSkipNone19 = uiConfig.optBoolean("contribute-watch-skip-none-19", false);
@@ -1379,7 +1426,22 @@ public class Config {
     contributeHideConsole = uiConfig.optBoolean("contribute-hide-console", false);
     contributeHideRules = uiConfig.optBoolean("contribute-hide-rules", false);
     showContribute = uiConfig.optBoolean("show-Contribute", true);
+    // contributeUseSlowShutdown = uiConfig.optBoolean("contribute-use-slow-shutdown", true);
+    tsumeGoToPlay = uiConfig.optInt("tsume-go-to-play", 1);
+    tsumeGoAttaker = uiConfig.optInt("tsume-go-attaker", 1);
+    tsumeGoKoThreat = uiConfig.optInt("tsume-go-ko-threat", 1);
+    tsumeGoWallDistance = uiConfig.optInt("tsume-go-wall-distance", 1);
 
+    captureBlackOffset = uiConfig.optInt("capture-black-offset", 120);
+    captureBlackPercent = uiConfig.optInt("capture-black-percent", 25);
+    captureWhiteOffset = uiConfig.optInt("capture-white-offset", 120);
+    captureWhitePercent = uiConfig.optInt("capture-white-percent", 15);
+    captureGrayOffset = uiConfig.optInt("capture-gray-percent", 80);
+
+    enableClickReview = uiConfig.optBoolean("enable-click-review", false);
+    contributeDisableRatingMatches =
+        uiConfig.optBoolean("contribute-disable-rating-matches", false);
+    contributeViewAlwaysTop = uiConfig.optBoolean("contribute-always-top", true);
     initialMaxScoreLead = uiConfig.optDouble("initial-max-score-lead", 15.0);
     chkDymPDA = uiConfig.optBoolean("chk-dym-pda", false);
     chkStaticPDA = uiConfig.optBoolean("chk-static-pda", false);
@@ -1418,13 +1480,6 @@ public class Config {
     analyzeUpdateIntervalCentisec = leelazConfig.optInt("analyze-update-interval-centisec", 10);
     analyzeUpdateIntervalCentisecSSH =
         leelazConfig.optInt("analyze-update-interval-centisecssh", 10);
-    if (theme.fontName() != null) fontName = theme.fontName();
-    // else fontName = "微软雅黑";
-
-    if (theme.uiFontName() != null) uiFontName = theme.uiFontName();
-    // else uiFontName = "微软雅黑";
-
-    if (theme.winrateFontName() != null) winrateFontName = theme.winrateFontName();
     readThemeVaule(true);
   }
 
@@ -1465,6 +1520,10 @@ public class Config {
       theme = new Theme();
       theme.getTheme(uiConfig);
     }
+    if (theme.fontName() != null) fontName = theme.fontName();
+    if (theme.uiFontName() != null) uiFontName = theme.uiFontName();
+    if (theme.winrateFontName() != null) winrateFontName = theme.winrateFontName();
+    if (!first) Utils.loadFonts(uiFontName, fontName, winrateFontName);
     int oriShadowSize = shadowSize;
     boolean oriShowStoneShadow = showStoneShadow;
     boolean oriUsePureBackground = usePureBackground;
@@ -1473,6 +1532,7 @@ public class Config {
     Color oriPureBackgroundColor = pureBackgroundColor;
     Color oriPureBoardColor = pureBoardColor;
     winrateStrokeWidth = theme.winrateStrokeWidth();
+    scoreLeadStrokeWidth = theme.scoreLeadStrokeWidth();
     minimumBlunderBarWidth = theme.minimumBlunderBarWidth();
     shadowSize = theme.shadowSize();
     commentFontSize = theme.commentFontSize();
@@ -2015,7 +2075,7 @@ public class Config {
     ui.put("large-winrate-graph", false);
     ui.put("winrate-stroke-width", 1.7);
     ui.put("show-blunder-bar", true);
-    ui.put("minimum-blunder-bar-width", 3);
+    ui.put("minimum-blunder-bar-width", 1);
     ui.put("weighted-blunder-bar-height", false);
     // ui.put("dynamic-winrate-graph-width", true);
     ui.put("show-comment", true);
@@ -2101,6 +2161,7 @@ public class Config {
   }
 
   public void persist() throws IOException {
+    if (deletedPersist) return;
     boolean windowIsMaximized = Lizzie.frame.getExtendedState() == JFrame.MAXIMIZED_BOTH;
     persistedUi.put("gtp-console-opened", Lizzie.gtpConsole.isVisible());
     JSONArray mainPos = new JSONArray();
@@ -2242,6 +2303,15 @@ public class Config {
         persistedUi.put("suggestions-list-position-9", pos2);
       }
     }
+    if (Lizzie.frame.ctrl != null) {
+      JSONArray ctrlPos = new JSONArray();
+      ctrlPos.put(Lizzie.frame.ctrl.getX());
+      ctrlPos.put(Lizzie.frame.ctrl.getY());
+      ctrlPos.put(Lizzie.frame.ctrl.getWidth());
+      ctrlPos.put(Lizzie.frame.ctrl.getHeight());
+      persistedUi.put("ctrl-position", ctrlPos);
+    }
+
     if (Lizzie.frame.search != null) {
       JSONArray searchPos = new JSONArray();
 
@@ -2472,10 +2542,18 @@ public class Config {
     writeConfig(this.persisted, new File(persistFilename));
   }
 
+  public String getPersistFilePath() {
+    return new File(persistFilename).getAbsolutePath();
+  }
+
+  public String getConfigFilePath() {
+    return new File(configFilename).getAbsolutePath();
+  }
+
   public void deletePersist(boolean showMsg) {
     if (!showMsg && !new File(persistFilename).exists()) return;
     new File(persistFilename).delete();
-    isDeletingPersist = true;
+    deletedPersist = true;
     if (showMsg) Utils.showMsg(Lizzie.resourceBundle.getString("Config.deletePersistFile"));
     else {
       JSONObject persistConfig = createPersistConfig();

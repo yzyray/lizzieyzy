@@ -9,13 +9,12 @@ import featurecat.lizzie.analysis.GameInfo;
 import featurecat.lizzie.analysis.Leelaz;
 import featurecat.lizzie.analysis.MoveData;
 import featurecat.lizzie.gui.LizzieFrame;
-import featurecat.lizzie.gui.Message;
 import featurecat.lizzie.gui.ScoreResult;
 import featurecat.lizzie.util.Utils;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -71,6 +70,12 @@ public class Board {
   public boolean isExtremlySmallBoard = false;
   private boolean neverPassedInGame = true;
 
+  public boolean isMouseOnStone = false;
+  private boolean preMouseOnStone = false;
+  public BoardHistoryNode mouseOnNode;
+  private long reviewStartTime = -1;
+  public int[] mouseOnStoneCoords = LizzieFrame.outOfBoundCoordinate;
+
   public Board() {
     hexHeight = Lizzie.config.otherSizeHeight;
     hexWidth = Lizzie.config.otherSizeWidth;
@@ -83,11 +88,11 @@ public class Board {
   private void initialize(boolean isEngineGame) {
     LizzieFrame.fileNameTitle = "";
     LizzieFrame.curFile = null;
+    clearTsumegoStatus();
     // scoreMode = false;
     isGameBoard = false;
     neverPassedInGame = true;
     analysisMode = false;
-    Optional.empty();
     forceRefresh = false;
     forceRefresh2 = false;
     hasBigBranch = false;
@@ -102,6 +107,7 @@ public class Board {
       if (LizzieFrame.boardRenderer2 != null) LizzieFrame.boardRenderer2.clearAfterMove();
       LizzieFrame.forceRecreate = true;
     }
+    if (Lizzie.frame != null) Lizzie.frame.clearTryPlay();
     if (boardWidth < 4) isExtremlySmallBoard = true;
     else isExtremlySmallBoard = false;
     Lizzie.leelaz.clearPonderLimit();
@@ -264,6 +270,58 @@ public class Board {
     else return LizzieFrame.outOfBoundCoordinate;
   }
 
+  public static String maybeConvertOtherCoordsToNormal(String otherCoords) {
+    if (Lizzie.config.useIinCoordsName || Lizzie.config.useFoxStyleCoords) {
+      if (boardWidth > 25 || boardHeight > 25) return otherCoords;
+      if (Lizzie.config.useIinCoordsName) {
+        if (otherCoords.length() <= 3 && otherCoords.charAt(0) >= 'I') {
+          return String.valueOf((char) (otherCoords.charAt(0) + 1)) + otherCoords.substring(1);
+        }
+      }
+      if (Lizzie.config.useFoxStyleCoords) {
+        if (otherCoords.length() <= 3 && otherCoords.charAt(0) >= 'I') {
+          otherCoords =
+              String.valueOf((char) (otherCoords.charAt(0) + 1)) + otherCoords.substring(1);
+        }
+        try {
+          int y = Integer.parseInt(otherCoords.substring(1));
+          y = Board.boardHeight + 1 - y;
+          return otherCoords.substring(0, 1) + y;
+        } catch (NumberFormatException e) {
+
+        }
+      }
+    }
+    return otherCoords;
+  }
+
+  public static String maybeConvertNormalCoordsToOther(String normalCoords) {
+    if (Lizzie.config.useIinCoordsName || Lizzie.config.useFoxStyleCoords) {
+      if (boardWidth > 25 || boardHeight > 25) return normalCoords;
+      if (Lizzie.config.useIinCoordsName) {
+        // H4->I4
+        if (normalCoords.length() <= 3 && normalCoords.charAt(0) > 'I') {
+          return String.valueOf((char) (normalCoords.charAt(0) - 1)) + normalCoords.substring(1);
+        }
+      }
+      if (Lizzie.config.useFoxStyleCoords) {
+        // H4->H16
+        if (normalCoords.length() <= 3 && normalCoords.charAt(0) > 'I') {
+          normalCoords =
+              String.valueOf((char) (normalCoords.charAt(0) - 1)) + normalCoords.substring(1);
+        }
+        try {
+          int y = Integer.parseInt(normalCoords.substring(1));
+          y = Board.boardHeight + 1 - y;
+          return normalCoords.substring(0, 1) + y;
+        } catch (NumberFormatException e) {
+
+        }
+      }
+    }
+    return normalCoords;
+  }
+
   public static int[] convertNameToCoordinates(String name) {
     // coordinates take the form C16 A19 Q5 K10 etc. I is not used.
     Optional<int[]> coords = asCoordinates(name);
@@ -391,8 +449,6 @@ public class Board {
         BoardHistoryNode cur = stack.pop();
         if (cur.getData().getPlayouts() > 0) {
           cur.getData().isChanged = true;
-          cur.nodeInfo.changed = true;
-          cur.nodeInfoMain.changed = true;
         }
         if (cur.numberOfChildren() >= 1) {
           for (int i = cur.numberOfChildren() - 1; i >= 0; i--)
@@ -466,15 +522,11 @@ public class Board {
     stack.push(node);
     while (!stack.isEmpty()) {
       BoardHistoryNode cur = stack.pop();
-      if (cur.getData().getPlayouts() > 0) {
-        cur.nodeInfo.changed = true;
-        cur.nodeInfoMain.changed = true;
-      }
+      cur.nodeInfo = new NodeInfo();
+      cur.nodeInfoMain = new NodeInfo();
       if (Lizzie.config.isDoubleEngineMode()) {
-        if (cur.getData().getPlayouts2() > 0) {
-          cur.nodeInfo2.changed = true;
-          cur.nodeInfoMain2.changed = true;
-        }
+        cur.nodeInfo2 = new NodeInfo();
+        cur.nodeInfoMain2 = new NodeInfo();
       }
       if (cur.numberOfChildren() >= 1) {
         for (int i = cur.numberOfChildren() - 1; i >= 0; i--)
@@ -504,8 +556,6 @@ public class Board {
       BoardHistoryNode cur = stack.pop();
       if (cur.getData().getPlayouts2() > 0) {
         cur.getData().isChanged2 = true;
-        cur.nodeInfo2.changed = true;
-        cur.nodeInfoMain2.changed = true;
       }
       if (cur.numberOfChildren() >= 1) {
         for (int i = cur.numberOfChildren() - 1; i >= 0; i--)
@@ -537,16 +587,30 @@ public class Board {
     }
   }
 
-  public ArrayList<Movelist> savelistforeditmode() {
-    if (boardstatbeforeedit == "") {
-      try {
-        boardstatbeforeedit = SGFParser.saveToString(false);
-      } catch (IOException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-      }
-      tempmovelist = getmovelistWithOutStartStone();
+  //  public ArrayList<Movelist> savelistforeditmode() {
+  //    if (boardstatbeforeedit == "") {
+  //      try {
+  //        boardstatbeforeedit = SGFParser.saveToString(false);
+  //      } catch (IOException e) {
+  //        // TODO Auto-generated catch block
+  //        e.printStackTrace();
+  //      }
+  //      tempmovelist = getmovelistWithOutStartStone();
+  //    }
+  //    tempallmovelist = getallmovelist();
+  //    boardstatafteredit = "";
+  //    tempmovelist2 = new ArrayList<Movelist>();
+  //    return tempmovelist;
+  //  }
+
+  public ArrayList<Movelist> saveListForEdit() {
+    try {
+      boardstatbeforeedit = SGFParser.saveToString(false);
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
     }
+    tempmovelist = getmovelistWithOutStartStone();
     tempallmovelist = getallmovelist();
     boardstatafteredit = "";
     tempmovelist2 = new ArrayList<Movelist>();
@@ -802,7 +866,7 @@ public class Board {
       stones[getIndex(x, y)] = Stone.EMPTY;
       zobrist.toggleStone(x, y, oriColor);
       data.moveNumberList[Board.getIndex(x, y)] = 0;
-
+      history.setRemovedStone();
       Lizzie.frame.refresh();
     }
   }
@@ -1049,50 +1113,40 @@ public class Board {
 
   public void addStartList() {
     Optional<BoardHistoryNode> node = history.getCurrentHistoryNode().now();
-    Optional<int[]> passstep = Optional.empty();
     if (node.isPresent()) {
       Optional<int[]> lastMove = node.get().getData().lastMove;
-      if (lastMove == passstep) {
+      if (lastMove.isPresent()) {
+        int[] n = lastMove.get();
+        Movelist move = new Movelist();
+        move.x = n[0];
+        move.y = n[1];
+        move.ispass = false;
+        move.isblack = node.get().getData().lastMoveColor.isBlack();
+        move.movenum = node.get().getData().moveNumber;
+        startStonelist.add(move);
+      } else {
         Movelist move = new Movelist();
         move.ispass = true;
         move.isblack = node.get().getData().lastMoveColor.isBlack();
         startStonelist.add(move);
         node = node.get().previous();
-      } else {
-        if (lastMove.isPresent()) {
-
-          int[] n = lastMove.get();
-          Movelist move = new Movelist();
-          move.x = n[0];
-          move.y = n[1];
-          move.ispass = false;
-          move.isblack = node.get().getData().lastMoveColor.isBlack();
-          move.movenum = node.get().getData().moveNumber;
-          startStonelist.add(move);
-        }
       }
     }
   }
 
   public void addStartListAll() {
     Optional<BoardHistoryNode> node = history.getCurrentHistoryNode().now();
-    Optional<int[]> passstep = Optional.empty();
     while (node.isPresent()) {
       Optional<int[]> lastMove = node.get().getData().lastMove;
-      if (lastMove == passstep) {
-        node = node.get().previous();
-      } else {
-        if (lastMove.isPresent()) {
-
-          int[] n = lastMove.get();
-          Movelist move = new Movelist();
-          move.x = n[0];
-          move.y = n[1];
-          move.ispass = false;
-          move.isblack = node.get().getData().lastMoveColor.isBlack();
-          move.movenum = node.get().getData().moveNumber;
-          startStonelist.add(move);
-        }
+      if (lastMove.isPresent()) {
+        int[] n = lastMove.get();
+        Movelist move = new Movelist();
+        move.x = n[0];
+        move.y = n[1];
+        move.ispass = false;
+        move.isblack = node.get().getData().lastMoveColor.isBlack();
+        move.movenum = node.get().getData().moveNumber;
+        startStonelist.add(move);
       }
       try {
         node = node.get().previous();
@@ -1102,10 +1156,10 @@ public class Board {
     }
   }
 
-  public synchronized void resendMoveToEngine(Leelaz leelaz) {
+  public void resendMoveToEngine(Leelaz leelaz, boolean loadEngine) {
     ArrayList<Movelist> mv = getMoveList();
     leelaz.sendCommand("clear_board");
-    Lizzie.board.restoreMoveNumber(mv, false, leelaz);
+    Lizzie.board.restoreMoveNumber(mv, false, leelaz, loadEngine);
   }
 
   public ArrayList<Movelist> getMoveList() {
@@ -1526,7 +1580,7 @@ public class Board {
       Lizzie.frame.refresh();
       if (Lizzie.frame.isPlayingAgainstLeelaz || Lizzie.frame.isAnaPlayingAgainstLeelaz) {
         if (Lizzie.frame.playerIsBlack != Lizzie.board.getHistory().isBlacksTurn()) {
-          if (neverPassedInGame) {
+          if (neverPassedInGame && !Lizzie.frame.syncBoard) {
             neverPassedInGame = false;
             Utils.showMsg(Lizzie.resourceBundle.getString("LizzieFrame.passInGameTip"));
           }
@@ -1590,11 +1644,11 @@ public class Board {
       Lizzie.frame.estimateResults.iscounted = false;
       Lizzie.frame.isCounting = false;
     }
-    updateWinrate();
-    if (EngineManager.isEngineGame) SGFParser.appendTime();
     synchronized (this) {
       if (!isValid(x, y) || (history.getStones()[getIndex(x, y)] != Stone.EMPTY && !newBranch))
         return;
+      updateWinrate();
+      if (EngineManager.isEngineGame) SGFParser.appendTime();
       // modifyStart();
       if (!forSync
           && !Lizzie.frame.bothSync
@@ -1878,6 +1932,97 @@ public class Board {
                 0));
     history.setGameInfo(oldHistory.getGameInfo());
   }
+
+  public void flattenWithCondition(
+      Stone[] stones,
+      Zobrist zobrist,
+      boolean blackToPlay,
+      List<extraMoveForTsumego> extraStones,
+      double komi) {
+    history =
+        new BoardHistoryList(
+            new BoardData(
+                stones,
+                Optional.empty(),
+                Stone.EMPTY,
+                blackToPlay,
+                zobrist,
+                0,
+                new int[boardWidth * boardHeight],
+                0,
+                0,
+                0.0,
+                0));
+    if (!hasStartStone) {
+      hasStartStone = true;
+      startStonelist = new ArrayList<Movelist>();
+    }
+    if (extraStones != null && extraStones.size() > 0) {
+      int moveNum = 1;
+      for (extraMoveForTsumego stone : extraStones) {
+        Movelist move = new Movelist();
+        move.x = stone.x;
+        move.y = stone.y;
+        move.ispass = false;
+        move.isblack = stone.color == Stone.BLACK;
+        move.movenum = moveNum;
+        startStonelist.add(move);
+        moveNum++;
+        Lizzie.leelaz.playMove(stone.color, convertCoordinatesToName(stone.x, stone.y));
+      }
+    }
+    history.getGameInfo().setKomi(komi);
+    history.getGameInfo().changeKomi();
+    Lizzie.leelaz.sendCommand("komi " + komi);
+    Lizzie.leelaz.ponder();
+  }
+
+  public void flattenWithCondition(
+      Stone[] stones, Zobrist zobrist, boolean blackToPlay, List<extraMoveForTsumego> extraStones) {
+    // 变成一步 extrastones 或者直接不flatten?
+    //	    Stone[] stones = history.getStones();
+    //	    boolean blackToPlay = history.isBlacksTurn();
+    history =
+        new BoardHistoryList(
+            new BoardData(
+                stones,
+                Optional.empty(),
+                Stone.EMPTY,
+                blackToPlay,
+                zobrist,
+                0,
+                new int[boardWidth * boardHeight],
+                0,
+                0,
+                0.0,
+                0));
+    hasStartStone = true;
+    startStonelist = new ArrayList<Movelist>();
+    if (extraStones != null && extraStones.size() > 0) {
+      int moveNum = 1;
+      for (extraMoveForTsumego stone :
+          extraStones) // addExtraStoneNow(stone.x, stone.y, stone.color);
+      {
+        Movelist move = new Movelist();
+        move.x = stone.x;
+        move.y = stone.y;
+        move.ispass = false;
+        move.isblack = stone.color == Stone.BLACK;
+        move.movenum = moveNum;
+        startStonelist.add(move);
+        moveNum++;
+        Lizzie.leelaz.playMove(stone.color, convertCoordinatesToName(stone.x, stone.y));
+      }
+    }
+    Lizzie.leelaz.ponder();
+  }
+
+  //  private void addExtraStoneNow(int x, int y, Stone color) {
+  //    if (color != null) {
+  //      history.getCurrentHistoryNode().addExtraStones(x, y, color == Stone.BLACK);
+  //      Lizzie.leelaz.playMove(color, convertCoordinatesToName(x, y));
+  //    }
+  //  }
 
   /**
    * Removes a chain if it has no liberties
@@ -2246,7 +2391,11 @@ public class Board {
           Lizzie.leelaz.playMove(data.get().lastMoveColor, "pass", true, data.get().blackToPlay);
         }
         history.next();
+        history.getCurrentHistoryNode().placeExtraStones();
+        if (history.getCurrentHistoryNode().hasRemovedStone())
+          history.getCurrentHistoryNode().clearAndSyncBoard(true);
         updateIsBest();
+        clearPressStoneInfo(null);
         if (needRefresh) {
           clearAfterMove();
           Lizzie.frame.refresh();
@@ -2295,7 +2444,12 @@ public class Board {
         });
   }
 
-  public void restoreMoveNumber(ArrayList<Movelist> mv, boolean isEngineGame, Leelaz engine) {
+  public void restoreMoveNumber(
+      ArrayList<Movelist> mv, boolean isEngineGame, Leelaz engine, boolean loadEngine) {
+    if (loadEngine && Lizzie.board.getHistory().getCurrentHistoryNode().checkForRemovedStone()) {
+      Lizzie.initializeAfterVersionCheck(isEngineGame, engine);
+      return;
+    }
     int lenth = mv.size();
     for (int i = 0; i < lenth; i++) {
       Movelist move = mv.get(lenth - 1 - i);
@@ -2309,7 +2463,7 @@ public class Board {
         engine.sendCommand("play " + color + " " + convertCoordinatesToName(move.x, move.y));
       }
     }
-    Lizzie.initializeAfterVersionCheck(isEngineGame, engine);
+    if (loadEngine) Lizzie.initializeAfterVersionCheck(isEngineGame, engine);
   }
 
   /** Go to move number by back routing from children when in branch */
@@ -2410,7 +2564,12 @@ public class Board {
    * @return the list of candidate nodes
    */
   private List<BoardHistoryNode> branchCandidates(BoardHistoryNode node) {
-    int targetDepth = node.getData().moveNumber;
+    BoardHistoryNode calcDepthNode = node;
+    int targetDepth = 0;
+    while (calcDepthNode.previous().isPresent()) {
+      targetDepth++;
+      calcDepthNode = calcDepthNode.previous().get();
+    }
     Stream<BoardHistoryNode> nodes = singletonList(history.root()).stream();
     for (int i = 0; i < targetDepth; i++) {
       nodes = nodes.flatMap(n -> n.getVariations().stream());
@@ -2565,6 +2724,7 @@ public class Board {
           return;
         }
       }
+      saveListForEdit();
       if (currentNode.previous().isPresent()) {
         BoardHistoryNode pre = currentNode.previous().get();
         previousMove(true);
@@ -2583,16 +2743,17 @@ public class Board {
         Lizzie.board.clearNodeInfo(Lizzie.board.getHistory().getStart());
         Lizzie.board.setMovelistAll();
       } else {
-        deleteMoveNoHintAfter();
-        // clear(false); // Clear the board if we're at the top
+        clear(false); // Clear the board if we're at the top
         if (Lizzie.leelaz.isPondering()) Lizzie.leelaz.ponder();
       }
     }
+    Lizzie.frame.redrawTree = true;
     // LizzieFrame.forceRecreate = true;
   }
 
   public void deleteMoveNoHintAfter() {
     if (!history.getCurrentHistoryNode().next().isPresent()) return;
+    saveListForEdit();
     synchronized (this) {
       BoardHistoryNode currentNode = history.getCurrentHistoryNode().next().get();
       if (currentNode.previous().isPresent()) {
@@ -2617,12 +2778,14 @@ public class Board {
         if (Lizzie.leelaz.isPondering()) Lizzie.leelaz.ponder();
       }
     }
+    Lizzie.frame.redrawTree = true;
     // LizzieFrame.forceRecreate = true;
   }
 
   public void deleteMoveNoHint() {
     synchronized (this) {
       BoardHistoryNode currentNode = history.getCurrentHistoryNode();
+      saveListForEdit();
       if (currentNode.previous().isPresent()) {
         BoardHistoryNode pre = currentNode.previous().get();
         previousMove(true);
@@ -2645,6 +2808,7 @@ public class Board {
         if (Lizzie.leelaz.isPondering()) Lizzie.leelaz.ponder();
       }
     }
+    Lizzie.frame.redrawTree = true;
     // LizzieFrame.forceRecreate = true;
   }
 
@@ -2698,7 +2862,6 @@ public class Board {
 
   public void copyNodeInfoToMain(BoardHistoryNode node) {
     node.nodeInfoMain.analyzed = node.nodeInfo.analyzed;
-    node.nodeInfoMain.changed = node.nodeInfo.changed;
     node.nodeInfoMain.coords = node.nodeInfo.coords;
     node.nodeInfoMain.moveNum = node.nodeInfo.moveNum;
     node.nodeInfoMain.isBlack = node.nodeInfo.isBlack;
@@ -2809,11 +2972,12 @@ public class Board {
     synchronized (this) {
       modifyStart();
       boolean isPass = false;
+      boolean needSync = history.getCurrentHistoryNode().hasRemovedStone();
       if (history.getCurrentHistoryNode().next().isPresent())
         updateIsBest(history.getCurrentHistoryNode().next().get());
       if (!history.getLastMove().isPresent()) isPass = true;
       if (history.getPrevious().isPresent()) {
-        if (!Lizzie.board.isLoadingFile) {
+        if (history.getData().lastMoveColor != Stone.EMPTY && !Lizzie.board.isLoadingFile) {
           boolean nopass = false;
           if (!Lizzie.leelaz.isKatago || Lizzie.leelaz.isSai) {
             if (isPass
@@ -2823,12 +2987,15 @@ public class Board {
           if (!nopass) Lizzie.leelaz.undo(true, history.getPrevious().get().blackToPlay);
           else modifyEnd();
         }
+        history.getCurrentHistoryNode().undoExtraStones();
         history.previous();
+        if (needSync) history.getCurrentHistoryNode().clearAndSyncBoard(false);
         if (needRefresh) {
           clearAfterMove();
           Lizzie.frame.refresh();
         }
         updateMovelistNext(Lizzie.board.getHistory().getCurrentHistoryNode());
+        clearPressStoneInfo(null);
         return true;
       }
       modifyEnd();
@@ -3093,36 +3260,35 @@ public class Board {
   }
 
   public void setMovelistAll() {
-    Runnable runnable =
-        new Runnable() {
-          public void run() {
-            BoardHistoryNode node = Lizzie.board.getHistory().getStart();
-            updateMovelist(node);
-            while (node.next().isPresent()) {
-              node = node.next().get();
-              updateMovelist(node);
-              updateIsBest(node);
-            }
+    new Thread() {
+      public void run() {
+        BoardHistoryNode node = Lizzie.board.getHistory().getStart();
+        Stack<BoardHistoryNode> stack = new Stack<>();
+        stack.push(node);
+        while (!stack.isEmpty()) {
+          BoardHistoryNode cur = stack.pop();
+          updateMovelist(cur);
+          if (cur.numberOfChildren() >= 1) {
+            for (int i = cur.numberOfChildren() - 1; i >= 0; i--)
+              stack.push(cur.getVariations().get(i));
           }
-        };
-    Thread thread = new Thread(runnable);
-    thread.start();
+        }
+      }
+    }.start();
   }
 
   public void setMovelistAll2() {
-    Runnable runnable =
-        new Runnable() {
-          public void run() {
-            BoardHistoryNode node = Lizzie.board.getHistory().getStart();
-            updateMovelist2(node);
-            while (node.next().isPresent()) {
-              node = node.next().get();
-              updateMovelist2(node);
-            }
-          }
-        };
-    Thread thread = new Thread(runnable);
-    thread.start();
+    BoardHistoryNode node = Lizzie.board.getHistory().getStart();
+    Stack<BoardHistoryNode> stack = new Stack<>();
+    stack.push(node);
+    while (!stack.isEmpty()) {
+      BoardHistoryNode cur = stack.pop();
+      updateMovelist2(cur);
+      if (cur.numberOfChildren() >= 1) {
+        for (int i = cur.numberOfChildren() - 1; i >= 0; i--)
+          stack.push(cur.getVariations().get(i));
+      }
+    }
   }
 
   public void updateMovelist(BoardHistoryNode node) {
@@ -3135,16 +3301,11 @@ public class Board {
     BoardHistoryNode previousNode = node.previous().get();
     int movenumer = node.getData().moveNumber;
     int playouts = node.getData().getPlayouts();
-    if ((playouts > previousNode.nodeInfo.playouts
-            || node.previous().get().getData().getPlayouts()
-                > previousNode.nodeInfo.previousPlayouts
-            || previousNode.nodeInfo.changed
-            || (previousNode.nodeInfo.nextNode != null && previousNode.nodeInfo.nextNode != node))
-        && previousNode.getData().winrate >= 0) {
-      if (previousNode.nodeInfo.changed) {
-        previousNode.nodeInfo.changed = false;
-      }
-
+    if (((playouts != previousNode.nodeInfo.playouts
+                || node.previous().get().getData().getPlayouts()
+                    != previousNode.nodeInfo.previousPlayouts)
+            && previousNode.getData().winrate >= 0)
+        || previousNode.getData().playoutsChanged) {
       double winrateDiff = lastWinrateDiff(node);
       if (Lizzie.board.isPkBoard && playouts > 0) {
         if (node.isMainTrunk() && node.previous().get().isMainTrunk()) {
@@ -3163,7 +3324,6 @@ public class Board {
             previousNode.nodeInfo.playouts = playouts;
             previousNode.nodeInfo.moveNum = movenumer;
             previousNode.nodeInfo.previousPlayouts = previousplayouts;
-            previousNode.nodeInfo.nextNode = node;
             if (node.getData().isKataData) {
               node.nodeInfo.scoreMeanDiff = lastScoreMeanDiff(node);
               previousNode.nodeInfo.scoreLead = node.getData().scoreMean;
@@ -3173,17 +3333,16 @@ public class Board {
         }
       } else {
         if (node.getData().lastMove != null && node.getData().lastMove.isPresent()) {
-          Map<String, Object> matchAiMap =
+          MatchAiInfo info =
               isMatchAi(node, Lizzie.config.matchAiMoves, Lizzie.config.matchAiPercentsPlayouts);
-          double percentsMatch =
-              Double.parseDouble(matchAiMap.getOrDefault("percents", "0").toString());
-          boolean isBest = Boolean.parseBoolean(matchAiMap.getOrDefault("best", false).toString());
-          boolean isMatchAi = Boolean.parseBoolean(matchAiMap.get("match").toString());
-
+          double percentsMatch = info.precents;
+          boolean isBest = info.isBest;
+          boolean isMatchAi = info.isMatch;
+          node.getData().lastMoveMatchCandidteNo = info.matchCandidteNo;
           int[] coords = node.getData().lastMove.get();
-
           boolean isblack = !node.getData().blackToPlay;
           int previousplayouts = 0;
+
           previousplayouts = previousNode.getData().getPlayouts();
           previousNode.nodeInfo.analyzed = previousplayouts > 0 && playouts > 0;
           previousNode.nodeInfo.analyzedMatchValue = previousplayouts > 0;
@@ -3203,7 +3362,6 @@ public class Board {
           previousNode.nodeInfo.previousPlayouts = previousplayouts;
           previousNode.nodeInfo.isMatchAi = isMatchAi;
           previousNode.nodeInfo.percentsMatch = percentsMatch;
-          previousNode.nodeInfo.nextNode = node;
           if (node.isMainTrunk() && node.previous().get().isMainTrunk()) {
             previousNode.nodeInfoMain.analyzed = previousplayouts > 0 && playouts > 0;
             previousNode.nodeInfoMain.analyzedMatchValue = previousplayouts > 0;
@@ -3226,6 +3384,7 @@ public class Board {
           }
         }
       }
+      previousNode.getData().playoutsChanged = false;
     }
   }
 
@@ -3236,15 +3395,10 @@ public class Board {
     BoardHistoryNode previousNode = node.previous().get();
     int movenumer = node.getData().moveNumber;
     int playouts = node.getData().getPlayouts2();
-    if ((playouts > previousNode.nodeInfo2.playouts
+    if ((playouts != previousNode.nodeInfo2.playouts
             || node.previous().get().getData().getPlayouts2()
-                > previousNode.nodeInfo2.previousPlayouts
-            || previousNode.nodeInfo2.changed
-            || (previousNode.nodeInfo2.nextNode != null && previousNode.nodeInfo2.nextNode != node))
+                != previousNode.nodeInfo2.previousPlayouts)
         && previousNode.getData().winrate2 >= 0) {
-      if (previousNode.nodeInfo2.changed) {
-        previousNode.nodeInfo2.changed = false;
-      }
       double winrateDiff = lastWinrateDiff2(node);
       if (Lizzie.board.isPkBoard) {
         if (node.getData().lastMove.isPresent()
@@ -3262,7 +3416,6 @@ public class Board {
           previousNode.nodeInfo2.playouts = playouts;
           previousNode.nodeInfo2.moveNum = movenumer;
           previousNode.nodeInfo2.previousPlayouts = previousplayouts;
-          previousNode.nodeInfo2.nextNode = node;
           if (node.getData().isKataData2) {
             previousNode.nodeInfo2.scoreMeanDiff = lastScoreMeanDiff2(node);
             previousNode.nodeInfo2.scoreLead = node.getData().scoreMean2;
@@ -3270,12 +3423,11 @@ public class Board {
         }
       } else {
         if (node.getData().lastMove != null && node.getData().lastMove.isPresent()) {
-          Map<String, Object> matchAiMap =
+          MatchAiInfo info =
               isMatchAi2(node, Lizzie.config.matchAiMoves, Lizzie.config.matchAiPercentsPlayouts);
-          double percentsMatch =
-              Double.parseDouble(matchAiMap.getOrDefault("percents", "0").toString());
-          boolean isBest = Boolean.parseBoolean(matchAiMap.getOrDefault("best", false).toString());
-          boolean isMatchAi = Boolean.parseBoolean(matchAiMap.get("match").toString());
+          double percentsMatch = info.precents;
+          boolean isBest = info.isBest;
+          boolean isMatchAi = info.isMatch;
           int[] coords = node.getData().lastMove.get();
           boolean isblack = !node.getData().blackToPlay;
           int previousplayouts = 0;
@@ -3298,7 +3450,6 @@ public class Board {
           previousNode.nodeInfo2.previousPlayouts = previousplayouts;
           previousNode.nodeInfo2.isMatchAi = isMatchAi;
           previousNode.nodeInfo2.percentsMatch = percentsMatch;
-          previousNode.nodeInfo2.nextNode = node;
 
           if (node.isMainTrunk()) {
             previousNode.nodeInfoMain2.analyzed = previousplayouts > 0 && playouts > 0;
@@ -3334,15 +3485,20 @@ public class Board {
     updateMovelist(nextnextNode);
   }
 
-  private Map<String, Object> isMatchAi(
-      BoardHistoryNode node, int bestNums, double percentPlayouts) {
+  class MatchAiInfo {
+    boolean isBest;
+    double precents;
+    int matchCandidteNo;
+    boolean isMatch;
+  }
+
+  private MatchAiInfo isMatchAi(BoardHistoryNode node, int bestNums, double percentPlayouts) {
     BoardData preNodeData = node.previous().get().getData();
-    Map<String, Object> map = new HashMap<String, Object>();
+    MatchAiInfo info = new MatchAiInfo();
     boolean hasPut = false;
     if (preNodeData.bestMoves.isEmpty()) {
-      map.put("match", false);
+      info.isMatch = false;
       hasPut = true;
-      // return false;
     }
     double maxPlayouts = 0;
     for (MoveData move : preNodeData.bestMoves) {
@@ -3359,27 +3515,27 @@ public class Board {
           if (c[0] == lastMoveCoords[0] && c[1] == lastMoveCoords[1]) {
             if ((preNodeData.bestMoves.get(i).playouts / maxPlayouts) * 100 >= percentPlayouts
                 && i < bestNums) {
-              if (i == 0) map.put("best", true);
-              map.put("match", true);
+              if (i == 0) info.isBest = true;
+              info.isMatch = true;
               hasPut = true;
             }
-            if (i == 0) map.put("percents", 1);
-            else map.put("percents", preNodeData.bestMoves.get(i).playouts / maxPlayouts);
+            if (i == 0) info.precents = 1;
+            else info.precents = preNodeData.bestMoves.get(i).playouts / maxPlayouts;
+            info.matchCandidteNo = i + 1;
           }
         }
       }
     }
-    if (!hasPut) map.put("match", false);
-    return map;
+    if (!hasPut) info.isMatch = false;
+    return info;
   }
 
-  private Map<String, Object> isMatchAi2(
-      BoardHistoryNode node, int bestNums, double percentPlayouts) {
+  private MatchAiInfo isMatchAi2(BoardHistoryNode node, int bestNums, double percentPlayouts) {
     BoardData preNodeData = node.previous().get().getData();
-    Map<String, Object> map = new HashMap<String, Object>();
+    MatchAiInfo info = new MatchAiInfo();
     boolean hasPut = false;
     if (preNodeData.bestMoves2.isEmpty()) {
-      map.put("match", false);
+      info.isMatch = false;
       hasPut = true;
       // return false;
     }
@@ -3398,18 +3554,18 @@ public class Board {
           if (c[0] == lastMoveCoords[0] && c[1] == lastMoveCoords[1]) {
             if ((preNodeData.bestMoves2.get(i).playouts / maxPlayouts) * 100 >= percentPlayouts
                 && i < bestNums) {
-              if (i == 0) map.put("best", true);
-              map.put("match", true);
+              if (i == 0) info.isBest = true;
+              info.isMatch = true;
               hasPut = true;
             }
-            if (i == 0) map.put("percents", 1);
-            else map.put("percents", preNodeData.bestMoves2.get(i).playouts / maxPlayouts);
+            if (i == 0) info.precents = 1;
+            else info.precents = preNodeData.bestMoves2.get(i).playouts / maxPlayouts;
           }
         }
       }
     }
-    if (!hasPut) map.put("match", false);
-    return map;
+    if (!hasPut) info.isMatch = false;
+    return info;
   }
 
   public void updateIsBest(BoardHistoryNode node) {
@@ -3491,26 +3647,50 @@ public class Board {
     double komi = Lizzie.board.getHistory().getGameInfo().getKomi();
     int startMoveNumber = 0;
     if (hasStartStone) startMoveNumber += startStonelist.size();
+    File tempfile = null;
+    String playerTitle = Lizzie.frame.playerTitle;
+    if (LizzieFrame.curFile != null) {
+      tempfile = LizzieFrame.curFile;
+    }
     Lizzie.board.clear(false);
     Lizzie.board.playAllMovelist(listHead, startMoveNumber);
     Lizzie.leelaz.komi(komi);
+    if (tempfile != null) {
+      LizzieFrame.curFile = tempfile;
+      LizzieFrame.fileNameTitle = LizzieFrame.curFile.getName();
+    }
+    Lizzie.frame.playerTitle = playerTitle;
     Lizzie.frame.refresh();
   }
 
   public void SpinAndMirror(int type) {
     if (Board.boardWidth != Board.boardHeight && type != 3 && type != 4) {
-      Message msg = new Message();
-      msg.setMessage(
+      Utils.showMsg(
           Lizzie.resourceBundle.getString("SpinAndMirror.noneSquareError")); // "非正方形棋盘不能旋转");
+      return;
+    }
+    if (Lizzie.frame.isPlayingAgainstLeelaz
+        || (EngineManager.isEngineGame && EngineManager.engineGameInfo.isGenmove)) {
+      Utils.showMsg(Lizzie.resourceBundle.getString("SpinAndMirror.inGameError"));
       return;
     }
     AllMovelist listHead = Lizzie.board.getAllMovelist(type);
     double komi = Lizzie.board.getHistory().getGameInfo().getKomi();
     int startMoveNumber = 0;
     if (hasStartStone) startMoveNumber += startStonelist.size();
+    File tempfile = null;
+    String playerTitle = Lizzie.frame.playerTitle;
+    if (LizzieFrame.curFile != null) {
+      tempfile = LizzieFrame.curFile;
+    }
     Lizzie.board.clear(false);
     Lizzie.board.playAllMovelist(listHead, startMoveNumber);
     Lizzie.leelaz.komi(komi);
+    if (tempfile != null) {
+      LizzieFrame.curFile = tempfile;
+      LizzieFrame.fileNameTitle = LizzieFrame.curFile.getName();
+    }
+    Lizzie.frame.playerTitle = playerTitle;
     Lizzie.frame.refresh();
   }
 
@@ -3549,14 +3729,17 @@ public class Board {
   public MoveLinkedList getMoveLinkedListAfter(BoardHistoryNode node) {
     // TODO Auto-generated method stub
     MoveLinkedList head = new MoveLinkedList();
-    getMoveLinkedListAfterHelper(node, head);
+    ArrayList<MoveLinkedList> tempHead = new ArrayList<MoveLinkedList>();
+    getMoveLinkedListAfterHelper(node, head, tempHead);
     if (head.variations.size() > 0) return head.variations.get(0);
     else return null;
   }
 
-  public void getMoveLinkedListAfterHelper(BoardHistoryNode node, MoveLinkedList head) {
+  public void getMoveLinkedListAfterHelper(
+      BoardHistoryNode node, MoveLinkedList head, ArrayList<MoveLinkedList> tempHead) {
     Stack<BoardHistoryNode> stack = new Stack<>();
     stack.push(node);
+
     while (!stack.isEmpty()) {
       BoardHistoryNode cur = stack.pop();
       if (cur.extraStones != null) {
@@ -3572,7 +3755,14 @@ public class Board {
         head =
             addMoveToLinedList(
                 head, lastMove, cur.getData().lastMoveColor.isBlack(), !cur.previous().isPresent());
+
+      if (!cur.next().isPresent() && !tempHead.isEmpty()) {
+        head = tempHead.get(tempHead.size() - 1);
+        tempHead.remove(tempHead.size() - 1);
+      }
+
       if (cur.numberOfChildren() >= 1) {
+        if (cur.numberOfChildren() > 1) tempHead.add(head);
         for (int i = cur.numberOfChildren() - 1; i >= 0; i--)
           stack.push(cur.getVariations().get(i));
       }
@@ -3749,7 +3939,7 @@ public class Board {
     GameInfo gameInfo = Lizzie.board.getHistory().getGameInfo();
     boolean oriPlaySound = Lizzie.config.playSound;
     Lizzie.config.playSound = false;
-    Lizzie.board.savelistforeditmode();
+    Lizzie.board.saveListForEdit();
     int moveNumber = Lizzie.board.moveNumberByCoord(coords);
     if (moveNumber > 0) {
       MoveLinkedList reStoreMainListHead =
@@ -4256,5 +4446,109 @@ public class Board {
     x0 = (x - y0 - 1) / 2;
     if (x0 < 0 || y0 < 0 || x0 >= hexWidth || y0 >= hexHeight) return false;
     return true;
+  }
+
+  public boolean hasStoneAt(int[] coords) {
+    if (history.getStones()[getIndex(coords[0], coords[1])] != Stone.EMPTY) return true;
+    return false;
+  }
+
+  public void clearPressStoneInfo(int[] coords) {
+    if (preMouseOnStone) {
+      if (coords == null
+          || coords[0] != mouseOnStoneCoords[0]
+          || coords[1] != mouseOnStoneCoords[1]) {
+        if (System.currentTimeMillis() - reviewStartTime < 300) return;
+        isMouseOnStone = false;
+        preMouseOnStone = false;
+        mouseOnStoneCoords = LizzieFrame.outOfBoundCoordinate;
+        if (reviewThread != null) reviewThread.interrupt();
+        Lizzie.frame.refresh();
+      }
+    }
+  }
+
+  public void setPressStoneInfo(int[] coords, boolean fromRightClick) {
+    if (!Lizzie.config.enableClickReview && !fromRightClick) {
+      return;
+    }
+    isMouseOnStone = false;
+    preMouseOnStone = true;
+    mouseOnStoneCoords = coords;
+    mouseOnNode = null;
+    Runnable runnable =
+        new Runnable() {
+          public void run() {
+            try {
+              Thread.sleep(50);
+            } catch (InterruptedException e) {
+              // TODO Auto-generated catch block
+              e.printStackTrace();
+            }
+            if (preMouseOnStone) {
+              isMouseOnStone = true;
+              BoardHistoryNode node = getHistory().getCurrentHistoryNode();
+              while (node.previous().isPresent()) {
+                if (node.getData().lastMove.isPresent()) {
+                  if (node.getData().lastMove.get()[0] == mouseOnStoneCoords[0]
+                      && node.getData().lastMove.get()[1] == mouseOnStoneCoords[1]) {
+                    mouseOnNode = node.previous().get();
+                    break;
+                  }
+                }
+                node = node.previous().get();
+              }
+              if (mouseOnNode != null) {
+                isMouseOnStone = true;
+                startReviewThread();
+              } else {
+                isMouseOnStone = false;
+                mouseOnStoneCoords = LizzieFrame.outOfBoundCoordinate;
+              }
+            }
+          }
+        };
+    Thread thread = new Thread(runnable);
+    thread.start();
+    reviewStartTime = System.currentTimeMillis();
+  }
+
+  private Thread reviewThread;
+  public int reviewLength;
+
+  private void startReviewThread() {
+    int secs = (int) (Lizzie.config.replayBranchIntervalSeconds * 1000);
+    if (reviewThread != null) reviewThread.interrupt();
+    Runnable runnable =
+        new Runnable() {
+          public void run() {
+            reviewLength = 1;
+            Lizzie.frame.refresh();
+            while (isMouseOnStone) {
+              try {
+                Thread.sleep(secs);
+              } catch (InterruptedException e) {
+                return;
+              }
+              reviewLength++;
+              Lizzie.frame.refresh();
+            }
+          }
+        };
+    reviewThread = new Thread(runnable);
+    reviewThread.start();
+  }
+
+  public BoardHistoryNode tsumegoNode;
+  public boolean isTusmegoMode = false;
+
+  public void saveTsumegoStatus() {
+    isTusmegoMode = true;
+    tsumegoNode = Lizzie.board.getHistory().getCurrentHistoryNode();
+  }
+
+  public void clearTsumegoStatus() {
+    isTusmegoMode = false;
+    tsumegoNode = null;
   }
 }

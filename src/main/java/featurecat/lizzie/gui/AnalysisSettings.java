@@ -153,7 +153,9 @@ public class AnalysisSettings extends JDialog {
               saveConfig();
               setVisible(false);
               Lizzie.frame.destroyAnalysisEngine();
-              Lizzie.frame.flashAnalyzeGame(Lizzie.config.analysisRecentIsPartGame);
+              Lizzie.frame.flashAnalyzeGame(
+                  Lizzie.config.analysisRecentIsPartGame,
+                  Lizzie.config.analysisRecentIsAllBranches);
             }
           }
         });
@@ -178,7 +180,9 @@ public class AnalysisSettings extends JDialog {
               saveConfig();
               setVisible(false);
               Lizzie.frame.destroyAnalysisEngine();
-              Lizzie.frame.flashAnalyzeGame(Lizzie.config.analysisRecentIsPartGame);
+              Lizzie.frame.flashAnalyzeGame(
+                  Lizzie.config.analysisRecentIsPartGame,
+                  Lizzie.config.analysisRecentIsAllBranches);
             } else {
               saveConfig();
               setVisible(false);

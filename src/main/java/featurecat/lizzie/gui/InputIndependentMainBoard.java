@@ -122,6 +122,8 @@ public class InputIndependentMainBoard implements KeyListener {
           Lizzie.frame.shareSGF();
         } else if (e.isAltDown()) {
           Lizzie.frame.startEngineGameDialog();
+        } else if (e.isShiftDown()) {
+          Lizzie.frame.openTsumego();
         } else Lizzie.frame.toggleGtpConsole();
         break;
       case VK_RIGHT:
@@ -302,18 +304,22 @@ public class InputIndependentMainBoard implements KeyListener {
           LizzieFrame.saveFile(true);
         } else if (e.isControlDown() && e.isAltDown()) {
           LizzieFrame.saveCurrentBranch();
-        } else if (e.isShiftDown()) {
+        } else if (e.isShiftDown() && e.isAltDown()) {
+
           Lizzie.frame.saveImage(
               Lizzie.frame.statx,
               Lizzie.frame.staty,
               (int) (Lizzie.frame.grw * 1.03),
               Lizzie.frame.grh + Lizzie.frame.stath);
+        } else if (e.isShiftDown()) {
+          Lizzie.frame.saveSubBoardPicture();
         } else {
           if (e.isAltDown()) {
             Lizzie.frame.saveMainBoardPicture();
           } else {
             if (e.isControlDown()) {
-              Lizzie.frame.saveSubBoardPicture();
+              // Lizzie.frame.saveSubBoardPicture();
+              Lizzie.frame.saveOriFile();
             } else LizzieFrame.saveFile(false);
           }
         }
@@ -421,10 +427,9 @@ public class InputIndependentMainBoard implements KeyListener {
           Lizzie.config.toggleShowCommentNodeColor();
         } else if (e.isAltDown()) {
           Lizzie.config.toggleShowComment();
-        }
-        //        else if (e.isShiftDown()) {
-        //                }
-        else {
+        } else if (e.isShiftDown()) {
+          Lizzie.frame.startCaptureTsumeGo();
+        } else {
           Lizzie.frame.togglePolicy();
         }
         break;
@@ -459,7 +464,7 @@ public class InputIndependentMainBoard implements KeyListener {
           Lizzie.frame.shareSGF();
         } else {
           if (e.isControlDown()) {
-            Lizzie.frame.flashAnalyzeGame(true);
+            Lizzie.frame.flashAnalyzeGame(true, false);
           } else {
             Lizzie.frame.moveToMainTrunk();
           }

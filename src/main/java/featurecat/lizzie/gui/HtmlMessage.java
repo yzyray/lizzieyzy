@@ -21,7 +21,6 @@ public class HtmlMessage extends JDialog {
 
   public HtmlMessage(String title, String content, Window owner) {
     super(owner);
-    this.setModal(false);
     this.setResizable(false);
     // setType(Type.POPUP);
     setTitle(title);
