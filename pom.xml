@@ -123,13 +123,13 @@
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
-			<version>20180130</version>
+			<version>20231013</version>
 		</dependency>
 
 		<dependency>
 			<groupId>me.friwi</groupId>
 			<artifactId>jcefmaven</artifactId>
-			<version>95.7.14.11</version>
+			<version>132.3.1</version>
 		</dependency>
 
 		<!-- <dependency> <groupId>me.friwi</groupId> <artifactId>jcef-natives-windows-amd64</artifactId> 
@@ -151,14 +151,14 @@
 		<dependency>
 			<groupId>ch.ethz.ganymed</groupId>
 			<artifactId>ganymed-ssh2</artifactId>
-			<version>build210</version>
+			<version>261</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.swinglabs.swingx/swingx-core -->
 		<dependency>
 			<groupId>org.swinglabs.swingx</groupId>
 			<artifactId>swingx-core</artifactId>
-			<version>1.6.4</version>
+			<version>1.6.5-1</version>
 		</dependency>
 
 		<!-- https://code.google.com/archive/p/juniversalchardet -->
@@ -172,7 +172,7 @@
 		<dependency>
 			<groupId>com.jhlabs</groupId>
 			<artifactId>filters</artifactId>
-			<version>2.0.235</version>
+			<version>2.0.235-1</version>
 		</dependency>
 
 		<dependency>
