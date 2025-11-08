@@ -1574,6 +1574,40 @@ public class LizzieFrame extends JFrame {
     mainPanel.setVisible(false);
     commentScrollPane.setVisible(false);
     blunderContentPane.setVisible(false);
+    // Listen for GraphicsConfiguration changes (e.g. moving window between monitors with different
+    // DPI). When detected, update javaScaleFactor / Config.isScaled and trigger layout/refresh.
+    this.addPropertyChangeListener(
+        "graphicsConfiguration",
+        evt -> {
+          try {
+            java.awt.GraphicsConfiguration graphicsConfig =
+                (java.awt.GraphicsConfiguration) evt.getNewValue();
+            if (graphicsConfig == null) {
+              return;
+            }
+            final AffineTransform tx = graphicsConfig.getDefaultTransform();
+            final double scaling = tx.getScaleX();
+            boolean wasScaled = Config.isScaled;
+            float oldJavaScale = Lizzie.javaScaleFactor;
+            if (scaling > 1.0) {
+              Config.isScaled = true;
+              Lizzie.javaScaleFactor = (float) scaling;
+            } else {
+              Config.isScaled = false;
+              Lizzie.javaScaleFactor = 1.0f;
+            }
+            if (Math.abs(Lizzie.javaScaleFactor - oldJavaScale) > 0.001f
+                || wasScaled != Config.isScaled) {
+              // reposition and redraw UI to account for new scaling
+              reSetLoc();
+              refreshContainer();
+              repaint();
+            }
+          } catch (Exception ex) {
+            ex.printStackTrace();
+          }
+        });
+
     setVisible(true);
   }
 
